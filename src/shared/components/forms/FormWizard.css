@@ -331,10 +331,4 @@
   color: #9ca3af;
 }
 
-.dark .wizard-panel > *::-webkit-scrollbar-thumb {
-  background: #4b5563;
-}
-
-.dark .wizard-panel > *::-webkit-scrollbar-thumb:hover {
-  background: #6b7280;
-}
+/* removed scrollbar dark mode styles */

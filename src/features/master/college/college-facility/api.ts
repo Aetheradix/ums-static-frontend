@@ -1,53 +1,49 @@
-import { ApiService } from 'services';
-
-const MASTER_API_ROOT = `master/`;
-
-const AVAILABLE_FACILITY_URL = `${MASTER_API_ROOT}available-facility`;
-
 export function getAvailableFacilities() {
-  return ApiService.getList<CollegeMaster.AvailableFacilityItem>(
-    AVAILABLE_FACILITY_URL
-  );
+  return [
+    { id: 1, facilityName: 'Play Ground', isActive: true },
+    { id: 2, facilityName: 'Library', isActive: true },
+    { id: 3, facilityName: 'Laboratory', isActive: true },
+    { id: 4, facilityName: 'Boys Hostel', isActive: true },
+    { id: 5, facilityName: 'Girls Hostel', isActive: true },
+    { id: 6, facilityName: 'Medical Room', isActive: true },
+    { id: 7, facilityName: 'Canteen', isActive: true },
+    { id: 8, facilityName: 'Transport Facility', isActive: true },
+    { id: 9, facilityName: 'CCTV', isActive: true },
+    { id: 10, facilityName: 'Pool', isActive: true },
+    { id: 11, facilityName: 'Computer Lab', isActive: true },
+  ] as unknown as CollegeMaster.AvailableFacilityItem[];
 }
 
 export async function getAvailableFacility(id: number) {
-  const { data } = await ApiService.get<CollegeMaster.AvailableFacilityItem>(
-    `${AVAILABLE_FACILITY_URL}/${id}`
-  );
-  return data;
+  return {
+    id,
+    facilityName: 'Mock Facility',
+    isActive: true,
+  } as unknown as CollegeMaster.AvailableFacilityItem;
 }
 
 export async function createAvailableFacility(
-  form: CollegeMaster.AvailableFacilityForm
+  _form: CollegeMaster.AvailableFacilityForm
 ) {
-  const { error, data } =
-    await ApiService.post<CollegeMaster.AvailableFacilityItem>(
-      AVAILABLE_FACILITY_URL,
-      form
-    );
-
-  return !error ? data : undefined;
+  return {
+    ..._form,
+    id: Math.floor(Math.random() * 1000),
+  } as unknown as CollegeMaster.AvailableFacilityItem;
 }
 
 export async function updateAvailableFacility(
-  id: number,
-  form: CollegeMaster.AvailableFacilityForm
+  _id: number,
+  _form: CollegeMaster.AvailableFacilityForm
 ): Promise<boolean> {
-  const result = await ApiService.put(`${AVAILABLE_FACILITY_URL}/${id}`, form);
-  return !result.error;
+  return true;
 }
 
-export async function deleteAvailableFacility(id: number): Promise<boolean> {
-  const result = await ApiService.del(`${AVAILABLE_FACILITY_URL}/${id}`);
-  return !result.error;
+export async function deleteAvailableFacility(_id: number): Promise<boolean> {
+  return true;
 }
 
 export async function patchAvailableFacilityStatus(
-  id: number
+  _id: number
 ): Promise<boolean> {
-  const result = await ApiService.patch(
-    `${AVAILABLE_FACILITY_URL}/${id}/status`,
-    {}
-  );
-  return !result.error;
+  return true;
 }
