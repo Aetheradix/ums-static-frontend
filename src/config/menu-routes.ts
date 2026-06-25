@@ -731,35 +731,18 @@ export const menuConfig: Menu.MenuItem[] = [
     ],
   },
   {
-    label: 'Academics',
-    slug: 'academics',
-    category: 'Academics',
-    icon: 'grid_view',
+    label: 'Admission\nManagement',
+    slug: 'admission-management',
+    category: 'Admission',
+    icon: 'how_to_reg',
     colorScheme: 'red',
-    description: 'Manage registrar and admin functions',
+    description:
+      'Manage student admissions, applications, and enrollment processes',
     navigationStyle: 'sidebar',
     children: [
       {
-        label: 'Programme Management',
-        slug: 'programme-management',
-        description:
-          'Manage countries, states, divisions, districts, tehsils, and blocks.',
-        icon: 'edit_location',
-        colorScheme: 'red',
-        children: [],
-      },
-      {
         label: 'Admission Admin Guide',
         slug: 'admission-admin-guide',
-        description:
-          'Manage countries, states, divisions, districts, tehsils, and blocks.',
-        icon: 'edit_location',
-        colorScheme: 'red',
-        children: [],
-      },
-      {
-        label: 'Academics',
-        slug: 'academics',
         description:
           'Manage countries, states, divisions, districts, tehsils, and blocks.',
         icon: 'edit_location',
@@ -993,6 +976,45 @@ export const menuConfig: Menu.MenuItem[] = [
             action: 'read',
           },
         ],
+      },
+    ],
+  },
+  {
+    label: 'Academics',
+    slug: 'academics',
+    category: 'Academics',
+    icon: 'school',
+    colorScheme: 'green',
+    description: 'Courses • Enrollment • Sessions • Evaluation • Grading',
+    path: '/academics',
+    children: [
+      {
+        label: 'Academic Management',
+        slug: 'academic-management',
+        description:
+          'Manage courses, student enrollment, academic sessions, evaluation components, and grading scales.',
+        path: '/academics',
+        icon: 'school',
+        colorScheme: 'green',
+      },
+    ],
+  },
+  {
+    label: 'Programme\nManagement',
+    slug: 'programme-management',
+    category: 'Academics',
+    icon: 'menu_book',
+    colorScheme: 'blue',
+    description: 'Programmes • Disciplines • UGC Degrees • Exam Schemes',
+    children: [
+      {
+        label: 'Programme Management System',
+        slug: 'programme-management-system',
+        description:
+          'Manage academic programmes, disciplines, UGC degrees, admission quotas, enrolment types, and exam schemes.',
+        path: '/programme-management',
+        icon: 'menu_book',
+        colorScheme: 'blue',
       },
     ],
   },

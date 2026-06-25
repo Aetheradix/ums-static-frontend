@@ -11,6 +11,8 @@ import Home from './home';
 import Master from './master';
 import Settings from './settings';
 import Sis from './sis';
+import Academics from './academics';
+import ProgrammeManagement from './programme-management';
 import PublicPortalLayout, {
   PublicRouteWrapper,
 } from './public-portal/layout/PublicPortalLayout';
@@ -102,6 +104,11 @@ export default function Features() {
                       <Route
                         path="employee-management/*"
                         element={<EmployeeManagement />}
+                      />
+                      <Route path="academics/*" element={<Academics />} />
+                      <Route
+                        path="programme-management/*"
+                        element={<ProgrammeManagement />}
                       />
                     </Routes>
                   </MainLayout>
