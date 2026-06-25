@@ -3,6 +3,7 @@ import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import MainLayout from 'shared/components/layout/MainLayout';
 import { UniversityLoader } from 'shared/components/progress';
+import Academics from './academics';
 import AdmissionPortal from './admission-portal';
 import AffiliationManagementSystem from './affiliation-management-system';
 import CareerAdvancement from './career-advancement';
@@ -11,6 +12,7 @@ import Home from './home';
 import HostelManagement from './hostel-management';
 import Lms from './lms';
 import Master from './master';
+import ProgrammeManagement from './programme-management';
 import PublicPortalLayout, {
   PublicRouteWrapper,
 } from './public-portal/layout/PublicPortalLayout';
@@ -104,6 +106,11 @@ export default function Features() {
                       <Route
                         path="employee-management/*"
                         element={<EmployeeManagement />}
+                      />
+                      <Route path="academics/*" element={<Academics />} />
+                      <Route
+                        path="programme-management/*"
+                        element={<ProgrammeManagement />}
                       />
                       <Route
                         path="hostel-management/*"
