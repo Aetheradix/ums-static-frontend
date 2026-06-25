@@ -73,9 +73,6 @@ const COLLEGE_DROPDOWN: Data.DataItem<string>[] = COLLEGE_OPTIONS.map(c => ({
   text: c,
 }));
 
-const FACILITY_CHECKBOXES: Data.DataItem<string>[] = FACILITY_OPTIONS.map(
-  f => ({ id: f, text: f })
-);
 
 export default function HostelRegistry() {
   const { hostels, setHostels, triggerNotification } = useHostel();

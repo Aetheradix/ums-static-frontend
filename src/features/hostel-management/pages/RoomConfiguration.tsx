@@ -59,8 +59,6 @@ const STATUS_OPTIONS: Data.DataItem<string>[] = [
   { id: 'Maintenance', text: 'Maintenance' },
 ];
 
-const ROOM_FACILITY_CHECKBOXES: Data.DataItem<string>[] =
-  ROOM_FACILITY_OPTIONS.map(f => ({ id: f, text: f }));
 
 export default function RoomConfiguration() {
   const { hostels, rooms, setRooms, setHostels, triggerNotification } =

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import {
   Checkbox,
   DropDownList,
-  TextArea,
   TextBox,
 } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
