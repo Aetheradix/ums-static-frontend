@@ -1,4 +1,4 @@
-import { findMock } from '../../mocks';
+import { findMock } from '../../features/examination-management/mocks';
 
 let apiRoot: string | undefined = undefined;
 
