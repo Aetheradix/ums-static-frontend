@@ -3,92 +3,56 @@ import validation from 'shared/utils/validation';
 
 const schema = validation.create<EmployeeManagement.FullOnboardingForm>(o => ({
   // ── Step 1: Quick Core ──
-  salutation: o.string().required().max(15).label('Salutation'),
-  firstName: o.string().required().max(50).label('First Name'),
-  middleName: o.string().allow('').max(50).label('Middle Name'),
-  lastName: o.string().required().max(50).label('Last Name'),
-  gender: o.string().required().label('Gender'),
-  casteId: o.number().required().min(1).label('Caste'),
-  mobileNumber: o
-    .string()
-    .required()
-    .length(10)
-    .pattern(/^\d{10}$/)
-    .label('Mobile Number'),
-  officialEmail: o
-    .string()
-    .required()
-    .max(100)
-    .email({ tlds: false })
-    .label('Official Email'),
-  dateOfBirth: o.date().required().label('Date of Birth'),
-  employeeType: o.string().required().max(50).label('Employee Type'),
-  employeeNatureId: o.number().required().min(1).label('Nature of Employment'),
-  organizationUnitId: o.number().required().min(1).label('Organization Unit'),
-  postId: o.number().required().min(1).label('Post'),
-  designationId: o.number().required().min(1).label('Designation'),
-  subjectSpecializationId: o
-    .number()
-    .required()
-    .min(1)
-    .label('Subject Specialization'),
-  seniorityRank: o.string().allow('').max(20).label('Seniority Rank'),
-  employeeCode: o.string().required().max(50).label('Employee Code'),
-  dateOfJoining: o.date().required().label('Date of Joining'),
+  salutation: o.any().required().label('Salutation'),
+  firstName: o.any().required().label('First Name'),
+  middleName: o.any().label('Middle Name'),
+  lastName: o.any().required().label('Last Name'),
+  gender: o.any().required().label('Gender'),
+  casteId: o.any().required().label('Caste'),
+  mobileNumber: o.any().required().label('Mobile Number'),
+  officialEmail: o.any().required().label('Official Email'),
+  dateOfBirth: o.any().required().label('Date of Birth'),
+  employeeType: o.any().required().label('Employee Type'),
+  employeeNatureId: o.any().required().label('Nature of Employment'),
+  organizationUnitId: o.any().required().label('Organization Unit'),
+  postId: o.any().required().label('Post'),
+  designationId: o.any().required().label('Designation'),
+  subjectSpecializationId: o.any().required().label('Subject Specialization'),
+  seniorityRank: o.any().label('Seniority Rank'),
+  employeeCode: o.any().required().label('Employee Code'),
+  dateOfJoining: o.any().required().label('Date of Joining'),
 
   // ── Step 2: Extended ──
-  bloodGroup: o.string().allow('').max(15).label('Blood Group'),
-  maritalStatus: o.string().allow('').max(30).label('Marital Status'),
-  nationalityId: o.number().required().min(1).label('Nationality'),
-  religionId: o.number().required().min(1).label('Religion'),
-  isPersonWithDisability: o.boolean().required().label('PwBD Status'),
-  fatherName: o.string().allow('').max(150).label("Father's Name"),
-  motherName: o.string().allow('').max(150).label("Mother's Name"),
-  personalEmail: o
-    .string()
-    .allow('')
-    .max(50)
-    .email({ tlds: false })
-    .label('Personal Email'),
-  alternateMobileNumber: o
-    .string()
-    .allow('')
-    .length(10)
-    .pattern(/^\d{10}$/)
-    .label('Alternate Mobile'),
-  officePhoneNumber: o.string().allow('').max(100).label('Office Phone'),
-  emergencyContactName: o
-    .string()
-    .required()
-    .max(100)
-    .label('Emergency Contact Name'),
-  emergencyRelation: o.string().required().max(50).label('Emergency Relation'),
-  emergencyPhoneNumber: o
-    .string()
-    .required()
-    .max(100)
-    .label('Emergency Mobile'),
-  personalWebsite: o.string().allow('').max(255).label('Personal Website'),
-  bioNote: o.string().allow('').max(600).label('Bio Note'),
-  aadharNumber: o.string().required().length(12).label('Aadhaar Number'),
-  panNumber: o.string().allow('').max(10).label('PAN Number'),
-  uanNumber: o.string().allow('').max(100).label('UAN Number'),
-  drivingLicense: o.string().allow('').max(100).label('Driving License'),
-  passportNumber: o.string().allow('').max(100).label('Passport Number'),
-  passportValidity: o.date().allow(null).optional().label('Passport Validity'),
+  bloodGroup: o.any().label('Blood Group'),
+  maritalStatus: o.any().label('Marital Status'),
+  nationalityId: o.any().required().label('Nationality'),
+  religionId: o.any().required().label('Religion'),
+  isPersonWithDisability: o.any().required().label('PwBD Status'),
+  fatherName: o.any().label("Father's Name"),
+  motherName: o.any().label("Mother's Name"),
+  personalEmail: o.any().label('Personal Email'),
+  alternateMobileNumber: o.any().label('Alternate Mobile'),
+  officePhoneNumber: o.any().label('Office Phone'),
+  emergencyContactName: o.any().required().label('Emergency Contact Name'),
+  emergencyRelation: o.any().required().label('Emergency Relation'),
+  emergencyPhoneNumber: o.any().required().label('Emergency Mobile'),
+  personalWebsite: o.any().label('Personal Website'),
+  bioNote: o.any().label('Bio Note'),
+  aadharNumber: o.any().required().label('Aadhaar Number'),
+  panNumber: o.any().label('PAN Number'),
+  uanNumber: o.any().label('UAN Number'),
+  drivingLicense: o.any().label('Driving License'),
+  passportNumber: o.any().label('Passport Number'),
+  passportValidity: o.any().label('Passport Validity'),
 
   // ── Step 3: Address ──
-  currentAddress: o.object().required(),
-  permanentAddress: o.object().required(),
-  isSameAsCurrentAddress: o.boolean().optional(),
+  currentAddress: o.any().required(),
+  permanentAddress: o.any().required(),
+  isSameAsCurrentAddress: o.any(),
 
   // ── Step 4: Qualifications ──
-  qualificationLevelId: o
-    .number()
-    .required()
-    .min(1)
-    .label('Highest Qualification'),
-  qualifications: o.array().min(1).required().label('Qualifications'),
+  qualificationLevelId: o.any().required().label('Highest Qualification'),
+  qualifications: o.any().required().label('Qualifications'),
 }));
 
 const emptyQualification: EmployeeManagement.QualificationForm = {

@@ -12,6 +12,7 @@ declare namespace EmployeeManagement {
     officialEmail: string;
     dateOfBirth: Date;
     employeeCode: string;
+    dateOfJoining: Date;
   }
 
   interface QuickOnboardingForm extends QuickOnboardingBase {
@@ -30,6 +31,7 @@ declare namespace EmployeeManagement {
     post: string;
     subjectSpecialization: string;
     isActive: boolean;
+    onboardingType: string;
   }
 
   // ── Full Onboarding Types ──

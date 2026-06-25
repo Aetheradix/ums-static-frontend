@@ -3,60 +3,42 @@ import validation from 'shared/utils/validation';
 
 const schema = validation.create<EmployeeManagement.QuickOnboardingForm>(o => ({
   // Employee Information
-  employeeType: o.string().required().max(50).label('Employee Type'),
+  employeeType: o.any().required().label('Employee Type'),
 
-  employeeNatureId: o.number().required().min(1).label('Nature of Employment'),
+  employeeNatureId: o.any().required().label('Nature of Employment'),
 
-  organizationUnitId: o.number().required().min(1).label('Organization Unit'),
+  organizationUnitId: o.any().required().label('Organization Unit'),
 
-  postId: o.number().required().min(1).label('Post'),
+  postId: o.any().required().label('Post'),
 
-  designationId: o.number().required().min(1).label('Designation'),
+  designationId: o.any().required().label('Designation'),
 
-  seniorityRank: o.string().required().max(20).label('Seniority Rank'),
+  seniorityRank: o.any().label('Seniority Rank'),
 
-  subjectSpecializationId: o
-    .number()
-    .required()
-    .min(1)
-    .label('Subject Specialization'),
+  subjectSpecializationId: o.any().required().label('Subject Specialization'),
 
   // Personal Information
-  salutation: o.string().required().max(15).label('Salutation'),
+  salutation: o.any().required().label('Salutation'),
+  firstName: o.any().required().label('First Name'),
 
-  firstName: o.string().required().max(50).label('First Name'),
+  middleName: o.any().label('Middle Name'),
 
-  middleName: o
-    .string()
-    .allow('', null)
-    .optional()
-    .max(50)
-    .label('Middle Name'),
+  lastName: o.any().required().label('Last Name'),
 
-  lastName: o.string().required().max(50).label('Last Name'),
+  gender: o.any().required().label('Gender'),
 
-  gender: o.string().required().label('Gender'),
+  casteId: o.any().required().label('Category'),
 
-  casteId: o.number().required().min(1).label('Category'),
+  mobileNumber: o.any().required().label('Mobile Number'),
 
-  mobileNumber: o
-    .string()
-    .required()
-    .length(10)
-    .pattern(/^\d{10}$/)
-    .label('Mobile Number'),
+  officialEmail: o.any().required().label('Official Email'),
 
-  officialEmail: o
-    .string()
-    .required()
-    .max(100)
-    .email({ tlds: false })
-    .label('Official Email'),
-
-  dateOfBirth: o.date().required().label('Date of Birth'),
+  dateOfBirth: o.any().required().label('Date of Birth'),
 
   // Employee Code
-  employeeCode: o.string().required().max(50).label('Employee Code'),
+  employeeCode: o.any().required().label('Employee Code'),
+
+  dateOfJoining: o.any().required().label('Date of Joining'),
 }));
 
 export function useQuickOnboardingForm(

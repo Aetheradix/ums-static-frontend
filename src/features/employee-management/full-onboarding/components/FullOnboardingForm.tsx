@@ -1,27 +1,6 @@
-import SelectBlock from 'features/components/SelectBlock';
-import SelectBloodGroup from 'features/components/SelectBloodGroup';
-import SelectCaste from 'features/components/SelectCaste';
-import SelectDegreeLevel from 'features/components/SelectDegreeLevel';
-import SelectDesignation from 'features/components/SelectDesignation';
-import SelectDistrict from 'features/components/SelectDistrict';
-import SelectDivision from 'features/components/SelectDivision';
-import SelectGender from 'features/components/SelectGender';
-import SelectMaritalStatus from 'features/components/SelectMaritalStatus';
-import SelectNationality from 'features/components/SelectNationality';
-import SelectNatureOfEmployment from 'features/components/SelectNatureOfEmployment';
-import SelectOrganizationUnit from 'features/components/SelectOrganizationUnit';
-import SelectPost from 'features/components/SelectPost';
-import SelectRelationshipTypes from 'features/components/SelectRelationshipTypes';
-import SelectReligion from 'features/components/SelectReligion';
-import SelectSalutation from 'features/components/SelectSalutation';
-import SelectServiceCadre from 'features/components/SelectServiceCadre';
-import SelectState from 'features/components/SelectState';
-import SelectSubjectSpecialization from 'features/components/SelectSubjectSpecialization';
-import SelectTehsil from 'features/components/SelectTehsil';
-import SelectYesNo from 'features/components/SelectYesNo';
-
 import {
   DatePicker,
+  DropDownList,
   FormWizard,
   NumberBox,
   Switch,
@@ -30,6 +9,29 @@ import {
 } from 'shared/components/forms';
 import type { WizardStep } from 'shared/components/forms/FormWizard';
 import { FormCard, FormGrid } from 'shared/new-components';
+import {
+  mockBlocks,
+  mockBloodGroups,
+  mockCastes,
+  mockDegreeLevels,
+  mockDesignations,
+  mockDistricts,
+  mockDivisions,
+  mockGenders,
+  mockMaritalStatus,
+  mockNationalities,
+  mockNatureOfEmployment,
+  mockOrgUnits,
+  mockPosts,
+  mockRelationships,
+  mockReligions,
+  mockSalutations,
+  mockServiceCadres,
+  mockSpecializations,
+  mockStates,
+  mockTehsils,
+  mockYesNo,
+} from '../../mockData';
 import { emptyQualification, useFullOnboardingForm } from './form.hook';
 
 interface Props {
@@ -75,11 +77,15 @@ export default function FullOnboardingForm(props: Props) {
       icon: 'user',
       content: (
         <div className="flex flex-col gap-6">
-          <FormCard title="Personal Information" icon="id-card">
+          <FormCard title="Employee Personal Information" icon="user">
             <FormGrid columns={3}>
-              <SelectSalutation
+              <DropDownList
                 {...register('salutation')}
                 label="Salutation"
+                placeholder="Select Salutation"
+                data={mockSalutations}
+                textField="name"
+                valueField="id"
                 required
               />
 
@@ -106,9 +112,25 @@ export default function FullOnboardingForm(props: Props) {
                 required
               />
 
-              <SelectGender {...register('gender')} required />
+              <DropDownList
+                {...register('gender')}
+                label="Gender"
+                placeholder="Select Gender"
+                data={mockGenders}
+                textField="name"
+                valueField="id"
+                required
+              />
 
-              <SelectCaste {...register('casteId')} label="Caste" required />
+              <DropDownList
+                {...register('casteId')}
+                label="Caste"
+                placeholder="Select Caste"
+                data={mockCastes}
+                textField="name"
+                valueField="id"
+                required
+              />
 
               <TextBox
                 {...register('mobileNumber')}
@@ -135,33 +157,65 @@ export default function FullOnboardingForm(props: Props) {
             </FormGrid>
           </FormCard>
 
-          <FormCard title="Employment Details" icon="briefcase">
+          <FormCard title="Employee Information" icon="briefcase">
             <FormGrid columns={3}>
-              <SelectServiceCadre
+              <DropDownList
                 {...register('employeeType')}
                 label="Employee Type"
+                placeholder="Select Employee Type"
+                data={mockServiceCadres}
+                textField="name"
+                valueField="id"
                 required
               />
 
-              <SelectNatureOfEmployment
+              <DropDownList
                 {...register('employeeNatureId')}
                 label="Nature of Employment"
+                placeholder="Select Nature of Employment"
+                data={mockNatureOfEmployment}
+                textField="name"
+                valueField="id"
                 required
               />
 
-              <SelectOrganizationUnit
+              <DropDownList
                 {...register('organizationUnitId')}
                 label="Organization Unit"
+                placeholder="Select Organization Unit"
+                data={mockOrgUnits}
+                textField="name"
+                valueField="id"
                 required
               />
 
-              <SelectPost {...register('postId')} required />
+              <DropDownList
+                {...register('postId')}
+                label="Post"
+                placeholder="Select Post"
+                data={mockPosts}
+                textField="name"
+                valueField="id"
+                required
+              />
 
-              <SelectDesignation {...register('designationId')} required />
+              <DropDownList
+                {...register('designationId')}
+                label="Designation"
+                placeholder="Select Designation"
+                data={mockDesignations}
+                textField="name"
+                valueField="id"
+                required
+              />
 
-              <SelectSubjectSpecialization
+              <DropDownList
                 {...register('subjectSpecializationId')}
                 label="Subject Specialization"
+                placeholder="Select Subject Specialization"
+                data={mockSpecializations}
+                textField="name"
+                valueField="id"
                 required
               />
 
@@ -202,32 +256,51 @@ export default function FullOnboardingForm(props: Props) {
         <div className="flex flex-col gap-6">
           <FormCard title="Personal & Family" icon="users">
             <FormGrid columns={3}>
-              <SelectBloodGroup
+              <DropDownList
                 {...register('bloodGroup')}
                 label="Blood Group"
+                placeholder="Select Blood Group"
+                data={mockBloodGroups}
+                textField="name"
+                valueField="id"
               />
 
-              <SelectMaritalStatus
+              <DropDownList
                 {...register('maritalStatus')}
                 label="Marital Status"
+                placeholder="Select Marital Status"
+                data={mockMaritalStatus}
+                textField="name"
+                valueField="id"
               />
 
-              <SelectNationality
+              <DropDownList
                 {...register('nationalityId')}
                 label="Nationality"
+                placeholder="Select Nationality"
+                data={mockNationalities}
+                textField="name"
+                valueField="id"
                 required
               />
 
-              <SelectReligion
+              <DropDownList
                 {...register('religionId')}
                 label="Religion"
+                placeholder="Select Religion"
+                data={mockReligions}
+                textField="name"
+                valueField="id"
                 required
               />
 
-              <SelectYesNo
+              <DropDownList
                 {...register('isPersonWithDisability')}
                 label="Person with Disability (PwBD)"
-                useBooleanValues
+                placeholder="Select Person with Disability (PwBD)"
+                data={mockYesNo}
+                textField="name"
+                valueField="id"
                 required
               />
 
@@ -298,9 +371,13 @@ export default function FullOnboardingForm(props: Props) {
                 required
               />
 
-              <SelectRelationshipTypes
+              <DropDownList
                 {...register('emergencyRelation')}
                 label="Emergency Relation"
+                placeholder="Select Emergency Relation"
+                data={mockRelationships}
+                textField="name"
+                valueField="id"
                 required
               />
 
@@ -396,31 +473,51 @@ export default function FullOnboardingForm(props: Props) {
                 required
               />
 
-              <SelectState
+              <DropDownList
                 {...register('currentAddress.stateId')}
                 label="State"
+                placeholder="Select State"
+                data={mockStates}
+                textField="name"
+                valueField="id"
                 required
               />
 
-              <SelectDivision
+              <DropDownList
                 {...register('currentAddress.divisionId')}
                 label="Division"
+                placeholder="Select Division"
+                data={mockDivisions}
+                textField="name"
+                valueField="id"
               />
 
-              <SelectDistrict
+              <DropDownList
                 {...register('currentAddress.districtId')}
                 label="District"
+                placeholder="Select District"
+                data={mockDistricts}
+                textField="name"
+                valueField="id"
                 required
               />
 
-              <SelectTehsil
+              <DropDownList
                 {...register('currentAddress.tehsilId')}
                 label="Tehsil"
+                placeholder="Select Tehsil"
+                data={mockTehsils}
+                textField="name"
+                valueField="id"
               />
 
-              <SelectBlock
+              <DropDownList
                 {...register('currentAddress.blockId')}
                 label="Block"
+                placeholder="Select Block"
+                data={mockBlocks}
+                textField="name"
+                valueField="id"
               />
 
               <TextBox
@@ -468,31 +565,51 @@ export default function FullOnboardingForm(props: Props) {
                     required
                   />
 
-                  <SelectState
+                  <DropDownList
                     {...register('permanentAddress.stateId')}
                     label="State"
+                    placeholder="Select State"
+                    data={mockStates}
+                    textField="name"
+                    valueField="id"
                     required
                   />
 
-                  <SelectDivision
+                  <DropDownList
                     {...register('permanentAddress.divisionId')}
                     label="Division"
+                    placeholder="Select Division"
+                    data={mockDivisions}
+                    textField="name"
+                    valueField="id"
                   />
 
-                  <SelectDistrict
+                  <DropDownList
                     {...register('permanentAddress.districtId')}
                     label="District"
+                    placeholder="Select District"
+                    data={mockDistricts}
+                    textField="name"
+                    valueField="id"
                     required
                   />
 
-                  <SelectTehsil
+                  <DropDownList
                     {...register('permanentAddress.tehsilId')}
                     label="Tehsil"
+                    placeholder="Select Tehsil"
+                    data={mockTehsils}
+                    textField="name"
+                    valueField="id"
                   />
 
-                  <SelectBlock
+                  <DropDownList
                     {...register('permanentAddress.blockId')}
                     label="Block"
+                    placeholder="Select Block"
+                    data={mockBlocks}
+                    textField="name"
+                    valueField="id"
                   />
 
                   <TextBox
@@ -520,9 +637,13 @@ export default function FullOnboardingForm(props: Props) {
         <div className="flex flex-col gap-6">
           <FormCard title="Highest Qualification" icon="star">
             <FormGrid columns={3}>
-              <SelectDegreeLevel
+              <DropDownList
                 {...register('qualificationLevelId')}
                 label="Highest Qualification"
+                placeholder="Select Highest Qualification"
+                data={mockDegreeLevels}
+                textField="name"
+                valueField="id"
                 required
               />
             </FormGrid>
@@ -535,9 +656,13 @@ export default function FullOnboardingForm(props: Props) {
               icon="graduation-cap"
             >
               <FormGrid columns={3}>
-                <SelectDegreeLevel
+                <DropDownList
                   {...register(`qualifications.${index}.qualificationId`)}
                   label="Qualification Name"
+                  placeholder="Select Qualification Name"
+                  data={mockDegreeLevels}
+                  textField="name"
+                  valueField="id"
                   required
                 />
 

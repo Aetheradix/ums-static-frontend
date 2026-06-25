@@ -1,15 +1,17 @@
-import SelectCaste from 'features/components/SelectCaste';
-import SelectDesignation from 'features/components/SelectDesignation';
-import SelectGender from 'features/components/SelectGender';
-import SelectNatureOfEmployment from 'features/components/SelectNatureOfEmployment';
-import SelectOrganizationUnit from 'features/components/SelectOrganizationUnit';
-import SelectPost from 'features/components/SelectPost';
-import SelectSalutation from 'features/components/SelectSalutation';
-import SelectServiceCadre from 'features/components/SelectServiceCadre';
-import SelectSubjectSpecialization from 'features/components/SelectSubjectSpecialization';
 import { Button } from 'shared/components/buttons';
-import { DatePicker, TextBox } from 'shared/components/forms';
+import { DatePicker, DropDownList, TextBox } from 'shared/components/forms';
 import { FormCard, FormGrid } from 'shared/new-components';
+import {
+  mockCastes,
+  mockDesignations,
+  mockGenders,
+  mockNatureOfEmployment,
+  mockOrgUnits,
+  mockPosts,
+  mockSalutations,
+  mockServiceCadres,
+  mockSpecializations,
+} from '../../mockData';
 import { useQuickOnboardingForm } from './form.hook';
 
 interface Props {
@@ -34,9 +36,13 @@ export default function QuickOnboardingForm(props: Props) {
       >
         <FormCard title="Employee Personal Information" icon="user">
           <FormGrid columns={3}>
-            <SelectSalutation
+            <DropDownList
               {...register('salutation')}
               label="Salutation"
+              placeholder="Select Salutation"
+              data={mockSalutations}
+              textField="name"
+              valueField="id"
               required
             />
 
@@ -60,9 +66,25 @@ export default function QuickOnboardingForm(props: Props) {
               required
             />
 
-            <SelectGender {...register('gender')} required />
+            <DropDownList
+              {...register('gender')}
+              label="Gender"
+              placeholder="Select Gender"
+              data={mockGenders}
+              textField="name"
+              valueField="id"
+              required
+            />
 
-            <SelectCaste {...register('casteId')} label="Category" required />
+            <DropDownList
+              {...register('casteId')}
+              label="Category"
+              placeholder="Select Category"
+              data={mockCastes}
+              textField="name"
+              valueField="id"
+              required
+            />
 
             <TextBox
               {...register('mobileNumber')}
@@ -90,27 +112,55 @@ export default function QuickOnboardingForm(props: Props) {
 
         <FormCard title="Employee Information" icon="briefcase">
           <FormGrid columns={3}>
-            <SelectServiceCadre
+            <DropDownList
               {...register('employeeType')}
               label="Employee Type"
+              placeholder="Select Employee Type"
+              data={mockServiceCadres}
+              textField="name"
+              valueField="id"
               required
             />
 
-            <SelectNatureOfEmployment
+            <DropDownList
               {...register('employeeNatureId')}
               label="Nature of Employment"
+              placeholder="Select Nature of Employment"
+              data={mockNatureOfEmployment}
+              textField="name"
+              valueField="id"
               required
             />
 
-            <SelectOrganizationUnit
+            <DropDownList
               {...register('organizationUnitId')}
               label="Organization Unit"
+              placeholder="Select Organization Unit"
+              data={mockOrgUnits}
+              textField="name"
+              valueField="id"
               required
             />
 
-            <SelectPost {...register('postId')} required />
+            <DropDownList
+              {...register('postId')}
+              label="Post"
+              placeholder="Select Post"
+              data={mockPosts}
+              textField="name"
+              valueField="id"
+              required
+            />
 
-            <SelectDesignation {...register('designationId')} required />
+            <DropDownList
+              {...register('designationId')}
+              label="Designation"
+              placeholder="Select Designation"
+              data={mockDesignations}
+              textField="name"
+              valueField="id"
+              required
+            />
 
             <TextBox
               {...register('seniorityRank')}
@@ -118,9 +168,13 @@ export default function QuickOnboardingForm(props: Props) {
               placeholder="Enter seniority rank"
             />
 
-            <SelectSubjectSpecialization
+            <DropDownList
               {...register('subjectSpecializationId')}
               label="Subject Specialization"
+              placeholder="Select Subject Specialization"
+              data={mockSpecializations}
+              textField="name"
+              valueField="id"
               required
             />
 
@@ -128,6 +182,13 @@ export default function QuickOnboardingForm(props: Props) {
               {...register('employeeCode')}
               label="Employee Code"
               placeholder="Enter Employee code"
+              required
+            />
+
+            <DatePicker
+              {...register('dateOfJoining')}
+              label="Date of Joining"
+              placeholder="Select date of joining"
               required
             />
           </FormGrid>
