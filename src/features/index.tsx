@@ -1,8 +1,9 @@
+import { LoginPage, ProtectedRoute } from 'auth';
 import React from 'react';
-import { ProtectedRoute, LoginPage } from 'auth';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import MainLayout from 'shared/components/layout/MainLayout';
 import { UniversityLoader } from 'shared/components/progress';
+import Academics from './academics';
 import AdmissionPortal from './admission-portal';
 import AffiliationManagementSystem from './affiliation-management-system';
 import CareerAdvancement from './career-advancement';
@@ -10,13 +11,12 @@ import EmployeeManagement from './employee-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
 import Master from './master';
-import Settings from './settings';
-import Sis from './sis';
-import Academics from './academics';
 import ProgrammeManagement from './programme-management';
 import PublicPortalLayout, {
   PublicRouteWrapper,
 } from './public-portal/layout/PublicPortalLayout';
+import Settings from './settings';
+import Sis from './sis';
 
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
@@ -110,6 +110,7 @@ export default function Features() {
                       <Route
                         path="programme-management/*"
                         element={<ProgrammeManagement />}
+                      />
                       <Route
                         path="hostel-management/*"
                         element={<HostelManagement />}
