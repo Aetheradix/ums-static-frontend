@@ -1,5 +1,6 @@
 import { Checkbox as PrimeCheckbox } from 'primereact/checkbox';
 import { InputText } from 'primereact/inputtext';
+import { useState, useEffect } from 'react';
 import { Controller, type FieldValues } from 'react-hook-form';
 import { sanitizeInput } from '../../utils/validation/config';
 import InputBlock from './InputBlock';
@@ -21,6 +22,8 @@ interface TextBoxProps<TForm extends FieldValues>
   showCheckbox?: boolean;
   checkboxChecked?: boolean;
   onCheckboxChange?: (checked: boolean) => void;
+  defaultValue?: any;
+  type?: string;
 }
 
 function InnerTextBox({
@@ -39,9 +42,16 @@ function InnerTextBox({
   showCheckbox,
   checkboxChecked,
   onCheckboxChange,
+  defaultValue,
+  type,
   ...rest
 }: TextBoxProps<FieldValues>) {
   const inputId = id ?? name;
+  const [internalValue, setInternalValue] = useState(defaultValue ?? value ?? '');
+
+  useEffect(() => {
+    setInternalValue(defaultValue ?? value ?? '');
+  }, [defaultValue, value]);
 
   return (
     <InputBlock
@@ -67,10 +77,14 @@ function InnerTextBox({
           />
         ) : undefined}
         <InputText
-          type="text"
+          type={type || 'text'}
           id={inputId}
-          value={value || ''}
-          onChange={e => onChange?.(sanitizeInput(e.target.value))}
+          value={internalValue}
+          onChange={e => {
+            const val = sanitizeInput(e.target.value);
+            setInternalValue(val);
+            onChange?.(val);
+          }}
           invalid={!!errorMessage}
           className={`${className ? className + ' ' : ''}w-full ${showCheckbox ? 'pl-11' : ''}`}
           autoComplete={autocomplete}
