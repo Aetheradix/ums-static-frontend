@@ -1,6 +1,10 @@
 import { ApiService } from 'services';
 import { examinationUrls as url } from './urls';
 
+function unwrap<T>(res: Api.ApiResult<T>): T {
+  return res.data as T;
+}
+
 // ───── Exam Type ─────
 export function getExamTypes() {
   return ApiService.getList<Examination.ExamTypeItem>(url.examType.root);
@@ -84,11 +88,8 @@ export async function patchExamCenterStatus(id: number, isActive: boolean) {
 }
 
 // ───── Hall / Room ─────
-export async function getHalls(centerId: number) {
-  const all = await ApiService.getList<Examination.HallItem>(
-    url.hall.root(centerId)
-  );
-  return all.filter(h => h.centerId === centerId);
+export function getHalls(centerId: number) {
+  return ApiService.getList<Examination.HallItem>(url.hall.root(centerId));
 }
 
 export async function createHall(form: Examination.HallForm) {
@@ -178,6 +179,18 @@ export function getTimetable(sessionId: number) {
   );
 }
 
+export async function createTimetableEntry(
+  sessionId: number,
+  form: Examination.TimetableForm
+) {
+  return unwrap(
+    await ApiService.post<Examination.TimetableItem>(
+      url.timetable.root(sessionId),
+      form
+    )
+  );
+}
+
 // ───── Marks Entry ─────
 export function getMarksEntries(sessionId: number) {
   return ApiService.getList<Examination.MarksEntryItem>(
@@ -203,6 +216,13 @@ export async function getDashboardStats() {
   return res.data as Examination.DashboardStats;
 }
 
+// ───── Reports Dashboard ─────
+export function getReportsDashboard() {
+  return ApiService.get<Record<string, unknown>>(url.reportsDashboard).then(
+    r => r.data
+  );
+}
+
 // ───── Options (dropdown data) ─────
 export function getProgramOptions() {
   return ApiService.getList<Data.DataItem<number>>(url.programOptions);
@@ -210,4 +230,267 @@ export function getProgramOptions() {
 
 export function getCycleOptions() {
   return ApiService.getList<Data.DataItem<number>>(url.cycleOptions);
+}
+
+// ───── Session Template CUD ─────
+export async function createSessionTemplate(
+  form: Examination.SessionTemplateForm
+) {
+  return unwrap(
+    await ApiService.post<Examination.SessionTemplateItem>(
+      url.sessionTemplate.create,
+      form
+    )
+  );
+}
+
+export async function updateSessionTemplate(
+  id: number,
+  form: Examination.SessionTemplateForm
+) {
+  return unwrap(
+    await ApiService.put<Examination.SessionTemplateItem>(
+      url.sessionTemplate.edit(id),
+      form
+    )
+  );
+}
+
+// ───── Admit Card Template CUD ─────
+export async function createAdmitCardTemplate(
+  form: Examination.AdmitCardTemplateForm
+) {
+  return unwrap(
+    await ApiService.post<Examination.AdmitCardTemplateItem>(
+      url.admitCardTemplate.create,
+      form
+    )
+  );
+}
+
+export async function updateAdmitCardTemplate(
+  id: number,
+  form: Examination.AdmitCardTemplateForm
+) {
+  return unwrap(
+    await ApiService.put<Examination.AdmitCardTemplateItem>(
+      url.admitCardTemplate.edit(id),
+      form
+    )
+  );
+}
+
+// ───── Exam Fee Update ─────
+export async function updateExamFee(id: number, form: Examination.ExamFeeForm) {
+  return unwrap(
+    await ApiService.put<Examination.ExamFeeItem>(url.fee.edit(id), form)
+  );
+}
+
+// ───── Late Fee Update ─────
+export async function updateLateFee(id: number, form: Examination.LateFeeForm) {
+  return unwrap(
+    await ApiService.put<Examination.LateFeeItem>(url.lateFee.edit(id), form)
+  );
+}
+
+// ───── Exam Session Update ─────
+export async function updateExamSession(
+  id: number,
+  form: Examination.ExamSessionForm
+) {
+  return unwrap(
+    await ApiService.put<Examination.ExamSessionItem>(
+      url.session.edit(id),
+      form
+    )
+  );
+}
+
+// ───── Question Paper ─────
+export function getQuestionPapers() {
+  return ApiService.getList<Examination.QuestionPaperItem>(
+    url.questionPaper.root
+  );
+}
+
+export async function createQuestionPaper(form: Examination.QuestionPaperForm) {
+  return unwrap(
+    await ApiService.post<Examination.QuestionPaperItem>(
+      url.questionPaper.create,
+      form
+    )
+  );
+}
+
+export function getQuestionPaperPatterns() {
+  return ApiService.getList<Examination.QuestionPaperPatternItem>(
+    url.questionPaper.patterns
+  );
+}
+
+export async function createQuestionPaperPattern(
+  form: Examination.QuestionPaperPatternForm
+) {
+  return unwrap(
+    await ApiService.post<Examination.QuestionPaperPatternItem>(
+      url.questionPaper.patterns,
+      form
+    )
+  );
+}
+
+// ───── Evaluator ─────
+export function getEvaluators() {
+  return ApiService.getList<Examination.EvaluatorItem>(url.evaluator.root);
+}
+
+export async function createEvaluator(form: Examination.EvaluatorForm) {
+  return unwrap(
+    await ApiService.post<Examination.EvaluatorItem>(url.evaluator.create, form)
+  );
+}
+
+export function getSheetDistributions() {
+  return ApiService.getList<Examination.SheetDistributionItem>(
+    url.evaluator.sheetDistribution
+  );
+}
+
+export async function createSheetDistribution(
+  form: Examination.SheetDistributionForm
+) {
+  return unwrap(
+    await ApiService.post<Examination.SheetDistributionItem>(
+      url.evaluator.sheetDistribution,
+      form
+    )
+  );
+}
+
+// ───── Supplementary ─────
+export function getSupplementarySetups() {
+  return ApiService.getList<Examination.SupplementarySessionItem>(
+    url.supplementary.root
+  );
+}
+
+export async function getSupplementarySession(id: number) {
+  const list = await getSupplementarySetups();
+  return list.find(x => x.id === id) ?? null;
+}
+
+export async function createSupplementarySession(
+  form: Examination.SupplementarySessionForm
+) {
+  return unwrap(
+    await ApiService.post<Examination.SupplementarySessionItem>(
+      url.supplementary.create,
+      form
+    )
+  );
+}
+
+// ───── Duplicate Marksheet ─────
+export function getDuplicateApplications() {
+  return ApiService.getList<Examination.DuplicateApplicationItem>(
+    url.duplicateMarksheet.applications
+  );
+}
+
+export function getGeneratedDuplicates() {
+  return ApiService.getList<Examination.GeneratedDuplicateItem>(
+    url.duplicateMarksheet.generate
+  );
+}
+
+// ───── Grade Card ─────
+export function getGradeCardGenerations() {
+  return ApiService.getList<Examination.GradeCardGenerationItem>(
+    url.gradeCard.root
+  );
+}
+
+// ───── Result Publication ─────
+export function getResultPublications() {
+  return ApiService.getList<Examination.ResultPublicationItem>(
+    url.resultPublication.root
+  );
+}
+
+// ───── Moderation ─────
+export function getModerationRules() {
+  return ApiService.getList<Examination.ModerationRuleItem>(
+    url.moderation.root
+  );
+}
+
+export async function createModerationRule(
+  form: Examination.ModerationRuleForm
+) {
+  return unwrap(
+    await ApiService.post<Examination.ModerationRuleItem>(
+      url.moderation.create,
+      form
+    )
+  );
+}
+
+// ───── Revaluation Evaluation ─────
+export function getRevaluationEvaluations() {
+  return ApiService.getList<Examination.RevaluationEvaluationItem>(
+    url.revaluationEvaluation.root
+  );
+}
+
+// ───── Student Portal ─────
+export function getStudentDashboard() {
+  return ApiService.get<{
+    info: Examination.StudentInfo;
+    stats: Examination.StudentDashboardStats;
+    sgpaTrend: Examination.SgpaTrendItem[];
+    subjectMarks: Examination.SubjectMarksItem[];
+    attendanceBreakdown: Examination.AttendanceDataPoint[];
+    upcomingExams: Examination.UpcomingExam[];
+    notifications: Examination.StudentNotification[];
+  }>(url.student.dashboard).then(r => r.data);
+}
+
+export function getStudentTimetable() {
+  return ApiService.getList<Examination.StudentTimetableItem>(
+    url.student.timetable
+  );
+}
+
+export function getStudentResults() {
+  return ApiService.get<{
+    sgpa: number;
+    cgpa: number;
+    semester: number;
+    subjects: Examination.StudentResultItem[];
+  }>(url.student.results).then(r => r.data);
+}
+
+export function getStudentGradeCards() {
+  return ApiService.getList<Examination.StudentGradeCardItem>(
+    url.student.gradeCards
+  );
+}
+
+export function getStudentRevaluations() {
+  return ApiService.getList<Examination.StudentRevaluationItem>(
+    url.student.revaluation
+  );
+}
+
+export function getStudentDuplicateMarksheets() {
+  return ApiService.getList<Examination.StudentDuplicateItem>(
+    url.student.duplicateMarksheet
+  );
+}
+
+export function getStudentTrackApplications() {
+  return ApiService.getList<Examination.TrackApplicationItem>(
+    url.student.trackApplications
+  );
 }

@@ -75,6 +75,52 @@ export const examinationUrls = {
   revaluation: {
     root: `${baseUrl}/revaluation`,
   },
+  questionPaper: {
+    root: `${baseUrl}/question-paper`,
+    edit: (id: number) => `${baseUrl}/question-paper/edit/${id}`,
+    create: `${baseUrl}/question-paper/create`,
+    patterns: `${baseUrl}/question-paper/patterns`,
+  },
+  evaluator: {
+    root: `${baseUrl}/evaluator`,
+    edit: (id: number) => `${baseUrl}/evaluator/edit/${id}`,
+    create: `${baseUrl}/evaluator/create`,
+    sheetDistribution: `${baseUrl}/evaluator/sheet-distribution`,
+  },
+  supplementary: {
+    root: `${baseUrl}/supplementary`,
+    get: (id: number) => `${baseUrl}/supplementary/${id}`,
+    edit: (id: number) => `${baseUrl}/supplementary/edit/${id}`,
+    create: `${baseUrl}/supplementary/create`,
+  },
+  duplicateMarksheet: {
+    applications: `${baseUrl}/duplicate-marksheet/applications`,
+    generate: `${baseUrl}/duplicate-marksheet/generate`,
+  },
+  gradeCard: {
+    root: `${baseUrl}/grade-card`,
+  },
+  resultPublication: {
+    root: `${baseUrl}/result-publication`,
+  },
+  moderation: {
+    root: `${baseUrl}/moderation`,
+    edit: (id: number) => `${baseUrl}/moderation/edit/${id}`,
+    create: `${baseUrl}/moderation/create`,
+  },
+  revaluationEvaluation: {
+    root: `${baseUrl}/revaluation-evaluation`,
+  },
+  student: {
+    dashboard: `${baseUrl}/student/dashboard`,
+    timetable: `${baseUrl}/student/timetable`,
+    results: `${baseUrl}/student/results`,
+    gradeCards: `${baseUrl}/student/grade-cards`,
+    revaluation: `${baseUrl}/student/revaluation`,
+    duplicateMarksheet: `${baseUrl}/student/duplicate-marksheet`,
+    trackApplications: `${baseUrl}/student/track-applications`,
+  },
+  reportsDashboard: `${baseUrl}/reporting/dashboard`,
   programOptions: `${baseUrl}/program-options`,
   cycleOptions: `${baseUrl}/cycle-options`,
 };

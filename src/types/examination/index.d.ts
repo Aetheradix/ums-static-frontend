@@ -153,6 +153,17 @@ declare namespace Examination {
   type SessionProgramItem = Data.WithId<SessionProgramForm>;
 
   // ─── Student Application (exam form) ───
+  interface StudentApplicationForm {
+    examSessionId: number;
+    studentId: string;
+    subjects: Array<{
+      subjectId: number;
+      subjectName: string;
+      subjectCode: string;
+    }>;
+    feeExempted: boolean;
+    lateFeeApplicable: boolean;
+  }
   interface StudentApplicationItem {
     id: number;
     studentName: string;
@@ -176,6 +187,15 @@ declare namespace Examination {
     endTime: string;
     centerId: number;
     centerName: string;
+  }
+  interface TimetableForm {
+    subjectCode: string;
+    subjectName: string;
+    examDate: string;
+    slotId: number;
+    startTime: string;
+    endTime: string;
+    centerId: number;
   }
 
   // ─── Marks entry ───
@@ -232,5 +252,306 @@ declare namespace Examination {
     formsSubmitted: number;
     marksEntryProgress: number;
     resultsPublished: number;
+    centersActive?: number;
+    pendingApprovals?: number;
+    marksBreakdown?: {
+      theoryEntered: number;
+      practicalEntered: number;
+      iaEntered: number;
+      verified: number;
+      approved: number;
+    };
+    sessionStats?: {
+      active: number;
+      upcoming: number;
+      completed: number;
+    };
+    upcomingDeadlines?: Array<{
+      title: string;
+      date: string;
+      daysLeft: number;
+      priority: 'high' | 'medium' | 'low';
+    }>;
+    recentActivities?: Array<{
+      text: string;
+      time: string;
+      type: string;
+    }>;
+    programDistribution?: Array<{
+      program: string;
+      students: number;
+    }>;
+  }
+
+  // ─── Question Paper ───
+  interface QuestionPaperItem {
+    id: number;
+    examType: string;
+    subject: string;
+    course: string;
+    semester: string;
+    year: string;
+    status: 'Draft' | 'Approved';
+  }
+  interface QuestionPaperForm {
+    examType: string;
+    subject: string;
+    course: string;
+    semester: string;
+    year: string;
+    status: 'Draft' | 'Approved';
+  }
+
+  // ─── Question Paper Pattern ───
+  interface QuestionPaperPatternItem {
+    id: number;
+    subject: string;
+    totalMarks: number;
+    mcq: number;
+    short: number;
+    long: number;
+    status: 'Active' | 'Inactive';
+  }
+  interface QuestionPaperPatternForm {
+    subject: string;
+    totalMarks: number;
+    mcq: number;
+    short: number;
+    long: number;
+    status: 'Active' | 'Inactive';
+  }
+
+  // ─── Evaluator ───
+  interface EvaluatorItem {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+    qualification: string;
+    subjects: number;
+    status: 'Active' | 'Inactive';
+  }
+  interface EvaluatorForm {
+    name: string;
+    email: string;
+    role: string;
+    qualification: string;
+    subjects: number;
+    status: 'Active' | 'Inactive';
+  }
+
+  // ─── Sheet Distribution ───
+  interface SheetDistributionItem {
+    id: number;
+    evaluator: string;
+    subject: string;
+    totalSheets: number;
+    assignedDate: string;
+    status: 'Pending' | 'In Progress' | 'Completed';
+  }
+  interface SheetDistributionForm {
+    evaluator: string;
+    subject: string;
+    totalSheets: number;
+    assignedDate: string;
+    status: 'Pending' | 'In Progress' | 'Completed';
+  }
+
+  // ─── Supplementary Session ───
+  interface SupplementarySessionItem {
+    id: number;
+    sessionName: string;
+    maxSubjects: number;
+    feePerSubject: number;
+    status: 'Draft' | 'Active';
+  }
+
+  interface SupplementarySessionForm {
+    sessionName: string;
+    maxSubjects: number;
+    feePerSubject: number;
+    status: 'Draft' | 'Active';
+  }
+
+  // ─── Duplicate Marksheet Application ───
+  interface DuplicateApplicationItem {
+    id: number;
+    studentName: string;
+    rollNo: string;
+    program: string;
+    reason: 'Damaged' | 'Lost' | 'Name Correction' | 'Other';
+    status: 'Pending' | 'Approved' | 'Generated';
+    appliedDate: string;
+  }
+
+  // ─── Generated Duplicate Marksheet ───
+  interface GeneratedDuplicateItem {
+    id: number;
+    rollNo: string;
+    name: string;
+    exam: string;
+    generatedDate: string;
+    status: 'Ready' | 'Downloaded';
+  }
+
+  // ─── Grade Card Generation ───
+  interface GradeCardGenerationItem {
+    id: number;
+    sessionName: string;
+    program: string;
+    semester?: string;
+    publishedDate: string;
+    totalCards: number;
+    generated: number;
+    status: 'Pending' | 'Completed';
+  }
+
+  // ─── Result Publication ───
+  interface ResultPublicationItem {
+    id: number;
+    sessionName: string;
+    program: string;
+    semester: string;
+    totalStudents: number;
+    processed: number;
+    status: 'Processing Pending' | 'Ready for Publication' | 'Published';
+  }
+
+  // ─── Moderation Rule ───
+  interface ModerationRuleForm {
+    rule: string;
+    type: 'FLAT_ADD' | 'PERCENTAGE' | 'NORMALIZE';
+    target: string;
+  }
+  interface ModerationRuleItem {
+    id: number;
+    rule: string;
+    type: string;
+    target: string;
+    status: 'Active' | 'Inactive';
+  }
+
+  // ─── Revaluation Evaluation ───
+  interface RevaluationEvaluationItem {
+    id: number;
+    subject: string;
+    rollNo: string;
+    oldMarks: number;
+    newMarks: number | null;
+    status: 'Pending Evaluation' | 'Evaluated';
+  }
+
+  // ─── Student Portal Types ───
+  interface StudentInfo {
+    name: string;
+    rollNumber: string;
+    enrollmentNumber: string;
+    program: string;
+    semester: number;
+    batch: string;
+    photoUrl?: string;
+  }
+
+  interface UpcomingExam {
+    id: number;
+    subject: string;
+    subjectCode: string;
+    date: string;
+    time: string;
+    hall: string;
+  }
+
+  interface StudentTimetableItem {
+    id: number;
+    subjectCode: string;
+    subjectName: string;
+    examDate: string;
+    startTime: string;
+    endTime: string;
+    hall: string;
+  }
+
+  interface StudentResultItem {
+    subjectCode: string;
+    subjectName: string;
+    obtainedMarks: number;
+    maxMarks: number;
+    grade: string;
+    gradePoint: number;
+    result: 'Pass' | 'Fail';
+  }
+
+  interface StudentGradeCardItem {
+    id: number;
+    sessionName: string;
+    sgpa: number;
+    cgpa: number;
+    status: 'Published' | 'Pending';
+    publishedDate: string;
+  }
+
+  interface StudentRevaluationItem {
+    id: number;
+    subjectName: string;
+    subjectCode: string;
+    revalType: string;
+    status: string;
+    appliedDate: string;
+    fee: number;
+  }
+
+  interface StudentDuplicateItem {
+    id: number;
+    examName: string;
+    reason: string;
+    status: string;
+    appliedDate: string;
+    fee: number;
+  }
+
+  interface TrackApplicationItem {
+    id: number;
+    type: 'Exam Form' | 'Revaluation' | 'Duplicate Marksheet' | 'Supplementary';
+    referenceNo: string;
+    sessionName: string;
+    status: string;
+    appliedDate: string;
+    lastUpdated: string;
+  }
+
+  // ─── Enhanced Student Dashboard Types ───
+  interface StudentDashboardStats {
+    currentSgpa: number;
+    cgpa: number;
+    totalExamsRegistered: number;
+    attendancePercentage: number;
+    backlogs: number;
+    pendingFees: number;
+    rank: number;
+    totalStudents: number;
+  }
+
+  interface SgpaTrendItem {
+    semester: number;
+    sgpa: number;
+  }
+
+  interface SubjectMarksItem {
+    subject: string;
+    obtained: number;
+    max: number;
+  }
+
+  interface AttendanceDataPoint {
+    label: string;
+    value: number;
+    color: string;
+  }
+
+  interface StudentNotification {
+    id: number;
+    message: string;
+    type: 'info' | 'warning' | 'success' | 'error';
+    date: string;
   }
 }
