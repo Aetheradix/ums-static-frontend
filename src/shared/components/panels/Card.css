@@ -1,0 +1,91 @@
+.card {
+  background-color: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px var(--card-box-shadow);
+  padding: 1rem;
+  margin: 1rem auto;
+  transition: all 0.3s ease;
+  max-width: 1500px;
+  border: 2px solid var(--hover-transperant-color);
+  position: relative;
+}
+.app-layout.sidebar-open .card {
+  max-width: 100%;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+.card-title {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-align: left;
+}
+
+.card-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--white);
+  border: none;
+  font-size: 2rem;
+  color: var(--black);
+  cursor: pointer;
+  padding: 0;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--transperant-shadow-color);
+  transition: background-color 0.2s;
+  align-items: center;
+  z-index: 99;
+}
+
+.card-close-btn:hover {
+  background-color: var(--gray-50);
+}
+
+.card-content {
+  color: var(--black);
+}
+
+/* Mobile responsive */
+@media (max-width: 780px) {
+  .card {
+    margin: 1rem 0.2rem;
+    padding: 1rem;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+.card-note {
+  font-size: 12px;
+  color: var(--primary-color);
+  /* margin-top: -0.5rem; */
+}
+
+/* Dark Theme Support */
+.dark .card {
+  background-color: var(--dark-card-bg);
+  border-color: var(--dark-border);
+  box-shadow: 0 8px 20px var(--dark-shadow);
+}
+
+.dark .card-close-btn {
+  background: var(--dark-card-bg);
+  color: var(--dark-text);
+  border-color: var(--dark-border);
+}
+
+.dark .card-close-btn:hover {
+  background-color: var(--dark-card-hover);
+}
+
+.dark .card-content {
+  color: var(--dark-text);
+}

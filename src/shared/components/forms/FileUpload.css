@@ -1,0 +1,224 @@
+@reference "tailwindcss";
+
+/* =========================
+   Common
+========================= */
+
+.file-upload-hidden-input {
+  @apply hidden;
+}
+
+.file-upload-note {
+  @apply mt-1 block text-xs font-semibold text-red-600;
+}
+
+.file-upload-pdf-icon {
+  @apply text-red-500;
+}
+
+.file-upload-image-icon {
+  @apply text-blue-500;
+}
+
+.file-upload-word-icon {
+  @apply text-blue-600;
+}
+
+/* =========================
+   File Mode
+========================= */
+
+.file-upload-file-mode {
+  @apply w-full;
+}
+
+.file-upload-dropzone {
+  @apply flex cursor-pointer items-center justify-between rounded-lg border border-dashed border-gray-300 bg-gray-50 p-3 shadow-sm transition-all duration-200;
+}
+
+.file-upload-dropzone:hover {
+  @apply border-black bg-gray-100;
+}
+
+.file-upload-file-info {
+  @apply flex min-w-0 items-center gap-3 overflow-hidden;
+}
+
+.file-upload-file-icon-box {
+  @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-md border bg-white shadow-sm;
+}
+
+.file-upload-file-icon-box i {
+  @apply text-xl;
+}
+
+.file-upload-file-text {
+  @apply flex min-w-0 flex-col;
+}
+
+.file-upload-file-name {
+  @apply truncate text-sm font-semibold text-gray-700;
+}
+
+.file-upload-file-note {
+  @apply truncate text-xs text-gray-400;
+}
+
+.file-upload-actions {
+  @apply ml-4 flex shrink-0 items-center gap-2;
+}
+
+.file-upload-change-button.p-button {
+  @apply !h-10 !w-auto !min-w-fit !gap-2 !rounded-md !px-4 !py-0;
+}
+
+.file-upload-delete-button {
+  @apply flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-md border border-zinc-900 bg-transparent text-zinc-900 transition-all duration-200;
+}
+
+.file-upload-delete-button:hover {
+  @apply border-red-200 bg-red-50 text-red-600;
+}
+
+.file-upload-delete-button i {
+  @apply text-sm leading-none;
+}
+
+/* =========================
+   Avatar Upload
+========================= */
+
+.file-upload-avatar-wrap {
+  @apply flex flex-col items-center gap-2;
+}
+
+.file-upload-avatar-preview {
+  @apply relative flex h-28 w-28 items-center justify-center overflow-visible rounded-full border-2 border-blue-400 bg-slate-100;
+}
+
+.file-upload-avatar-preview img {
+  @apply h-full w-full rounded-full object-cover;
+}
+
+.file-upload-avatar-placeholder {
+  @apply flex h-24 w-24 items-center justify-center rounded-full bg-white text-slate-400;
+}
+
+.file-upload-avatar-placeholder i {
+  @apply text-3xl;
+}
+
+.file-upload-avatar-action {
+  @apply absolute bottom-1 right-1 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-slate-300 bg-white p-0 text-slate-700 shadow-sm transition-all duration-200;
+}
+
+.file-upload-avatar-action:hover {
+  @apply border-slate-400 bg-slate-50 text-black;
+}
+
+.file-upload-avatar-action i {
+  @apply text-sm leading-none;
+}
+
+/* =========================
+   Photo Mode
+========================= */
+
+.file-upload-photo-mode {
+  @apply flex flex-col items-center justify-center;
+}
+
+.file-upload-preview {
+  width: var(--preview-width);
+  height: var(--preview-height);
+  @apply flex items-center justify-center overflow-hidden rounded-md border border-slate-200 bg-white;
+}
+
+.file-upload-preview img {
+  @apply h-full w-full object-cover;
+}
+
+.file-upload-preview-empty {
+  @apply flex flex-col items-center justify-center gap-2 text-slate-500;
+}
+
+.file-upload-icon {
+  @apply text-2xl;
+}
+
+.file-upload-filename {
+  @apply max-w-32 truncate text-xs font-medium text-slate-500;
+}
+
+.file-upload-photo-actions {
+  @apply flex flex-col items-center;
+}
+
+/* =========================
+   Dark Mode
+========================= */
+
+.dark .file-upload-note {
+  color: var(--dark-text-muted);
+}
+
+.dark .file-upload-dropzone {
+  background-color: var(--dark-card-hover);
+  border-color: var(--dark-border);
+}
+
+.dark .file-upload-dropzone:hover {
+  background-color: var(--dark-input-bg);
+  border-color: var(--dark-border);
+}
+
+.dark .file-upload-file-icon-box {
+  background-color: var(--dark-card-bg);
+  border-color: var(--dark-border);
+}
+
+.dark .file-upload-file-name {
+  color: var(--dark-card-text);
+}
+
+.dark .file-upload-file-note {
+  color: var(--dark-text-muted);
+}
+
+.dark .file-upload-delete-button {
+  @apply border-white/[0.16] bg-transparent text-white;
+}
+
+.dark .file-upload-delete-button:hover {
+  @apply border-red-400 bg-red-500/[0.12] text-red-400;
+}
+
+.dark .file-upload-avatar-preview {
+  border-color: rgb(96, 165, 250);
+  background-color: var(--dark-card-hover);
+}
+
+.dark .file-upload-avatar-placeholder {
+  background-color: var(--dark-card-bg);
+  color: var(--dark-text-muted);
+}
+
+.dark .file-upload-avatar-action {
+  background-color: var(--dark-card-bg);
+  border-color: var(--dark-border);
+  color: var(--dark-card-text);
+}
+
+.dark .file-upload-avatar-action:hover {
+  background-color: var(--dark-card-hover);
+}
+
+.dark .file-upload-preview {
+  background-color: var(--dark-card-bg);
+  border-color: var(--dark-border);
+}
+
+.dark .file-upload-preview-empty,
+.dark .file-upload-filename {
+  color: var(--dark-text-muted);
+}

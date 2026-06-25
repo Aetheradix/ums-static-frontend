@@ -1,0 +1,118 @@
+@reference "tailwindcss";
+
+/* ── Input Block Container ── */
+.input-block {
+  @apply w-full mb-4 relative;
+}
+
+.input-block.vertical {
+  @apply flex flex-col;
+}
+
+.input-block.vertical label {
+  @apply mb-1;
+}
+
+.input-block.horizontal {
+  @apply grid gap-3 pb-3;
+  grid-template-columns: 150px 1fr;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.input-block.horizontal label {
+  @apply m-0;
+}
+
+/* ── Label ── */
+.label-main {
+  @apply inline-flex items-center gap-1 text-sm font-bold text-slate-800;
+}
+
+.label-sub {
+  @apply text-xs font-normal text-slate-600 ml-1;
+}
+
+.label-required {
+  @apply ml-0.5;
+  color: var(--color-danger);
+}
+
+/* ── Dark Theme Overrides ── */
+.dark .label-main {
+  @apply text-white;
+}
+
+.dark .label-sub {
+  @apply text-[var(--dark-text-secondary)];
+}
+
+/* ── Input Wrapper ── */
+.input-wrapper {
+  @apply relative w-full;
+}
+
+/* ── Input Field ── */
+.input-field-wrapper {
+  @apply relative w-full;
+}
+
+.input-field-wrapper input {
+  @apply w-full h-10 rounded-md border border-slate-200
+  px-3 pr-2 text-sm text-slate-700
+  outline-none transition-all duration-200;
+}
+
+.input-field-wrapper input:focus {
+  @apply border-blue-500 ring-2 ring-blue-100;
+}
+
+.input-field-wrapper input::placeholder {
+  @apply text-slate-400;
+}
+
+.dark .input-field-wrapper input::placeholder {
+  color: var(--dark-placeholder);
+}
+
+/* ── Error State ── */
+.input-wrapper.has-error input {
+  @apply border-red-400 focus:border-red-500 focus:ring-red-100;
+}
+
+/* ── Modern Error Message Underneath ── */
+.input-error-message {
+  @apply text-xs font-semibold text-[var(--color-danger)] mt-1.5 block;
+  animation: slideDown 0.15s ease-out forwards;
+}
+
+/* ── Checkbox overlay ── */
+.input-checkbox-overlay {
+  @apply flex items-center absolute top-1/2 left-2 -translate-y-1/2 z-10;
+}
+
+/* ── Input icon ── */
+.input-icon {
+  @apply absolute top-1/2 -translate-y-1/2
+  pointer-events-none text-gray-400;
+}
+
+.input-icon-left {
+  left: 1rem;
+}
+
+.input-icon-right {
+  right: 1rem;
+}
+
+/* ── Animation ── */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

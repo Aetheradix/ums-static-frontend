@@ -1,0 +1,307 @@
+@reference "tailwindcss";
+
+/* Search Bar Card Styling */
+.fee-search-container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--bg-white);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-light-color);
+  box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.dark .fee-search-container {
+  background: #18181b;
+  border-color: #27272a;
+  box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.3);
+}
+
+.fee-search-input-group {
+  position: relative;
+  flex: 1;
+}
+
+.fee-search-input-group i {
+  position: absolute;
+  left: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  pointer-events: none;
+}
+
+.fee-search-input {
+  width: 100%;
+  padding: 0.875rem 1rem 0.875rem 3rem;
+  border: 1px solid var(--border-light-color);
+  border-radius: var(--radius-lg);
+  font-size: 1rem;
+  background-color: var(--color-gray-100);
+  color: var(--color-black);
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fee-search-input:focus {
+  border-color: var(--color-blue-500);
+  background-color: var(--bg-white);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+}
+
+.dark .fee-search-input {
+  background-color: #27272a;
+  color: var(--color-white);
+  border-color: #3f3f46;
+}
+
+.dark .fee-search-input:focus {
+  background-color: #18181b;
+  border-color: var(--color-blue-500);
+}
+
+/* Details Section Grid */
+.student-profile-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Glass Header Card */
+.student-detail-header-card {
+  padding: 2rem;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.8),
+    rgba(244, 244, 245, 0.6)
+  );
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+}
+
+.dark .student-detail-header-card {
+  background: linear-gradient(
+    135deg,
+    rgba(39, 39, 42, 0.8),
+    rgba(24, 24, 27, 0.6)
+  );
+  border-color: rgba(63, 63, 70, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.student-hero-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.student-avatar-circle {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.75rem;
+  font-weight: 700;
+  box-shadow: 0 8px 20px -6px rgba(59, 130, 246, 0.5);
+}
+
+.student-hero-text h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem 0;
+  color: var(--color-black);
+}
+
+.dark .student-hero-text h3 {
+  color: var(--color-white);
+}
+
+.student-hero-text p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* Badge Styling */
+.payment-status-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.payment-status-badge.paid {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.payment-status-badge.unpaid {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.dark .payment-status-badge.paid {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+}
+
+.dark .payment-status-badge.unpaid {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+
+/* Standard Section Cards */
+.info-section-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.info-card-block {
+  padding: 1.5rem;
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light-color);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+}
+
+.dark .info-card-block {
+  background: #18181b;
+  border-color: #27272a;
+}
+
+.info-card-title-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px dashed var(--border-light-color);
+}
+
+.dark .info-card-title-bar {
+  border-bottom-color: #27272a;
+}
+
+.info-card-title-bar i {
+  color: #3b82f6;
+  font-size: 1.2rem;
+}
+
+.info-card-title-bar h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--color-black);
+}
+
+.dark .info-card-title-bar h4 {
+  color: var(--color-white);
+}
+
+.info-details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.info-detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+.info-detail-label {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.info-detail-value {
+  font-weight: 600;
+  color: var(--color-black);
+}
+
+.dark .info-detail-value {
+  color: var(--color-white);
+}
+
+/* Big Action Bar */
+.fee-action-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 1.5rem;
+  background: var(--bg-white);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-light-color);
+  margin-top: 1rem;
+}
+
+.dark .fee-action-bar {
+  background: #18181b;
+  border-color: #27272a;
+}
+
+/* Empty Search Placeholder styling */
+.fee-empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-secondary);
+}
+
+.fee-empty-state i {
+  font-size: 4rem;
+  color: var(--color-gray-400);
+  margin-bottom: 1.5rem;
+  display: block;
+}
+
+.fee-empty-state h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--color-black);
+}
+
+.dark .fee-empty-state h3 {
+  color: var(--color-white);
+}
+
+.fee-empty-state p {
+  max-width: 400px;
+  margin: 0 auto;
+}

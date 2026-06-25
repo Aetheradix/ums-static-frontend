@@ -1,0 +1,60 @@
+@reference "tailwindcss";
+
+.form-page-wrapper {
+  @apply flex-1 min-h-0;
+}
+
+/* .form-page-container {
+  @apply max-w-[1440px] mx-auto w-full;
+} */
+.form-page-container {
+  @apply mx-auto w-full;
+}
+
+/* FIXED HEADER */
+.form-page-header {
+  @apply flex flex-col gap-2 mb-6;
+}
+
+.form-page-breadcrumb-container {
+  @apply w-full;
+}
+
+.form-page-header-content {
+  @apply flex items-start justify-between w-full gap-4 max-sm:flex-col;
+}
+
+/* LEFT SIDE WRAPPER */
+.form-page-header-left {
+  @apply flex flex-col gap-1;
+}
+
+.form-page-title {
+  @apply text-2xl font-bold text-slate-900 m-0 leading-tight max-sm:text-xl;
+}
+
+.form-page-description {
+  @apply text-sm text-slate-500 mt-1 m-0 max-w-xl;
+}
+
+/* RIGHT SIDE (NAV / ACTION) */
+.form-page-header-right {
+  @apply flex flex-col items-end gap-2 max-sm:items-start;
+}
+
+.form-page-action {
+  @apply flex-shrink-0 flex items-center mt-1;
+}
+
+.form-page-content {
+  @apply space-y-6;
+}
+
+/* ── Dark Theme Support ── */
+.dark .form-page-title {
+  @apply text-white;
+}
+
+.dark .form-page-description {
+  @apply text-slate-400;
+}

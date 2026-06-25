@@ -1,0 +1,132 @@
+@reference "tailwindcss";
+
+/* --- Status Badge in Table --- */
+.user-status-badge {
+  @apply inline-flex rounded-md px-2 py-1 text-xs font-medium;
+}
+
+.user-status-active {
+  @apply bg-green-50 text-green-700;
+}
+
+.user-status-inactive {
+  @apply bg-red-50 text-red-700;
+}
+
+/* --- User Form Layout --- */
+.user-form-inline {
+  @apply w-full;
+}
+
+.user-form-inline-grid {
+  @apply grid w-full items-start gap-4;
+  grid-template-columns: 1.15fr 1.15fr 1.15fr 1.4fr 0.9fr auto;
+}
+
+.user-form-field,
+.user-form-status {
+  @apply min-w-0 mb-1;
+}
+
+.user-form-inline input,
+.user-form-inline .p-inputtext {
+  @apply w-full;
+}
+
+/* --- Inline Form Actions --- */
+.user-form-actions-inline {
+  @apply flex min-w-max items-end justify-end self-end;
+}
+
+.user-form-actions-inline > * {
+  @apply !m-0 !border-0 !p-0;
+}
+
+/* --- Status Toggle --- */
+.user-form-status {
+  @apply self-start;
+}
+
+.user-form-status-label {
+  @apply mb-2 block text-sm font-semibold text-slate-900;
+}
+
+.user-status-toggle {
+  @apply flex h-10 cursor-pointer items-center gap-2;
+}
+
+.user-status-toggle-input {
+  @apply sr-only;
+}
+
+.user-status-toggle-track {
+  @apply relative inline-flex h-6 w-11 shrink-0 items-center rounded-full bg-slate-300 transition-colors duration-200;
+}
+
+.user-status-toggle-thumb {
+  @apply absolute left-1 h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200;
+}
+
+.user-status-toggle-input:checked + .user-status-toggle-track {
+  @apply bg-green-500;
+}
+
+.user-status-toggle-input:checked
+  + .user-status-toggle-track
+  .user-status-toggle-thumb {
+  @apply translate-x-5;
+}
+
+.user-status-toggle-text {
+  @apply text-sm font-medium text-slate-700;
+}
+
+/* =========================
+   Dark Mode
+========================= */
+
+/* Status Badge in Table */
+.dark .user-status-active {
+  @apply bg-green-500/15 text-green-400;
+}
+
+.dark .user-status-inactive {
+  @apply bg-red-500/15 text-red-400;
+}
+
+/* User Form */
+.dark .user-form-status-label {
+  @apply text-slate-200;
+}
+
+.dark .user-form-inline input,
+.dark .user-form-inline .p-inputtext {
+  @apply border-white/[0.08] bg-[#0d0d0f] text-slate-100;
+}
+
+.dark .user-form-inline input::placeholder,
+.dark .user-form-inline .p-inputtext::placeholder {
+  @apply text-slate-500;
+}
+
+/* Status Toggle */
+.dark .user-status-toggle-track {
+  @apply bg-zinc-700;
+}
+
+.dark .user-status-toggle-thumb {
+  @apply bg-white shadow-none;
+}
+
+.dark .user-status-toggle-input:checked + .user-status-toggle-track {
+  @apply bg-green-500;
+}
+
+.dark .user-status-toggle-text {
+  @apply text-slate-300;
+}
+
+/* Inline Action Area */
+.dark .user-form-actions-inline > * {
+  @apply !border-0;
+}

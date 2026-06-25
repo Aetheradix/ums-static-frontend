@@ -1,0 +1,318 @@
+@reference "tailwindcss";
+
+.stepper-container {
+  display: flex;
+  width: 100%;
+  position: relative;
+  padding: 1rem 0;
+}
+
+.stepper-container.horizontal {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.stepper-container.vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.step-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.stepper-container.vertical .step-item {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+/* Node & Icon */
+.step-node {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  background: var(--bg-white);
+  border: 2px solid var(--border-color);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .step-node {
+  background-color: var(--dark-card-bg);
+  border-color: var(--dark-border);
+}
+
+.step-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+
+.dark .step-icon-container {
+  color: var(--dark-text-muted);
+}
+
+/* Active State */
+.step-item.active .step-node {
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08);
+}
+
+.dark .step-item.active .step-node {
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.15);
+}
+
+.step-item.active .step-icon-container {
+  color: var(--bg-white);
+}
+
+.dark .step-item.active .step-icon-container {
+  color: var(--black);
+}
+
+.step-pulse {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--primary-color);
+  opacity: 0.3;
+  animation: stepPulse 2s infinite;
+  z-index: -1;
+}
+
+@keyframes stepPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  70% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* Completed State */
+.step-item.completed .step-node {
+  border-color: var(--color-success);
+  background: var(--color-success);
+}
+
+.step-item.completed .step-icon-container {
+  color: var(--bg-white);
+}
+
+/* Content */
+.step-content {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 150px;
+}
+
+.stepper-container.vertical .step-content {
+  margin-top: 0.25rem;
+  align-items: flex-start;
+  text-align: left;
+  max-width: none;
+}
+
+.step-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
+}
+
+.dark .step-label {
+  color: var(--dark-text-muted);
+}
+
+.step-item.active .step-label,
+.step-item.completed .step-label {
+  color: var(--black);
+}
+
+.dark .step-item.active .step-label,
+.dark .step-item.completed .step-label {
+  color: var(--dark-text);
+}
+
+.step-description {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+/* Connectors */
+.step-connector-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+  padding: 0.5rem 0;
+}
+
+.stepper-container.vertical .step-connector-wrapper {
+  width: 2.5rem;
+  height: 100%;
+  flex-direction: column;
+  padding: 0;
+}
+
+.step-line {
+  position: absolute;
+  height: 2px;
+  background: var(--border-color);
+  transition: background 0.4s ease;
+  z-index: 1;
+}
+
+.dark .step-line {
+  background: var(--dark-border);
+}
+
+/* Horizontal Connector Logic */
+.stepper-container.horizontal .step-line {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.stepper-container.horizontal .step-line.prev {
+  left: 0;
+  right: 50%;
+}
+
+.stepper-container.horizontal .step-line.next {
+  left: 50%;
+  right: 0;
+}
+
+/* Vertical Connector Logic */
+.stepper-container.vertical .step-line {
+  width: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.stepper-container.vertical .step-line.prev {
+  top: -1.5rem;
+  bottom: 50%;
+}
+
+.stepper-container.vertical .step-line.next {
+  top: 50%;
+  bottom: -1.5rem;
+}
+
+.step-item.completed .step-line,
+.step-item.active .step-line.prev {
+  background: var(--primary-color);
+}
+
+.step-item.completed .step-line.next {
+  background: var(--color-success);
+}
+
+/* Tooltip/Hover Effect */
+.step-item:hover .step-node {
+  transform: scale(1.05);
+}
+
+.step-item.pending:hover .step-node {
+  border-color: var(--color-gray-300);
+}
+
+.dark .step-item.pending:hover .step-node {
+  border-color: var(--color-gray-600);
+}
+
+/* ============================================================
+   DARK THEME SPECIFIC OVERRIDES
+   ============================================================ */
+
+/* Active State */
+.dark .step-item.active .step-node {
+  background-color: var(--white, #ffffff) !important;
+  border-color: var(--white, #ffffff) !important;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.15) !important;
+}
+
+.dark .step-item.active .step-icon-container {
+  color: var(--black, #0a0a0a) !important;
+}
+
+.dark .step-item.active .step-label {
+  color: var(--white, #ffffff) !important;
+}
+
+.dark .step-pulse {
+  background-color: var(--white, #ffffff) !important;
+}
+
+/* Completed State */
+.dark .step-item.completed .step-node {
+  background-color: var(--color-success, #10b981) !important;
+  border-color: var(--color-success, #10b981) !important;
+}
+
+.dark .step-item.completed .step-icon-container {
+  color: var(--white, #ffffff) !important;
+}
+
+.dark .step-item.completed .step-label {
+  color: var(--white, #ffffff) !important;
+}
+
+/* Pending State */
+.dark .step-item.pending .step-node {
+  background-color: #1a1a1c !important;
+  border-color: #333336 !important;
+}
+
+.dark .step-item.pending .step-icon-container {
+  color: #a1a1aa !important;
+}
+
+.dark .step-item.pending .step-label {
+  color: #71717a !important;
+}
+
+/* Connector Lines */
+.dark .step-line {
+  background-color: #333336 !important;
+}
+
+.dark .step-item.completed .step-line,
+.dark .step-item.active .step-line.prev {
+  background-color: var(--color-success, #10b981) !important;
+}
+
+.dark .step-item.completed .step-line.next {
+  background-color: var(--color-success, #10b981) !important;
+}

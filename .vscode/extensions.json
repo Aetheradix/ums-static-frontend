@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "mhutchie.git-graph",
+    "donjayamanne.githistory",
+    "redhat.fabric8-analytics"
+  ]
+}

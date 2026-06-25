@@ -1,0 +1,50 @@
+@reference "tailwindcss";
+
+.p-tabview .p-tabview-nav {
+  @apply flex items-center list-none m-0 p-0 overflow-x-auto gap-2;
+}
+
+.p-tabview .p-tabview-nav li {
+  @apply m-0 p-0;
+}
+
+.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+  @apply flex items-center px-4 py-4 font-bold tracking-[0.1px] text-slate-600 no-underline cursor-pointer border-b-3 border-transparent transition-all duration-200;
+  font-family: var(--font-sans);
+  font-size: 15px;
+}
+
+/* Hover (optional – smooth, no layout shift) */
+/* .p-tabview .p-tabview-nav li:not(.p-highlight):hover .p-tabview-nav-link {
+  @apply text-blue-800 bg-blue-50 border-blue-200;
+} */
+
+/* Active tab – NO padding/border width change */
+.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  @apply text-zinc-900 border-black;
+  background-color: #f9f9fb;
+  border-radius: 0;
+  letter-spacing: 0.1px;
+}
+
+/* Panels */
+.p-tabview .p-tabview-panels {
+  @apply p-0 m-0 bg-transparent border-none;
+}
+
+/* Dark Theme */
+.dark .p-tabview .p-tabview-nav {
+  @apply border-zinc-700 bg-transparent;
+}
+
+.dark .p-tabview .p-tabview-nav li .p-tabview-nav-link {
+  @apply text-zinc-400 bg-transparent;
+}
+
+.dark .p-tabview .p-tabview-nav li:not(.p-highlight):hover .p-tabview-nav-link {
+  @apply text-zinc-200 bg-zinc-900 border-zinc-700;
+}
+
+.dark .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  @apply text-white border-white;
+}

@@ -1,0 +1,62 @@
+@reference "tailwindcss";
+/* SubMenuPage layout */
+.submenu-page {
+  @apply flex-1 py-8;
+}
+
+/* .submenu-page-container {
+  @apply max-w-[1400px] mx-auto px-6 w-full;
+} */
+.submenu-page-container {
+  @apply mx-auto px-6 w-full;
+}
+
+/* SubMenuHeader */
+.submenu-header {
+  @apply mb-8;
+}
+
+.submenu-breadcrumb {
+  @apply flex items-center gap-2 text-sm font-medium text-slate-500 mb-6 max-sm:text-xs;
+}
+
+.submenu-breadcrumb-link {
+  @apply cursor-pointer transition-colors duration-200 hover:text-[#2264dc];
+}
+
+.submenu-breadcrumb-sep {
+  @apply text-base;
+}
+
+.submenu-breadcrumb-current {
+  @apply text-slate-900 font-semibold;
+}
+
+.submenu-welcome h1 {
+  @apply text-[30px] font-bold text-slate-900 mb-1.5 max-md:text-2xl max-sm:text-xl;
+}
+
+.submenu-welcome p {
+  @apply text-[15px] text-slate-500;
+}
+
+.submenu-name {
+  @apply text-[#2264dc];
+}
+
+/* SubMenuGrid */
+.submenu-grid {
+  @apply grid grid-cols-5 gap-[20px] max-xl:grid-cols-4 max-xl:gap-5 max-lg:grid-cols-3 max-md:grid-cols-2 max-md:gap-4 max-sm:grid-cols-2;
+}
+
+/* Dark Theme Overrides */
+.dark .submenu-welcome h1,
+.dark .submenu-breadcrumb-current,
+.dark .submenu-breadcrumb-sep {
+  color: var(--dark-text);
+}
+
+.dark .submenu-welcome p,
+.dark .submenu-breadcrumb {
+  color: var(--dark-text-secondary);
+}

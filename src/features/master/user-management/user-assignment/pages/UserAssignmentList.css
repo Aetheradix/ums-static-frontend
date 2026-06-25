@@ -1,0 +1,10 @@
+@reference "tailwindcss";
+
+/* Action column center */
+.role-main-panel .p-datatable-thead th:last-child .p-column-header-content {
+  @apply justify-center;
+}
+
+.role-main-panel .p-datatable-tbody td:last-child {
+  @apply text-center;
+}

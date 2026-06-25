@@ -1,0 +1,285 @@
+@reference "tailwindcss";
+
+/* Wrapper */
+.ws-waffle-wrapper {
+  @apply relative;
+}
+
+/* Trigger */
+.ws-waffle-trigger {
+  @apply cursor-pointer;
+}
+
+/* Dropdown */
+/* remove max height to show view all footer */
+/* .ws-waffle-dropdown {
+  @apply absolute right-0 top-full mt-3 w-[430px] max-h-[560px] overflow-hidden rounded-3xl border z-50;
+} */
+.ws-waffle-dropdown {
+  @apply absolute right-0 top-full mt-3 w-[430px] overflow-hidden rounded-3xl border z-50;
+}
+
+/* ─────────────────────────────
+   Mobile Responsive
+───────────────────────────── */
+@media (max-width: 640px) {
+  .ws-waffle-dropdown {
+    @apply fixed top-auto right-3 left-3 mt-2 w-auto max-h-[75vh] rounded-2xl;
+  }
+}
+.ws-waffle-dropdown.light {
+  @apply border;
+  background-color: var(--bg-white);
+  border-color: var(--color-gray-200);
+  color: var(--color-gray-800);
+}
+
+.ws-waffle-dropdown.dark {
+  @apply bg-gray-950 border-gray-800 text-white;
+}
+
+/* Header */
+.ws-waffle-header {
+  @apply flex items-center justify-between px-5 pt-3 pb-2 border-b;
+}
+
+.ws-waffle-dropdown.light .ws-waffle-header {
+  border: 1px solid var(--color-gray-100);
+}
+
+.ws-waffle-dropdown.dark .ws-waffle-header {
+  @apply border-gray-800;
+}
+
+.ws-waffle-title {
+  @apply text-lg font-bold tracking-tight;
+}
+
+/* Edit Button */
+.ws-waffle-edit-btn {
+  @apply flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200;
+}
+
+.ws-waffle-dropdown.light .ws-waffle-edit-btn {
+  @apply bg-zinc-50 border text-zinc-700 hover:bg-zinc-100;
+  border-color: var(--color-gray-100);
+}
+
+.ws-waffle-dropdown.dark .ws-waffle-edit-btn {
+  @apply bg-gray-900 border border-gray-800 text-zinc-100 hover:bg-gray-800;
+}
+
+/* Sections */
+.ws-waffle-section {
+  @apply px-5 py-4;
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+.ws-waffle-section-title {
+  @apply text-[11px] font-extrabold tracking-wider uppercase mb-3;
+}
+
+.ws-waffle-dropdown.light .ws-waffle-section-title {
+  @apply text-zinc-500;
+}
+
+.ws-waffle-dropdown.dark .ws-waffle-section-title {
+  @apply text-zinc-400;
+}
+
+/* Grid */
+.ws-waffle-grid {
+  @apply grid grid-cols-4 gap-3;
+}
+
+.ws-waffle-favorite-card {
+  @apply rounded-2xl p-3 cursor-pointer border transition-all duration-200;
+}
+
+.ws-waffle-dropdown.light .ws-waffle-favorite-card {
+  @apply hover:shadow-md;
+  background-color: var(--color-surface-light);
+  border-color: var(--color-gray-100);
+}
+
+.ws-waffle-dropdown.light .ws-waffle-favorite-card:hover {
+  background-color: var(--bg-white);
+}
+
+.ws-waffle-dropdown.dark .ws-waffle-favorite-card {
+  @apply bg-gray-900/70 border-gray-800 hover:bg-gray-900;
+}
+
+/* Icons */
+.ws-waffle-icon {
+  @apply w-11 h-11 rounded-xl flex items-center justify-center border shadow-sm mb-2;
+}
+
+.ws-waffle-icon i {
+  @apply text-lg;
+}
+
+/* List */
+.ws-waffle-list {
+  @apply space-y-1 max-h-[280px] overflow-y-auto pr-1;
+}
+
+.ws-waffle-list-item {
+  @apply flex items-center justify-between rounded-2xl px-3 py-3 cursor-pointer transition-all duration-200;
+}
+
+.ws-waffle-dropdown.light .ws-waffle-list-item:hover {
+  @apply bg-zinc-50;
+}
+
+.ws-waffle-dropdown.dark .ws-waffle-list-item:hover {
+  @apply bg-gray-900;
+}
+
+.ws-waffle-item-left {
+  @apply flex items-center gap-3 min-w-0;
+}
+
+.ws-waffle-item-title {
+  @apply text-sm font-semibold truncate;
+}
+
+.ws-waffle-item-description {
+  @apply text-xs leading-relaxed line-clamp-2;
+}
+
+.ws-waffle-dropdown.light .ws-waffle-item-description {
+  @apply text-zinc-500;
+}
+
+.ws-waffle-dropdown.dark .ws-waffle-item-description {
+  @apply text-zinc-400;
+}
+
+.ws-waffle-arrow {
+  @apply text-sm;
+}
+
+.ws-waffle-dropdown.light .ws-waffle-arrow {
+  @apply text-zinc-400;
+}
+
+.ws-waffle-dropdown.dark .ws-waffle-arrow {
+  @apply text-zinc-500;
+}
+
+/* Footer */
+.ws-waffle-footer {
+  @apply px-5 py-4 border-t;
+}
+
+.ws-waffle-dropdown.light .ws-waffle-footer {
+  border: 1px solid var(--color-gray-100);
+}
+
+.ws-waffle-dropdown.dark .ws-waffle-footer {
+  @apply border-gray-800;
+}
+
+.ws-waffle-footer-btn {
+  @apply w-full rounded-lg py-3 text-sm font-semibold transition-all border
+         bg-[var(--primary-color)]
+         text-[var(--white)]
+         border-[var(--primary-color)]
+         hover:bg-[var(--white)]
+         hover:text-[var(--primary-color)];
+}
+
+/* Label */
+.ws-waffle-card-label {
+  @apply text-[11px] leading-tight font-medium line-clamp-2;
+}
+
+/* ─────────────────────────────
+   Icon Color Schemes - Light
+───────────────────────────── */
+
+.waffle-icon-blue-light {
+  @apply bg-blue-50 text-blue-600 border-blue-100;
+}
+
+.waffle-icon-purple-light {
+  @apply bg-purple-50 text-purple-600 border-purple-100;
+}
+
+.waffle-icon-gray-light {
+  @apply bg-zinc-100 text-zinc-600 border-zinc-200;
+}
+
+.waffle-icon-green-light {
+  @apply bg-emerald-50 text-emerald-600 border-emerald-100;
+}
+
+.waffle-icon-orange-light {
+  @apply bg-orange-50 text-orange-600 border-orange-100;
+}
+
+.waffle-icon-red-light {
+  @apply bg-red-50 border-red-100;
+  color: var(--color-danger);
+}
+
+.waffle-icon-pink-light {
+  @apply bg-pink-50 text-pink-600 border-pink-100;
+}
+
+.waffle-icon-teal-light {
+  @apply bg-teal-50 text-teal-600 border-teal-100;
+}
+
+.waffle-icon-indigo-light {
+  @apply bg-indigo-50 text-indigo-600 border-indigo-100;
+}
+
+.waffle-icon-amber-light {
+  @apply bg-amber-50 text-amber-600 border-amber-100;
+}
+
+/* ─────────────────────────────
+   Icon Color Schemes - Dark
+───────────────────────────── */
+
+.waffle-icon-blue-dark {
+  @apply bg-blue-900/30 text-blue-300 border-blue-700/40;
+}
+
+.waffle-icon-purple-dark {
+  @apply bg-purple-900/30 text-purple-300 border-purple-700/40;
+}
+
+.waffle-icon-gray-dark {
+  @apply bg-zinc-800 text-zinc-300 border-zinc-700/40;
+}
+
+.waffle-icon-green-dark {
+  @apply bg-emerald-900/30 text-emerald-300 border-emerald-700/40;
+}
+
+.waffle-icon-orange-dark {
+  @apply bg-orange-900/30 text-orange-300 border-orange-700/40;
+}
+
+.waffle-icon-red-dark {
+  @apply bg-red-900/30 text-red-300 border-red-700/40;
+}
+
+.waffle-icon-pink-dark {
+  @apply bg-pink-900/30 text-pink-300 border-pink-700/40;
+}
+
+.waffle-icon-teal-dark {
+  @apply bg-teal-900/30 text-teal-300 border-teal-700/40;
+}
+
+.waffle-icon-indigo-dark {
+  @apply bg-indigo-900/30 text-indigo-300 border-indigo-700/40;
+}
+
+.waffle-icon-amber-dark {
+  @apply bg-amber-900/30 text-amber-300 border-amber-700/40;
+}

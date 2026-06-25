@@ -1,0 +1,195 @@
+@reference "tailwindcss";
+
+/* ── Ripple effect ── */
+.ripple {
+  @apply pointer-events-none absolute rounded-full bg-white/60;
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* ── Variants ── */
+.button-variant-primary {
+  @apply !border-[var(--primary-color)] !bg-[var(--primary-color)] !text-white;
+}
+
+.button-variant-primary i,
+.button-variant-primary .p-button-icon {
+  @apply !text-white;
+}
+
+.button-variant-success {
+  @apply !border !border-[var(--success-color)] !bg-transparent !text-green-500;
+}
+
+.text-success {
+  @apply !text-[var(--success-color)];
+}
+
+.button-variant-danger {
+  @apply !w-auto !border !border-[var(--color-danger)] !bg-transparent !text-[var(--color-danger)];
+}
+
+.button-variant-warning {
+  @apply !border-[var(--warning-color)] !bg-[var(--warning-color)] !text-white;
+}
+
+.button-variant-info {
+  @apply !border-[var(--info-color)] !bg-[var(--info-color)] !text-white;
+}
+
+.button-variant-outlined {
+  @apply !w-auto !border !border-[var(--primary-color)] !bg-transparent !text-[var(--primary-color)];
+}
+
+.button-variant-outlined i,
+.button-variant-outlined .p-button-icon {
+  @apply !text-[var(--primary-color)];
+}
+
+.button-variant-text {
+  @apply !min-w-[5.5rem] !border-transparent !bg-transparent !p-0;
+}
+
+/* ── Sizes ── */
+.button-size-small {
+  @apply !px-3 !py-[0.3rem] !text-sm;
+}
+
+.button-size-medium {
+  @apply px-4! py-[0.7rem]! !text-[0.9rem] no-underline;
+}
+
+.button-size-large {
+  @apply !px-6 !py-3 !text-lg;
+}
+
+.button-auto-width {
+  @apply !w-auto;
+}
+
+/* ── Disabled ── */
+.button-disabled {
+  @apply pointer-events-none cursor-not-allowed opacity-60;
+}
+
+/* ── PrimeReact severity overrides ── */
+.p-button.p-button-success,
+.p-button-group.p-button-success > .p-button,
+.p-splitbutton.p-button-success > .p-button {
+  @apply !border !border-[var(--success-color-alt)] !text-[var(--success-color-alt)];
+}
+
+.p-button.p-button-danger,
+.p-button-group.p-button-danger > .p-button,
+.p-splitbutton.p-button-danger > .p-button {
+  @apply !border !border-[var(--color-danger)] !text-[var(--color-danger)];
+}
+
+/* ==========================================
+   PrimeReact Tooltip
+   ========================================== */
+
+.p-tooltip {
+  @apply pointer-events-none z-[9999];
+  overflow: visible !important;
+  animation: tooltip-fade-in 0.15s ease-out;
+}
+
+.p-tooltip .p-tooltip-text {
+  @apply relative rounded-md bg-black px-2.5 py-1.5 text-xs font-medium text-white shadow-lg;
+  line-height: 1;
+  letter-spacing: 0.1px;
+  overflow: visible !important;
+}
+
+/* Hide PrimeReact default arrow */
+.p-tooltip .p-tooltip-arrow {
+  display: none !important;
+}
+
+/* Move tooltip slightly upward */
+.p-tooltip.p-tooltip-top {
+  margin-top: -8px;
+}
+
+/* Custom sharp triangle */
+.p-tooltip.p-tooltip-top .p-tooltip-text::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 0;
+  height: 0;
+  transform: translateX(-50%);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--color-black);
+}
+
+@keyframes tooltip-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Dark theme ── */
+.dark .button-variant-primary {
+  @apply !border-white !bg-white !text-[var(--primary-color)];
+}
+
+.dark .button-variant-primary i,
+.dark .button-variant-primary .p-button-icon {
+  @apply !text-[var(--primary-color)];
+}
+
+.dark .button-variant-primary:hover {
+  @apply !bg-zinc-200;
+}
+
+.dark .button-variant-success {
+  @apply !border-[var(--success-color)] !bg-[var(--success-color)] !text-white;
+}
+
+.dark .button-variant-danger {
+  @apply !border-[var(--color-danger)] !bg-[var(--color-danger)] !text-white;
+}
+
+.dark .button-variant-warning {
+  @apply !border-[var(--warning-color)] !bg-[var(--warning-color)] !text-white;
+}
+
+.dark .button-variant-info {
+  @apply !border-[var(--info-color)] !bg-[var(--info-color)] !text-white;
+}
+
+.dark .button-variant-outlined {
+  @apply !border-zinc-700 !bg-zinc-800 !text-white;
+}
+
+.dark .button-variant-outlined i,
+.dark .button-variant-outlined .p-button-icon {
+  @apply !text-white;
+}
+
+.dark .button-variant-outlined:hover {
+  @apply !bg-zinc-700;
+}
+
+.dark .button-variant-text {
+  @apply !border-transparent !bg-transparent !text-[var(--dark-text)];
+}
+
+.dark .button-variant-text:hover {
+  @apply !bg-[var(--dark-link-hover)];
+}

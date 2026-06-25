@@ -1,0 +1,103 @@
+@reference "tailwindcss";
+
+.inline-create-panel {
+  @apply mb-4 rounded-xl border border-slate-200 bg-white shadow-sm;
+  overflow: visible;
+}
+
+.inline-create-panel-header {
+  @apply flex items-center justify-between gap-4 border-b border-slate-100 px-4 py-2;
+}
+
+.inline-create-panel-title {
+  @apply m-0 text-base font-semibold text-slate-900;
+}
+
+.inline-create-panel-subtitle {
+  @apply mb-0 mt-1 text-sm text-slate-500;
+}
+
+.inline-create-panel-close {
+  @apply inline-flex h-8 w-8 cursor-pointer items-center justify-center border border-gray-200 bg-gray-100 p-0 text-slate-500 transition-all duration-200;
+  border-radius: var(--radius-sm) !important;
+}
+
+.inline-create-panel-close:hover {
+  @apply bg-slate-50 text-slate-900;
+}
+
+.inline-create-panel-body {
+  @apply px-4 py-4;
+}
+
+/* Compact form inside inline panel */
+.inline-create-panel-body form {
+  @apply w-full;
+}
+
+.inline-create-panel-body .form-grid {
+  @apply gap-4;
+}
+
+.inline-create-panel-body .input-block.vertical {
+  @apply mb-0;
+}
+
+/* Only compact height override, color/border/background global se aayega */
+.inline-create-panel-body .input-field-wrapper input {
+  @apply h-[34px]! min-h-[34px]!;
+}
+
+/* Only compact dropdown sizing, theme global se aayegi */
+.inline-create-panel-body .p-dropdown {
+  @apply !h-[38px] !min-h-[38px] !w-full !rounded-md;
+}
+
+.inline-create-panel-body .p-dropdown-label {
+  @apply !flex !items-center !py-0 !text-sm;
+}
+
+.inline-create-panel-body .p-dropdown-trigger {
+  @apply !w-10;
+}
+
+/* Agar wrapper ki wajah se double border aa rahi ho */
+.inline-create-panel-body .input-field-wrapper:has(.p-dropdown) {
+  @apply !border-0 !shadow-none;
+}
+
+/* =========================
+   Dark Mode
+========================= */
+
+.dark .inline-create-panel {
+  background-color: var(--dark-card-bg);
+  border-color: var(--dark-border);
+  color: var(--dark-card-text);
+  box-shadow: none;
+}
+
+.dark .inline-create-panel-header {
+  border-color: var(--dark-border);
+}
+
+.dark .inline-create-panel-title {
+  color: var(--dark-text);
+}
+
+.dark .inline-create-panel-subtitle {
+  color: var(--dark-text-muted);
+}
+
+.dark .inline-create-panel-close {
+  @apply border-white/[0.08] bg-white/[0.06] text-slate-300 shadow-none;
+}
+
+.dark .inline-create-panel-close:hover {
+  @apply border-white bg-white text-black;
+}
+
+.dark .inline-create-panel-body label,
+.dark .inline-create-panel-body .form-field-label {
+  @apply text-slate-200;
+}

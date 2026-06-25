@@ -1,0 +1,158 @@
+@reference "tailwindcss";
+/* MenuPage layout */
+.menu-page {
+  @apply flex-1 py-8;
+}
+
+/* .menu-page-container {
+  @apply max-w-[1440px] mx-auto px-6 w-full;
+} */
+.menu-page-container {
+  @apply mx-auto px-4 w-full;
+}
+
+/* WelcomeBanner */
+.welcome-banner {
+  @apply border border-slate-200 rounded-2xl p-5 mb-6 shadow-[0_4px_20px_rgba(0,0,0,0.04)] max-md:p-4;
+
+  background: var(--gradient-aurora);
+}
+
+.welcome-sso-badge {
+  @apply inline-flex items-center gap-1.5 bg-slate-50/80 border border-slate-200 px-2.5 py-1 rounded-full text-[10px] font-bold text-slate-600 mb-3;
+}
+
+.welcome-sso-icon {
+  @apply text-zinc-900 flex;
+}
+
+.welcome-content {
+  @apply flex justify-between items-center max-md:flex-col max-md:items-start max-md:gap-4;
+}
+
+.welcome-heading {
+  @apply text-[22px] font-bold mb-1 max-lg:text-[20px] max-sm:text-lg;
+}
+
+.welcome-name {
+  @apply text-black;
+}
+
+.welcome-subtext {
+  @apply text-slate-500 text-[13px] font-medium;
+}
+
+.welcome-actions {
+  @apply flex gap-2.5 max-md:w-full max-sm:flex-col;
+}
+
+.welcome-btn-outline {
+  @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold border
+         border-slate-200 text-slate-700
+         bg-[var(--bg-white)]
+         hover:bg-slate-50
+         transition-all duration-200
+         max-md:flex-1 max-md:justify-center cursor-pointer;
+}
+
+.welcome-btn-filled {
+  @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold bg-slate-700 text-white hover:bg-slate-800 transition-all duration-200 max-md:flex-1 max-md:justify-center cursor-pointer;
+}
+
+.welcome-btn-outline svg,
+.welcome-btn-filled svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ServiceFilters */
+.service-filters-header {
+  @apply flex justify-between items-center mb-6;
+}
+
+.service-filters-title {
+  @apply text-[15px] font-bold;
+}
+
+.service-filters-link {
+  @apply text-zinc-900 text-sm font-semibold flex items-center gap-1.5 transition-opacity hover:opacity-70 no-underline hover:no-underline;
+}
+
+.service-filters-link i {
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  margin-top: 1px;
+}
+
+.service-filter-tabs {
+  @apply flex gap-3 mb-8 max-md:overflow-x-auto max-md:pb-2 max-md:-mx-4 max-md:px-4;
+}
+
+.service-filter-tab {
+  @apply px-[18px] py-2 rounded-full border-none text-sm font-semibold flex items-center gap-1.5 transition-all duration-200 cursor-pointer shrink-0 bg-slate-100 text-slate-700;
+}
+
+.service-filter-tab.active {
+  @apply bg-black text-white;
+}
+
+/* ServicesGrid */
+.services-grid {
+  @apply grid grid-cols-5 gap-[20px] max-xl:grid-cols-4 max-xl:gap-5 max-lg:grid-cols-3 max-md:grid-cols-2 max-md:gap-4 max-sm:grid-cols-2;
+}
+
+/* ── Dark Theme Overrides ── */
+.dark .welcome-banner {
+  background: var(--dark-card-bg) !important;
+  border-color: var(--dark-border);
+}
+
+.dark .welcome-sso-badge {
+  background-color: var(--dark-bg);
+  border-color: var(--dark-border);
+  color: var(--text-secondary);
+}
+
+.dark .welcome-heading {
+  color: var(--dark-text);
+}
+
+.dark .welcome-subtext {
+  color: var(--text-secondary);
+}
+
+.dark .welcome-btn-outline {
+  background-color: var(--dark-bg);
+  border-color: var(--dark-border);
+  color: var(--dark-text);
+}
+
+.dark .welcome-btn-outline:hover {
+  background-color: var(--dark-card-hover);
+}
+
+.dark .service-filters-title {
+  color: var(--dark-text);
+}
+
+.dark .service-filter-tab:not(.active) {
+  background-color: var(--dark-card-bg);
+  color: var(--text-secondary);
+}
+
+.dark .service-filter-tab:not(.active):hover {
+  background-color: var(--dark-card-hover);
+  color: var(--white);
+}
+
+.dark .service-filter-tab.active {
+  background-color: var(--white) !important;
+  color: var(--black) !important;
+}
+
+.dark .service-filters-link,
+.dark .welcome-name,
+.dark .welcome-sso-icon {
+  color: var(--white) !important;
+}

@@ -1,0 +1,55 @@
+@reference "tailwindcss";
+
+/* --- Feature Permission Table --- */
+.role-permission-feature-name {
+  @apply font-semibold text-slate-900;
+}
+
+.role-permission-check {
+  @apply mx-auto block h-5 w-5 cursor-default rounded-md border border-slate-300 accent-black;
+}
+
+/* Feature Name header/body left */
+.role-permission-main-panel
+  .p-datatable-thead
+  th:nth-child(1)
+  .p-column-header-content {
+  @apply justify-start;
+}
+
+.role-permission-main-panel .p-datatable-tbody td:nth-child(1) {
+  @apply text-left;
+}
+
+/* Read, Write, Action header center */
+.role-permission-main-panel
+  .p-datatable-thead
+  th:nth-child(2)
+  .p-column-header-content,
+.role-permission-main-panel
+  .p-datatable-thead
+  th:nth-child(3)
+  .p-column-header-content,
+.role-permission-main-panel
+  .p-datatable-thead
+  th:nth-child(4)
+  .p-column-header-content {
+  @apply justify-center;
+}
+
+/* Read, Write, Action body center */
+.role-permission-main-panel .p-datatable-tbody td:nth-child(2),
+.role-permission-main-panel .p-datatable-tbody td:nth-child(3),
+.role-permission-main-panel .p-datatable-tbody td:nth-child(4) {
+  @apply text-center;
+}
+
+/* --- Dark Theme --- */
+.dark .role-permission-feature-name {
+  color: var(--dark-card-text);
+}
+
+.dark .role-permission-check {
+  @apply border-slate-500;
+  accent-color: var(--white);
+}

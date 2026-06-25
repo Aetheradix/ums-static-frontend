@@ -1,0 +1,183 @@
+@reference "tailwindcss";
+
+.ws-header {
+  @apply border-b border-slate-200 py-3
+  bg-(--bg-white) sticky top-0 z-50;
+}
+
+/* .ws-header-inner {
+  @apply max-w-[1440px] mx-auto px-6 flex items-center gap-10 max-md:flex-wrap max-md:gap-4;
+} */
+.ws-header-inner {
+  @apply mx-auto px-6 flex items-center gap-10 max-md:flex-wrap max-md:gap-4;
+}
+
+.ws-logo-section {
+  @apply flex items-center gap-3 min-w-[180px] max-md:order-1 max-sm:min-w-0;
+}
+
+.ws-logo-box {
+  @apply bg-slate-800 text-white w-10 h-10 flex items-center justify-center rounded-lg font-extrabold text-lg;
+}
+
+.ws-logo-text {
+  @apply flex flex-col;
+}
+
+.ws-logo-title {
+  @apply font-bold text-base leading-tight;
+}
+
+.ws-logo-subtitle {
+  @apply text-[11px] text-slate-500 font-semibold max-sm:hidden;
+}
+
+.ws-search-section {
+  @apply flex-1 max-md:order-3 max-md:w-full max-md:flex-none;
+}
+
+.ws-search-container {
+  @apply relative w-full max-w-[600px] max-md:max-w-none;
+}
+
+.ws-search-icon {
+  @apply absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500;
+}
+
+.ws-search-input {
+  @apply w-full py-3 pl-[42px] pr-3.5 rounded-lg border-none bg-slate-100 text-sm font-medium outline-none;
+}
+
+.ws-header-actions {
+  @apply flex items-center gap-6 max-md:order-2 max-md:gap-3 max-md:ml-auto;
+}
+
+.ws-action-icons {
+  @apply flex items-center gap-4 pr-6 border-r border-slate-200 text-slate-500 max-md:pr-3 max-md:gap-3;
+}
+
+.ws-icon-btn {
+  @apply cursor-pointer flex items-center;
+}
+
+.ws-notif-btn {
+  @apply cursor-pointer flex items-center relative;
+}
+
+.ws-badge {
+  @apply absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[9px] font-bold w-[15px] h-[15px] flex items-center justify-center rounded-full border-2 border-white;
+}
+
+.ws-user-profile {
+  @apply flex items-center gap-2.5 cursor-pointer;
+}
+
+.ws-avatar {
+  @apply bg-[var(--primary-color)] text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-[13px] uppercase;
+}
+
+.ws-username {
+  @apply font-semibold text-sm max-md:hidden;
+}
+
+.ws-profile-dropdown {
+  @apply absolute right-0 mt-2.5 w-60 bg-white border border-slate-200 rounded-lg shadow-lg py-2 z-50;
+}
+
+.dark .ws-profile-dropdown {
+  @apply bg-zinc-900 border-zinc-800;
+}
+
+.ws-dropdown-header {
+  @apply px-4 py-3 border-b border-slate-100;
+}
+
+.dark .ws-dropdown-header {
+  @apply border-zinc-800;
+}
+
+.ws-dropdown-item-danger {
+  @apply w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 flex items-center gap-2 font-semibold transition-colors cursor-pointer border-none outline-none;
+}
+
+/* Dark theme styles for header */
+.dark .ws-header {
+  @apply bg-zinc-950 border-zinc-800 text-zinc-100;
+}
+
+.dark .ws-logo-title,
+.dark .ws-username {
+  @apply text-zinc-100;
+}
+
+.dark .ws-search-input {
+  @apply bg-zinc-900 text-zinc-100;
+}
+
+.dark .ws-action-icons,
+.dark .ws-search-icon {
+  @apply text-zinc-400;
+}
+
+/* dropdown items */
+.ws-dropdown-item {
+  @apply flex w-full cursor-pointer items-center gap-3 border-0 bg-transparent px-4 py-2.5 text-left text-sm font-medium text-slate-700 transition-all duration-200;
+}
+
+.ws-dropdown-item:hover {
+  @apply bg-slate-50 text-black;
+}
+
+.ws-dropdown-item i {
+  @apply text-slate-500;
+}
+
+.ws-dropdown-item:hover i {
+  @apply text-black;
+}
+
+.dark .ws-dropdown-item {
+  @apply text-zinc-300;
+}
+
+.dark .ws-dropdown-item:hover {
+  @apply bg-white/[0.06] text-white;
+}
+
+.dark .ws-dropdown-item i {
+  @apply text-zinc-400;
+}
+
+.dark .ws-dropdown-item:hover i {
+  @apply text-white;
+}
+
+.dark .ws-logo-image {
+  filter: brightness(0) invert(1);
+}
+
+.ws-hamburger-btn {
+  display: none; /* hidden on desktop */
+}
+
+@media (max-width: 1023px) {
+  .ws-hamburger-btn {
+    @apply flex items-center justify-center w-9 h-9 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 cursor-pointer transition-all duration-200 flex-shrink-0;
+  }
+  .dark .ws-hamburger-btn {
+    @apply bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white;
+  }
+  .ws-hamburger-btn:hover {
+    @apply bg-slate-100 text-slate-900;
+  }
+  .ws-hamburger-btn i {
+    font-size: 14px;
+    font-weight: 700;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-hidden {
+    display: none !important;
+  }
+}

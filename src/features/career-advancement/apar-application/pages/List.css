@@ -1,0 +1,11 @@
+@reference "tailwindcss";
+
+/* Row of action buttons below the search filter grid */
+.form-actions-row {
+  @apply flex items-center gap-3 mt-4;
+}
+
+/* Row of action buttons inside the grid cells */
+.apar-action-buttons {
+  @apply flex items-center gap-2;
+}

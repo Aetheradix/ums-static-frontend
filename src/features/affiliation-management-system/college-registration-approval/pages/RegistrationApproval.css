@@ -1,0 +1,125 @@
+@reference "tailwindcss";
+
+/* ==========================================
+   Registration Approval Grid
+   ========================================== */
+
+.registration-approval-grid
+  .p-datatable-thead
+  > tr
+  > th:last-child
+  .p-column-header-content {
+  @apply justify-center;
+}
+
+/* ==========================================
+   Registration Preview
+   ========================================== */
+
+.registration-preview-popup {
+  max-height: calc(100vh - 2rem);
+}
+
+.registration-preview-body {
+  @apply bg-slate-50;
+}
+
+.registration-preview-content {
+  @apply flex flex-col gap-4;
+}
+
+/* ==========================================
+   Rejection Reason
+   ========================================== */
+
+.registration-rejection-reason {
+  @apply max-w-64 font-normal leading-5 text-zinc-600 pl-2;
+}
+
+/* ==========================================
+   Documents
+   ========================================== */
+
+.registration-document-list {
+  @apply flex flex-col gap-2;
+}
+
+.registration-document-item {
+  @apply flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3;
+}
+
+.registration-document-icon {
+  @apply flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-slate-100 text-zinc-500;
+}
+
+.registration-document-icon i {
+  @apply text-sm;
+}
+
+.registration-document-content {
+  @apply min-w-0;
+}
+
+.registration-document-title {
+  @apply m-0 text-sm font-medium text-zinc-900;
+}
+
+.registration-document-id {
+  @apply m-0 mt-1 break-all text-xs text-zinc-500;
+}
+
+.registration-empty-text {
+  @apply m-0 text-sm text-zinc-500;
+}
+
+.registration-document-download {
+  @apply ml-auto inline-flex h-8 w-8 flex-shrink-0 cursor-pointer items-center
+         justify-center rounded-md border border-slate-200 bg-white
+         text-zinc-600 transition-all duration-200;
+}
+
+.registration-document-download:hover {
+  @apply border-zinc-900 bg-zinc-900 text-white;
+}
+
+.registration-document-download i {
+  @apply text-sm;
+}
+
+/* ==========================================
+   Dark Mode
+   ========================================== */
+
+.dark .registration-preview-body {
+  background-color: var(--dark-surface-secondary);
+}
+
+.dark .registration-rejection-reason {
+  @apply text-zinc-400;
+}
+
+.dark .registration-document-item {
+  background-color: var(--dark-card-bg);
+  border-color: var(--dark-border);
+}
+
+.dark .registration-document-icon {
+  @apply bg-zinc-800 text-zinc-400;
+}
+
+.dark .registration-document-title {
+  @apply text-zinc-100;
+}
+
+.dark .registration-document-id,
+.dark .registration-empty-text {
+  @apply text-zinc-400;
+}
+
+.dark .registration-document-download {
+  @apply border-zinc-700 bg-zinc-900 text-zinc-300;
+}
+
+.dark .registration-document-download:hover {
+  @apply border-white bg-white text-black;
+}

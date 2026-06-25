@@ -1,0 +1,397 @@
+@reference "tailwindcss";
+
+.employee-profile-page {
+  @apply relative flex flex-col gap-4;
+}
+
+.employee-profile-actions {
+  @apply absolute right-0 top-[-4.25rem] flex items-center gap-3;
+}
+
+.employee-more-action-wrap {
+  @apply relative;
+}
+
+.employee-more-menu {
+  @apply absolute right-0 top-[calc(100%+0.5rem)] z-20 w-56 rounded-lg border border-slate-200 bg-white p-1.5 shadow-lg;
+}
+
+/* Old native button fallback */
+.employee-more-menu-item {
+  @apply flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium text-slate-700 transition-all duration-200;
+}
+
+.employee-more-menu-item:hover {
+  @apply bg-slate-50 text-black;
+}
+
+.employee-more-menu-item i {
+  @apply text-sm text-slate-500;
+}
+
+.employee-more-menu-item-danger:hover {
+  @apply bg-red-50 text-red-600;
+}
+
+.employee-more-menu-item-danger:hover i {
+  @apply text-red-600;
+}
+
+/* Shared Button menu item */
+.employee-more-menu-button.p-button {
+  @apply !flex !w-full !items-center !justify-start !gap-2;
+  @apply !rounded-md !border-0 !bg-transparent !px-3 !py-2;
+  @apply !text-left !text-sm !font-medium !text-slate-500 !shadow-none;
+  @apply !transition-all !duration-200;
+}
+
+.employee-more-menu-button.p-button:hover {
+  @apply !bg-slate-50 !text-black;
+}
+
+.employee-more-menu-button.p-button .p-button-icon {
+  @apply !m-0 !text-sm !text-slate-500;
+}
+
+.employee-more-menu-button.p-button .p-button-label {
+  @apply !flex-1 !text-left;
+}
+
+.employee-more-menu-button-danger.p-button:hover {
+  @apply !bg-red-50 !text-red-600;
+}
+
+.employee-more-menu-button-danger.p-button:hover .p-button-icon {
+  @apply !text-red-600;
+}
+
+/* =========================
+   Summary Card
+========================= */
+
+.employee-profile-summary-card {
+  @apply flex items-center justify-between gap-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm;
+}
+
+.employee-profile-main-info {
+  @apply flex min-w-0 flex-1 items-center gap-5;
+}
+
+.employee-profile-avatar {
+  @apply relative flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xl font-bold text-slate-800;
+}
+
+.employee-profile-avatar-status {
+  @apply absolute bottom-1 right-1 h-3.5 w-3.5 rounded-full border-2 border-white;
+}
+
+.employee-profile-avatar-status.active {
+  @apply bg-green-500;
+}
+
+.employee-profile-avatar-status.inactive {
+  @apply bg-red-500;
+}
+
+.employee-profile-identity {
+  @apply flex min-w-0 flex-col gap-2;
+}
+
+.employee-profile-identity h3 {
+  @apply m-0 truncate text-xl font-bold text-black;
+}
+
+.employee-profile-code {
+  @apply w-fit rounded-md bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700;
+}
+
+.employee-profile-chips {
+  @apply flex flex-wrap items-center gap-2;
+}
+
+.employee-profile-chip {
+  @apply inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700;
+}
+
+.employee-profile-chip i {
+  @apply text-sm text-slate-500;
+}
+
+/* Right side wrapper: Contact + Status */
+.employee-profile-summary-meta {
+  @apply ml-auto flex shrink-0 items-stretch gap-6;
+}
+
+/* Contact info section */
+.employee-profile-contact-box {
+  @apply flex min-w-[280px] flex-col justify-center gap-4 border-l border-slate-200 pl-6;
+}
+
+.employee-profile-contact-item {
+  @apply flex flex-col gap-1;
+}
+
+.employee-profile-contact-value {
+  @apply flex max-w-[300px] items-center gap-2 truncate text-sm font-bold text-black;
+}
+
+.employee-profile-contact-value i {
+  @apply shrink-0 text-sm text-slate-500;
+}
+
+/* Status section */
+.employee-profile-status-box {
+  @apply flex min-w-44 flex-col justify-center gap-4 border-l border-slate-200 pl-6;
+}
+
+.employee-profile-status-box > div {
+  @apply flex flex-col gap-1;
+}
+
+.employee-profile-status-label {
+  @apply text-xs font-medium text-slate-500;
+}
+
+.employee-profile-status {
+  @apply inline-flex w-fit items-center gap-1.5 text-sm font-bold;
+}
+
+.employee-profile-status span {
+  @apply h-2 w-2 rounded-full;
+}
+
+.employee-profile-status.active {
+  @apply text-green-600;
+}
+
+.employee-profile-status.active span {
+  @apply bg-green-500;
+}
+
+.employee-profile-status.inactive {
+  @apply text-red-600;
+}
+
+.employee-profile-status.inactive span {
+  @apply bg-red-500;
+}
+
+.employee-profile-status-box strong {
+  @apply text-sm font-bold text-black;
+}
+
+/* =========================
+   Profile Info Cards
+========================= */
+
+.employee-profile-card-grid {
+  @apply grid grid-cols-3 gap-4;
+}
+
+.employee-profile-info-card {
+  @apply rounded-xl border border-slate-200 bg-white p-4 shadow-sm;
+}
+
+.employee-profile-info-card-title {
+  @apply mb-4 flex items-center gap-3;
+}
+
+.employee-profile-info-card-title span {
+  @apply flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-black;
+}
+
+.employee-profile-info-card-title span i {
+  @apply text-sm;
+}
+
+.employee-profile-info-card-title h4 {
+  @apply m-0 text-sm font-bold text-black;
+}
+
+.employee-profile-info-grid {
+  @apply grid grid-cols-2 gap-x-6 gap-y-4;
+}
+
+.employee-profile-info-item {
+  @apply flex flex-col gap-1;
+}
+
+.employee-profile-info-item span {
+  @apply text-xs font-medium text-slate-500;
+}
+
+.employee-profile-info-item strong {
+  @apply break-words text-sm font-semibold text-black;
+}
+
+.employee-profile-footer {
+  @apply flex justify-end;
+}
+
+/* =========================
+   Top Action Buttons
+========================= */
+
+.employee-profile-icon-action-panel {
+  @apply flex h-10 items-center overflow-visible rounded-lg border border-black bg-black shadow-sm;
+}
+
+.employee-profile-panel-icon-btn.p-button {
+  @apply !h-10 !w-10 !min-w-10 !rounded-none !border-0 !bg-transparent !p-0 !text-white !shadow-none;
+}
+
+.employee-profile-panel-icon-btn.p-button:hover {
+  @apply !bg-white !text-black;
+}
+
+.employee-profile-panel-icon-btn.p-button .p-button-icon {
+  @apply !m-0 !text-sm !text-current;
+}
+
+.employee-profile-panel-icon-btn.p-button .p-button-label {
+  @apply hidden;
+}
+
+.employee-profile-action-divider {
+  @apply h-5 w-px bg-white/25;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 1200px) {
+  .employee-profile-summary-card {
+    @apply flex-col items-start;
+  }
+
+  .employee-profile-summary-meta {
+    @apply ml-0 w-full;
+  }
+
+  .employee-profile-contact-box {
+    @apply flex-1;
+  }
+
+  .employee-profile-status-box {
+    @apply flex-1;
+  }
+}
+
+@media (max-width: 768px) {
+  .employee-profile-actions {
+    @apply static justify-end;
+  }
+
+  .employee-profile-main-info {
+    @apply w-full items-start;
+  }
+
+  .employee-profile-summary-meta {
+    @apply flex-col gap-4;
+  }
+
+  .employee-profile-contact-box,
+  .employee-profile-status-box {
+    @apply w-full border-l-0 border-t border-slate-200 pl-0 pt-4;
+  }
+
+  .employee-profile-card-grid {
+    @apply grid-cols-1;
+  }
+
+  .employee-profile-info-grid {
+    @apply grid-cols-1;
+  }
+}
+
+/* =========================
+   Dark Mode
+========================= */
+
+.dark .employee-more-menu,
+.dark .employee-profile-summary-card,
+.dark .employee-profile-info-card {
+  @apply border-white/[0.08] bg-[#0d0d0f] shadow-none;
+}
+
+.dark .employee-more-menu-item {
+  @apply text-slate-300;
+}
+
+.dark .employee-more-menu-item:hover {
+  @apply bg-white/[0.06] text-white;
+}
+
+.dark .employee-more-menu-button.p-button {
+  @apply !text-slate-300;
+}
+
+.dark .employee-more-menu-button.p-button:hover {
+  @apply !bg-white/[0.06] !text-white;
+}
+
+.dark .employee-more-menu-button.p-button .p-button-icon {
+  @apply !text-slate-400;
+}
+
+.dark .employee-more-menu-button-danger.p-button:hover {
+  @apply !bg-red-500/[0.12] !text-red-400;
+}
+
+.dark .employee-more-menu-button-danger.p-button:hover .p-button-icon {
+  @apply !text-red-400;
+}
+
+.dark .employee-profile-avatar {
+  @apply bg-white/[0.08] text-white;
+}
+
+.dark .employee-profile-avatar-status {
+  @apply border-[#0d0d0f];
+}
+
+.dark .employee-profile-identity h3,
+.dark .employee-profile-contact-value,
+.dark .employee-profile-status-box strong,
+.dark .employee-profile-info-card-title h4,
+.dark .employee-profile-info-item strong {
+  @apply text-white;
+}
+
+.dark .employee-profile-code,
+.dark .employee-profile-chip,
+.dark .employee-profile-info-card-title span {
+  @apply border-white/[0.08] bg-white/[0.06] text-slate-200;
+}
+
+.dark .employee-profile-chip i,
+.dark .employee-profile-contact-value i {
+  @apply text-slate-300;
+}
+
+.dark .employee-profile-contact-box,
+.dark .employee-profile-status-box {
+  @apply border-white/[0.08];
+}
+
+.dark .employee-profile-info-item span,
+.dark .employee-profile-status-label {
+  @apply text-slate-400;
+}
+
+.dark .employee-profile-icon-action-panel {
+  @apply border-white/[0.12] bg-white shadow-none;
+}
+
+.dark .employee-profile-panel-icon-btn.p-button {
+  @apply !text-black;
+}
+
+.dark .employee-profile-panel-icon-btn.p-button:hover {
+  @apply !bg-black !text-white;
+}
+
+.dark .employee-profile-action-divider {
+  @apply bg-black/20;
+}

@@ -1,0 +1,51 @@
+@reference "tailwindcss";
+
+.preview-field {
+  @apply flex min-w-0 flex-col gap-1 border-b border-slate-200 py-2.5;
+}
+
+.preview-field-full {
+  @apply md:col-span-2 lg:col-span-3;
+}
+
+.preview-field-label {
+  @apply text-xs font-medium leading-4 text-zinc-700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.preview-field-value {
+  @apply break-words text-sm font-bold leading-5 text-zinc-900;
+}
+
+.preview-field-break-word .preview-field-value {
+  @apply break-all;
+}
+
+/* Dark mode */
+.dark .preview-field {
+  border-color: var(--dark-border);
+}
+
+.dark .preview-field-label {
+  @apply text-zinc-400;
+}
+
+.dark .preview-field-value {
+  @apply text-zinc-100;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .preview-field {
+    @apply py-2;
+  }
+
+  .preview-field-label {
+    @apply text-[11px];
+  }
+
+  .preview-field-value {
+    @apply text-sm;
+  }
+}

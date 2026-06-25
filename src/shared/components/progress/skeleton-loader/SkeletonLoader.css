@@ -1,0 +1,24 @@
+.skeleton-card {
+  animation: skeleton-fade-in 0.2s ease-in-out;
+}
+
+.skeleton-card-metric {
+  background: var(--surface-100);
+}
+
+.skeleton-chart-body {
+  min-height: 280px;
+}
+
+.skeleton-bar-column {
+  height: 100%;
+}
+
+@keyframes skeleton-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

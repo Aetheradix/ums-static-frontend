@@ -1,0 +1,79 @@
+@reference "tailwindcss";
+
+.form-actions-container {
+  @apply flex items-center gap-3 pt-3 mt-3;
+  /* border-top: 1px solid var(--color-gray-100); */
+}
+
+.dark .form-actions-container {
+  @apply border-zinc-800;
+}
+
+.form-actions-left {
+  @apply justify-start;
+}
+
+.form-actions-right {
+  @apply justify-end;
+}
+
+.form-actions-center {
+  @apply justify-center;
+}
+
+/* ── Light Theme Buttons ── */
+
+/* Reset Button (Grey) */
+.form-actions-container button[type='reset'] {
+  /* background-color: var(--color-gray-100) !important; */
+  border-color: var(--primary-color) !important;
+  color: var(--primary-color) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.form-actions-container button[type='reset']:hover {
+  background-color: var(--color-gray-200) !important;
+  border-color: var(--color-gray-300) !important;
+  color: var(--primary-color) !important;
+}
+
+/* Submit Button (Black) */
+.form-actions-container button[type='submit'] {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: var(--color-white) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.form-actions-container button[type='submit']:hover {
+  background-color: var(--color-gray-800) !important;
+  border-color: var(--color-gray-800) !important;
+}
+
+/* ── Dark Theme Buttons ── */
+
+/* Reset Button (Dark Grey) */
+.dark .form-actions-container button[type='reset'] {
+  background-color: var(--color-gray-800) !important;
+  border-color: var(--color-gray-700) !important;
+  color: var(--color-gray-100) !important;
+}
+
+.dark .form-actions-container button[type='reset']:hover {
+  background-color: var(--color-gray-700) !important;
+  border-color: var(--color-gray-600) !important;
+  color: var(--color-white) !important;
+}
+
+/* Submit Button (White/Light Zinc) */
+.dark .form-actions-container button[type='submit'] {
+  background-color: var(--color-gray-100) !important;
+  border-color: var(--color-gray-100) !important;
+  color: var(--primary-color) !important;
+}
+
+.dark .form-actions-container button[type='submit']:hover {
+  background-color: var(--color-gray-200) !important;
+  border-color: var(--color-gray-200) !important;
+  color: var(--primary-color) !important;
+}

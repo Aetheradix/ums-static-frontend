@@ -1,0 +1,100 @@
+@reference "tailwindcss";
+
+/* =========================
+   Enclosure Step
+========================= */
+
+.college-enclosure-step {
+  @apply flex flex-col;
+}
+
+/* =========================
+   Application Number
+========================= */
+
+.application-number-field-wrap {
+  @apply relative;
+}
+
+.application-number-field-wrap .input-block,
+.application-number-field-wrap .input-block.vertical {
+  @apply mb-0;
+}
+
+.application-number-field-wrap input,
+.application-number-field-wrap .p-inputtext {
+  @apply pr-11;
+}
+
+.application-number-copy-btn {
+  @apply absolute bottom-[5px] right-3 flex h-8 w-8 cursor-pointer items-center justify-center bg-white text-slate-600 transition-all duration-200;
+}
+
+.application-number-copy-btn:hover {
+  @apply border-slate-300 bg-slate-50 text-black;
+}
+
+.application-number-copy-btn i {
+  @apply text-lg;
+}
+
+/* =========================
+   Enclosure Note
+========================= */
+
+.enclosure-card-top-note {
+  @apply mb-4 ml-auto flex w-fit items-center gap-2 rounded-md border border-black/10 bg-black/[0.03] px-3 py-1.5 text-xs font-semibold text-black;
+}
+
+.enclosure-card-top-note i {
+  @apply text-sm;
+}
+
+/* =========================
+   Upload List
+========================= */
+
+.enclosure-upload-list {
+  @apply flex flex-col gap-5;
+}
+
+/* File upload row styling - scoped only for enclosure page */
+.enclosure-upload-list .file-upload-wrapper,
+.enclosure-upload-list .file-upload-container,
+.enclosure-upload-list .file-upload-box {
+  @apply rounded-xl border border-slate-200 bg-white transition-all duration-200;
+}
+
+.enclosure-upload-list .file-upload-wrapper:hover,
+.enclosure-upload-list .file-upload-container:hover,
+.enclosure-upload-list .file-upload-box:hover {
+  @apply border-slate-300 bg-slate-50/40;
+}
+
+/* =========================
+   Dark Mode
+========================= */
+
+.dark .application-number-copy-btn {
+  @apply border-white/[0.08] bg-white/[0.04] text-slate-300;
+}
+
+.dark .application-number-copy-btn:hover {
+  @apply border-white/[0.16] bg-white/[0.08] text-white;
+}
+
+.dark .enclosure-card-top-note {
+  @apply border-violet-500/[0.18] bg-violet-500/[0.12] text-violet-200;
+}
+
+.dark .enclosure-upload-list .file-upload-wrapper,
+.dark .enclosure-upload-list .file-upload-container,
+.dark .enclosure-upload-list .file-upload-box {
+  @apply border-white/[0.08] bg-white/[0.04];
+}
+
+.dark .enclosure-upload-list .file-upload-wrapper:hover,
+.dark .enclosure-upload-list .file-upload-container:hover,
+.dark .enclosure-upload-list .file-upload-box:hover {
+  @apply border-white/[0.16] bg-white/[0.06];
+}

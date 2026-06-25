@@ -1,0 +1,38 @@
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "editor.formatOnSave": true,
+  "editor.insertSpaces": false,
+  "files.insertFinalNewline": true,
+  "files.eol": "\n",
+  "files.watcherExclude": {
+    "node_modules": true,
+    "**/node_modules": true,
+    "dist": true
+  },
+  "search.exclude": {
+    "node_modules": true,
+    "**/node_modules": true,
+    "dist": true
+  },
+  "todo-tree.filtering.useBuiltInExcludes": "file excludes",
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "javascriptreact",
+    "typescriptreact"
+  ],
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false,
+  "tailwindCSS.validate": true,
+  "tailwindCSS.experimental.classRegex": [],
+  "files.associations": {
+    "*.css": "tailwindcss"
+  }
+}

@@ -1,0 +1,357 @@
+@reference "tailwindcss";
+
+/* =========================
+   My Profile Layout
+========================= */
+
+.my-profile-layout {
+  display: grid;
+  align-items: flex-start;
+  gap: calc(var(--spacing, 0.25rem) * 5);
+  grid-template-columns: 350px minmax(0, 1fr);
+}
+
+.my-profile-sidebar-card,
+.my-profile-content-card {
+  @apply overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm;
+}
+
+/* =========================
+   Left Profile Card
+========================= */
+
+.my-profile-cover {
+  @apply relative h-32 overflow-hidden;
+  background: var(--gradient-aurora);
+}
+
+.my-profile-avatar-wrap {
+  @apply relative -mt-16 flex justify-center;
+}
+
+.my-profile-avatar-wrap .input-block {
+  @apply mb-0;
+}
+
+.my-profile-avatar-wrap .input-block-label,
+.my-profile-avatar-wrap label {
+  @apply hidden;
+}
+
+.my-profile-user-head {
+  @apply px-5 pb-4 pt-3 text-center;
+}
+
+.my-profile-user-head h3 {
+  @apply m-0 text-xl font-bold text-slate-900;
+}
+
+.my-profile-user-head p {
+  @apply m-0 mt-1 truncate text-sm font-medium text-slate-500;
+}
+
+.my-profile-divider {
+  @apply mx-5 border-t border-slate-100;
+}
+
+.my-profile-info-section {
+  @apply px-5 py-4;
+}
+
+.my-profile-info-section h4 {
+  @apply m-0 mb-1 text-base font-bold text-slate-900;
+}
+
+/* Label | Colon | Value */
+
+.my-profile-info-row {
+  @apply grid grid-cols-[7.5rem_auto_minmax(0,1fr)] items-start gap-x-2 py-2 text-sm;
+}
+
+.my-profile-info-label {
+  @apply font-semibold text-slate-800;
+}
+
+.my-profile-info-colon {
+  @apply font-medium text-slate-600;
+}
+
+.my-profile-info-value {
+  @apply min-w-0 break-words font-medium leading-5 text-slate-600;
+}
+
+/* =========================
+   Right Content Card
+========================= */
+
+.my-profile-content-card {
+  @apply min-w-0 p-5;
+}
+
+/* =========================
+   Tabs
+========================= */
+
+.my-profile-tabs-wrap {
+  @apply w-full;
+}
+
+.my-profile-tab-panel {
+  @apply pt-4;
+}
+
+/* =========================
+   Profile Form
+========================= */
+
+.my-profile-form-panel {
+  @apply flex flex-col gap-5;
+}
+
+/* Form Section Card */
+
+.my-profile-form-section {
+  @apply overflow-hidden rounded-xl border border-slate-200 bg-white;
+}
+
+.my-profile-section-header {
+  @apply flex items-center gap-3 border-b border-slate-100 bg-slate-50 px-5 py-4;
+}
+
+.my-profile-section-icon {
+  @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700;
+}
+
+.my-profile-section-icon i {
+  @apply text-sm leading-none;
+}
+
+.my-profile-section-header h3 {
+  @apply m-0 text-sm font-bold text-slate-900;
+}
+
+.my-profile-section-header p {
+  @apply m-0 mt-1 text-xs leading-5 text-slate-500;
+}
+
+/* Section Content */
+
+.my-profile-form-section .my-profile-form-grid,
+.my-profile-form-section .my-profile-address-grid,
+.my-profile-form-section .my-profile-description {
+  @apply px-5 pb-2 pt-4;
+}
+
+/* Input Grid */
+
+.my-profile-form-grid {
+  @apply grid grid-cols-3 gap-x-5;
+}
+
+.my-profile-form-grid .input-block {
+  @apply mb-3;
+}
+
+/* Address Grid */
+
+.my-profile-address-grid {
+  @apply grid grid-cols-2 gap-x-5;
+}
+
+.my-profile-address-grid .input-block {
+  @apply mb-3;
+}
+
+.my-profile-address-grid .p-inputtextarea {
+  @apply min-h-24 w-full resize-none;
+}
+
+/* Bio */
+
+.my-profile-description {
+  @apply w-full;
+}
+
+.my-profile-description .input-block {
+  @apply mb-3;
+}
+
+.my-profile-description .p-inputtextarea {
+  @apply min-h-24 w-full resize-none;
+}
+
+/* Profile Upload */
+
+.my-profile-upload-block {
+  @apply flex flex-col gap-3;
+}
+
+.my-profile-upload-block label {
+  @apply text-sm font-bold text-slate-900;
+}
+
+/* Form Actions */
+
+.my-profile-actions {
+  @apply flex items-center justify-end gap-3;
+}
+
+/* =========================
+   Notification
+========================= */
+
+.my-profile-notification-panel {
+  @apply flex flex-col gap-3;
+}
+
+.my-profile-notification-row {
+  @apply flex items-center justify-between gap-4 rounded-xl border border-slate-100 bg-slate-50 px-4 py-4;
+}
+
+.my-profile-notification-row h4 {
+  @apply m-0 text-sm font-bold text-slate-900;
+}
+
+.my-profile-notification-row p {
+  @apply m-0 mt-1 text-sm text-slate-500;
+}
+
+.my-profile-notification-row input {
+  @apply h-5 w-5 accent-black;
+}
+
+/* =========================
+   Dark Mode
+========================= */
+
+.dark .my-profile-sidebar-card,
+.dark .my-profile-content-card {
+  background-color: var(--dark-card-bg);
+  border-color: var(--dark-border);
+}
+
+.dark .my-profile-cover {
+  background: var(--gradient-aurora);
+}
+
+.dark .my-profile-user-head h3,
+.dark .my-profile-info-section h4,
+.dark .my-profile-info-label,
+.dark .my-profile-upload-block label,
+.dark .my-profile-notification-row h4 {
+  color: var(--dark-card-text);
+}
+
+.dark .my-profile-user-head p,
+.dark .my-profile-info-colon,
+.dark .my-profile-info-value,
+.dark .my-profile-notification-row p {
+  color: var(--dark-text-muted);
+}
+
+.dark .my-profile-divider,
+.dark .my-profile-actions {
+  border-color: var(--dark-border);
+}
+
+/* Dark Form Sections */
+
+.dark .my-profile-form-section {
+  background-color: var(--dark-card-bg);
+  border-color: var(--dark-border);
+}
+
+.dark .my-profile-section-header {
+  background-color: var(--dark-card-hover);
+  border-color: var(--dark-border);
+}
+
+.dark .my-profile-section-icon {
+  background-color: var(--dark-card-bg);
+  border-color: var(--dark-border);
+  color: var(--dark-card-text);
+}
+
+.dark .my-profile-section-header h3 {
+  color: var(--dark-card-text);
+}
+
+.dark .my-profile-section-header p {
+  color: var(--dark-text-muted);
+}
+
+.dark .my-profile-notification-row {
+  background-color: var(--dark-card-hover);
+  border-color: var(--dark-border);
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 1200px) {
+  .my-profile-form-grid {
+    @apply grid-cols-2;
+  }
+}
+
+@media (max-width: 1024px) {
+  .my-profile-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .my-profile-sidebar-card {
+    @apply w-full;
+  }
+}
+
+@media (max-width: 768px) {
+  .my-profile-content-card {
+    @apply p-4;
+  }
+
+  .my-profile-form-grid,
+  .my-profile-address-grid {
+    @apply grid-cols-1;
+  }
+
+  .my-profile-section-header {
+    @apply px-4 py-3;
+  }
+
+  .my-profile-form-section .my-profile-form-grid,
+  .my-profile-form-section .my-profile-address-grid,
+  .my-profile-form-section .my-profile-description {
+    @apply px-4;
+  }
+
+  .my-profile-info-row {
+    @apply grid-cols-[7rem_auto_minmax(0,1fr)];
+  }
+
+  .my-profile-actions {
+    @apply flex-col-reverse items-stretch;
+  }
+
+  .my-profile-actions .p-button {
+    @apply !w-full;
+  }
+}
+
+@media (max-width: 480px) {
+  .my-profile-info-section {
+    @apply px-4;
+  }
+
+  .my-profile-info-row {
+    @apply grid-cols-[6.5rem_auto_minmax(0,1fr)] gap-x-1;
+  }
+
+  .my-profile-section-header {
+    @apply items-start;
+  }
+
+  .my-profile-section-icon {
+    @apply h-8 w-8;
+  }
+}

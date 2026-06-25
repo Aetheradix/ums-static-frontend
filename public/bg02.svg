@@ -1,0 +1,7 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 900" width="1000" height="900">
+	<style>
+		.s0 { fill: #ffffff } 
+	</style>
+	<path fill-rule="evenodd" class="s0" d="m1000 900h-1000v-900h903v109h97z"/>
+	<path fill-rule="evenodd" class="s0" d="m1000 586c0-13.81-11.19-25-25-25h-260c-13.81 0-25 11.19-25 25v289c0 13.81 11.19 25 25 25h200c13.81 0 25-11.19 25-25v-10c0-13.81 11.19-25 25-25h10c13.81 0 25-11.19 25-25z"/>
+</svg>

@@ -1,0 +1,35 @@
+branch_name=$(git symbolic-ref --short HEAD)
+
+# Allow main branch bypass for branch naming checks
+if [ "$branch_name" != "main" ]; then
+  # Block protected branches
+  if [ "$branch_name" = "qa" ]; then
+    echo "Direct commits to '$branch_name' are not allowed."
+    echo "Please create a feature/bugfix branch."
+    exit 1
+  fi
+
+  pattern="^(feature|bugfix|refactor|hotfix|release)/[a-z0-9._-]+$"
+
+  if ! echo "$branch_name" | grep -Eq "$pattern"; then
+    echo "Invalid branch name: $branch_name"
+    echo "Expected format:"
+    echo "feature/xyz-name"
+    echo "refactor/xyz-name"
+    echo "bugfix/xyz-name"
+    echo "hotfix/xyz-name"
+    echo "release/x.y.z"
+    exit 1
+  fi
+fi
+
+echo "Running lint-staged"
+npx lint-staged || exit 1
+
+echo "Running type-checks"
+npm run type-check || exit 1
+
+echo "Running production build"
+npm run build || exit 1
+
+echo "All checks passed ready to merge."

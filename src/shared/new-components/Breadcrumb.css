@@ -1,0 +1,34 @@
+@reference "tailwindcss";
+
+.breadcrumb-nav {
+  @apply flex items-center gap-2 text-sm font-medium text-zinc-500 mb-2 max-sm:text-xs flex-wrap;
+}
+
+.dark .breadcrumb-nav {
+  @apply text-zinc-300;
+}
+
+.breadcrumb-separator {
+  @apply text-base text-zinc-400 select-none;
+}
+
+.dark .breadcrumb-separator {
+  @apply text-zinc-600;
+}
+
+.breadcrumb-item-active {
+  @apply font-semibold text-slate-900 tracking-[0.1px];
+}
+
+.dark .breadcrumb-item-active {
+  @apply text-zinc-100;
+}
+
+.breadcrumb-item-link {
+  @apply cursor-pointer transition-colors duration-200 
+         hover:text-(--color-black,#000);
+}
+
+.dark .breadcrumb-item-link:hover {
+  color: var(--color-zinc-100, oklch(96.7% 0.001 286.375)) !important;
+}

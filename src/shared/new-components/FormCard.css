@@ -1,0 +1,77 @@
+@reference "tailwindcss";
+
+.form-card {
+  @apply rounded-2xl border border-slate-200
+         shadow-[0_1px_3px_rgba(0,0,0,0.04)]
+         transition-all duration-300
+         bg-(--bg-white) mb-5;
+}
+
+.dark .form-card {
+  background-color: var(--dark-card-bg);
+  border-color: var(--dark-border);
+}
+
+/* HEADER */
+.form-card-header {
+  @apply flex items-start justify-between px-6 py-4;
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+.dark .form-card-header {
+  @apply border-zinc-800;
+}
+
+/* LEFT SECTION (icon + text) */
+.form-card-header-left {
+  @apply flex items-start gap-4;
+}
+
+/* ICON */
+.form-card-icon {
+  @apply w-13 h-13 rounded-full flex items-center justify-center flex-shrink-0;
+  background: linear-gradient(
+    135deg,
+    var(--color-gray-100),
+    var(--color-gray-200)
+  );
+}
+
+.dark .form-card-icon {
+  background: var(--color-gray-900);
+}
+
+.form-card-icon i {
+  @apply text-zinc-600 text-lg;
+}
+
+.dark .form-card-icon i {
+  @apply text-zinc-400;
+}
+
+/* TEXT */
+.form-card-title {
+  @apply text-lg font-semibold text-zinc-800 m-0;
+}
+
+.dark .form-card-title {
+  @apply text-white;
+}
+
+.form-card-subtitle {
+  @apply text-sm text-zinc-500 mt-0.5 m-0;
+}
+
+.dark .form-card-subtitle {
+  @apply text-[var(--dark-text-secondary)];
+}
+
+/* RIGHT ACTION */
+.form-card-header-action {
+  @apply flex items-center;
+}
+
+/* BODY */
+.form-card-body {
+  @apply p-6;
+}

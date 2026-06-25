@@ -1,0 +1,155 @@
+@reference "tailwindcss";
+
+/* =========================
+   Radio Button Styles
+========================= */
+
+.radio-button-container .p-radiobutton {
+  @apply h-5 w-5;
+}
+
+.radio-button-container .p-radiobutton .p-radiobutton-box {
+  @apply relative h-5 w-5 rounded-full border-2 border-slate-400 bg-white shadow-none transition-all duration-200;
+}
+
+/* Remove PrimeReact default inner icon */
+.radio-button-container .p-radiobutton .p-radiobutton-box .p-radiobutton-icon {
+  @apply hidden;
+}
+
+/* Hover */
+.radio-button-container
+  .p-radiobutton
+  .p-radiobutton-box:not(.p-disabled):not(.p-highlight):hover {
+  @apply border-[var(--primary-color)];
+}
+
+/* Selected outer circle - when highlight class is on box */
+.radio-button-container .p-radiobutton .p-radiobutton-box.p-highlight {
+  @apply border-[var(--primary-color)] bg-white;
+}
+
+/* Selected outer circle - when highlight class is on parent */
+.radio-button-container .p-radiobutton.p-highlight .p-radiobutton-box {
+  @apply border-[var(--primary-color)] bg-white;
+}
+
+/* Selected inner dot - when highlight class is on box */
+.radio-button-container .p-radiobutton .p-radiobutton-box.p-highlight::after {
+  content: '';
+  @apply absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--primary-color)];
+}
+
+/* Selected inner dot - when highlight class is on parent */
+.radio-button-container .p-radiobutton.p-highlight .p-radiobutton-box::after {
+  content: '';
+  @apply absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--primary-color)];
+}
+
+/* Focus */
+.radio-button-container .p-radiobutton .p-radiobutton-box.p-focus {
+  @apply ring-2 ring-[var(--primary-color)]/20;
+}
+
+/* Invalid */
+.radio-button-container .p-radiobutton.p-invalid .p-radiobutton-box {
+  @apply border-[var(--color-danger)];
+}
+
+.radio-button-container
+  .p-radiobutton.p-invalid
+  .p-radiobutton-box.p-highlight::after,
+.radio-button-container
+  .p-radiobutton.p-invalid.p-highlight
+  .p-radiobutton-box::after {
+  @apply bg-[var(--color-danger)];
+}
+
+/* =========================
+   Label Width Variants
+========================= */
+
+.radio-label-sm {
+  @apply w-40;
+}
+
+.radio-label-md {
+  @apply w-60;
+}
+
+.radio-label-lg {
+  @apply w-80;
+}
+
+/* =========================
+   Dark Mode
+========================= */
+
+.dark .radio-button-container .p-radiobutton .p-radiobutton-box {
+  @apply border-slate-500 bg-transparent shadow-none;
+}
+
+/* Hover */
+.dark
+  .radio-button-container
+  .p-radiobutton
+  .p-radiobutton-box:not(.p-disabled):not(.p-highlight):hover {
+  @apply border-white;
+}
+
+/* Selected outer circle - when highlight class is on box */
+.dark .radio-button-container .p-radiobutton .p-radiobutton-box.p-highlight {
+  @apply border-white bg-transparent;
+}
+
+/* Selected outer circle - when highlight class is on parent */
+.dark .radio-button-container .p-radiobutton.p-highlight .p-radiobutton-box {
+  @apply border-white bg-transparent;
+}
+
+/* Selected inner dot - when highlight class is on box */
+.dark
+  .radio-button-container
+  .p-radiobutton
+  .p-radiobutton-box.p-highlight::after {
+  @apply bg-white;
+}
+
+/* Selected inner dot - when highlight class is on parent */
+.dark
+  .radio-button-container
+  .p-radiobutton.p-highlight
+  .p-radiobutton-box::after {
+  @apply bg-white;
+}
+
+/* Focus */
+.dark .radio-button-container .p-radiobutton .p-radiobutton-box.p-focus {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.14);
+}
+
+/* Invalid */
+.dark .radio-button-container .p-radiobutton.p-invalid .p-radiobutton-box {
+  @apply border-red-400;
+}
+
+.dark
+  .radio-button-container
+  .p-radiobutton.p-invalid
+  .p-radiobutton-box.p-highlight::after,
+.dark
+  .radio-button-container
+  .p-radiobutton.p-invalid.p-highlight
+  .p-radiobutton-box::after {
+  @apply bg-red-400;
+}
+
+/* Labels */
+.dark .radio-option-label,
+.dark .radio-button-container label {
+  @apply text-slate-200;
+}
+
+.dark .radio-field-label {
+  @apply text-slate-300;
+}

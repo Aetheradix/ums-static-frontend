@@ -1,0 +1,79 @@
+@reference "tailwindcss";
+
+.status-badge {
+  @apply inline-flex items-center gap-2 rounded-full border px-2.5 py-1 text-xs font-medium;
+  letter-spacing: 0.1px;
+}
+
+.status-badge-dot {
+  @apply h-1.5 w-1.5 flex-shrink-0 rounded-full;
+}
+
+/* Pending */
+.status-badge-pending {
+  @apply border-amber-200 bg-amber-50 text-amber-700;
+}
+
+.status-badge-pending .status-badge-dot {
+  @apply bg-amber-500;
+}
+
+/* Approved */
+.status-badge-approved {
+  @apply border-green-200 bg-green-50 text-green-700;
+}
+
+.status-badge-approved .status-badge-dot {
+  @apply bg-green-500;
+}
+
+/* Rejected */
+.status-badge-rejected {
+  @apply border-red-200 bg-red-50 text-red-700;
+}
+
+.status-badge-rejected .status-badge-dot {
+  @apply bg-red-500;
+}
+
+/* Neutral */
+.status-badge-neutral {
+  @apply border-slate-200 bg-slate-50 text-slate-600;
+}
+
+.status-badge-neutral .status-badge-dot {
+  @apply bg-slate-400;
+}
+
+/* Dark mode */
+.dark .status-badge-pending {
+  @apply border-amber-400/20 bg-amber-500/10 text-amber-300;
+}
+
+.dark .status-badge-pending .status-badge-dot {
+  @apply bg-amber-400;
+}
+
+.dark .status-badge-approved {
+  @apply border-green-400/20 bg-green-500/10 text-green-300;
+}
+
+.dark .status-badge-approved .status-badge-dot {
+  @apply bg-green-400;
+}
+
+.dark .status-badge-rejected {
+  @apply border-red-400/20 bg-red-500/10 text-red-300;
+}
+
+.dark .status-badge-rejected .status-badge-dot {
+  @apply bg-red-400;
+}
+
+.dark .status-badge-neutral {
+  @apply border-white/10 bg-white/5 text-zinc-300;
+}
+
+.dark .status-badge-neutral .status-badge-dot {
+  @apply bg-zinc-500;
+}

@@ -1,0 +1,289 @@
+@reference "tailwindcss";
+
+.role-side-panel {
+  @apply flex h-full max-h-[620px] flex-col rounded-xl border border-slate-200 bg-white p-4 shadow-sm;
+}
+
+.role-side-panel-header {
+  @apply mb-4 flex shrink-0 items-start justify-between gap-3;
+}
+
+.role-side-panel-title {
+  @apply m-0 text-lg font-semibold text-slate-900;
+}
+
+.role-side-panel-subtitle {
+  @apply mb-0 text-sm text-slate-500;
+}
+
+.role-side-search {
+  @apply relative mb-3 shrink-0;
+}
+
+.role-side-search-icon {
+  @apply absolute left-3 top-1/2 -translate-y-1/2 text-slate-400;
+}
+
+.role-side-search-input {
+  @apply h-10 w-full rounded-lg border border-slate-200 bg-white pl-9 pr-3 text-sm text-slate-700 outline-none transition-all duration-200;
+}
+
+.role-side-search-input:focus {
+  @apply shadow-sm;
+  border-color: var(--color-black);
+}
+
+/* Form card */
+.role-side-form-card {
+  @apply mb-4 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm;
+}
+
+.role-side-form-header {
+  @apply flex items-start justify-between gap-3 border-b border-slate-100 px-3 py-3 pb-2;
+}
+
+.role-side-form-title {
+  @apply m-0 flex items-center gap-2 text-base font-semibold;
+  color: var(--color-black);
+}
+
+.role-side-form-subtitle {
+  @apply mb-0 mt-1 text-xs text-slate-500;
+}
+
+.role-side-close {
+  @apply inline-flex h-5 w-5 cursor-pointer items-center justify-center border-none bg-white p-0 text-slate-500 transition-all duration-200;
+  border-radius: var(--radius-sm) !important;
+}
+
+.role-side-close:hover {
+  @apply border-slate-300 bg-slate-50 text-slate-900;
+}
+
+.role-side-form-card form {
+  @apply px-3 py-3;
+}
+
+.role-side-form-card .form-grid {
+  @apply gap-2;
+}
+
+.role-side-form-card .input-block.vertical {
+  @apply mb-0;
+}
+
+.role-side-form-card .input-field-wrapper input {
+  @apply !h-[38px] !min-h-[38px] !rounded-md;
+}
+
+/* .role-side-form-card form > div:last-child {
+  @apply mt-3 border-t border-slate-100 pt-3;
+} */
+.role-side-form-card form .form-actions-container {
+  @apply mt-0 border-none pt-0;
+}
+
+/* Role list header */
+.role-side-list-header {
+  @apply mb-2 flex shrink-0 items-center justify-between;
+}
+
+.role-side-list-title {
+  @apply text-sm font-semibold text-slate-900;
+}
+
+.role-side-list-count {
+  @apply inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-slate-100 px-2 text-xs font-semibold text-slate-600;
+}
+
+/* Scroll area */
+.role-side-list-scroll {
+  @apply min-h-0 flex-1 overflow-y-auto pr-1;
+}
+
+.role-side-list-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.role-side-list-scroll::-webkit-scrollbar-track {
+  @apply rounded-full bg-slate-100;
+}
+
+.role-side-list-scroll::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-slate-300;
+}
+
+.role-side-list-scroll::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400;
+}
+
+.role-side-list {
+  @apply flex flex-col gap-2;
+}
+
+.role-side-empty {
+  @apply rounded-lg border border-dashed border-slate-200 px-3 py-4 text-center text-sm text-slate-500;
+}
+
+/* Role item */
+.role-side-item {
+  @apply relative flex w-full cursor-pointer items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-3 text-left transition-all duration-200;
+}
+
+.role-side-item:hover {
+  @apply bg-slate-50;
+  border-color: color-mix(in srgb, var(--color-black) 35%, transparent);
+}
+
+.role-side-item-selected {
+  @apply shadow-sm;
+  border-color: color-mix(in srgb, var(--color-black) 70%, transparent);
+  background-color: color-mix(in srgb, var(--color-black) 5%, white);
+}
+
+.role-side-item-selected::before {
+  content: '';
+  @apply absolute bottom-2 left-0 top-2 w-1 rounded-r-full;
+  background-color: var(--color-black);
+}
+
+.role-side-select-indicator {
+  @apply inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-xs text-slate-400;
+}
+
+.role-side-item-selected .role-side-select-indicator {
+  @apply text-white;
+  border-color: var(--color-black);
+  background-color: var(--color-black);
+}
+
+.role-side-item-content {
+  @apply min-w-0 flex-1;
+}
+
+.role-side-item-name {
+  @apply block truncate text-sm font-semibold text-slate-900;
+}
+
+.role-side-item-description {
+  @apply mt-0.5 block truncate text-xs text-slate-500;
+}
+
+.role-side-item-actions {
+  @apply flex shrink-0 items-center gap-2;
+}
+
+.role-side-footer {
+  @apply mt-3 shrink-0 border-t border-slate-100 pt-3 text-xs text-slate-500;
+}
+
+/* --- Dark Theme: Role Side Panel --- */
+.dark .role-side-panel {
+  background-color: var(--dark-card-bg);
+  color: var(--dark-card-text);
+  border-color: var(--dark-border);
+  box-shadow: none;
+}
+
+.dark .role-side-panel-title,
+.dark .role-side-form-title,
+.dark .role-side-list-title,
+.dark .role-side-item-name {
+  color: var(--dark-card-text);
+}
+
+.dark .role-side-panel-subtitle,
+.dark .role-side-form-subtitle,
+.dark .role-side-item-description,
+.dark .role-side-footer {
+  color: var(--gray-300);
+}
+
+.dark .role-side-search-input {
+  background-color: var(--dark-input-bg);
+  border-color: var(--dark-border);
+  color: var(--dark-card-text);
+}
+
+.dark .role-side-search-input::placeholder {
+  color: var(--gray-300);
+}
+
+.dark .role-side-search-input:focus {
+  border-color: var(--white);
+}
+
+.dark .role-side-form-card {
+  background-color: var(--dark-p-card-bg);
+  border-color: var(--dark-border);
+  box-shadow: none;
+}
+
+.dark .role-side-form-header {
+  border-color: var(--dark-border);
+}
+
+.dark .role-side-close {
+  background-color: transparent;
+  color: var(--gray-300);
+}
+
+.dark .role-side-close:hover {
+  background-color: var(--dark-input-bg);
+  color: var(--white);
+}
+
+.dark .role-side-list-count {
+  background-color: var(--dark-input-bg);
+  color: var(--gray-300);
+}
+
+.dark .role-side-list-scroll::-webkit-scrollbar-track {
+  background-color: var(--dark-card-bg);
+}
+
+.dark .role-side-list-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--dark-border);
+}
+
+.dark .role-side-empty {
+  border-color: var(--dark-border);
+  color: var(--gray-300);
+  background-color: var(--dark-p-card-bg);
+}
+
+.dark .role-side-item {
+  background-color: var(--dark-card-bg);
+  border-color: var(--dark-border);
+}
+
+.dark .role-side-item:hover {
+  background-color: var(--dark-input-bg);
+  border-color: var(--gray-300);
+}
+
+.dark .role-side-item-selected {
+  background-color: var(--dark-input-bg);
+  border-color: var(--white);
+}
+
+.dark .role-side-item-selected::before {
+  background-color: var(--white);
+}
+
+.dark .role-side-select-indicator {
+  background-color: var(--dark-input-bg);
+  border-color: var(--dark-border);
+  color: var(--gray-300);
+}
+
+.dark .role-side-item-selected .role-side-select-indicator {
+  background-color: var(--white);
+  border-color: var(--white);
+  color: var(--color-black);
+}
+
+.dark .role-side-form-card form > div:last-child,
+.dark .role-side-footer {
+  border-color: var(--dark-border);
+}

@@ -1,0 +1,317 @@
+@reference "tailwindcss";
+
+/* =========================
+   1. DataTable
+========================= */
+
+.p-datatable {
+  @apply w-full overflow-hidden rounded-lg border border-slate-200 shadow-sm;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+  @apply border-b border-slate-200 bg-slate-50 px-4 py-3 text-left font-semibold;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+  @apply border border-slate-200 px-4 py-3 text-sm text-black align-middle;
+}
+
+/* Remove hover effects */
+.p-datatable .p-datatable-tbody > tr:hover {
+  background-color: var(--bg-white);
+}
+
+.p-datatable .p-datatable-tbody > tr,
+.p-datatable .p-datatable-tbody > tr:hover * {
+  transition: none !important;
+}
+
+/* Sort icon */
+.p-datatable .p-sortable-column .p-sortable-column-icon {
+  @apply ml-2 h-3 w-3 text-slate-400;
+}
+
+.p-datatable .p-sortable-column .p-sortable-column-icon svg {
+  font-size: 5px;
+}
+
+/* Filter icon */
+.p-column-filter-menu-button {
+  @apply text-gray-300;
+}
+
+/* Frozen columns */
+.p-datatable .p-datatable-tbody > tr > td.p-frozen-column {
+  background-color: var(--bg-white);
+}
+
+.p-datatable .p-datatable-tbody > tr:nth-child(even) > td.p-frozen-column {
+  @apply bg-gray-50;
+}
+
+/* =========================
+   2. Paginator
+========================= */
+
+.p-paginator {
+  @apply flex min-h-[4rem] w-full items-center border-t px-4 py-2 text-sm;
+  background-color: var(--bg-white);
+  border-color: var(--color-gray-200);
+  gap: 0.5rem;
+}
+
+/* Showing 1-10 of 30 items */
+.p-paginator-current {
+  @apply order-1 mr-3 whitespace-nowrap text-sm text-slate-500;
+}
+
+/* Rows per page dropdown wrapper */
+.p-paginator-rpp-options {
+  @apply order-2 mr-4;
+  width: auto !important;
+  flex: 0 0 auto !important;
+}
+
+/* Rows per page dropdown */
+.p-paginator .p-dropdown {
+  @apply flex h-9 min-w-[72px] items-center rounded-lg border border-slate-200 bg-white;
+  width: auto !important;
+  flex: 0 0 auto !important;
+}
+
+/* Dropdown label */
+.p-paginator .p-dropdown-label {
+  @apply flex h-9 items-center px-3 py-0 text-sm leading-9 text-slate-600;
+  width: auto !important;
+  min-width: 32px;
+}
+
+/* Dropdown arrow */
+.p-paginator .p-dropdown-trigger {
+  @apply flex h-9 w-9 items-center justify-center;
+}
+
+/* Page buttons group starts from right */
+.p-paginator-first {
+  @apply order-3 ml-auto;
+}
+
+.p-paginator-prev {
+  @apply order-4;
+}
+
+.p-paginator-pages {
+  @apply order-5 flex items-center gap-1;
+}
+
+.p-paginator-next {
+  @apply order-6;
+}
+
+.p-paginator-last {
+  @apply order-7;
+}
+
+/* Paginator buttons */
+.p-paginator .p-link {
+  @apply flex h-9 min-w-9 items-center justify-center rounded-lg border-0 bg-transparent text-sm text-slate-600 shadow-none;
+}
+
+.p-paginator .p-link:hover {
+  @apply bg-slate-100 text-black;
+}
+
+/* Page number */
+.p-paginator-page {
+  @apply text-sm font-medium text-slate-600;
+}
+
+/* Active page */
+.p-paginator-page.p-highlight {
+  @apply rounded-lg border border-black bg-black text-white;
+}
+
+/* Ellipsis */
+.p-paginator-ellipsis {
+  @apply flex h-9 min-w-9 items-center justify-center text-slate-500;
+}
+
+/* =========================
+   3. Grid Row Actions
+========================= */
+
+.grid-action-col {
+  @apply w-24 min-w-24 text-right;
+}
+
+.grid-action-col .p-column-header-content {
+  @apply justify-end;
+}
+
+.grid-row-actions {
+  @apply flex items-center justify-end gap-1.5;
+}
+
+.grid-row-actions-center {
+  @apply flex items-center justify-center gap-1.5;
+}
+
+.grid-action-icon-btn {
+  @apply !inline-flex !h-8 !w-8 !min-w-8 !cursor-pointer;
+  @apply !items-center !justify-center !gap-0;
+  @apply !border !border-slate-200 !bg-white !p-0 !text-slate-500;
+  @apply !shadow-sm !transition-all !duration-200 !ease-in-out;
+  border-radius: var(--radius-sm) !important;
+  position: relative;
+}
+
+.grid-action-icon-btn i,
+.grid-action-icon-btn .p-button-icon {
+  @apply !m-0 !text-sm !leading-none;
+}
+
+.grid-action-icon-btn .p-button-label {
+  @apply hidden;
+}
+
+.grid-action-icon-btn:hover {
+  @apply !-translate-y-px !border-slate-300 !bg-slate-50 !text-slate-900 !shadow-md;
+}
+
+.grid-action-edit-btn:hover {
+  @apply !border-indigo-200 !bg-indigo-50 !text-[#3e4095];
+}
+
+.grid-action-delete-btn:hover {
+  @apply !border-red-200 !bg-red-50 !text-red-600;
+}
+
+.grid-action-icon-btn:focus,
+.grid-action-icon-btn:focus-visible {
+  @apply !outline-none !ring-2 !ring-slate-200 !ring-offset-1;
+}
+
+/* =========================
+   4. Dark Theme
+========================= */
+
+.dark .p-datatable {
+  @apply border;
+  background-color: var(--dark-card-bg);
+  color: var(--dark-card-text);
+  border-color: var(--dark-border);
+}
+
+.dark .p-datatable-thead > tr > th {
+  @apply border-b;
+  background-color: var(--color-black) !important;
+  color: var(--white) !important;
+  border-color: var(--dark-border);
+}
+
+.dark .p-datatable-thead > tr > th .p-column-title,
+.dark .p-datatable-thead > tr > th .p-column-header-content {
+  background-color: transparent !important;
+  color: var(--white) !important;
+}
+
+.dark .p-sortable-column .p-sortable-column-icon {
+  @apply text-white;
+}
+
+.dark .p-datatable-tbody > tr > td {
+  background-color: var(--dark-card-bg);
+  color: var(--dark-card-text);
+  border-color: var(--dark-border);
+}
+
+.dark .p-datatable-tbody > tr:nth-child(even) > td {
+  background-color: var(--dark-surface-secondary);
+}
+
+.dark .p-datatable-tbody > tr:hover {
+  background-color: var(--dark-input-bg);
+}
+
+.dark .p-datatable .p-datatable-tbody > tr > td.p-frozen-column {
+  background-color: var(--dark-card-bg);
+}
+
+.dark
+  .p-datatable
+  .p-datatable-tbody
+  > tr:nth-child(even)
+  > td.p-frozen-column {
+  background-color: var(--dark-surface-secondary);
+}
+
+.dark .p-paginator {
+  background-color: var(--dark-card-bg);
+  border-color: var(--dark-border);
+  color: var(--dark-card-text);
+}
+
+.dark .p-paginator-current {
+  @apply text-zinc-400;
+}
+
+.dark .p-paginator .p-dropdown {
+  @apply border-zinc-700 bg-zinc-900;
+}
+
+.dark .p-paginator .p-dropdown-label {
+  @apply text-zinc-300;
+}
+
+.dark .p-paginator .p-link {
+  @apply text-zinc-400;
+}
+
+.dark .p-paginator .p-link:hover {
+  @apply bg-zinc-800 text-white;
+}
+
+.dark .p-paginator .p-paginator-page.p-highlight {
+  @apply border-white bg-white text-black;
+}
+
+/* Grid Row Actions Dark Theme */
+.dark .grid-action-icon-btn {
+  @apply !border-zinc-700 !bg-zinc-900 !text-zinc-400 !shadow-none;
+}
+
+.dark .grid-action-icon-btn:hover {
+  @apply !border-zinc-600 !bg-zinc-800 !text-white;
+}
+
+.dark .grid-action-edit-btn:hover {
+  @apply !border-indigo-800 !bg-[#3e4095]/20 !text-indigo-200;
+}
+
+.dark .grid-action-delete-btn:hover {
+  @apply !border-red-900 !bg-red-950/40 !text-red-400;
+}
+
+.dark .grid-action-icon-btn:focus,
+.dark .grid-action-icon-btn:focus-visible {
+  @apply ring-zinc-700! ring-offset-zinc-950!;
+}
+
+/* =========================
+   5. Misc
+========================= */
+
+.p-ink {
+  @apply hidden;
+}
+
+.time-input {
+  @apply w-full rounded-md border border-gray-300 p-1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .p-dialog {
+    width: 95vw !important;
+  }
+}

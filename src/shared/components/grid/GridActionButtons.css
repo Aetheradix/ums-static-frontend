@@ -1,0 +1,107 @@
+@reference "tailwindcss";
+
+.grid-action-buttons {
+  @apply flex items-center justify-center gap-2;
+}
+
+.employee-management-grid
+  .p-datatable-thead
+  > tr
+  > th:last-child
+  .p-column-header-content {
+  @apply justify-center;
+}
+/* Base icon button */
+.p-button.grid-action-button {
+  @apply !h-8 !w-8 !min-w-8 !rounded-sm shadow-sm !p-0 !gap-0;
+  @apply !border !border-gray-300 !bg-white !text-gray-600;
+  @apply transition-all duration-200 ease-out;
+}
+
+/* Icon inside button */
+.p-button.grid-action-button .p-button-icon {
+  @apply !m-0 inline-flex items-center justify-center text-sm leading-none;
+}
+
+/* Hide label if Button component adds one */
+.p-button.grid-action-button .p-button-label {
+  @apply hidden;
+}
+
+/* Remove PrimeReact ripple visual overflow if needed */
+.p-button.grid-action-button .p-ink,
+.p-button.grid-action-button .ripple {
+  @apply hidden;
+}
+
+/* View */
+.p-button.grid-action-button-view:hover {
+  @apply !border-black !bg-black/[0.04] !text-black;
+}
+
+/* Edit */
+.p-button.grid-action-button-edit:hover {
+  @apply !border-black !bg-black/[0.04] !text-black;
+}
+
+/* Delete */
+.p-button.grid-action-button-delete:hover {
+  @apply !border-red-500 !bg-red-50 !text-red-600;
+}
+
+/* Focus state */
+.p-button.grid-action-button:focus,
+.p-button.grid-action-button:focus-visible {
+  @apply !shadow-none !outline-none !ring-2 !ring-black/[0.12];
+}
+
+/* Disabled state */
+.p-button.grid-action-button:disabled,
+.p-button.grid-action-button.button-disabled {
+  @apply !cursor-not-allowed !border-gray-200 !bg-gray-50 !text-gray-300 !opacity-70;
+}
+
+/* Approve */
+.p-button.grid-action-button-approve:hover {
+  @apply !border-green-500 !bg-green-50 !text-green-600;
+}
+
+/* Reject */
+.p-button.grid-action-button-reject:hover {
+  @apply !border-red-500 !bg-red-50 !text-red-600;
+}
+
+/* ==========================================
+   Dark Mode
+   ========================================== */
+
+.dark .p-button.grid-action-button {
+  @apply !border-white/[0.12] !bg-white/[0.03] !text-gray-300;
+}
+
+.dark .p-button.grid-action-button-view:hover,
+.dark .p-button.grid-action-button-edit:hover {
+  @apply !border-white/[0.24] !bg-white/[0.08] !text-white;
+}
+
+.dark .p-button.grid-action-button-delete:hover {
+  @apply !border-red-400 !bg-red-500/[0.12] !text-red-400;
+}
+
+.dark .p-button.grid-action-button:focus,
+.dark .p-button.grid-action-button:focus-visible {
+  @apply !ring-white/[0.16];
+}
+
+.dark .p-button.grid-action-button:disabled,
+.dark .p-button.grid-action-button.button-disabled {
+  @apply !border-white/[0.08] !bg-white/[0.03] !text-gray-600 !opacity-60;
+}
+
+.dark .p-button.grid-action-button-approve:hover {
+  @apply !border-green-400 !bg-green-500/[0.12] !text-green-400;
+}
+
+.dark .p-button.grid-action-button-reject:hover {
+  @apply !border-red-400 !bg-red-500/[0.12] !text-red-400;
+}

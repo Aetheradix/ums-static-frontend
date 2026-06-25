@@ -1,0 +1,27 @@
+@reference "tailwindcss";
+
+/* ── Button Panel ── */
+.button-panel {
+  @apply flex flex-row items-center justify-start gap-2 py-4 pt-[1.9rem];
+}
+
+.button-panel-end {
+  @apply flex flex-row items-center justify-end gap-2 py-4 pt-[1.9rem];
+}
+
+.button-panel > button:last-child {
+  @apply ml-0;
+}
+
+/* ── Custom submit / reset ── */
+.custom-submit {
+  @apply !border !border-[var(--primary-color)] !bg-[var(--primary-color)] !text-white;
+}
+
+.dark .custom-submit {
+  @apply !border-white !bg-[var(--primary-color)] !text-white;
+}
+
+.custom-reset {
+  @apply !border-2 !border-[var(--primary-color)] !bg-transparent !text-[var(--primary-color)];
+}

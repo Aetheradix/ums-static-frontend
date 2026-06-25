@@ -1,0 +1,33 @@
+.input-panel {
+  background-color: var(--white);
+  border-radius: var(--border-radious);
+  margin: 1rem 0;
+  transition: all 0.3s ease;
+  width: 100%;
+  border: 2px solid var(--hover-transperant-color);
+}
+.input-panel.horizontal {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.dark .input-panel {
+  background-color: var(--dark-bg);
+}
+
+@media (max-width: 1000px) {
+  .input-panel {
+    padding: 0.5rem;
+    margin: 0.5rem;
+  }
+  .input-panel.horizontal {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .input-panel.vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

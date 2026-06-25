@@ -1,0 +1,187 @@
+.ws-navbar {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-primary, #002069);
+  padding: 0 1.5rem;
+  height: 48px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: visible;
+  position: relative;
+  z-index: 99;
+}
+
+.ws-navbar-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  height: 100%;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ws-navbar-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1rem;
+  height: 100%;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease-in-out;
+  border-bottom: 2px solid transparent;
+  flex-shrink: 0;
+}
+
+.ws-navbar-item:hover,
+.ws-navbar-item.active {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-bottom-color: #ffffff;
+}
+
+.ws-navbar-item i {
+  font-size: 1rem;
+}
+
+.ws-navbar-more {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0 1rem;
+  height: 100%;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  transition: all 0.2s ease-in-out;
+  flex-shrink: 0;
+}
+
+.ws-navbar-more:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.ws-navbar-more-dropdown {
+  width: 250px;
+}
+
+/* Hide on mobile */
+@media (max-width: 768px) {
+  .ws-navbar {
+    display: none !important;
+  }
+}
+
+/* Dark Mode Overrides if needed */
+body.dark .ws-navbar {
+  background-color: var(--color-primary, #1b2b3d);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* TieredMenu Popup Styling Overrides */
+.ws-navbar-dropdown.p-tieredmenu {
+  padding: 0.5rem 0;
+  border-radius: 0.5rem;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  background: #ffffff;
+  min-width: 250px;
+}
+
+body.dark .ws-navbar-dropdown.p-tieredmenu {
+  background: #18181b; /* zinc-900 */
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.ws-navbar-dropdown .p-tieredmenu-root-list,
+.ws-navbar-dropdown .p-submenu-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.ws-navbar-dropdown .p-submenu-list {
+  padding: 0.5rem 0;
+  border-radius: 0.5rem;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  background: #ffffff;
+}
+
+body.dark .ws-navbar-dropdown .p-submenu-list {
+  background: #18181b; /* zinc-900 */
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.ws-navbar-dropdown .p-menuitem-link {
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #334155;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+body.dark .ws-navbar-dropdown .p-menuitem-link {
+  color: #cbd5e1;
+}
+
+.ws-navbar-dropdown .p-menuitem-link:hover,
+.ws-navbar-dropdown .p-menuitem.p-menuitem-active > .p-menuitem-link {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+body.dark .ws-navbar-dropdown .p-menuitem-link:hover,
+body.dark .ws-navbar-dropdown .p-menuitem.p-menuitem-active > .p-menuitem-link {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #f8fafc;
+}
+
+.ws-navbar-dropdown .p-menuitem-icon {
+  font-size: 1rem;
+  color: #64748b;
+}
+
+body.dark .ws-navbar-dropdown .p-menuitem-icon {
+  color: #94a3b8;
+}
+
+.ws-navbar-dropdown .p-menuitem-link:hover .p-menuitem-icon,
+.ws-navbar-dropdown
+  .p-menuitem.p-menuitem-active
+  > .p-menuitem-link
+  .p-menuitem-icon {
+  color: #0f172a;
+}
+
+body.dark .ws-navbar-dropdown .p-menuitem-link:hover .p-menuitem-icon,
+body.dark
+  .ws-navbar-dropdown
+  .p-menuitem.p-menuitem-active
+  > .p-menuitem-link
+  .p-menuitem-icon {
+  color: #f8fafc;
+}
+
+.ws-navbar-dropdown .p-submenu-icon {
+  margin-left: auto;
+  font-size: 0.65rem;
+  color: inherit;
+  opacity: 0.7;
+}

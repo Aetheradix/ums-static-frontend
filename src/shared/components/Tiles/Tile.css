@@ -1,0 +1,347 @@
+@reference "tailwindcss";
+
+/* ─────────────────────────────
+   Tile Container
+───────────────────────────── */
+.db-card-container {
+  @apply relative transition-all duration-300 ease-in-out;
+}
+
+.db-card-container:hover {
+  @apply -translate-y-1;
+}
+
+/* ─────────────────────────────
+   Service Card
+───────────────────────────── */
+.db-service-card {
+  @apply rounded-[22px] p-5 relative flex flex-col min-h-[180px] cursor-pointer overflow-hidden bg-[var(--bg-white)];
+
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+  border: none !important;
+}
+
+.db-service-card:hover {
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+}
+
+/* ─────────────────────────────
+   Top Right Cutout Area
+───────────────────────────── */
+.db-card-corner-action {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 68px;
+  height: 68px;
+  background-color: #f5f7ff;
+  border-bottom-left-radius: 24px;
+  z-index: 5;
+}
+
+.db-card-corner-action::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -20px;
+  width: 20px;
+  height: 20px;
+  background-color: transparent;
+  border-top-right-radius: 20px;
+  box-shadow: 10px -10px 0 10px #f5f7ff;
+}
+
+.db-card-corner-action::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  background-color: transparent;
+  border-top-right-radius: 20px;
+  box-shadow: 10px -10px 0 10px #f5f7ff;
+}
+
+/* ─────────────────────────────
+   Arrow Button
+───────────────────────────── */
+.db-card-arrow {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+
+  @apply w-10 h-10 rounded-full flex items-center justify-center text-slate-900 transition-all duration-200;
+
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+}
+
+.db-card-arrow i {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.db-card-arrow:hover {
+  @apply scale-105;
+}
+/* ─────────────────────────────
+   Card Content
+───────────────────────────── */
+.db-card-content {
+  @apply flex flex-col justify-between relative z-2;
+  flex: 1;
+}
+
+/* ─────────────────────────────
+   Icon Box
+───────────────────────────── */
+.db-card-icon-box {
+  @apply w-15 h-15 rounded-2xl flex items-center justify-center;
+  border: none;
+}
+
+.db-card-icon-box .icon-base {
+  font-size: 30px;
+}
+
+/* ─────────────────────────────
+   Title
+───────────────────────────── */
+.db-card-title {
+  @apply text-[16px] font-bold leading-[1.4] text-slate-900 mt-4;
+  white-space: pre-line;
+}
+
+/* ─────────────────────────────
+   Description
+───────────────────────────── */
+.db-card-description {
+  @apply text-[13px] leading-relaxed text-slate-500 mt-2;
+}
+
+/* ─────────────────────────────
+   Badge
+───────────────────────────── */
+.db-card-badge {
+  @apply inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 mt-3 px-2.5 py-1 bg-slate-50 rounded-full w-fit;
+}
+
+.db-card-badge-dot {
+  @apply w-1.5 h-1.5 rounded-full shrink-0;
+}
+
+/* ─────────────────────────────
+   Icon Color Schemes
+───────────────────────────── */
+.db-card-icon-box.bg-blue {
+  @apply bg-blue-50 text-blue-600;
+}
+
+.db-card-icon-box.bg-purple {
+  @apply bg-violet-50 text-violet-600;
+}
+
+.db-card-icon-box.bg-gray {
+  @apply bg-slate-100 text-slate-600;
+}
+
+.db-card-icon-box.bg-green {
+  @apply bg-green-50 text-green-600;
+}
+
+.db-card-icon-box.bg-orange {
+  @apply bg-orange-50 text-orange-600;
+}
+
+.db-card-icon-box.bg-red {
+  @apply bg-red-50;
+  color: var(--color-danger);
+}
+
+.db-card-icon-box.bg-pink {
+  @apply bg-rose-50 text-rose-500;
+}
+
+.db-card-icon-box.bg-teal {
+  @apply bg-teal-50 text-teal-600;
+}
+
+.db-card-icon-box.bg-indigo {
+  @apply bg-indigo-50 text-indigo-600;
+}
+
+.db-card-icon-box.bg-amber {
+  @apply bg-amber-50 text-amber-600;
+}
+
+/* ─────────────────────────────
+   Badge Colors
+───────────────────────────── */
+.db-card-badge-dot.badge-blue {
+  @apply bg-blue-500;
+}
+
+.db-card-badge-dot.badge-purple {
+  @apply bg-violet-500;
+}
+
+.db-card-badge-dot.badge-gray {
+  @apply bg-slate-500;
+}
+
+.db-card-badge-dot.badge-green {
+  @apply bg-green-500;
+}
+
+.db-card-badge-dot.badge-orange {
+  @apply bg-orange-500;
+}
+
+.db-card-badge-dot.badge-red {
+  background-color: var(--color-danger);
+}
+
+.db-card-badge-dot.badge-pink {
+  @apply bg-rose-500;
+}
+
+.db-card-badge-dot.badge-teal {
+  @apply bg-teal-500;
+}
+
+.db-card-badge-dot.badge-indigo {
+  @apply bg-indigo-500;
+}
+
+.db-card-badge-dot.badge-amber {
+  @apply bg-amber-500;
+}
+
+/* ─────────────────────────────
+   Dark Theme
+───────────────────────────── */
+.dark .db-service-card {
+  background-color: #121214;
+  border: none !important;
+
+  box-shadow:
+    inset 0 0 0 1px var(--dark-border),
+    0 10px 30px rgba(0, 0, 0, 0.4);
+
+  overflow: hidden;
+}
+
+.dark .db-service-card:hover {
+  background-color: #18181b;
+
+  box-shadow:
+    inset 0 0 0 1px #3f3f46,
+    0 15px 40px rgba(0, 0, 0, 0.6);
+}
+
+.dark .db-card-corner-action {
+  background-color: var(--dark-bg);
+  top: 0;
+  right: 0;
+  width: 68px;
+  height: 68px;
+}
+
+.dark .db-card-corner-action::before,
+.dark .db-card-corner-action::after {
+  box-shadow: 10px -10px 0 10px var(--dark-bg);
+}
+
+.dark .db-card-arrow {
+  background-color: var(--dark-card-bg);
+  color: var(--dark-text);
+}
+
+.dark .db-card-arrow:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.dark .db-card-title {
+  color: var(--dark-text);
+}
+
+.dark .db-card-description {
+  color: var(--dark-text-secondary);
+}
+
+.dark .db-card-badge {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--dark-text);
+}
+
+.dark .db-card-icon-box {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* ─────────────────────────────
+   Mobile Responsiveness
+   ───────────────────────────── */
+@media (max-width: 639px) {
+  .db-service-card {
+    @apply p-4 min-h-[140px] rounded-[16px];
+  }
+
+  .db-card-corner-action {
+    width: 48px;
+    height: 48px;
+    border-bottom-left-radius: 16px;
+  }
+
+  .dark .db-card-corner-action {
+    width: 48px;
+    height: 48px;
+  }
+
+  .db-card-corner-action::before {
+    left: -12px;
+    width: 12px;
+    height: 12px;
+    border-top-right-radius: 12px;
+    box-shadow: 6px -6px 0 6px #f5f7ff;
+  }
+
+  .db-card-corner-action::after {
+    bottom: -12px;
+    width: 12px;
+    height: 12px;
+    border-top-right-radius: 12px;
+    box-shadow: 6px -6px 0 6px #f5f7ff;
+  }
+
+  .dark .db-card-corner-action::before,
+  .dark .db-card-corner-action::after {
+    box-shadow: 6px -6px 0 6px var(--dark-bg);
+  }
+
+  .db-card-arrow {
+    top: 8px;
+    right: 8px;
+    @apply w-7 h-7;
+  }
+
+  .db-card-arrow i {
+    font-size: 10px;
+  }
+
+  .db-card-icon-box {
+    @apply w-11 h-11 rounded-xl;
+  }
+
+  .db-card-icon-box .icon-base {
+    font-size: 22px;
+  }
+
+  .db-card-title {
+    @apply text-[13px] mt-3;
+  }
+
+  .db-card-description {
+    @apply text-[11px] mt-1.5;
+  }
+}

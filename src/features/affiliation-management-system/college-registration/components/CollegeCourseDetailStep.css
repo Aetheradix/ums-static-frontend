@@ -1,0 +1,131 @@
+@reference "tailwindcss";
+
+/* =========================
+   Course Fee Summary
+========================= */
+
+.course-fee-summary-panel {
+  @apply mb-5 mt-6 grid grid-cols-1 gap-5 rounded-xl;
+}
+
+.course-fee-card {
+  @apply flex min-h-[130px] items-start gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-200;
+}
+
+.course-fee-card:hover {
+  @apply border-slate-300 shadow-md;
+}
+
+.course-fee-icon {
+  @apply flex h-12 w-12 shrink-0 items-center justify-center rounded-full;
+}
+
+.course-fee-icon .icon-base {
+  @apply text-[24px] leading-none;
+}
+
+.course-fee-content {
+  @apply flex min-w-0 flex-col;
+}
+
+.course-fee-content h4 {
+  @apply m-0 text-sm font-bold text-slate-800;
+}
+
+.course-fee-content strong {
+  @apply mt-2 text-2xl font-bold leading-none tracking-tight;
+}
+
+.course-fee-content p {
+  @apply m-0 mt-3 text-sm font-medium leading-5 text-slate-600;
+}
+
+/* Card color variants */
+.course-fee-card-affiliation .course-fee-icon {
+  @apply bg-emerald-50 text-emerald-700;
+}
+
+.course-fee-card-affiliation .course-fee-content strong {
+  @apply text-emerald-700;
+}
+
+.course-fee-card-inspection .course-fee-icon {
+  @apply bg-blue-50 text-blue-700;
+}
+
+.course-fee-card-inspection .course-fee-content strong {
+  @apply text-blue-700;
+}
+
+.course-fee-card-fd .course-fee-icon {
+  @apply bg-violet-50 text-violet-700;
+}
+
+.course-fee-card-fd .course-fee-content strong {
+  @apply text-violet-700;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (min-width: 768px) {
+  .course-fee-summary-panel {
+    @apply grid-cols-3;
+  }
+}
+
+/* =========================
+   Dark Mode
+========================= */
+
+.dark .course-fee-summary-panel {
+  border-color: rgba(255, 255, 255, 0.08);
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.dark .course-fee-card {
+  border-color: rgba(255, 255, 255, 0.08);
+  background-color: rgba(255, 255, 255, 0.04);
+  box-shadow: none;
+}
+
+.dark .course-fee-card:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.dark .course-fee-content h4 {
+  @apply text-slate-100;
+}
+
+.dark .course-fee-content p {
+  @apply text-slate-300;
+}
+
+.dark .course-fee-card-affiliation .course-fee-icon {
+  background-color: rgba(16, 185, 129, 0.14);
+  @apply text-emerald-300;
+}
+
+.dark .course-fee-card-affiliation .course-fee-content strong {
+  @apply text-emerald-300;
+}
+
+.dark .course-fee-card-inspection .course-fee-icon {
+  background-color: rgba(59, 130, 246, 0.14);
+  @apply text-blue-300;
+}
+
+.dark .course-fee-card-inspection .course-fee-content strong {
+  @apply text-blue-300;
+}
+
+.dark .course-fee-card-fd .course-fee-icon {
+  background-color: rgba(139, 92, 246, 0.14);
+  @apply text-violet-300;
+}
+
+.dark .course-fee-card-fd .course-fee-content strong {
+  @apply text-violet-300;
+}

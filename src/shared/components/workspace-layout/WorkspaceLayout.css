@@ -1,0 +1,194 @@
+@reference "tailwindcss";
+@reference "tailwindcss";
+/* WorkspaceTopBar */
+.ws-topbar {
+  @apply bg-(--primary-color) text-white text-[13px] py-2.5 max-sm:hidden;
+}
+
+.dark .ws-topbar {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: var(--color-black);
+}
+
+.dark .ws-footer-bar {
+  background-color: var(--color-black);
+}
+/* .ws-topbar-inner {
+  @apply max-w-[1440px] mx-auto px-6 flex justify-between items-center opacity-90;
+} */
+.ws-topbar-inner {
+  @apply mx-auto px-6 flex justify-between items-center opacity-90;
+}
+
+.ws-topbar-dot {
+  @apply mx-1.5;
+}
+
+/* WorkspaceHeader */
+.ws-header {
+  @apply border-b border-slate-200 py-3 bg-[var(--bg-white)] sticky top-0 z-50;
+}
+
+/* .ws-header-inner {
+  @apply max-w-[1440px] mx-auto px-6 flex items-center gap-10 max-md:flex-wrap max-md:gap-4;
+} */
+.ws-header-inner {
+  @apply mx-auto px-6 flex items-center gap-10 max-md:flex-wrap max-md:gap-4;
+}
+
+.ws-logo-section {
+  @apply flex items-center gap-3 min-w-[180px] max-md:order-1 max-sm:min-w-0;
+}
+
+.ws-logo-box {
+  @apply bg-slate-800 text-white w-10 h-10 flex items-center justify-center rounded-lg font-extrabold text-lg;
+}
+
+.ws-logo-text {
+  @apply flex flex-col;
+}
+
+.ws-logo-title {
+  @apply font-bold text-base leading-tight;
+}
+
+.ws-logo-subtitle {
+  @apply text-[11px] text-slate-500 font-semibold max-sm:hidden;
+}
+
+.ws-search-section {
+  @apply flex-1 max-md:order-3 max-md:w-full max-md:flex-none;
+}
+
+.ws-search-container {
+  @apply relative w-full max-w-[600px] max-md:max-w-none;
+}
+
+.ws-search-icon {
+  @apply absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500;
+}
+
+.ws-search-input {
+  @apply w-full py-3 pl-[42px] pr-3.5 rounded-lg border-none bg-slate-100 text-sm font-medium outline-none;
+}
+
+.ws-header-actions {
+  @apply flex items-center gap-6 max-md:order-2 max-md:gap-3 max-md:ml-auto;
+}
+
+.ws-action-icons {
+  @apply flex items-center gap-4 pr-6 border-r border-slate-200 text-slate-500 max-md:pr-3 max-md:gap-3;
+}
+
+.ws-icon-btn {
+  @apply cursor-pointer flex items-center;
+}
+
+.ws-notif-btn {
+  @apply cursor-pointer flex items-center relative;
+}
+
+.ws-badge {
+  @apply absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[9px] font-bold w-[15px] h-[15px] flex items-center justify-center rounded-full border-2 border-white;
+}
+
+/* .ws-user-profile {
+  @apply flex items-center gap-2.5 cursor-pointer;
+} */
+
+.ws-avatar {
+  @apply bg-[var(--primary-color)] text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-[13px];
+}
+
+.ws-username {
+  @apply font-semibold text-sm max-md:hidden;
+}
+
+/* WorkspaceFooterNav */
+.ws-footer-nav {
+  @apply py-5 border-t border-slate-200 bg-[var(--bg-white)];
+}
+/* .ws-footer-nav-inner {
+  @apply max-w-[1440px] mx-auto px-6 flex items-center flex-wrap gap-4 max-md:gap-3 max-md:justify-center;
+} */
+.ws-footer-nav-inner {
+  @apply mx-auto px-6 flex items-center flex-wrap gap-4 max-md:gap-3 max-md:justify-center;
+}
+
+.ws-footer-link {
+  @apply text-slate-700 no-underline text-sm font-semibold;
+}
+
+.ws-footer-sep {
+  @apply w-px h-3.5 bg-slate-200 max-md:hidden;
+}
+
+/* WorkspaceFooterBar */
+.ws-footer-bar {
+  @apply bg-(--primary-color) text-white py-3 text-[13px] max-md:text-[10px];
+}
+
+/* .ws-footer-bar-inner {
+  @apply max-w-[1440px] mx-auto px-6 flex justify-between items-center opacity-80 max-md:flex-col max-md:gap-2.5 max-md:text-center;
+} */
+.ws-footer-bar-inner {
+  @apply mx-auto px-6 flex justify-between items-center opacity-80 max-md:flex-col max-md:gap-2.5 max-md:text-center;
+}
+
+.ws-footer-links {
+  @apply flex gap-4;
+}
+
+/* WorkspaceLayout */
+.ws-root {
+  @apply font-sans bg-[#fbfbfd] min-h-screen text-slate-900 flex flex-col;
+}
+
+.ws-main {
+  @apply flex-1;
+}
+
+/* Dark Theme Overrides for Workspace Layout */
+.dark .ws-root {
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
+}
+
+.dark .ws-header {
+  background-color: var(--dark-card-bg);
+  border-bottom-color: var(--dark-border);
+}
+
+.dark .ws-logo-title,
+.dark .ws-username {
+  color: var(--dark-text);
+}
+
+.dark .ws-search-input {
+  background-color: var(--dark-input-bg);
+  color: var(--dark-text);
+}
+
+.dark .ws-footer-nav {
+  background-color: var(--dark-card-bg);
+  border-top-color: var(--dark-border);
+}
+
+.dark .ws-footer-link {
+  color: var(--dark-text);
+}
+
+.dark .ws-action-icons,
+.dark .ws-search-icon {
+  color: var(--dark-text-secondary);
+}
+
+.dark .ws-logo-image {
+  filter: brightness(0) invert(1);
+}
+
+@media (max-width: 768px) {
+  .mobile-hidden {
+    display: none !important;
+  }
+}

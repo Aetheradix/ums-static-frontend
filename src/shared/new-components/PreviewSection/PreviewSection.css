@@ -1,0 +1,77 @@
+@reference "tailwindcss";
+
+.preview-section {
+  @apply bg-transparent;
+}
+
+.preview-section-header {
+  @apply flex items-center justify-between gap-4 border-b border-zinc-900 pb-2;
+}
+
+.preview-section-header-left {
+  @apply flex min-w-0 items-center gap-3;
+}
+
+.preview-section-step {
+  @apply inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded bg-zinc-900 text-xs font-semibold text-white;
+}
+
+.preview-section-heading {
+  @apply min-w-0;
+}
+
+.preview-section-title {
+  @apply m-0 text-base font-semibold leading-tight text-zinc-900;
+}
+
+.preview-section-subtitle {
+  @apply m-0 mt-1 text-xs leading-4 text-zinc-500;
+}
+
+.preview-section-header-action {
+  @apply flex flex-shrink-0 items-center;
+}
+
+.preview-section-body {
+  @apply pt-3;
+}
+
+/* Dark mode */
+.dark .preview-section-header {
+  @apply border-zinc-600;
+}
+
+.dark .preview-section-step {
+  @apply bg-white text-black;
+}
+
+.dark .preview-section-title {
+  @apply text-white;
+}
+
+.dark .preview-section-subtitle {
+  @apply text-zinc-400;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .preview-section-header {
+    @apply items-start;
+  }
+
+  .preview-section-header-left {
+    @apply items-start;
+  }
+
+  .preview-section-step {
+    @apply h-5 w-5 text-[10px];
+  }
+
+  .preview-section-title {
+    @apply text-sm;
+  }
+
+  .preview-section-subtitle {
+    @apply text-[11px];
+  }
+}

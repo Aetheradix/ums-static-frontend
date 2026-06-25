@@ -1,0 +1,21 @@
+@import 'tailwindcss';
+
+.form-subsection {
+  @apply w-full mt-6 mb-4 mx-0;
+}
+
+.form-subsection-header {
+  @apply flex items-center gap-2 mb-4 pb-2 border-b border-dashed border-indigo-600/20;
+}
+
+.form-subsection-icon {
+  @apply text-sm text-indigo-500;
+}
+
+.form-subsection-title {
+  @apply text-xs font-extrabold text-indigo-600 tracking-wider;
+}
+
+.form-subsection-content {
+  @apply grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5;
+}

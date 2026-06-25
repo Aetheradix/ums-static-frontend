@@ -1,0 +1,23 @@
+.apar-status-badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.apar-status-badge--pending {
+  background-color: #fef9c3;
+  color: #92400e;
+}
+
+.apar-status-badge--forwarded {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.apar-status-badge--completed {
+  background-color: #dcfce7;
+  color: #166534;
+}

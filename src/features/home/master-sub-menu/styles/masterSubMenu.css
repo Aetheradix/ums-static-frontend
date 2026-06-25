@@ -1,0 +1,35 @@
+@reference "tailwindcss";
+
+.submenu-page {
+  @apply flex-1 py-8;
+}
+
+/* .submenu-page-container {
+  @apply max-w-[1440px] mx-auto px-6 w-full;
+} */
+.submenu-page-container {
+  @apply mx-auto px-6 w-full;
+}
+
+/* SubMenuHeader */
+.submenu-header {
+  @apply flex flex-col gap-1 mb-8;
+}
+
+/* .submenu-category {
+  @apply text-blue-500 text-xs font-bold uppercase tracking-wider;
+} */
+
+.submenu-title {
+  @apply text-3xl font-bold text-slate-900;
+}
+
+/* SubMenuGrid */
+.submenu-grid {
+  @apply grid grid-cols-4 gap-[30px] max-xl:grid-cols-3 max-xl:gap-5 max-lg:grid-cols-2 max-md:grid-cols-2;
+}
+
+/* ── Dark Theme Support ── */
+.dark .submenu-title {
+  color: var(--dark-text);
+}

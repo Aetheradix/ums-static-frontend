@@ -1,0 +1,20 @@
+@reference "tailwindcss";
+
+.grid-panel-wrapper {
+  /* add any wrapper styles here if needed */
+}
+
+.grid-panel-header {
+  @apply flex items-center justify-between w-full;
+}
+
+.grid-panel-toolbar {
+  @apply flex items-center gap-3 w-full;
+}
+.grid-panel-title {
+  @apply text-lg font-semibold text-zinc-800;
+}
+
+.dark .grid-panel-title {
+  @apply text-zinc-100;
+}

@@ -1,0 +1,79 @@
+@reference "tailwindcss";
+
+.main-layout-nav {
+  @apply w-full border-b border-slate-200 bg-[var(--bg-white)];
+}
+
+.main-layout-content {
+  @apply flex-1 min-h-[calc(100vh-140px)];
+
+  background-color: #f8faff;
+}
+
+/* ── Dark Theme Overrides ── */
+.dark .main-layout-nav {
+  background-color: var(--dark-card-bg) !important;
+  border-color: var(--dark-border) !important;
+}
+
+.dark .main-layout-content {
+  background-color: var(--color-black);
+}
+
+/* Main Content Area */
+.sis-main-content-area {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Mobile Navigation Toggle Button */
+.mobile-sidebar-toggle-trigger {
+  display: none; /* Hidden by default on desktop */
+}
+
+/* Responsive Styles for Mobile Drawer Layout */
+@media (max-width: 1023px) {
+  /* Toggle Button styling */
+  .mobile-sidebar-toggle-trigger {
+    @apply flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-xl font-bold text-sm shadow-sm cursor-pointer hover:bg-slate-50 transition-all duration-200 self-start mb-4;
+    width: fit-content;
+  }
+
+  .dark .mobile-sidebar-toggle-trigger {
+    @apply bg-[#18181b] border-white/[0.08] text-white hover:bg-[#27272a];
+  }
+
+  .mobile-sidebar-toggle-trigger i {
+    font-size: 14px;
+  }
+
+  /* Overlay backdrop */
+  .mobile-drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+    backdrop-filter: blur(2px);
+    transition: opacity 0.3s ease;
+  }
+
+  /* Sidebar Wrapper transforms into a Drawer */
+  .app-sidebar-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Slide in active drawer */
+  .app-sidebar-wrapper.mobile-open {
+    transform: translateX(0);
+  }
+}

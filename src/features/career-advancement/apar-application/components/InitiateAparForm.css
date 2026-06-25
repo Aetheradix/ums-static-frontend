@@ -1,0 +1,37 @@
+/* InitiateAparForm.css */
+
+/* Radio Button Field */
+.apar-radio-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.apar-radio-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary, #495057);
+  display: block;
+}
+
+.required-star {
+  color: #dc3545;
+  margin-left: 2px;
+}
+
+.apar-radio-options {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-height: 38px;
+  padding-top: 4px;
+}
+
+/* Form Actions */
+.initiate-apar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0 8px;
+  margin-top: 4px;
+}
