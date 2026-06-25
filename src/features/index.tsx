@@ -8,6 +8,7 @@ import AffiliationManagementSystem from './affiliation-management-system';
 import CareerAdvancement from './career-advancement';
 import EmployeeManagement from './employee-management';
 import Home from './home';
+import HostelManagement from './hostel-management';
 import Master from './master';
 import Settings from './settings';
 import Sis from './sis';
@@ -109,6 +110,9 @@ export default function Features() {
                       <Route
                         path="programme-management/*"
                         element={<ProgrammeManagement />}
+                      <Route
+                        path="hostel-management/*"
+                        element={<HostelManagement />}
                       />
                     </Routes>
                   </MainLayout>
