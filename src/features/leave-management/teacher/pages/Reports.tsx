@@ -35,7 +35,7 @@ export default function TeacherReports() {
 
       {/* Leave Summary */}
       <FormCard title="Leave Summary — Current Academic Year">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           {[
             { label: 'Total Applied', value: 4, color: '#3b82f6' },
             { label: 'Approved', value: 2, color: '#16a34a' },
@@ -78,7 +78,7 @@ export default function TeacherReports() {
 
       {/* Leave Balance Report */}
       <FormCard title="Leave Balance Report" className="mt-4">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '0.75rem' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {[
             { type: 'Casual Leave', alloc: 12, used: 1, remain: 11 },
             { type: 'Medical Leave', alloc: 20, used: 2, remain: 18 },

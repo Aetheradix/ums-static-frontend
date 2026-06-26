@@ -15,14 +15,14 @@ export default function TeacherAttendance() {
       ]}
     >
       {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard title="Present Days" value="19" icon="check_circle" colorScheme="green" subtitle="This month" />
         <StatCard title="Absent Days" value="1" icon="cancel" colorScheme="red" subtitle="This month" />
         <StatCard title="Leave Days" value="2" icon="event_busy" colorScheme="orange" subtitle="This month" />
         <StatCard title="Attendance %" value="91%" icon="percent" colorScheme="blue" subtitle="This month" />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
         {/* Calendar */}
         <FormCard title="Attendance Calendar — June 2024">
           <AttendanceCalendar />

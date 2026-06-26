@@ -37,7 +37,7 @@ export default function AcademicCalendar() {
         { label: 'Academic Calendar' },
       ]}
     >
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
         {/* Calendar */}
         <FormCard title="Monthly Calendar — June 2024">
           <AttendanceCalendar />
@@ -86,7 +86,7 @@ export default function AcademicCalendar() {
           </button>
         )
       }>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {filtered.map((ev, i) => (
             <div key={i} style={{ display: 'flex', gap: '0.75rem', padding: '0.75rem', borderRadius: 8, background: '#f9fafb', border: '1px solid #f3f4f6' }}>
               <div style={{ width: 8, borderRadius: 4, background: ev.color, flexShrink: 0 }} />

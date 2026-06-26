@@ -115,7 +115,7 @@ export default function StudentLeaveRequests() {
           subtitle={`${viewItem.enrollmentNo} · ${viewItem.course} · ${viewItem.semester}`}
           size="lg"
         >
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '0.75rem', marginBottom: '1rem' }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
             {[
               { label: 'Leave Type', value: viewItem.leaveType },
               { label: 'From Date', value: viewItem.fromDate },

@@ -79,7 +79,7 @@ export default function LtcManagement() {
       ]}
     >
       {/* KPI */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard title="Total Claims" value={data.length} icon="travel_explore" colorScheme="blue" subtitle="All time" />
         <StatCard title="Pending Claims" value={pending} icon="pending_actions" colorScheme="orange" subtitle="Awaiting review" />
         <StatCard title="Approved Claims" value={approved} icon="check_circle" colorScheme="green" subtitle="Processed" />

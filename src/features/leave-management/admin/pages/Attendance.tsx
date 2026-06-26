@@ -29,7 +29,7 @@ export default function Attendance() {
       ]}
     >
       {/* KPI */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard title="Present" value={present} icon="check_circle" colorScheme="green" subtitle="Today" />
         <StatCard title="Absent" value={absent} icon="cancel" colorScheme="red" subtitle="Today" />
         <StatCard title="On Leave" value={onLeave} icon="event_busy" colorScheme="orange" subtitle="Today" />
@@ -38,7 +38,7 @@ export default function Attendance() {
 
       {/* Attendance Bar Chart */}
       <FormCard title="Department Attendance — Today">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: '1rem' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
             { dept: 'Computer Science', present: 12, total: 15 },
             { dept: 'Mathematics', present: 8, total: 10 },

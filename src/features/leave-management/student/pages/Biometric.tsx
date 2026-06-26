@@ -33,14 +33,14 @@ export default function StudentBiometric() {
       ]}
     >
       {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard title="Today Punch In" value="08:55 AM" icon="login" colorScheme="green" subtitle="On time" />
         <StatCard title="Working Hours" value="In Class" icon="schedule" colorScheme="blue" subtitle="Ongoing" />
         <StatCard title="Attendance %" value="87%" icon="percent" colorScheme="teal" subtitle="This month" />
         <StatCard title="Late Entries" value="1" icon="schedule" colorScheme="amber" subtitle="This month" />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <FormCard title="Today's Biometric">
           <BiometricWidget
             punchIn="08:55"
