@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import { Button } from 'shared/components/buttons';
 import {
   FormPage,
@@ -16,8 +16,6 @@ const gateways = [
 ];
 
 export default function PaymentPage() {
-  const navigate = useNavigate();
-
   const [form, setForm] = useState({
     gateway: '',
     transactionNo: '',

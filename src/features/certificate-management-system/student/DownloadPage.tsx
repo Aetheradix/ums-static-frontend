@@ -1,11 +1,8 @@
-import { useNavigate } from 'react-router-dom';
 import { Button } from 'shared/components/buttons';
 import { FormPage, FormCard, FormGrid } from 'shared/new-components';
 import { TextBox } from 'shared/components/forms';
 
 export default function DownloadPage() {
-  const navigate = useNavigate();
-
   const handleDownload = () => {
     alert('Downloading PDF...');
   };

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from 'shared/components/buttons';
 import { FormPage, FormCard, FormGrid } from 'shared/new-components';
 import { TextBox, DropDownList } from 'shared/components/forms';
@@ -21,7 +21,6 @@ const reasons = [
 
 export default function EditApplication() {
   const navigate = useNavigate();
-  const { id } = useParams();
 
   const [form, setForm] = useState({
     type: 'degree',
