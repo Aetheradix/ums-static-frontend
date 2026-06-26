@@ -74,7 +74,7 @@ export default function FullOnboardingForm(props: Props) {
       label: 'Employee (Core)',
       icon: 'user',
       content: (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
           <FormCard title="Personal Information" icon="id-card">
             <FormGrid columns={3}>
               <SelectSalutation
@@ -199,7 +199,7 @@ export default function FullOnboardingForm(props: Props) {
       label: 'Extended Details',
       icon: 'id-card',
       content: (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
           <FormCard title="Personal & Family" icon="users">
             <FormGrid columns={3}>
               <SelectBloodGroup
@@ -370,7 +370,7 @@ export default function FullOnboardingForm(props: Props) {
       label: 'Address Details',
       icon: 'map-marker',
       content: (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
           <FormCard title="Current Address" icon="home">
             <FormGrid columns={3}>
               <TextBox
@@ -517,7 +517,7 @@ export default function FullOnboardingForm(props: Props) {
       label: 'Qualifications',
       icon: 'book',
       content: (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
           <FormCard title="Highest Qualification" icon="star">
             <FormGrid columns={3}>
               <SelectDegreeLevel
