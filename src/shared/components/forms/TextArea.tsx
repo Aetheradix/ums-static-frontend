@@ -1,4 +1,5 @@
 import { InputTextarea } from 'primereact/inputtextarea';
+import { useState, useEffect } from 'react';
 import { Controller, type FieldValues } from 'react-hook-form';
 import { sanitizeInput } from '../../utils/validation/config';
 
@@ -14,6 +15,7 @@ interface TextAreaProps<TForm extends FieldValues>
   rows?: number;
   cols?: number;
   autoResize?: boolean;
+  defaultValue?: any;
 }
 
 function InnerTextArea({
@@ -26,9 +28,15 @@ function InnerTextArea({
   required,
   subLabel,
   className,
+  defaultValue,
   ...rest
 }: TextAreaProps<FieldValues>) {
   const inputId = id ?? name;
+  const [internalValue, setInternalValue] = useState(defaultValue ?? value ?? '');
+
+  useEffect(() => {
+    setInternalValue(defaultValue ?? value ?? '');
+  }, [defaultValue, value]);
 
   return (
     <InputBlock
@@ -40,8 +48,12 @@ function InnerTextArea({
     >
       <InputTextarea
         id={inputId}
-        value={value || ''}
-        onChange={e => onChange?.(sanitizeInput(e.target.value))}
+        value={internalValue}
+        onChange={e => {
+           const val = sanitizeInput(e.target.value);
+           setInternalValue(val);
+           onChange?.(val);
+        }}
         invalid={!!errorMessage}
         className={`w-full ${className ?? ''}`}
         {...rest}

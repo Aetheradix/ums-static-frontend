@@ -1,5 +1,6 @@
 import { Calendar } from 'primereact/calendar';
 import { Checkbox as PrimeCheckbox } from 'primereact/checkbox';
+import { useState, useEffect } from 'react';
 import { Controller, type FieldValues } from 'react-hook-form';
 
 import InputBlock from './InputBlock';
@@ -24,6 +25,7 @@ interface DatePickerProps<TForm extends FieldValues>
   hourFormat?: '12' | '24';
   view?: 'date' | 'month' | 'year';
   dateFormat?: string;
+  defaultValue?: any;
 }
 
 function InnerDatePicker({
@@ -38,9 +40,15 @@ function InnerDatePicker({
   showCheckbox,
   checkboxChecked,
   onCheckboxChange,
+  defaultValue,
   ...rest
 }: DatePickerProps<FieldValues>) {
   const inputId = id ?? name;
+  const [internalValue, setInternalValue] = useState(defaultValue ?? value ?? null);
+
+  useEffect(() => {
+    setInternalValue(defaultValue ?? value ?? null);
+  }, [defaultValue, value]);
 
   return (
     <InputBlock
@@ -60,9 +68,12 @@ function InnerDatePicker({
         )}
         <Calendar
           inputId={inputId}
-          value={value}
+          value={internalValue}
           dateFormat="dd/mm/yy"
-          onChange={e => onChange?.(e.value)}
+          onChange={e => {
+            setInternalValue(e.value);
+            onChange?.(e.value);
+          }}
           className="w-full custom-calendar"
           invalid={!!errorMessage}
           appendTo={appendTo}
