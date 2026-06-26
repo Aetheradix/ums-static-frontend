@@ -47,7 +47,16 @@ Compose the new page **strictly by importing and assembling the shared component
 - **No Inline Styles:** Do not use `style={{ ... }}`. Use Tailwind utility classes exclusively.
 - **Design Tokens:** Respect the established semantic color palettes and spacing variables found in the global CSS (`index.css` or Tailwind config).
 
-## 5. Enforcement Checklist for AI
+## 5. Routing and Portal Selectors
+
+When configuring the navigation structure in `src/config/menu-routes.ts` and `src/shared/components/layout/MainLayout.tsx`, observe these strict rules:
+
+- **Portal Landing Pages:** Top-level modules that have complex bifurcations (like Employee Services splitting into HR Admin and ESS) should act as "Portal Selectors".
+- **Bypassing the SubMenu Grid:** To make a top-level menu item bypass the default sub-menu grid and go straight to a custom Portal Selector page, you MUST assign a direct `path` property to the parent item in `menu-routes.ts` (e.g., `path: '/employee-management'`).
+- **Hiding the Sidebar:** Portal landing pages must render full-width without the sidebar. Any new portal landing path MUST be added to the `PORTAL_PATHS` array inside `MainLayout.tsx` (e.g., `'/employee-management'`). This ensures the sidebar and mobile drawer toggle are completely hidden on that screen.
+- **Deep Sidebar Matching:** `MainLayout.tsx` computes sidebar tabs by finding the deepest parent whose children contain a direct match to the current route. Ensure nested children in `menu-routes.ts` correctly define their `path` relative to their module so the sidebar resolves the exact specific feature group (like EMS vs ESS).
+
+## 6. Enforcement Checklist for AI
 
 Before concluding a task, verify:
 
@@ -55,5 +64,6 @@ Before concluding a task, verify:
 - [ ] Are all generic UI elements used on this new page imported from `src/shared/`?
 - [ ] Is the page visually identical in layout and typography to existing pages?
 - [ ] Are there zero inline styles?
+- [ ] For new modules, did I add them to `PORTAL_PATHS` in `MainLayout` if they need a full-width selector view without a sidebar?
 
 **END OF RULES**

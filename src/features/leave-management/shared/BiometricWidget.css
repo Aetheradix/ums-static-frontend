@@ -1,0 +1,149 @@
+.biometric-widget {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.biometric-punch-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.biometric-punch-card {
+  border-radius: 10px;
+  padding: 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border: 1px solid var(--color-border, #e5e7eb);
+}
+
+.biometric-punch-card.punch-in {
+  background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
+  border-color: #86efac;
+}
+
+.biometric-punch-card.punch-out {
+  background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%);
+  border-color: #fca5a5;
+}
+
+.biometric-punch-label {
+  font-size: 0.688rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary, #6b7280);
+}
+
+.biometric-punch-time {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--color-text-primary, #111827);
+  line-height: 1;
+}
+
+.biometric-punch-status {
+  font-size: 0.688rem;
+  color: var(--color-text-muted, #9ca3af);
+}
+
+.biometric-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.biometric-stat-item {
+  text-align: center;
+  padding: 0.625rem 0.5rem;
+  border-radius: 8px;
+  background: var(--color-surface, #f9fafb);
+  border: 1px solid var(--color-border, #f3f4f6);
+}
+
+.biometric-stat-value {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-primary, #111827);
+  line-height: 1;
+}
+
+.biometric-stat-label {
+  display: block;
+  font-size: 0.625rem;
+  color: var(--color-text-muted, #9ca3af);
+  margin-top: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.biometric-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.biometric-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.biometric-status-dot.ok {
+  background: #22c55e;
+}
+.biometric-status-dot.missing {
+  background: #ef4444;
+}
+.biometric-status-dot.late {
+  background: #f59e0b;
+}
+
+.biometric-status-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+}
+
+.biometric-status-sub {
+  font-size: 0.688rem;
+  color: var(--color-text-muted, #9ca3af);
+  margin-left: auto;
+}
+
+.biometric-attendance-bar {
+  margin-top: 0.25rem;
+}
+
+.biometric-att-label-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.biometric-att-label {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #6b7280);
+}
+
+.biometric-att-pct {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.biometric-att-track {
+  background: #f3f4f6;
+  border-radius: 9999px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.biometric-att-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.4s ease;
+}
