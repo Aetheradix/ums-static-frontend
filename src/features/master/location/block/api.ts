@@ -3,7 +3,23 @@ import { ApiService } from 'services';
 const BLOCK_URL = `master/blocks`;
 
 export function getBlocks() {
-  return ApiService.getList<Master.BlockItem>(BLOCK_URL);
+  //   return ApiService.getList<Master.BlockItem>(BLOCK_URL);
+  return Promise.resolve([
+    {
+      id: 1,
+      name: 'Indore Block',
+      text: 'Indore Block',
+      isActive: true,
+      tehsilId: 1,
+    },
+    {
+      id: 2,
+      name: 'Rau Block',
+      text: 'Rau Block',
+      isActive: true,
+      tehsilId: 1,
+    },
+  ] as unknown as Master.BlockItem[]);
 }
 
 export async function getBlock(id: number) {

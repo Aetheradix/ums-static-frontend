@@ -9,7 +9,7 @@
   @apply max-w-[1440px] mx-auto px-6 flex items-center gap-10 max-md:flex-wrap max-md:gap-4;
 } */
 .ws-header-inner {
-  @apply mx-auto px-6 flex items-center gap-10 max-md:flex-wrap max-md:gap-4;
+  @apply mx-auto px-6 flex items-center justify-between gap-10 max-md:gap-2 max-md:px-4;
 }
 
 .ws-logo-section {

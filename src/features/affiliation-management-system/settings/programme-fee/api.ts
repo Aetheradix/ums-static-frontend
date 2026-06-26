@@ -1,59 +1,73 @@
-import { ApiService } from 'services';
-
-const MASTER_API_ROOT = `master/`;
-
-const PROGRAMME_FEE_URL = `${MASTER_API_ROOT}programme-fee`;
-
 export function getProgrammeFees() {
-  return ApiService.getList<AffiliationMaster.ProgrammeFeeItem>(
-    PROGRAMME_FEE_URL
-  );
+  return [
+    {
+      programmeFeeId: 1,
+      programmeId: 1, // B.Tech
+      affiliationFee: 50000,
+      inspectionFee: 25000,
+      securityDepositAmount: 100000,
+      isActive: true,
+    },
+    {
+      programmeFeeId: 2,
+      programmeId: 2, // MBA
+      affiliationFee: 40000,
+      inspectionFee: 20000,
+      securityDepositAmount: 75000,
+      isActive: true,
+    },
+    {
+      programmeFeeId: 3,
+      programmeId: 3, // B.Sc
+      affiliationFee: 20000,
+      inspectionFee: 10000,
+      securityDepositAmount: 50000,
+      isActive: true,
+    },
+    {
+      programmeFeeId: 4,
+      programmeId: 4, // M.Tech
+      affiliationFee: 60000,
+      inspectionFee: 30000,
+      securityDepositAmount: 120000,
+      isActive: true,
+    },
+  ] as unknown as AffiliationManagementSystem.ProgrammeFeeItem[];
 }
 
 export async function getProgrammeFee(programmeFeeId: number) {
-  const { data } = await ApiService.get<AffiliationMaster.ProgrammeFeeItem>(
-    `${PROGRAMME_FEE_URL}/${programmeFeeId}`
-  );
-  return data;
+  return {
+    programmeFeeId,
+    programmeName: 'Mock Programme',
+    feeAmount: 1000,
+    isActive: true,
+  } as unknown as AffiliationMaster.ProgrammeFeeItem;
 }
 
 export async function createProgrammeFee(
   form: AffiliationMaster.ProgrammeFeeForm
 ) {
-  const { error, data } =
-    await ApiService.post<AffiliationMaster.ProgrammeFeeItem>(
-      PROGRAMME_FEE_URL,
-
-      form
-    );
-
-  return !error ? data : undefined;
+  return {
+    ...form,
+    programmeFeeId: Math.floor(Math.random() * 1000),
+  } as unknown as AffiliationMaster.ProgrammeFeeItem;
 }
 
 export async function updateProgrammeFee(
-  programmeFeeId: number,
-  form: AffiliationMaster.ProgrammeFeeForm
+  _programmeFeeId: number,
+  _form: AffiliationMaster.ProgrammeFeeForm
 ): Promise<boolean> {
-  const result = await ApiService.put(
-    `${PROGRAMME_FEE_URL}/${programmeFeeId}`,
-    form
-  );
-  return !result.error;
+  return true;
 }
 
 export async function deleteProgrammeFee(
-  programmeFeeId: number
+  _programmeFeeId: number
 ): Promise<boolean> {
-  const result = await ApiService.del(`${PROGRAMME_FEE_URL}/${programmeFeeId}`);
-  return !result.error;
+  return true;
 }
 
 export async function patchProgrammeFeeStatus(
-  programmeFeeId: number
+  _programmeFeeId: number
 ): Promise<boolean> {
-  const result = await ApiService.patch(
-    `${PROGRAMME_FEE_URL}/${programmeFeeId}`,
-    {}
-  );
-  return !result.error;
+  return true;
 }

@@ -3,7 +3,12 @@ import { ApiService } from 'services';
 const DISTRICT_URL = `master/districts`;
 
 export function getDistricts() {
-  return ApiService.getList<Master.DistrictItem>(DISTRICT_URL);
+  //   return ApiService.getList<Master.DistrictItem>(DISTRICT_URL);
+  return Promise.resolve([
+    { id: 1, name: 'Indore', text: 'Indore', isActive: true, divisionId: 1 },
+    { id: 2, name: 'Bhopal', text: 'Bhopal', isActive: true, divisionId: 1 },
+    { id: 3, name: 'Gwalior', text: 'Gwalior', isActive: true, divisionId: 1 },
+  ] as unknown as Master.DistrictItem[]);
 }
 
 export async function getDistrict(id: number) {

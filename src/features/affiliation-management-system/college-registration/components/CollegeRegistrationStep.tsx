@@ -1,11 +1,37 @@
-import {
-  SelectAccommodationType,
-  SelectCollegeArea,
-  SelectCollegeCategory,
-  SelectCollegeType,
-} from 'features/components';
-import SelectDistrict from 'features/components/SelectDistrict';
+import { DropDownList } from 'shared/components/forms';
 import { useAvailableFacilitiesQuery } from 'features/master/college/college-facility/queries';
+
+const dummyDistricts = [
+  { id: 1, name: 'Bhopal', isActive: true },
+  { id: 2, name: 'Indore', isActive: true },
+  { id: 3, name: 'Gwalior', isActive: true },
+  { id: 4, name: 'Jabalpur', isActive: true },
+];
+
+const dummyCategories = [
+  { id: 1, name: 'Government', isActive: true },
+  { id: 2, name: 'Private', isActive: true },
+  { id: 3, name: 'Autonomous', isActive: true },
+];
+
+const dummyTypes = [
+  { id: 1, name: 'Engineering', isActive: true },
+  { id: 2, name: 'Medical', isActive: true },
+  { id: 3, name: 'Management', isActive: true },
+  { id: 4, name: 'Arts & Science', isActive: true },
+];
+
+const dummyAreas = [
+  { id: 'Urban', name: 'Urban', isActive: true },
+  { id: 'Rural', name: 'Rural', isActive: true },
+  { id: 'Semi-Urban', name: 'Semi-Urban', isActive: true },
+];
+
+const dummyAccommodations = [
+  { id: 'Boys & Girls (Co-ed)', name: 'Boys & Girls (Co-ed)', isActive: true },
+  { id: 'Boys Only', name: 'Boys Only', isActive: true },
+  { id: 'Girls Only', name: 'Girls Only', isActive: true },
+];
 import { useEffect, useRef } from 'react';
 import type { Control, Path, UseFormSetValue } from 'react-hook-form';
 import { Controller, useFieldArray, useWatch } from 'react-hook-form';
@@ -167,9 +193,13 @@ export default function CollegeRegistrationStep({
           />
         </div>
 
-        <SelectDistrict
+        <DropDownList
           label="District"
           defaultOptionText="Select district"
+          placeholder="Select district"
+          data={dummyDistricts}
+          textField="name"
+          valueField="id"
           {...register('districtId')}
           required
         />
@@ -191,29 +221,46 @@ export default function CollegeRegistrationStep({
           required
         />
 
-        <SelectCollegeCategory
+        <DropDownList
           label="College Category"
           defaultOptionText="Select college category"
+          placeholder="Select college category"
+          data={dummyCategories}
+          textField="name"
+          valueField="id"
           {...register('collegeCategoryId')}
           required
         />
 
-        <SelectCollegeType
+        <DropDownList
           label="College Type"
           defaultOptionText="Select college type"
+          placeholder="Select college type"
+          data={dummyTypes}
+          textField="name"
+          valueField="id"
           {...register('collegeTypeId')}
           required
         />
 
-        <SelectCollegeArea
+        <DropDownList
           label="College Area"
           defaultOptionText="Select college area"
+          placeholder="Select college area"
+          data={dummyAreas}
+          textField="name"
+          valueField="id"
           {...register('collegeArea')}
           required
         />
-        <SelectAccommodationType
+
+        <DropDownList
           label="Accommodation Type"
           defaultOptionText="Select Accommodation type"
+          placeholder="Select Accommodation type"
+          data={dummyAccommodations}
+          textField="name"
+          valueField="id"
           {...register('accommodationType')}
           required
         />
