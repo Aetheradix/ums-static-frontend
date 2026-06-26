@@ -2,8 +2,8 @@ import { useAuth } from 'auth';
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { WaffleMenu } from 'shared/new-components';
-import './WorkspaceHeader.css';
 import { ThemeSettingsSidebar } from './ThemeSettingsSidebar';
+import './WorkspaceHeader.css';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();

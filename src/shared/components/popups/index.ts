@@ -1,3 +1,4 @@
+import ConfirmDialog from './ConfirmDialog';
 import Modal from './Modal';
 
-export { Modal };
+export { ConfirmDialog, Modal };

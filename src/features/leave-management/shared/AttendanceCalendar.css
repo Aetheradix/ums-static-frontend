@@ -122,7 +122,19 @@
   flex-shrink: 0;
 }
 
-.att-calendar-legend-dot.present { background: #dcfce7; border: 1px solid #15803d; }
-.att-calendar-legend-dot.absent { background: #fee2e2; border: 1px solid #b91c1c; }
-.att-calendar-legend-dot.leave { background: #fef3c7; border: 1px solid #b45309; }
-.att-calendar-legend-dot.holiday { background: #f0f9ff; border: 1px solid #0369a1; }
+.att-calendar-legend-dot.present {
+  background: #dcfce7;
+  border: 1px solid #15803d;
+}
+.att-calendar-legend-dot.absent {
+  background: #fee2e2;
+  border: 1px solid #b91c1c;
+}
+.att-calendar-legend-dot.leave {
+  background: #fef3c7;
+  border: 1px solid #b45309;
+}
+.att-calendar-legend-dot.holiday {
+  background: #f0f9ff;
+  border: 1px solid #0369a1;
+}

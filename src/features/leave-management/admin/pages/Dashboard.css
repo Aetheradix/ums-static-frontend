@@ -233,11 +233,26 @@
   font-weight: 600;
 }
 
-.lms-status-pill.pending { background: #fef3c7; color: #b45309; }
-.lms-status-pill.approved { background: #dcfce7; color: #15803d; }
-.lms-status-pill.rejected { background: #fee2e2; color: #b91c1c; }
-.lms-status-pill.forwarded { background: #f3e8ff; color: #7c3aed; }
-.lms-status-pill.withdrawn { background: #f3f4f6; color: #6b7280; }
+.lms-status-pill.pending {
+  background: #fef3c7;
+  color: #b45309;
+}
+.lms-status-pill.approved {
+  background: #dcfce7;
+  color: #15803d;
+}
+.lms-status-pill.rejected {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.lms-status-pill.forwarded {
+  background: #f3e8ff;
+  color: #7c3aed;
+}
+.lms-status-pill.withdrawn {
+  background: #f3f4f6;
+  color: #6b7280;
+}
 
 @media (max-width: 1200px) {
   .lms-dashboard-stats,

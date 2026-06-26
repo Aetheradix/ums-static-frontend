@@ -1,7 +1,12 @@
 import { useCallback, useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import { DropDownList, Switch, TextArea, TextBox } from 'shared/components/forms';
+import {
+  DropDownList,
+  Switch,
+  TextArea,
+  TextBox,
+} from 'shared/components/forms';
 import {
   FormCard,
   FormGrid,
@@ -13,7 +18,11 @@ import {
 import { type LeaveType, leaveTypes as initialData } from '../../../mocks';
 import { lmsUrls } from '../../../urls';
 
-type PopupState = { mode: 'closed' } | { mode: 'create' } | { mode: 'edit'; item: LeaveType } | { mode: 'view'; item: LeaveType };
+type PopupState =
+  | { mode: 'closed' }
+  | { mode: 'create' }
+  | { mode: 'edit'; item: LeaveType }
+  | { mode: 'view'; item: LeaveType };
 
 const APPLICABLE_OPTIONS = [
   { name: 'All', value: 'All' },
@@ -22,10 +31,16 @@ const APPLICABLE_OPTIONS = [
 ];
 
 const EMPTY: Partial<LeaveType> = {
-  code: '', name: '', description: '', maxDays: 0,
-  carryForward: false, halfDayAllowed: false,
-  attachmentMandatory: false, requiresApproval: true,
-  applicableFor: 'All', status: 'Active',
+  code: '',
+  name: '',
+  description: '',
+  maxDays: 0,
+  carryForward: false,
+  halfDayAllowed: false,
+  attachmentMandatory: false,
+  requiresApproval: true,
+  applicableFor: 'All',
+  status: 'Active',
 };
 
 export default function LeaveTypeMaster() {
@@ -33,7 +48,10 @@ export default function LeaveTypeMaster() {
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
   const [form, setForm] = useState<Partial<LeaveType>>(EMPTY);
 
-  const close = useCallback(() => { setPopup({ mode: 'closed' }); setForm(EMPTY); }, []);
+  const close = useCallback(() => {
+    setPopup({ mode: 'closed' });
+    setForm(EMPTY);
+  }, []);
 
   const handleSave = () => {
     if (!form.code || !form.name) {
@@ -41,10 +59,17 @@ export default function LeaveTypeMaster() {
       return;
     }
     if (popup.mode === 'create') {
-      setData(prev => [...prev, { ...form, id: String(Date.now()) } as LeaveType]);
+      setData(prev => [
+        ...prev,
+        { ...form, id: String(Date.now()) } as LeaveType,
+      ]);
       ToastService.success('Leave type created.');
     } else if (popup.mode === 'edit') {
-      setData(prev => prev.map(d => d.id === (popup as any).item.id ? { ...d, ...form } as LeaveType : d));
+      setData(prev =>
+        prev.map(d =>
+          d.id === (popup as any).item.id ? ({ ...d, ...form } as LeaveType) : d
+        )
+      );
       ToastService.success('Leave type updated.');
     }
     close();
@@ -77,28 +102,71 @@ export default function LeaveTypeMaster() {
             { field: 'name', header: 'Leave Name' },
             { field: 'maxDays', header: 'Max Days' },
             {
-              field: 'carryForward', header: 'Carry Forward',
-              cell: (item: LeaveType) => <span>{item.carryForward ? 'Yes' : 'No'}</span>,
+              field: 'carryForward',
+              header: 'Carry Forward',
+              cell: (item: LeaveType) => (
+                <span>{item.carryForward ? 'Yes' : 'No'}</span>
+              ),
             },
             { field: 'applicableFor', header: 'Applicable For' },
             {
-              field: 'status', header: 'Status',
+              field: 'status',
+              header: 'Status',
               cell: (item: LeaveType) => (
-                <StatusBadge label={item.status} variant={item.status === 'Active' ? 'approved' : 'rejected'} />
+                <StatusBadge
+                  label={item.status}
+                  variant={item.status === 'Active' ? 'approved' : 'rejected'}
+                />
               ),
             },
             {
-              field: 'id', header: 'Actions', sortable: false,
+              field: 'id',
+              header: 'Actions',
+              sortable: false,
               cell: (item: LeaveType) => (
                 <div style={{ display: 'flex', gap: '0.375rem' }}>
-                  <Button size="small" label="" icon="eye" variant="outlined" onClick={() => { setForm(item); setPopup({ mode: 'view', item }); }} />
-                  <Button size="small" label="" icon="pencil" variant="outlined" onClick={() => { setForm(item); setPopup({ mode: 'edit', item }); }} />
-                  <Button size="small" label="" icon="trash" variant="danger" onClick={() => handleDelete(item)} />
+                  <Button
+                    size="small"
+                    label=""
+                    icon="eye"
+                    variant="outlined"
+                    onClick={() => {
+                      setForm(item);
+                      setPopup({ mode: 'view', item });
+                    }}
+                  />
+                  <Button
+                    size="small"
+                    label=""
+                    icon="pencil"
+                    variant="outlined"
+                    onClick={() => {
+                      setForm(item);
+                      setPopup({ mode: 'edit', item });
+                    }}
+                  />
+                  <Button
+                    size="small"
+                    label=""
+                    icon="trash"
+                    variant="danger"
+                    onClick={() => handleDelete(item)}
+                  />
                 </div>
               ),
             },
           ]}
-          toolbar={<Button label="Add Leave Type" icon="plus" variant="primary" onClick={() => { setForm(EMPTY); setPopup({ mode: 'create' }); }} />}
+          toolbar={
+            <Button
+              label="Add Leave Type"
+              icon="plus"
+              variant="primary"
+              onClick={() => {
+                setForm(EMPTY);
+                setPopup({ mode: 'create' });
+              }}
+            />
+          }
           searchBox
           searchPlaceholder="Search leave types..."
         />
@@ -107,27 +175,93 @@ export default function LeaveTypeMaster() {
       <FormPopup
         visible={popup.mode !== 'closed'}
         onHide={close}
-        title={popup.mode === 'create' ? 'Add Leave Type' : popup.mode === 'edit' ? 'Edit Leave Type' : 'View Leave Type'}
+        title={
+          popup.mode === 'create'
+            ? 'Add Leave Type'
+            : popup.mode === 'edit'
+              ? 'Edit Leave Type'
+              : 'View Leave Type'
+        }
         subtitle="Configure leave type details and applicability."
         size="lg"
       >
         <FormGrid columns={2}>
-          <TextBox label="Leave Code" placeholder="e.g. CL" value={form.code ?? ''} onChange={v => setForm(f => ({ ...f, code: v }))} required disabled={isReadOnly} />
-          <TextBox label="Leave Name" placeholder="e.g. Casual Leave" value={form.name ?? ''} onChange={v => setForm(f => ({ ...f, name: v }))} required disabled={isReadOnly} />
-          <TextBox label="Maximum Days" placeholder="e.g. 12" value={String(form.maxDays ?? '')} onChange={v => setForm(f => ({ ...f, maxDays: Number(v) }))} disabled={isReadOnly} />
-          <DropDownList label="Applicable For" data={APPLICABLE_OPTIONS} textField="name" optionValue="value" value={form.applicableFor} onChange={v => setForm(f => ({ ...f, applicableFor: v as any }))} disabled={isReadOnly} />
+          <TextBox
+            label="Leave Code"
+            placeholder="e.g. CL"
+            value={form.code ?? ''}
+            onChange={v => setForm(f => ({ ...f, code: v }))}
+            required
+            disabled={isReadOnly}
+          />
+          <TextBox
+            label="Leave Name"
+            placeholder="e.g. Casual Leave"
+            value={form.name ?? ''}
+            onChange={v => setForm(f => ({ ...f, name: v }))}
+            required
+            disabled={isReadOnly}
+          />
+          <TextBox
+            label="Maximum Days"
+            placeholder="e.g. 12"
+            value={String(form.maxDays ?? '')}
+            onChange={v => setForm(f => ({ ...f, maxDays: Number(v) }))}
+            disabled={isReadOnly}
+          />
+          <DropDownList
+            label="Applicable For"
+            data={APPLICABLE_OPTIONS}
+            textField="name"
+            optionValue="value"
+            value={form.applicableFor}
+            onChange={v => setForm(f => ({ ...f, applicableFor: v as any }))}
+            disabled={isReadOnly}
+          />
         </FormGrid>
-        <TextArea label="Description" placeholder="Brief description of this leave type" value={form.description ?? ''} onChange={v => setForm(f => ({ ...f, description: v }))} disabled={isReadOnly} rows={2} />
+        <TextArea
+          label="Description"
+          placeholder="Brief description of this leave type"
+          value={form.description ?? ''}
+          onChange={v => setForm(f => ({ ...f, description: v }))}
+          disabled={isReadOnly}
+          rows={2}
+        />
         <FormGrid columns={2}>
-          <Switch label="Carry Forward Allowed" checked={form.carryForward ?? false} onChange={v => setForm(f => ({ ...f, carryForward: v }))} disabled={isReadOnly} />
-          <Switch label="Half Day Allowed" checked={form.halfDayAllowed ?? false} onChange={v => setForm(f => ({ ...f, halfDayAllowed: v }))} disabled={isReadOnly} />
-          <Switch label="Attachment Mandatory" checked={form.attachmentMandatory ?? false} onChange={v => setForm(f => ({ ...f, attachmentMandatory: v }))} disabled={isReadOnly} />
-          <Switch label="Requires Approval" checked={form.requiresApproval ?? true} onChange={v => setForm(f => ({ ...f, requiresApproval: v }))} disabled={isReadOnly} />
+          <Switch
+            label="Carry Forward Allowed"
+            checked={form.carryForward ?? false}
+            onChange={v => setForm(f => ({ ...f, carryForward: v }))}
+            disabled={isReadOnly}
+          />
+          <Switch
+            label="Half Day Allowed"
+            checked={form.halfDayAllowed ?? false}
+            onChange={v => setForm(f => ({ ...f, halfDayAllowed: v }))}
+            disabled={isReadOnly}
+          />
+          <Switch
+            label="Attachment Mandatory"
+            checked={form.attachmentMandatory ?? false}
+            onChange={v => setForm(f => ({ ...f, attachmentMandatory: v }))}
+            disabled={isReadOnly}
+          />
+          <Switch
+            label="Requires Approval"
+            checked={form.requiresApproval ?? true}
+            onChange={v => setForm(f => ({ ...f, requiresApproval: v }))}
+            disabled={isReadOnly}
+          />
         </FormGrid>
         {!isReadOnly && (
           <div className="flex justify-end gap-3 mt-4">
             <Button label="Cancel" variant="outlined" onClick={close} />
-            <Button label={popup.mode === 'create' ? 'Create' : 'Update'} variant="primary" icon="save" onClick={handleSave} />
+            <Button
+              label={popup.mode === 'create' ? 'Create' : 'Update'}
+              variant="primary"
+              icon="save"
+              onClick={handleSave}
+            />
           </div>
         )}
       </FormPopup>
