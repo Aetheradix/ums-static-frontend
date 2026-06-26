@@ -124,7 +124,7 @@ const Header: React.FC = () => {
 
             {/* Dark Mode Toggle */}
             <div
-              className="ws-icon-btn"
+              className="ws-icon-btn mobile-hidden"
               onClick={toggleDarkMode}
               title="Toggle Dark Mode"
             >

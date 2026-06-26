@@ -1,33 +1,61 @@
-import ApiService from 'services/api';
+let nextId = 6;
 
-const ROLE_URL = `user-management/role`;
+let roles: UserManagement.UserRoleList[] = [
+  {
+    id: '1',
+    name: 'Super Admin',
+    description: 'Full system access with all permissions',
+    isActive: true,
+  },
+  {
+    id: '2',
+    name: 'Admin',
+    description: 'Administrative access to manage university data',
+    isActive: true,
+  },
+  {
+    id: '3',
+    name: 'Registrar',
+    description: 'Academic records and student management',
+    isActive: true,
+  },
+  {
+    id: '4',
+    name: 'Faculty',
+    description: 'Teaching staff portal access',
+    isActive: true,
+  },
+  {
+    id: '5',
+    name: 'Student',
+    description: 'Student self-service portal access',
+    isActive: false,
+  },
+];
 
 export async function getUserRole(
   id: string
 ): Promise<UserManagement.UserRoleList> {
-  const response = await ApiService.get<UserManagement.UserRoleList>(
-    `${ROLE_URL}/${id}`
-  );
-  return response.data!;
+  return roles.find(r => r.id === id)!;
 }
 
 export async function getUserRoles(): Promise<UserManagement.UserRoleList[]> {
-  const response =
-    await ApiService.get<UserManagement.UserRoleList[]>(ROLE_URL);
-  return response.data ?? [];
+  return [...roles];
 }
 
 export async function createUserRole(data: UserManagement.UserRoleForm) {
-  const { error, data: result } =
-    await ApiService.post<UserManagement.UserRoleForm>(ROLE_URL, data);
-  return !error ? result : undefined;
+  const newRole: UserManagement.UserRoleList = {
+    id: String(nextId++),
+    ...data,
+  };
+  roles = [...roles, newRole];
+  return newRole;
 }
 
 export async function updateUserRole(
   id: string,
   data: UserManagement.UserRoleForm
 ): Promise<boolean> {
-  const url = `${ROLE_URL}/${id}`;
-  const { error } = await ApiService.put(url, data);
-  return !error;
+  roles = roles.map(r => (r.id === id ? { ...r, ...data } : r));
+  return true;
 }
