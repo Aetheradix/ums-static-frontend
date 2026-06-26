@@ -69,7 +69,7 @@ export default function StudentApplyLeave() {
       <div style={{ maxWidth: '900px' }}>
         {/* Student Info */}
         <FormCard title="Student Information" icon="school">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '0.75rem' }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {[
               { label: 'Name', value: STUDENT.name },
               { label: 'Enrollment No.', value: STUDENT.enrollmentNo },
@@ -133,7 +133,7 @@ export default function StudentApplyLeave() {
 
         {/* Leave Balance */}
         <FormCard title="Available Leave Balance" className="mt-4">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '0.75rem' }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {[
               { type: 'Casual Leave', balance: STUDENT.leaveBalance.casual },
               { type: 'Medical Leave', balance: STUDENT.leaveBalance.medical },

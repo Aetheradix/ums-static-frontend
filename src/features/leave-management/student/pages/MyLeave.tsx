@@ -118,7 +118,7 @@ export default function MyLeave() {
           subtitle={`${popup.item.leaveType} · ${popup.item.days} days`}
           size="lg"
         >
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: '0.75rem', marginBottom: '1rem' }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
             {[
               { label: 'Leave Type', value: popup.item.leaveType },
               { label: 'Duration', value: `${popup.item.fromDate} — ${popup.item.toDate}` },

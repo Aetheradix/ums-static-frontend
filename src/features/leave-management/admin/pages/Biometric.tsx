@@ -26,7 +26,7 @@ export default function Biometric() {
       ]}
     >
       {/* KPI */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard title="Total Punches" value={biometricRecords.length} icon="fingerprint" colorScheme="blue" subtitle="Today" />
         <StatCard title="OK Records" value={ok.length} icon="check_circle" colorScheme="green" subtitle="No issues" />
         <StatCard title="Missing Punch" value={missing.length} icon="warning" colorScheme="red" subtitle="Needs action" />
@@ -65,7 +65,7 @@ export default function Biometric() {
 
       {/* Monthly Summary */}
       <FormCard title="Monthly Summary — June 2024" className="mt-4">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '1rem' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[
             { label: 'Total Working Days', value: 21 },
             { label: 'Average Punch In', value: '09:05 AM' },

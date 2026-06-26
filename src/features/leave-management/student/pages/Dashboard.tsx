@@ -33,7 +33,7 @@ export default function StudentDashboard() {
       ]}
     >
       {/* KPI */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard title="Attendance %" value={`${MY_STUDENT.attendancePct}%`} icon="percent" colorScheme={MY_STUDENT.attendancePct >= 75 ? 'green' : 'red'} subtitle="This semester" trend={{ value: 2, direction: 'up', label: 'vs last month' }} />
         <StatCard title="Leave Balance" value="15 days" icon="event_available" colorScheme="blue" subtitle="All types" />
         <StatCard title="Applied Leaves" value={myApps.length + 2} icon="assignment" colorScheme="purple" subtitle="This year" />
@@ -41,7 +41,7 @@ export default function StudentDashboard() {
       </div>
 
       {/* Row 1 */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         {/* Biometric Widget */}
         <FormCard title="Today's Biometric">
           <BiometricWidget
@@ -58,7 +58,7 @@ export default function StudentDashboard() {
 
         {/* Leave Status */}
         <FormCard title="Leave Status Summary">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '0.75rem', marginBottom: '1rem' }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
             {[
               { label: 'Approved', value: approved + 2, color: '#16a34a', bg: '#dcfce7' },
               { label: 'Pending', value: pending, color: '#b45309', bg: '#fef3c7' },
@@ -85,7 +85,7 @@ export default function StudentDashboard() {
       </div>
 
       {/* Row 2 */}
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 mb-6">
         {/* Attendance Calendar */}
         <FormCard title="Attendance Calendar — June 2024">
           <AttendanceCalendar />

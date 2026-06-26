@@ -61,7 +61,7 @@ export default function Settings() {
         <div style={{ marginTop: '1.5rem' }}>
           {/* Workflow Tab */}
           {TABS[activeTab].key === 'workflow' && (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <TextBox label="Max Pending Days (before escalation)" value={workflowSettings.maxPendingDays} onChange={v => setWorkflowSettings(s => ({ ...s, maxPendingDays: v }))} placeholder="5" />
               <TextBox label="Attachment Required Above (days)" value={workflowSettings.requireAttachmentAbove} onChange={v => setWorkflowSettings(s => ({ ...s, requireAttachmentAbove: v }))} placeholder="3" />
               <Switch label="Auto-Approve Single Day Leave" checked={workflowSettings.autoApprove} onChange={v => setWorkflowSettings(s => ({ ...s, autoApprove: v }))} />
@@ -74,7 +74,7 @@ export default function Settings() {
 
           {/* Notification Tab */}
           {TABS[activeTab].key === 'notification' && (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div style={{ gridColumn: '1/-1', fontWeight: 600, fontSize: '0.875rem', color: '#374151', paddingBottom: '0.5rem', borderBottom: '1px solid #f3f4f6' }}>Channels</div>
               <Switch label="Email Notifications" checked={notifSettings.emailEnabled} onChange={v => setNotifSettings(s => ({ ...s, emailEnabled: v }))} />
               <Switch label="SMS Notifications" checked={notifSettings.smsEnabled} onChange={v => setNotifSettings(s => ({ ...s, smsEnabled: v }))} />
@@ -90,7 +90,7 @@ export default function Settings() {
 
           {/* Attendance Sync Tab */}
           {TABS[activeTab].key === 'attendance' && (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <Switch label="Automatic Daily Sync" checked={biometricSettings.autoSync} onChange={v => setBiometricSettings(s => ({ ...s, autoSync: v }))} />
               <TextBox label="Sync Interval (minutes)" value={biometricSettings.syncInterval} onChange={v => setBiometricSettings(s => ({ ...s, syncInterval: v }))} placeholder="15" />
               <div className="flex gap-3" style={{ gridColumn: '1/-1' }}>
@@ -102,7 +102,7 @@ export default function Settings() {
 
           {/* Biometric Integration Tab */}
           {TABS[activeTab].key === 'biometric' && (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <TextBox label="Biometric Device IP" value={biometricSettings.deviceIp} onChange={v => setBiometricSettings(s => ({ ...s, deviceIp: v }))} placeholder="192.168.x.x" />
               <TextBox label="Sync Interval (minutes)" value={biometricSettings.syncInterval} onChange={v => setBiometricSettings(s => ({ ...s, syncInterval: v }))} placeholder="15" />
               <Switch label="Alert on Missing Sync" checked={biometricSettings.missingSyncAlert} onChange={v => setBiometricSettings(s => ({ ...s, missingSyncAlert: v }))} />

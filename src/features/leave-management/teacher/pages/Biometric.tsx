@@ -35,14 +35,14 @@ export default function TeacherBiometric() {
       ]}
     >
       {/* Today's Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard title="Today Punch In" value="09:00 AM" icon="login" colorScheme="green" subtitle="On time" />
         <StatCard title="Working Hours" value="In Progress" icon="schedule" colorScheme="blue" subtitle="Ongoing" />
         <StatCard title="Attendance %" value="91%" icon="percent" colorScheme="teal" subtitle="This month" />
         <StatCard title="Missing Punch" value="1" icon="warning" colorScheme="red" subtitle="This month" />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         {/* Today's Widget */}
         <FormCard title="Today's Biometric — 26 Jun 2024">
           <BiometricWidget

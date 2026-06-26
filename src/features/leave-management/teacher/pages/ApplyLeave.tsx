@@ -131,7 +131,7 @@ export default function ApplyLeave() {
 
         {/* Current Balance Preview */}
         <FormCard title="Current Leave Balance" className="mt-4">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '0.75rem' }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {[
               { type: 'Casual', balance: 11, color: '#3b82f6' },
               { type: 'Medical', balance: 18, color: '#ef4444' },

@@ -18,7 +18,7 @@ export default function StudentAttendance() {
       ]}
     >
       {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard
           title="Attendance %"
           value={`${STUDENT.attendancePct}%`}
@@ -39,7 +39,7 @@ export default function StudentAttendance() {
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
         {/* Calendar */}
         <FormCard title="Attendance Calendar — June 2024">
           <AttendanceCalendar />
