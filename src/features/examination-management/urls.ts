@@ -58,9 +58,17 @@ export const examinationUrls = {
     create: `${baseUrl}/session/create`,
     programs: (id: number) => `${baseUrl}/session/${id}/program`,
     applications: (id: number) => `${baseUrl}/session/${id}/application`,
+    attendanceRollCall: (id: number) =>
+      `${baseUrl}/session/${id}/attendance-roll-call`,
+    eligibilityList: (id: number) =>
+      `${baseUrl}/session/${id}/eligibility-list`,
+    gradeBoundaries: (id: number) =>
+      `${baseUrl}/session/${id}/grade-boundaries`,
   },
   timetable: {
     root: (sessionId: number) => `${baseUrl}/session/${sessionId}/timetable`,
+    edit: (sessionId: number, id: number) =>
+      `${baseUrl}/session/${sessionId}/timetable/edit/${id}`,
   },
   marks: {
     root: (sessionId: number) => `${baseUrl}/session/${sessionId}/marks-entry`,
@@ -80,12 +88,16 @@ export const examinationUrls = {
     edit: (id: number) => `${baseUrl}/question-paper/edit/${id}`,
     create: `${baseUrl}/question-paper/create`,
     patterns: `${baseUrl}/question-paper/patterns`,
+    patternEdit: (id: number) =>
+      `${baseUrl}/question-paper/patterns/edit/${id}`,
   },
   evaluator: {
     root: `${baseUrl}/evaluator`,
     edit: (id: number) => `${baseUrl}/evaluator/edit/${id}`,
     create: `${baseUrl}/evaluator/create`,
     sheetDistribution: `${baseUrl}/evaluator/sheet-distribution`,
+    sheetDistributionEdit: (id: number) =>
+      `${baseUrl}/evaluator/sheet-distribution/edit/${id}`,
   },
   supplementary: {
     root: `${baseUrl}/supplementary`,
@@ -117,6 +129,8 @@ export const examinationUrls = {
     results: `${baseUrl}/student/results`,
     gradeCards: `${baseUrl}/student/grade-cards`,
     revaluation: `${baseUrl}/student/revaluation`,
+    admitCard: `${baseUrl}/student/admit-card`,
+    seatingPlan: `${baseUrl}/student/seating-plan`,
     duplicateMarksheet: `${baseUrl}/student/duplicate-marksheet`,
     trackApplications: `${baseUrl}/student/track-applications`,
   },

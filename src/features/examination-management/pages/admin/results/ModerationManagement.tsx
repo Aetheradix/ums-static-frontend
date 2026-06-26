@@ -12,6 +12,17 @@ import ModerationRuleForm from '../../../components/ModerationRuleForm';
 export default function ModerationManagement() {
   const { data, isLoading } = useModerationRulesQuery();
   const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState<number | undefined>(undefined);
+
+  const handleEdit = (id: number) => {
+    setEditId(id);
+    setShowForm(true);
+  };
+
+  const handleClose = () => {
+    setEditId(undefined);
+    setShowForm(false);
+  };
 
   return (
     <FormPage
@@ -46,12 +57,12 @@ export default function ModerationManagement() {
             },
             {
               header: 'Actions',
-              cell: () => (
+              cell: (item: Examination.ModerationRuleItem) => (
                 <Button
-                  icon="cog"
+                  icon="pencil"
                   variant="text"
                   tooltip="Configure"
-                  onClick={() => {}}
+                  onClick={() => handleEdit(item.id)}
                 />
               ),
             },
@@ -60,11 +71,15 @@ export default function ModerationManagement() {
       </FormCard>
       <FormPopup
         visible={showForm}
-        onHide={() => setShowForm(false)}
-        title="New Moderation Rule"
-        subtitle="Create a moderation rule for grace marks or scaling"
+        onHide={handleClose}
+        title={editId ? 'Edit Moderation Rule' : 'New Moderation Rule'}
+        subtitle={
+          editId
+            ? 'Modify configuration'
+            : 'Create a moderation rule for grace marks or scaling'
+        }
       >
-        <ModerationRuleForm onClose={() => setShowForm(false)} />
+        <ModerationRuleForm id={editId} onClose={handleClose} />
       </FormPopup>
     </FormPage>
   );

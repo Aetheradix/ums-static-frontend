@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { FormPage, FormCard, GridPanel } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
 import { ToastService } from 'services';
+import { Button } from 'shared/components/buttons';
+import { FormCard, FormPage, GridPanel } from 'shared/new-components';
 import { useDuplicateApplicationsQuery } from '../../../queries';
 
 export default function Applications() {
@@ -69,6 +69,7 @@ export default function Applications() {
                 <div className="flex gap-1">
                   {item.status === 'Pending' && (
                     <Button
+                      label="Approve"
                       icon="check"
                       variant="success"
                       tooltip="Approve"

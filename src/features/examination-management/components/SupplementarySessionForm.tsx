@@ -3,7 +3,12 @@ import { NumberBox, TextBox, DropDownList } from 'shared/components/forms';
 import { useAppForm } from 'shared/hooks/form';
 import { FormActions, FormGrid } from 'shared/new-components';
 import validation from 'shared/utils/validation';
-import { useCreateSupplementarySessionMutation } from '../queries';
+import { useEffect } from 'react';
+import {
+  useCreateSupplementarySessionMutation,
+  useUpdateSupplementarySessionMutation,
+  useSupplementarySetupsQuery,
+} from '../queries';
 
 const STATUS_OPTIONS = [
   { label: 'Draft', value: 'Draft' },
@@ -11,6 +16,7 @@ const STATUS_OPTIONS = [
 ];
 
 interface SupplementarySessionFormProps {
+  id?: number;
   onClose: () => void;
 }
 
@@ -27,10 +33,18 @@ const schema = validation.create<Examination.SupplementarySessionForm>(o => ({
 }));
 
 export default function SupplementarySessionForm({
+  id,
   onClose,
 }: SupplementarySessionFormProps) {
-  const { mutateAsync: create, isPending } =
+  const isEditMode = !!id;
+  const { data: sessions } = useSupplementarySetupsQuery();
+  const initialData = isEditMode ? sessions?.find(s => s.id === id) : undefined;
+
+  const { mutateAsync: create, isPending: isCreating } =
     useCreateSupplementarySessionMutation();
+  const { mutateAsync: update, isPending: isUpdating } =
+    useUpdateSupplementarySessionMutation(id!);
+  const isPending = isCreating || isUpdating;
 
   const { register, handleSubmit, reset, control } =
     useAppForm<Examination.SupplementarySessionForm>({
@@ -43,9 +57,25 @@ export default function SupplementarySessionForm({
       },
     });
 
+  useEffect(() => {
+    if (initialData) {
+      reset({
+        sessionName: initialData.sessionName,
+        maxSubjects: initialData.maxSubjects,
+        feePerSubject: initialData.feePerSubject,
+        status: initialData.status as any,
+      });
+    }
+  }, [initialData, reset]);
+
   const onSubmit = async (data: Examination.SupplementarySessionForm) => {
-    await create(data);
-    ToastService.success('Supplementary session created successfully.');
+    if (isEditMode) {
+      await update(data);
+      ToastService.success('Supplementary session updated successfully.');
+    } else {
+      await create(data);
+      ToastService.success('Supplementary session created successfully.');
+    }
     onClose();
   };
 
@@ -79,7 +109,7 @@ export default function SupplementarySessionForm({
         />
       </FormGrid>
       <FormActions
-        isEditMode={false}
+        isEditMode={isEditMode}
         isLoading={isPending}
         onSave={handleSubmit(onSubmit)}
         onReset={reset}

@@ -12,6 +12,17 @@ import QuestionPaperPatternForm from '../../../components/QuestionPaperPatternFo
 export default function QuestionPaperPattern() {
   const { data, isLoading } = useQuestionPaperPatternsQuery();
   const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState<number | undefined>(undefined);
+
+  const handleEdit = (id: number) => {
+    setEditId(id);
+    setShowForm(true);
+  };
+
+  const handleClose = () => {
+    setEditId(undefined);
+    setShowForm(false);
+  };
 
   return (
     <FormPage
@@ -50,12 +61,12 @@ export default function QuestionPaperPattern() {
             },
             {
               header: 'Actions',
-              cell: () => (
+              cell: (item: Examination.QuestionPaperPatternItem) => (
                 <Button
                   icon="pencil"
                   variant="text"
                   tooltip="Edit"
-                  onClick={() => {}}
+                  onClick={() => handleEdit(item.id)}
                 />
               ),
             },
@@ -64,11 +75,15 @@ export default function QuestionPaperPattern() {
       </FormCard>
       <FormPopup
         visible={showForm}
-        onHide={() => setShowForm(false)}
-        title="New Pattern"
-        subtitle="Define question paper pattern"
+        onHide={handleClose}
+        title={editId ? 'Edit Pattern' : 'New Pattern'}
+        subtitle={
+          editId
+            ? 'Modify question paper pattern details'
+            : 'Define question paper pattern'
+        }
       >
-        <QuestionPaperPatternForm onClose={() => setShowForm(false)} />
+        <QuestionPaperPatternForm id={editId} onClose={handleClose} />
       </FormPopup>
     </FormPage>
   );

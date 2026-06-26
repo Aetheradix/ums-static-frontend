@@ -7,8 +7,21 @@ import { useReportsDashboardQuery } from '../../../queries';
 const SEMESTERS = ['Odd 2024', 'Even 2024', 'Odd 2023', 'Even 2023'];
 
 export default function ReportsDashboard() {
-  const { data, isLoading } = useReportsDashboardQuery();
+  const { data, isLoading, isError, error } = useReportsDashboardQuery();
   const [semester, setSemester] = useState('Odd 2024');
+
+  if (isError) {
+    return (
+      <FormPage
+        title="Examination Reports Dashboard"
+        description="Consolidated reporting analytics for the Examination Management System."
+      >
+        <div className="flex items-center justify-center h-64 text-red-500">
+          {(error as Error)?.message || 'Failed to load reports data'}
+        </div>
+      </FormPage>
+    );
+  }
 
   if (isLoading || !data) {
     return (
@@ -23,7 +36,7 @@ export default function ReportsDashboard() {
     );
   }
 
-  const d = data as unknown as ReportsDashboardData;
+  const d = data;
 
   return (
     <FormPage
@@ -129,7 +142,7 @@ function KpiCard({
 }
 
 /* ── Overview Tab ── */
-function OverviewTab({ data }: { data: ReportsDashboardData }) {
+function OverviewTab({ data }: { data: Examination.ReportsDashboard }) {
   const gradeCanvasRef = useRef<HTMLCanvasElement>(null);
   const sgpaCanvasRef = useRef<HTMLCanvasElement>(null);
   const failureCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -325,7 +338,7 @@ function OverviewTab({ data }: { data: ReportsDashboardData }) {
 }
 
 /* ── Performance Tab ── */
-function PerformanceTab({ data }: { data: ReportsDashboardData }) {
+function PerformanceTab({ data }: { data: Examination.ReportsDashboard }) {
   const [filter, setFilter] = useState<'all' | 'cse' | 'ece'>('all');
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -411,7 +424,7 @@ function PerformanceTab({ data }: { data: ReportsDashboardData }) {
 }
 
 /* ── Subjects Tab ── */
-function SubjectsTab({ data }: { data: ReportsDashboardData }) {
+function SubjectsTab({ data }: { data: Examination.ReportsDashboard }) {
   return (
     <FormCard title="Subject Performance Details">
       <div className="overflow-x-auto">
@@ -470,7 +483,7 @@ function SubjectsTab({ data }: { data: ReportsDashboardData }) {
 }
 
 /* ── Enrollment Tab ── */
-function EnrollmentTab({ data }: { data: ReportsDashboardData }) {
+function EnrollmentTab({ data }: { data: Examination.ReportsDashboard }) {
   const enrollmentCanvasRef = useRef<HTMLCanvasElement>(null);
   const attendanceCanvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -610,75 +623,3 @@ function EnrollmentTab({ data }: { data: ReportsDashboardData }) {
 }
 
 /* ── Types ── */
-interface ReportsDashboardData {
-  overview: {
-    totalStudents: number;
-    appeared: number;
-    passed: number;
-    passPercentage: number;
-    avgSgpa: number;
-    atRisk: number;
-    attendanceRate: number;
-  };
-  topPerformers: {
-    rank: number;
-    name: string;
-    usn: string;
-    sgpa: number;
-    cgpa: number;
-    semester: number;
-    program: string;
-  }[];
-  gradeDistribution: {
-    grade: string;
-    count: number;
-    minScore: number;
-    maxScore: number;
-    color: string;
-  }[];
-  failureAnalysis: {
-    subject: string;
-    enrollment: number;
-    failed: number;
-    failRate: number;
-  }[];
-  sgpaTrend: {
-    semester: number;
-    avgSgpa: number;
-    maxSgpa: number;
-    minSgpa: number;
-  }[];
-  enrollmentData: {
-    program: string;
-    students: number;
-    appeared: number;
-    passed: number;
-    change: number;
-  }[];
-  attendanceBreakdown: { range: string; count: number; color: string }[];
-  subjectPassRates: {
-    all: {
-      subject: string;
-      code: string;
-      passRate: number;
-      enrollment: number;
-      avgScore: number;
-    }[];
-    cse: {
-      subject: string;
-      code: string;
-      passRate: number;
-      enrollment: number;
-      avgScore: number;
-    }[];
-    ece: {
-      subject: string;
-      code: string;
-      passRate: number;
-      enrollment: number;
-      avgScore: number;
-    }[];
-  };
-  semesterOptions: string[];
-  selectedSemester: string;
-}

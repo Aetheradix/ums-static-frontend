@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { FormPage, FormCard, GridPanel } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
-import { useStudentApplicationsQuery } from '../../../queries';
 import { ToastService } from 'services';
+import { Button } from 'shared/components/buttons';
+import { FormCard, FormPage, GridPanel } from 'shared/new-components';
+import { useStudentApplicationsQuery } from '../../../queries';
 
 const STATUS_COLORS: Record<string, string> = {
   Draft: 'bg-gray-100 text-gray-700',

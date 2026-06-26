@@ -4,9 +4,43 @@ import { useExamCentersQuery, useHallsQuery } from '../../../queries';
 
 export default function SeatingPlan() {
   const { sessionId } = useParams<{ sessionId: string }>();
-  const { data: centers } = useExamCentersQuery();
+  const {
+    data: centers,
+    isError: isCentersError,
+    isLoading: isCentersLoading,
+  } = useExamCentersQuery();
   const firstCenterId = (centers ?? [])[0]?.id ?? 0;
-  const { data: halls } = useHallsQuery(firstCenterId);
+  const {
+    data: halls,
+    isError: isHallsError,
+    isLoading: isHallsLoading,
+  } = useHallsQuery(firstCenterId);
+
+  if (isCentersError || isHallsError) {
+    return (
+      <FormPage
+        title="Seating Plan"
+        description={`Seating arrangement for session #${sessionId}`}
+      >
+        <div className="flex items-center justify-center h-64 text-red-500">
+          Failed to load data for seating plan
+        </div>
+      </FormPage>
+    );
+  }
+
+  if (isCentersLoading || isHallsLoading) {
+    return (
+      <FormPage
+        title="Seating Plan"
+        description={`Seating arrangement for session #${sessionId}`}
+      >
+        <div className="flex items-center justify-center h-64 text-gray-400">
+          Loading...
+        </div>
+      </FormPage>
+    );
+  }
 
   return (
     <FormPage

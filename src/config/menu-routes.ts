@@ -952,7 +952,7 @@ export const menuConfig: Menu.MenuItem[] = [
               {
                 label: 'Marks Entry',
                 description: 'Enter marks for examination sessions.',
-                path: '/examination-management/marks',
+                path: '/examination-management/marks/1',
                 icon: 'edit',
                 colorScheme: 'red',
                 feature: '@examination-management/marks-entry',
@@ -961,7 +961,7 @@ export const menuConfig: Menu.MenuItem[] = [
               {
                 label: 'Marks Verification',
                 description: 'Verify entered marks.',
-                path: '/examination-management/marks/verify',
+                path: '/examination-management/marks/1/verify',
                 icon: 'fact_check',
                 colorScheme: 'red',
                 feature: '@examination-management/marks-verification',
@@ -970,7 +970,7 @@ export const menuConfig: Menu.MenuItem[] = [
               {
                 label: 'Marks Approval',
                 description: 'Approve verified marks.',
-                path: '/examination-management/marks/approve',
+                path: '/examination-management/marks/1/approve',
                 icon: 'approval',
                 colorScheme: 'red',
                 feature: '@examination-management/marks-approval',
@@ -990,7 +990,7 @@ export const menuConfig: Menu.MenuItem[] = [
               {
                 label: 'Result Processing',
                 description: 'Process results for examination sessions.',
-                path: '/examination-management/results',
+                path: '/examination-management/results/1',
                 icon: 'calculate',
                 colorScheme: 'red',
                 feature: '@examination-management/result-processing',

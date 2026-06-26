@@ -12,6 +12,17 @@ import ExamFeeForm from '../../../components/ExamFeeForm';
 export default function FeeConfiguration() {
   const { data, isLoading } = useExamFeesQuery();
   const [showPopup, setShowPopup] = useState(false);
+  const [editId, setEditId] = useState<number | undefined>(undefined);
+
+  const handleEdit = (id: number) => {
+    setEditId(id);
+    setShowPopup(true);
+  };
+
+  const handleClose = () => {
+    setEditId(undefined);
+    setShowPopup(false);
+  };
 
   return (
     <FormPage
@@ -47,17 +58,34 @@ export default function FeeConfiguration() {
                 </span>
               ),
             },
+            {
+              header: 'Actions',
+              cell: (item: Examination.ExamFeeItem) => (
+                <div className="flex gap-2">
+                  <Button
+                    icon="pencil"
+                    variant="text"
+                    tooltip="Edit Fee"
+                    onClick={() => handleEdit(item.id)}
+                  />
+                </div>
+              ),
+            },
           ]}
         />
       </FormCard>
       {showPopup && (
         <FormPopup
           visible
-          onHide={() => setShowPopup(false)}
-          title="Add Exam Fee"
-          subtitle="Create a new fee configuration"
+          onHide={handleClose}
+          title={editId ? 'Edit Exam Fee' : 'Add Exam Fee'}
+          subtitle={
+            editId
+              ? 'Modify fee configuration'
+              : 'Create a new fee configuration'
+          }
         >
-          <ExamFeeForm onClose={() => setShowPopup(false)} />
+          <ExamFeeForm id={editId} onClose={handleClose} />
         </FormPopup>
       )}
     </FormPage>

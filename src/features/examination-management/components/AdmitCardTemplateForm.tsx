@@ -18,7 +18,7 @@ interface AdmitCardTemplateFormProps {
 const DEFAULT_VALUES: Examination.AdmitCardTemplateForm = {
   templateCode: '',
   templateName: '',
-  applicableCycleId: '' as unknown as number,
+  applicableCycleId: '',
   applicableFromYear: new Date().getFullYear(),
   orientation: 'Portrait',
   isDefault: false,

@@ -12,6 +12,17 @@ import QuestionPaperForm from '../../../components/QuestionPaperForm';
 export default function QuestionPaperList() {
   const { data, isLoading } = useQuestionPapersQuery();
   const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState<number | undefined>(undefined);
+
+  const handleEdit = (id: number) => {
+    setEditId(id);
+    setShowForm(true);
+  };
+
+  const handleClose = () => {
+    setEditId(undefined);
+    setShowForm(false);
+  };
 
   return (
     <FormPage
@@ -50,13 +61,15 @@ export default function QuestionPaperList() {
             },
             {
               header: 'Actions',
-              cell: () => (
-                <Button
-                  icon="eye"
-                  variant="text"
-                  tooltip="View/Download"
-                  onClick={() => {}}
-                />
+              cell: (item: Examination.QuestionPaperItem) => (
+                <div className="flex gap-2">
+                  <Button
+                    icon="pencil"
+                    variant="text"
+                    tooltip="Edit"
+                    onClick={() => handleEdit(item.id)}
+                  />
+                </div>
               ),
             },
           ]}
@@ -64,11 +77,15 @@ export default function QuestionPaperList() {
       </FormCard>
       <FormPopup
         visible={showForm}
-        onHide={() => setShowForm(false)}
-        title="Add Question Paper"
-        subtitle="Upload a new question paper"
+        onHide={handleClose}
+        title={editId ? 'Edit Question Paper' : 'Add Question Paper'}
+        subtitle={
+          editId
+            ? 'Modify question paper details'
+            : 'Upload a new question paper'
+        }
       >
-        <QuestionPaperForm onClose={() => setShowForm(false)} />
+        <QuestionPaperForm id={editId} onClose={handleClose} />
       </FormPopup>
     </FormPage>
   );

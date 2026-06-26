@@ -7,9 +7,43 @@ import { ToastService } from 'services';
 
 export default function DutyAllocation() {
   const { sessionId } = useParams<{ sessionId: string }>();
-  const { data: centers } = useExamCentersQuery();
-  const { data: duties } = useDutyTypesQuery();
+  const {
+    data: centers,
+    isError: isCentersError,
+    isLoading: isCentersLoading,
+  } = useExamCentersQuery();
+  const {
+    data: duties,
+    isError: isDutiesError,
+    isLoading: isDutiesLoading,
+  } = useDutyTypesQuery();
   const [selectedCenter, setSelectedCenter] = useState<number | null>(null);
+
+  if (isCentersError || isDutiesError) {
+    return (
+      <FormPage
+        title="Duty Allocation"
+        description={`Assign invigilation duties for session #${sessionId}`}
+      >
+        <div className="flex items-center justify-center h-64 text-red-500">
+          Failed to load data for duty allocation
+        </div>
+      </FormPage>
+    );
+  }
+
+  if (isCentersLoading || isDutiesLoading) {
+    return (
+      <FormPage
+        title="Duty Allocation"
+        description={`Assign invigilation duties for session #${sessionId}`}
+      >
+        <div className="flex items-center justify-center h-64 text-gray-400">
+          Loading...
+        </div>
+      </FormPage>
+    );
+  }
 
   const handleAllocate = () => {
     ToastService.success('Duty allocation saved successfully.');

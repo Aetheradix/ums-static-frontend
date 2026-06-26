@@ -648,6 +648,70 @@ export const examinationMocks = {
     ],
   },
 
+  'examination-management/session/1/attendance-roll-call': [
+    {
+      id: 1,
+      studentName: 'Rahul Sharma',
+      rollNumber: 'B.Tech/2024/001',
+      subjectCode: 'CS301',
+      status: 'Present',
+    },
+    {
+      id: 2,
+      studentName: 'Priya Patel',
+      rollNumber: 'B.Tech/2024/002',
+      subjectCode: 'CS301',
+      status: 'Absent',
+    },
+    {
+      id: 3,
+      studentName: 'Suresh Verma',
+      rollNumber: 'B.Tech/2024/003',
+      subjectCode: 'CS301',
+      status: 'Present',
+    },
+  ],
+
+  'examination-management/session/1/eligibility-list': [
+    {
+      id: 1,
+      studentName: 'Rahul Sharma',
+      rollNumber: 'B.Tech/2024/001',
+      attendancePercentage: 85,
+      feePaid: true,
+      prerequisitesMet: true,
+      isEligible: true,
+    },
+    {
+      id: 2,
+      studentName: 'Priya Patel',
+      rollNumber: 'B.Tech/2024/002',
+      attendancePercentage: 70,
+      feePaid: true,
+      prerequisitesMet: true,
+      isEligible: false,
+    },
+    {
+      id: 3,
+      studentName: 'Amit Kumar',
+      rollNumber: 'MBA/2024/001',
+      attendancePercentage: 90,
+      feePaid: false,
+      prerequisitesMet: true,
+      isEligible: false,
+    },
+  ],
+
+  'examination-management/session/1/grade-boundaries': [
+    { grade: 'O', minScore: 90, maxScore: 100, point: 10 },
+    { grade: 'A+', minScore: 80, maxScore: 89.99, point: 9 },
+    { grade: 'A', minScore: 70, maxScore: 79.99, point: 8 },
+    { grade: 'B+', minScore: 60, maxScore: 69.99, point: 7 },
+    { grade: 'B', minScore: 50, maxScore: 59.99, point: 6 },
+    { grade: 'C', minScore: 40, maxScore: 49.99, point: 5 },
+    { grade: 'F', minScore: 0, maxScore: 39.99, point: 0 },
+  ],
+
   'examination-management/halls?centerId=1': [
     {
       id: 1,
@@ -1093,6 +1157,71 @@ export const sisMocks = {
 };
 
 export const examinationExtendedMocks = {
+  'examination-management/student/seating-plan': {
+    seat: 'Hall 101 - Seat S12',
+    hall: 'Hall 101',
+    floor: 'Main Campus, Ground Floor',
+    halls: [
+      {
+        name: 'Hall 101',
+        floor: 'Ground',
+        capacity: 60,
+        type: 'Classroom',
+        seats: Array(20)
+          .fill(null)
+          .map((_, i) => ({
+            seat: `S${i + 1}`,
+            status: i < 12 ? 'allocated' : i < 17 ? 'reserved' : 'available',
+          })),
+      },
+      {
+        name: 'Hall 102',
+        floor: 'Ground',
+        capacity: 50,
+        type: 'Classroom',
+        seats: Array(20)
+          .fill(null)
+          .map((_, i) => ({
+            seat: `S${i + 1}`,
+            status: i < 10 ? 'allocated' : i < 15 ? 'reserved' : 'available',
+          })),
+      },
+    ],
+  },
+  'examination-management/student/admit-card': {
+    studentData: {
+      name: 'Rahul Sharma',
+      rollNo: 'B.Tech/2024/001',
+      enrollment: 'ENR2024001',
+      program: 'Bachelor of Technology (CSE)',
+      semester: '4th Semester',
+      session: '2024-2025',
+      exam: 'End Semester Examination December 2024',
+    },
+    examSubjects: [
+      {
+        code: 'CS301',
+        name: 'Data Structures',
+        date: '02 Dec 2024',
+        time: '09:00 - 12:00',
+        hall: 'Hall 101',
+      },
+      {
+        code: 'CS302',
+        name: 'Database Management Systems',
+        date: '04 Dec 2024',
+        time: '09:00 - 12:00',
+        hall: 'Hall 102',
+      },
+      {
+        code: 'MA201',
+        name: 'Engineering Mathematics III',
+        date: '06 Dec 2024',
+        time: '09:00 - 11:00',
+        hall: 'LH 201',
+      },
+    ],
+  },
   'examination-management/question-paper': [
     {
       id: 1,

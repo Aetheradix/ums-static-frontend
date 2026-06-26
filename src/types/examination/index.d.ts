@@ -34,7 +34,7 @@ declare namespace Examination {
   interface SessionTemplateForm {
     code: string;
     applicableYear: number;
-    applicableCycleId: number;
+    applicableCycleId: number | '';
     applicableCycleName?: string;
     templateName: string;
     description?: string;
@@ -86,7 +86,7 @@ declare namespace Examination {
   interface AdmitCardTemplateForm {
     templateCode: string;
     templateName: string;
-    applicableCycleId: number;
+    applicableCycleId: number | '';
     applicableCycleName?: string;
     applicableFromYear: number;
     orientation: 'Portrait' | 'Landscape';
@@ -553,5 +553,146 @@ declare namespace Examination {
     message: string;
     type: 'info' | 'warning' | 'success' | 'error';
     date: string;
+  }
+
+  // ─── Phase 3 Workflow Types ───
+  interface AttendanceRollCallItem {
+    id: number;
+    studentName: string;
+    rollNumber: string;
+    subjectCode: string;
+    status: 'Present' | 'Absent';
+  }
+
+  interface EligibilityItem {
+    id: number;
+    studentName: string;
+    rollNumber: string;
+    attendancePercentage: number;
+    feePaid: boolean;
+    prerequisitesMet: boolean;
+    isEligible: boolean;
+  }
+
+  interface GradeBoundaryItem {
+    grade: string;
+    minScore: number;
+    maxScore: number;
+    point: number;
+  }
+
+  // ─── Phase 5 Workflow Types ───
+  interface ReportsDashboard {
+    overview: {
+      totalStudents: number;
+      appeared: number;
+      passed: number;
+      passPercentage: number;
+      avgSgpa: number;
+      atRisk: number;
+      attendanceRate: number;
+    };
+    topPerformers: {
+      rank: number;
+      name: string;
+      usn: string;
+      sgpa: number;
+      cgpa: number;
+      semester: number;
+      program: string;
+    }[];
+    gradeDistribution: {
+      grade: string;
+      count: number;
+      minScore: number;
+      maxScore: number;
+      color: string;
+    }[];
+    failureAnalysis: {
+      subject: string;
+      enrollment: number;
+      failed: number;
+      failRate: number;
+    }[];
+    sgpaTrend: {
+      semester: number;
+      avgSgpa: number;
+      maxSgpa: number;
+      minSgpa: number;
+    }[];
+    enrollmentData: {
+      program: string;
+      students: number;
+      appeared: number;
+      passed: number;
+      change: number;
+    }[];
+    attendanceBreakdown: { range: string; count: number; color: string }[];
+    subjectPassRates: {
+      all: {
+        subject: string;
+        code: string;
+        passRate: number;
+        enrollment: number;
+        avgScore: number;
+      }[];
+      cse: {
+        subject: string;
+        code: string;
+        passRate: number;
+        enrollment: number;
+        avgScore: number;
+      }[];
+      ece: {
+        subject: string;
+        code: string;
+        passRate: number;
+        enrollment: number;
+        avgScore: number;
+      }[];
+    };
+    semesterOptions: string[];
+    selectedSemester: string;
+  }
+
+  interface AdmitCardSubject {
+    code: string;
+    name: string;
+    date: string;
+    time: string;
+    hall: string;
+  }
+
+  interface StudentAdmitCardData {
+    studentData: {
+      name: string;
+      rollNo: string;
+      enrollment: string;
+      program: string;
+      semester: string;
+      session: string;
+      exam: string;
+    };
+    examSubjects: AdmitCardSubject[];
+  }
+
+  interface SeatingPlanSeat {
+    seat: string;
+    status: 'allocated' | 'reserved' | 'available';
+  }
+
+  interface SeatingPlanHall {
+    name: string;
+    floor: string;
+    capacity: number;
+    type: string;
+    seats: SeatingPlanSeat[];
+  }
+
+  interface StudentSeatingPlanData {
+    seat: string;
+    hall: string;
+    floor: string;
+    halls: SeatingPlanHall[];
   }
 }

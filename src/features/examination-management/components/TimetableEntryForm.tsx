@@ -1,12 +1,18 @@
 import { ToastService } from 'services';
-import { TextBox, NumberBox } from 'shared/components/forms';
+import { TextBox, NumberBox, DatePicker } from 'shared/components/forms';
 import { useAppForm } from 'shared/hooks/form';
 import { FormActions, FormGrid } from 'shared/new-components';
 import validation from 'shared/utils/validation';
-import { useCreateTimetableEntryMutation } from '../queries';
+import { useEffect } from 'react';
+import {
+  useCreateTimetableEntryMutation,
+  useUpdateTimetableEntryMutation,
+  useTimetableQuery,
+} from '../queries';
 
 interface Props {
   sessionId: number;
+  id?: number;
   onClose: () => void;
 }
 
@@ -20,10 +26,20 @@ const schema = validation.create<Examination.TimetableForm>(o => ({
   centerId: o.number().required().label('Center'),
 }));
 
-export default function TimetableEntryForm({ sessionId, onClose }: Props) {
-  const { mutateAsync: create, isPending } =
+export default function TimetableEntryForm({ sessionId, id, onClose }: Props) {
+  const isEditMode = !!id;
+  const { data: timetable } = useTimetableQuery(sessionId);
+  const initialData = isEditMode
+    ? timetable?.find(t => t.id === id)
+    : undefined;
+
+  const { mutateAsync: create, isPending: isCreating } =
     useCreateTimetableEntryMutation(sessionId);
-  const { register, handleSubmit, reset } =
+  const { mutateAsync: update, isPending: isUpdating } =
+    useUpdateTimetableEntryMutation(sessionId, id!);
+  const isPending = isCreating || isUpdating;
+
+  const { register, handleSubmit, reset, control } =
     useAppForm<Examination.TimetableForm>({
       resolver: validation.resolver(schema),
       defaultValues: {
@@ -36,9 +52,29 @@ export default function TimetableEntryForm({ sessionId, onClose }: Props) {
         centerId: 1,
       },
     });
+
+  useEffect(() => {
+    if (initialData) {
+      reset({
+        subjectCode: initialData.subjectCode,
+        subjectName: initialData.subjectName,
+        examDate: initialData.examDate,
+        slotId: initialData.slotId,
+        startTime: initialData.startTime,
+        endTime: initialData.endTime,
+        centerId: initialData.centerId,
+      });
+    }
+  }, [initialData, reset]);
+
   const onSubmit = async (data: Examination.TimetableForm) => {
-    await create(data);
-    ToastService.success('Timetable entry added successfully.');
+    if (isEditMode) {
+      await update(data);
+      ToastService.success('Timetable entry updated successfully.');
+    } else {
+      await create(data);
+      ToastService.success('Timetable entry added successfully.');
+    }
     onClose();
   };
   return (
@@ -56,10 +92,11 @@ export default function TimetableEntryForm({ sessionId, onClose }: Props) {
           {...register('subjectName')}
           required
         />
-        <TextBox
+        <DatePicker
           label="Exam Date"
           placeholder="YYYY-MM-DD"
-          {...register('examDate')}
+          name="examDate"
+          control={control}
           required
         />
         <NumberBox label="Time Slot ID" {...register('slotId')} required />
@@ -78,7 +115,7 @@ export default function TimetableEntryForm({ sessionId, onClose }: Props) {
         <NumberBox label="Center ID" {...register('centerId')} required />
       </FormGrid>
       <FormActions
-        isEditMode={false}
+        isEditMode={isEditMode}
         isLoading={isPending}
         onSave={handleSubmit(onSubmit)}
         onReset={reset}

@@ -15,6 +15,17 @@ export default function TimetableManagement() {
   const sid = Number(sessionId);
   const { data, isLoading } = useTimetableQuery(sid);
   const [showPopup, setShowPopup] = useState(false);
+  const [editId, setEditId] = useState<number | undefined>(undefined);
+
+  const handleEdit = (id: number) => {
+    setEditId(id);
+    setShowPopup(true);
+  };
+
+  const handleClose = () => {
+    setEditId(undefined);
+    setShowPopup(false);
+  };
 
   return (
     <FormPage
@@ -45,12 +56,12 @@ export default function TimetableManagement() {
             { field: 'centerName', header: 'Center' },
             {
               header: 'Actions',
-              cell: () => (
+              cell: (item: Examination.TimetableItem) => (
                 <Button
                   icon="pencil"
                   variant="text"
                   tooltip="Edit"
-                  onClick={() => {}}
+                  onClick={() => handleEdit(item.id)}
                 />
               ),
             },
@@ -59,14 +70,11 @@ export default function TimetableManagement() {
       </FormCard>
       <FormPopup
         visible={showPopup}
-        onHide={() => setShowPopup(false)}
-        title="Add Timetable Entry"
-        subtitle="Schedule a new exam"
+        onHide={handleClose}
+        title={editId ? 'Edit Timetable Entry' : 'Add Timetable Entry'}
+        subtitle={editId ? 'Modify scheduled exam' : 'Schedule a new exam'}
       >
-        <TimetableEntryForm
-          sessionId={sid}
-          onClose={() => setShowPopup(false)}
-        />
+        <TimetableEntryForm id={editId} sessionId={sid} onClose={handleClose} />
       </FormPopup>
     </FormPage>
   );

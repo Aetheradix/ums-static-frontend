@@ -12,6 +12,17 @@ import LateFeeForm from '../../../components/LateFeeForm';
 export default function LateFeeConfiguration() {
   const { data, isLoading } = useLateFeesQuery();
   const [showPopup, setShowPopup] = useState(false);
+  const [editId, setEditId] = useState<number | undefined>(undefined);
+
+  const handleEdit = (id: number) => {
+    setEditId(id);
+    setShowPopup(true);
+  };
+
+  const handleClose = () => {
+    setEditId(undefined);
+    setShowPopup(false);
+  };
 
   return (
     <FormPage
@@ -54,17 +65,32 @@ export default function LateFeeConfiguration() {
                 </span>
               ),
             },
+            {
+              header: 'Actions',
+              cell: (item: Examination.LateFeeItem) => (
+                <div className="flex gap-2">
+                  <Button
+                    icon="pencil"
+                    variant="text"
+                    tooltip="Edit Rule"
+                    onClick={() => handleEdit(item.id)}
+                  />
+                </div>
+              ),
+            },
           ]}
         />
       </FormCard>
       {showPopup && (
         <FormPopup
           visible
-          onHide={() => setShowPopup(false)}
-          title="Add Late Fee Rule"
-          subtitle="Create a new late fee rule"
+          onHide={handleClose}
+          title={editId ? 'Edit Late Fee Rule' : 'Add Late Fee Rule'}
+          subtitle={
+            editId ? 'Modify late fee rule' : 'Create a new late fee rule'
+          }
         >
-          <LateFeeForm onClose={() => setShowPopup(false)} />
+          <LateFeeForm id={editId} onClose={handleClose} />
         </FormPopup>
       )}
     </FormPage>

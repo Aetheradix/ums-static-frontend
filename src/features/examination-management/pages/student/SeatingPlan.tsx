@@ -1,33 +1,37 @@
 import { FormPage, FormCard } from 'shared/new-components';
-
-const halls = [
-  {
-    name: 'Hall 101',
-    floor: 'Ground',
-    capacity: 60,
-    type: 'Classroom',
-    seats: Array(20)
-      .fill(null)
-      .map((_, i) => ({
-        seat: `S${i + 1}`,
-        status: i < 12 ? 'allocated' : i < 17 ? 'reserved' : 'available',
-      })),
-  },
-  {
-    name: 'Hall 102',
-    floor: 'Ground',
-    capacity: 50,
-    type: 'Classroom',
-    seats: Array(20)
-      .fill(null)
-      .map((_, i) => ({
-        seat: `S${i + 1}`,
-        status: i < 10 ? 'allocated' : i < 15 ? 'reserved' : 'available',
-      })),
-  },
-];
+import { useStudentSeatingPlanQuery } from '../../queries';
 
 export default function StudentSeatingPlan() {
+  const { data, isLoading, isError, error } = useStudentSeatingPlanQuery();
+
+  if (isLoading) {
+    return (
+      <FormPage
+        title="My Seating Plan"
+        description="View your assigned examination hall and seat"
+      >
+        <div className="flex justify-center items-center h-64 text-gray-500">
+          Loading seating plan...
+        </div>
+      </FormPage>
+    );
+  }
+
+  if (isError || !data) {
+    return (
+      <FormPage
+        title="My Seating Plan"
+        description="View your assigned examination hall and seat"
+      >
+        <div className="flex justify-center items-center h-64 text-red-500">
+          {(error as Error)?.message || 'Seating plan not available.'}
+        </div>
+      </FormPage>
+    );
+  }
+
+  const { seat, hall: assignedHall, floor, halls } = data;
+
   return (
     <FormPage
       title="My Seating Plan"
@@ -36,9 +40,9 @@ export default function StudentSeatingPlan() {
       <FormCard>
         <div className="p-4 mb-4 bg-blue-50 rounded-lg border border-blue-200">
           <p className="text-sm font-medium text-blue-800">
-            Your Seat: <strong>Hall 101 - Seat S12</strong>
+            Your Seat: <strong>{seat}</strong>
           </p>
-          <p className="text-xs text-blue-600">Main Campus, Ground Floor</p>
+          <p className="text-xs text-blue-600">{floor}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -60,7 +64,7 @@ export default function StudentSeatingPlan() {
                         : s.status === 'reserved'
                           ? 'bg-yellow-100 text-yellow-700 border-yellow-200'
                           : 'bg-gray-50 text-gray-400 border-gray-200'
-                    } ${s.seat === 'S12' && hall.name === 'Hall 101' ? 'ring-2 ring-blue-500 font-bold' : ''}`}
+                    } ${s.seat === seat.split(' - Seat ')[1] && hall.name === assignedHall ? 'ring-2 ring-blue-500 font-bold' : ''}`}
                   >
                     {s.seat}
                   </div>

@@ -1,42 +1,39 @@
 import { FormPage, FormCard } from 'shared/new-components';
 import { Button } from 'shared/components/buttons';
 import { ToastService } from 'services';
-
-const studentData = {
-  name: 'Rahul Sharma',
-  rollNo: 'B.Tech/2024/001',
-  enrollment: 'ENR2024001',
-  program: 'Bachelor of Technology (CSE)',
-  semester: '4th Semester',
-  session: '2024-2025',
-  exam: 'End Semester Examination December 2024',
-};
-
-const examSubjects = [
-  {
-    code: 'CS301',
-    name: 'Data Structures',
-    date: '02 Dec 2024',
-    time: '09:00 - 12:00',
-    hall: 'Hall 101',
-  },
-  {
-    code: 'CS302',
-    name: 'Database Management Systems',
-    date: '04 Dec 2024',
-    time: '09:00 - 12:00',
-    hall: 'Hall 102',
-  },
-  {
-    code: 'MA201',
-    name: 'Engineering Mathematics III',
-    date: '06 Dec 2024',
-    time: '09:00 - 11:00',
-    hall: 'LH 201',
-  },
-];
+import { useStudentAdmitCardQuery } from '../../queries';
 
 export default function StudentAdmitCard() {
+  const { data, isLoading, isError, error } = useStudentAdmitCardQuery();
+
+  if (isLoading) {
+    return (
+      <FormPage
+        title="My Admit Card"
+        description="Download your admit card / hall ticket"
+      >
+        <div className="flex justify-center items-center h-64 text-gray-500">
+          Loading admit card data...
+        </div>
+      </FormPage>
+    );
+  }
+
+  if (isError || !data) {
+    return (
+      <FormPage
+        title="My Admit Card"
+        description="Download your admit card / hall ticket"
+      >
+        <div className="flex justify-center items-center h-64 text-red-500">
+          {(error as Error)?.message || 'Admit card not generated yet.'}
+        </div>
+      </FormPage>
+    );
+  }
+
+  const { studentData, examSubjects } = data;
+
   return (
     <FormPage
       title="My Admit Card"

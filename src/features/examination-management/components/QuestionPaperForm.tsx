@@ -3,7 +3,12 @@ import { TextBox, DropDownList } from 'shared/components/forms';
 import { useAppForm } from 'shared/hooks/form';
 import { FormActions, FormGrid } from 'shared/new-components';
 import validation from 'shared/utils/validation';
-import { useCreateQuestionPaperMutation } from '../queries';
+import { useEffect } from 'react';
+import {
+  useCreateQuestionPaperMutation,
+  useUpdateQuestionPaperMutation,
+  useQuestionPapersQuery,
+} from '../queries';
 
 const STATUS_OPTIONS = [
   { label: 'Draft', value: 'Draft' },
@@ -11,6 +16,7 @@ const STATUS_OPTIONS = [
 ];
 
 interface Props {
+  id?: number;
   onClose: () => void;
 }
 
@@ -23,8 +29,17 @@ const schema = validation.create<Examination.QuestionPaperForm>(o => ({
   status: o.string().required().label('Status').valid('Draft', 'Approved'),
 }));
 
-export default function QuestionPaperForm({ onClose }: Props) {
-  const { mutateAsync: create, isPending } = useCreateQuestionPaperMutation();
+export default function QuestionPaperForm({ id, onClose }: Props) {
+  const isEditMode = !!id;
+  const { data: papers } = useQuestionPapersQuery();
+  const initialData = isEditMode ? papers?.find(p => p.id === id) : undefined;
+
+  const { mutateAsync: create, isPending: isCreating } =
+    useCreateQuestionPaperMutation();
+  const { mutateAsync: update, isPending: isUpdating } =
+    useUpdateQuestionPaperMutation(id!);
+  const isPending = isCreating || isUpdating;
+
   const { register, handleSubmit, reset, control } =
     useAppForm<Examination.QuestionPaperForm>({
       resolver: validation.resolver(schema),
@@ -37,9 +52,28 @@ export default function QuestionPaperForm({ onClose }: Props) {
         status: 'Draft',
       },
     });
+
+  useEffect(() => {
+    if (initialData) {
+      reset({
+        examType: initialData.examType,
+        subject: initialData.subject,
+        course: initialData.course,
+        semester: initialData.semester,
+        year: initialData.year,
+        status: initialData.status as any,
+      });
+    }
+  }, [initialData, reset]);
+
   const onSubmit = async (data: Examination.QuestionPaperForm) => {
-    await create(data);
-    ToastService.success('Question paper added successfully.');
+    if (isEditMode) {
+      await update(data);
+      ToastService.success('Question paper updated successfully.');
+    } else {
+      await create(data);
+      ToastService.success('Question paper added successfully.');
+    }
     onClose();
   };
   return (
@@ -86,7 +120,7 @@ export default function QuestionPaperForm({ onClose }: Props) {
         />
       </FormGrid>
       <FormActions
-        isEditMode={false}
+        isEditMode={isEditMode}
         isLoading={isPending}
         onSave={handleSubmit(onSubmit)}
         onReset={reset}

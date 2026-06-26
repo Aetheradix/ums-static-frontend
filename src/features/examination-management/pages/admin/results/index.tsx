@@ -4,6 +4,7 @@ import ResultProcessing from './ResultProcessing';
 import ModerationManagement from './ModerationManagement';
 import ResultPublication from './ResultPublication';
 import GradeCardGeneration from './GradeCardGeneration';
+import { GradeCalculation } from './GradeCalculation';
 
 function ResultsIndex() {
   const { data: sessions } = useExamSessionsQuery();
@@ -23,6 +24,10 @@ export default function ResultsPages() {
     <Routes>
       <Route index element={<ResultsIndex />} />
       <Route path=":sessionId" element={<ResultProcessing />} />
+      <Route
+        path="grade-calculation/:sessionId"
+        element={<GradeCalculation />}
+      />
       <Route path="moderation" element={<ModerationManagement />} />
       <Route path="publication" element={<ResultPublication />} />
       <Route path="grade-cards" element={<GradeCardGeneration />} />

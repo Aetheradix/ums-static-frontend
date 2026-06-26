@@ -41,6 +41,27 @@ export default function MarksEntrySheet() {
     ToastService.success('Marks submitted for verification.');
   };
 
+  const CellInput = ({
+    field,
+    initialValue,
+    autoFocus,
+  }: {
+    field: string;
+    initialValue: string;
+    autoFocus?: boolean;
+  }) => {
+    const [val, setVal] = useState(initialValue);
+    return (
+      <input
+        className="w-16 px-1 py-0.5 border border-blue-400 rounded text-sm text-center outline-none"
+        value={val}
+        onChange={e => setVal(e.target.value)}
+        onBlur={() => setMarks(prev => ({ ...prev, [field]: val }))}
+        autoFocus={autoFocus}
+      />
+    );
+  };
+
   const EditableCell = (
     field: string,
     value: string | number | null | undefined
@@ -54,10 +75,9 @@ export default function MarksEntrySheet() {
       const isEditing = editId !== null && item !== undefined;
       if (isEditing) {
         return (
-          <input
-            className="w-16 px-1 py-0.5 border border-blue-400 rounded text-sm text-center outline-none"
-            value={marks[field] ?? ''}
-            onChange={e => setMarks({ ...marks, [field]: e.target.value })}
+          <CellInput
+            field={field}
+            initialValue={marks[field] ?? ''}
             autoFocus={field === 'theoryMarks'}
           />
         );

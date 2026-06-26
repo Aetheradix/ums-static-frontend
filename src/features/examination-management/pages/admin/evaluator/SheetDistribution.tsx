@@ -12,6 +12,17 @@ import SheetDistributionForm from '../../../components/SheetDistributionForm';
 export default function SheetDistribution() {
   const { data, isLoading } = useSheetDistributionsQuery();
   const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState<number | undefined>(undefined);
+
+  const handleEdit = (id: number) => {
+    setEditId(id);
+    setShowForm(true);
+  };
+
+  const handleClose = () => {
+    setEditId(undefined);
+    setShowForm(false);
+  };
 
   return (
     <FormPage
@@ -49,13 +60,15 @@ export default function SheetDistribution() {
             },
             {
               header: 'Actions',
-              cell: () => (
-                <Button
-                  icon="eye"
-                  variant="text"
-                  tooltip="View"
-                  onClick={() => {}}
-                />
+              cell: (item: Examination.SheetDistributionItem) => (
+                <div className="flex gap-2">
+                  <Button
+                    icon="pencil"
+                    variant="text"
+                    tooltip="Edit"
+                    onClick={() => handleEdit(item.id)}
+                  />
+                </div>
               ),
             },
           ]}
@@ -63,11 +76,15 @@ export default function SheetDistribution() {
       </FormCard>
       <FormPopup
         visible={showForm}
-        onHide={() => setShowForm(false)}
-        title="New Distribution"
-        subtitle="Assign answer sheets to an evaluator"
+        onHide={handleClose}
+        title={editId ? 'Edit Distribution' : 'New Distribution'}
+        subtitle={
+          editId
+            ? 'Modify answer sheet distribution'
+            : 'Assign answer sheets to an evaluator'
+        }
       >
-        <SheetDistributionForm onClose={() => setShowForm(false)} />
+        <SheetDistributionForm id={editId} onClose={handleClose} />
       </FormPopup>
     </FormPage>
   );

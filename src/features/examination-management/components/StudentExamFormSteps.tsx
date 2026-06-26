@@ -77,22 +77,10 @@ export function EligibilityStep({ register }: any) {
       <TextBox label="Academic Session" {...register('session')} disabled />
       <TextBox label="Current Status" {...register('currentStatus')} disabled />
 
-      <div
-        className="col-span-full"
-        style={{
-          padding: '1rem',
-          backgroundColor: '#e0f2fe',
-          borderRadius: '4px',
-          border: '1px solid #bae6fd',
-        }}
-      >
+      <div className="col-span-full p-4 bg-sky-100 rounded border border-sky-200">
         <strong>Eligibility Status:</strong>{' '}
-        <span
-          style={{ color: '#16a34a', fontWeight: 'bold', marginLeft: '0.5rem' }}
-        >
-          Eligible
-        </span>
-        <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.9rem' }}>
+        <span className="text-green-600 font-bold ml-2">Eligible</span>
+        <p className="mt-2 text-sm">
           You are eligible to fill the examination form. No pending reasons
           found.
         </p>
@@ -182,45 +170,18 @@ export function FeeCalculationStep({ register }: any) {
         disabled
       />
 
-      <div
-        className="col-span-full"
-        style={{
-          padding: '1.5rem',
-          backgroundColor: '#f8fafc',
-          borderRadius: '4px',
-          border: '1px solid #cbd5e1',
-        }}
-      >
-        <h3 style={{ marginTop: 0 }}>Fee Summary</h3>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginBottom: '0.5rem',
-          }}
-        >
+      <div className="col-span-full p-6 bg-slate-50 rounded border border-slate-300">
+        <h3 className="mt-0 text-lg font-bold">Fee Summary</h3>
+        <div className="flex justify-between mb-2">
           <span>Total Amount</span>
           <strong>₹2550</strong>
         </div>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginBottom: '0.5rem',
-          }}
-        >
+        <div className="flex justify-between mb-2">
           <span>Payment Gateway Charges</span>
           <strong>₹50</strong>
         </div>
-        <hr style={{ margin: '1rem 0' }} />
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            fontSize: '1.2rem',
-            color: '#1e40af',
-          }}
-        >
+        <hr className="my-4" />
+        <div className="flex justify-between text-xl text-blue-800">
           <strong>Net Payable Amount</strong>
           <strong>₹2600</strong>
         </div>
@@ -232,18 +193,7 @@ export function FeeCalculationStep({ register }: any) {
 export function DeclarationStep({ control }: any) {
   return (
     <FormSubSection title="Declaration and Submission">
-      <div
-        className="col-span-full"
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '1rem',
-          padding: '1rem',
-          backgroundColor: '#fffbeb',
-          border: '1px solid #fde68a',
-          borderRadius: '4px',
-        }}
-      >
+      <div className="col-span-full flex flex-col gap-4 p-4 bg-amber-50 border border-amber-200 rounded">
         <Checkbox
           label="I declare that the information provided is true and correct."
           name="agreeInfo"
@@ -289,29 +239,15 @@ export function PaymentStep({ register, control }: any) {
         disabled
       />
 
-      <div
-        className="col-span-full"
-        style={{ marginTop: '2rem', textAlign: 'center' }}
-      >
-        <p style={{ color: '#64748b', marginBottom: '1rem' }}>
+      <div className="col-span-full mt-8 text-center">
+        <p className="text-slate-500 mb-4">
           Click below to proceed securely to the payment gateway.
         </p>
         <button
           type="button"
-          className="p-button p-component p-button-success"
-          style={{
-            padding: '0.75rem 2rem',
-            fontSize: '1.1rem',
-            borderRadius: '4px',
-            border: 'none',
-            cursor: 'pointer',
-          }}
+          className="p-button p-component p-button-success px-8 py-3 text-lg rounded border-none cursor-pointer"
         >
-          <i
-            className="pi pi-credit-card"
-            style={{ marginRight: '0.5rem' }}
-          ></i>{' '}
-          Proceed to Pay ₹2600
+          <i className="pi pi-credit-card mr-2"></i> Proceed to Pay ₹2600
         </button>
       </div>
     </FormSubSection>

@@ -2,8 +2,11 @@ import { useAppForm } from 'shared/hooks/form';
 import validation from 'shared/utils/validation';
 import { FormGrid, FormActions } from 'shared/new-components';
 import { TextBox, NumberBox, DropDownList } from 'shared/components/forms';
+import { useEffect } from 'react';
 import {
   useCreateLateFeeMutation,
+  useUpdateLateFeeMutation,
+  useLateFeesQuery,
   useProgramOptionsQuery,
   useCycleOptionsQuery,
 } from '../queries';
@@ -20,6 +23,7 @@ const STATUS_OPTIONS = [
 ];
 
 interface LateFeeFormProps {
+  id?: number;
   onClose: () => void;
 }
 
@@ -38,12 +42,18 @@ const schema = validation.create<Examination.LateFeeForm>(o => ({
   status: o.string().required().label('Status').valid('Published', 'Draft'),
 }));
 
-export default function LateFeeForm({ onClose }: LateFeeFormProps) {
+export default function LateFeeForm({ id, onClose }: LateFeeFormProps) {
+  const isEditMode = !!id;
+  const { data: fees } = useLateFeesQuery();
+  const initialData = isEditMode ? fees?.find(f => f.id === id) : undefined;
+
   const { data: programs } = useProgramOptionsQuery();
   const { data: cycles } = useCycleOptionsQuery();
   const { mutateAsync: create, isPending: isCreating } =
     useCreateLateFeeMutation();
-  const isSaving = isCreating;
+  const { mutateAsync: update, isPending: isUpdating } =
+    useUpdateLateFeeMutation(id!);
+  const isSaving = isCreating || isUpdating;
 
   const { register, handleSubmit, reset, control } =
     useAppForm<Examination.LateFeeForm>({
@@ -59,9 +69,28 @@ export default function LateFeeForm({ onClose }: LateFeeFormProps) {
       },
     });
 
+  useEffect(() => {
+    if (initialData) {
+      reset({
+        programId: initialData.programId,
+        termNo: initialData.termNo,
+        termType: initialData.termType,
+        applicableFromYear: initialData.applicableFromYear,
+        applicableCycleId: initialData.applicableCycleId,
+        lateFeeConfigJSON: initialData.lateFeeConfigJSON,
+        status: initialData.status as any,
+      });
+    }
+  }, [initialData, reset]);
+
   const onSubmit = async (data: Examination.LateFeeForm) => {
-    await create(data);
-    ToastService.success('Late fee rule created successfully.');
+    if (isEditMode) {
+      await update(data);
+      ToastService.success('Late fee rule updated successfully.');
+    } else {
+      await create(data);
+      ToastService.success('Late fee rule created successfully.');
+    }
     onClose();
   };
 
@@ -122,7 +151,7 @@ export default function LateFeeForm({ onClose }: LateFeeFormProps) {
         />
       </FormGrid>
       <FormActions
-        isEditMode={false}
+        isEditMode={isEditMode}
         isLoading={isSaving}
         onSave={handleSubmit(onSubmit)}
         onReset={reset}

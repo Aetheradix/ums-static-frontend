@@ -12,6 +12,17 @@ import EvaluatorForm from '../../../components/EvaluatorForm';
 export default function EvaluatorList() {
   const { data, isLoading } = useEvaluatorsQuery();
   const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState<number | undefined>(undefined);
+
+  const handleEdit = (id: number) => {
+    setEditId(id);
+    setShowForm(true);
+  };
+
+  const handleClose = () => {
+    setEditId(undefined);
+    setShowForm(false);
+  };
 
   return (
     <FormPage
@@ -50,12 +61,12 @@ export default function EvaluatorList() {
             },
             {
               header: 'Actions',
-              cell: () => (
+              cell: (item: Examination.EvaluatorItem) => (
                 <Button
                   icon="pencil"
                   variant="text"
                   tooltip="Edit"
-                  onClick={() => {}}
+                  onClick={() => handleEdit(item.id)}
                 />
               ),
             },
@@ -64,11 +75,13 @@ export default function EvaluatorList() {
       </FormCard>
       <FormPopup
         visible={showForm}
-        onHide={() => setShowForm(false)}
-        title="Add Evaluator"
-        subtitle="Register a new evaluator"
+        onHide={handleClose}
+        title={editId ? 'Edit Evaluator' : 'Add Evaluator'}
+        subtitle={
+          editId ? 'Modify evaluator details' : 'Register a new evaluator'
+        }
       >
-        <EvaluatorForm onClose={() => setShowForm(false)} />
+        <EvaluatorForm id={editId} onClose={handleClose} />
       </FormPopup>
     </FormPage>
   );

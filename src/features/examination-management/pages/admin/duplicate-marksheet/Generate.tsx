@@ -1,6 +1,6 @@
-import { FormPage, FormCard, GridPanel } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
 import { ToastService } from 'services';
+import { Button } from 'shared/components/buttons';
+import { FormCard, FormPage, GridPanel } from 'shared/new-components';
 import { useGeneratedDuplicatesQuery } from '../../../queries';
 
 export default function Generate() {

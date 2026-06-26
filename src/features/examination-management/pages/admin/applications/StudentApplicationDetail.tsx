@@ -1,9 +1,9 @@
-import { useParams, useNavigate } from 'react-router-dom';
-import { FormPage, FormCard, GridPanel } from 'shared/new-components';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from 'shared/components/buttons';
+import { FormCard, FormPage, GridPanel } from 'shared/new-components';
 import {
-  useStudentApplicationsQuery,
   useExamSessionsQuery,
+  useStudentApplicationsQuery,
 } from '../../../queries';
 
 export default function StudentApplicationDetail() {

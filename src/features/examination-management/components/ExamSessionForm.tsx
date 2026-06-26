@@ -2,7 +2,13 @@ import { useAppForm } from 'shared/hooks/form';
 import validation from 'shared/utils/validation';
 import { FormGrid, FormActions } from 'shared/new-components';
 import { TextBox, NumberBox, DropDownList } from 'shared/components/forms';
-import { useCreateExamSessionMutation, useCycleOptionsQuery } from '../queries';
+import { useEffect } from 'react';
+import {
+  useCreateExamSessionMutation,
+  useUpdateExamSessionMutation,
+  useExamSessionsQuery,
+  useCycleOptionsQuery,
+} from '../queries';
 import { ToastService } from 'services';
 
 const SESSION_TYPE_OPTIONS = [
@@ -16,6 +22,7 @@ const STATUS_OPTIONS = [
 ];
 
 interface ExamSessionFormProps {
+  id?: number;
   onClose: () => void;
 }
 
@@ -37,11 +44,17 @@ const schema = validation.create<Examination.ExamSessionForm>(o => ({
   status: o.string().required().label('Status').valid('Active', 'Inactive'),
 }));
 
-export default function ExamSessionForm({ onClose }: ExamSessionFormProps) {
+export default function ExamSessionForm({ id, onClose }: ExamSessionFormProps) {
+  const isEditMode = !!id;
+  const { data: sessions } = useExamSessionsQuery();
+  const initialData = isEditMode ? sessions?.find(s => s.id === id) : undefined;
+
   const { data: cycles } = useCycleOptionsQuery();
   const { mutateAsync: create, isPending: isCreating } =
     useCreateExamSessionMutation();
-  const isSaving = isCreating;
+  const { mutateAsync: update, isPending: isUpdating } =
+    useUpdateExamSessionMutation(id!);
+  const isSaving = isCreating || isUpdating;
 
   const { register, handleSubmit, reset, control } =
     useAppForm<Examination.ExamSessionForm>({
@@ -56,9 +69,27 @@ export default function ExamSessionForm({ onClose }: ExamSessionFormProps) {
       },
     });
 
+  useEffect(() => {
+    if (initialData) {
+      reset({
+        sessionType: initialData.sessionType as any,
+        academicYearSessionId: initialData.academicYearSessionId,
+        examinationYear: initialData.examinationYear,
+        cycleId: initialData.cycleId,
+        sessionName: initialData.sessionName,
+        status: initialData.status as any,
+      });
+    }
+  }, [initialData, reset]);
+
   const onSubmit = async (data: Examination.ExamSessionForm) => {
-    await create(data);
-    ToastService.success('Examination session created successfully.');
+    if (isEditMode) {
+      await update(data);
+      ToastService.success('Examination session updated successfully.');
+    } else {
+      await create(data);
+      ToastService.success('Examination session created successfully.');
+    }
     onClose();
   };
 
@@ -110,7 +141,7 @@ export default function ExamSessionForm({ onClose }: ExamSessionFormProps) {
         />
       </FormGrid>
       <FormActions
-        isEditMode={false}
+        isEditMode={isEditMode}
         isLoading={isSaving}
         onSave={handleSubmit(onSubmit)}
         onReset={reset}

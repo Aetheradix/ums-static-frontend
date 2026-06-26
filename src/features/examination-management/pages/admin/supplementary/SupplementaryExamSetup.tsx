@@ -12,6 +12,17 @@ import SupplementarySessionForm from '../../../components/SupplementarySessionFo
 export default function SupplementaryExamSetup() {
   const { data, isLoading } = useSupplementarySetupsQuery();
   const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState<number | undefined>(undefined);
+
+  const handleEdit = (id: number) => {
+    setEditId(id);
+    setShowForm(true);
+  };
+
+  const handleClose = () => {
+    setEditId(undefined);
+    setShowForm(false);
+  };
 
   return (
     <FormPage
@@ -46,12 +57,12 @@ export default function SupplementaryExamSetup() {
             },
             {
               header: 'Actions',
-              cell: () => (
+              cell: (item: Examination.SupplementarySessionItem) => (
                 <Button
                   icon="pencil"
                   variant="text"
                   tooltip="Edit Configuration"
-                  onClick={() => {}}
+                  onClick={() => handleEdit(item.id)}
                 />
               ),
             },
@@ -61,11 +72,17 @@ export default function SupplementaryExamSetup() {
 
       <FormPopup
         visible={showForm}
-        onHide={() => setShowForm(false)}
-        title="New Supplementary Session"
-        subtitle="Configure a new supplementary/backlog examination session"
+        onHide={handleClose}
+        title={
+          editId ? 'Edit Supplementary Session' : 'New Supplementary Session'
+        }
+        subtitle={
+          editId
+            ? 'Modify configuration'
+            : 'Configure a new supplementary/backlog examination session'
+        }
       >
-        <SupplementarySessionForm onClose={() => setShowForm(false)} />
+        <SupplementarySessionForm id={editId} onClose={handleClose} />
       </FormPopup>
     </FormPage>
   );

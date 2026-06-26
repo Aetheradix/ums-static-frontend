@@ -98,7 +98,7 @@ export default function StudentExamFormWizard() {
   ];
 
   return (
-    <div className="p-4" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+    <div className="p-4 max-w-[1200px] mx-auto">
       <FormCard
         title="Student Examination Form"
         subtitle="Complete the steps below to register for your exams."

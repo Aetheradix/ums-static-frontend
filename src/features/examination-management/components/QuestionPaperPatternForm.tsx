@@ -3,7 +3,12 @@ import { NumberBox, TextBox, DropDownList } from 'shared/components/forms';
 import { useAppForm } from 'shared/hooks/form';
 import { FormActions, FormGrid } from 'shared/new-components';
 import validation from 'shared/utils/validation';
-import { useCreateQuestionPaperPatternMutation } from '../queries';
+import { useEffect } from 'react';
+import {
+  useCreateQuestionPaperPatternMutation,
+  useUpdateQuestionPaperPatternMutation,
+  useQuestionPaperPatternsQuery,
+} from '../queries';
 
 const STATUS_OPTIONS = [
   { label: 'Active', value: 'Active' },
@@ -11,6 +16,7 @@ const STATUS_OPTIONS = [
 ];
 
 interface Props {
+  id?: number;
   onClose: () => void;
 }
 
@@ -23,9 +29,17 @@ const schema = validation.create<Examination.QuestionPaperPatternForm>(o => ({
   status: o.string().required().label('Status').valid('Active', 'Inactive'),
 }));
 
-export default function QuestionPaperPatternForm({ onClose }: Props) {
-  const { mutateAsync: create, isPending } =
+export default function QuestionPaperPatternForm({ id, onClose }: Props) {
+  const isEditMode = !!id;
+  const { data: patterns } = useQuestionPaperPatternsQuery();
+  const initialData = isEditMode ? patterns?.find(p => p.id === id) : undefined;
+
+  const { mutateAsync: create, isPending: isCreating } =
     useCreateQuestionPaperPatternMutation();
+  const { mutateAsync: update, isPending: isUpdating } =
+    useUpdateQuestionPaperPatternMutation(id!);
+  const isPending = isCreating || isUpdating;
+
   const { register, handleSubmit, reset, control } =
     useAppForm<Examination.QuestionPaperPatternForm>({
       resolver: validation.resolver(schema),
@@ -38,9 +52,28 @@ export default function QuestionPaperPatternForm({ onClose }: Props) {
         status: 'Active',
       },
     });
+
+  useEffect(() => {
+    if (initialData) {
+      reset({
+        subject: initialData.subject,
+        totalMarks: initialData.totalMarks,
+        mcq: initialData.mcq,
+        short: initialData.short,
+        long: initialData.long,
+        status: initialData.status as any,
+      });
+    }
+  }, [initialData, reset]);
+
   const onSubmit = async (data: Examination.QuestionPaperPatternForm) => {
-    await create(data);
-    ToastService.success('Pattern created successfully.');
+    if (isEditMode) {
+      await update(data);
+      ToastService.success('Pattern updated successfully.');
+    } else {
+      await create(data);
+      ToastService.success('Pattern created successfully.');
+    }
     onClose();
   };
   return (
@@ -67,7 +100,7 @@ export default function QuestionPaperPatternForm({ onClose }: Props) {
         />
       </FormGrid>
       <FormActions
-        isEditMode={false}
+        isEditMode={isEditMode}
         isLoading={isPending}
         onSave={handleSubmit(onSubmit)}
         onReset={reset}

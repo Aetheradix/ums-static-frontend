@@ -234,7 +234,20 @@ function QuickActionBtn({
 
 export default function StudentDashboard() {
   const navigate = useNavigate();
-  const { data, isLoading } = useStudentDashboardQuery();
+  const { data, isLoading, isError, error } = useStudentDashboardQuery();
+
+  if (isError) {
+    return (
+      <FormPage
+        title="Student Dashboard"
+        description="Overview of your examination activities"
+      >
+        <div className="flex items-center justify-center h-64 text-red-500">
+          {(error as Error)?.message || 'Failed to load student dashboard'}
+        </div>
+      </FormPage>
+    );
+  }
 
   if (isLoading) {
     return (

@@ -14,6 +14,17 @@ export default function SessionList() {
   const { data, isLoading } = useExamSessionsQuery();
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
+  const [editId, setEditId] = useState<number | undefined>(undefined);
+
+  const handleEdit = (id: number) => {
+    setEditId(id);
+    setShowPopup(true);
+  };
+
+  const handleClose = () => {
+    setEditId(undefined);
+    setShowPopup(false);
+  };
 
   return (
     <FormPage
@@ -64,6 +75,12 @@ export default function SessionList() {
               cell: (item: Examination.ExamSessionItem) => (
                 <div className="flex gap-1">
                   <Button
+                    icon="pencil"
+                    variant="text"
+                    tooltip="Edit Session"
+                    onClick={() => handleEdit(item.id)}
+                  />
+                  <Button
                     icon="calendar"
                     variant="text"
                     tooltip="Timetable"
@@ -100,11 +117,15 @@ export default function SessionList() {
       {showPopup && (
         <FormPopup
           visible
-          onHide={() => setShowPopup(false)}
-          title="Create Session"
-          subtitle="Create a new examination session"
+          onHide={handleClose}
+          title={editId ? 'Edit Session' : 'Create Session'}
+          subtitle={
+            editId
+              ? 'Modify examination session'
+              : 'Create a new examination session'
+          }
         >
-          <ExamSessionForm onClose={() => setShowPopup(false)} />
+          <ExamSessionForm id={editId} onClose={handleClose} />
         </FormPopup>
       )}
     </FormPage>

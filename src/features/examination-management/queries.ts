@@ -314,6 +314,93 @@ export function useStudentApplicationsQuery(sessionId: number) {
   });
 }
 
+// ───── Phase 3 Workflows ─────
+export function useAttendanceRollCallQuery(sessionId: number) {
+  return useQuery({
+    queryKey: [...QUERY_KEY, 'attendance-roll-call', sessionId],
+    queryFn: () => api.getAttendanceRollCall(sessionId),
+    enabled: !!sessionId,
+  });
+}
+
+export function useSaveAttendanceMutation(sessionId: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { id: number; status: 'Present' | 'Absent' }[]) =>
+      api.saveAttendance(sessionId, data),
+    onSuccess: () =>
+      qc.invalidateQueries({
+        queryKey: [...QUERY_KEY, 'attendance-roll-call', sessionId],
+      }),
+  });
+}
+
+export function useEligibilityListQuery(sessionId: number) {
+  return useQuery({
+    queryKey: [...QUERY_KEY, 'eligibility-list', sessionId],
+    queryFn: () => api.getEligibilityList(sessionId),
+    enabled: !!sessionId,
+  });
+}
+
+export function useUpdateEligibilityStatusMutation(sessionId: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { id: number; isEligible: boolean }[]) =>
+      api.updateEligibilityStatus(sessionId, data),
+    onSuccess: () =>
+      qc.invalidateQueries({
+        queryKey: [...QUERY_KEY, 'eligibility-list', sessionId],
+      }),
+  });
+}
+
+export function useGradeBoundariesQuery(sessionId: number) {
+  return useQuery({
+    queryKey: [...QUERY_KEY, 'grade-boundaries', sessionId],
+    queryFn: () => api.getGradeBoundaries(sessionId),
+    enabled: !!sessionId,
+  });
+}
+
+export function useSaveGradeBoundariesMutation(sessionId: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Examination.GradeBoundaryItem[]) =>
+      api.saveGradeBoundaries(sessionId, data),
+    onSuccess: () =>
+      qc.invalidateQueries({
+        queryKey: [...QUERY_KEY, 'grade-boundaries', sessionId],
+      }),
+  });
+}
+
+export function useTriggerGradeCalculationMutation(sessionId: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => api.triggerGradeCalculation(sessionId),
+    onSuccess: () =>
+      qc.invalidateQueries({
+        queryKey: [...QUERY_KEY, 'result', sessionId],
+      }),
+  });
+}
+
+// ─── Student Queries ───
+export function useStudentAdmitCardQuery() {
+  return useQuery({
+    queryKey: [...QUERY_KEY, 'student-admit-card'],
+    queryFn: api.getStudentAdmitCard,
+  });
+}
+
+export function useStudentSeatingPlanQuery() {
+  return useQuery({
+    queryKey: [...QUERY_KEY, 'student-seating-plan'],
+    queryFn: api.getStudentSeatingPlan,
+  });
+}
+
 // ───── Timetable ─────
 export function useTimetableQuery(sessionId: number) {
   return useQuery({
@@ -469,6 +556,16 @@ export function useCreateSupplementarySessionMutation() {
   });
 }
 
+export function useUpdateSupplementarySessionMutation(id: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (form: Examination.SupplementarySessionForm) =>
+      api.updateSupplementarySession(id, form),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: [...QUERY_KEY, 'supplementary'] }),
+  });
+}
+
 // ───── Duplicate Marksheet ─────
 export function useDuplicateApplicationsQuery() {
   return useQuery({
@@ -512,6 +609,16 @@ export function useCreateModerationRuleMutation() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: api.createModerationRule,
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: [...QUERY_KEY, 'moderation'] }),
+  });
+}
+
+export function useUpdateModerationRuleMutation(id: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (form: Examination.ModerationRuleForm) =>
+      api.updateModerationRule(id, form),
     onSuccess: () =>
       qc.invalidateQueries({ queryKey: [...QUERY_KEY, 'moderation'] }),
   });
@@ -593,10 +700,32 @@ export function useCreateQuestionPaperMutation() {
   });
 }
 
+export function useUpdateQuestionPaperMutation(id: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (form: Examination.QuestionPaperForm) =>
+      api.updateQuestionPaper(id, form),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: [...QUERY_KEY, 'question-paper'] }),
+  });
+}
+
 export function useCreateQuestionPaperPatternMutation() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: api.createQuestionPaperPattern,
+    onSuccess: () =>
+      qc.invalidateQueries({
+        queryKey: [...QUERY_KEY, 'question-paper-pattern'],
+      }),
+  });
+}
+
+export function useUpdateQuestionPaperPatternMutation(id: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (form: Examination.QuestionPaperPatternForm) =>
+      api.updateQuestionPaperPattern(id, form),
     onSuccess: () =>
       qc.invalidateQueries({
         queryKey: [...QUERY_KEY, 'question-paper-pattern'],
@@ -614,10 +743,30 @@ export function useCreateEvaluatorMutation() {
   });
 }
 
+export function useUpdateEvaluatorMutation(id: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (form: Examination.EvaluatorForm) =>
+      api.updateEvaluator(id, form),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: [...QUERY_KEY, 'evaluator'] }),
+  });
+}
+
 export function useCreateSheetDistributionMutation() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: api.createSheetDistribution,
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: [...QUERY_KEY, 'sheet-distribution'] }),
+  });
+}
+
+export function useUpdateSheetDistributionMutation(id: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (form: Examination.SheetDistributionForm) =>
+      api.updateSheetDistribution(id, form),
     onSuccess: () =>
       qc.invalidateQueries({ queryKey: [...QUERY_KEY, 'sheet-distribution'] }),
   });
@@ -629,6 +778,18 @@ export function useCreateTimetableEntryMutation(sessionId: number) {
   return useMutation({
     mutationFn: (form: Examination.TimetableForm) =>
       api.createTimetableEntry(sessionId, form),
+    onSuccess: () =>
+      qc.invalidateQueries({
+        queryKey: [...QUERY_KEY, 'timetable', sessionId],
+      }),
+  });
+}
+
+export function useUpdateTimetableEntryMutation(sessionId: number, id: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (form: Examination.TimetableForm) =>
+      api.updateTimetableEntry(sessionId, id, form),
     onSuccess: () =>
       qc.invalidateQueries({
         queryKey: [...QUERY_KEY, 'timetable', sessionId],

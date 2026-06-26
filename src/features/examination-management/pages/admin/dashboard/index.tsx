@@ -1,13 +1,26 @@
+import Chart from 'chart.js/auto';
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Chart from 'chart.js/auto';
+import { FormCard, FormPage } from 'shared/new-components';
 import { useDashboardStatsQuery, useExamSessionsQuery } from '../../../queries';
-import { FormPage, FormCard } from 'shared/new-components';
 
 export default function AdminDashboard() {
-  const { data: stats, isLoading } = useDashboardStatsQuery();
+  const { data: stats, isLoading, isError, error } = useDashboardStatsQuery();
   const { data: sessions } = useExamSessionsQuery();
   const navigate = useNavigate();
+
+  if (isError) {
+    return (
+      <FormPage
+        title="Examination Dashboard"
+        description="Overview of the examination management system"
+      >
+        <div className="flex items-center justify-center h-64 text-red-500">
+          {(error as Error)?.message || 'Failed to load dashboard statistics'}
+        </div>
+      </FormPage>
+    );
+  }
 
   if (isLoading || !stats) {
     return (

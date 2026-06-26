@@ -3,7 +3,12 @@ import { TextBox, DropDownList } from 'shared/components/forms';
 import { useAppForm } from 'shared/hooks/form';
 import { FormActions, FormGrid } from 'shared/new-components';
 import validation from 'shared/utils/validation';
-import { useCreateModerationRuleMutation } from '../queries';
+import { useEffect } from 'react';
+import {
+  useCreateModerationRuleMutation,
+  useUpdateModerationRuleMutation,
+  useModerationRulesQuery,
+} from '../queries';
 
 const TYPE_OPTIONS = [
   { label: 'Flat Add', value: 'FLAT_ADD' },
@@ -18,6 +23,7 @@ const TARGET_OPTIONS = [
 ];
 
 interface Props {
+  id?: number;
   onClose: () => void;
 }
 
@@ -31,16 +37,41 @@ const schema = validation.create<Examination.ModerationRuleForm>(o => ({
   target: o.string().required().label('Target').max(50),
 }));
 
-export default function ModerationRuleForm({ onClose }: Props) {
-  const { mutateAsync: create, isPending } = useCreateModerationRuleMutation();
+export default function ModerationRuleForm({ id, onClose }: Props) {
+  const isEditMode = !!id;
+  const { data: rules } = useModerationRulesQuery();
+  const initialData = isEditMode ? rules?.find(r => r.id === id) : undefined;
+
+  const { mutateAsync: create, isPending: isCreating } =
+    useCreateModerationRuleMutation();
+  const { mutateAsync: update, isPending: isUpdating } =
+    useUpdateModerationRuleMutation(id!);
+  const isPending = isCreating || isUpdating;
+
   const { register, handleSubmit, reset, control } =
     useAppForm<Examination.ModerationRuleForm>({
       resolver: validation.resolver(schema),
       defaultValues: { rule: '', type: 'FLAT_ADD', target: 'all' },
     });
+
+  useEffect(() => {
+    if (initialData) {
+      reset({
+        rule: initialData.rule,
+        type: initialData.type as any,
+        target: initialData.target,
+      });
+    }
+  }, [initialData, reset]);
+
   const onSubmit = async (data: Examination.ModerationRuleForm) => {
-    await create(data);
-    ToastService.success('Moderation rule created successfully.');
+    if (isEditMode) {
+      await update(data);
+      ToastService.success('Moderation rule updated successfully.');
+    } else {
+      await create(data);
+      ToastService.success('Moderation rule created successfully.');
+    }
     onClose();
   };
   return (
@@ -72,7 +103,7 @@ export default function ModerationRuleForm({ onClose }: Props) {
         />
       </FormGrid>
       <FormActions
-        isEditMode={false}
+        isEditMode={isEditMode}
         isLoading={isPending}
         onSave={handleSubmit(onSubmit)}
         onReset={reset}

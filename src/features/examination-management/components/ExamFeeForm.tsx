@@ -3,8 +3,11 @@ import { DropDownList, NumberBox, TextBox } from 'shared/components/forms';
 import { useAppForm } from 'shared/hooks/form';
 import { FormActions, FormGrid } from 'shared/new-components';
 import validation from 'shared/utils/validation';
+import { useEffect } from 'react';
 import {
   useCreateExamFeeMutation,
+  useUpdateExamFeeMutation,
+  useExamFeesQuery,
   useCycleOptionsQuery,
   useProgramOptionsQuery,
 } from '../queries';
@@ -20,6 +23,7 @@ const STATUS_OPTIONS = [
 ];
 
 interface ExamFeeFormProps {
+  id?: number;
   onClose: () => void;
 }
 
@@ -38,12 +42,18 @@ const schema = validation.create<Examination.ExamFeeForm>(o => ({
   status: o.string().required().label('Status').valid('Published', 'Draft'),
 }));
 
-export default function ExamFeeForm({ onClose }: ExamFeeFormProps) {
+export default function ExamFeeForm({ id, onClose }: ExamFeeFormProps) {
+  const isEditMode = !!id;
+  const { data: fees } = useExamFeesQuery();
+  const initialData = isEditMode ? fees?.find(f => f.id === id) : undefined;
+
   const { data: programs } = useProgramOptionsQuery();
   const { data: cycles } = useCycleOptionsQuery();
   const { mutateAsync: create, isPending: isCreating } =
     useCreateExamFeeMutation();
-  const isSaving = isCreating;
+  const { mutateAsync: update, isPending: isUpdating } =
+    useUpdateExamFeeMutation(id!);
+  const isSaving = isCreating || isUpdating;
 
   const { register, handleSubmit, reset, control } =
     useAppForm<Examination.ExamFeeForm>({
@@ -59,9 +69,28 @@ export default function ExamFeeForm({ onClose }: ExamFeeFormProps) {
       },
     });
 
+  useEffect(() => {
+    if (initialData) {
+      reset({
+        programId: initialData.programId,
+        termNo: initialData.termNo,
+        termType: initialData.termType,
+        applicableFromYear: initialData.applicableFromYear,
+        applicableCycleId: initialData.applicableCycleId,
+        feeConfigJSON: initialData.feeConfigJSON,
+        status: initialData.status as any,
+      });
+    }
+  }, [initialData, reset]);
+
   const onSubmit = async (data: Examination.ExamFeeForm) => {
-    await create(data);
-    ToastService.success('Exam fee configuration created successfully.');
+    if (isEditMode) {
+      await update(data);
+      ToastService.success('Exam fee configuration updated successfully.');
+    } else {
+      await create(data);
+      ToastService.success('Exam fee configuration created successfully.');
+    }
     onClose();
   };
 
@@ -118,7 +147,7 @@ export default function ExamFeeForm({ onClose }: ExamFeeFormProps) {
         />
       </FormGrid>
       <FormActions
-        isEditMode={false}
+        isEditMode={isEditMode}
         isLoading={isSaving}
         onSave={handleSubmit(onSubmit)}
         onReset={reset}

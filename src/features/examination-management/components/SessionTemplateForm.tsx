@@ -20,7 +20,7 @@ const DEFAULT_VALUES: Examination.SessionTemplateForm = {
   code: '',
   templateName: '',
   applicableYear: new Date().getFullYear(),
-  applicableCycleId: '' as unknown as number, // Required field
+  applicableCycleId: '', // Required field
   description: '',
   isDefault: false,
   status: 'Draft',

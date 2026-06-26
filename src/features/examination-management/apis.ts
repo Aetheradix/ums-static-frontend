@@ -172,6 +172,66 @@ export function getStudentApplications(sessionId: number) {
   );
 }
 
+// ───── Phase 3 Workflows ─────
+export function getAttendanceRollCall(sessionId: number) {
+  return ApiService.getList<Examination.AttendanceRollCallItem>(
+    url.session.attendanceRollCall(sessionId)
+  );
+}
+
+export async function saveAttendance(
+  sessionId: number,
+  data: { id: number; status: 'Present' | 'Absent' }[]
+) {
+  return ApiService.post(url.session.attendanceRollCall(sessionId), { data });
+}
+
+export function getEligibilityList(sessionId: number) {
+  return ApiService.getList<Examination.EligibilityItem>(
+    url.session.eligibilityList(sessionId)
+  );
+}
+
+export async function updateEligibilityStatus(
+  sessionId: number,
+  data: { id: number; isEligible: boolean }[]
+) {
+  return ApiService.post(url.session.eligibilityList(sessionId), { data });
+}
+
+export function getGradeBoundaries(sessionId: number) {
+  return ApiService.getList<Examination.GradeBoundaryItem>(
+    url.session.gradeBoundaries(sessionId)
+  );
+}
+
+// ─── Student ───
+export function getStudentAdmitCard() {
+  return ApiService.get<Examination.StudentAdmitCardData>(
+    url.student.admitCard
+  ).then(r => r.data);
+}
+
+export function getStudentSeatingPlan() {
+  return ApiService.get<Examination.StudentSeatingPlanData>(
+    url.student.seatingPlan
+  ).then(r => r.data);
+}
+
+export async function saveGradeBoundaries(
+  sessionId: number,
+  data: Examination.GradeBoundaryItem[]
+) {
+  return ApiService.post(url.session.gradeBoundaries(sessionId), { data });
+}
+
+export async function triggerGradeCalculation(sessionId: number) {
+  return ApiService.post(
+    `${url.session.gradeBoundaries(sessionId)}/trigger`,
+    {}
+  );
+}
+
 // ───── Timetable ─────
 export function getTimetable(sessionId: number) {
   return ApiService.getList<Examination.TimetableItem>(
@@ -186,6 +246,19 @@ export async function createTimetableEntry(
   return unwrap(
     await ApiService.post<Examination.TimetableItem>(
       url.timetable.root(sessionId),
+      form
+    )
+  );
+}
+
+export async function updateTimetableEntry(
+  sessionId: number,
+  id: number,
+  form: Examination.TimetableForm
+) {
+  return unwrap(
+    await ApiService.put<Examination.TimetableItem>(
+      url.timetable.edit(sessionId, id),
       form
     )
   );
@@ -218,9 +291,9 @@ export async function getDashboardStats() {
 
 // ───── Reports Dashboard ─────
 export function getReportsDashboard() {
-  return ApiService.get<Record<string, unknown>>(url.reportsDashboard).then(
-    r => r.data
-  );
+  return ApiService.get<Examination.ReportsDashboard>(
+    url.reportsDashboard
+  ).then(r => r.data);
 }
 
 // ───── Options (dropdown data) ─────
@@ -323,6 +396,18 @@ export async function createQuestionPaper(form: Examination.QuestionPaperForm) {
   );
 }
 
+export async function updateQuestionPaper(
+  id: number,
+  form: Examination.QuestionPaperForm
+) {
+  return unwrap(
+    await ApiService.put<Examination.QuestionPaperItem>(
+      url.questionPaper.edit(id),
+      form
+    )
+  );
+}
+
 export function getQuestionPaperPatterns() {
   return ApiService.getList<Examination.QuestionPaperPatternItem>(
     url.questionPaper.patterns
@@ -340,6 +425,18 @@ export async function createQuestionPaperPattern(
   );
 }
 
+export async function updateQuestionPaperPattern(
+  id: number,
+  form: Examination.QuestionPaperPatternForm
+) {
+  return unwrap(
+    await ApiService.put<Examination.QuestionPaperPatternItem>(
+      url.questionPaper.patternEdit(id),
+      form
+    )
+  );
+}
+
 // ───── Evaluator ─────
 export function getEvaluators() {
   return ApiService.getList<Examination.EvaluatorItem>(url.evaluator.root);
@@ -348,6 +445,18 @@ export function getEvaluators() {
 export async function createEvaluator(form: Examination.EvaluatorForm) {
   return unwrap(
     await ApiService.post<Examination.EvaluatorItem>(url.evaluator.create, form)
+  );
+}
+
+export async function updateEvaluator(
+  id: number,
+  form: Examination.EvaluatorForm
+) {
+  return unwrap(
+    await ApiService.put<Examination.EvaluatorItem>(
+      url.evaluator.edit(id),
+      form
+    )
   );
 }
 
@@ -363,6 +472,18 @@ export async function createSheetDistribution(
   return unwrap(
     await ApiService.post<Examination.SheetDistributionItem>(
       url.evaluator.sheetDistribution,
+      form
+    )
+  );
+}
+
+export async function updateSheetDistribution(
+  id: number,
+  form: Examination.SheetDistributionForm
+) {
+  return unwrap(
+    await ApiService.put<Examination.SheetDistributionItem>(
+      url.evaluator.sheetDistributionEdit(id),
       form
     )
   );
@@ -386,6 +507,18 @@ export async function createSupplementarySession(
   return unwrap(
     await ApiService.post<Examination.SupplementarySessionItem>(
       url.supplementary.create,
+      form
+    )
+  );
+}
+
+export async function updateSupplementarySession(
+  id: number,
+  form: Examination.SupplementarySessionForm
+) {
+  return unwrap(
+    await ApiService.put<Examination.SupplementarySessionItem>(
+      url.supplementary.edit(id),
       form
     )
   );
@@ -431,6 +564,18 @@ export async function createModerationRule(
   return unwrap(
     await ApiService.post<Examination.ModerationRuleItem>(
       url.moderation.create,
+      form
+    )
+  );
+}
+
+export async function updateModerationRule(
+  id: number,
+  form: Examination.ModerationRuleForm
+) {
+  return unwrap(
+    await ApiService.put<Examination.ModerationRuleItem>(
+      url.moderation.edit(id),
       form
     )
   );
