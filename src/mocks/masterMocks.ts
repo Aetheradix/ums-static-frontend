@@ -146,41 +146,41 @@ export const masterMocks = {
     { id: '2', name: 'Private', code: 'PVT', isActive: true },
     { id: '3', name: 'Autonomous', code: 'AUTO', isActive: true },
   ],
-  'subject/subjects': [
+  'master/subjects': [
     {
       id: '1',
-      name: 'Data Structures and Algorithms',
-      code: 'CS301',
+      subjectName: 'Data Structures and Algorithms',
+      subjectCode: 'CS301',
       credits: 4,
       type: 'Theory',
       isActive: true,
     },
     {
       id: '2',
-      name: 'Database Management Systems',
-      code: 'CS302',
+      subjectName: 'Database Management Systems',
+      subjectCode: 'CS302',
       credits: 4,
       type: 'Theory',
       isActive: true,
     },
     {
       id: '3',
-      name: 'Engineering Mathematics III',
-      code: 'MA201',
+      subjectName: 'Engineering Mathematics III',
+      subjectCode: 'MA201',
       credits: 3,
       type: 'Theory',
       isActive: true,
     },
     {
       id: '4',
-      name: 'Computer Networks Lab',
-      code: 'CS303L',
+      subjectName: 'Computer Networks Lab',
+      subjectCode: 'CS303L',
       credits: 2,
       type: 'Practical',
       isActive: true,
     },
   ],
-  'other/academic-year': [
+  'master/academic-year': [
     {
       id: '1',
       name: '2025-2026',
@@ -198,7 +198,7 @@ export const masterMocks = {
       isActive: true,
     },
   ],
-  'other/programme': [
+  'master/programme': [
     {
       id: '1',
       name: 'Bachelor of Technology',

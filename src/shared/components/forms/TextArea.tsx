@@ -32,7 +32,9 @@ function InnerTextArea({
   ...rest
 }: TextAreaProps<FieldValues>) {
   const inputId = id ?? name;
-  const [internalValue, setInternalValue] = useState(defaultValue ?? value ?? '');
+  const [internalValue, setInternalValue] = useState(
+    defaultValue ?? value ?? ''
+  );
 
   useEffect(() => {
     setInternalValue(defaultValue ?? value ?? '');
@@ -50,9 +52,9 @@ function InnerTextArea({
         id={inputId}
         value={internalValue}
         onChange={e => {
-           const val = sanitizeInput(e.target.value);
-           setInternalValue(val);
-           onChange?.(val);
+          const val = sanitizeInput(e.target.value);
+          setInternalValue(val);
+          onChange?.(val);
         }}
         invalid={!!errorMessage}
         className={`w-full ${className ?? ''}`}

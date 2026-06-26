@@ -415,6 +415,201 @@
 .dark .draft-important-note {
   @apply border-amber-500/[0.18] bg-amber-500/[0.12] text-amber-100;
 }
+.dark .affiliation-other-facility-input-wrap .p-inputtext {
+  background-color: var(--dark-input-bg) !important;
+}
+
+.dark .affiliation-other-facility-delete.p-button {
+  @apply !text-white;
+}
+
+.dark .affiliation-other-facility-delete.p-button:hover {
+  @apply !bg-white/[0.08] !text-white;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 768px) {
+  .affiliation-facility-header-row {
+    @apply flex-col gap-1;
+  }
+
+  .affiliation-facility-header-row p {
+    @apply text-left;
+  }
+
+  .affiliation-other-facility-body {
+    grid-template-columns: 1fr;
+  }
+
+  .affiliation-other-facility-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .affiliation-step-list {
+    @apply grid-cols-1;
+  }
+
+  .affiliation-form-actions {
+    @apply flex-col-reverse items-stretch;
+  }
+
+  .affiliation-form-actions .p-button {
+    @apply w-full justify-center;
+  }
+}
+
+/* =========================
+   Draft Success Dialog
+========================= */
+
+.draft-success-dialog .p-dialog-content {
+  @apply relative overflow-hidden rounded-2xl bg-white p-0;
+}
+
+.draft-success-dialog.p-dialog {
+  @apply rounded-2xl shadow-2xl w-[34rem] max-w-[95vw];
+}
+
+.draft-success-close {
+  @apply absolute right-4 top-4 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent text-slate-500 transition-all duration-200;
+}
+
+.draft-success-close:hover {
+  @apply bg-slate-100 text-black;
+}
+
+.draft-success-content {
+  @apply flex flex-col items-center px-6 pb-6 pt-7;
+}
+
+.draft-success-icon-wrap {
+  @apply mb-4 flex items-center justify-center;
+}
+
+.draft-success-icon {
+  @apply flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600;
+}
+
+.draft-success-icon i {
+  @apply text-3xl font-bold;
+}
+
+.draft-success-header {
+  @apply mb-5 text-center;
+}
+
+.draft-success-header h3 {
+  @apply m-0 text-2xl font-bold text-slate-900;
+}
+
+.draft-success-header p {
+  @apply m-0 mt-2 text-sm font-medium text-slate-600;
+}
+
+.draft-application-number-card {
+  @apply relative mb-4 flex w-full flex-col items-center justify-center rounded-xl border border-blue-100 bg-blue-50/60 px-12 py-5;
+}
+
+.draft-application-number-card span {
+  @apply text-xs font-bold uppercase tracking-wider text-blue-600;
+}
+
+.draft-application-number-card strong {
+  @apply mt-2 text-3xl font-bold tracking-widest text-blue-950;
+}
+
+.draft-copy-button {
+  @apply absolute right-4 top-1/2 flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-lg border border-blue-100 bg-white transition-all duration-200;
+}
+
+.draft-copy-button:hover {
+  @apply border-blue-200 bg-blue-50 text-blue-900;
+}
+
+.draft-important-note {
+  @apply flex w-full gap-3 rounded-xl border border-amber-100 bg-amber-50 px-4 py-4 text-amber-950;
+}
+
+.draft-note-icon {
+  @apply mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-200/70 text-amber-700;
+}
+
+.draft-note-icon i {
+  @apply text-sm;
+}
+
+.draft-important-note strong {
+  @apply block text-sm font-bold;
+}
+
+.draft-important-note p {
+  @apply m-0 mt-1 text-sm font-medium leading-6;
+}
+
+.draft-success-actions {
+  @apply mt-5 flex w-full justify-end border-t border-slate-100 pt-4;
+}
+
+.draft-success-actions .p-button {
+  @apply !w-auto !px-5;
+}
+
+/* =========================
+   Dark Mode
+========================= */
+
+.dark .draft-success-dialog .p-dialog-content {
+  background-color: var(--dark-card-bg);
+}
+
+.dark .draft-success-close {
+  @apply text-slate-300;
+}
+
+.dark .draft-success-close:hover {
+  @apply bg-white/[0.08] text-white;
+}
+
+.dark .draft-success-icon {
+  @apply bg-emerald-500/[0.14] text-emerald-300;
+}
+
+.dark .draft-success-header h3 {
+  @apply text-white;
+}
+
+.dark .draft-success-header p {
+  @apply text-slate-300;
+}
+
+.dark .draft-application-number-card {
+  @apply border-white/[0.08] bg-white/[0.04];
+}
+
+.dark .draft-application-number-card span {
+  @apply text-blue-300;
+}
+
+.dark .draft-application-number-card strong {
+  @apply text-white;
+}
+
+.dark .draft-copy-button {
+  @apply border-white/[0.08] bg-white/[0.06] text-white;
+}
+
+.dark .draft-copy-button:hover {
+  @apply bg-white/[0.1];
+}
+
+.dark .draft-important-note {
+  @apply border-amber-500/[0.18] bg-amber-500/[0.12] text-amber-100;
+}
 
 .dark .draft-note-icon {
   @apply bg-amber-500/[0.22] text-amber-200;
@@ -422,4 +617,13 @@
 
 .dark .draft-success-actions {
   @apply border-white/[0.08];
+}
+
+/* =========================
+   Wizard Scroll Override
+========================= */
+.affiliation-page-no-scroll .wizard-panel > * {
+  max-height: none !important;
+  overflow: visible !important;
+  padding-right: 0 !important;
 }

@@ -6,7 +6,10 @@ export default function Assessment() {
   return (
     <Routes>
       <Route path="quiz-management/*" element={<QuizManagement />} />
-      <Route path="assignment-submissions/*" element={<AssignmentSubmissions />} />
+      <Route
+        path="assignment-submissions/*"
+        element={<AssignmentSubmissions />}
+      />
     </Routes>
   );
 }

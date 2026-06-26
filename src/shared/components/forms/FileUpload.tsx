@@ -324,7 +324,7 @@ function InnerFileUpload({
 export default function FileUpload<TForm extends FieldValues>(
   props: FileUploadProps<TForm>
 ) {
-  const { name, control } = props;
+  const { name, control, required } = props;
 
   if (!control || !name) {
     return (
@@ -342,6 +342,7 @@ export default function FileUpload<TForm extends FieldValues>(
         <InnerFileUpload
           {...(props as unknown as FileUploadProps<FieldValues>)}
           {...field}
+          required={required}
           errorMessage={formState.errors[name]?.message?.toString()}
         />
       )}

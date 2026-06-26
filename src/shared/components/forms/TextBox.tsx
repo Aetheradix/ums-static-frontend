@@ -47,7 +47,9 @@ function InnerTextBox({
   ...rest
 }: TextBoxProps<FieldValues>) {
   const inputId = id ?? name;
-  const [internalValue, setInternalValue] = useState(defaultValue ?? value ?? '');
+  const [internalValue, setInternalValue] = useState(
+    defaultValue ?? value ?? ''
+  );
 
   useEffect(() => {
     setInternalValue(defaultValue ?? value ?? '');

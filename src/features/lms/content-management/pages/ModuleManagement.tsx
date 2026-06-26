@@ -8,32 +8,45 @@ const MOCK_MODULES = [
   {
     id: 1,
     name: 'Programming Basics',
-    topics: ['Introduction', 'Variables', 'Data Types', 'Loops']
+    topics: ['Introduction', 'Variables', 'Data Types', 'Loops'],
   },
   {
     id: 2,
     name: 'DBMS',
-    topics: ['SQL Basics', 'Joins', 'Normalization']
-  }
+    topics: ['SQL Basics', 'Joins', 'Normalization'],
+  },
 ];
 
 export default function ModuleManagement() {
   const [data] = useState(MOCK_MODULES);
-  const [popup, setPopup] = useState<{ mode: 'closed' | 'module' | 'topic'; moduleId?: number }>({ mode: 'closed' });
+  const [popup, setPopup] = useState<{
+    mode: 'closed' | 'module' | 'topic';
+    moduleId?: number;
+  }>({ mode: 'closed' });
 
   const closePopup = () => setPopup({ mode: 'closed' });
 
   const handleSave = () => {
-    ToastService.success(`${popup.mode === 'module' ? 'Module' : 'Topic'} saved successfully`);
+    ToastService.success(
+      `${popup.mode === 'module' ? 'Module' : 'Topic'} saved successfully`
+    );
     closePopup();
   };
 
   return (
-    <FormPage title="Module Management" description="Manage modules and their topics.">
+    <FormPage
+      title="Module Management"
+      description="Manage modules and their topics."
+    >
       <div className="flex justify-end mb-4">
-        <Button label="Create Module" icon="plus" variant="primary" onClick={() => setPopup({ mode: 'module' })} />
+        <Button
+          label="Create Module"
+          icon="plus"
+          variant="primary"
+          onClick={() => setPopup({ mode: 'module' })}
+        />
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {data.map(mod => (
           <FormCard key={mod.id} title={mod.name} className="flex flex-col">
@@ -46,7 +59,13 @@ export default function ModuleManagement() {
               </ul>
             </div>
             <div className="mt-4 pt-4 border-t flex justify-end">
-              <Button label="Add Topic" size="small" variant="outlined" icon="plus" onClick={() => setPopup({ mode: 'topic', moduleId: mod.id })} />
+              <Button
+                label="Add Topic"
+                size="small"
+                variant="outlined"
+                icon="plus"
+                onClick={() => setPopup({ mode: 'topic', moduleId: mod.id })}
+              />
             </div>
           </FormCard>
         ))}
@@ -60,17 +79,22 @@ export default function ModuleManagement() {
       >
         <div className="grid grid-cols-1 gap-4">
           {popup.mode === 'module' ? (
-             <>
-               <DropDownList label="Course" textField="label" data={[
-                 { label: 'Bachelor of Computer Applications', value: 'BCA' },
-                 { label: 'Bachelor of Commerce', value: 'BCOM' },
-                 { label: 'Master of Business Administration', value: 'MBA' },
-                 { label: 'Bachelor of Technology', value: 'BTECH' }
-               ]} required />
-               <TextBox label="Module Name" required />
-             </>
+            <>
+              <DropDownList
+                label="Course"
+                textField="label"
+                data={[
+                  { label: 'Bachelor of Computer Applications', value: 'BCA' },
+                  { label: 'Bachelor of Commerce', value: 'BCOM' },
+                  { label: 'Master of Business Administration', value: 'MBA' },
+                  { label: 'Bachelor of Technology', value: 'BTECH' },
+                ]}
+                required
+              />
+              <TextBox label="Module Name" required />
+            </>
           ) : (
-             <TextBox label="Topic Name" required />
+            <TextBox label="Topic Name" required />
           )}
         </div>
         <div className="flex justify-end gap-2 mt-4">

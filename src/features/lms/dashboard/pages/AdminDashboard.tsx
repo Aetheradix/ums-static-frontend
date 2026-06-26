@@ -9,9 +9,9 @@ export default function AdminDashboard() {
       {
         label: 'Average Course Progress (%)',
         backgroundColor: '#4f46e5',
-        data: [75, 60, 85, 45]
-      }
-    ]
+        data: [75, 60, 85, 45],
+      },
+    ],
   };
 
   const contentDistributionData = {
@@ -20,8 +20,8 @@ export default function AdminDashboard() {
       {
         data: [300, 150, 100, 292],
         backgroundColor: ['#3b82f6', '#ef4444', '#f59e0b', '#10b981'],
-      }
-    ]
+      },
+    ],
   };
 
   const teacherSubjectData = {
@@ -30,9 +30,9 @@ export default function AdminDashboard() {
       {
         label: 'Subjects Assigned',
         backgroundColor: '#f59e0b',
-        data: [4, 3, 5, 2]
-      }
-    ]
+        data: [4, 3, 5, 2],
+      },
+    ],
   };
 
   const certificateData = {
@@ -41,8 +41,8 @@ export default function AdminDashboard() {
       {
         data: [450, 120],
         backgroundColor: ['#10b981', '#f43f5e'],
-      }
-    ]
+      },
+    ],
   };
 
   return (
@@ -53,7 +53,7 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pb-4">
         <FormCard className="flex items-center gap-4">
           <div className="bg-orange-100 text-orange-600 p-3 rounded-lg flex items-center justify-center">
-             <Icon name="people" />
+            <Icon name="people" />
           </div>
           <div>
             <div className="text-gray-500 text-sm">Total Enrollments</div>
@@ -63,17 +63,17 @@ export default function AdminDashboard() {
 
         <FormCard className="flex items-center gap-4">
           <div className="bg-blue-100 text-blue-600 p-3 rounded-lg flex items-center justify-center">
-             <Icon name="menu_book" />
+            <Icon name="menu_book" />
           </div>
           <div>
             <div className="text-gray-500 text-sm">Total Topics</div>
             <div className="text-2xl font-bold text-gray-800">145</div>
           </div>
         </FormCard>
-        
+
         <FormCard className="flex items-center gap-4">
           <div className="bg-green-100 text-green-600 p-3 rounded-lg flex items-center justify-center">
-             <Icon name="cloud_upload" />
+            <Icon name="cloud_upload" />
           </div>
           <div>
             <div className="text-gray-500 text-sm">Total Upload Content</div>
@@ -83,7 +83,7 @@ export default function AdminDashboard() {
 
         <FormCard className="flex items-center gap-4">
           <div className="bg-purple-100 text-purple-600 p-3 rounded-lg flex items-center justify-center">
-             <Icon name="workspace_premium" />
+            <Icon name="workspace_premium" />
           </div>
           <div>
             <div className="text-gray-500 text-sm">Certificates Generated</div>
@@ -95,13 +95,22 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <FormCard title="Course Wise Student Progress">
           <div className="card flex justify-center">
-            <Chart type="bar" data={progressData} options={{ scales: { y: { beginAtZero: true, max: 100 } } }} className="w-full" />
+            <Chart
+              type="bar"
+              data={progressData}
+              options={{ scales: { y: { beginAtZero: true, max: 100 } } }}
+              className="w-full"
+            />
           </div>
         </FormCard>
 
         <FormCard title="Content Distribution">
           <div className="card flex justify-center">
-            <Chart type="pie" data={contentDistributionData} className="w-full md:w-[25rem]" />
+            <Chart
+              type="pie"
+              data={contentDistributionData}
+              className="w-full md:w-[25rem]"
+            />
           </div>
         </FormCard>
 
@@ -113,7 +122,11 @@ export default function AdminDashboard() {
 
         <FormCard title="Certificate Status (Generated vs Pending)">
           <div className="card flex justify-center">
-            <Chart type="doughnut" data={certificateData} className="w-full md:w-[25rem]" />
+            <Chart
+              type="doughnut"
+              data={certificateData}
+              className="w-full md:w-[25rem]"
+            />
           </div>
         </FormCard>
       </div>

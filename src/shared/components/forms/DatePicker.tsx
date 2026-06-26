@@ -44,7 +44,9 @@ function InnerDatePicker({
   ...rest
 }: DatePickerProps<FieldValues>) {
   const inputId = id ?? name;
-  const [internalValue, setInternalValue] = useState(defaultValue ?? value ?? null);
+  const [internalValue, setInternalValue] = useState(
+    defaultValue ?? value ?? null
+  );
 
   useEffect(() => {
     setInternalValue(defaultValue ?? value ?? null);

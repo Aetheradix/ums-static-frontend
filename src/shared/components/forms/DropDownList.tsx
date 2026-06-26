@@ -86,6 +86,7 @@ function InnerDropDownList<TData = Data.DataItem<number>>({
           inputId={id ?? name}
           options={!defaultOptionText ? data : optionsWithDefault}
           optionLabel={textField as string}
+          optionValue={rest.optionValue ?? (valueField as string)}
           value={internalValue}
           onChange={e => {
             setInternalValue(e.value);
