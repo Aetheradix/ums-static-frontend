@@ -1,0 +1,75 @@
+.leave-balance-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.leave-balance-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background: var(--color-surface, #f9fafb);
+  border: 1px solid var(--color-border, #f3f4f6);
+}
+
+.leave-balance-type {
+  font-size: 0.813rem;
+  color: var(--color-text-secondary, #6b7280);
+  font-weight: 500;
+}
+
+.leave-balance-values {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.leave-balance-chip {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+}
+
+.leave-balance-chip.allocated {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.leave-balance-chip.used {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.leave-balance-chip.remaining {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.leave-balance-chip.carry {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.leave-balance-header-row {
+  display: grid;
+  grid-template-columns: 1fr repeat(4, auto);
+  gap: 0.5rem;
+  padding: 0 0.75rem;
+  margin-bottom: 0.125rem;
+}
+
+.leave-balance-col-label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted, #9ca3af);
+  text-align: center;
+}
+
+.leave-balance-col-label:first-child {
+  text-align: left;
+}
