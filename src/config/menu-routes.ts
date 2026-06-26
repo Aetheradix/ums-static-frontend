@@ -1268,6 +1268,14 @@ export const menuConfig: Menu.MenuItem[] = [
         action: 'read',
       },
       {
+        label: 'Student Profile',
+        slug: 'student-profile',
+        description: 'Manage student profile details.',
+        path: '/sis/student-profile',
+        icon: 'person_add',
+        colorScheme: 'red',
+      },
+      {
         label: 'Student Application Form',
         slug: 'student-application-form',
         description: 'Create and submit student applications.',
