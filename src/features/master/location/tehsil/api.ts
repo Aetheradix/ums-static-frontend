@@ -3,7 +3,23 @@ import { ApiService } from 'services';
 const TEHSIL_URL = `master/tehsil`;
 
 export function getTehsils() {
-  return ApiService.getList<Master.TehsilItem>(TEHSIL_URL);
+  //   return ApiService.getList<Master.TehsilItem>(TEHSIL_URL);
+  return Promise.resolve([
+    {
+      id: 1,
+      name: 'Indore Tehsil',
+      text: 'Indore Tehsil',
+      isActive: true,
+      districtId: 1,
+    },
+    {
+      id: 2,
+      name: 'Mhow Tehsil',
+      text: 'Mhow Tehsil',
+      isActive: true,
+      districtId: 1,
+    },
+  ] as unknown as Master.TehsilItem[]);
 }
 
 export async function getTehsil(id: number) {

@@ -1,6 +1,9 @@
+import { useEffect, useState, useCallback } from 'react';
 import { useForm, type Path } from 'react-hook-form';
 import validation from 'shared/utils/validation';
-import type { ApplicationFormData } from '../types';
+import { getStudentApplicationService } from 'shared/di';
+import type { ApplicationFormData, MasterLookups } from '../types';
+import type { StudentApplicationService } from '../services/StudentApplicationService';
 
 const priorEducationEntrySchema = validation.create<any>(o => ({
   educationLevel: o.string().required(),
@@ -99,6 +102,13 @@ const schema = validation.create<ApplicationFormData>(o => ({
 }));
 
 export function useApplicationForm() {
+  const [service] = useState<StudentApplicationService>(() =>
+    getStudentApplicationService()
+  );
+  const [lookups, setLookups] = useState<MasterLookups | null>(null);
+  const [draftLoaded, setDraftLoaded] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const methods = useForm<ApplicationFormData>({
     mode: 'onSubmit',
     resolver: validation.resolver(schema),
@@ -108,9 +118,52 @@ export function useApplicationForm() {
     shouldFocusError: false,
   });
 
+  useEffect(() => {
+    async function init() {
+      const [lookupsData, draft] = await Promise.all([
+        service.getLookups(),
+        service.loadDraft(),
+      ]);
+      setLookups(lookupsData);
+      if (draft) {
+        methods.reset(draft);
+      }
+      setDraftLoaded(true);
+    }
+    init();
+  }, [service, methods]);
+
+  const saveDraft = useCallback(async () => {
+    const data = methods.getValues();
+    await service.saveDraft(data);
+  }, [service, methods]);
+
+  const onSubmit = useCallback(
+    async (
+      data: ApplicationFormData
+    ): Promise<{ applicationId: number } | null> => {
+      if (!lookups) return null;
+      setIsSubmitting(true);
+      try {
+        return await service.submitApplication(data, lookups);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [service, lookups]
+  );
+
   function register(key: Path<ApplicationFormData>) {
     return { control: methods.control, name: key };
   }
 
-  return { methods, register };
+  return {
+    methods,
+    register,
+    lookups,
+    draftLoaded,
+    isSubmitting,
+    saveDraft,
+    onSubmit,
+  };
 }

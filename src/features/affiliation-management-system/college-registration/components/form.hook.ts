@@ -168,6 +168,7 @@ const schema =
           o.object().keys({
             collegeCourseDetailId: o.number().optional(),
             registrationId: o.number().optional(),
+            id: o.any().optional(),
             courseId: o
               .number()
               .required()

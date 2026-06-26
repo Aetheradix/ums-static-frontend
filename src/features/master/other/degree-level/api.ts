@@ -5,7 +5,12 @@ const MASTER_API_ROOT = `master/`;
 const DEGREE_LEVEL_URL = `${MASTER_API_ROOT}degree-level`;
 
 export function getDegreeLevels() {
-  return ApiService.getList<Master.Other.DegreeLevelForm>(DEGREE_LEVEL_URL);
+  //   return ApiService.getList<Master.Other.DegreeLevelForm>(DEGREE_LEVEL_URL);
+  return Promise.resolve([
+    { id: 1, name: 'Undergraduate', text: 'Undergraduate', isActive: true },
+    { id: 2, name: 'Postgraduate', text: 'Postgraduate', isActive: true },
+    { id: 3, name: 'Diploma', text: 'Diploma', isActive: true },
+  ] as unknown as Master.Other.DegreeLevelForm[]);
 }
 
 export async function getDegreeLevel(id: number) {

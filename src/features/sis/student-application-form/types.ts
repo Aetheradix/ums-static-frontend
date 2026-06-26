@@ -100,6 +100,181 @@ export interface AddressDto {
   zipcode: number;
 }
 
+export interface MasterLookups {
+  genders: GenderItem[];
+  castes: CasteItem[];
+  nationalities: NationalityItem[];
+  residencyStatuses: ResidencyStatusItem[];
+  occupations: OccupationItem[];
+  designations: DesignationItem[];
+  addressTypes: AddressTypeItem[];
+  academicYears: AcademicYearItem[];
+  programmes: ProgrammeItem[];
+  degreeLevels: DegreeLevelItem[];
+  specialisations: SpecialisationItem[];
+  programmeModes: ProgrammeModeItem[];
+  states: StateItem[];
+  divisions: DivisionItem[];
+  districts: DistrictItem[];
+  tehsils: TehsilItem[];
+  blocks: BlockItem[];
+  collegeCategories: CollegeCategoryItem[];
+  collegeTypes: CollegeTypeItem[];
+  allColleges: CollegeRegistrationItem[];
+}
+
+export interface GenderItem {
+  id: number;
+  name: string;
+  text: string;
+  isActive: boolean;
+}
+
+export interface CasteItem {
+  id: number;
+  name: string;
+  code: string;
+  isActive: boolean;
+}
+
+export interface NationalityItem {
+  id: number;
+  name: string;
+  code: string;
+  isActive: boolean;
+}
+
+export interface ResidencyStatusItem {
+  id: number;
+  name: string;
+  text: string;
+  isActive: boolean;
+}
+
+export interface OccupationItem {
+  id: number;
+  name: string;
+  text: string;
+  isActive: boolean;
+}
+
+export interface DesignationItem {
+  id: number;
+  name: string;
+  code: string;
+  level: number;
+  isActive: boolean;
+}
+
+export interface AddressTypeItem {
+  id: number;
+  name: string;
+  text: string;
+  isActive: boolean;
+}
+
+export interface AcademicYearItem {
+  id: number;
+  name: string;
+  session: string;
+  startDate: string;
+  endDate: string;
+  isCurrent: boolean;
+  isActive: boolean;
+}
+
+export interface ProgrammeItem {
+  id: number;
+  name: string;
+  code: string;
+  durationYears: number;
+  isActive: boolean;
+}
+
+export interface DegreeLevelItem {
+  id: number;
+  name: string;
+  code: string;
+  isActive: boolean;
+}
+
+export interface SpecialisationItem {
+  id: number;
+  name: string;
+  code: string;
+  isActive: boolean;
+}
+
+export interface ProgrammeModeItem {
+  id: number;
+  name: string;
+  code: string;
+  isActive: boolean;
+}
+
+export interface StateItem {
+  id: number;
+  name: string;
+  code: string;
+  isActive: boolean;
+}
+
+export interface DivisionItem {
+  id: number;
+  name: string;
+  stateId: number;
+  stateName: string;
+  isActive: boolean;
+}
+
+export interface DistrictItem {
+  id: number;
+  name: string;
+  divisionId: number;
+  divisionName: string;
+  isActive: boolean;
+}
+
+export interface TehsilItem {
+  id: number;
+  name: string;
+  districtId: number;
+  districtName: string;
+  isActive: boolean;
+}
+
+export interface BlockItem {
+  id: number;
+  name: string;
+  tehsilId: number;
+  tehsilName: string;
+  isActive: boolean;
+}
+
+export interface CollegeCategoryItem {
+  id: number;
+  name: string;
+  code: string;
+  isActive: boolean;
+}
+
+export interface CollegeTypeItem {
+  id: number;
+  name: string;
+  code: string;
+  isActive: boolean;
+}
+
+export interface CollegeRegistrationItem {
+  id: number;
+  collegeRegistrationId: number;
+  collegeName: string;
+  name: string;
+  district: string;
+  city: string;
+  isActive: boolean;
+}
+
 export interface ApplicationFormData {
   academicSession: string;
   programme: string;

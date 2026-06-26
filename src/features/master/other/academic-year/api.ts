@@ -5,7 +5,23 @@ const MASTER_API_ROOT = `master/`;
 const ACADEMIC_YEAR_URL = `${MASTER_API_ROOT}academic-year`;
 
 export function getAcademicYears() {
-  return ApiService.getList<Master.Other.AcademicYearItem>(ACADEMIC_YEAR_URL);
+  //   return ApiService.getList<Master.Other.AcademicYearItem>(ACADEMIC_YEAR_URL);
+  return Promise.resolve([
+    {
+      id: 1,
+      name: '2023-2024',
+      text: '2023-2024',
+      session: '2023-2024',
+      isActive: true,
+    },
+    {
+      id: 2,
+      name: '2024-2025',
+      text: '2024-2025',
+      session: '2024-2025',
+      isActive: true,
+    },
+  ] as unknown as Master.Other.AcademicYearItem[]);
 }
 
 export async function getAcademicYear(id: number) {

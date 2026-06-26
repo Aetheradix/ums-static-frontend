@@ -3,7 +3,23 @@ import { ApiService } from 'services';
 const DIVISION_URL = `master/divisions`;
 
 export function getDivisions() {
-  return ApiService.getList<Master.DivisionItem>(DIVISION_URL);
+  //   return ApiService.getList<Master.DivisionItem>(DIVISION_URL);
+  return Promise.resolve([
+    {
+      id: 1,
+      name: 'Indore Division',
+      text: 'Indore Division',
+      isActive: true,
+      stateId: 1,
+    },
+    {
+      id: 2,
+      name: 'Bhopal Division',
+      text: 'Bhopal Division',
+      isActive: true,
+      stateId: 1,
+    },
+  ] as unknown as Master.DivisionItem[]);
 }
 
 export async function getDivision(id: number) {

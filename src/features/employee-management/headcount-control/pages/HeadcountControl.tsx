@@ -7,6 +7,7 @@ import {
   Switch,
   TextBox,
 } from 'shared/components/forms';
+import { AlertPanel } from 'shared/components/panels';
 import {
   FormCard,
   FormGrid,
@@ -310,20 +311,11 @@ export default function HeadcountControl() {
         </FormCard>
 
         {showExceededAlert && (
-          <div className="bg-red-50 dark:bg-red-950/20 border-l-4 border-red-500 p-4 text-red-700 dark:text-red-300 rounded shadow-sm flex items-start gap-3">
-            <span className="material-symbols-outlined text-red-500">
-              warning
-            </span>
-            <div>
-              <h4 className="font-bold">HRMIS Compliance Alert</h4>
-              <p className="text-sm">
-                Headcount check is enabled, but some posts have active employees
-                exceeding approved sanctioned counts (e.g. Mathematics -
-                Lecturer). Please adjust the sanctioned counts or reallocate
-                personnel.
-              </p>
-            </div>
-          </div>
+          <AlertPanel severity="error" title="HRMIS Compliance Alert">
+            Headcount check is enabled, but some posts have active employees
+            exceeding approved sanctioned counts (e.g. Mathematics - Lecturer).
+            Please adjust the sanctioned counts or reallocate personnel.
+          </AlertPanel>
         )}
 
         <div className="grid grid-cols-3 gap-6">
