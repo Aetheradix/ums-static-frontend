@@ -7,10 +7,14 @@ import Academics from './academics';
 import AdmissionPortal from './admission-portal';
 import AffiliationManagementSystem from './affiliation-management-system';
 import CareerAdvancement from './career-advancement';
+import CertificateManagementSystem from './certificate-management-system';
 import EmployeeManagement from './employee-management';
+import EmployeeReports from './employee-reports';
 import ExaminationManagement from './examination-management';
+import GrievanceManagement from './grievance-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
+import LeaveManagement from './leave-management';
 import Lms from './lms';
 import Master from './master';
 import ProgrammeManagement from './programme-management';
@@ -21,6 +25,7 @@ import Settings from './settings';
 import Sis from './sis';
 import StudentManagement from './student-management';
 import AdmissionsManagement from './admissions-management';
+import StudentFeedbackManagement from './student-feedback-management';
 
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
@@ -111,12 +116,20 @@ export default function Features() {
                         element={<AffiliationManagementSystem />}
                       />
                       <Route
+                        path="certificate-management-system/*"
+                        element={<CertificateManagementSystem />}
+                      />
+                      <Route
                         path="career-advancement/*"
                         element={<CareerAdvancement />}
                       />
                       <Route
                         path="employee-management/*"
                         element={<EmployeeManagement />}
+                      />
+                      <Route
+                        path="employee-reports/*"
+                        element={<EmployeeReports />}
                       />
                       <Route
                         path="examination-management/*"
@@ -131,7 +144,19 @@ export default function Features() {
                         path="hostel-management/*"
                         element={<HostelManagement />}
                       />
+                      <Route
+                        path="grievance-management/*"
+                        element={<GrievanceManagement />}
+                      />
                       <Route path="lms/*" element={<Lms />} />
+                      <Route
+                        path="student-feedback-management/*"
+                        element={<StudentFeedbackManagement />}
+                      />
+                      <Route
+                        path="leave-management/*"
+                        element={<LeaveManagement />}
+                      />
                     </Routes>
                   </MainLayout>
                 }

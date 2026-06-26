@@ -1,13 +1,31 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'shared/components/buttons';
 import GridActionButtons from 'shared/components/grid/GridActionButtons';
+import { ConfirmDialog } from 'shared/components/popups';
 import { Loader } from 'shared/components/progress';
 import { FormCard, FormPage, GridPanel } from 'shared/new-components';
-import { useGetBasicEmployeesQuery } from '../queries';
+import { mockGetBasicEmployees } from '../../mockData';
 
 export default function List() {
   const navigate = useNavigate();
-  const { data, isLoading } = useGetBasicEmployeesQuery();
+  const [data, setData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [employeeToDelete, setEmployeeToDelete] = useState<any>(null);
+
+  useEffect(() => {
+    mockGetBasicEmployees().then(res => {
+      setData(res);
+      setIsLoading(false);
+    });
+  }, []);
+
+  const handleDeleteConfirm = () => {
+    setData(prev =>
+      prev.filter(emp => emp.employeeId !== employeeToDelete?.employeeId)
+    );
+    setEmployeeToDelete(null);
+  };
 
   return (
     <FormPage
@@ -27,6 +45,7 @@ export default function List() {
               },
               { field: 'employeeCode', header: 'Employee Code' },
               { field: 'fullName', header: 'Name' },
+              { field: 'onboardingType', header: 'Onboarding Type' },
               { field: 'gender', header: 'Gender' },
               { field: 'employeeNature', header: 'Nature' },
               { field: 'organizationUnit', header: 'Org. Unit' },
@@ -38,16 +57,16 @@ export default function List() {
                 cell: (item: EmployeeManagement.QuickOnboardingItem) => (
                   <GridActionButtons
                     onView={() =>
-                      navigate(
-                        `/employee-management/manage-employees/${item.employeeId}`
-                      )
+                      navigate(`/settings/employee-profile/${item.employeeId}`)
                     }
-                    onEdit={() =>
-                      navigate(
-                        `/employee-management/manage-employees/${item.employeeId}/edit`
-                      )
-                    }
-                    onDelete={() => {}}
+                    onEdit={() => {
+                      if (item.onboardingType === 'Quick Onboarding') {
+                        navigate('/employee-management/quick-onboarding');
+                      } else {
+                        navigate('/employee-management/full-onboarding');
+                      }
+                    }}
+                    onDelete={() => setEmployeeToDelete(item)}
                   />
                 ),
               },
@@ -78,6 +97,17 @@ export default function List() {
           />
         </div>
       </FormCard>
+
+      <ConfirmDialog
+        visible={!!employeeToDelete}
+        onHide={() => setEmployeeToDelete(null)}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Employee"
+        message={`Are you sure you want to permanently delete ${employeeToDelete?.fullName ?? 'this employee'}? This action cannot be undone.`}
+        confirmLabel="Yes, Delete"
+        cancelLabel="Cancel"
+        variant="danger"
+      />
     </FormPage>
   );
 }

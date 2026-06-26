@@ -1,30 +1,30 @@
+import {
+  Activity,
+  ArrowLeft,
+  ArrowRight,
+  BarChart2,
+  BookOpen,
+  Building,
+  Clock,
+  CreditCard,
+  Eye,
+  EyeOff,
+  FileText,
+  Globe,
+  GraduationCap,
+  Home,
+  Lock,
+  Mail,
+  Shield,
+  ShieldCheck,
+  User,
+  UserPlus,
+  Users,
+} from 'lucide-react';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 import { useAuth } from './useAuth';
-import {
-  UserPlus,
-  FileText,
-  CreditCard,
-  BarChart2,
-  Users,
-  Clock,
-  BookOpen,
-  GraduationCap,
-  Building,
-  Activity,
-  ShieldCheck,
-  Globe,
-  User,
-  Lock,
-  Eye,
-  EyeOff,
-  ArrowRight,
-  ArrowLeft,
-  Shield,
-  Home,
-  Mail,
-} from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
   const { login } = useAuth();
@@ -40,8 +40,9 @@ export const LoginPage: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoggingIn(true);
-    // Simulate slight network delay for better UX
     await new Promise(resolve => setTimeout(resolve, 800));
+
+    // Fallback: generic admin login (accepts any credentials)
     await login();
     setIsLoggingIn(false);
     navigate('/home');

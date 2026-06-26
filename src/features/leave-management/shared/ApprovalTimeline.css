@@ -1,0 +1,133 @@
+.approval-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+
+.approval-timeline-item {
+  display: flex;
+  gap: 0.875rem;
+  position: relative;
+}
+
+.approval-timeline-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 28px;
+}
+
+.approval-timeline-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  z-index: 1;
+}
+
+.approval-timeline-dot.approved {
+  background: #dcfce7;
+  color: #15803d;
+  border: 2px solid #86efac;
+}
+
+.approval-timeline-dot.rejected {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 2px solid #fca5a5;
+}
+
+.approval-timeline-dot.pending {
+  background: #fef3c7;
+  color: #b45309;
+  border: 2px solid #fcd34d;
+}
+
+.approval-timeline-dot.submitted {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border: 2px solid #93c5fd;
+}
+
+.approval-timeline-dot.forwarded {
+  background: #f3e8ff;
+  color: #7c3aed;
+  border: 2px solid #c4b5fd;
+}
+
+.approval-timeline-line {
+  flex: 1;
+  width: 2px;
+  background: var(--color-border, #e5e7eb);
+  min-height: 24px;
+  margin: 2px 0;
+}
+
+.approval-timeline-content {
+  flex: 1;
+  padding-bottom: 1.25rem;
+}
+
+.approval-timeline-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.approval-timeline-actor {
+  font-size: 0.813rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+}
+
+.approval-timeline-date {
+  font-size: 0.688rem;
+  color: var(--color-text-muted, #9ca3af);
+  flex-shrink: 0;
+}
+
+.approval-timeline-action-label {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.688rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.approval-timeline-action-label.approved {
+  background: #dcfce7;
+  color: #15803d;
+}
+.approval-timeline-action-label.rejected {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.approval-timeline-action-label.pending {
+  background: #fef3c7;
+  color: #b45309;
+}
+.approval-timeline-action-label.submitted {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.approval-timeline-action-label.forwarded {
+  background: #f3e8ff;
+  color: #7c3aed;
+}
+
+.approval-timeline-remarks {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #6b7280);
+  font-style: italic;
+}
