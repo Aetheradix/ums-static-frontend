@@ -7,6 +7,7 @@ import Academics from './academics';
 import AdmissionPortal from './admission-portal';
 import AffiliationManagementSystem from './affiliation-management-system';
 import CareerAdvancement from './career-advancement';
+import CertificateManagementSystem from './certificate-management-system';
 import EmployeeManagement from './employee-management';
 import ExaminationManagement from './examination-management';
 import Home from './home';
@@ -100,6 +101,10 @@ export default function Features() {
                       <Route
                         path="affiliation-management-system/*"
                         element={<AffiliationManagementSystem />}
+                      />
+                      <Route
+                        path="certificate-management-system/*"
+                        element={<CertificateManagementSystem />}
                       />
                       <Route
                         path="career-advancement/*"
