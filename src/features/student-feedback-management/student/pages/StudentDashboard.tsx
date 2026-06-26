@@ -157,6 +157,7 @@ export default function StudentDashboard() {
                   return (
                     <Button
                       icon="eye"
+                      label="View"
                       variant="outlined"
                       size="small"
                       onClick={() =>
@@ -171,6 +172,7 @@ export default function StudentDashboard() {
                   return (
                     <Button
                       icon="arrow_forward"
+                      label="Continue"
                       variant="primary"
                       size="small"
                       onClick={() =>
@@ -184,6 +186,7 @@ export default function StudentDashboard() {
                 return (
                   <Button
                     icon="play"
+                    label="Start"
                     variant="primary"
                     size="small"
                     onClick={() =>
