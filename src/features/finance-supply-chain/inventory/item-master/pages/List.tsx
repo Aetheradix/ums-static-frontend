@@ -47,6 +47,31 @@ export default function List() {
     },
   });
 
+  const saveMutation = useMutation({
+    mutationFn: async (item: any) => {
+      // Mock API call
+      return item.id === 0
+        ? {
+            ...item,
+            id: Date.now(),
+            itemCode: item.itemCode || `ITM-${Date.now().toString().slice(-4)}`,
+          }
+        : item;
+    },
+    onSuccess(savedItem) {
+      const prev = qc.getQueryData<ItemMasterItem[]>(QK) ?? [];
+      if (prev.find(i => i.id === savedItem.id)) {
+        qc.setQueryData(
+          QK,
+          prev.map(i => (i.id === savedItem.id ? savedItem : i))
+        );
+      } else {
+        qc.setQueryData(QK, [savedItem, ...prev]);
+      }
+      closePopup();
+    },
+  });
+
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
   const closePopup = useCallback(() => setPopup({ mode: 'closed' }), []);
 
@@ -88,7 +113,7 @@ export default function List() {
               cell: (i: ItemMasterItem) => (
                 <div className="flex gap-2">
                   <Button
-                    icon="edit"
+                    icon="file-edit"
                     variant="outlined"
                     onClick={() => setPopup({ mode: 'edit', item: i })}
                   />
@@ -123,6 +148,7 @@ export default function List() {
         <ItemForm
           onClose={closePopup}
           initialData={popup.mode === 'edit' ? popup.item : undefined}
+          onSave={data => saveMutation.mutate(data)}
         />
       </FormPopup>
     </FormPage>
@@ -132,9 +158,11 @@ export default function List() {
 function ItemForm({
   onClose,
   initialData,
+  onSave,
 }: {
   onClose: () => void;
   initialData?: ItemMasterItem;
+  onSave: (data: any) => void;
 }) {
   const [form, setForm] = useState(
     initialData || {
@@ -153,7 +181,7 @@ function ItemForm({
     <form
       onSubmit={e => {
         e.preventDefault();
-        onClose();
+        onSave(form);
       }}
     >
       <FormGrid columns={2}>
@@ -162,6 +190,7 @@ function ItemForm({
           placeholder="Auto-generated if empty"
           value={form.itemCode}
           onChange={v => setForm(p => ({ ...p, itemCode: v }))}
+          disabled={!!initialData}
         />
         <TextBox
           label="Item Name"
@@ -211,8 +240,7 @@ function ItemForm({
       <FormActions
         isEditMode={!!initialData}
         isLoading={false}
-        onSave={() => {}}
-        onReset={() => {}}
+        onReset={onClose}
       />
     </form>
   );

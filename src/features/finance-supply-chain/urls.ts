@@ -130,6 +130,15 @@ export const inventoryUrls = {
     root: `${inventory}/stock-transfer`,
     create: `${inventory}/stock-transfer/create`,
   },
+  stockRegister: {
+    root: `${inventory}/stock-register`,
+  },
+  stockVerification: {
+    root: `${inventory}/stock-verification`,
+  },
+  disposalWriteoff: {
+    root: `${inventory}/disposal-writeoff`,
+  },
 };
 
 // ─── Asset Management ─────────────────────────────────────────────────────────

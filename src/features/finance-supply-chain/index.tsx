@@ -40,9 +40,14 @@ import VendorBill from './procurement/vendor-bill';
 import ItemMaster from './inventory/item-master';
 import StockManagement from './inventory/stock-management';
 import StockIssue from './inventory/stock-issue';
+import StockTransfer from './inventory/stock-transfer';
+import StockRegister from './inventory/stock-register';
+import StockVerification from './inventory/stock-verification';
+import DisposalWriteoff from './inventory/disposal-writeoff';
 
 // Asset Management
 import AssetRegister from './asset-management/asset-register';
+import AssetAllocation from './asset-management/asset-allocation';
 import Depreciation from './asset-management/depreciation';
 
 // GST & Compliance
@@ -128,11 +133,25 @@ export default function FinanceSupplyChain() {
         element={<StockManagement />}
       />
       <Route path="inventory/stock-issue/*" element={<StockIssue />} />
+      <Route path="inventory/stock-transfer/*" element={<StockTransfer />} />
+      <Route path="inventory/stock-register/*" element={<StockRegister />} />
+      <Route
+        path="inventory/stock-verification/*"
+        element={<StockVerification />}
+      />
+      <Route
+        path="inventory/disposal-writeoff/*"
+        element={<DisposalWriteoff />}
+      />
 
       {/* Asset Management */}
       <Route
         path="asset-management/asset-register/*"
         element={<AssetRegister />}
+      />
+      <Route
+        path="asset-management/asset-allocation/*"
+        element={<AssetAllocation />}
       />
       <Route
         path="asset-management/depreciation/*"

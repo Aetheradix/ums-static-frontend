@@ -178,6 +178,38 @@ const Sidebar: React.FC<SidebarProps> = ({
       trending_up: 'chart-line',
       event: 'calendar',
       'th-large': 'th-large',
+
+      // FSC Module Icons
+      dashboard: 'th-large',
+      tune: 'sliders-v',
+      savings: 'wallet',
+      shopping_cart: 'shopping-cart',
+      gavel: 'hammer',
+      assessment: 'chart-bar',
+      account_balance: 'building',
+
+      // Inventory Icons
+      inventory: 'box',
+      inventory_2: 'database',
+      outbox: 'upload',
+      move_down: 'arrow-down',
+      fact_check: 'check-square',
+      delete_sweep: 'trash',
+
+      // Budget Management
+      post_add: 'file-plus',
+      pie_chart: 'chart-pie',
+      edit_note: 'file-edit',
+      swap_horiz: 'arrow-right-arrow-left',
+
+      // Asset Management
+      list_alt: 'list',
+      trending_down: 'arrow-down-right',
+
+      // Financial Reports
+      balance: 'calculator',
+      account_balance_wallet: 'wallet',
+      waterfall_chart: 'chart-bar',
     };
 
     return iconMap[iconName] || 'circle'; // Default to circle if icon doesn't exist in PrimeIcons

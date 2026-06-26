@@ -1594,6 +1594,30 @@ export const menuConfig: Menu.MenuItem[] = [
             icon: 'move_down',
             colorScheme: 'green',
           },
+          {
+            label: 'Stock Register',
+            slug: 'stock-register',
+            description: 'Maintain the complete digital stock register.',
+            path: '/finance-supply-chain/inventory/stock-register',
+            icon: 'menu_book',
+            colorScheme: 'green',
+          },
+          {
+            label: 'Stock Verification',
+            slug: 'stock-verification',
+            description: 'Annual physical audit support.',
+            path: '/finance-supply-chain/inventory/stock-verification',
+            icon: 'fact_check',
+            colorScheme: 'green',
+          },
+          {
+            label: 'Disposal & Write-off',
+            slug: 'disposal-writeoff',
+            description: 'Manage condemned items and write-offs.',
+            path: '/finance-supply-chain/inventory/disposal-writeoff',
+            icon: 'delete_sweep',
+            colorScheme: 'green',
+          },
         ],
       },
       {
@@ -1638,6 +1662,7 @@ export const menuConfig: Menu.MenuItem[] = [
         icon: 'gavel',
         colorScheme: 'red',
         children: [
+          /*
           {
             label: 'GST Transactions',
             slug: 'gst-transactions',
@@ -1662,6 +1687,7 @@ export const menuConfig: Menu.MenuItem[] = [
             icon: 'analytics',
             colorScheme: 'red',
           },
+          */
           {
             label: 'GST & Tax Report',
             slug: 'gst-tax-report',

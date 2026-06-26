@@ -8,7 +8,6 @@ import {
 } from 'shared/components/forms';
 import { Loader } from 'shared/components/progress';
 import {
-  FormActions,
   FormCard,
   FormGrid,
   FormPage,
@@ -21,6 +20,7 @@ import { useQuery } from '@tanstack/react-query';
 
 type AssetItem = (typeof ASSETS)[0];
 const QK = ['@fsc/assets'];
+
 function useAssetsQuery() {
   const { data = [], isLoading } = useQuery({
     queryKey: QK,
@@ -29,7 +29,30 @@ function useAssetsQuery() {
   return { data, isLoading };
 }
 
-type PopupState = { mode: 'closed' } | { mode: 'create' };
+type PopupState =
+  | { mode: 'closed' }
+  | { mode: 'create' }
+  | { mode: 'view'; item: AssetItem }
+  | { mode: 'edit'; item: AssetItem };
+
+function getStatusVariant(
+  status: string
+): 'approved' | 'pending' | 'neutral' | 'rejected' {
+  switch (status) {
+    case 'In Use':
+    case 'Active':
+    case 'Good':
+      return 'approved';
+    case 'Under Repair':
+    case 'Repair':
+      return 'pending';
+    case 'Retired':
+    case 'Disposed':
+      return 'neutral';
+    default:
+      return 'rejected';
+  }
+}
 
 export default function List() {
   const { data, isLoading } = useAssetsQuery();
@@ -49,7 +72,13 @@ export default function List() {
           searchPlaceholder="Search by asset code, name, category..."
           columns={[
             { cell: (_, o) => <span>{o.rowIndex + 1}</span>, width: '40px' },
-            { field: 'assetCode', header: 'Asset Code' },
+            {
+              field: 'assetCode',
+              header: 'Asset Code',
+              cell: (i: AssetItem) => (
+                <span className="font-bold text-blue-700">{i.assetCode}</span>
+              ),
+            },
             { field: 'name', header: 'Asset Name' },
             { field: 'category', header: 'Category' },
             { field: 'purchaseDate', header: 'Purchase Date' },
@@ -77,33 +106,31 @@ export default function List() {
               cell: (i: AssetItem) => (
                 <StatusBadge
                   label={i.status}
-                  variant={
-                    i.status === 'Approved' ||
-                    i.status === 'Delivered' ||
-                    i.status === 'Good' ||
-                    i.status === 'Paid' ||
-                    i.status === 'Active' ||
-                    i.status === 'Completed' ||
-                    i.status === 'Filed' ||
-                    i.status === 'Deposited' ||
-                    i.status === 'Issued' ||
-                    i.status === 'Matched' ||
-                    i.status === 'Open'
-                      ? 'approved'
-                      : i.status === 'Pending' ||
-                          i.status === 'Draft' ||
-                          i.status === 'Defective' ||
-                          i.status === 'Repair' ||
-                          i.status === 'Medium'
-                        ? 'pending'
-                        : i.status === 'Closed' ||
-                            i.status === 'Retired' ||
-                            i.status === 'Low' ||
-                            i.status === 'Cancelled'
-                          ? 'neutral'
-                          : 'rejected'
-                  }
+                  variant={getStatusVariant(i.status)}
                 />
+              ),
+            },
+            {
+              header: 'Actions',
+              sortable: false,
+              width: '100px',
+              cell: (i: AssetItem) => (
+                <div className="flex items-center gap-2">
+                  <Button
+                    icon="eye"
+                    variant="text"
+                    size="small"
+                    tooltip="View"
+                    onClick={() => setPopup({ mode: 'view', item: i })}
+                  />
+                  <Button
+                    icon="file-edit"
+                    variant="text"
+                    size="small"
+                    tooltip="Edit"
+                    onClick={() => setPopup({ mode: 'edit', item: i })}
+                  />
+                </div>
               ),
             },
           ]}
@@ -117,6 +144,8 @@ export default function List() {
           }
         />
       </FormCard>
+
+      {/* Create Popup */}
       <FormPopup
         visible={popup.mode === 'create'}
         onHide={closePopup}
@@ -124,36 +153,63 @@ export default function List() {
         subtitle="Enter details of the newly acquired asset."
         size="lg"
       >
-        <AssetForm onClose={closePopup} />
+        <AssetForm mode="create" onClose={closePopup} />
+      </FormPopup>
+
+      {/* View / Edit Popup */}
+      <FormPopup
+        visible={popup.mode === 'view' || popup.mode === 'edit'}
+        onHide={closePopup}
+        title={popup.mode === 'edit' ? 'Edit Asset' : 'View Asset'}
+        size="lg"
+      >
+        {(popup.mode === 'view' || popup.mode === 'edit') && (
+          <AssetForm
+            mode={popup.mode}
+            initialData={popup.item}
+            onClose={closePopup}
+          />
+        )}
       </FormPopup>
     </FormPage>
   );
 }
 
-function AssetForm({ onClose }: { onClose: () => void }) {
+// ─── Form ─────────────────────────────────────────────────────────────────────
+
+interface AssetFormProps {
+  mode: 'create' | 'view' | 'edit';
+  initialData?: AssetItem;
+  onClose: () => void;
+}
+
+function AssetForm({ mode, initialData, onClose }: AssetFormProps) {
+  const isView = mode === 'view';
+
   const [form, setForm] = useState({
-    assetCode: '',
-    name: '',
-    category: 'IT Equipment',
-    purchaseDate: '',
-    purchaseCost: 0,
-    location: '',
-    depreciationMethod: 'SLM',
-    status: 'Good',
+    name: initialData?.name ?? '',
+    category: initialData?.category ?? 'IT Equipment',
+    purchaseDate: initialData?.purchaseDate ?? '',
+    purchaseCost: initialData?.purchaseCost ?? 0,
+    location: initialData?.location ?? '',
+    depreciationMethod: initialData?.depreciationMethod ?? 'SLM',
+    status: initialData?.status ?? 'In Use',
   });
+
+  const handleSubmit = () => {
+    console.log('Submitted', form);
+    onClose();
+  };
+
   return (
-    <form
-      onSubmit={e => {
-        e.preventDefault();
-        onClose();
-      }}
-    >
+    <div className="flex flex-col gap-6">
       <FormGrid columns={2}>
         <TextBox
           label="Asset Name"
           placeholder="E.g. Dell PowerEdge R740"
           value={form.name}
           onChange={v => setForm(p => ({ ...p, name: v }))}
+          disabled={isView}
           required
         />
         <DropDownList
@@ -162,13 +218,17 @@ function AssetForm({ onClose }: { onClose: () => void }) {
           label="Category"
           data={[
             { label: 'IT Equipment', value: 'IT Equipment' },
+            { label: 'AV Equipment', value: 'AV Equipment' },
             { label: 'Lab Equipment', value: 'Lab Equipment' },
-            { label: 'Buildings', value: 'Buildings' },
+            { label: 'Office Equipment', value: 'Office Equipment' },
+            { label: 'HVAC', value: 'HVAC' },
+            { label: 'Building', value: 'Building' },
             { label: 'Vehicles', value: 'Vehicles' },
             { label: 'Furniture', value: 'Furniture' },
           ]}
           value={form.category}
           onChange={v => setForm(p => ({ ...p, category: v as string }))}
+          disabled={isView}
           required
         />
         <DatePicker
@@ -180,12 +240,14 @@ function AssetForm({ onClose }: { onClose: () => void }) {
               purchaseDate: v ? v.toISOString().split('T')[0] : '',
             }))
           }
+          disabled={isView}
           required
         />
         <NumberBox
           label="Purchase Cost (₹)"
           value={form.purchaseCost}
           onChange={v => setForm(p => ({ ...p, purchaseCost: v ?? 0 }))}
+          disabled={isView}
           required
         />
         <TextBox
@@ -193,6 +255,7 @@ function AssetForm({ onClose }: { onClose: () => void }) {
           placeholder="E.g. Server Room 1"
           value={form.location}
           onChange={v => setForm(p => ({ ...p, location: v }))}
+          disabled={isView}
           required
         />
         <DropDownList
@@ -207,14 +270,41 @@ function AssetForm({ onClose }: { onClose: () => void }) {
           onChange={v =>
             setForm(p => ({ ...p, depreciationMethod: v as string }))
           }
+          disabled={isView}
         />
+        {mode !== 'create' && (
+          <DropDownList
+            textField="label"
+            valueField="value"
+            label="Status"
+            data={[
+              { label: 'In Use', value: 'In Use' },
+              { label: 'Under Repair', value: 'Under Repair' },
+              { label: 'Retired', value: 'Retired' },
+              { label: 'Disposed', value: 'Disposed' },
+            ]}
+            value={form.status}
+            onChange={v => setForm(p => ({ ...p, status: v as string }))}
+            disabled={isView}
+          />
+        )}
       </FormGrid>
-      <FormActions
-        isEditMode={false}
-        isLoading={false}
-        onSave={() => {}}
-        onReset={() => {}}
-      />
-    </form>
+
+      <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+        <Button
+          label={isView ? 'Close' : 'Cancel'}
+          variant="outlined"
+          onClick={onClose}
+        />
+        {!isView && (
+          <Button
+            label={mode === 'create' ? 'Register Asset' : 'Save Changes'}
+            variant="primary"
+            icon={mode === 'create' ? 'save' : 'file-edit'}
+            onClick={handleSubmit}
+          />
+        )}
+      </div>
+    </div>
   );
 }
