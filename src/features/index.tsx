@@ -6,6 +6,7 @@ import { UniversityLoader } from 'shared/components/progress';
 import Academics from './academics';
 import AdmissionPortal from './admission-portal';
 import AffiliationManagementSystem from './affiliation-management-system';
+import AlumniManagement from './alumni-management';
 import CareerAdvancement from './career-advancement';
 import CertificateManagementSystem from './certificate-management-system';
 import EmployeeManagement from './employee-management';
@@ -146,6 +147,10 @@ export default function Features() {
                       <Route
                         path="leave-management/*"
                         element={<LeaveManagement />}
+                      />
+                      <Route
+                        path="alumni-management/*"
+                        element={<AlumniManagement />}
                       />
                     </Routes>
                   </MainLayout>
