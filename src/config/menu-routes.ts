@@ -531,15 +531,16 @@ export const menuConfig: Menu.MenuItem[] = [
     category: 'Employee',
     icon: 'groups',
     colorScheme: 'red',
-    description: 'Classes • Grades • Advising • Resources',
+    description: 'EMS • ESS • Reports • Career Advancement',
+    path: '/employee-management',
     children: [
       {
-        label: 'Employee Management System',
+        label: 'Employee Management',
         slug: 'employee-management',
         description:
-          'Manage countries, states, divisions, districts, tehsils, and blocks.',
-        path: '/home/sub-menu/employee-management',
-        icon: 'edit_location',
+          'HR Admin and Employee self-service portal — onboarding, leaves, appraisals, research and more.',
+        path: '/employee-management',
+        icon: 'manage_accounts',
         colorScheme: 'red',
         navigationStyle: 'sidebar',
         children: [
@@ -1146,6 +1147,33 @@ export const menuConfig: Menu.MenuItem[] = [
                 path: '/employee-management/settings/privacy',
                 icon: 'visibility',
                 colorScheme: 'green',
+              },
+              {
+                label: 'Employee Masters (View Only)',
+                slug: 'ess-masters',
+                description:
+                  'View master lists for reference (e.g. Leave Types, Designation Types).',
+                path: '/home/sub-menu/ess-masters',
+                icon: 'list_alt',
+                colorScheme: 'green',
+                children: [
+                  {
+                    label: 'Leave Type Reference',
+                    slug: 'ess-leave-type-master',
+                    description: 'View available leave types.',
+                    path: '/employee-management/ess/masters/leave-types',
+                    icon: 'calendar_month',
+                    colorScheme: 'green',
+                  },
+                  {
+                    label: 'Travel Purpose Reference',
+                    slug: 'ess-travel-purpose-master',
+                    description: 'View allowed travel purposes.',
+                    path: '/employee-management/ess/masters/travel-purposes',
+                    icon: 'travel_explore',
+                    colorScheme: 'green',
+                  },
+                ],
               },
             ],
           },

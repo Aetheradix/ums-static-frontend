@@ -17,9 +17,13 @@ const ServicesGrid: React.FC = () => {
           title={service.label}
           icon={service.icon}
           colorScheme={service.colorScheme}
-          onClick={() =>
-            service.slug && navigate(homeUrls.subMenu.root(service.slug))
-          }
+          onClick={() => {
+            if (service.path) {
+              navigate(service.path);
+            } else if (service.slug) {
+              navigate(homeUrls.subMenu.root(service.slug));
+            }
+          }}
         />
       ))}
     </div>

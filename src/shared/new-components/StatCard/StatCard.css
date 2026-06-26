@@ -1,111 +1,77 @@
+@reference "tailwindcss";
+
 .stat-card {
-  background: white;
-  border-radius: 14px;
-  padding: 1.25rem 1.5rem;
-  border: 1px solid var(--color-border, #e5e7eb);
-  display: flex;
-  flex-direction: column;
-  gap: 0.875rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.2s ease;
+  @apply relative overflow-hidden bg-white rounded-2xl border border-slate-200 
+         shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 flex flex-col gap-4 
+         transition-all duration-300;
 }
 
 .stat-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  @apply shadow-lg border-slate-300 -translate-y-0.5;
 }
 
 .stat-card-body {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  @apply flex items-center gap-4 relative z-10;
 }
 
 .stat-card-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  color: white;
+  @apply w-12 h-12 rounded-xl flex items-center justify-center shrink-0 text-white shadow-sm;
+  /* colorScheme is applied via inline styles or classes in the TSX */
 }
 
 .stat-card-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  min-width: 0;
+  @apply flex flex-col gap-1 min-w-0;
 }
 
 .stat-card-value {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--color-text-primary, #111827);
-  line-height: 1;
-  letter-spacing: -0.02em;
+  @apply text-2xl font-bold text-slate-800 leading-none tracking-tight;
 }
 
 .stat-card-title {
-  font-size: 0.813rem;
-  color: var(--color-text-secondary, #6b7280);
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  @apply text-sm font-medium text-slate-500 whitespace-nowrap overflow-hidden text-ellipsis;
 }
 
 .stat-card-subtitle {
-  font-size: 0.75rem;
-  color: var(--color-text-muted, #9ca3af);
-  margin-top: 0.125rem;
+  @apply text-xs text-slate-400;
 }
 
 .stat-card-trend {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding-top: 0.625rem;
-  border-top: 1px solid var(--color-border, #e5e7eb);
+  @apply flex items-center gap-1.5 text-xs font-medium pt-3 border-t border-slate-100;
 }
 
 .stat-card-trend-up {
-  color: #16a34a;
+  @apply text-emerald-600;
 }
 
 .stat-card-trend-down {
-  color: #dc2626;
+  @apply text-rose-600;
 }
 
 .stat-card-trend-neutral {
-  color: #6b7280;
+  @apply text-slate-500;
 }
 
 /* Dark Mode Support */
 .dark .stat-card {
-  background-color: var(--dark-card-bg);
-  border-color: var(--dark-border);
-  box-shadow: 0 1px 4px var(--dark-shadow);
+  @apply bg-[var(--dark-card-bg)] border-[var(--dark-border)] shadow-none;
 }
 
 .dark .stat-card:hover {
-  box-shadow: 0 4px 12px var(--dark-shadow);
+  @apply border-slate-600 shadow-md;
 }
 
 .dark .stat-card-value {
-  color: var(--dark-text);
+  @apply text-slate-100;
 }
 
 .dark .stat-card-title {
-  color: var(--dark-text-muted);
+  @apply text-slate-400;
 }
 
 .dark .stat-card-subtitle {
-  color: var(--dark-placeholder);
+  @apply text-slate-500;
 }
 
 .dark .stat-card-trend {
-  border-top-color: var(--dark-border);
+  @apply border-slate-700/50;
 }

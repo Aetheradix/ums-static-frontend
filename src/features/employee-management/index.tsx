@@ -13,11 +13,15 @@ import TravelManagement from './employee-self-service/travel/pages/TravelManagem
 import FullOnboarding from './full-onboarding';
 import HeadcountControl from './headcount-control/pages/HeadcountControl';
 import ManageEmployees from './manage-employees';
+import EmployeePortalPage from './portal/EmployeePortalPage';
+import AdminPortalPage from './portal/AdminPortalPage';
 import QuickOnboarding from './quick-onboarding';
 
 export default function EmployeeManagement() {
   return (
     <Routes>
+      <Route index element={<EmployeePortalPage />} />
+      <Route path="admin-portal" element={<AdminPortalPage />} />
       <Route path="dashboard" element={<EMSDashboard />} />
       <Route path="manage-employees/*" element={<ManageEmployees />} />
       <Route path="quick-onboarding/*" element={<QuickOnboarding />} />
@@ -33,7 +37,7 @@ export default function EmployeeManagement() {
       <Route path="career-event-tracking" element={<CareerEventTracking />} />
       <Route path="headcount-control" element={<HeadcountControl />} />
       <Route path="ess-dashboard" element={<ESSDashboard />} />
-      <Route path="*" element={<EMSDashboard />} />
+      <Route path="*" element={<EmployeePortalPage />} />
     </Routes>
   );
 }
