@@ -9,6 +9,7 @@ import AffiliationManagementSystem from './affiliation-management-system';
 import CareerAdvancement from './career-advancement';
 import CertificateManagementSystem from './certificate-management-system';
 import EmployeeManagement from './employee-management';
+import EmployeeReports from './employee-reports';
 import ExaminationManagement from './examination-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
@@ -114,6 +115,10 @@ export default function Features() {
                       <Route
                         path="employee-management/*"
                         element={<EmployeeManagement />}
+                      />
+                      <Route
+                        path="employee-reports/*"
+                        element={<EmployeeReports />}
                       />
                       <Route
                         path="examination-management/*"
