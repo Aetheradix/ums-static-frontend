@@ -27,6 +27,12 @@ export default function Notifications() {
     ToastService.success('Notification settings saved successfully.');
   };
 
+  const getPreviewText = (text: string) => {
+    return text
+      .replace('{sessionName}', 'Faculty Feedback Odd 2024-25')
+      .replace('{endDate}', '2025-06-30');
+  };
+
   const eventColors: Record<string, string> = {
     'Feedback Open': 'border-l-blue-500 bg-blue-50',
     Reminder: 'border-l-amber-500 bg-amber-50',
@@ -86,6 +92,12 @@ export default function Notifications() {
                     onChange={v => updateTemplate(t.id, 'body', v)}
                     rows={3}
                   />
+                  <div className="mt-2 p-3 bg-white/60 rounded text-sm text-gray-700 border border-white/40">
+                    <span className="font-medium text-gray-900 block mb-1">
+                      Preview:
+                    </span>
+                    {getPreviewText(t.body)}
+                  </div>
                 </div>
               </FormGrid>
             </div>
