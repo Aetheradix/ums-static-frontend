@@ -13,12 +13,21 @@ export default function AparReporting() {
     useCareerAdvancement();
 
   // Find Ramesh's APAR application (EMP001)
-  const app = aparApplications.find((a: CareerAdvancement.CASAPARApplication) => a.employeeId === 'EMP001') || aparApplications[0];
+  const app =
+    aparApplications.find(
+      (a: CareerAdvancement.CASAPARApplication) => a.employeeId === 'EMP001'
+    ) || aparApplications[0];
 
   // Reporting Officer states
-  const [workScore, setWorkScore] = useState(app?.reportingOfficerWorkScore || 8);
-  const [personalScore, setPersonalScore] = useState(app?.reportingOfficerPersonalScore || 9);
-  const [functionalScore, setFunctionalScore] = useState(app?.reportingOfficerFunctionalScore || 8);
+  const [workScore, setWorkScore] = useState(
+    app?.reportingOfficerWorkScore || 8
+  );
+  const [personalScore, setPersonalScore] = useState(
+    app?.reportingOfficerPersonalScore || 9
+  );
+  const [functionalScore, setFunctionalScore] = useState(
+    app?.reportingOfficerFunctionalScore || 8
+  );
   const [grade, setGrade] = useState(app?.reportingOfficerGrade || 'Very Good');
   const [penPicture, setPenPicture] = useState(
     app?.reportingOfficerPenPicture ||
@@ -64,8 +73,6 @@ export default function AparReporting() {
         { label: 'Reporting Appraisal' },
       ]}
     >
-
-
       <div className="space-y-6">
         <FormCard
           title={`Employee Self-Assessment Summary - ${app?.employeeName}`}
@@ -83,16 +90,28 @@ export default function AparReporting() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="bg-white p-3 rounded-lg border border-slate-100 text-center">
-                <span className="text-xs font-bold text-slate-400 uppercase">Work Output Score</span>
-                <p className="text-xl font-extrabold text-indigo-600 mt-1">{app?.workOutputScore || '—'} / 10</p>
+                <span className="text-xs font-bold text-slate-400 uppercase">
+                  Work Output Score
+                </span>
+                <p className="text-xl font-extrabold text-indigo-600 mt-1">
+                  {app?.workOutputScore || '—'} / 10
+                </p>
               </div>
               <div className="bg-white p-3 rounded-lg border border-slate-100 text-center">
-                <span className="text-xs font-bold text-slate-400 uppercase">Personal Attributes Avg</span>
-                <p className="text-xl font-extrabold text-indigo-600 mt-1">8.6 / 10</p>
+                <span className="text-xs font-bold text-slate-400 uppercase">
+                  Personal Attributes Avg
+                </span>
+                <p className="text-xl font-extrabold text-indigo-600 mt-1">
+                  8.6 / 10
+                </p>
               </div>
               <div className="bg-white p-3 rounded-lg border border-slate-100 text-center">
-                <span className="text-xs font-bold text-slate-400 uppercase">Functional Competency Avg</span>
-                <p className="text-xl font-extrabold text-indigo-600 mt-1">8.5 / 10</p>
+                <span className="text-xs font-bold text-slate-400 uppercase">
+                  Functional Competency Avg
+                </span>
+                <p className="text-xl font-extrabold text-indigo-600 mt-1">
+                  8.5 / 10
+                </p>
               </div>
             </div>
           </div>

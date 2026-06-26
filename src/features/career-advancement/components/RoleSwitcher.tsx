@@ -4,8 +4,14 @@ import { DropDownList } from 'shared/components/forms';
 const ROLE_OPTIONS: Data.DataItem<string>[] = [
   { id: 'cas_admin', text: 'cas_admin (Admin)' },
   { id: 'cas_employee', text: 'cas_employee (Employee)' },
-  { id: 'cas_reporting_officer', text: 'cas_reporting_officer (Reporting Officer)' },
-  { id: 'cas_reviewing_officer', text: 'cas_reviewing_officer (Reviewing Officer)' },
+  {
+    id: 'cas_reporting_officer',
+    text: 'cas_reporting_officer (Reporting Officer)',
+  },
+  {
+    id: 'cas_reviewing_officer',
+    text: 'cas_reviewing_officer (Reviewing Officer)',
+  },
   { id: 'cas_iqac', text: 'cas_iqac (IQAC)' },
   { id: 'HOD', text: 'HOD (Head of Department)' },
   { id: 'Dean', text: 'Dean (School Dean)' },
@@ -27,7 +33,10 @@ export default function RoleSwitcher() {
             CAS Simulation Environment
           </h4>
           <p className="text-xs text-slate-500 font-semibold">
-            Active Role: <span className="text-indigo-600 font-bold uppercase">{simulatedRole.replace('cas_', '').toUpperCase()}</span>
+            Active Role:{' '}
+            <span className="text-indigo-600 font-bold uppercase">
+              {simulatedRole.replace('cas_', '').toUpperCase()}
+            </span>
           </p>
         </div>
       </div>
@@ -45,7 +54,9 @@ export default function RoleSwitcher() {
             onChange={v => {
               const nextRole = v as string;
               setSimulatedRole(nextRole);
-              triggerNotification(`Switched simulated role to: ${nextRole.toUpperCase()}`);
+              triggerNotification(
+                `Switched simulated role to: ${nextRole.toUpperCase()}`
+              );
             }}
           />
         </div>

@@ -4,7 +4,17 @@ const MASTER_API_ROOT = `master/`;
 
 const NATIONALITY_URL = `${MASTER_API_ROOT}nationality`;
 export function getNationalities() {
-  return ApiService.getList<Master.Other.NationalityItem>(NATIONALITY_URL);
+  //   return ApiService.getList<Master.Other.NationalityItem>(NATIONALITY_URL);
+  return Promise.resolve([
+    { id: 1, name: 'Indian', text: 'Indian', isActive: true },
+    { id: 2, name: 'NRI', text: 'NRI', isActive: true },
+    {
+      id: 3,
+      name: 'Foreign National',
+      text: 'Foreign National',
+      isActive: true,
+    },
+  ] as unknown as Master.Other.NationalityItem[]);
 }
 
 export async function getNationality(id: number) {

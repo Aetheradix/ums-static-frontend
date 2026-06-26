@@ -8,9 +8,11 @@ import AdmissionPortal from './admission-portal';
 import AffiliationManagementSystem from './affiliation-management-system';
 import CareerAdvancement from './career-advancement';
 import EmployeeManagement from './employee-management';
+import ExaminationManagement from './examination-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
 import Lms from './lms';
+import LeaveManagement from './leave-management';
 import Master from './master';
 import ProgrammeManagement from './programme-management';
 import PublicPortalLayout, {
@@ -107,6 +109,10 @@ export default function Features() {
                         path="employee-management/*"
                         element={<EmployeeManagement />}
                       />
+                      <Route
+                        path="examination-management/*"
+                        element={<ExaminationManagement />}
+                      />
                       <Route path="academics/*" element={<Academics />} />
                       <Route
                         path="programme-management/*"
@@ -117,6 +123,10 @@ export default function Features() {
                         element={<HostelManagement />}
                       />
                       <Route path="lms/*" element={<Lms />} />
+                      <Route
+                        path="leave-management/*"
+                        element={<LeaveManagement />}
+                      />
                     </Routes>
                   </MainLayout>
                 }

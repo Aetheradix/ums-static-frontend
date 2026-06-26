@@ -5,7 +5,6 @@ import { FormCard, FormGrid, FormPage, GridPanel } from 'shared/new-components';
 import { TextBox, TextArea } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
 
-
 export default function DeanAcademics() {
   const navigate = useNavigate();
   const { pbasApplications, setPBASApplications, triggerNotification } =
@@ -29,8 +28,12 @@ export default function DeanAcademics() {
     app?.screeningCommitteeRemarks ||
       'Approved for advancement. The candidate satisfies all api criteria guidelines.'
   );
-  const [vcNominee, setVcNominee] = useState(app?.vcNominee || 'Prof. Amitabh Bachan');
-  const [sme, setSme] = useState(app?.subjectMatterExpert || 'Dr. Satish Sharma, IIT Delhi');
+  const [vcNominee, setVcNominee] = useState(
+    app?.vcNominee || 'Prof. Amitabh Bachan'
+  );
+  const [sme, setSme] = useState(
+    app?.subjectMatterExpert || 'Dr. Satish Sharma, IIT Delhi'
+  );
 
   const totalFinalScore = useMemo(() => {
     return Number(finalT || 0) + Number(finalR || 0) + Number(finalO || 0);
@@ -38,7 +41,10 @@ export default function DeanAcademics() {
 
   const handleFinishScreening = () => {
     if (!remarks) {
-      triggerNotification('Committee remarks are required to submit screening.', 'error');
+      triggerNotification(
+        'Committee remarks are required to submit screening.',
+        'error'
+      );
       return;
     }
 
@@ -82,7 +88,10 @@ export default function DeanAcademics() {
       })
     );
 
-    triggerNotification('Review process finished. Application fully approved and finalized.', 'success');
+    triggerNotification(
+      'Review process finished. Application fully approved and finalized.',
+      'success'
+    );
     navigate('/career-advancement/dashboard');
   };
 
@@ -95,8 +104,6 @@ export default function DeanAcademics() {
         { label: 'Dean Academics Review' },
       ]}
     >
-
-
       <div className="space-y-6">
         <FormCard title="Applications Forwarded by IQAC" icon="list">
           <GridPanel
@@ -111,7 +118,9 @@ export default function DeanAcademics() {
               },
               {
                 header: 'IQAC Verified API',
-                cell: () => <span className="text-cyan-600 font-bold">177</span>,
+                cell: () => (
+                  <span className="text-cyan-600 font-bold">177</span>
+                ),
               },
               {
                 header: 'Actions',
@@ -122,13 +131,23 @@ export default function DeanAcademics() {
                       label="View"
                       icon="eye"
                       variant="outlined"
-                      onClick={() => triggerNotification('Viewing application details.', 'info')}
+                      onClick={() =>
+                        triggerNotification(
+                          'Viewing application details.',
+                          'info'
+                        )
+                      }
                     />
                     <Button
                       label="Print"
                       icon="print"
                       variant="outlined"
-                      onClick={() => triggerNotification('Sending print layout to printer...', 'info')}
+                      onClick={() =>
+                        triggerNotification(
+                          'Sending print layout to printer...',
+                          'info'
+                        )
+                      }
                     />
                   </div>
                 ),
@@ -146,15 +165,25 @@ export default function DeanAcademics() {
               <table className="w-full border-collapse text-sm text-slate-700">
                 <thead>
                   <tr className="bg-slate-50 border-b border-slate-200">
-                    <th className="p-3 text-left font-bold text-slate-600">Assessment Category</th>
-                    <th className="p-3 text-left font-bold text-slate-600">Claimed Score</th>
-                    <th className="p-3 text-left font-bold text-slate-600">IQAC Verified Score</th>
-                    <th className="p-3 text-left font-bold text-slate-600">Final Score</th>
+                    <th className="p-3 text-left font-bold text-slate-600">
+                      Assessment Category
+                    </th>
+                    <th className="p-3 text-left font-bold text-slate-600">
+                      Claimed Score
+                    </th>
+                    <th className="p-3 text-left font-bold text-slate-600">
+                      IQAC Verified Score
+                    </th>
+                    <th className="p-3 text-left font-bold text-slate-600">
+                      Final Score
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className="border-b border-slate-100">
-                    <td className="p-3 font-semibold">Teaching, Learning & Evaluation</td>
+                    <td className="p-3 font-semibold">
+                      Teaching, Learning & Evaluation
+                    </td>
                     <td className="p-3 text-slate-500">85</td>
                     <td className="p-3 text-cyan-600 font-semibold">80</td>
                     <td className="p-3">
@@ -168,7 +197,9 @@ export default function DeanAcademics() {
                     </td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="p-3 font-semibold">Research & Academic Contributions</td>
+                    <td className="p-3 font-semibold">
+                      Research & Academic Contributions
+                    </td>
                     <td className="p-3 text-slate-500">60</td>
                     <td className="p-3 text-cyan-600 font-semibold">55</td>
                     <td className="p-3">
@@ -182,7 +213,9 @@ export default function DeanAcademics() {
                     </td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="p-3 font-semibold">Other Extension Activities</td>
+                    <td className="p-3 font-semibold">
+                      Other Extension Activities
+                    </td>
                     <td className="p-3 text-slate-500">45</td>
                     <td className="p-3 text-cyan-600 font-semibold">42</td>
                     <td className="p-3">
@@ -259,7 +292,9 @@ export default function DeanAcademics() {
                     label="Print Application"
                     icon="print"
                     variant="outlined"
-                    onClick={() => triggerNotification('Generating Print Layout...', 'info')}
+                    onClick={() =>
+                      triggerNotification('Generating Print Layout...', 'info')
+                    }
                   />
                 </>
               )}

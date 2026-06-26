@@ -5,9 +5,14 @@ const MASTER_API_ROOT = `master/`;
 const COLLEGE_CATEGORY_URL = `${MASTER_API_ROOT}college-categories`;
 
 export function getCollegeCategories() {
-  return ApiService.getList<CollegeMaster.CollegeCategoryItem>(
-    COLLEGE_CATEGORY_URL
-  );
+  //   return ApiService.getList<CollegeMaster.CollegeCategoryItem>(
+  //     COLLEGE_CATEGORY_URL
+  //   );
+  return Promise.resolve([
+    { id: 1, name: 'Co-Education', text: 'Co-Education', isActive: true },
+    { id: 2, name: 'Womens', text: 'Womens', isActive: true },
+    { id: 3, name: 'Mens', text: 'Mens', isActive: true },
+  ] as unknown as CollegeMaster.CollegeCategoryItem[]);
 }
 
 export async function getCollegeCategory(id: number) {

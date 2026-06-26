@@ -3,7 +3,12 @@ import { ApiService } from 'services';
 const STATE_URL = `master/state`;
 
 export function getStates() {
-  return ApiService.getList<Master.StateItem>(STATE_URL);
+  //   return ApiService.getList<Master.StateItem>(STATE_URL);
+  return Promise.resolve([
+    { id: 1, name: 'Madhya Pradesh', text: 'Madhya Pradesh', isActive: true },
+    { id: 2, name: 'Maharashtra', text: 'Maharashtra', isActive: true },
+    { id: 3, name: 'Gujarat', text: 'Gujarat', isActive: true },
+  ] as unknown as Master.StateItem[]);
 }
 
 export async function getState(id: number) {

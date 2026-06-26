@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { NumberBox, TextBox, DropDownList } from 'shared/components/forms';
 import { FormGrid } from 'shared/new-components';
-import { uploadPriorEducationDocument } from '../api';
+import { getStudentApplicationService } from 'shared/di';
 import './PriorEducationCard.css';
 
 export const EDUCATION_LEVELS = [
@@ -86,7 +86,8 @@ export default function PriorEducationCard({
     setUploadError(null);
     setUploading(true);
     try {
-      const id = await uploadPriorEducationDocument(file);
+      const service = getStudentApplicationService();
+      const id = await service.uploadDocument(file);
       if (id) {
         setValue(`priorEducations.${index}.documentFile`, file);
         setValue(`priorEducations.${index}.documentId`, id, {

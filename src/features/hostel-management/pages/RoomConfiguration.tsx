@@ -59,7 +59,6 @@ const STATUS_OPTIONS: Data.DataItem<string>[] = [
   { id: 'Maintenance', text: 'Maintenance' },
 ];
 
-
 export default function RoomConfiguration() {
   const { hostels, rooms, setRooms, setHostels, triggerNotification } =
     useHostel();

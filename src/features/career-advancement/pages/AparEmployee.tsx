@@ -5,14 +5,16 @@ import { FormCard, FormGrid, FormPage } from 'shared/new-components';
 import { TextBox, TextArea } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
 
-
 export default function AparEmployee() {
   const navigate = useNavigate();
   const { aparApplications, setAPARApplications, triggerNotification } =
     useCareerAdvancement();
 
   // Load Dr. Ramesh Kumar's APAR application (EMP001)
-  const app = aparApplications.find((a: CareerAdvancement.CASAPARApplication) => a.employeeId === 'EMP001') || aparApplications[0];
+  const app =
+    aparApplications.find(
+      (a: CareerAdvancement.CASAPARApplication) => a.employeeId === 'EMP001'
+    ) || aparApplications[0];
 
   // Employee self-assessment states
   const [description, setDescription] = useState(
@@ -26,23 +28,43 @@ export default function AparEmployee() {
   );
 
   // Personal Attributes
-  const [leadership, setLeadership] = useState(app?.personalAttributes?.leadershipQuality || '8');
-  const [communication, setCommunication] = useState(app?.personalAttributes?.communicationSkills || '9');
-  const [integrity, setIntegrity] = useState(app?.personalAttributes?.integrity || '9');
-  const [adaptability, setAdaptability] = useState(app?.personalAttributes?.adaptability || '8');
-  const [teamWork, setTeamWork] = useState(app?.personalAttributes?.teamWork || '9');
+  const [leadership, setLeadership] = useState(
+    app?.personalAttributes?.leadershipQuality || '8'
+  );
+  const [communication, setCommunication] = useState(
+    app?.personalAttributes?.communicationSkills || '9'
+  );
+  const [integrity, setIntegrity] = useState(
+    app?.personalAttributes?.integrity || '9'
+  );
+  const [adaptability, setAdaptability] = useState(
+    app?.personalAttributes?.adaptability || '8'
+  );
+  const [teamWork, setTeamWork] = useState(
+    app?.personalAttributes?.teamWork || '9'
+  );
 
   // Functional Competency
-  const [domain, setDomain] = useState(app?.functionalCompetency?.domainKnowledge || '9');
-  const [problemSolving, setProblemSolving] = useState(app?.functionalCompetency?.problemSolvingAbility || '8');
-  const [decision, setDecision] = useState(app?.functionalCompetency?.decisionMaking || '8');
-  const [analytical, setAnalytical] = useState(app?.functionalCompetency?.analyticalSkills || '9');
+  const [domain, setDomain] = useState(
+    app?.functionalCompetency?.domainKnowledge || '9'
+  );
+  const [problemSolving, setProblemSolving] = useState(
+    app?.functionalCompetency?.problemSolvingAbility || '8'
+  );
+  const [decision, setDecision] = useState(
+    app?.functionalCompetency?.decisionMaking || '8'
+  );
+  const [analytical, setAnalytical] = useState(
+    app?.functionalCompetency?.analyticalSkills || '9'
+  );
   const [functionalRemarks, setFunctionalRemarks] = useState(
     app?.functionalCompetencyRemarks ||
       'Coordinated departmental examinations and updated curriculum syllabus.'
   );
 
-  const [additionalRemarks, setAdditionalRemarks] = useState(app?.additionalRemarks || '');
+  const [additionalRemarks, setAdditionalRemarks] = useState(
+    app?.additionalRemarks || ''
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,8 +121,6 @@ export default function AparEmployee() {
         { label: 'Self Assessment' },
       ]}
     >
-
-
       <form onSubmit={handleSubmit} className="space-y-6">
         <FormCard title="1. Assessment of Work Output" icon="description">
           <FormGrid columns={1}>

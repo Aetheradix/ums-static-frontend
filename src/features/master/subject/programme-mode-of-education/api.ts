@@ -2,9 +2,14 @@ import { ApiService } from 'services';
 
 const PROGRAMME_MODE_OF_EDUCATION_URL = `master/programme-modes-of-education`;
 export function getProgrammeModeOfEducations() {
-  return ApiService.getList<Master.SubjectMaster.ProgrammeModeOfEducationItem>(
-    PROGRAMME_MODE_OF_EDUCATION_URL
-  );
+  //   return ApiService.getList<Master.SubjectMaster.ProgrammeModeOfEducationItem>(
+  //     PROGRAMME_MODE_OF_EDUCATION_URL
+  //   );
+  return Promise.resolve([
+    { id: 1, name: 'Regular', text: 'Regular', isActive: true },
+    { id: 2, name: 'Distance', text: 'Distance', isActive: true },
+    { id: 3, name: 'Part-Time', text: 'Part-Time', isActive: true },
+  ] as unknown as Master.SubjectMaster.ProgrammeModeOfEducationItem[]);
 }
 
 export async function getProgrammeModeOfEducation(id: number) {

@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useCareerAdvancement } from '../context';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
 import { TextBox, DropDownList, Checkbox } from 'shared/components/forms';
-import FormWizard, { type WizardStep } from 'shared/components/forms/FormWizard';
+import FormWizard, {
+  type WizardStep,
+} from 'shared/components/forms/FormWizard';
 
 import { STAGE_OPTIONS, QUALIFICATION_OPTIONS } from '../data';
 
@@ -65,7 +67,10 @@ export default function PbasCreate() {
 
   const handleComplete = () => {
     if (!form.declaration || !form.signature) {
-      triggerNotification('Please accept the declaration and sign the application.', 'error');
+      triggerNotification(
+        'Please accept the declaration and sign the application.',
+        'error'
+      );
       return;
     }
 
@@ -126,7 +131,9 @@ export default function PbasCreate() {
       researchAPIScore: Number(form.researchAPIScore),
 
       mentorshipActivities: form.mentorshipActivities,
-      professionalDevelopmentPrograms: Number(form.professionalDevelopmentPrograms),
+      professionalDevelopmentPrograms: Number(
+        form.professionalDevelopmentPrograms
+      ),
       professionalBodyAssociations: form.professionalBodyAssociations,
       mousUndertaken: Number(form.mousUndertaken),
       consultancyDetails: form.consultancyDetails,
@@ -136,7 +143,10 @@ export default function PbasCreate() {
       totalAPIScore: totalScore,
     };
 
-    setPBASApplications((prev: CareerAdvancement.CASPBASApplication[]) => [...prev, newApp]);
+    setPBASApplications((prev: CareerAdvancement.CASPBASApplication[]) => [
+      ...prev,
+      newApp,
+    ]);
     triggerNotification(
       'PBAS Application submitted. Forwarded to Head of Department (HOD).',
       'success'
@@ -161,36 +171,20 @@ export default function PbasCreate() {
       label: 'Basic Details',
       content: (
         <FormGrid columns={2}>
-          <TextBox
-            label="Employee ID"
-            value={form.employeeId}
-            readOnly
-          />
-          <TextBox
-            label="Employee Name"
-            value={form.employeeName}
-            readOnly
-          />
+          <TextBox label="Employee ID" value={form.employeeId} readOnly />
+          <TextBox label="Employee Name" value={form.employeeName} readOnly />
           <TextBox
             label="Date of Birth"
             value={form.dob}
             onChange={v => set('dob', v)}
           />
-          <TextBox
-            label="Department"
-            value={form.department}
-            readOnly
-          />
+          <TextBox label="Department" value={form.department} readOnly />
           <TextBox
             label="Date of Joining"
             value={form.dateOfJoining}
             onChange={v => set('dateOfJoining', v)}
           />
-          <TextBox
-            label="Category"
-            value={form.category}
-            readOnly
-          />
+          <TextBox label="Category" value={form.category} readOnly />
           <DropDownList
             label="Stage Applying For *"
             data={stageOptions}
@@ -392,26 +386,45 @@ export default function PbasCreate() {
       content: (
         <div className="space-y-6">
           <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 text-indigo-800 text-xs leading-relaxed">
-            I hereby declare that the details provided above are true to the best of my knowledge
-            and correspond to performance appraisal systems guidelines. I understand that the verified
-            API scores are subject to administrative scrutiny and screening committee audits.
+            I hereby declare that the details provided above are true to the
+            best of my knowledge and correspond to performance appraisal systems
+            guidelines. I understand that the verified API scores are subject to
+            administrative scrutiny and screening committee audits.
           </div>
-          <FormCard title="API Score Summary" icon="chart-bar" className="bg-slate-50 border border-slate-200">
+          <FormCard
+            title="API Score Summary"
+            icon="chart-bar"
+            className="bg-slate-50 border border-slate-200"
+          >
             <div className="grid grid-cols-3 gap-4 text-center">
               <div className="bg-white p-3 rounded-lg border border-slate-100">
-                <span className="text-[10px] font-bold text-slate-400 uppercase">Teaching Score</span>
-                <p className="text-lg font-black text-indigo-600 mt-1">{form.teachingAPIScore}</p>
+                <span className="text-[10px] font-bold text-slate-400 uppercase">
+                  Teaching Score
+                </span>
+                <p className="text-lg font-black text-indigo-600 mt-1">
+                  {form.teachingAPIScore}
+                </p>
               </div>
               <div className="bg-white p-3 rounded-lg border border-slate-100">
-                <span className="text-[10px] font-bold text-slate-400 uppercase">Research Score</span>
-                <p className="text-lg font-black text-indigo-600 mt-1">{form.researchAPIScore}</p>
+                <span className="text-[10px] font-bold text-slate-400 uppercase">
+                  Research Score
+                </span>
+                <p className="text-lg font-black text-indigo-600 mt-1">
+                  {form.researchAPIScore}
+                </p>
               </div>
               <div className="bg-white p-3 rounded-lg border border-slate-100">
-                <span className="text-[10px] font-bold text-slate-400 uppercase">Extension Score</span>
-                <p className="text-lg font-black text-indigo-600 mt-1">{form.othersAPIScore}</p>
+                <span className="text-[10px] font-bold text-slate-400 uppercase">
+                  Extension Score
+                </span>
+                <p className="text-lg font-black text-indigo-600 mt-1">
+                  {form.othersAPIScore}
+                </p>
               </div>
               <div className="col-span-3 bg-indigo-50 p-3 rounded-lg border border-indigo-100 flex justify-between items-center px-6">
-                <span className="text-xs font-bold text-indigo-700 uppercase">Total Claimed API Score:</span>
+                <span className="text-xs font-bold text-indigo-700 uppercase">
+                  Total Claimed API Score:
+                </span>
                 <span className="text-xl font-extrabold text-indigo-700">
                   {Number(form.teachingAPIScore || 0) +
                     Number(form.researchAPIScore || 0) +
@@ -447,8 +460,6 @@ export default function PbasCreate() {
         { label: 'PBAS Wizard' },
       ]}
     >
-
-
       <FormCard title="New Promotion Application Form" icon="file">
         <FormWizard
           steps={steps}
