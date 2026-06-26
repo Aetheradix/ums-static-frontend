@@ -20,8 +20,7 @@ type PopupState =
   | { mode: 'closed' }
   | { mode: 'create'; templateId?: string }
   | { mode: 'edit'; item: FeedbackQuestion }
-  | { mode: 'view'; item: FeedbackQuestion }
-  | { mode: 'clone'; item: FeedbackQuestion };
+  | { mode: 'view'; item: FeedbackQuestion };
 
 const QUESTION_TYPE_OPTIONS = [
   { name: 'Rating (1-5)', value: 'Rating' },
@@ -91,20 +90,6 @@ export default function QuestionBank() {
     setPopup({ mode: 'edit', item });
   };
 
-  const openClone = (item: FeedbackQuestion) => {
-    setForm({
-      question: item.question,
-      category: item.category,
-      questionType: item.questionType,
-      optionsText: item.options.join('\n'),
-      ratingScale: item.ratingScale,
-      isMandatory: item.isMandatory,
-      templateId: item.templateId,
-      status: 'Active',
-    });
-    setPopup({ mode: 'clone', item });
-  };
-
   const handleSave = () => {
     const options = form.optionsText
       .split('\n')
@@ -113,7 +98,7 @@ export default function QuestionBank() {
     const qType = (form.questionType ||
       'Text') as FeedbackQuestion['questionType'];
 
-    if (popup.mode === 'create' || popup.mode === 'clone') {
+    if (popup.mode === 'create') {
       const newItem: FeedbackQuestion = {
         id: String(Date.now()),
         templateId: form.templateId,
@@ -160,15 +145,6 @@ export default function QuestionBank() {
       ToastService.success('Question updated successfully.');
     }
     closePopup();
-  };
-
-  const handleArchive = (item: FeedbackQuestion) => {
-    setData(prev =>
-      prev.map(q =>
-        q.id === item.id ? { ...q, status: 'Archived' as const } : q
-      )
-    );
-    ToastService.success('Question archived successfully.');
   };
 
   const getTemplateTitle = (tid: string) =>
@@ -265,22 +241,6 @@ export default function QuestionBank() {
                       onClick={() => openEdit(item)}
                     />
                   )}
-                  <Button
-                    icon="copy"
-                    label="Clone"
-                    variant="outlined"
-                    size="small"
-                    onClick={() => openClone(item)}
-                  />
-                  {item.status === 'Active' && (
-                    <Button
-                      icon="archive"
-                      label="Archive"
-                      variant="outlined"
-                      size="small"
-                      onClick={() => handleArchive(item)}
-                    />
-                  )}
                 </div>
               ),
             },
@@ -288,19 +248,11 @@ export default function QuestionBank() {
         />
       </FormCard>
 
-      {(popup.mode === 'create' ||
-        popup.mode === 'edit' ||
-        popup.mode === 'clone') && (
+      {(popup.mode === 'create' || popup.mode === 'edit') && (
         <FormPopup
           visible
           onHide={closePopup}
-          title={
-            popup.mode === 'create'
-              ? 'Add Question'
-              : popup.mode === 'edit'
-                ? 'Edit Question'
-                : 'Clone Question'
-          }
+          title={popup.mode === 'create' ? 'Add Question' : 'Edit Question'}
           subtitle="Fill in the question details."
           size="lg"
         >

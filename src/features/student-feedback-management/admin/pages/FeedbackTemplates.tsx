@@ -21,8 +21,7 @@ import { feedbackUrls } from '../../urls';
 type PopupState =
   | { mode: 'closed' }
   | { mode: 'create' }
-  | { mode: 'edit'; item: FeedbackTemplate }
-  | { mode: 'clone'; item: FeedbackTemplate };
+  | { mode: 'edit'; item: FeedbackTemplate };
 
 type PreviewState =
   | { mode: 'closed' }
@@ -53,10 +52,6 @@ export default function FeedbackTemplates() {
     setForm({ name: item.name, status: item.status });
     setPopup({ mode: 'edit', item });
   };
-  const openClone = (item: FeedbackTemplate) => {
-    setForm({ name: `${item.name} (Copy)`, status: 'Draft' });
-    setPopup({ mode: 'clone', item });
-  };
   const openPreview = (item: FeedbackTemplate) =>
     setPreview({ mode: 'preview', item });
 
@@ -86,17 +81,6 @@ export default function FeedbackTemplates() {
         )
       );
       ToastService.success('Template updated successfully.');
-    } else if (popup.mode === 'clone') {
-      const cloned: FeedbackTemplate = {
-        id: String(Date.now()),
-        name: form.name,
-        questionCount: 0,
-        version: 1,
-        status: 'Draft',
-        lastUpdated: new Date().toISOString().split('T')[0],
-      };
-      setData(prev => [...prev, cloned]);
-      ToastService.success('Template cloned successfully.');
     }
     closePopup();
   };
@@ -180,13 +164,6 @@ export default function FeedbackTemplates() {
                     size="small"
                     onClick={() => openPreview(item)}
                   />
-                  <Button
-                    icon="copy"
-                    label="Clone"
-                    variant="outlined"
-                    size="small"
-                    onClick={() => openClone(item)}
-                  />
                   {item.status === 'Draft' && (
                     <Button
                       icon="send"
@@ -203,19 +180,11 @@ export default function FeedbackTemplates() {
         />
       </FormCard>
 
-      {(popup.mode === 'create' ||
-        popup.mode === 'edit' ||
-        popup.mode === 'clone') && (
+      {(popup.mode === 'create' || popup.mode === 'edit') && (
         <FormPopup
           visible
           onHide={closePopup}
-          title={
-            popup.mode === 'create'
-              ? 'Create Template'
-              : popup.mode === 'edit'
-                ? 'Edit Template'
-                : 'Clone Template'
-          }
+          title={popup.mode === 'create' ? 'Create Template' : 'Edit Template'}
           subtitle="Fill in the template details."
           size="lg"
         >

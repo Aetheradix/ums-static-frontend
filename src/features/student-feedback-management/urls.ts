@@ -15,5 +15,7 @@ export const feedbackUrls = {
   student: {
     dashboard: '/student-feedback-management/student',
     form: '/student-feedback-management/student/form/:sessionId',
+    formItem:
+      '/student-feedback-management/student/form/:sessionId/:responseId',
   },
 };

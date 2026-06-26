@@ -96,11 +96,10 @@ export default function StudentResponses() {
               }
             />
           </div>
-          <div className="flex items-end pb-1">
+          <div className="flex items-start pt-5">
             <Button
               label="Clear Filters"
               variant="outlined"
-              size="small"
               onClick={() =>
                 setFilters({
                   department: '',

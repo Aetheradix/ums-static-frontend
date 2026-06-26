@@ -1990,33 +1990,90 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Admin Portal',
             slug: 'admin',
             description:
-              'Admin portal (Dashboard/Templates/Question Bank tiles)',
-            path: '/student-feedback-management/admin',
+              'Manage feedback sessions, templates, questions, assignments, and view analytics.',
+            path: '/student-feedback-management/admin/dashboard',
             icon: 'admin_panel_settings',
             colorScheme: 'orange',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dashboard',
                 slug: 'dashboard',
-                description: 'Stats dashboard with charts',
+                description:
+                  'View stats, completion rates, and visual analytics.',
                 path: '/student-feedback-management/admin/dashboard',
                 icon: 'dashboard',
                 colorScheme: 'orange',
               },
               {
-                label: 'Templates',
-                slug: 'templates',
-                description: 'Template CRUD with all actions',
-                path: '/student-feedback-management/admin/templates',
-                icon: 'description',
+                label: 'Feedback Sessions',
+                slug: 'sessions',
+                description:
+                  'Create, publish, close, and manage feedback collection sessions.',
+                path: '/student-feedback-management/admin/sessions',
+                icon: 'event_note',
                 colorScheme: 'orange',
               },
               {
                 label: 'Question Bank',
                 slug: 'question-bank',
-                description: 'Question CRUD with answer types',
+                description:
+                  'Manage questions, categories, and answer types for templates.',
                 path: '/student-feedback-management/admin/question-bank',
                 icon: 'help_outline',
+                colorScheme: 'orange',
+              },
+              {
+                label: 'Feedback Templates',
+                slug: 'templates',
+                description:
+                  'Create reusable question templates for feedback sessions.',
+                path: '/student-feedback-management/admin/templates',
+                icon: 'description',
+                colorScheme: 'orange',
+              },
+              {
+                label: 'Feedback Assignment',
+                slug: 'assignments',
+                description:
+                  'Assign templates to courses, faculty, and student groups.',
+                path: '/student-feedback-management/admin/assignments',
+                icon: 'assignment_ind',
+                colorScheme: 'orange',
+              },
+              {
+                label: 'Student Responses',
+                slug: 'responses',
+                description: 'View and filter student feedback submissions.',
+                path: '/student-feedback-management/admin/responses',
+                icon: 'people',
+                colorScheme: 'orange',
+              },
+              {
+                label: 'Reports & Analytics',
+                slug: 'reports',
+                description:
+                  'Analyze feedback data with charts and export options.',
+                path: '/student-feedback-management/admin/reports',
+                icon: 'bar_chart',
+                colorScheme: 'orange',
+              },
+              {
+                label: 'Notifications',
+                slug: 'notifications',
+                description:
+                  'Configure notification templates and delivery channels.',
+                path: '/student-feedback-management/admin/notifications',
+                icon: 'notifications',
+                colorScheme: 'orange',
+              },
+              {
+                label: 'Settings',
+                slug: 'settings',
+                description:
+                  'Configure feedback parameters and system-wide settings.',
+                path: '/student-feedback-management/admin/settings',
+                icon: 'settings',
                 colorScheme: 'orange',
               },
             ],

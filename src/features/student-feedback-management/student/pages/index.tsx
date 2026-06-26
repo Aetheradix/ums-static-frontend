@@ -7,7 +7,10 @@ export default function StudentPages() {
     <Routes>
       <Route index element={<StudentDashboard />} />
       <Route path="dashboard" element={<StudentDashboard />} />
-      <Route path="form/:sessionId" element={<StudentFeedbackForm />} />
+      <Route
+        path="form/:sessionId/:responseId"
+        element={<StudentFeedbackForm />}
+      />
     </Routes>
   );
 }

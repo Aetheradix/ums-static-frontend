@@ -109,6 +109,10 @@ const facultyRatings = [
   { label: 'Dr. Sharma', rating: 4.2 },
   { label: 'Prof. Verma', rating: 3.8 },
   { label: 'Dr. Patel', rating: 4.5 },
+  { label: 'Dr. Singh', rating: 4.0 },
+  { label: 'Dr. Khan', rating: 3.7 },
+  { label: 'Dr. Gupta', rating: 4.3 },
+  { label: 'Prof. Singh', rating: 3.9 },
   { label: 'Admin', rating: 4.0 },
   { label: 'Librarian', rating: 3.5 },
 ];
@@ -375,27 +379,27 @@ export default function Dashboard() {
 
   const recentActivities = [
     {
-      text: 'New session "Faculty Feedback Even 2024-25" created.',
-      time: '2 hours ago',
-      type: 'session',
-    },
-    {
-      text: 'Feedback "Faculty Feedback Odd 2024-25" published.',
-      time: '1 day ago',
-      type: 'marks',
-    },
-    {
       text: '342 responses received for "Faculty Feedback Odd 2024-25".',
-      time: '3 days ago',
+      time: '2 hours ago',
       type: 'fee',
     },
     {
-      text: 'Session "Infrastructure Feedback 2024" closed.',
+      text: 'Feedback "Faculty Feedback Odd 2024-25" opened for submissions.',
+      time: '1 day ago',
+      type: 'session',
+    },
+    {
+      text: 'Session "Infrastructure Feedback 2024" closed with 189 responses.',
+      time: '3 days ago',
+      type: 'marks',
+    },
+    {
+      text: 'New session "Library Services Feedback 2025" scheduled.',
       time: '1 week ago',
       type: 'timetable',
     },
     {
-      text: 'New template "Library Services" created.',
+      text: 'Template "Library Services Feedback Template" created for upcoming session.',
       time: '2 weeks ago',
       type: 'qp',
     },

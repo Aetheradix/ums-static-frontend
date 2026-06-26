@@ -242,7 +242,7 @@ export default function FeedbackSessions() {
                       }
                     />
                   )}
-                  {item.status !== 'Closed' && item.status !== 'Archived' && (
+                  {item.status !== 'Closed' && (
                     <Button
                       icon="lock"
                       label="Close"
@@ -250,17 +250,6 @@ export default function FeedbackSessions() {
                       size="small"
                       onClick={() =>
                         updateStatus(item, 'Closed', 'Session closed.')
-                      }
-                    />
-                  )}
-                  {item.status !== 'Archived' && (
-                    <Button
-                      icon="archive"
-                      label="Archive"
-                      variant="outlined"
-                      size="small"
-                      onClick={() =>
-                        updateStatus(item, 'Archived', 'Session archived.')
                       }
                     />
                   )}

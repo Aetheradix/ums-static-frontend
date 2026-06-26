@@ -57,7 +57,7 @@ function DepartmentComparisonChart() {
     const ctx = ref.current.getContext('2d');
     if (!ctx) return;
     const chart = new Chart(ctx, {
-      type: 'radar',
+      type: 'bar',
       data: {
         labels: [
           'Teaching',
@@ -69,32 +69,38 @@ function DepartmentComparisonChart() {
         ],
         datasets: [
           {
-            label: 'CSE',
+            label: 'Computer Science',
             data: [4.2, 3.8, 4.0, 3.5, 4.5, 4.1],
+            backgroundColor: 'rgba(59,130,246,0.7)',
             borderColor: '#3b82f6',
-            backgroundColor: 'rgba(59,130,246,0.1)',
-            pointBackgroundColor: '#3b82f6',
+            borderWidth: 1,
+            borderRadius: 3,
           },
           {
-            label: 'ECE',
+            label: 'Electronics',
             data: [4.0, 4.2, 3.9, 3.8, 4.0, 3.9],
+            backgroundColor: 'rgba(34,197,94,0.7)',
             borderColor: '#22c55e',
-            backgroundColor: 'rgba(34,197,94,0.1)',
-            pointBackgroundColor: '#22c55e',
+            borderWidth: 1,
+            borderRadius: 3,
           },
           {
-            label: 'ME',
+            label: 'Mechanical',
             data: [3.8, 3.5, 4.1, 4.0, 3.7, 4.0],
+            backgroundColor: 'rgba(245,158,11,0.7)',
             borderColor: '#f59e0b',
-            backgroundColor: 'rgba(245,158,11,0.1)',
-            pointBackgroundColor: '#f59e0b',
+            borderWidth: 1,
+            borderRadius: 3,
           },
         ],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        scales: { r: { min: 0, max: 5, ticks: { stepSize: 1 } } },
+        scales: {
+          x: { grid: { display: false } },
+          y: { min: 0, max: 5, ticks: { stepSize: 1 } },
+        },
         plugins: {
           legend: {
             position: 'bottom',
@@ -193,7 +199,7 @@ const TAB_ITEMS = [
   },
   {
     title: 'Department',
-    content: <SummaryTab />,
+    content: <DepartmentTab />,
   },
   {
     title: 'Question Analysis',
@@ -276,38 +282,115 @@ function SummaryTab() {
   );
 }
 
-function FacultyTab() {
+function DepartmentTab() {
+  const deptData = [
+    { name: 'Computer Science', responses: 8, avgRating: 4.1 },
+    { name: 'Electronics', responses: 3, avgRating: 4.0 },
+    { name: 'Mechanical', responses: 3, avgRating: 3.9 },
+    { name: 'Civil', responses: 1, avgRating: 3.5 },
+  ];
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <FormCard title="Department Comparison">
+        <div className="h-64">
+          <DepartmentComparisonChart />
+        </div>
+      </FormCard>
+      <FormCard title="Department Summary">
+        <div className="space-y-3">
+          {deptData.map(d => (
+            <div
+              key={d.name}
+              className="flex items-center justify-between p-3 border border-gray-100 rounded-lg"
+            >
+              <div>
+                <p className="text-sm font-medium text-gray-800">{d.name}</p>
+                <p className="text-xs text-gray-500">{d.responses} responses</p>
+              </div>
+              <span
+                className={`text-lg font-bold ${d.avgRating >= 4 ? 'text-green-600' : d.avgRating >= 3.5 ? 'text-yellow-600' : 'text-red-600'}`}
+              >
+                {d.avgRating}
+              </span>
+            </div>
+          ))}
+        </div>
+      </FormCard>
+    </div>
+  );
+}
+
+function FacultyTab() {
+  const allFaculty = [
+    {
+      name: 'Dr. Sharma',
+      rating: 4.2,
+      strength: 'Teaching',
+      weak: 'Course Materials',
+    },
+    {
+      name: 'Prof. Verma',
+      rating: 3.8,
+      strength: 'Interaction',
+      weak: 'Pacing',
+    },
+    {
+      name: 'Dr. Patel',
+      rating: 4.5,
+      strength: 'Subject Knowledge',
+      weak: 'Assignment Feedback',
+    },
+    {
+      name: 'Dr. Singh',
+      rating: 4.0,
+      strength: 'Clarity',
+      weak: 'Assessment Variety',
+    },
+    {
+      name: 'Dr. Khan',
+      rating: 3.7,
+      strength: 'Practical Examples',
+      weak: 'Speed',
+    },
+    {
+      name: 'Dr. Gupta',
+      rating: 4.3,
+      strength: 'Course Structure',
+      weak: 'Office Hours',
+    },
+    {
+      name: 'Prof. Singh',
+      rating: 3.9,
+      strength: 'Communication',
+      weak: 'Use of Technology',
+    },
+    {
+      name: 'Admin',
+      rating: 4.0,
+      strength: 'Responsiveness',
+      weak: 'Process Communication',
+    },
+    {
+      name: 'Librarian',
+      rating: 3.5,
+      strength: 'Resource Availability',
+      weak: 'Digital Collection',
+    },
+  ];
+  return (
+    <div className="grid grid-cols-1 gap-6">
       <FormCard title="Faculty Ratings">
-        <div className="space-y-4">
-          {[
-            {
-              name: 'Dr. Sharma',
-              rating: 4.2,
-              strength: 'Teaching',
-              weak: 'Course Materials',
-            },
-            {
-              name: 'Prof. Verma',
-              rating: 3.8,
-              strength: 'Interaction',
-              weak: 'Pacing',
-            },
-            {
-              name: 'Dr. Patel',
-              rating: 4.5,
-              strength: 'Subject Knowledge',
-              weak: 'Assignment Feedback',
-            },
-          ].map(f => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {allFaculty.map(f => (
             <div
               key={f.name}
               className="flex items-center justify-between p-3 border border-gray-100 rounded-lg"
             >
-              <div>
-                <p className="text-sm font-medium text-gray-800">{f.name}</p>
-                <div className="flex gap-4 mt-1 text-xs text-gray-500">
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-gray-800 truncate">
+                  {f.name}
+                </p>
+                <div className="flex gap-3 mt-1 text-xs text-gray-500 flex-wrap">
                   <span>
                     <span className="text-green-600">Strength:</span>{' '}
                     {f.strength}
@@ -318,17 +401,12 @@ function FacultyTab() {
                 </div>
               </div>
               <span
-                className={`text-lg font-bold ${f.rating >= 4 ? 'text-green-600' : f.rating >= 3.5 ? 'text-yellow-600' : 'text-red-600'}`}
+                className={`shrink-0 ml-2 text-lg font-bold ${f.rating >= 4 ? 'text-green-600' : f.rating >= 3.5 ? 'text-yellow-600' : 'text-red-600'}`}
               >
                 {f.rating}
               </span>
             </div>
           ))}
-        </div>
-      </FormCard>
-      <FormCard title="Department Comparison">
-        <div className="h-64">
-          <DepartmentComparisonChart />
         </div>
       </FormCard>
     </div>

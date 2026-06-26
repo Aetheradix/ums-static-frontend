@@ -89,8 +89,8 @@ export const feedbackSessions: FeedbackSession[] = [
     semesters: ['3', '5', '7'],
     departments: ['Computer Science', 'Electronics'],
     programmes: ['B.Tech'],
-    startDate: '2024-10-01',
-    endDate: '2024-10-31',
+    startDate: '2025-06-01',
+    endDate: '2025-06-30',
     status: 'Open',
     isAnonymous: true,
     responseCount: 342,
@@ -139,7 +139,7 @@ export const feedbackSessions: FeedbackSession[] = [
     status: 'Archived',
     isAnonymous: true,
     responseCount: 0,
-    targetCount: 0,
+    targetCount: 60,
     templateId: 'T1',
   },
   {
@@ -430,10 +430,10 @@ export const feedbackTemplates: FeedbackTemplate[] = [
   {
     id: 'T1',
     name: 'Faculty Feedback Template',
-    questionCount: 5,
+    questionCount: 7,
     version: 3,
     status: 'Published',
-    lastUpdated: '2024-09-20',
+    lastUpdated: '2025-06-01',
   },
   {
     id: 'T2',
@@ -454,10 +454,10 @@ export const feedbackTemplates: FeedbackTemplate[] = [
   {
     id: 'T4',
     name: 'Library Services Feedback Template',
-    questionCount: 4,
+    questionCount: 5,
     version: 1,
     status: 'Draft',
-    lastUpdated: '2025-03-28',
+    lastUpdated: '2025-04-10',
   },
 ];
 
@@ -465,7 +465,7 @@ export const feedbackAssignments: FeedbackAssignment[] = [
   {
     id: 'A1',
     academicYear: '2024-25',
-    semester: 'Odd',
+    semester: '3',
     department: 'Computer Science',
     programme: 'B.Tech',
     section: 'A',
@@ -477,7 +477,7 @@ export const feedbackAssignments: FeedbackAssignment[] = [
   {
     id: 'A2',
     academicYear: '2024-25',
-    semester: 'Odd',
+    semester: '5',
     department: 'Computer Science',
     programme: 'B.Tech',
     section: 'B',
@@ -489,7 +489,7 @@ export const feedbackAssignments: FeedbackAssignment[] = [
   {
     id: 'A3',
     academicYear: '2024-25',
-    semester: 'Even',
+    semester: '4',
     department: 'Electronics',
     programme: 'B.Tech',
     section: 'A',
@@ -501,7 +501,7 @@ export const feedbackAssignments: FeedbackAssignment[] = [
   {
     id: 'A4',
     academicYear: '2024-25',
-    semester: 'Both',
+    semester: '1',
     department: 'All',
     programme: 'All',
     section: '',
@@ -513,7 +513,7 @@ export const feedbackAssignments: FeedbackAssignment[] = [
   {
     id: 'A5',
     academicYear: '2025-26',
-    semester: 'Odd',
+    semester: '1',
     department: 'All',
     programme: 'All',
     section: '',
@@ -522,20 +522,45 @@ export const feedbackAssignments: FeedbackAssignment[] = [
     templateId: 'T4',
     studentsCount: 1000,
   },
+  {
+    id: 'A6',
+    academicYear: '2024-25',
+    semester: '5',
+    department: 'Computer Science',
+    programme: 'B.Tech',
+    section: 'A',
+    course: 'Java Programming',
+    faculty: 'Dr. Sharma',
+    templateId: 'T1',
+    studentsCount: 65,
+  },
+  {
+    id: 'A7',
+    academicYear: '2024-25',
+    semester: '5',
+    department: 'Computer Science',
+    programme: 'B.Tech',
+    section: 'A',
+    course: 'DBMS',
+    faculty: 'Dr. Singh',
+    templateId: 'T1',
+    studentsCount: 60,
+  },
+  {
+    id: 'A8',
+    academicYear: '2024-25',
+    semester: '5',
+    department: 'Computer Science',
+    programme: 'B.Tech',
+    section: 'A',
+    course: 'Operating System',
+    faculty: 'Dr. Khan',
+    templateId: 'T1',
+    studentsCount: 55,
+  },
 ];
 
 export const studentResponses: StudentResponse[] = [
-  {
-    id: 'R1',
-    sessionId: 'S1',
-    studentId: 'STU001',
-    department: 'Computer Science',
-    programme: 'B.Tech',
-    faculty: 'Dr. Sharma',
-    course: 'Data Structures',
-    submittedOn: '2024-10-05',
-    completionStatus: 'Completed',
-  },
   {
     id: 'R2',
     sessionId: 'S1',
@@ -544,7 +569,7 @@ export const studentResponses: StudentResponse[] = [
     programme: 'B.Tech',
     faculty: 'Dr. Sharma',
     course: 'Data Structures',
-    submittedOn: '2024-10-06',
+    submittedOn: '2025-06-05',
     completionStatus: 'Completed',
   },
   {
@@ -555,7 +580,7 @@ export const studentResponses: StudentResponse[] = [
     programme: 'B.Tech',
     faculty: 'Prof. Verma',
     course: 'Algorithms',
-    submittedOn: '2024-10-07',
+    submittedOn: '2025-06-07',
     completionStatus: 'Partial',
   },
   {
@@ -577,7 +602,7 @@ export const studentResponses: StudentResponse[] = [
     programme: 'B.Tech',
     faculty: 'Dr. Sharma',
     course: 'Data Structures',
-    submittedOn: '2024-10-08',
+    submittedOn: '2025-06-08',
     completionStatus: 'Completed',
   },
   {
@@ -643,7 +668,7 @@ export const studentResponses: StudentResponse[] = [
     programme: 'B.Tech',
     faculty: 'Dr. Sharma',
     course: 'Data Structures',
-    submittedOn: '2024-10-10',
+    submittedOn: '2025-06-10',
     completionStatus: 'Completed',
   },
   {
@@ -654,7 +679,7 @@ export const studentResponses: StudentResponse[] = [
     programme: 'B.Tech',
     faculty: 'Prof. Verma',
     course: 'Algorithms',
-    submittedOn: '2024-10-12',
+    submittedOn: '2025-06-12',
     completionStatus: 'Completed',
   },
   {
@@ -689,6 +714,39 @@ export const studentResponses: StudentResponse[] = [
     course: 'Infrastructure',
     submittedOn: '2024-12-10',
     completionStatus: 'Completed',
+  },
+  {
+    id: 'R16',
+    sessionId: 'S1',
+    studentId: 'STU001',
+    department: 'Computer Science',
+    programme: 'B.Tech',
+    faculty: 'Dr. Sharma',
+    course: 'Java Programming',
+    submittedOn: '',
+    completionStatus: 'Pending',
+  },
+  {
+    id: 'R17',
+    sessionId: 'S1',
+    studentId: 'STU001',
+    department: 'Computer Science',
+    programme: 'B.Tech',
+    faculty: 'Dr. Singh',
+    course: 'DBMS',
+    submittedOn: '2025-06-25',
+    completionStatus: 'Completed',
+  },
+  {
+    id: 'R18',
+    sessionId: 'S1',
+    studentId: 'STU001',
+    department: 'Computer Science',
+    programme: 'B.Tech',
+    faculty: 'Dr. Khan',
+    course: 'Operating System',
+    submittedOn: '',
+    completionStatus: 'Partial',
   },
 ];
 
@@ -783,6 +841,8 @@ export const facultyOptions = [
   'Librarian',
   'Dr. Gupta',
   'Prof. Singh',
+  'Dr. Singh',
+  'Dr. Khan',
 ];
 
 export const courseOptions = [
@@ -793,4 +853,6 @@ export const courseOptions = [
   'Library',
   'Computer Networks',
   'DBMS',
+  'Java Programming',
+  'Operating System',
 ];
