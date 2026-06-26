@@ -4,7 +4,6 @@ import { useCareerAdvancement } from '../context';
 import { FormCard, FormPage } from 'shared/new-components';
 import { Button } from 'shared/components/buttons';
 
-
 export default function AparTrack() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -15,8 +14,12 @@ export default function AparTrack() {
   // Find targeted APAR application
   const app = useMemo(() => {
     return (
-      aparApplications.find((a: CareerAdvancement.CASAPARApplication) => a.id === appId) ||
-      aparApplications.find((a: CareerAdvancement.CASAPARApplication) => a.employeeId === 'EMP001') ||
+      aparApplications.find(
+        (a: CareerAdvancement.CASAPARApplication) => a.id === appId
+      ) ||
+      aparApplications.find(
+        (a: CareerAdvancement.CASAPARApplication) => a.employeeId === 'EMP001'
+      ) ||
       aparApplications[0]
     );
   }, [aparApplications, appId]);
@@ -38,7 +41,10 @@ export default function AparTrack() {
       {
         label: 'Self-Assessment Submitted',
         done: isForwarded || isUnderReview || isCompleted,
-        date: isForwarded || isUnderReview || isCompleted ? app?.submittedOn || '15 Jan 2025' : undefined,
+        date:
+          isForwarded || isUnderReview || isCompleted
+            ? app?.submittedOn || '15 Jan 2025'
+            : undefined,
         desc: 'Employee self-appraisal form submitted.',
         by: app?.employeeName,
       },
@@ -68,31 +74,49 @@ export default function AparTrack() {
         { label: 'Track Application' },
       ]}
     >
-
-
       <div className="space-y-6">
-        <FormCard title="Application Profile" icon="user" className="bg-slate-50">
+        <FormCard
+          title="Application Profile"
+          icon="user"
+          className="bg-slate-50"
+        >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
             <div>
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Application ID</span>
-              <span className="text-slate-800 font-extrabold block mt-1">{app?.id}</span>
-            </div>
-            <div>
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Employee Name</span>
-              <span className="text-slate-800 font-extrabold block mt-1">{app?.employeeName}</span>
-            </div>
-            <div>
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Department</span>
-              <span className="text-slate-800 font-extrabold block mt-1">{app?.department}</span>
-            </div>
-            <div>
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Active Status</span>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+                Application ID
+              </span>
               <span className="text-slate-800 font-extrabold block mt-1">
-                <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                  app?.status === 'Completed'
-                    ? 'bg-emerald-100 text-emerald-700'
-                    : 'bg-amber-100 text-amber-700'
-                }`}>
+                {app?.id}
+              </span>
+            </div>
+            <div>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+                Employee Name
+              </span>
+              <span className="text-slate-800 font-extrabold block mt-1">
+                {app?.employeeName}
+              </span>
+            </div>
+            <div>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+                Department
+              </span>
+              <span className="text-slate-800 font-extrabold block mt-1">
+                {app?.department}
+              </span>
+            </div>
+            <div>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+                Active Status
+              </span>
+              <span className="text-slate-800 font-extrabold block mt-1">
+                <span
+                  className={`px-2 py-0.5 rounded text-xs font-bold ${
+                    app?.status === 'Completed'
+                      ? 'bg-emerald-100 text-emerald-700'
+                      : 'bg-amber-100 text-amber-700'
+                  }`}
+                >
                   {app?.status}
                 </span>
               </span>
@@ -130,7 +154,9 @@ export default function AparTrack() {
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-slate-500 mt-1 font-semibold">{s.desc}</p>
+                  <p className="text-xs text-slate-500 mt-1 font-semibold">
+                    {s.desc}
+                  </p>
                   {s.by && (
                     <span className="text-[10px] bg-slate-100 text-slate-500 font-bold px-1.5 py-0.5 rounded mt-1.5 inline-block">
                       Action By: {s.by}

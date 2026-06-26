@@ -4,7 +4,6 @@ import { FormCard, FormGrid, FormPage, GridPanel } from 'shared/new-components';
 import { TextBox, DropDownList } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
 
-
 const TYPE_OPTIONS: Data.DataItem<string>[] = [
   { id: 'APAR', text: 'APAR' },
   { id: 'PBAS', text: 'PBAS' },
@@ -54,7 +53,10 @@ export default function SessionsManagement() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.startDate || !form.endDate) {
-      triggerNotification('Session Name, Start and End dates are required.', 'error');
+      triggerNotification(
+        'Session Name, Start and End dates are required.',
+        'error'
+      );
       return;
     }
 
@@ -70,7 +72,10 @@ export default function SessionsManagement() {
       sessionTo: form.sessionTo,
     };
 
-    setSessions((prev: CareerAdvancement.CASSession[]) => [...prev, newSession]);
+    setSessions((prev: CareerAdvancement.CASSession[]) => [
+      ...prev,
+      newSession,
+    ]);
     triggerNotification('Session created successfully!', 'success');
     setForm({ ...BLANK_FORM });
     setShowForm(false);
@@ -85,8 +90,6 @@ export default function SessionsManagement() {
         { label: 'Sessions Configuration' },
       ]}
     >
-
-
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-lg font-black text-slate-800">
           Available Assessment Sessions
@@ -236,13 +239,23 @@ export default function SessionsManagement() {
                     label="View"
                     icon="eye"
                     variant="outlined"
-                    onClick={() => triggerNotification(`Viewing configuration for ${item.name}`, 'info')}
+                    onClick={() =>
+                      triggerNotification(
+                        `Viewing configuration for ${item.name}`,
+                        'info'
+                      )
+                    }
                   />
                   <Button
                     label="Edit"
                     icon="pencil"
                     variant="outlined"
-                    onClick={() => triggerNotification('Editing session is restricted in preview.', 'warning')}
+                    onClick={() =>
+                      triggerNotification(
+                        'Editing session is restricted in preview.',
+                        'warning'
+                      )
+                    }
                   />
                 </div>
               ),

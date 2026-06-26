@@ -42,16 +42,20 @@ export default function AparAll() {
 
   // Filter logic
   const filteredApplications = useMemo(() => {
-    return aparApplications.filter((a: CareerAdvancement.CASAPARApplication) => {
-      const matchSearch =
-        employeeSearch === '' ||
-        a.employeeName.toLowerCase().includes(employeeSearch.toLowerCase()) ||
-        a.id.toLowerCase().includes(employeeSearch.toLowerCase());
-      const matchDept = selectedDept === '' || a.department === selectedDept;
-      const matchSession = selectedSession === '' || a.session === selectedSession;
-      const matchStatus = selectedStatus === '' || a.status === selectedStatus;
-      return matchSearch && matchDept && matchSession && matchStatus;
-    });
+    return aparApplications.filter(
+      (a: CareerAdvancement.CASAPARApplication) => {
+        const matchSearch =
+          employeeSearch === '' ||
+          a.employeeName.toLowerCase().includes(employeeSearch.toLowerCase()) ||
+          a.id.toLowerCase().includes(employeeSearch.toLowerCase());
+        const matchDept = selectedDept === '' || a.department === selectedDept;
+        const matchSession =
+          selectedSession === '' || a.session === selectedSession;
+        const matchStatus =
+          selectedStatus === '' || a.status === selectedStatus;
+        return matchSearch && matchDept && matchSession && matchStatus;
+      }
+    );
   }, [
     aparApplications,
     employeeSearch,
@@ -91,8 +95,6 @@ export default function AparAll() {
         { label: 'APAR Applications' },
       ]}
     >
-
-
       <FormCard title="Search Filters" icon="search" className="mb-6">
         <FormGrid columns={4}>
           <TextBox
@@ -152,7 +154,9 @@ export default function AparAll() {
               field: 'status',
               header: 'Status',
               cell: (item: CareerAdvancement.CASAPARApplication) => (
-                <span className={`px-2 py-0.5 rounded text-xs font-bold ${getStatusBadge(item.status)}`}>
+                <span
+                  className={`px-2 py-0.5 rounded text-xs font-bold ${getStatusBadge(item.status)}`}
+                >
                   {item.status}
                 </span>
               ),
@@ -173,13 +177,17 @@ export default function AparAll() {
                     label="Process"
                     icon="cog"
                     variant="primary"
-                    onClick={() => navigate(`/career-advancement/apar-process?id=${item.id}`)}
+                    onClick={() =>
+                      navigate(`/career-advancement/apar-process?id=${item.id}`)
+                    }
                   />
                   <Button
                     label="Track"
                     icon="map-marker"
                     variant="outlined"
-                    onClick={() => navigate(`/career-advancement/apar-track?id=${item.id}`)}
+                    onClick={() =>
+                      navigate(`/career-advancement/apar-track?id=${item.id}`)
+                    }
                   />
                 </div>
               ),

@@ -1,5 +1,6 @@
 import { Checkbox as PrimeCheckbox } from 'primereact/checkbox';
 import { Dropdown } from 'primereact/dropdown';
+import { useState, useEffect } from 'react';
 import { Controller, type FieldValues } from 'react-hook-form';
 
 import InputBlock from './InputBlock';
@@ -51,6 +52,12 @@ function InnerDropDownList<TData = Data.DataItem<number>>({
   onCheckboxChange,
   ...rest
 }: InnerDropDownProps<TData, FieldValues>) {
+  const [internalValue, setInternalValue] = useState(rest.value ?? null);
+
+  useEffect(() => {
+    setInternalValue(rest.value ?? null);
+  }, [rest.value]);
+
   const optionsWithDefault = [
     {
       [textField]: defaultOptionText,
@@ -79,7 +86,10 @@ function InnerDropDownList<TData = Data.DataItem<number>>({
           inputId={id ?? name}
           options={!defaultOptionText ? data : optionsWithDefault}
           optionLabel={textField as string}
+          optionValue={rest.optionValue ?? (valueField as string)}
+          value={internalValue}
           onChange={e => {
+            setInternalValue(e.value);
             if (e.value === defaultOptionText) {
               onChange?.(null);
             } else {

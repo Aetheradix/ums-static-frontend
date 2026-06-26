@@ -9,9 +9,11 @@ import FormPage from './FormPage';
 import FormPopup from './FormPopup';
 import GridPanel from './GridPanel';
 import InlineCreatePanel from './InlineCreatePanel/InlineCreatePanel';
+import PaymentDialog from './PaymentDialog';
 import PreviewField from './PreviewField/PreviewField';
 import PreviewSection from './PreviewSection/PreviewSection';
 import PreviewSummary from './PreviewSummary/PreviewSummary';
+import ReceiptDialog from './ReceiptDialog';
 import Sidebar from './Sidebar';
 import SkeletonLoader from './skeleton/SkeletonLoader';
 import StatusBadge from './StatusBadge/StatusBadge';
@@ -31,9 +33,11 @@ export {
   FormPopup,
   GridPanel,
   InlineCreatePanel,
+  PaymentDialog,
   PreviewField,
   PreviewSection,
   PreviewSummary,
+  ReceiptDialog,
   Sidebar,
   SkeletonLoader,
   StatCard,

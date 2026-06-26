@@ -73,7 +73,6 @@ const COLLEGE_DROPDOWN: Data.DataItem<string>[] = COLLEGE_OPTIONS.map(c => ({
   text: c,
 }));
 
-
 export default function HostelRegistry() {
   const { hostels, setHostels, triggerNotification } = useHostel();
   const [form, setForm] = useState<HostelForm>({ ...BLANK_FORM });

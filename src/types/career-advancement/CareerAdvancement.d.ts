@@ -23,11 +23,17 @@ declare namespace CareerAdvancement {
     department: string;
     session: string;
     stage: string;
-    status: 'Draft' | 'Pending' | 'Forwarded' | 'Under Review' | 'Completed' | 'Rejected';
+    status:
+      | 'Draft'
+      | 'Pending'
+      | 'Forwarded'
+      | 'Under Review'
+      | 'Completed'
+      | 'Rejected';
     currentHandler?: string;
     submittedOn?: string;
     lastUpdated?: string;
-    
+
     // Admin initialization data
     dateOfBirth?: string;
     category?: string;
@@ -40,7 +46,7 @@ declare namespace CareerAdvancement {
     employeeValidityDate?: string;
     reportingOfficerValidityDate?: string;
     reviewingOfficerValidityDate?: string;
-    
+
     // Employee self-assessment
     workOutputDescription?: string;
     workOutputScore?: number;
@@ -50,14 +56,14 @@ declare namespace CareerAdvancement {
     functionalCompetencyRemarks?: string;
     supportingDocuments?: string[];
     additionalRemarks?: string;
-    
+
     // Reporting Officer assessment
     reportingOfficerWorkScore?: number;
     reportingOfficerPersonalScore?: number;
     reportingOfficerFunctionalScore?: number;
     reportingOfficerGrade?: string;
     reportingOfficerPenPicture?: string;
-    
+
     // Reviewing Officer assessment
     reviewingOfficerAgree?: 'Yes' | 'No';
     reviewingOfficerWorkScore?: number;
@@ -92,24 +98,31 @@ declare namespace CareerAdvancement {
     session: string;
     type: 'PBAS' | 'CAS';
     stage: string;
-    status: 'Draft' | 'Pending' | 'Forwarded' | 'Under Review' | 'Approved' | 'Rejected' | 'Resubmission Required';
+    status:
+      | 'Draft'
+      | 'Pending'
+      | 'Forwarded'
+      | 'Under Review'
+      | 'Approved'
+      | 'Rejected'
+      | 'Resubmission Required';
     currentHandler?: string;
     submittedOn?: string;
     lastUpdated?: string;
-    
+
     // Basic details
     dateOfBirth?: string;
     category?: string;
     dateOfJoining?: string;
     stageApplyingFor?: string;
-    
+
     // Academic details
     highestQualification?: string;
     university?: string;
     yearOfPassing?: number;
     netSetQualified?: 'Yes' | 'No';
     netSetYear?: number;
-    
+
     // Teaching API
     lecturesDelivered?: number;
     tutorialPracticalHours?: number;
@@ -118,7 +131,7 @@ declare namespace CareerAdvancement {
     eContentDeveloped?: 'Yes' | 'No';
     eLearningContributions?: string;
     teachingAPIScore?: number;
-    
+
     // Research API
     intJournalPapers?: number;
     natJournalPapers?: number;
@@ -129,7 +142,7 @@ declare namespace CareerAdvancement {
     phdStudentsGuided?: number;
     collaborations?: string;
     researchAPIScore?: number;
-    
+
     // Extension API
     mentorshipActivities?: string;
     professionalDevelopmentPrograms?: number;
@@ -138,23 +151,23 @@ declare namespace CareerAdvancement {
     consultancyDetails?: string;
     additionalELearning?: string;
     othersAPIScore?: number;
-    
+
     // Final score
     totalAPIScore?: number;
-    
+
     // Verification details
     hodRemarks?: string;
     hodVerifiedScore?: number;
     hodDecision?: string;
-    
+
     deanRemarks?: string;
     deanVerifiedScore?: number;
     deanDecision?: string;
-    
+
     iqacRemarks?: string;
     iqacVerifiedScore?: number;
     iqacDecision?: string;
-    
+
     vcRemarks?: string;
     vcNominee?: string;
     subjectMatterExpert?: string;
@@ -200,13 +213,20 @@ declare namespace CareerAdvancement {
     employees: Employee[];
     setEmployees: React.Dispatch<React.SetStateAction<Employee[]>>;
     aparApplications: CASAPARApplication[];
-    setAPARApplications: React.Dispatch<React.SetStateAction<CASAPARApplication[]>>;
+    setAPARApplications: React.Dispatch<
+      React.SetStateAction<CASAPARApplication[]>
+    >;
     pbasApplications: CASPBASApplication[];
-    setPBASApplications: React.Dispatch<React.SetStateAction<CASPBASApplication[]>>;
+    setPBASApplications: React.Dispatch<
+      React.SetStateAction<CASPBASApplication[]>
+    >;
     sessions: CASSession[];
     setSessions: React.Dispatch<React.SetStateAction<CASSession[]>>;
     simulatedRole: string;
     setSimulatedRole: React.Dispatch<React.SetStateAction<string>>;
-    triggerNotification: (message: string, type?: 'success' | 'error' | 'warning' | 'info') => void;
+    triggerNotification: (
+      message: string,
+      type?: 'success' | 'error' | 'warning' | 'info'
+    ) => void;
   }
 }

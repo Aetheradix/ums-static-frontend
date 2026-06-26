@@ -1,22 +1,38 @@
-import { ApiService } from 'services';
-import { formatDatesInPayload } from 'shared/utils/dateUtils';
-
-const COLLEGE_REGISTRATION_URL = `college-affiliation/registration`;
-
 export async function getCollegeRegistrations() {
-  return ApiService.getList<AffiliationManagementSystem.CollegeRegistrationListItem>(
-    COLLEGE_REGISTRATION_URL
-  );
+  return [
+    {
+      id: 1,
+      registrationId: 1,
+      collegeName: 'Holkar Science College',
+      isActive: true,
+    },
+    {
+      id: 2,
+      registrationId: 2,
+      collegeName: 'Christian Eminent College',
+      isActive: true,
+    },
+  ] as unknown as AffiliationManagementSystem.CollegeRegistrationListItem[];
 }
 
 export async function getCollegesByCollegeType(collegeTypeId: number) {
-  const { data } = await ApiService.get<
-    { registrationId: number; collegeName: string; collegeTypeId: number }[]
-  >(`${COLLEGE_REGISTRATION_URL}/college-type/${collegeTypeId}`);
-  return data;
+  return [
+    {
+      registrationId: 1,
+      collegeName: 'Holkar Science College',
+      collegeTypeId: collegeTypeId,
+      isActive: true,
+    },
+    {
+      registrationId: 2,
+      collegeName: 'Christian Eminent College',
+      collegeTypeId: collegeTypeId,
+      isActive: true,
+    },
+  ];
 }
 
-function buildApiPayload(
+export function buildApiPayload(
   form: AffiliationManagementSystem.CollegeApplicationFormData,
   documentIds: { documentId: string; documentType: string }[]
 ) {
@@ -78,34 +94,18 @@ function buildApiPayload(
 }
 
 export async function createCollegeRegistration(
-  form: AffiliationManagementSystem.CollegeApplicationFormData,
-  documentIds: { documentId: string; documentType: string }[]
+  _form: AffiliationManagementSystem.CollegeApplicationFormData,
+  _documentIds: { documentId: string; documentType: string }[]
 ) {
-  const payload = buildApiPayload(form, documentIds);
-  const formattedPayload = formatDatesInPayload(payload);
-
-  const { error, data } = await ApiService.post<{ value: number }>(
-    COLLEGE_REGISTRATION_URL,
-    formattedPayload
-  );
-
-  return !error ? data : undefined;
+  return { value: Math.floor(Math.random() * 1000) };
 }
 
 export async function updateCollegeRegistration(
   id: number,
-  form: AffiliationManagementSystem.CollegeApplicationFormData,
-  documentIds: { documentId: string; documentType: string }[]
+  _form: AffiliationManagementSystem.CollegeApplicationFormData,
+  _documentIds: { documentId: string; documentType: string }[]
 ) {
-  const payload = buildApiPayload(form, documentIds);
-  const formattedPayload = formatDatesInPayload(payload);
-
-  const { error, data } = await ApiService.put<{ value: number }>(
-    `${COLLEGE_REGISTRATION_URL}/${id}`,
-    formattedPayload
-  );
-
-  return !error ? data : undefined;
+  return { value: id };
 }
 
 export async function uploadCollegeDocuments(
@@ -113,15 +113,14 @@ export async function uploadCollegeDocuments(
   affidavitFile: File | null,
   regularAuthorityFile: File | null
 ) {
-  const formData = new FormData();
-  if (nocFile) formData.append('NocFile', nocFile);
-  if (affidavitFile) formData.append('AffidavitFile', affidavitFile);
+  const docs = [];
+  if (nocFile) docs.push({ documentId: 'mock-noc', documentType: 'NocFile' });
+  if (affidavitFile)
+    docs.push({ documentId: 'mock-affidavit', documentType: 'AffidavitFile' });
   if (regularAuthorityFile)
-    formData.append('RegularAuthorityFile', regularAuthorityFile);
-
-  const { error, data } = await ApiService.postFormData<
-    { documentId: string; documentType: string }[]
-  >(`${COLLEGE_REGISTRATION_URL}/upload-documents`, formData);
-
-  return !error && data ? data : [];
+    docs.push({
+      documentId: 'mock-regular',
+      documentType: 'RegularAuthorityFile',
+    });
+  return docs;
 }

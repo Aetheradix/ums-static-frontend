@@ -1,9 +1,5 @@
 import { useState } from 'react';
-import {
-  Checkbox,
-  DropDownList,
-  TextBox,
-} from 'shared/components/forms';
+import { Checkbox, DropDownList, TextBox } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
 import FormWizard, {

@@ -13,14 +13,25 @@ export default function AparReviewing() {
     useCareerAdvancement();
 
   // Find Ramesh's APAR application (EMP001)
-  const app = aparApplications.find((a: CareerAdvancement.CASAPARApplication) => a.employeeId === 'EMP001') || aparApplications[0];
+  const app =
+    aparApplications.find(
+      (a: CareerAdvancement.CASAPARApplication) => a.employeeId === 'EMP001'
+    ) || aparApplications[0];
 
   // Reviewing Officer states
   const [agree, setAgree] = useState<any>(app?.reviewingOfficerAgree || 'Yes');
-  const [workScore, setWorkScore] = useState(app?.reviewingOfficerWorkScore || 8);
-  const [personalScore, setPersonalScore] = useState(app?.reviewingOfficerPersonalScore || 9);
-  const [functionalScore, setFunctionalScore] = useState(app?.reviewingOfficerFunctionalScore || 8);
-  const [finalGrade, setFinalGrade] = useState(app?.reviewingOfficerFinalGrade || 'Very Good');
+  const [workScore, setWorkScore] = useState(
+    app?.reviewingOfficerWorkScore || 8
+  );
+  const [personalScore, setPersonalScore] = useState(
+    app?.reviewingOfficerPersonalScore || 9
+  );
+  const [functionalScore, setFunctionalScore] = useState(
+    app?.reviewingOfficerFunctionalScore || 8
+  );
+  const [finalGrade, setFinalGrade] = useState(
+    app?.reviewingOfficerFinalGrade || 'Very Good'
+  );
   const [remarks, setRemarks] = useState(app?.reviewingOfficerRemarks || '');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -34,9 +45,16 @@ export default function AparReviewing() {
             status: 'Completed',
             currentHandler: 'Completed',
             reviewingOfficerAgree: agree,
-            reviewingOfficerWorkScore: agree === 'Yes' ? a.reportingOfficerWorkScore : Number(workScore),
-            reviewingOfficerPersonalScore: agree === 'Yes' ? a.reportingOfficerPersonalScore : Number(personalScore),
-            reviewingOfficerFunctionalScore: agree === 'Yes' ? a.reportingOfficerFunctionalScore : Number(functionalScore),
+            reviewingOfficerWorkScore:
+              agree === 'Yes' ? a.reportingOfficerWorkScore : Number(workScore),
+            reviewingOfficerPersonalScore:
+              agree === 'Yes'
+                ? a.reportingOfficerPersonalScore
+                : Number(personalScore),
+            reviewingOfficerFunctionalScore:
+              agree === 'Yes'
+                ? a.reportingOfficerFunctionalScore
+                : Number(functionalScore),
             reviewingOfficerFinalGrade: finalGrade,
             reviewingOfficerRemarks: remarks,
             lastUpdated: new Date().toLocaleDateString('en-GB', {
@@ -68,8 +86,6 @@ export default function AparReviewing() {
         { label: 'Reviewing Appraisal' },
       ]}
     >
-
-
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormCard
@@ -78,10 +94,20 @@ export default function AparReviewing() {
             className="bg-slate-50 border border-slate-200"
           >
             <div className="text-sm space-y-2">
-              <p><strong>Employee:</strong> {app?.employeeName}</p>
-              <p><strong>Designation:</strong> {app?.designation} ({app?.department})</p>
-              <p><strong>Work description:</strong> "{app?.workOutputDescription || '—'}"</p>
-              <p><strong>Claimed score:</strong> {app?.workOutputScore || '—'}/10</p>
+              <p>
+                <strong>Employee:</strong> {app?.employeeName}
+              </p>
+              <p>
+                <strong>Designation:</strong> {app?.designation} (
+                {app?.department})
+              </p>
+              <p>
+                <strong>Work description:</strong> "
+                {app?.workOutputDescription || '—'}"
+              </p>
+              <p>
+                <strong>Claimed score:</strong> {app?.workOutputScore || '—'}/10
+              </p>
             </div>
           </FormCard>
 
@@ -91,11 +117,29 @@ export default function AparReviewing() {
             className="bg-slate-50 border border-slate-200"
           >
             <div className="text-sm space-y-2">
-              <p><strong>Assigned Grade:</strong> <span className="font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded">{app?.reportingOfficerGrade || 'Very Good'}</span></p>
-              <p><strong>Work Score:</strong> {app?.reportingOfficerWorkScore || '8'} / 10</p>
-              <p><strong>Personal Attributes Score:</strong> {app?.reportingOfficerPersonalScore || '9'} / 10</p>
-              <p><strong>Functional Competency Score:</strong> {app?.reportingOfficerFunctionalScore || '8'} / 10</p>
-              <p className="italic text-slate-600 mt-2">"{app?.reportingOfficerPenPicture || 'No pen picture submitted.'}"</p>
+              <p>
+                <strong>Assigned Grade:</strong>{' '}
+                <span className="font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded">
+                  {app?.reportingOfficerGrade || 'Very Good'}
+                </span>
+              </p>
+              <p>
+                <strong>Work Score:</strong>{' '}
+                {app?.reportingOfficerWorkScore || '8'} / 10
+              </p>
+              <p>
+                <strong>Personal Attributes Score:</strong>{' '}
+                {app?.reportingOfficerPersonalScore || '9'} / 10
+              </p>
+              <p>
+                <strong>Functional Competency Score:</strong>{' '}
+                {app?.reportingOfficerFunctionalScore || '8'} / 10
+              </p>
+              <p className="italic text-slate-600 mt-2">
+                "
+                {app?.reportingOfficerPenPicture || 'No pen picture submitted.'}
+                "
+              </p>
             </div>
           </FormCard>
         </div>
@@ -143,7 +187,8 @@ export default function AparReviewing() {
                   />
                   <div className="col-span-2">
                     <p className="text-xs font-semibold text-rose-500 mb-2">
-                      * Specify below the reasons for disagreement with the Reporting Officer.
+                      * Specify below the reasons for disagreement with the
+                      Reporting Officer.
                     </p>
                   </div>
                 </>

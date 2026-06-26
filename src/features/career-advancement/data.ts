@@ -1,4 +1,3 @@
-
 // ─── INITIAL EMPLOYEES ──────────────────────────────────────────────
 export const INITIAL_EMPLOYEES: CareerAdvancement.Employee[] = [
   {
@@ -44,78 +43,80 @@ export const INITIAL_EMPLOYEES: CareerAdvancement.Employee[] = [
 ];
 
 // ─── INITIAL APAR APPLICATIONS ──────────────────────────────────────
-export const INITIAL_APAR_APPLICATIONS: CareerAdvancement.CASAPARApplication[] = [
-  {
-    id: 'APAR-2025-0001',
-    employeeId: 'EMP001',
-    employeeName: 'Dr. Ramesh Kumar',
-    designation: 'Assistant Professor',
-    department: 'Computer Science',
-    session: 'APAR 2024-25',
-    stage: 'Stage 1→2',
-    status: 'Pending',
-    submittedOn: '12 Jan 2025',
-    lastUpdated: '12 Jan 2025',
-  },
-  {
-    id: 'APAR-2025-0002',
-    employeeId: 'EMP002',
-    employeeName: 'Prof. Sunita Verma',
-    designation: 'Associate Professor',
-    department: 'Mathematics',
-    session: 'APAR 2024-25',
-    stage: 'Stage 2→3',
-    status: 'Forwarded',
-    submittedOn: '10 Jan 2025',
-    lastUpdated: '14 Jan 2025',
-    currentHandler: 'Reporting Officer',
-  },
-  {
-    id: 'APAR-2025-0003',
-    employeeId: 'EMP003',
-    employeeName: 'Dr. Ajay Singh',
-    designation: 'Assistant Professor',
-    department: 'Physics',
-    session: 'APAR 2024-25',
-    stage: 'Stage 1→2',
-    status: 'Completed',
-    submittedOn: '08 Jan 2025',
-    lastUpdated: '16 Jan 2025',
-  },
-];
+export const INITIAL_APAR_APPLICATIONS: CareerAdvancement.CASAPARApplication[] =
+  [
+    {
+      id: 'APAR-2025-0001',
+      employeeId: 'EMP001',
+      employeeName: 'Dr. Ramesh Kumar',
+      designation: 'Assistant Professor',
+      department: 'Computer Science',
+      session: 'APAR 2024-25',
+      stage: 'Stage 1→2',
+      status: 'Pending',
+      submittedOn: '12 Jan 2025',
+      lastUpdated: '12 Jan 2025',
+    },
+    {
+      id: 'APAR-2025-0002',
+      employeeId: 'EMP002',
+      employeeName: 'Prof. Sunita Verma',
+      designation: 'Associate Professor',
+      department: 'Mathematics',
+      session: 'APAR 2024-25',
+      stage: 'Stage 2→3',
+      status: 'Forwarded',
+      submittedOn: '10 Jan 2025',
+      lastUpdated: '14 Jan 2025',
+      currentHandler: 'Reporting Officer',
+    },
+    {
+      id: 'APAR-2025-0003',
+      employeeId: 'EMP003',
+      employeeName: 'Dr. Ajay Singh',
+      designation: 'Assistant Professor',
+      department: 'Physics',
+      session: 'APAR 2024-25',
+      stage: 'Stage 1→2',
+      status: 'Completed',
+      submittedOn: '08 Jan 2025',
+      lastUpdated: '16 Jan 2025',
+    },
+  ];
 
 // ─── INITIAL PBAS APPLICATIONS ──────────────────────────────────────
-export const INITIAL_PBAS_APPLICATIONS: CareerAdvancement.CASPBASApplication[] = [
-  {
-    id: 'PBAS-2025-0001',
-    employeeId: 'EMP004',
-    employeeName: 'Prof. Meena Patel',
-    designation: 'Professor',
-    department: 'Chemistry',
-    session: 'PBAS 2024-25',
-    type: 'PBAS',
-    stage: 'Stage 3→4',
-    status: 'Under Review',
-    submittedOn: '15 Jan 2025',
-    lastUpdated: '18 Jan 2025',
-    currentHandler: 'HOD',
-    totalAPIScore: 165,
-  },
-  {
-    id: 'CAS-2025-0001',
-    employeeId: 'EMP005',
-    employeeName: 'Dr. Vikram Rao',
-    designation: 'Assistant Professor',
-    department: 'English',
-    session: 'CAS 2024-25',
-    type: 'CAS',
-    stage: 'Stage 2→3',
-    status: 'Pending',
-    submittedOn: '20 Jan 2025',
-    lastUpdated: '20 Jan 2025',
-    totalAPIScore: 140,
-  },
-];
+export const INITIAL_PBAS_APPLICATIONS: CareerAdvancement.CASPBASApplication[] =
+  [
+    {
+      id: 'PBAS-2025-0001',
+      employeeId: 'EMP004',
+      employeeName: 'Prof. Meena Patel',
+      designation: 'Professor',
+      department: 'Chemistry',
+      session: 'PBAS 2024-25',
+      type: 'PBAS',
+      stage: 'Stage 3→4',
+      status: 'Under Review',
+      submittedOn: '15 Jan 2025',
+      lastUpdated: '18 Jan 2025',
+      currentHandler: 'HOD',
+      totalAPIScore: 165,
+    },
+    {
+      id: 'CAS-2025-0001',
+      employeeId: 'EMP005',
+      employeeName: 'Dr. Vikram Rao',
+      designation: 'Assistant Professor',
+      department: 'English',
+      session: 'CAS 2024-25',
+      type: 'CAS',
+      stage: 'Stage 2→3',
+      status: 'Pending',
+      submittedOn: '20 Jan 2025',
+      lastUpdated: '20 Jan 2025',
+      totalAPIScore: 140,
+    },
+  ];
 
 // ─── INITIAL SESSIONS ───────────────────────────────────────────────
 export const INITIAL_SESSIONS: CareerAdvancement.CASSession[] = [
@@ -171,7 +172,11 @@ export const CATEGORY_OPTIONS = ['General', 'OBC', 'SC', 'ST', 'EWS'];
 
 export const GROUP_OPTIONS = ['Group A', 'Group B', 'Group C', 'Group D'];
 
-export const EMPLOYMENT_TYPE_OPTIONS = ['Permanent', 'Temporary', 'Officiating'];
+export const EMPLOYMENT_TYPE_OPTIONS = [
+  'Permanent',
+  'Temporary',
+  'Officiating',
+];
 
 export const STAGE_OPTIONS = [
   'Stage 1 → Stage 2',
