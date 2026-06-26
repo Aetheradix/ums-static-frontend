@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useMenu } from 'config/menu-routes';
 import { TieredMenu } from 'primereact/tieredmenu';
@@ -57,7 +57,18 @@ const getIcon = (iconName?: any) => {
 };
 
 export const WorkspaceNavbar: React.FC = () => {
-  const menuItems = useMenu();
+  const baseMenuItems = useMenu();
+  const menuItems = useMemo(
+    () => [
+      {
+        label: 'Home',
+        icon: 'home',
+        path: '/home/menu',
+      },
+      ...baseMenuItems,
+    ],
+    [baseMenuItems]
+  );
   const navigate = useNavigate();
   const location = useLocation();
   const containerRef = useRef<HTMLDivElement>(null);

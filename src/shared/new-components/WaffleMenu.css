@@ -16,7 +16,8 @@
   @apply absolute right-0 top-full mt-3 w-[430px] max-h-[560px] overflow-hidden rounded-3xl border z-50;
 } */
 .ws-waffle-dropdown {
-  @apply absolute right-0 top-full mt-3 w-[430px] overflow-hidden rounded-3xl border z-50;
+  @apply absolute right-0 top-full mt-3 w-[430px] overflow-hidden rounded-3xl border;
+  z-index: 9999;
 }
 
 /* ─────────────────────────────
