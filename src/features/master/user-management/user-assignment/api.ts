@@ -1,40 +1,71 @@
-import ApiService from 'services/api';
-
-const USER_ASSIGNMENT_URL = `user-management/user-assignment`;
+let assignments: UserManagement.UserAssignmentList[] = [
+  {
+    userId: '1',
+    userName: 'admin',
+    roleName: 'Super Admin',
+    domain: 'GLOBAL',
+  },
+  {
+    userId: '2',
+    userName: 'arjun.sharma',
+    roleName: 'Admin',
+    domain: 'GLOBAL',
+  },
+  {
+    userId: '3',
+    userName: 'priya.verma',
+    roleName: 'Registrar',
+    domain: 'GLOBAL',
+  },
+  {
+    userId: '4',
+    userName: 'rohit.mishra',
+    roleName: 'Faculty',
+    domain: 'GLOBAL',
+  },
+  {
+    userId: '5',
+    userName: 'sneha.iyer',
+    roleName: 'Admin',
+    domain: 'GLOBAL',
+  },
+];
 
 export async function getUserAssignments(): Promise<
   UserManagement.UserAssignmentList[]
 > {
-  const response =
-    await ApiService.get<UserManagement.UserAssignmentList[]>(
-      USER_ASSIGNMENT_URL
-    );
-  return response.data ?? [];
+  return [...assignments];
 }
 
 export async function getUserAssignmentById(
   userId: string
 ): Promise<UserManagement.UserAssignmentForm[]> {
-  const response = await ApiService.get<UserManagement.UserAssignmentForm[]>(
-    `${USER_ASSIGNMENT_URL}/${userId}`
-  );
-  return response.data ?? [];
+  return assignments
+    .filter(a => a.userId === userId)
+    .map(({ userId, roleName, domain }) => ({ userId, roleName, domain }));
 }
 
 export async function createUserAssignment(
   data: UserManagement.UserAssignmentForm
 ) {
-  const { error, data: result } =
-    await ApiService.post<UserManagement.UserAssignmentForm>(
-      USER_ASSIGNMENT_URL,
-      data
-    );
-  return !error ? result : undefined;
+  const user = assignments.find(a => a.userId === data.userId);
+  const newAssignment: UserManagement.UserAssignmentList = {
+    userId: data.userId,
+    userName: user?.userName ?? data.userId,
+    roleName: data.roleName,
+    domain: data.domain,
+  };
+  assignments = [...assignments, newAssignment];
+  return newAssignment;
 }
 
 export async function updateUserAssignment(
   data: UserManagement.UserAssignmentForm
 ): Promise<boolean> {
-  const { error } = await ApiService.put(USER_ASSIGNMENT_URL, data);
-  return !error;
+  assignments = assignments.map(a =>
+    a.userId === data.userId
+      ? { ...a, roleName: data.roleName, domain: data.domain }
+      : a
+  );
+  return true;
 }

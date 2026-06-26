@@ -1,0 +1,51 @@
+@reference "tailwindcss";
+
+.portal-selector-wrapper {
+  @apply w-full px-6 py-8;
+}
+
+.portal-selector-header {
+  @apply mb-8;
+}
+
+.portal-selector-back {
+  @apply mb-4;
+}
+
+.portal-selector-title {
+  @apply text-2xl font-bold text-slate-900 mb-1;
+}
+
+.portal-selector-description {
+  @apply text-sm text-slate-500;
+}
+
+.portal-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 1024px) {
+  .portal-selector-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .portal-selector-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .portal-selector-wrapper {
+    @apply px-4 py-6;
+  }
+}
+
+.dark .portal-selector-title {
+  color: var(--dark-text);
+}
+
+.dark .portal-selector-description {
+  color: var(--dark-text-secondary);
+}

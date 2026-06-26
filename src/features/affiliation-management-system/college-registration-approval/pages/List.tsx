@@ -458,20 +458,7 @@ export default function List() {
                         <p className="registration-document-title">
                           {document.documentType || 'Document'}
                         </p>
-
-                        <p className="registration-document-id">
-                          {document.documentId || 'N/A'}
-                        </p>
                       </div>
-
-                      <button
-                        type="button"
-                        className="registration-document-download"
-                        aria-label={`Download ${document.documentType || 'document'}`}
-                        title="Download document"
-                      >
-                        <i className="pi pi-download" />
-                      </button>
                     </div>
                   ))}
                 </div>

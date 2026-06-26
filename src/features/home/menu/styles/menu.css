@@ -43,7 +43,7 @@
 }
 
 .welcome-actions {
-  @apply flex gap-2.5 max-md:w-full max-sm:flex-col;
+  @apply flex gap-2.5 max-md:w-full;
 }
 
 .welcome-btn-outline {

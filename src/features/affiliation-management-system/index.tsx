@@ -6,6 +6,10 @@ import CollegeRegistrationApproval from './college-registration-approval';
 import ProgrammeFee from './settings/programme-fee';
 
 import DraftRegistrationRequest from './draft-registration-request';
+import InspectionReport from './inspection-report';
+import ProfileDetails from './Profile-details';
+import ApprovalStatusReport from './approval-status-report';
+import InspectionStatusReport from './inspection-status-report';
 
 export default function AffiliationManagementSystem() {
   return (
@@ -18,6 +22,16 @@ export default function AffiliationManagementSystem() {
       <Route
         path="draft-registration-request/*"
         element={<DraftRegistrationRequest />}
+      />
+      <Route path="inspection-report/*" element={<InspectionReport />} />
+      <Route path="profile-details/*" element={<ProfileDetails />} />
+      <Route
+        path="approval-status-report/*"
+        element={<ApprovalStatusReport />}
+      />
+      <Route
+        path="inspection-status-report/*"
+        element={<InspectionStatusReport />}
       />
       <Route path="affiliation-settings/*">
         <Route path="available-facility/*" element={<AvailableFacility />} />

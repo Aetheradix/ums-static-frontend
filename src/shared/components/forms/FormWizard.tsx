@@ -19,6 +19,7 @@ interface FormWizardProps {
   triggerValidation?: (fields: string[]) => Promise<boolean>;
   onReset?: () => void;
   customActions?: (activeIndex: number, isLastStep: boolean) => ReactNode;
+  hideReset?: boolean;
 }
 
 export default function FormWizard({
@@ -31,6 +32,7 @@ export default function FormWizard({
   triggerValidation,
   onReset,
   customActions,
+  hideReset,
 }: FormWizardProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [maxTabReached, setMaxTabReached] = useState(
@@ -216,14 +218,16 @@ export default function FormWizard({
               )}
               {customActions &&
                 customActions(activeIndex, activeIndex === steps.length - 1)}
-              <Button
-                type="button"
-                label="Reset"
-                icon="refresh"
-                variant="outlined"
-                onClick={handleReset}
-                disabled={isSaving}
-              />
+              {!hideReset && (
+                <Button
+                  type="button"
+                  label="Reset"
+                  icon="refresh"
+                  variant="outlined"
+                  onClick={handleReset}
+                  disabled={isSaving}
+                />
+              )}
               {activeIndex < steps.length - 1 ? (
                 <Button
                   type="button"

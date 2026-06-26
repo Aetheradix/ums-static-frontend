@@ -228,13 +228,31 @@ export default function ApplicationForm() {
           ToastService.success('Application submitted successfully.');
           reset();
         }
-      } catch {
-        ToastService.error('Failed to submit application.');
+      } catch (e: any) {
+        ToastService.error(e?.message || 'Failed to submit application.');
       }
     },
     errors => {
-      console.log('Validation Errors on Save:', errors);
-      ToastService.error('Please fix the validation errors in the form.');
+      console.log('Validation Errors:', errors);
+
+      const getFirstError = (obj: any): string | null => {
+        if (!obj || typeof obj !== 'object') return null;
+        for (const key in obj) {
+          if (obj[key]?.message && typeof obj[key].message === 'string') {
+            return obj[key].message;
+          }
+          const nested = getFirstError(obj[key]);
+          if (nested) return nested;
+        }
+        return null;
+      };
+
+      const errorMsg = getFirstError(errors);
+      ToastService.error(
+        errorMsg
+          ? `Validation Error: ${errorMsg}`
+          : 'Please fix the validation errors in the form.'
+      );
     }
   );
 
