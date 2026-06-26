@@ -19,6 +19,11 @@ export default function MainLayout({ children }: React.PropsWithChildren) {
     ): { parent: any; children: any[] } | null {
       for (const item of items) {
         if (item.children && item.children.length > 0) {
+          // 1. Try to find a deeper match first (e.g. Level 3 child under a Level 2 sub-menu)
+          const deeperMatch = findParentAndChildren(item.children, currentPath);
+          if (deeperMatch) return deeperMatch;
+
+          // 2. If no deeper match, check if this item's immediate children match
           const hasMatchingChild = item.children.some(
             (child: any) =>
               child.path &&
@@ -28,8 +33,6 @@ export default function MainLayout({ children }: React.PropsWithChildren) {
           if (hasMatchingChild) {
             return { parent: item, children: item.children };
           }
-          const found = findParentAndChildren(item.children, currentPath);
-          if (found) return found;
         }
       }
       return null;
