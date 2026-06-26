@@ -13,7 +13,9 @@ const pending = leaveApplications.filter(a => a.status === 'Pending');
 const approved = leaveApplications.filter(a => a.status === 'Approved');
 const rejected = leaveApplications.filter(a => a.status === 'Rejected');
 const maxDept = Math.max(...departmentWiseLeave.map(d => d.count));
-const maxMonthly = Math.max(...monthlyLeaveTrend.map(m => Math.max(m.employee, m.student)));
+const maxMonthly = Math.max(
+  ...monthlyLeaveTrend.map(m => Math.max(m.employee, m.student))
+);
 
 const QUICK_ACTIONS = [
   { label: 'Approve Leave', icon: 'check-circle', path: '' },
@@ -39,24 +41,75 @@ export default function AdminDashboard() {
     >
       {/* KPI Row 1 */}
       <div className="lms-dashboard-stats">
-        <StatCard title="Total Employees" value="342" icon="groups" colorScheme="blue" subtitle="15 departments" />
-        <StatCard title="Total Students" value="1,248" icon="school" colorScheme="purple" subtitle="20 courses" />
-        <StatCard title="Today's Leave Requests" value={pending.length + 4} icon="assignment" colorScheme="orange" trend={{ value: 12, direction: 'up', label: 'vs yesterday' }} />
-        <StatCard title="Pending Approvals" value={pending.length} icon="pending_actions" colorScheme="red" subtitle="Awaiting action" />
+        <StatCard
+          title="Total Employees"
+          value="342"
+          icon="groups"
+          colorScheme="blue"
+          subtitle="15 departments"
+        />
+        <StatCard
+          title="Total Students"
+          value="1,248"
+          icon="school"
+          colorScheme="purple"
+          subtitle="20 courses"
+        />
+        <StatCard
+          title="Today's Leave Requests"
+          value={pending.length + 4}
+          icon="assignment"
+          colorScheme="orange"
+          trend={{ value: 12, direction: 'up', label: 'vs yesterday' }}
+        />
+        <StatCard
+          title="Pending Approvals"
+          value={pending.length}
+          icon="pending_actions"
+          colorScheme="red"
+          subtitle="Awaiting action"
+        />
       </div>
 
       {/* KPI Row 2 */}
       <div className="lms-dashboard-stats-2">
-        <StatCard title="Approved Leaves" value={approved.length + 48} icon="check_circle" colorScheme="green" subtitle="This month" />
-        <StatCard title="Rejected Leaves" value={rejected.length + 12} icon="cancel" colorScheme="red" subtitle="This month" />
-        <StatCard title="Biometric Missing" value="8" icon="fingerprint" colorScheme="amber" subtitle="Today" />
-        <StatCard title="LTC Requests" value="6" icon="travel_explore" colorScheme="teal" subtitle="Pending" />
+        <StatCard
+          title="Approved Leaves"
+          value={approved.length + 48}
+          icon="check_circle"
+          colorScheme="green"
+          subtitle="This month"
+        />
+        <StatCard
+          title="Rejected Leaves"
+          value={rejected.length + 12}
+          icon="cancel"
+          colorScheme="red"
+          subtitle="This month"
+        />
+        <StatCard
+          title="Biometric Missing"
+          value="8"
+          icon="fingerprint"
+          colorScheme="amber"
+          subtitle="Today"
+        />
+        <StatCard
+          title="LTC Requests"
+          value="6"
+          icon="travel_explore"
+          colorScheme="teal"
+          subtitle="Pending"
+        />
       </div>
 
       {/* Charts Row 1 */}
       <div className="lms-charts-row">
         {/* Monthly Trend */}
-        <FormCard title="Monthly Leave Trend" subtitle="Employee vs Student leaves">
+        <FormCard
+          title="Monthly Leave Trend"
+          subtitle="Employee vs Student leaves"
+        >
           <div className="lms-trend-chart">
             {monthlyLeaveTrend.map(m => (
               <div key={m.month} className="lms-trend-col">
@@ -81,11 +134,45 @@ export default function AdminDashboard() {
             ))}
           </div>
           <div style={{ display: 'flex', gap: '1rem', marginTop: '0.75rem' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', fontSize: '0.75rem', color: '#6b7280' }}>
-              <span style={{ width: 10, height: 10, borderRadius: 3, background: '#3b82f6', display: 'inline-block' }} />Employee
+            <span
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.375rem',
+                fontSize: '0.75rem',
+                color: '#6b7280',
+              }}
+            >
+              <span
+                style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: 3,
+                  background: '#3b82f6',
+                  display: 'inline-block',
+                }}
+              />
+              Employee
             </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', fontSize: '0.75rem', color: '#6b7280' }}>
-              <span style={{ width: 10, height: 10, borderRadius: 3, background: '#8b5cf6', display: 'inline-block' }} />Student
+            <span
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.375rem',
+                fontSize: '0.75rem',
+                color: '#6b7280',
+              }}
+            >
+              <span
+                style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: 3,
+                  background: '#8b5cf6',
+                  display: 'inline-block',
+                }}
+              />
+              Student
             </span>
           </div>
         </FormCard>
@@ -98,7 +185,10 @@ export default function AdminDashboard() {
               <div className="lms-bar-track">
                 <div
                   className="lms-bar-fill"
-                  style={{ width: `${(d.count / maxDept) * 100}%`, background: d.color }}
+                  style={{
+                    width: `${(d.count / maxDept) * 100}%`,
+                    background: d.color,
+                  }}
                 />
               </div>
               <span className="lms-bar-value">{d.count}</span>
@@ -114,10 +204,16 @@ export default function AdminDashboard() {
           <div className="lms-dist-list">
             {leaveTypeDistribution.map(l => (
               <div key={l.type} className="lms-dist-row">
-                <span className="lms-dist-dot" style={{ background: l.color }} />
+                <span
+                  className="lms-dist-dot"
+                  style={{ background: l.color }}
+                />
                 <span className="lms-dist-label">{l.type}</span>
                 <div className="lms-dist-track">
-                  <div className="lms-dist-fill" style={{ width: `${l.pct}%`, background: l.color }} />
+                  <div
+                    className="lms-dist-fill"
+                    style={{ width: `${l.pct}%`, background: l.color }}
+                  />
                 </div>
                 <span className="lms-dist-count">{l.count}</span>
               </div>
@@ -133,7 +229,11 @@ export default function AdminDashboard() {
                 key={a.label}
                 type="button"
                 className="lms-quick-action-btn"
-                onClick={() => a.path ? navigate(a.path) : navigate(lmsUrls.admin.leaveRequests)}
+                onClick={() =>
+                  a.path
+                    ? navigate(a.path)
+                    : navigate(lmsUrls.admin.leaveRequests)
+                }
               >
                 <i className={`pi pi-${a.icon}`} />
                 {a.label}
@@ -184,7 +284,9 @@ export default function AdminDashboard() {
                   <td>{a.days}</td>
                   <td>{a.currentApprover}</td>
                   <td>
-                    <span className={`lms-status-pill ${a.status.toLowerCase()}`}>
+                    <span
+                      className={`lms-status-pill ${a.status.toLowerCase()}`}
+                    >
                       {a.status}
                     </span>
                   </td>
@@ -196,7 +298,9 @@ export default function AdminDashboard() {
 
         {/* Attendance Summary */}
         <FormCard title="Today's Summary">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}
+          >
             {[
               { label: 'Present', value: 28, color: '#16a34a', pct: 75 },
               { label: 'Absent', value: 4, color: '#ef4444', pct: 11 },
@@ -204,12 +308,31 @@ export default function AdminDashboard() {
               { label: 'Late Entry', value: 2, color: '#8b5cf6', pct: 5 },
             ].map(s => (
               <div key={s.label}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <span style={{ fontSize: '0.813rem', color: '#6b7280' }}>{s.label}</span>
-                  <span style={{ fontSize: '0.813rem', fontWeight: 700, color: s.color }}>{s.value}</span>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    marginBottom: 4,
+                  }}
+                >
+                  <span style={{ fontSize: '0.813rem', color: '#6b7280' }}>
+                    {s.label}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: '0.813rem',
+                      fontWeight: 700,
+                      color: s.color,
+                    }}
+                  >
+                    {s.value}
+                  </span>
                 </div>
                 <div className="lms-bar-track">
-                  <div className="lms-bar-fill" style={{ width: `${s.pct}%`, background: s.color }} />
+                  <div
+                    className="lms-bar-fill"
+                    style={{ width: `${s.pct}%`, background: s.color }}
+                  />
                 </div>
               </div>
             ))}

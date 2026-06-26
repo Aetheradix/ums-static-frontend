@@ -93,9 +93,15 @@
   flex-shrink: 0;
 }
 
-.biometric-status-dot.ok { background: #22c55e; }
-.biometric-status-dot.missing { background: #ef4444; }
-.biometric-status-dot.late { background: #f59e0b; }
+.biometric-status-dot.ok {
+  background: #22c55e;
+}
+.biometric-status-dot.missing {
+  background: #ef4444;
+}
+.biometric-status-dot.late {
+  background: #f59e0b;
+}
 
 .biometric-status-text {
   font-size: 0.75rem;

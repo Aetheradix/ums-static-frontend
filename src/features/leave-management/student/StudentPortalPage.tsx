@@ -11,7 +11,8 @@ export default function StudentPortalPage() {
       portals={[
         {
           title: 'Dashboard',
-          description: 'Attendance %, leave balance, applied leaves and quick actions.',
+          description:
+            'Attendance %, leave balance, applied leaves and quick actions.',
           icon: 'dashboard',
           colorScheme: 'blue',
           path: lmsUrls.student.dashboard,

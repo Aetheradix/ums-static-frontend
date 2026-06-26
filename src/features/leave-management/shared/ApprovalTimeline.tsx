@@ -1,6 +1,11 @@
 import './ApprovalTimeline.css';
 
-type TimelineStatus = 'submitted' | 'approved' | 'rejected' | 'pending' | 'forwarded';
+type TimelineStatus =
+  | 'submitted'
+  | 'approved'
+  | 'rejected'
+  | 'pending'
+  | 'forwarded';
 
 export interface TimelineStep {
   actor: string;
@@ -49,7 +54,10 @@ export default function ApprovalTimeline({ steps }: ApprovalTimelineProps) {
               <span className="approval-timeline-date">{step.date}</span>
             </div>
             {step.role && (
-              <span className="approval-timeline-date" style={{ marginBottom: '0.25rem', display: 'block' }}>
+              <span
+                className="approval-timeline-date"
+                style={{ marginBottom: '0.25rem', display: 'block' }}
+              >
                 {step.role}
               </span>
             )}
@@ -57,7 +65,9 @@ export default function ApprovalTimeline({ steps }: ApprovalTimelineProps) {
               {ACTION_LABELS[step.action]}
             </span>
             {step.remarks && (
-              <p className="approval-timeline-remarks">&ldquo;{step.remarks}&rdquo;</p>
+              <p className="approval-timeline-remarks">
+                &ldquo;{step.remarks}&rdquo;
+              </p>
             )}
           </div>
         </div>

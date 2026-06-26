@@ -11,7 +11,8 @@ export default function AdminPortalPage() {
       portals={[
         {
           title: 'Dashboard',
-          description: 'KPI cards, charts, pending approvals and quick actions.',
+          description:
+            'KPI cards, charts, pending approvals and quick actions.',
           icon: 'dashboard',
           colorScheme: 'blue',
           path: lmsUrls.admin.dashboard,
@@ -53,7 +54,8 @@ export default function AdminPortalPage() {
         },
         {
           title: 'Attendance',
-          description: 'Today\'s attendance dashboard and employee attendance grid.',
+          description:
+            "Today's attendance dashboard and employee attendance grid.",
           icon: 'assignment_turned_in',
           colorScheme: 'green',
           path: lmsUrls.admin.attendance,

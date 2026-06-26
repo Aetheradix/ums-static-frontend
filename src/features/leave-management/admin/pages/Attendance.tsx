@@ -15,7 +15,6 @@ const STATUS_COLORS: Record<string, string> = {
   Holiday: '#0369a1',
 };
 
-
 export default function Attendance() {
   return (
     <FormPage
@@ -30,10 +29,34 @@ export default function Attendance() {
     >
       {/* KPI */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <StatCard title="Present" value={present} icon="check_circle" colorScheme="green" subtitle="Today" />
-        <StatCard title="Absent" value={absent} icon="cancel" colorScheme="red" subtitle="Today" />
-        <StatCard title="On Leave" value={onLeave} icon="event_busy" colorScheme="orange" subtitle="Today" />
-        <StatCard title="Late Entry" value={late} icon="schedule" colorScheme="purple" subtitle="Today" />
+        <StatCard
+          title="Present"
+          value={present}
+          icon="check_circle"
+          colorScheme="green"
+          subtitle="Today"
+        />
+        <StatCard
+          title="Absent"
+          value={absent}
+          icon="cancel"
+          colorScheme="red"
+          subtitle="Today"
+        />
+        <StatCard
+          title="On Leave"
+          value={onLeave}
+          icon="event_busy"
+          colorScheme="orange"
+          subtitle="Today"
+        />
+        <StatCard
+          title="Late Entry"
+          value={late}
+          icon="schedule"
+          colorScheme="purple"
+          subtitle="Today"
+        />
       </div>
 
       {/* Attendance Bar Chart */}
@@ -50,14 +73,58 @@ export default function Attendance() {
             { dept: 'Administration', present: 18, total: 20 },
           ].map(d => {
             const pct = Math.round((d.present / d.total) * 100);
-            const color = pct >= 85 ? '#16a34a' : pct >= 70 ? '#f59e0b' : '#ef4444';
+            const color =
+              pct >= 85 ? '#16a34a' : pct >= 70 ? '#f59e0b' : '#ef4444';
             return (
-              <div key={d.dept} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <span style={{ width: '10rem', fontSize: '0.813rem', color: '#6b7280', flexShrink: 0 }}>{d.dept}</span>
-                <div style={{ flex: 1, background: '#f3f4f6', borderRadius: 9999, height: 10, overflow: 'hidden' }}>
-                  <div style={{ width: `${pct}%`, height: '100%', background: color, borderRadius: 9999, transition: 'width 0.4s ease' }} />
+              <div
+                key={d.dept}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                }}
+              >
+                <span
+                  style={{
+                    width: '10rem',
+                    fontSize: '0.813rem',
+                    color: '#6b7280',
+                    flexShrink: 0,
+                  }}
+                >
+                  {d.dept}
+                </span>
+                <div
+                  style={{
+                    flex: 1,
+                    background: '#f3f4f6',
+                    borderRadius: 9999,
+                    height: 10,
+                    overflow: 'hidden',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: `${pct}%`,
+                      height: '100%',
+                      background: color,
+                      borderRadius: 9999,
+                      transition: 'width 0.4s ease',
+                    }}
+                  />
                 </div>
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color, width: '3rem', textAlign: 'right', flexShrink: 0 }}>{pct}%</span>
+                <span
+                  style={{
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    color,
+                    width: '3rem',
+                    textAlign: 'right',
+                    flexShrink: 0,
+                  }}
+                >
+                  {pct}%
+                </span>
               </div>
             );
           })}
@@ -69,26 +136,126 @@ export default function Attendance() {
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr>
-              {['#', 'Employee', 'Department', 'Punch In', 'Punch Out', 'Working Hrs', 'Status', 'Mapped Leave'].map(h => (
-                <th key={h} style={{ fontSize: '0.688rem', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', padding: '0.5rem 0.75rem', borderBottom: '1px solid #e5e7eb', textAlign: 'left' }}>{h}</th>
+              {[
+                '#',
+                'Employee',
+                'Department',
+                'Punch In',
+                'Punch Out',
+                'Working Hrs',
+                'Status',
+                'Mapped Leave',
+              ].map(h => (
+                <th
+                  key={h}
+                  style={{
+                    fontSize: '0.688rem',
+                    fontWeight: 600,
+                    color: '#9ca3af',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    padding: '0.5rem 0.75rem',
+                    borderBottom: '1px solid #e5e7eb',
+                    textAlign: 'left',
+                  }}
+                >
+                  {h}
+                </th>
               ))}
             </tr>
           </thead>
           <tbody>
             {todayAttendance.map((rec, i) => (
               <tr key={rec.id}>
-                <td style={{ fontSize: '0.813rem', padding: '0.625rem 0.75rem', borderBottom: '1px solid #f3f4f6', color: '#9ca3af' }}>{i + 1}</td>
-                <td style={{ fontSize: '0.813rem', padding: '0.625rem 0.75rem', borderBottom: '1px solid #f3f4f6', fontWeight: 600 }}>{rec.employee}</td>
-                <td style={{ fontSize: '0.813rem', padding: '0.625rem 0.75rem', borderBottom: '1px solid #f3f4f6', color: '#6b7280' }}>{rec.department}</td>
-                <td style={{ fontSize: '0.813rem', padding: '0.625rem 0.75rem', borderBottom: '1px solid #f3f4f6' }}>{rec.punchIn}</td>
-                <td style={{ fontSize: '0.813rem', padding: '0.625rem 0.75rem', borderBottom: '1px solid #f3f4f6' }}>{rec.punchOut}</td>
-                <td style={{ fontSize: '0.813rem', padding: '0.625rem 0.75rem', borderBottom: '1px solid #f3f4f6' }}>{rec.workingHours}</td>
-                <td style={{ padding: '0.625rem 0.75rem', borderBottom: '1px solid #f3f4f6' }}>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '0.125rem 0.5rem', borderRadius: 9999, fontSize: '0.688rem', fontWeight: 600, background: STATUS_COLORS[rec.status] + '22', color: STATUS_COLORS[rec.status] }}>
+                <td
+                  style={{
+                    fontSize: '0.813rem',
+                    padding: '0.625rem 0.75rem',
+                    borderBottom: '1px solid #f3f4f6',
+                    color: '#9ca3af',
+                  }}
+                >
+                  {i + 1}
+                </td>
+                <td
+                  style={{
+                    fontSize: '0.813rem',
+                    padding: '0.625rem 0.75rem',
+                    borderBottom: '1px solid #f3f4f6',
+                    fontWeight: 600,
+                  }}
+                >
+                  {rec.employee}
+                </td>
+                <td
+                  style={{
+                    fontSize: '0.813rem',
+                    padding: '0.625rem 0.75rem',
+                    borderBottom: '1px solid #f3f4f6',
+                    color: '#6b7280',
+                  }}
+                >
+                  {rec.department}
+                </td>
+                <td
+                  style={{
+                    fontSize: '0.813rem',
+                    padding: '0.625rem 0.75rem',
+                    borderBottom: '1px solid #f3f4f6',
+                  }}
+                >
+                  {rec.punchIn}
+                </td>
+                <td
+                  style={{
+                    fontSize: '0.813rem',
+                    padding: '0.625rem 0.75rem',
+                    borderBottom: '1px solid #f3f4f6',
+                  }}
+                >
+                  {rec.punchOut}
+                </td>
+                <td
+                  style={{
+                    fontSize: '0.813rem',
+                    padding: '0.625rem 0.75rem',
+                    borderBottom: '1px solid #f3f4f6',
+                  }}
+                >
+                  {rec.workingHours}
+                </td>
+                <td
+                  style={{
+                    padding: '0.625rem 0.75rem',
+                    borderBottom: '1px solid #f3f4f6',
+                  }}
+                >
+                  <span
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 4,
+                      padding: '0.125rem 0.5rem',
+                      borderRadius: 9999,
+                      fontSize: '0.688rem',
+                      fontWeight: 600,
+                      background: STATUS_COLORS[rec.status] + '22',
+                      color: STATUS_COLORS[rec.status],
+                    }}
+                  >
                     {rec.status}
                   </span>
                 </td>
-                <td style={{ fontSize: '0.813rem', padding: '0.625rem 0.75rem', borderBottom: '1px solid #f3f4f6', color: '#9ca3af' }}>{rec.mappedLeave ?? '—'}</td>
+                <td
+                  style={{
+                    fontSize: '0.813rem',
+                    padding: '0.625rem 0.75rem',
+                    borderBottom: '1px solid #f3f4f6',
+                    color: '#9ca3af',
+                  }}
+                >
+                  {rec.mappedLeave ?? '—'}
+                </td>
               </tr>
             ))}
           </tbody>

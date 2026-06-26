@@ -2,7 +2,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import { DatePicker, DropDownList, Switch, TextArea, TextBox } from 'shared/components/forms';
+import {
+  DatePicker,
+  DropDownList,
+  Switch,
+  TextArea,
+  TextBox,
+} from 'shared/components/forms';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
 import { leaveTypes } from '../../mocks';
 import { lmsUrls } from '../../urls';
@@ -12,8 +18,13 @@ const LEAVE_OPTIONS = leaveTypes
   .map(lt => ({ name: lt.name, value: lt.id }));
 
 const EMPTY_FORM = {
-  leaveType: '', fromDate: undefined as Date | undefined, toDate: undefined as Date | undefined, halfDay: false,
-  reason: '', emergencyContact: '', addressDuringLeave: '',
+  leaveType: '',
+  fromDate: undefined as Date | undefined,
+  toDate: undefined as Date | undefined,
+  halfDay: false,
+  reason: '',
+  emergencyContact: '',
+  addressDuringLeave: '',
 };
 
 export default function ApplyLeave() {
@@ -24,10 +35,22 @@ export default function ApplyLeave() {
   const selected = leaveTypes.find(lt => lt.id === form.leaveType);
 
   const validate = () => {
-    if (!form.leaveType) { ToastService.error('Please select a leave type.'); return false; }
-    if (!form.fromDate) { ToastService.error('From date is required.'); return false; }
-    if (!form.toDate) { ToastService.error('To date is required.'); return false; }
-    if (!form.reason.trim()) { ToastService.error('Reason is required.'); return false; }
+    if (!form.leaveType) {
+      ToastService.error('Please select a leave type.');
+      return false;
+    }
+    if (!form.fromDate) {
+      ToastService.error('From date is required.');
+      return false;
+    }
+    if (!form.toDate) {
+      ToastService.error('To date is required.');
+      return false;
+    }
+    if (!form.reason.trim()) {
+      ToastService.error('Reason is required.');
+      return false;
+    }
     return true;
   };
 
@@ -58,7 +81,11 @@ export default function ApplyLeave() {
     >
       <div style={{ maxWidth: '900px' }}>
         {/* Leave Details */}
-        <FormCard title="Leave Details" subtitle="Select leave type and duration" icon="calendar">
+        <FormCard
+          title="Leave Details"
+          subtitle="Select leave type and duration"
+          icon="calendar"
+        >
           <FormGrid columns={2}>
             <DropDownList
               label="Leave Type"
@@ -67,16 +94,29 @@ export default function ApplyLeave() {
               optionValue="value"
               placeholder="Select Leave Type"
               value={form.leaveType}
-              onChange={v => setForm(f => ({ ...f, leaveType: String(v ?? '') }))}
+              onChange={v =>
+                setForm(f => ({ ...f, leaveType: String(v ?? '') }))
+              }
               required
             />
             {selected && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', justifyContent: 'flex-end' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.25rem',
+                  justifyContent: 'flex-end',
+                }}
+              >
                 <p style={{ fontSize: '0.75rem', color: '#6b7280' }}>
-                  Max: <strong>{selected.maxDays} days</strong> &bull; Carry Forward: <strong>{selected.carryForward ? 'Yes' : 'No'}</strong>
+                  Max: <strong>{selected.maxDays} days</strong> &bull; Carry
+                  Forward:{' '}
+                  <strong>{selected.carryForward ? 'Yes' : 'No'}</strong>
                 </p>
                 {selected.attachmentMandatory && (
-                  <p style={{ fontSize: '0.688rem', color: '#ef4444' }}>⚠ Medical certificate required</p>
+                  <p style={{ fontSize: '0.688rem', color: '#ef4444' }}>
+                    ⚠ Medical certificate required
+                  </p>
                 )}
               </div>
             )}
@@ -111,7 +151,12 @@ export default function ApplyLeave() {
         </FormCard>
 
         {/* Contact Info */}
-        <FormCard title="Contact During Leave" subtitle="Emergency contact details" icon="phone" className="mt-4">
+        <FormCard
+          title="Contact During Leave"
+          subtitle="Emergency contact details"
+          icon="phone"
+          className="mt-4"
+        >
           <FormGrid columns={2}>
             <TextBox
               label="Emergency Contact Name & Number"
@@ -138,9 +183,35 @@ export default function ApplyLeave() {
               { type: 'Earned', balance: 15, color: '#10b981' },
               { type: 'Half Pay', balance: 20, color: '#f59e0b' },
             ].map(b => (
-              <div key={b.type} style={{ textAlign: 'center', padding: '0.875rem', border: '1px solid #f3f4f6', borderRadius: 8, background: '#f9fafb' }}>
-                <p style={{ fontSize: '1.5rem', fontWeight: 700, color: b.color }}>{b.balance}</p>
-                <p style={{ fontSize: '0.688rem', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{b.type}</p>
+              <div
+                key={b.type}
+                style={{
+                  textAlign: 'center',
+                  padding: '0.875rem',
+                  border: '1px solid #f3f4f6',
+                  borderRadius: 8,
+                  background: '#f9fafb',
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: '1.5rem',
+                    fontWeight: 700,
+                    color: b.color,
+                  }}
+                >
+                  {b.balance}
+                </p>
+                <p
+                  style={{
+                    fontSize: '0.688rem',
+                    color: '#9ca3af',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.04em',
+                  }}
+                >
+                  {b.type}
+                </p>
               </div>
             ))}
           </div>
@@ -148,9 +219,24 @@ export default function ApplyLeave() {
 
         {/* Actions */}
         <div className="flex justify-end gap-3 mt-4">
-          <Button label="Cancel" variant="outlined" onClick={() => navigate(lmsUrls.teacher.portal)} />
-          <Button label="Save as Draft" variant="outlined" icon="save" onClick={handleDraft} />
-          <Button label="Submit Application" variant="primary" icon="send" isLoading={saving} onClick={handleSubmit} />
+          <Button
+            label="Cancel"
+            variant="outlined"
+            onClick={() => navigate(lmsUrls.teacher.portal)}
+          />
+          <Button
+            label="Save as Draft"
+            variant="outlined"
+            icon="save"
+            onClick={handleDraft}
+          />
+          <Button
+            label="Submit Application"
+            variant="primary"
+            icon="send"
+            isLoading={saving}
+            onClick={handleSubmit}
+          />
         </div>
       </div>
     </FormPage>

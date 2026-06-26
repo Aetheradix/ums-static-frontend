@@ -11,21 +11,24 @@ export default function LmsPortalPage() {
       portals={[
         {
           title: 'Admin Portal',
-          description: 'Manage leave types, policies, attendance, biometric, LTC and generate reports.',
+          description:
+            'Manage leave types, policies, attendance, biometric, LTC and generate reports.',
           icon: 'admin_panel_settings',
           colorScheme: 'blue',
           path: lmsUrls.admin.portal,
         },
         {
           title: 'Teacher Portal',
-          description: 'Apply leaves, track requests, manage student leave approvals.',
+          description:
+            'Apply leaves, track requests, manage student leave approvals.',
           icon: 'groups',
           colorScheme: 'green',
           path: lmsUrls.teacher.portal,
         },
         {
           title: 'Student Portal',
-          description: 'Apply for leave, track attendance, view leave balance and biometric records.',
+          description:
+            'Apply for leave, track attendance, view leave balance and biometric records.',
           icon: 'school',
           colorScheme: 'purple',
           path: lmsUrls.student.portal,

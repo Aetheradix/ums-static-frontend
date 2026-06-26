@@ -34,11 +34,17 @@ export default function LeaveBalanceCard({
         <div key={entry.type} className="leave-balance-row">
           <span className="leave-balance-type">{entry.type}</span>
           <div className="leave-balance-values">
-            <span className="leave-balance-chip allocated">{entry.allocated}</span>
+            <span className="leave-balance-chip allocated">
+              {entry.allocated}
+            </span>
             <span className="leave-balance-chip used">{entry.used}</span>
-            <span className="leave-balance-chip remaining">{entry.remaining}</span>
+            <span className="leave-balance-chip remaining">
+              {entry.remaining}
+            </span>
             {showCarryForward && (
-              <span className="leave-balance-chip carry">{entry.carryForward ?? 0}</span>
+              <span className="leave-balance-chip carry">
+                {entry.carryForward ?? 0}
+              </span>
             )}
           </div>
         </div>

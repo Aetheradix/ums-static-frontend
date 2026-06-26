@@ -12,8 +12,8 @@ import EmployeeManagement from './employee-management';
 import ExaminationManagement from './examination-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
-import Lms from './lms';
 import LeaveManagement from './leave-management';
+import Lms from './lms';
 import Master from './master';
 import ProgrammeManagement from './programme-management';
 import PublicPortalLayout, {
@@ -21,6 +21,7 @@ import PublicPortalLayout, {
 } from './public-portal/layout/PublicPortalLayout';
 import Settings from './settings';
 import Sis from './sis';
+import StudentFeedbackManagement from './student-feedback-management';
 
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
@@ -128,6 +129,10 @@ export default function Features() {
                         element={<HostelManagement />}
                       />
                       <Route path="lms/*" element={<Lms />} />
+                      <Route
+                        path="student-feedback-management/*"
+                        element={<StudentFeedbackManagement />}
+                      />
                       <Route
                         path="leave-management/*"
                         element={<LeaveManagement />}

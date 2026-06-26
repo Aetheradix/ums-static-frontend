@@ -52,9 +52,18 @@ export default function LeaveManagementRoutes() {
       <Route path="admin" element={<AdminPortalPage />} />
       <Route path="admin/dashboard" element={<AdminDashboard />} />
       <Route path="admin/masters/leave-types" element={<LeaveTypeMaster />} />
-      <Route path="admin/masters/leave-policy" element={<LeavePolicyMaster />} />
-      <Route path="admin/masters/approval-hierarchy" element={<ApprovalHierarchyMaster />} />
-      <Route path="admin/masters/academic-calendar" element={<AcademicCalendar />} />
+      <Route
+        path="admin/masters/leave-policy"
+        element={<LeavePolicyMaster />}
+      />
+      <Route
+        path="admin/masters/approval-hierarchy"
+        element={<ApprovalHierarchyMaster />}
+      />
+      <Route
+        path="admin/masters/academic-calendar"
+        element={<AcademicCalendar />}
+      />
       <Route path="admin/leave-requests" element={<LeaveRequests />} />
       <Route path="admin/attendance" element={<AdminAttendance />} />
       <Route path="admin/biometric" element={<AdminBiometric />} />
@@ -66,8 +75,14 @@ export default function LeaveManagementRoutes() {
       <Route path="teacher" element={<TeacherPortalPage />} />
       <Route path="teacher/dashboard" element={<TeacherDashboard />} />
       <Route path="teacher/apply-leave" element={<TeacherApplyLeave />} />
-      <Route path="teacher/my-applications" element={<TeacherMyApplications />} />
-      <Route path="teacher/student-requests" element={<StudentLeaveRequests />} />
+      <Route
+        path="teacher/my-applications"
+        element={<TeacherMyApplications />}
+      />
+      <Route
+        path="teacher/student-requests"
+        element={<StudentLeaveRequests />}
+      />
       <Route path="teacher/attendance" element={<TeacherAttendance />} />
       <Route path="teacher/biometric" element={<TeacherBiometric />} />
       <Route path="teacher/reports" element={<TeacherReports />} />
