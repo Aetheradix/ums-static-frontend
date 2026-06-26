@@ -82,3 +82,30 @@
 .stat-card-trend-neutral {
   color: #6b7280;
 }
+
+/* Dark Mode Support */
+.dark .stat-card {
+  background-color: var(--dark-card-bg);
+  border-color: var(--dark-border);
+  box-shadow: 0 1px 4px var(--dark-shadow);
+}
+
+.dark .stat-card:hover {
+  box-shadow: 0 4px 12px var(--dark-shadow);
+}
+
+.dark .stat-card-value {
+  color: var(--dark-text);
+}
+
+.dark .stat-card-title {
+  color: var(--dark-text-muted);
+}
+
+.dark .stat-card-subtitle {
+  color: var(--dark-placeholder);
+}
+
+.dark .stat-card-trend {
+  border-top-color: var(--dark-border);
+}

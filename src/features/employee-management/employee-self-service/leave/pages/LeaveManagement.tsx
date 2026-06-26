@@ -78,9 +78,14 @@ export default function LeaveManagement() {
     setIsSubmitting(true);
     await new Promise(resolve => setTimeout(resolve, 1000));
 
+    const selectedLeaveType =
+      typeof data.leaveType === 'object' && data.leaveType
+        ? data.leaveType.id || data.leaveType.name
+        : data.leaveType;
+
     const newLeave: LeaveApplication = {
       id: `LV-${Math.floor(1000 + Math.random() * 9000)}`,
-      leaveType: data.leaveType || 'Casual Leave',
+      leaveType: selectedLeaveType || 'Casual Leave',
       startDate: data.startDate || new Date().toISOString().split('T')[0],
       endDate: data.endDate || new Date().toISOString().split('T')[0],
       days: 3,
@@ -96,12 +101,12 @@ export default function LeaveManagement() {
 
   return (
     <FormPage
-      title="Leave Management"
+      title="Request Leave"
       description="Apply for leaves, view balances, and check status of applications."
       breadcrumbs={[
         { label: 'Home', to: '/' },
         { label: 'ESS Portal', to: '#' },
-        { label: 'Leave Management', to: '#' },
+        { label: 'Request Leave', to: '#' },
       ]}
     >
       {/* Leave Balances Summary */}

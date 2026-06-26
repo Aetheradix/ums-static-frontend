@@ -1,15 +1,4 @@
-import { FormCard, FormGrid } from 'shared/new-components';
-
-function ReadOnlyField({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <label className="text-sm font-semibold text-gray-800">{label}</label>
-      <div className="px-3 py-2 border border-gray-200 rounded-lg bg-gray-50/50 text-sm text-gray-500 min-h-[38px] flex items-center">
-        {value || '-'}
-      </div>
-    </div>
-  );
-}
+import { FormCard, FormGrid, PreviewField } from 'shared/new-components';
 
 export default function ProfileDetailsTab({ data }: any) {
   if (!data) return null;
@@ -22,37 +11,38 @@ export default function ProfileDetailsTab({ data }: any) {
         className="shadow-none border border-gray-100"
       >
         <FormGrid columns={3}>
-          <ReadOnlyField label="Full Name" value={data.fullName} />
-          <ReadOnlyField label="Name in Hindi" value={data.nameInHindi || ''} />
-          <ReadOnlyField label="Gender" value={data.gender} />
-          <ReadOnlyField label="Date of Birth" value={data.dateOfBirth} />
-          <ReadOnlyField
+          <PreviewField label="Full Name" value={data.fullName} />
+          <PreviewField label="Name in Hindi" value={data.nameInHindi} />
+          <PreviewField label="Gender" value={data.gender} />
+          <PreviewField label="Date of Birth" value={data.dateOfBirth} />
+          <PreviewField
             label="Category"
             value={data.casteId ? `Caste ID: ${data.casteId}` : 'General'}
           />
-          <ReadOnlyField
+          <PreviewField
             label="PwD Status"
             value={data.isPersonWithDisability ? 'Yes' : 'No'}
           />
-          <ReadOnlyField label="Blood Group" value={data.bloodGroup} />
-          <ReadOnlyField
+          <PreviewField label="Blood Group" value={data.bloodGroup} />
+          <PreviewField
             label="Nationality"
             value={
               data.nationalityId ? `Nat ID: ${data.nationalityId}` : 'Indian'
             }
           />
-          <ReadOnlyField label="Marital Status" value={data.maritalStatus} />
-          <ReadOnlyField
+          <PreviewField label="Marital Status" value={data.maritalStatus} />
+          <PreviewField
             label="Guardian / Father Name"
             value={data.fatherName}
           />
-          <ReadOnlyField label="Mother Name" value={data.motherName} />
+          <PreviewField label="Mother Name" value={data.motherName} />
         </FormGrid>
 
         <div className="mt-4">
-          <ReadOnlyField
+          <PreviewField
             label="Bio"
             value={data.bioNote || 'No bio available.'}
+            fullWidth
           />
         </div>
       </FormCard>

@@ -12,6 +12,7 @@ import {
   FormCard,
   FormGrid,
   FormPage,
+  GridPanel,
   StatusBadge,
 } from 'shared/new-components';
 
@@ -71,13 +72,23 @@ export default function TravelManagement() {
     setIsSubmitting(true);
     await new Promise(resolve => setTimeout(resolve, 1000));
 
+    const selectedPurpose =
+      typeof data.purpose === 'object' && data.purpose
+        ? data.purpose.id || data.purpose.name
+        : data.purpose;
+
+    const selectedMode =
+      typeof data.mode === 'object' && data.mode
+        ? data.mode.id || data.mode.name
+        : data.mode;
+
     const newTravel: TravelRecord = {
       id: `TRV-${Math.floor(5000 + Math.random() * 4999)}`,
       startDate: data.startDate || new Date().toISOString().split('T')[0],
       endDate: data.endDate || new Date().toISOString().split('T')[0],
       destination: data.destination || 'Bhopal',
-      purpose: data.purpose || 'Official Duty',
-      mode: data.mode || 'Train',
+      purpose: selectedPurpose || 'Official Duty',
+      mode: selectedMode || 'Train',
       sanctionedBy: data.sanctionedBy || 'Registrar',
       status: 'Pending',
     };
@@ -173,61 +184,81 @@ export default function TravelManagement() {
 
       {/* Travel History Logs */}
       <FormCard title="My Travel Log History" icon="compass">
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-left text-sm text-gray-500">
-            <thead className="bg-gray-50 text-xs font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200">
-              <tr>
-                <th className="px-6 py-3 border-none">Sanction Ref</th>
-                <th className="px-6 py-3 border-none">Destination</th>
-                <th className="px-6 py-3 border-none">Dates</th>
-                <th className="px-6 py-3 border-none">Purpose</th>
-                <th className="px-6 py-3 border-none text-center">Mode</th>
-                <th className="px-6 py-3 border-none">Approved By</th>
-                <th className="px-6 py-3 border-none text-center">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-              {history.map(item => (
-                <tr key={item.id} className="hover:bg-gray-50/50">
-                  <td className="px-6 py-4 font-semibold text-gray-900">
-                    {item.id}
-                  </td>
-                  <td className="px-6 py-4 font-medium text-gray-900">
-                    {item.destination}
-                  </td>
-                  <td className="px-6 py-4 text-xs font-medium text-gray-700">
-                    {item.startDate} to {item.endDate}
-                  </td>
-                  <td
-                    className="px-6 py-4 truncate max-w-xs"
-                    title={item.purpose}
-                  >
-                    {item.purpose}
-                  </td>
-                  <td className="px-6 py-4 text-center font-bold text-gray-800">
-                    {item.mode}
-                  </td>
-                  <td className="px-6 py-4 text-xs font-semibold text-gray-600">
-                    {item.sanctionedBy}
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <StatusBadge
-                      variant={
-                        item.status === 'Completed' ||
-                        item.status === 'Approved'
-                          ? 'approved'
-                          : item.status === 'Pending'
-                            ? 'pending'
-                            : 'rejected'
-                      }
-                      label={item.status}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <GridPanel
+          data={history}
+          pagination={false}
+          columns={[
+            {
+              cell: (_, option) => <span>{option.rowIndex + 1}</span>,
+              width: '40px',
+            },
+            {
+              field: 'id',
+              header: 'Sanction Ref',
+              cell: (item: TravelRecord) => (
+                <span className="font-semibold text-gray-900">{item.id}</span>
+              ),
+            },
+            {
+              field: 'destination',
+              header: 'Destination',
+              cell: (item: TravelRecord) => (
+                <span className="font-medium text-gray-900">
+                  {item.destination}
+                </span>
+              ),
+            },
+            {
+              header: 'Dates',
+              cell: (item: TravelRecord) => (
+                <span className="text-xs font-medium text-gray-700">
+                  {item.startDate} to {item.endDate}
+                </span>
+              ),
+            },
+            {
+              field: 'purpose',
+              header: 'Purpose',
+              cell: (item: TravelRecord) => (
+                <span className="truncate max-w-xs block" title={item.purpose}>
+                  {item.purpose}
+                </span>
+              ),
+            },
+            {
+              field: 'mode',
+              header: 'Mode',
+              cell: (item: TravelRecord) => (
+                <span className="font-bold text-gray-800">{item.mode}</span>
+              ),
+            },
+            {
+              field: 'sanctionedBy',
+              header: 'Approved By',
+              cell: (item: TravelRecord) => (
+                <span className="text-xs font-semibold text-gray-600">
+                  {item.sanctionedBy}
+                </span>
+              ),
+            },
+            {
+              field: 'status',
+              header: 'Status',
+              cell: (item: TravelRecord) => (
+                <StatusBadge
+                  variant={
+                    item.status === 'Completed' || item.status === 'Approved'
+                      ? 'approved'
+                      : item.status === 'Pending'
+                        ? 'pending'
+                        : 'rejected'
+                  }
+                  label={item.status}
+                />
+              ),
+            },
+          ]}
+        />
       </FormCard>
     </FormPage>
   );

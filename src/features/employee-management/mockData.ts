@@ -287,3 +287,39 @@ export async function mockGetEmployeeById(id: number) {
   await mockDelay(1000);
   return mockEmployees.find(e => e.employeeId === id) || null;
 }
+
+export const mockBulkValidEmployees = [
+  {
+    employeeCode: 'EMP-010',
+    firstName: 'John',
+    lastName: 'Doe',
+    officialEmail: 'john@university.edu',
+    mobileNumber: '9988776655',
+  },
+  {
+    employeeCode: 'EMP-011',
+    firstName: 'Alice',
+    lastName: 'Smith',
+    officialEmail: 'alice@university.edu',
+    mobileNumber: '9988776644',
+  },
+];
+
+export const mockBulkInvalidEmployees = [
+  {
+    employeeCode: 'EMP-010',
+    firstName: 'Bob',
+    lastName: 'Brown',
+    officialEmail: 'invalidemail.com',
+    mobileNumber: '123',
+    validationMessage: 'Duplicate Employee Code, Invalid Email',
+  },
+  {
+    employeeCode: 'EMP-013',
+    firstName: '',
+    lastName: 'Taylor',
+    officialEmail: 'taylor@university.edu',
+    mobileNumber: '9988776633',
+    validationMessage: 'First Name is required',
+  },
+];

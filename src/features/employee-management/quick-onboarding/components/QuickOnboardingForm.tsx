@@ -29,7 +29,7 @@ export default function QuickOnboardingForm(props: Props) {
   );
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
       <fieldset
         disabled={props.isReadOnly}
         className="flex flex-col gap-6 border-none p-0 m-0 min-w-0"
@@ -43,14 +43,12 @@ export default function QuickOnboardingForm(props: Props) {
               data={mockSalutations}
               textField="name"
               valueField="id"
-              required
             />
 
             <TextBox
               {...register('firstName')}
               label="First Name"
               placeholder="Enter first name"
-              required
             />
 
             <TextBox
@@ -63,7 +61,6 @@ export default function QuickOnboardingForm(props: Props) {
               {...register('lastName')}
               label="Last Name"
               placeholder="Enter last name"
-              required
             />
 
             <DropDownList
@@ -73,7 +70,6 @@ export default function QuickOnboardingForm(props: Props) {
               data={mockGenders}
               textField="name"
               valueField="id"
-              required
             />
 
             <DropDownList
@@ -83,7 +79,6 @@ export default function QuickOnboardingForm(props: Props) {
               data={mockCastes}
               textField="name"
               valueField="id"
-              required
             />
 
             <TextBox
@@ -91,21 +86,18 @@ export default function QuickOnboardingForm(props: Props) {
               label="Mobile Number"
               placeholder="Enter mobile number"
               maxLength={10}
-              required
             />
 
             <TextBox
               {...register('officialEmail')}
               label="Official Email"
               placeholder="Enter official email"
-              required
             />
 
             <DatePicker
               {...register('dateOfBirth')}
               label="Date of Birth"
               placeholder="Select date of birth"
-              required
             />
           </FormGrid>
         </FormCard>
@@ -119,7 +111,6 @@ export default function QuickOnboardingForm(props: Props) {
               data={mockServiceCadres}
               textField="name"
               valueField="id"
-              required
             />
 
             <DropDownList
@@ -129,7 +120,6 @@ export default function QuickOnboardingForm(props: Props) {
               data={mockNatureOfEmployment}
               textField="name"
               valueField="id"
-              required
             />
 
             <DropDownList
@@ -139,7 +129,6 @@ export default function QuickOnboardingForm(props: Props) {
               data={mockOrgUnits}
               textField="name"
               valueField="id"
-              required
             />
 
             <DropDownList
@@ -149,7 +138,6 @@ export default function QuickOnboardingForm(props: Props) {
               data={mockPosts}
               textField="name"
               valueField="id"
-              required
             />
 
             <DropDownList
@@ -159,7 +147,6 @@ export default function QuickOnboardingForm(props: Props) {
               data={mockDesignations}
               textField="name"
               valueField="id"
-              required
             />
 
             <TextBox
@@ -175,21 +162,18 @@ export default function QuickOnboardingForm(props: Props) {
               data={mockSpecializations}
               textField="name"
               valueField="id"
-              required
             />
 
             <TextBox
               {...register('employeeCode')}
               label="Employee Code"
               placeholder="Enter Employee code"
-              required
             />
 
             <DatePicker
               {...register('dateOfJoining')}
               label="Date of Joining"
               placeholder="Select date of joining"
-              required
             />
           </FormGrid>
         </FormCard>

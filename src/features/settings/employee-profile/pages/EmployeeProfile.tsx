@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Loader } from 'shared/components/progress';
-import { FormPage, Tabs } from 'shared/new-components';
+import { FormCard, FormPage, Tabs } from 'shared/new-components';
 import { mockGetEmployeeById } from '../../../employee-management/mockData';
 import ProfileSidebar from '../components/ProfileSidebar';
 import BankDetailsTab from '../components/tabs/BankDetailsTab';
@@ -9,6 +9,7 @@ import ContactAddressTab from '../components/tabs/ContactAddressTab';
 import OrganizationTab from '../components/tabs/OrganizationTab';
 import ProfessionalTab from '../components/tabs/ProfessionalTab';
 import ProfileDetailsTab from '../components/tabs/ProfileDetailsTab';
+
 export default function EmployeeProfile() {
   const { id } = useParams<{ id: string }>();
   const [data, setData] = useState<any>(null);
@@ -61,8 +62,8 @@ export default function EmployeeProfile() {
             />
           </div>
 
-          {/* Right Main Content */}
-          <div className="flex-1 bg-white border border-gray-200 rounded-xl p-6 shadow-sm min-w-0">
+          {/* Right Main Content — use FormCard instead of raw div */}
+          <FormCard className="flex-1 min-w-0">
             <Tabs
               activeIndex={activeTabIndex}
               onTabChange={e => setActiveTabIndex(e.index)}
@@ -72,7 +73,10 @@ export default function EmployeeProfile() {
                 { title: 'Contact & Address', content: null },
                 { title: 'Organization Details', content: null },
                 { title: 'Professional Details', content: null },
-                { title: 'Bank Details', content: null },
+                {
+                  title: `Bank Details ${data?.bankName && data?.accountNumber ? '' : '❗'}`,
+                  content: null,
+                },
               ]}
             />
 
@@ -83,7 +87,7 @@ export default function EmployeeProfile() {
               {activeTabIndex === 3 && <ProfessionalTab data={data} />}
               {activeTabIndex === 4 && <BankDetailsTab data={data} />}
             </div>
-          </div>
+          </FormCard>
         </div>
       ) : (
         !isLoading && <p>Employee not found.</p>

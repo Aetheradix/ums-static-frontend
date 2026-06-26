@@ -1,15 +1,4 @@
-import { FormCard, FormGrid } from 'shared/new-components';
-
-function ReadOnlyField({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <label className="text-sm font-semibold text-gray-800">{label}</label>
-      <div className="px-3 py-2 border border-gray-200 rounded-lg bg-gray-50/50 text-sm text-gray-500 min-h-[38px] flex items-center">
-        {value || '-'}
-      </div>
-    </div>
-  );
-}
+import { FormCard, FormGrid, PreviewField } from 'shared/new-components';
 
 export default function OrganizationTab({ data }: any) {
   if (!data) return null;
@@ -22,27 +11,29 @@ export default function OrganizationTab({ data }: any) {
         className="shadow-none border border-gray-100"
       >
         <FormGrid columns={3}>
-          <ReadOnlyField label="Employee Type" value={data.employeeType} />
-          <ReadOnlyField
+          <PreviewField label="Employee Type" value={data.employeeType} />
+          <PreviewField
             label="Nature of Employment"
             value={data.employeeNature}
           />
-          <ReadOnlyField
+          <PreviewField
             label="Organization Unit"
             value={data.organizationUnit}
           />
-          <ReadOnlyField label="Post" value={data.post} />
-          <ReadOnlyField
+          <PreviewField label="Post" value={data.post} />
+          <PreviewField
             label="Designation"
-            value={data.designationId ? `Desig ID: ${data.designationId}` : '-'}
+            value={
+              data.designationId ? `Desig ID: ${data.designationId}` : undefined
+            }
           />
-          <ReadOnlyField label="Seniority Rank" value={data.seniorityRank} />
-          <ReadOnlyField
+          <PreviewField label="Seniority Rank" value={data.seniorityRank} />
+          <PreviewField
             label="Subject Specialization"
             value={data.subjectSpecialization}
           />
-          <ReadOnlyField label="Employee Code" value={data.employeeCode} />
-          <ReadOnlyField label="Date of Joining" value={data.dateOfJoining} />
+          <PreviewField label="Employee Code" value={data.employeeCode} />
+          <PreviewField label="Date of Joining" value={data.dateOfJoining} />
         </FormGrid>
       </FormCard>
     </div>

@@ -129,7 +129,12 @@ export default function FormWizard({
       : 100;
 
   return (
-    <form onKeyDown={handleKeyDown} key={formKey} className="wizard-form">
+    <form
+      onKeyDown={handleKeyDown}
+      key={formKey}
+      noValidate
+      className="wizard-form"
+    >
       {/* ── Stepper header ── */}
       <div className="wizard-stepper">
         {/* Background progress track */}

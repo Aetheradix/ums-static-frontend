@@ -7,6 +7,7 @@ import {
   FormCard,
   FormGrid,
   FormPage,
+  GridPanel,
   StatusBadge,
 } from 'shared/new-components';
 
@@ -68,13 +69,23 @@ export default function ResearchManagement() {
     setIsSubmitting(true);
     await new Promise(resolve => setTimeout(resolve, 1000));
 
+    const selectedType =
+      typeof data.type === 'object' && data.type
+        ? data.type.id || data.type.name
+        : data.type;
+
+    const selectedIndex =
+      typeof data.index === 'object' && data.index
+        ? data.index.id || data.index.name
+        : data.index;
+
     const newPub: ResearchRecord = {
       id: `PUB-${Math.floor(5000 + Math.random() * 4999)}`,
       title: data.title || 'Untitled Research Paper',
-      type: data.type || 'Journal',
+      type: selectedType || 'Journal',
       journalName: data.journalName || 'Unknown Journal',
       year: data.year || new Date().getFullYear(),
-      index: data.index || 'None',
+      index: selectedIndex || 'None',
       doi: data.doi || '-',
       status: 'Pending',
     };
@@ -168,61 +179,80 @@ export default function ResearchManagement() {
 
       {/* Publications History Table */}
       <FormCard title="My Publication Records" icon="list">
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-left text-sm text-gray-500">
-            <thead className="bg-gray-50 text-xs font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200">
-              <tr>
-                <th className="px-6 py-3 border-none">Publication ID</th>
-                <th className="px-6 py-3 border-none">Title</th>
-                <th className="px-6 py-3 border-none">Type</th>
-                <th className="px-6 py-3 border-none">Journal/Publisher</th>
-                <th className="px-6 py-3 border-none text-center">Year</th>
-                <th className="px-6 py-3 border-none">Indexing</th>
-                <th className="px-6 py-3 border-none text-center">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-              {history.map(item => (
-                <tr key={item.id} className="hover:bg-gray-50/50">
-                  <td className="px-6 py-4 font-semibold text-gray-900">
-                    {item.id}
-                  </td>
-                  <td
-                    className="px-6 py-4 font-medium text-gray-900 max-w-sm truncate"
-                    title={item.title}
-                  >
-                    {item.title}
-                  </td>
-                  <td className="px-6 py-4">{item.type}</td>
-                  <td
-                    className="px-6 py-4 max-w-xs truncate"
-                    title={item.journalName}
-                  >
-                    {item.journalName}
-                  </td>
-                  <td className="px-6 py-4 text-center font-bold text-gray-800">
-                    {item.year}
-                  </td>
-                  <td className="px-6 py-4 text-xs font-semibold text-gray-600">
-                    {item.index}
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <StatusBadge
-                      variant={
-                        item.status === 'Approved'
-                          ? 'approved'
-                          : item.status === 'Pending'
-                            ? 'pending'
-                            : 'rejected'
-                      }
-                      label={item.status}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <GridPanel
+          data={history}
+          pagination={false}
+          columns={[
+            {
+              cell: (_, option) => <span>{option.rowIndex + 1}</span>,
+              width: '40px',
+            },
+            {
+              field: 'id',
+              header: 'Publication ID',
+              cell: (item: ResearchRecord) => (
+                <span className="font-semibold text-gray-900">{item.id}</span>
+              ),
+            },
+            {
+              field: 'title',
+              header: 'Title',
+              cell: (item: ResearchRecord) => (
+                <span
+                  className="font-medium text-gray-900 truncate max-w-sm block"
+                  title={item.title}
+                >
+                  {item.title}
+                </span>
+              ),
+            },
+            { field: 'type', header: 'Type' },
+            {
+              field: 'journalName',
+              header: 'Journal/Publisher',
+              cell: (item: ResearchRecord) => (
+                <span
+                  className="truncate max-w-xs block"
+                  title={item.journalName}
+                >
+                  {item.journalName}
+                </span>
+              ),
+            },
+            {
+              field: 'year',
+              header: 'Year',
+              cell: (item: ResearchRecord) => (
+                <span className="font-bold text-gray-800">{item.year}</span>
+              ),
+            },
+            {
+              field: 'index',
+              header: 'Indexing',
+              cell: (item: ResearchRecord) => (
+                <span className="text-xs font-semibold text-gray-600">
+                  {item.index}
+                </span>
+              ),
+            },
+            {
+              field: 'status',
+              header: 'Status',
+              cell: (item: ResearchRecord) => (
+                <StatusBadge
+                  variant={
+                    item.status === 'Approved'
+                      ? 'approved'
+                      : item.status === 'Pending'
+                        ? 'pending'
+                        : 'rejected'
+                  }
+                  label={item.status}
+                />
+              ),
+            },
+          ]}
+        />
       </FormCard>
     </FormPage>
   );

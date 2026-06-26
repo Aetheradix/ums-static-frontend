@@ -3,7 +3,6 @@ import {
   DropDownList,
   FormWizard,
   NumberBox,
-  Switch,
   TextArea,
   TextBox,
 } from 'shared/components/forms';
@@ -44,20 +43,7 @@ export default function FullOnboardingForm(props: Props) {
   const { handleSubmit, reset, register, watch, trigger, setValue } =
     useFullOnboardingForm(props.onSubmit, props.initialData);
 
-  const isSameAsCurrentAddress = watch('isSameAsCurrentAddress');
   const qualifications = watch('qualifications') || [];
-
-  const handleSameAddressToggle = (checked: boolean) => {
-    setValue('isSameAsCurrentAddress', checked);
-
-    if (checked) {
-      const snapshot = watch('currentAddress');
-      setValue('permanentAddress', {
-        ...snapshot,
-        addressType: 'Permanent',
-      });
-    }
-  };
 
   const addQualification = () => {
     setValue('qualifications', [...qualifications, { ...emptyQualification }]);
@@ -87,7 +73,6 @@ export default function FullOnboardingForm(props: Props) {
                 data={mockSalutations}
                 textField="name"
                 valueField="id"
-                required
               />
 
               <TextBox
@@ -95,7 +80,6 @@ export default function FullOnboardingForm(props: Props) {
                 label="First Name"
                 placeholder="Enter first name"
                 maxLength={50}
-                required
               />
 
               <TextBox
@@ -110,7 +94,6 @@ export default function FullOnboardingForm(props: Props) {
                 label="Last Name"
                 placeholder="Enter last name"
                 maxLength={50}
-                required
               />
 
               <DropDownList
@@ -120,7 +103,6 @@ export default function FullOnboardingForm(props: Props) {
                 data={mockGenders}
                 textField="name"
                 valueField="id"
-                required
               />
 
               <DropDownList
@@ -130,7 +112,6 @@ export default function FullOnboardingForm(props: Props) {
                 data={mockCastes}
                 textField="name"
                 valueField="id"
-                required
               />
 
               <TextBox
@@ -138,7 +119,6 @@ export default function FullOnboardingForm(props: Props) {
                 label="Mobile Number"
                 placeholder="Enter mobile number"
                 maxLength={10}
-                required
               />
 
               <TextBox
@@ -146,14 +126,12 @@ export default function FullOnboardingForm(props: Props) {
                 label="Official Email"
                 placeholder="Enter official email"
                 maxLength={100}
-                required
               />
 
               <DatePicker
                 {...register('dateOfBirth')}
                 label="Date of Birth"
                 placeholder="Select date of birth"
-                required
               />
             </FormGrid>
           </FormCard>
@@ -167,7 +145,6 @@ export default function FullOnboardingForm(props: Props) {
                 data={mockServiceCadres}
                 textField="name"
                 valueField="id"
-                required
               />
 
               <DropDownList
@@ -177,7 +154,6 @@ export default function FullOnboardingForm(props: Props) {
                 data={mockNatureOfEmployment}
                 textField="name"
                 valueField="id"
-                required
               />
 
               <DropDownList
@@ -187,7 +163,6 @@ export default function FullOnboardingForm(props: Props) {
                 data={mockOrgUnits}
                 textField="name"
                 valueField="id"
-                required
               />
 
               <DropDownList
@@ -197,7 +172,6 @@ export default function FullOnboardingForm(props: Props) {
                 data={mockPosts}
                 textField="name"
                 valueField="id"
-                required
               />
 
               <DropDownList
@@ -207,7 +181,6 @@ export default function FullOnboardingForm(props: Props) {
                 data={mockDesignations}
                 textField="name"
                 valueField="id"
-                required
               />
 
               <DropDownList
@@ -217,7 +190,6 @@ export default function FullOnboardingForm(props: Props) {
                 data={mockSpecializations}
                 textField="name"
                 valueField="id"
-                required
               />
 
               <TextBox
@@ -232,14 +204,12 @@ export default function FullOnboardingForm(props: Props) {
                 label="Employee Code"
                 placeholder="Enter employee code"
                 maxLength={50}
-                required
               />
 
               <DatePicker
                 {...register('dateOfJoining')}
                 label="Date of Joining"
                 placeholder="Select date of joining"
-                required
               />
             </FormGrid>
           </FormCard>
@@ -282,7 +252,6 @@ export default function FullOnboardingForm(props: Props) {
                 data={mockNationalities}
                 textField="name"
                 valueField="id"
-                required
               />
 
               <DropDownList
@@ -292,7 +261,6 @@ export default function FullOnboardingForm(props: Props) {
                 data={mockReligions}
                 textField="name"
                 valueField="id"
-                required
               />
 
               <DropDownList
@@ -302,7 +270,6 @@ export default function FullOnboardingForm(props: Props) {
                 data={mockYesNo}
                 textField="name"
                 valueField="id"
-                required
               />
 
               <TextBox
@@ -369,7 +336,6 @@ export default function FullOnboardingForm(props: Props) {
                 label="Emergency Contact Name"
                 placeholder="Enter emergency contact name"
                 maxLength={100}
-                required
               />
 
               <DropDownList
@@ -379,7 +345,6 @@ export default function FullOnboardingForm(props: Props) {
                 data={mockRelationships}
                 textField="name"
                 valueField="id"
-                required
               />
 
               <TextBox
@@ -387,7 +352,6 @@ export default function FullOnboardingForm(props: Props) {
                 label="Emergency Mobile"
                 placeholder="Enter emergency phone"
                 maxLength={10}
-                required
               />
             </FormGrid>
           </FormCard>
@@ -399,7 +363,6 @@ export default function FullOnboardingForm(props: Props) {
                 label="Aadhaar Number"
                 placeholder="Enter 12-digit Aadhaar"
                 maxLength={12}
-                required
               />
 
               <TextBox
@@ -456,7 +419,6 @@ export default function FullOnboardingForm(props: Props) {
                 label="Address Line 1"
                 placeholder="Enter address line 1"
                 maxLength={255}
-                required
               />
 
               <TextBox
@@ -471,7 +433,6 @@ export default function FullOnboardingForm(props: Props) {
                 label="City"
                 placeholder="Enter city"
                 maxLength={100}
-                required
               />
 
               <DropDownList
@@ -481,7 +442,6 @@ export default function FullOnboardingForm(props: Props) {
                 data={mockStates}
                 textField="name"
                 valueField="id"
-                required
               />
 
               <DropDownList
@@ -500,7 +460,6 @@ export default function FullOnboardingForm(props: Props) {
                 data={mockDistricts}
                 textField="name"
                 valueField="id"
-                required
               />
 
               <DropDownList
@@ -526,102 +485,7 @@ export default function FullOnboardingForm(props: Props) {
                 label="PIN Code"
                 placeholder="Enter PIN code"
                 maxLength={10}
-                required
               />
-            </FormGrid>
-          </FormCard>
-
-          <FormCard title="Permanent Address" icon="map">
-            <FormGrid columns={3}>
-              <div className="col-span-full">
-                <Switch
-                  {...register('isSameAsCurrentAddress')}
-                  label="Same as Current Address"
-                  onChange={handleSameAddressToggle}
-                />
-              </div>
-
-              {!isSameAsCurrentAddress && (
-                <>
-                  <TextBox
-                    {...register('permanentAddress.addressLine1')}
-                    label="Address Line 1"
-                    placeholder="Enter address line 1"
-                    maxLength={255}
-                    required
-                  />
-
-                  <TextBox
-                    {...register('permanentAddress.addressLine2')}
-                    label="Address Line 2"
-                    placeholder="Enter address line 2"
-                    maxLength={255}
-                  />
-
-                  <TextBox
-                    {...register('permanentAddress.city')}
-                    label="City"
-                    placeholder="Enter city"
-                    maxLength={100}
-                    required
-                  />
-
-                  <DropDownList
-                    {...register('permanentAddress.stateId')}
-                    label="State"
-                    placeholder="Select State"
-                    data={mockStates}
-                    textField="name"
-                    valueField="id"
-                    required
-                  />
-
-                  <DropDownList
-                    {...register('permanentAddress.divisionId')}
-                    label="Division"
-                    placeholder="Select Division"
-                    data={mockDivisions}
-                    textField="name"
-                    valueField="id"
-                  />
-
-                  <DropDownList
-                    {...register('permanentAddress.districtId')}
-                    label="District"
-                    placeholder="Select District"
-                    data={mockDistricts}
-                    textField="name"
-                    valueField="id"
-                    required
-                  />
-
-                  <DropDownList
-                    {...register('permanentAddress.tehsilId')}
-                    label="Tehsil"
-                    placeholder="Select Tehsil"
-                    data={mockTehsils}
-                    textField="name"
-                    valueField="id"
-                  />
-
-                  <DropDownList
-                    {...register('permanentAddress.blockId')}
-                    label="Block"
-                    placeholder="Select Block"
-                    data={mockBlocks}
-                    textField="name"
-                    valueField="id"
-                  />
-
-                  <TextBox
-                    {...register('permanentAddress.pinCode')}
-                    label="PIN Code"
-                    placeholder="Enter PIN code"
-                    maxLength={10}
-                    required
-                  />
-                </>
-              )}
             </FormGrid>
           </FormCard>
         </div>
@@ -645,7 +509,6 @@ export default function FullOnboardingForm(props: Props) {
                 data={mockDegreeLevels}
                 textField="name"
                 valueField="id"
-                required
               />
             </FormGrid>
           </FormCard>

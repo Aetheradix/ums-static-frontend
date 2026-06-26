@@ -79,6 +79,7 @@ function InnerDropDownList<TData = Data.DataItem<number>>({
           inputId={id ?? name}
           options={!defaultOptionText ? data : optionsWithDefault}
           optionLabel={textField as string}
+          optionValue={valueField as string}
           onChange={e => {
             if (e.value === defaultOptionText) {
               onChange?.(null);
