@@ -11,6 +11,7 @@ import CertificateManagementSystem from './certificate-management-system';
 import EmployeeManagement from './employee-management';
 import EmployeeReports from './employee-reports';
 import ExaminationManagement from './examination-management';
+import GrievanceManagement from './grievance-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
 import LeaveManagement from './leave-management';
@@ -132,6 +133,10 @@ export default function Features() {
                       <Route
                         path="hostel-management/*"
                         element={<HostelManagement />}
+                      />
+                      <Route
+                        path="grievance-management/*"
+                        element={<GrievanceManagement />}
                       />
                       <Route path="lms/*" element={<Lms />} />
                       <Route
