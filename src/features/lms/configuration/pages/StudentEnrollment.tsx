@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { Button } from 'shared/components/buttons';
-import {
-  FormPage,
-  FormCard,
-  GridPanel,
-  FormPopup,
-} from 'shared/new-components';
-import { DropDownList, DatePicker, TextBox } from 'shared/components/forms';
 import { ToastService } from 'services';
+import { Button } from 'shared/components/buttons';
+import { DatePicker, DropDownList, TextBox } from 'shared/components/forms';
+import {
+  FormCard,
+  FormPage,
+  FormPopup,
+  GridPanel,
+} from 'shared/new-components';
 
 const MOCK_DATA = [
   {
@@ -15,7 +15,7 @@ const MOCK_DATA = [
     student: 'Chetan',
     enrollmentNo: 'EN2026001',
     course: 'BCA',
-    session: 'Fall 2026',
+    session: '2026',
     enrollmentDate: '2026-07-15',
   },
   {
@@ -23,7 +23,7 @@ const MOCK_DATA = [
     student: 'Ravi',
     enrollmentNo: 'EN2026002',
     course: 'MBA',
-    session: 'Fall 2026',
+    session: '2026',
     enrollmentDate: '2026-07-16',
   },
 ];
@@ -113,7 +113,7 @@ export default function StudentEnrollment() {
             label="Session"
             defaultValue={popup.item?.session}
             textField="label"
-            data={[{ label: 'Fall 2026', value: 'Fall 2026' }]}
+            data={[{ label: '2026', value: '2026' }]}
             required
             disabled={popup.mode === 'view'}
           />
