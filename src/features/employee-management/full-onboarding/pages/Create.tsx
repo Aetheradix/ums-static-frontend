@@ -16,7 +16,6 @@ export default function Create() {
     try {
       setIsPending(true);
       await new Promise(resolve => setTimeout(resolve, 1000));
-
       ToastService.success('Employee onboarded successfully.');
       handleBack();
     } catch (err) {

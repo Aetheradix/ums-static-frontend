@@ -55,7 +55,7 @@ const schema = validation.create<EmployeeManagement.FullOnboardingForm>(o => ({
   qualifications: o.any().required().label('Qualifications'),
 }));
 
-const emptyQualification: EmployeeManagement.QualificationForm = {
+export const emptyQualification: EmployeeManagement.QualificationForm = {
   qualificationId: 0,
   university: '',
   board: '',
@@ -66,22 +66,24 @@ const emptyQualification: EmployeeManagement.QualificationForm = {
 
 export function useFullOnboardingForm(
   submitCallback: Forms.SubmitFunc<EmployeeManagement.FullOnboardingForm>,
-  fetchData?: Forms.FetchDataFunc<EmployeeManagement.FullOnboardingForm>
+  initialData?: Partial<EmployeeManagement.FullOnboardingForm>
 ) {
+  const defaultValues: Partial<EmployeeManagement.FullOnboardingForm> = {
+    isPersonWithDisability: false,
+    isSameAsCurrentAddress: false,
+    currentAddress: {
+      addressType: 'Current',
+    } as EmployeeManagement.AddressForm,
+    permanentAddress: {
+      addressType: 'Permanent',
+    } as EmployeeManagement.AddressForm,
+    qualifications: [{ ...emptyQualification }],
+    ...initialData,
+  };
+
   const { register, handleSubmit, reset, setValue, watch, trigger } =
     useAppForm<EmployeeManagement.FullOnboardingForm>({
-      defaultValues: fetchData || {
-        isPersonWithDisability: false,
-        isSameAsCurrentAddress: false,
-        currentAddress: {
-          addressType: 'Current',
-        } as EmployeeManagement.AddressForm,
-        permanentAddress: {
-          addressType: 'Permanent',
-        } as EmployeeManagement.AddressForm,
-        qualifications: [{ ...emptyQualification }],
-      },
-
+      defaultValues,
       resolver: validation.resolver(schema),
     });
 
@@ -94,5 +96,3 @@ export function useFullOnboardingForm(
     trigger,
   };
 }
-
-export { emptyQualification };

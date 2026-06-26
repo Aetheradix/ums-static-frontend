@@ -4,6 +4,7 @@ import { Loader } from 'shared/components/progress';
 import { FormPage, Tabs } from 'shared/new-components';
 import { mockGetEmployeeById } from '../../../employee-management/mockData';
 import ProfileSidebar from '../components/ProfileSidebar';
+import BankDetailsTab from '../components/tabs/BankDetailsTab';
 import ContactAddressTab from '../components/tabs/ContactAddressTab';
 import OrganizationTab from '../components/tabs/OrganizationTab';
 import ProfessionalTab from '../components/tabs/ProfessionalTab';
@@ -71,6 +72,7 @@ export default function EmployeeProfile() {
                 { title: 'Contact & Address', content: null },
                 { title: 'Organization Details', content: null },
                 { title: 'Professional Details', content: null },
+                { title: 'Bank Details', content: null },
               ]}
             />
 
@@ -79,6 +81,7 @@ export default function EmployeeProfile() {
               {activeTabIndex === 1 && <ContactAddressTab data={data} />}
               {activeTabIndex === 2 && <OrganizationTab data={data} />}
               {activeTabIndex === 3 && <ProfessionalTab data={data} />}
+              {activeTabIndex === 4 && <BankDetailsTab data={data} />}
             </div>
           </div>
         </div>

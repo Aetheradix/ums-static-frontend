@@ -37,11 +37,12 @@ import { emptyQualification, useFullOnboardingForm } from './form.hook';
 interface Props {
   onSubmit: Forms.SubmitFunc<EmployeeManagement.FullOnboardingForm>;
   isSaving: boolean;
+  initialData?: Partial<EmployeeManagement.FullOnboardingForm>;
 }
 
 export default function FullOnboardingForm(props: Props) {
   const { handleSubmit, reset, register, watch, trigger, setValue } =
-    useFullOnboardingForm(props.onSubmit);
+    useFullOnboardingForm(props.onSubmit, props.initialData);
 
   const isSameAsCurrentAddress = watch('isSameAsCurrentAddress');
   const qualifications = watch('qualifications') || [];

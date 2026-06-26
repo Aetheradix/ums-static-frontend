@@ -1,5 +1,5 @@
-import React, { createContext, useEffect, useState } from 'react';
 import { User } from 'oidc-client-ts';
+import React, { createContext, useEffect, useState } from 'react';
 import { AuthService } from './AuthService';
 
 export interface AuthContextProps {
