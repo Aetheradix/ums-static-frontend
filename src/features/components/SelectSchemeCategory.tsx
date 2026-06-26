@@ -5,6 +5,7 @@ import { DropDownList } from 'shared/components/forms';
 interface SelectSchemeCategoryProps<
   T extends FieldValues,
 > extends Controls.FormProps<T> {
+  data?: any[];
   label?: string;
   disabled?: boolean;
   schemeTypeId?: number;
@@ -13,24 +14,24 @@ interface SelectSchemeCategoryProps<
 export default function SelectSchemeCategory<T extends FieldValues>({
   defaultOptionText,
   label = 'Scheme Category',
+  data = [],
   schemeTypeId,
   ...props
 }: SelectSchemeCategoryProps<T> &
   Controls.InputBlockProps & { defaultOptionText?: string }) {
-  const { data, isLoading } = useSchemesCategoriesQuery();
+  const { data: apiData } = useSchemesCategoriesQuery();
+  const sourceData = data && data.length > 0 ? data : apiData;
 
   // Filter active and match schemeTypeId if provided
-  const activeData =
-    data?.filter((item: Master.Scheme.SchemeCategoryItem) => {
-      if (!item.isActive) return false;
+  const options =
+    sourceData?.filter((item: any) => {
       if (schemeTypeId && item.schemeTypeId !== schemeTypeId) return false;
       return true;
     }) || [];
 
   return (
     <DropDownList
-      data={activeData}
-      loading={isLoading}
+      data={options}
       textField="name"
       valueField="id"
       optionValue="id"

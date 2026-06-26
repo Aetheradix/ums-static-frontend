@@ -177,6 +177,7 @@ export default function Create() {
         isSaving={isPending || isUploading}
         triggerValidation={trigger as (fields: string[]) => Promise<boolean>}
         onReset={reset}
+        hideReset={true}
         customActions={(_activeIndex, isLastStep) =>
           isLastStep ? (
             <Button

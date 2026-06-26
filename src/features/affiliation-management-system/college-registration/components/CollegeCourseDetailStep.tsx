@@ -78,7 +78,9 @@ export default function CollegeCourseDetailStep({
 
   const activeProgrammeFees = programmeFeesData.filter(item => item.isActive);
 
-  const selectedCourse = programmes.find(p => p.id === Number(tempCourseId));
+  const selectedCourse = programmes.find(
+    p => String(p.id) === String(tempCourseId)
+  );
   const currentFees = getCourseFees(
     Number(tempCourseId),
     selectedCourse?.name || '',
@@ -148,7 +150,7 @@ export default function CollegeCourseDetailStep({
 
   const selectedCourseRows = fields.map((field, rowIndex) => {
     const courseName =
-      programmes.find(p => p.id === field.courseId)?.name ??
+      programmes.find(p => String(p.id) === String(field.courseId))?.name ??
       `Course #${field.courseId}`;
 
     const fees = getCourseFees(
@@ -161,7 +163,8 @@ export default function CollegeCourseDetailStep({
     const subjectNames = (field.subjectIds || [])
       .map(sId => {
         return (
-          subjects.find(s => s.id === sId)?.subjectName ?? `Subject #${sId}`
+          subjects.find(s => String(s.id) === String(sId))?.subjectName ??
+          `Subject #${sId}`
         );
       })
       .filter(Boolean)

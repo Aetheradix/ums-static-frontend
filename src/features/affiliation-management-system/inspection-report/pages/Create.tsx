@@ -19,7 +19,7 @@ import { useSubmitInspectionReportMutation } from '../api';
 import { useInspectionReportForm } from '../components/form.hook';
 
 export default function Create() {
-  const { register, control, handleSubmit, formState } =
+  const { register, control, handleSubmit, formState, reset } =
     useInspectionReportForm();
   const { mutateAsync, isPending } = useSubmitInspectionReportMutation();
 
@@ -28,6 +28,7 @@ export default function Create() {
       try {
         await mutateAsync(data);
         ToastService.success('Inspection report submitted successfully!');
+        reset();
       } catch (e: any) {
         ToastService.error(e?.message || 'Failed to submit report.');
       }
