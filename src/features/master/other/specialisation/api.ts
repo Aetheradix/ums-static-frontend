@@ -5,9 +5,19 @@ const MASTER_API_ROOT = `master/`;
 const SPECIALISATION_URL = `${MASTER_API_ROOT}specialisation`;
 
 export function getSpecialisations() {
-  return ApiService.getList<Master.Other.SpecialisationItem>(
-    SPECIALISATION_URL
-  );
+  //   return ApiService.getList<Master.Other.SpecialisationItem>(
+  //     SPECIALISATION_URL
+  //   );
+  return Promise.resolve([
+    {
+      id: 1,
+      name: 'Computer Science',
+      text: 'Computer Science',
+      isActive: true,
+    },
+    { id: 2, name: 'Mechanical', text: 'Mechanical', isActive: true },
+    { id: 3, name: 'Finance', text: 'Finance', isActive: true },
+  ] as unknown as Master.Other.SpecialisationItem[]);
 }
 
 export async function getSpecialisation(id: number) {

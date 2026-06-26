@@ -5,7 +5,12 @@ const MASTER_API_ROOT = `master/`;
 const PROGRAMME_URL = `${MASTER_API_ROOT}programme`;
 
 export function getProgrammes() {
-  return ApiService.getList<Master.Other.ProgrammeItem>(PROGRAMME_URL);
+  //   return ApiService.getList<Master.Other.ProgrammeItem>(PROGRAMME_URL);
+  return Promise.resolve([
+    { id: 1, name: 'B.Tech', text: 'B.Tech', isActive: true },
+    { id: 2, name: 'M.Tech', text: 'M.Tech', isActive: true },
+    { id: 3, name: 'MBA', text: 'MBA', isActive: true },
+  ] as unknown as Master.Other.ProgrammeItem[]);
 }
 
 export async function getProgramme(id: number) {

@@ -3,7 +3,12 @@ import { ApiService } from 'services';
 const CASTE_URL = `master/castes`;
 
 export function getCastes() {
-  return ApiService.getList<Master.HR.CasteItem>(CASTE_URL);
+  //   return ApiService.getList<Master.HR.CasteItem>(CASTE_URL);
+  return Promise.resolve([
+    { id: 1, name: 'General', text: 'General', isActive: true },
+    { id: 2, name: 'OBC', text: 'OBC', isActive: true },
+    { id: 3, name: 'SC/ST', text: 'SC/ST', isActive: true },
+  ] as unknown as Master.HR.CasteItem[]);
 }
 
 export async function getCaste(id: number) {

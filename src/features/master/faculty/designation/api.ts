@@ -5,7 +5,14 @@ const MASTER_API_ROOT = `master/`;
 const DESIGNATION_URL = `${MASTER_API_ROOT}faculty-designation`;
 
 export function getDesignations() {
-  return ApiService.getList<Master.DesignationItem>(DESIGNATION_URL);
+  //   return ApiService.getList<Master.DesignationItem>(DESIGNATION_URL);
+  ApiService;
+  DESIGNATION_URL;
+  return Promise.resolve([
+    { id: 1, name: 'Manager', text: 'Manager', isActive: true },
+    { id: 2, name: 'Developer', text: 'Developer', isActive: true },
+    { id: 3, name: 'Analyst', text: 'Analyst', isActive: true },
+  ] as unknown as Master.DesignationItem[]);
 }
 
 export async function getDesignation(id: number) {

@@ -5,7 +5,12 @@ const MASTER_API_ROOT = `master/`;
 const COLLEGE_TYPE_URL = `${MASTER_API_ROOT}college-types`;
 
 export function getCollegeTypes() {
-  return ApiService.getList<CollegeMaster.CollegeTypeItem>(COLLEGE_TYPE_URL);
+  //   return ApiService.getList<CollegeMaster.CollegeTypeItem>(COLLEGE_TYPE_URL);
+  return Promise.resolve([
+    { id: 1, name: 'Government', text: 'Government', isActive: true },
+    { id: 2, name: 'Private', text: 'Private', isActive: true },
+    { id: 3, name: 'Aided', text: 'Aided', isActive: true },
+  ] as unknown as CollegeMaster.CollegeTypeItem[]);
 }
 
 export async function getCollegeType(id: number) {

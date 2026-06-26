@@ -1,4 +1,5 @@
 import { QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from 'auth';
 import { initConfig } from 'config/initConfig';
 import 'primeicons/primeicons.css';
 import { PrimeReactProvider } from 'primereact/api';
@@ -7,7 +8,6 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import ReactModal from 'react-modal';
 import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from 'auth';
 import App from './App';
 
 import './index.css';
