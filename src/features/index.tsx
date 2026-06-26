@@ -12,6 +12,7 @@ import EmployeeManagement from './employee-management';
 import ExaminationManagement from './examination-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
+import GrievanceManagement from './grievance-management';
 import Lms from './lms';
 import LeaveManagement from './leave-management';
 import Master from './master';
@@ -126,6 +127,10 @@ export default function Features() {
                       <Route
                         path="hostel-management/*"
                         element={<HostelManagement />}
+                      />
+                      <Route
+                        path="grievance-management/*"
+                        element={<GrievanceManagement />}
                       />
                       <Route path="lms/*" element={<Lms />} />
                       <Route
