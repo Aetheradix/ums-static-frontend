@@ -786,7 +786,49 @@ export const menuConfig: Menu.MenuItem[] = [
     ],
   },
   {
+    label: 'Leave\nManagement',
+    slug: 'leave-management',
+    category: 'Leave',
+    icon: 'event_busy',
+    colorScheme: 'teal',
+    description: 'Leave • Attendance • Biometric • LTC • Reports',
+    children: [
+      {
+        label: 'Leave Management System',
+        slug: 'leave-management-system',
+        description: 'Manage leave requests, attendance, biometric and LTC for employees and students.',
+        path: '/leave-management',
+        icon: 'event_busy',
+        colorScheme: 'teal',
+        children: [
+          {
+            label: 'Admin Portal',
+            description: 'Admin dashboard, masters, reports and settings.',
+            path: '/leave-management/admin',
+            icon: 'admin_panel_settings',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Teacher Portal',
+            description: 'Apply leave, manage student approvals, attendance.',
+            path: '/leave-management/teacher',
+            icon: 'groups',
+            colorScheme: 'green',
+          },
+          {
+            label: 'Student Portal',
+            description: 'Apply leave, view attendance calendar and biometric.',
+            path: '/leave-management/student',
+            icon: 'school',
+            colorScheme: 'purple',
+          },
+        ],
+      },
+    ],
+  },
+  {
     label: 'Admission\nManagement',
+
     slug: 'admission-management',
     category: 'Admission',
     icon: 'how_to_reg',

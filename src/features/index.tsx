@@ -12,6 +12,7 @@ import ExaminationManagement from './examination-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
 import Lms from './lms';
+import LeaveManagement from './leave-management';
 import Master from './master';
 import ProgrammeManagement from './programme-management';
 import PublicPortalLayout, {
@@ -122,6 +123,10 @@ export default function Features() {
                         element={<HostelManagement />}
                       />
                       <Route path="lms/*" element={<Lms />} />
+                      <Route
+                        path="leave-management/*"
+                        element={<LeaveManagement />}
+                      />
                     </Routes>
                   </MainLayout>
                 }
