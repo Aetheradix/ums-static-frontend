@@ -153,17 +153,14 @@
    Step content panels
    ══════════════════════════════════════════════════ */
 .wizard-body {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-top: 2px solid #111827;
-  border-bottom: none;
-  border-radius: 0;
+  background: transparent;
+  border: none;
   min-height: 420px;
 }
 
-.wizard-panel {
+/* .wizard-panel {
   padding: 24px 28px 16px;
-}
+} */
 
 .wizard-panel.wz-panel-hidden {
   display: none;
@@ -185,43 +182,18 @@
   }
 }
 
-/* Scrollable content inside each panel */
+/* Content inside each panel expands naturally to avoid double scroll */
 .wizard-panel > * {
-  max-height: 450px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-right: 6px;
-  scrollbar-width: thin;
-  scrollbar-color: #d1d5db transparent;
-}
-
-.wizard-panel > *::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.wizard-panel > *::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.wizard-panel > *::-webkit-scrollbar-thumb {
-  background: #e5e7eb;
-  border-radius: 10px;
-  transition: background 0.2s;
-}
-
-.wizard-panel > *::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  height: auto;
+  padding-right: 0;
 }
 
 /* ══════════════════════════════════════════════════
    Footer
    ══════════════════════════════════════════════════ */
 .wizard-footer {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-top: 1px solid #f3f4f6;
-  border-radius: 0 0 12px 12px;
+  background: transparent;
+  border: none;
 }
 
 .wizard-footer-inner {
@@ -257,8 +229,8 @@
    DARK MODE
    ══════════════════════════════════════════════════ */
 .dark .wizard-stepper {
-  background: #1f2937;
-  border-color: #374151;
+  background: transparent;
+  border-color: transparent;
 }
 
 .dark .wizard-track {
@@ -317,18 +289,78 @@
 }
 
 .dark .wizard-body {
-  background: #1f2937;
-  border-color: #374151;
-  border-top-color: #f3f4f6;
+  background: transparent;
+  border-color: transparent;
 }
 
 .dark .wizard-footer {
-  background: #1f2937;
-  border-color: #374151;
+  background: transparent;
+  border-color: transparent;
 }
 
 .dark .wizard-step-counter {
   color: #9ca3af;
 }
 
-/* removed scrollbar dark mode styles */
+/* ══════════════════════════════════════════════════
+   RESPONSIVE DESIGN (MOBILE & TABLET)
+   ══════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .wizard-stepper {
+    padding: 16px 12px 12px;
+  }
+
+  .wizard-panel {
+    padding: 16px 16px 12px;
+  }
+
+  .wz-label {
+    font-size: 11px;
+    max-width: 70px;
+    white-space: normal;
+  }
+
+  .wizard-track {
+    top: 32px; /* Adjust if badge size is different */
+    left: 20px;
+    right: 20px;
+  }
+
+  .wizard-footer-inner {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .wizard-footer-left {
+    justify-content: center;
+  }
+
+  .wizard-footer-right {
+    justify-content: space-between;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .wizard-stepper {
+    padding: 12px 8px 8px;
+  }
+
+  .wizard-step-btn:not(.wz-active) .wz-label {
+    display: none; /* Hide inactive labels to save space */
+  }
+
+  .wizard-step-btn.wz-active .wz-label {
+    max-width: 100px;
+  }
+
+  .wizard-track {
+    left: 12px;
+    right: 12px;
+  }
+
+  .wizard-panel {
+    padding: 12px 8px;
+  }
+}
