@@ -24,16 +24,10 @@ export default function CareerAdvancement() {
         <Route path="sessions-management" element={<SessionsManagement />} />
 
         {/* APAR / Employee Form */}
-        <Route
-          path="employee-self-assessment"
-          element={<AparEmployee />}
-        />
+        <Route path="employee-self-assessment" element={<AparEmployee />} />
 
         {/* PBAS / CAS Application Wizard */}
-        <Route
-          path="performance-appraisal-system"
-          element={<PbasCreate />}
-        />
+        <Route path="performance-appraisal-system" element={<PbasCreate />} />
 
         {/* APAR All & Handoff review pages */}
         <Route path="apar-application/all" element={<AparAll />} />

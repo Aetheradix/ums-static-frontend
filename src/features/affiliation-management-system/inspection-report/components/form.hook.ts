@@ -80,12 +80,9 @@ const schema = validation.create<InspectionReportFormData>(o => ({
     .string()
     .required()
     .messages({ 'string.empty': 'Please select if Principal is qualified' }),
-  areSalariesPaidViaBank: o
-    .string()
-    .required()
-    .messages({
-      'string.empty': 'Please select if salaries are paid via Bank',
-    }),
+  areSalariesPaidViaBank: o.string().required().messages({
+    'string.empty': 'Please select if salaries are paid via Bank',
+  }),
   totalTeachingFaculty: o
     .string()
     .required()

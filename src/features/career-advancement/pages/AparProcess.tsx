@@ -5,7 +5,11 @@ import { FormCard, FormGrid, FormPage } from 'shared/new-components';
 import { TextBox, DropDownList } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
 
-import { CATEGORY_OPTIONS, GROUP_OPTIONS, EMPLOYMENT_TYPE_OPTIONS } from '../data';
+import {
+  CATEGORY_OPTIONS,
+  GROUP_OPTIONS,
+  EMPLOYMENT_TYPE_OPTIONS,
+} from '../data';
 
 export default function AparProcess() {
   const navigate = useNavigate();
@@ -17,7 +21,11 @@ export default function AparProcess() {
 
   // Find the selected APAR application
   const app = useMemo(() => {
-    return aparApplications.find((a: CareerAdvancement.CASAPARApplication) => a.id === appId) || aparApplications[0];
+    return (
+      aparApplications.find(
+        (a: CareerAdvancement.CASAPARApplication) => a.id === appId
+      ) || aparApplications[0]
+    );
   }, [aparApplications, appId]);
 
   // Form states
@@ -25,13 +33,27 @@ export default function AparProcess() {
   const [category, setCategory] = useState(app?.category || 'General');
   const [group, setGroup] = useState(app?.group || 'Group A');
   const [scst, setScst] = useState<any>(app?.belongsToSCST || 'No');
-  const [empType, setEmpType] = useState<any>(app?.employmentType || 'Permanent');
-  const [sections, setSections] = useState(app?.sectionsServed || 'Department of Computer Science');
-  const [lengthService, setLengthService] = useState(app?.serviceLengthUnderReviewer || '9 months');
-  const [continuousAppt, setContinuousAppt] = useState(app?.dateOfContinuousAppointment || '2018-08-20');
-  const [validityEmployee, setValidityEmployee] = useState(app?.employeeValidityDate || '2025-07-31');
-  const [validityReporting, setValidityReporting] = useState(app?.reportingOfficerValidityDate || '2025-08-31');
-  const [validityReviewing, setValidityReviewing] = useState(app?.reviewingOfficerValidityDate || '2025-09-30');
+  const [empType, setEmpType] = useState<any>(
+    app?.employmentType || 'Permanent'
+  );
+  const [sections, setSections] = useState(
+    app?.sectionsServed || 'Department of Computer Science'
+  );
+  const [lengthService, setLengthService] = useState(
+    app?.serviceLengthUnderReviewer || '9 months'
+  );
+  const [continuousAppt, setContinuousAppt] = useState(
+    app?.dateOfContinuousAppointment || '2018-08-20'
+  );
+  const [validityEmployee, setValidityEmployee] = useState(
+    app?.employeeValidityDate || '2025-07-31'
+  );
+  const [validityReporting, setValidityReporting] = useState(
+    app?.reportingOfficerValidityDate || '2025-08-31'
+  );
+  const [validityReviewing, setValidityReviewing] = useState(
+    app?.reviewingOfficerValidityDate || '2025-09-30'
+  );
 
   const handleInitiate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,12 +100,13 @@ export default function AparProcess() {
       description="Initialize the appraisal report configuration, timelines and dates for the employee"
       breadcrumbs={[
         { label: 'Career Advancement', to: '/career-advancement/dashboard' },
-        { label: 'APAR Applications', to: '/career-advancement/apar-application/all' },
+        {
+          label: 'APAR Applications',
+          to: '/career-advancement/apar-application/all',
+        },
         { label: 'Initiate APAR' },
       ]}
     >
-
-
       <FormCard
         title={`Configure APAR - ${app?.employeeName}`}
         subtitle={`Appraisal configuration for ${app?.designation} (${app?.department})`}
@@ -175,7 +198,9 @@ export default function AparProcess() {
             <Button
               label="Back to List"
               variant="outlined"
-              onClick={() => navigate('/career-advancement/apar-application/all')}
+              onClick={() =>
+                navigate('/career-advancement/apar-application/all')
+              }
             />
           </div>
         </form>

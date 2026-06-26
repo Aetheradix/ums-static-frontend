@@ -7,11 +7,8 @@ import { Button } from 'shared/components/buttons';
 
 export default function PbasApproval() {
   const navigate = useNavigate();
-  const {
-    pbasApplications,
-    setPBASApplications,
-    triggerNotification,
-  } = useCareerAdvancement();
+  const { pbasApplications, setPBASApplications, triggerNotification } =
+    useCareerAdvancement();
 
   // Find targeted application
   const app = useMemo(() => {
@@ -22,20 +19,38 @@ export default function PbasApproval() {
   const stageInfo = useMemo(() => {
     const path = window.location.pathname.toLowerCase();
     if (path.includes('pbas-hod')) {
-      return { title: 'HOD Approval Page', nextLabel: 'Dean', fieldPrefix: 'hod' };
+      return {
+        title: 'HOD Approval Page',
+        nextLabel: 'Dean',
+        fieldPrefix: 'hod',
+      };
     } else if (path.includes('pbas-dean')) {
-      return { title: 'Dean Approval Page', nextLabel: 'IQAC', fieldPrefix: 'dean' };
+      return {
+        title: 'Dean Approval Page',
+        nextLabel: 'IQAC',
+        fieldPrefix: 'dean',
+      };
     } else if (path.includes('pbas-iqac')) {
-      return { title: 'IQAC Verification', nextLabel: 'Dean Academics', fieldPrefix: 'iqac' };
+      return {
+        title: 'IQAC Verification',
+        nextLabel: 'Dean Academics',
+        fieldPrefix: 'iqac',
+      };
     } else {
-      return { title: 'PBAS Approval Desk', nextLabel: 'Admin', fieldPrefix: 'hod' };
+      return {
+        title: 'PBAS Approval Desk',
+        nextLabel: 'Admin',
+        fieldPrefix: 'hod',
+      };
     }
   }, []);
 
   // Form states
   const [remarks, setRemarks] = useState('');
   const [verifiedScore, setVerifiedScore] = useState(app?.totalAPIScore || 165);
-  const [decision, setDecision] = useState(`Approve & Forward to ${stageInfo.nextLabel}`);
+  const [decision, setDecision] = useState(
+    `Approve & Forward to ${stageInfo.nextLabel}`
+  );
   const [resubmitReason, setResubmitReason] = useState('');
 
   const handleDecisionSubmit = (e: React.FormEvent) => {
@@ -103,8 +118,14 @@ export default function PbasApproval() {
   };
 
   const decisionOptions = [
-    { id: `Approve & Forward to ${stageInfo.nextLabel}`, text: `Approve & Forward to ${stageInfo.nextLabel}` },
-    { id: 'Request Resubmission', text: 'Request Resubmission (Send back to Employee)' },
+    {
+      id: `Approve & Forward to ${stageInfo.nextLabel}`,
+      text: `Approve & Forward to ${stageInfo.nextLabel}`,
+    },
+    {
+      id: 'Request Resubmission',
+      text: 'Request Resubmission (Send back to Employee)',
+    },
   ];
 
   return (
@@ -116,7 +137,6 @@ export default function PbasApproval() {
         { label: 'PBAS Approval Desk' },
       ]}
     >
-
       <div className="space-y-6">
         <FormCard title="Applications Pending Your Review" icon="list">
           <GridPanel
@@ -143,13 +163,23 @@ export default function PbasApproval() {
                       label="View App Detail"
                       icon="eye"
                       variant="outlined"
-                      onClick={() => triggerNotification(`Opening details for ${item.employeeName}`, 'info')}
+                      onClick={() =>
+                        triggerNotification(
+                          `Opening details for ${item.employeeName}`,
+                          'info'
+                        )
+                      }
                     />
                     <Button
                       label="Track"
                       icon="map-marker"
                       variant="outlined"
-                      onClick={() => triggerNotification('Application tracking opened.', 'info')}
+                      onClick={() =>
+                        triggerNotification(
+                          'Application tracking opened.',
+                          'info'
+                        )
+                      }
                     />
                   </div>
                 ),
@@ -159,20 +189,35 @@ export default function PbasApproval() {
         </FormCard>
 
         {app && (
-          <FormCard title={`Process Application: ${app.employeeName}`} icon="cog">
+          <FormCard
+            title={`Process Application: ${app.employeeName}`}
+            icon="cog"
+          >
             <form onSubmit={handleDecisionSubmit}>
               <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6 flex flex-col md:flex-row gap-6 text-sm text-slate-700">
                 <div>
-                  <span className="font-bold text-slate-400 block uppercase text-[10px]">Applied Promotion Stage:</span>
-                  <span className="font-extrabold mt-0.5 block">{app.stage}</span>
+                  <span className="font-bold text-slate-400 block uppercase text-[10px]">
+                    Applied Promotion Stage:
+                  </span>
+                  <span className="font-extrabold mt-0.5 block">
+                    {app.stage}
+                  </span>
                 </div>
                 <div>
-                  <span className="font-bold text-slate-400 block uppercase text-[10px]">Claimed API Score:</span>
-                  <span className="font-extrabold mt-0.5 block text-indigo-600">{app.totalAPIScore}</span>
+                  <span className="font-bold text-slate-400 block uppercase text-[10px]">
+                    Claimed API Score:
+                  </span>
+                  <span className="font-extrabold mt-0.5 block text-indigo-600">
+                    {app.totalAPIScore}
+                  </span>
                 </div>
                 <div>
-                  <span className="font-bold text-slate-400 block uppercase text-[10px]">Department:</span>
-                  <span className="font-extrabold mt-0.5 block">{app.department}</span>
+                  <span className="font-bold text-slate-400 block uppercase text-[10px]">
+                    Department:
+                  </span>
+                  <span className="font-extrabold mt-0.5 block">
+                    {app.department}
+                  </span>
                 </div>
               </div>
 
