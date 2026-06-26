@@ -19,6 +19,7 @@ import PublicPortalLayout, {
 } from './public-portal/layout/PublicPortalLayout';
 import Settings from './settings';
 import Sis from './sis';
+import StudentFeedbackManagement from './student-feedback-management';
 
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
@@ -122,6 +123,10 @@ export default function Features() {
                         element={<HostelManagement />}
                       />
                       <Route path="lms/*" element={<Lms />} />
+                      <Route
+                        path="student-feedback-management/*"
+                        element={<StudentFeedbackManagement />}
+                      />
                     </Routes>
                   </MainLayout>
                 }

@@ -1248,15 +1248,7 @@ export const menuConfig: Menu.MenuItem[] = [
         colorScheme: 'red',
         children: [],
       },
-      {
-        label: 'Feedback Management',
-        slug: 'student-feedback-management',
-        description:
-          'Manage countries, states, divisions, districts, tehsils, and blocks.',
-        icon: 'edit_location',
-        colorScheme: 'red',
-        children: [],
-      },
+
       {
         label: 'Student Additional Information',
         slug: 'student-additional-information',
@@ -1973,6 +1965,61 @@ export const menuConfig: Menu.MenuItem[] = [
             path: '/master/admission-fee/bank-reconciliation',
             icon: 'account_balance',
             colorScheme: 'green',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    label: 'Feedback\nManagement',
+    slug: 'feedback',
+    category: 'Feedback',
+    icon: 'feedback',
+    colorScheme: 'orange',
+    description: 'Student and Employee Feedback Systems',
+    children: [
+      {
+        label: 'Student Feedback Management',
+        slug: 'student-feedback-management',
+        description: 'Portal selector (role selection)',
+        icon: 'feedback',
+        colorScheme: 'orange',
+        path: '/student-feedback-management',
+        children: [
+          {
+            label: 'Admin Portal',
+            slug: 'admin',
+            description:
+              'Admin portal (Dashboard/Templates/Question Bank tiles)',
+            path: '/student-feedback-management/admin',
+            icon: 'admin_panel_settings',
+            colorScheme: 'orange',
+            children: [
+              {
+                label: 'Dashboard',
+                slug: 'dashboard',
+                description: 'Stats dashboard with charts',
+                path: '/student-feedback-management/admin/dashboard',
+                icon: 'dashboard',
+                colorScheme: 'orange',
+              },
+              {
+                label: 'Templates',
+                slug: 'templates',
+                description: 'Template CRUD with all actions',
+                path: '/student-feedback-management/admin/templates',
+                icon: 'description',
+                colorScheme: 'orange',
+              },
+              {
+                label: 'Question Bank',
+                slug: 'question-bank',
+                description: 'Question CRUD with answer types',
+                path: '/student-feedback-management/admin/question-bank',
+                icon: 'help_outline',
+                colorScheme: 'orange',
+              },
+            ],
           },
         ],
       },
