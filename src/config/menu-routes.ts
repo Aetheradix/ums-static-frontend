@@ -9,7 +9,7 @@ export const menuConfig: Menu.MenuItem[] = [
     category: 'Administrative',
     icon: 'school',
     colorScheme: 'red',
-    description: 'Dashboard • Courses • Progress • Finance • Profile',
+    description: 'Dashboard â€¢ Courses â€¢ Progress â€¢ Finance â€¢ Profile',
 
     children: [
       {
@@ -531,7 +531,7 @@ export const menuConfig: Menu.MenuItem[] = [
     category: 'Employee',
     icon: 'groups',
     colorScheme: 'red',
-    description: 'Classes • Grades • Advising • Resources',
+    description: 'Classes â€¢ Grades â€¢ Advising â€¢ Resources',
     children: [
       {
         label: 'Employee Management System',
@@ -693,7 +693,7 @@ export const menuConfig: Menu.MenuItem[] = [
             colorScheme: 'orange',
           },
           {
-            label: 'APAR — All Applications',
+            label: 'APAR â€” All Applications',
             slug: 'apar-application',
             description: 'Initiate and manage APAR for all employees',
             path: '/career-advancement/apar-application/all',
@@ -701,7 +701,7 @@ export const menuConfig: Menu.MenuItem[] = [
             colorScheme: 'orange',
           },
           {
-            label: 'APAR — Process Setup',
+            label: 'APAR â€” Process Setup',
             slug: 'apar-process',
             description: 'Configure and initiate APAR workflow.',
             path: '/career-advancement/apar-process',
@@ -786,13 +786,12 @@ export const menuConfig: Menu.MenuItem[] = [
     ],
   },
   {
-    label: 'Admission\nManagement',
-    slug: 'admission-management',
-    category: 'Admission',
-    icon: 'how_to_reg',
+    label: 'Academic\nExaminations',
+    slug: 'academic-examinations',
+    category: 'Academics',
+    icon: 'school',
     colorScheme: 'red',
-    description:
-      'Manage student admissions, applications, and enrollment processes',
+    description: 'Manage exams, grading, evaluations, and certifications',
     navigationStyle: 'sidebar',
     children: [
       {
@@ -1275,26 +1274,6 @@ export const menuConfig: Menu.MenuItem[] = [
         icon: 'person_add',
         colorScheme: 'red',
       },
-      {
-        label: 'Student Application Form',
-        slug: 'student-application-form',
-        description: 'Create and submit student applications.',
-        path: '/sis/student-application-form',
-        icon: 'assignment',
-        colorScheme: 'red',
-        feature: '@sis/StudentApplicationForm',
-        action: 'read',
-      },
-      {
-        label: 'Fee Payment Approval (Temp)',
-        slug: 'student-fee-approval',
-        description: 'Approve student application fee payments.',
-        path: '/sis/student-fee-approval',
-        icon: 'check_circle',
-        colorScheme: 'red',
-        feature: '@sis/StudentFeeApproval',
-        action: 'read',
-      },
     ],
   },
   {
@@ -1436,7 +1415,7 @@ export const menuConfig: Menu.MenuItem[] = [
     category: 'Affiliation Management System',
     icon: 'groups',
     colorScheme: 'red',
-    description: 'Classes • Grades • Advising • Resources',
+    description: 'Classes â€¢ Grades â€¢ Advising â€¢ Resources',
     children: [
       {
         label: 'College Registration',
@@ -1556,7 +1535,8 @@ export const menuConfig: Menu.MenuItem[] = [
     category: 'Academics',
     icon: 'school',
     colorScheme: 'green',
-    description: 'Courses • Enrollment • Sessions • Evaluation • Grading',
+    description:
+      'Courses â€¢ Enrollment â€¢ Sessions â€¢ Evaluation â€¢ Grading',
     path: '/academics',
     children: [
       {
@@ -1576,7 +1556,7 @@ export const menuConfig: Menu.MenuItem[] = [
     category: 'Academics',
     icon: 'menu_book',
     colorScheme: 'blue',
-    description: 'Programmes • Disciplines • UGC Degrees • Exam Schemes',
+    description: 'Programmes â€¢ Disciplines â€¢ UGC Degrees â€¢ Exam Schemes',
     children: [
       {
         label: 'Programme Management System',
@@ -1833,7 +1813,8 @@ export const menuConfig: Menu.MenuItem[] = [
     category: 'Finance',
     icon: 'payments',
     colorScheme: 'green',
-    description: 'Configuration • Structure • Demand • Payments • Auditing',
+    description:
+      'Configuration â€¢ Structure â€¢ Demand â€¢ Payments â€¢ Auditing',
     path: '/master/admission-fee/dashboard',
     children: [
       {
@@ -1981,6 +1962,112 @@ export const menuConfig: Menu.MenuItem[] = [
             path: '/master/admission-fee/bank-reconciliation',
             icon: 'account_balance',
             colorScheme: 'green',
+          },
+        ],
+      },
+    ],
+  },
+
+  // === ADMISSIONS MANAGEMENT MODULE ===
+  {
+    label: 'Admissions\nManagement',
+    slug: 'admissions-management',
+    category: 'Admission',
+    icon: 'how_to_reg',
+    colorScheme: 'blue',
+    description:
+      'Manage student admissions, applications, fees, and portal configuration.',
+    navigationStyle: 'sidebar',
+    children: [
+      {
+        label: 'Admin Portal',
+        slug: 'admissions-admin',
+        description:
+          'Configure programmes, review applications, and manage the portal.',
+        icon: 'admin_panel_settings',
+        colorScheme: 'blue',
+        path: '/admissions-management/admin',
+        children: [
+          {
+            label: 'All Applications',
+            description: 'View and manage all admission applications.',
+            path: '/admissions-management/admin/applications',
+            icon: 'folder_open',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Fee Approval',
+            description: 'Approve or reject pending fee payments.',
+            path: '/admissions-management/admin/fee-approval',
+            icon: 'payments',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Programme Config',
+            description: 'Set admission criteria per programme.',
+            path: '/admissions-management/admin/programme-config',
+            icon: 'schema',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Fee Configuration',
+            description: 'Configure fees per programme and category.',
+            path: '/admissions-management/admin/fee-config',
+            icon: 'receipt_long',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Portal Settings',
+            description: 'Manage portal content, deadlines, and FAQs.',
+            path: '/admissions-management/admin/portal-settings',
+            icon: 'settings',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Notifications',
+            description: 'Publish public notices and announcements.',
+            path: '/admissions-management/admin/notifications',
+            icon: 'campaign',
+            colorScheme: 'blue',
+          },
+        ],
+      },
+      {
+        label: 'Student Portal',
+        slug: 'admissions-student',
+        description:
+          'Student self-service for applications, fee payment, and subject selection.',
+        icon: 'school',
+        colorScheme: 'blue',
+        path: '/admissions-management/student',
+        children: [
+          {
+            label: 'Apply Now',
+            description: 'Fill and submit admission application form.',
+            path: '/admissions-management/student/apply',
+            icon: 'assignment',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Application Status',
+            description: 'Track the status of your application.',
+            path: '/admissions-management/student/status',
+            icon: 'track_changes',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Fee Payment',
+            description: 'Pay your admission fee online.',
+            path: '/admissions-management/student/fee-payment',
+            icon: 'credit_card',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Subject Selection',
+            description: 'Choose subjects and electives.',
+            path: '/admissions-management/student/subject-selection',
+            icon: 'checklist',
+            colorScheme: 'blue',
           },
         ],
       },

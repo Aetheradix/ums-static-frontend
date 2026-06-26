@@ -1,8 +1,8 @@
 import { LocalStorageCacheService, type ICacheService } from 'services/cache';
-import { StaticStudentApplicationRepository } from 'features/sis/student-application-form/repositories/StaticStudentApplicationRepository';
-import { StudentApplicationService } from 'features/sis/student-application-form/services/StudentApplicationService';
-import { StaticStudentProfileRepository } from 'features/sis/student-profile/repositories/StaticStudentProfileRepository';
-import { StudentProfileService } from 'features/sis/student-profile/services/StudentProfileService';
+import { StaticStudentApplicationRepository } from 'features/admissions-management/student/application-form/repositories/StaticStudentApplicationRepository';
+import { StudentApplicationService } from 'features/admissions-management/student/application-form/services/StudentApplicationService';
+import { StaticStudentProfileRepository } from 'features/student-management/student/profile/repositories/StaticStudentProfileRepository';
+import { StudentProfileService } from 'features/student-management/student/profile/services/StudentProfileService';
 
 let cacheService: ICacheService | null = null;
 let studentAppService: StudentApplicationService | null = null;
