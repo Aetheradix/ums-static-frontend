@@ -1,0 +1,238 @@
+.dashboard-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-full-row {
+  margin-bottom: 1.5rem;
+}
+
+.chart-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+.chart-bar-label {
+  width: 10rem;
+  font-size: 0.813rem;
+  color: var(--color-text-secondary, #6b7280);
+  text-align: right;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chart-bar-track {
+  flex: 1;
+  background: #f3f4f6;
+  border-radius: 9999px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.chart-bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.4s ease;
+}
+
+.chart-bar-value {
+  width: 2.5rem;
+  font-size: 0.813rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.chart-bar-pct {
+  width: 2.75rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted, #9ca3af);
+  flex-shrink: 0;
+}
+
+.grade-chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+
+.grade-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.625rem 1rem;
+  border-radius: 10px;
+  min-width: 68px;
+  border: 1px solid var(--color-border, #e5e7eb);
+}
+
+.grade-chip-label {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.grade-chip-desc {
+  font-size: 0.688rem;
+  color: var(--color-text-muted, #9ca3af);
+  margin-top: 0.125rem;
+  text-align: center;
+}
+
+.grade-chip-pct {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+.split-stat-row {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.split-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.split-stat-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+}
+
+.split-stat-name {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #6b7280);
+  font-weight: 500;
+}
+
+.attendance-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0;
+  border-bottom: 1px solid var(--color-border, #f3f4f6);
+}
+
+.attendance-row:last-child {
+  border-bottom: none;
+}
+
+.attendance-label {
+  width: 12rem;
+  font-size: 0.813rem;
+  color: var(--color-text-secondary, #6b7280);
+  flex-shrink: 0;
+}
+
+.attendance-track {
+  flex: 1;
+  background: #f3f4f6;
+  border-radius: 9999px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.attendance-fill {
+  height: 100%;
+  border-radius: 9999px;
+}
+
+.attendance-pct {
+  width: 3rem;
+  font-size: 0.813rem;
+  font-weight: 600;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.recent-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.recent-table th {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted, #9ca3af);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-border, #e5e7eb);
+  text-align: left;
+}
+
+.recent-table td {
+  font-size: 0.813rem;
+  color: var(--color-text-primary, #111827);
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--color-border, #f3f4f6);
+}
+
+.recent-table tr:last-child td {
+  border-bottom: none;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status-pill-enrolled {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-pill-pending {
+  background: #fef9c3;
+  color: #a16207;
+}
+
+@media (max-width: 1200px) {
+  .dashboard-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard-charts-row,
+  .dashboard-bottom-row {
+    grid-template-columns: 1fr;
+  }
+}

@@ -38,11 +38,13 @@ import EmployeeGroup from './employee/settings/employee-group';
 import SeparationReasonType from './employee/settings/separation-reason-type';
 import UserManagement from './user-management';
 import CmsManagement from '../cms-management';
+import AdmissionFee from './admission-fee';
 
 export default function Master() {
   return (
     <Routes>
       <Route path="user-management/*" element={<UserManagement />} />
+      <Route path="admission-fee/*" element={<AdmissionFee />} />
       <Route path="location/*" element={<Location />} />
       <Route path="subject/*" element={<Subject />} />
       <Route path="cms-management/*" element={<CmsManagement />} />
