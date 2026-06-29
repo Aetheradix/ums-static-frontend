@@ -13,6 +13,8 @@ const PORTAL_PATHS: string[] = [
   '/employee-management',
   '/employee-management/admin-portal',
   '/academics',
+  '/admissions-management',
+  '/student-management',
 ];
 
 function isPortalPath(pathname: string): boolean {

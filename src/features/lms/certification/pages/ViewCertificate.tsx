@@ -3,6 +3,7 @@ import { FormPage, FormCard } from 'shared/new-components';
 import { Button } from 'shared/components/buttons';
 import { useNavigate } from 'react-router-dom';
 import { ToastService } from 'services';
+import { learningUrls } from '../../urls';
 
 export default function ViewCertificate() {
   const navigate = useNavigate();
@@ -24,6 +25,11 @@ export default function ViewCertificate() {
     <FormPage
       title="Certificate Designer"
       description="Edit and preview the certificate layout."
+      breadcrumbs={[
+        { label: 'Home', to: '/home' },
+        { label: 'Learning Management System', to: learningUrls.portal },
+        { label: 'Certificate Designer' },
+      ]}
     >
       <div className="flex justify-end gap-2 mb-4">
         <Button

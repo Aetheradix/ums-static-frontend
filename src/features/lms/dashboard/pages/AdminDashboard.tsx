@@ -1,6 +1,7 @@
 import { FormPage, FormCard } from 'shared/new-components';
 import { Icon } from 'shared/components/Icon/Icon';
 import { Chart } from 'primereact/chart';
+import { learningUrls } from '../../urls';
 
 export default function AdminDashboard() {
   const progressData = {
@@ -49,6 +50,11 @@ export default function AdminDashboard() {
     <FormPage
       title="LMS Dashboard"
       description="Overview of Learning Management System statistics."
+      breadcrumbs={[
+        { label: 'Home', to: '/home' },
+        { label: 'Learning Management System', to: learningUrls.portal },
+        { label: 'Dashboard' },
+      ]}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pb-4">
         <FormCard className="flex items-center gap-4">

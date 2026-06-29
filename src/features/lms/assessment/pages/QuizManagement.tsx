@@ -8,6 +8,7 @@ import {
 } from 'shared/new-components';
 import { DropDownList, TextBox } from 'shared/components/forms';
 import { ToastService } from 'services';
+import { learningUrls } from '../../urls';
 
 const MOCK_DATA = [
   {
@@ -56,6 +57,11 @@ export default function QuizManagement() {
     <FormPage
       title="Quiz Management"
       description="Create and manage quizzes for modules."
+      breadcrumbs={[
+        { label: 'Home', to: '/home' },
+        { label: 'Learning Management System', to: learningUrls.portal },
+        { label: 'Quiz Management' },
+      ]}
     >
       <FormCard>
         <GridPanel

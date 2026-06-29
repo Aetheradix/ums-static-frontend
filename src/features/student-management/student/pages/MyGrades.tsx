@@ -5,8 +5,8 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
-import { type StudentGrade, myGrades } from '../../data';
-import { academicsUrls } from '../../urls';
+import { type StudentGrade, myGrades } from '../../../academics/data';
+import { studentManagementUrls } from '../../urls';
 
 export default function MyGrades() {
   const [data] = useState<StudentGrade[]>(myGrades);
@@ -17,8 +17,8 @@ export default function MyGrades() {
       description="Check your marks and grades for all subjects."
       breadcrumbs={[
         { label: 'Home', to: '/home' },
-        { label: 'Academic Management', to: academicsUrls.portal },
-        { label: 'Student Portal', to: academicsUrls.student.portal },
+        { label: 'Student Management', to: '/student-management' },
+        { label: 'Student Portal', to: studentManagementUrls.student.root },
         { label: 'My Grades' },
       ]}
     >

@@ -13,6 +13,7 @@ import {
   FileUpload,
 } from 'shared/components/forms';
 import { ToastService } from 'services';
+import { learningUrls } from '../../urls';
 
 const MOCK_CONTENT = [
   {
@@ -58,6 +59,11 @@ export default function ContentUpload() {
     <FormPage
       title="Content Upload"
       description="Upload and manage learning materials for modules."
+      breadcrumbs={[
+        { label: 'Home', to: '/home' },
+        { label: 'Learning Management System', to: learningUrls.portal },
+        { label: 'Content Upload' },
+      ]}
     >
       <div className="flex justify-end mb-4">
         <Button
