@@ -6,10 +6,12 @@ import ContentManagement from './content-management';
 import Assessment from './assessment';
 import ProgressTracking from './progress-tracking';
 import Certification from './certification';
+import LearningPortalPage from './LearningPortalPage';
 
 export default function Lms() {
   return (
     <Routes>
+      <Route index element={<LearningPortalPage />} />
       <Route path="dashboard/*" element={<Dashboard />} />
       <Route path="masters/*" element={<Masters />} />
       <Route path="configuration/*" element={<Configuration />} />

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DatePicker, DropDownList, TextBox } from 'shared/components/forms';
+import { learningUrls } from '../../urls';
 import {
   FormCard,
   FormPage,
@@ -48,6 +49,11 @@ export default function StudentEnrollment() {
     <FormPage
       title="Student Enrollment"
       description="Enroll students into courses for a session."
+      breadcrumbs={[
+        { label: 'Home', to: '/home' },
+        { label: 'Learning Management System', to: learningUrls.portal },
+        { label: 'Student Enrollment' }
+      ]}
     >
       <FormCard>
         <GridPanel

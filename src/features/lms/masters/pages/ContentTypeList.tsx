@@ -8,6 +8,7 @@ import {
 } from 'shared/new-components';
 import { TextBox } from 'shared/components/forms';
 import { ToastService } from 'services';
+import { learningUrls } from '../../urls';
 
 const MOCK_DATA = [
   { id: 1, name: 'Video' },
@@ -37,6 +38,11 @@ export default function ContentTypeList() {
     <FormPage
       title="Content Type Master"
       description="Manage different types of learning content."
+      breadcrumbs={[
+        { label: 'Home', to: '/home' },
+        { label: 'Learning Management System', to: learningUrls.portal },
+        { label: 'Content Type Master' }
+      ]}
     >
       <FormCard>
         <GridPanel
