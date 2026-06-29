@@ -53,7 +53,7 @@ export default function AssignmentSubmissions() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Learning Management System', to: learningUrls.portal },
-        { label: 'Assignment Submissions Review' }
+        { label: 'Assignment Submissions Review' },
       ]}
     >
       <FormCard>

@@ -40,7 +40,7 @@ export default function AssessmentTypeList() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Learning Management System', to: learningUrls.portal },
-        { label: 'Assessment Type Master' }
+        { label: 'Assessment Type Master' },
       ]}
     >
       <FormCard>

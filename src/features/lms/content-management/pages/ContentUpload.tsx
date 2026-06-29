@@ -62,7 +62,7 @@ export default function ContentUpload() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Learning Management System', to: learningUrls.portal },
-        { label: 'Content Upload' }
+        { label: 'Content Upload' },
       ]}
     >
       <div className="flex justify-end mb-4">

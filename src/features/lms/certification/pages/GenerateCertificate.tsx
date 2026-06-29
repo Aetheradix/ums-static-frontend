@@ -50,7 +50,7 @@ export default function GenerateCertificate() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Learning Management System', to: learningUrls.portal },
-        { label: 'Certificate Generation' }
+        { label: 'Certificate Generation' },
       ]}
     >
       <FormCard>
