@@ -1288,14 +1288,6 @@ export const menuConfig: Menu.MenuItem[] = [
         navigationStyle: 'sidebar',
         children: [
           {
-            label: 'Dashboard',
-            slug: 'candidate-dashboard',
-            description: 'Your application status and journey overview.',
-            path: '/recruitment-management/candidate/dashboard',
-            icon: 'dashboard',
-            colorScheme: 'blue',
-          },
-          {
             label: 'Upload Documents',
             slug: 'candidate-documents',
             description: 'Upload and manage your required documents.',
@@ -1388,6 +1380,24 @@ export const menuConfig: Menu.MenuItem[] = [
               'Configure required documents per designation and subject.',
             path: '/recruitment-management/admin/document-config',
             icon: 'description',
+            colorScheme: 'purple',
+          },
+          {
+            label: 'Verification Center Upload',
+            slug: 'admin-verification-center',
+            description:
+              'Upload candidates and their assigned verification centers.',
+            path: '/recruitment-management/admin/verification-center',
+            icon: 'location_on',
+            colorScheme: 'purple',
+          },
+          {
+            label: 'Document Verification by HO',
+            slug: 'admin-ho-verification',
+            description:
+              'Head Office bulk approve or reject verified candidates.',
+            path: '/recruitment-management/admin/ho-verification',
+            icon: 'fact_check',
             colorScheme: 'purple',
           },
           {

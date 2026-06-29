@@ -9,13 +9,6 @@ export default function CandidatePortalPage() {
       backLabel="Recruitment Management"
       portals={[
         {
-          title: 'Dashboard',
-          description: 'View your application status and journey overview.',
-          icon: 'dashboard',
-          colorScheme: 'blue',
-          path: '/recruitment-management/candidate/dashboard',
-        },
-        {
           title: 'Upload Documents',
           description:
             'Upload and manage your required documents before locking your profile.',

@@ -40,6 +40,22 @@ export default function HRAdminPortalPage() {
           path: '/recruitment-management/admin/document-config',
         },
         {
+          title: 'Verification Center Upload',
+          description:
+            'Upload candidates and their assigned verification centers. Manually assign incharge details.',
+          icon: 'location_on',
+          colorScheme: 'teal',
+          path: '/recruitment-management/admin/verification-center',
+        },
+        {
+          title: 'Document Verification by HO',
+          description:
+            'Head Office review: filter by test, subject and center, then bulk approve or reject verified candidates.',
+          icon: 'fact_check',
+          colorScheme: 'green',
+          path: '/recruitment-management/admin/ho-verification',
+        },
+        {
           title: 'Candidate Approvals',
           description:
             'Multi-select candidates and bulk approve or reject after Tier 1 verification.',

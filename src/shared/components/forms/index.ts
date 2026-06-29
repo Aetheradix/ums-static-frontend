@@ -11,6 +11,7 @@ import MaskedBox from './MaskedBox';
 import MultiSelectList from './MultiSelectList';
 import NumberBox from './NumberBox';
 import PasswordBox from './PasswordBox';
+import PickList from './PickList';
 import RadioButtonList from './RadioList';
 import Switch from './Switch';
 import TextArea from './TextArea';
@@ -30,6 +31,7 @@ export {
   MultiSelectList,
   NumberBox,
   PasswordBox,
+  PickList,
   RadioButtonList,
   Switch,
   TextArea,
