@@ -14,6 +14,7 @@ import Home from './home';
 import HostelManagement from './hostel-management';
 import Lms from './lms';
 import LeaveManagement from './leave-management';
+import TrainerDevelopment from './trainer-development';
 import Master from './master';
 import ProgrammeManagement from './programme-management';
 import PublicPortalLayout, {
@@ -131,6 +132,10 @@ export default function Features() {
                       <Route
                         path="leave-management/*"
                         element={<LeaveManagement />}
+                      />
+                      <Route
+                        path="trainer-development/*"
+                        element={<TrainerDevelopment />}
                       />
                     </Routes>
                   </MainLayout>
