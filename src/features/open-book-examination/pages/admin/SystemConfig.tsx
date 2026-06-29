@@ -3,6 +3,7 @@ import { Button } from 'shared/components/buttons';
 import { NumberBox } from 'shared/components/forms';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
 import { mockSystemConfig } from '../../data';
+import { InfoBanner } from '../../components';
 
 export default function SystemConfig() {
   const [config, setConfig] = useState({ ...mockSystemConfig });
@@ -16,6 +17,10 @@ export default function SystemConfig() {
 
   return (
     <FormPage title="System Configuration" description="Global system settings">
+      <InfoBanner
+        title="About System Configuration"
+        message="Adjust global settings for the examination platform, including default pass percentages, file size limits, and automated proctoring sensitivities."
+      />
       <FormCard title="Exam Defaults">
         <FormGrid>
           <NumberBox

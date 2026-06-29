@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from 'shared/components/buttons';
 import { TextBox } from 'shared/components/forms';
 import { FormCard, FormPage } from 'shared/new-components';
-import { BookMaterialViewer } from '../../components';
+import { BookMaterialViewer, InfoBanner } from '../../components';
 import { mockExams, mockStudyMaterials } from '../../data';
 
 export default function ExamResources() {
@@ -15,6 +15,10 @@ export default function ExamResources() {
   if (!exam) {
     return (
       <FormPage title="Exam Resources">
+        <InfoBanner
+          title="About Study Resources"
+          message="Access materials, textbooks, and notes permitted for your upcoming open book exams. Download or view them online."
+        />
         <p className="text-gray-500">Exam not found.</p>
       </FormPage>
     );

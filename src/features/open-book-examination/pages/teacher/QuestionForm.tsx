@@ -10,6 +10,7 @@ import {
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
 import type { BloomLevel, Difficulty, QuestionType } from '../../data';
 import { mockQuestions, mockSubjects } from '../../data';
+import { InfoBanner } from '../../components';
 
 const questionTypes: { value: QuestionType; label: string }[] = [
   { value: 'mcq', label: 'Multiple Choice (MCQ)' },
@@ -76,6 +77,10 @@ export default function QuestionForm() {
       title={isEdit ? 'Edit Question' : 'Create Question'}
       description="Add a new question to the bank"
     >
+      <InfoBanner
+        title="About Question Creation"
+        message="Design individual questions for the question bank. Provide the question text, options (if applicable), marks, and define the correct answers."
+      />
       <FormCard>
         <FormGrid>
           <DropDownList

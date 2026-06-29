@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { DropDownList } from 'shared/components/forms';
 import { FormPage, GridPanel } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import { mockAdmitCards, mockExams } from '../../data';
 
 export default function AdmitCards() {
@@ -22,6 +23,10 @@ export default function AdmitCards() {
 
   return (
     <FormPage title="Admit Cards" description="Generate and manage admit cards">
+      <InfoBanner
+        title="About Admit Cards"
+        message="Generate, view, and manage admit cards for upcoming examinations. You can download all admit cards as a single PDF or regenerate them if exam details have changed."
+      />
       <div className="flex gap-3 items-end mb-4">
         <DropDownList
           label="Select Exam"
@@ -48,7 +53,7 @@ export default function AdmitCards() {
           dataKey="id"
           pagination={{ rows: 10 }}
           searchBox
-          toolbar={<Button label="Download All (PDF)" icon="file_download" />}
+          toolbar={<Button label="Download All (PDF)" icon="download" />}
           columns={[
             { field: 'studentName', header: 'Student' },
             { field: 'rollNo', header: 'Roll No' },
@@ -59,7 +64,7 @@ export default function AdmitCards() {
             {
               field: 'id',
               header: 'Actions',
-              cell: () => <Button icon="file_download" variant="text" />,
+              cell: () => <Button icon="download" variant="text" />,
             },
           ]}
         />

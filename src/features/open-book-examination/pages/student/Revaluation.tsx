@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { TextArea } from 'shared/components/forms';
 import { FormPage, FormPopup, GridPanel } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import { mockResults, mockRevaluationRequests } from '../../data';
 
 export default function Revaluation() {
@@ -51,6 +52,10 @@ export default function Revaluation() {
       title="Revaluation Requests"
       description="Request revaluation of your exam answers"
     >
+      <InfoBanner
+        title="About Revaluation"
+        message="Submit requests for revaluation if you believe there was an error in the grading of your exam. Track the status of your pending requests."
+      />
       <GridPanel
         data={data}
         toolbar={

@@ -3,6 +3,7 @@ import { Button } from 'shared/components/buttons';
 import { DropDownList } from 'shared/components/forms';
 import { FormPage, GridPanel } from 'shared/new-components';
 import { mockEvaluations, mockExams, mockUsers } from '../../data';
+import { InfoBanner } from '../../components';
 
 export default function Evaluators() {
   const [examId, setExamId] = useState<string>('');
@@ -20,6 +21,10 @@ export default function Evaluators() {
       title="Evaluator Assignment"
       description="Assign teachers to evaluate student answers"
     >
+      <InfoBanner
+        title="About Evaluator Assignment"
+        message="Assign available teachers to evaluate exams that have concluded. You can auto-distribute assignments evenly or assign them manually to specific evaluators."
+      />
       <div className="mb-4">
         <DropDownList
           label="Select Exam"
@@ -37,7 +42,7 @@ export default function Evaluators() {
           dataKey="id"
           pagination={{ rows: 10 }}
           searchBox
-          toolbar={<Button label="Auto-Distribute" icon="auto_mode" />}
+          toolbar={<Button label="Auto-Distribute" icon="sync" />}
           columns={
             [
               { field: 'studentName', header: 'Student' },

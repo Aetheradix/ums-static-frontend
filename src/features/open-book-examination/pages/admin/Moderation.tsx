@@ -1,8 +1,14 @@
 import { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { DropDownList } from 'shared/components/forms';
-import { FormPage, FormPopup, GridPanel } from 'shared/new-components';
+import {
+  FormPage,
+  FormPopup,
+  GridPanel,
+  StatCard,
+} from 'shared/new-components';
 import { mockExams, mockModerationRecords } from '../../data';
+import { InfoBanner } from '../../components';
 
 export default function Moderation() {
   const [data, setData] = useState(mockModerationRecords);
@@ -19,6 +25,11 @@ export default function Moderation() {
     ? data.filter(r => r.examId === Number(examId))
     : data;
 
+  const totalCount = filtered.length;
+  const pendingCount = filtered.filter(r => r.status === 'pending').length;
+  const approvedCount = filtered.filter(r => r.status === 'approved').length;
+  const rejectedCount = filtered.filter(r => r.status === 'rejected').length;
+
   const handleAction = (id: number, status: 'approved' | 'rejected') => {
     const idx = data.findIndex(r => r.id === id);
     if (idx !== -1) {
@@ -33,6 +44,38 @@ export default function Moderation() {
       title="Moderation Dashboard"
       description="Review flagged evaluations"
     >
+      <InfoBanner
+        title="About Moderation Dashboard"
+        message="This dashboard allows administrators to review evaluations that have been flagged by teachers for irregularities (e.g., unusual answer patterns). You can approve or reject the flag based on your review."
+      />
+
+      <div className="grid grid-cols-4 gap-4 mb-6">
+        <StatCard
+          title="Total Flagged"
+          value={totalCount}
+          icon="flag"
+          colorScheme="blue"
+        />
+        <StatCard
+          title="Pending Review"
+          value={pendingCount}
+          icon="hourglass_empty"
+          colorScheme="orange"
+        />
+        <StatCard
+          title="Approved Flags"
+          value={approvedCount}
+          icon="check_circle"
+          colorScheme="green"
+        />
+        <StatCard
+          title="Rejected Flags"
+          value={rejectedCount}
+          icon="cancel"
+          colorScheme="red"
+        />
+      </div>
+
       <GridPanel
         title="Moderation Records"
         data={filtered}

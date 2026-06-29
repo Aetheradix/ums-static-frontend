@@ -164,7 +164,10 @@ export default function AdminDashboard() {
       title="Admin Dashboard"
       description="System-wide overview of the Open Book Examination platform"
       breadcrumbs={[
-        { label: 'Open Book Examination' },
+        {
+          label: 'Open Book Examination',
+          to: '/home/sub-menu/open-book-examination',
+        },
         { label: 'Admin Dashboard' },
       ]}
     >
@@ -231,7 +234,7 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           <FormCard
             title="Exams by Status"
-            icon="bar_chart"
+            icon="chart-bar"
             className="xl:col-span-2"
           >
             <div className="w-full h-72">
@@ -244,7 +247,7 @@ export default function AdminDashboard() {
             </div>
           </FormCard>
           <div className="flex flex-col gap-6">
-            <FormCard title="Pass / Fail" icon="pie_chart">
+            <FormCard title="Pass / Fail" icon="chart-pie">
               <div className="w-full h-48">
                 <Chart
                   type="doughnut"

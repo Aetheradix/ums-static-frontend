@@ -6,6 +6,7 @@ import { FormCard, FormPage, FormPopup } from 'shared/new-components';
 import { DifficultyBadge, QuestionTypeIcon } from '../../components';
 import type { Difficulty, QuestionType } from '../../data';
 import { mockExams, mockQuestionPapers, mockQuestions } from '../../data';
+import { InfoBanner } from '../../components';
 
 interface SectionBuilder {
   name: string;
@@ -91,6 +92,10 @@ export default function PaperBuilder() {
       title={`Build Question Paper${exam ? ` — ${exam.title}` : ''}`}
       description="Select and arrange questions for the paper"
     >
+      <InfoBanner
+        title="About Paper Builder"
+        message="Assemble the exam paper by selecting questions from the bank. Define sections, assign marks, and configure question randomization."
+      />
       <div className="flex gap-6">
         <div className="w-1/3">
           <FormCard

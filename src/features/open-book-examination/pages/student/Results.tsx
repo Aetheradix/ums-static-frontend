@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'shared/components/buttons';
 import { FormPage, GridPanel } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import { mockResults } from '../../data';
 
 export default function Results() {
@@ -10,6 +11,10 @@ export default function Results() {
 
   return (
     <FormPage title="My Results" description="View your examination results">
+      <InfoBanner
+        title="About Results"
+        message="View your final published results for completed examinations. Access detailed score breakdowns and evaluator feedback."
+      />
       <GridPanel
         data={data}
         columns={

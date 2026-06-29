@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { FormPage, FormPopup, GridPanel } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import { mockExams, mockRegistrations } from '../../data';
 
 export default function Registration() {
@@ -46,6 +47,10 @@ export default function Registration() {
       title="Exam Registration"
       description="Register for open book examinations"
     >
+      <InfoBanner
+        title="About Registration"
+        message="Browse and register for upcoming open book examinations. Review your eligibility and submit your registration requests here."
+      />
       {availableExams.length > 0 && (
         <GridPanel
           title="Available Exams for Registration"

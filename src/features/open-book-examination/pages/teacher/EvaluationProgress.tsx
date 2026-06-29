@@ -4,6 +4,7 @@ import { Button } from 'shared/components/buttons';
 import { DropDownList } from 'shared/components/forms';
 import { FormPage, GridPanel } from 'shared/new-components';
 import { mockAttempts, mockEvaluations, mockExams } from '../../data';
+import { InfoBanner } from '../../components';
 
 export default function EvaluationProgress() {
   const navigate = useNavigate();
@@ -45,6 +46,10 @@ export default function EvaluationProgress() {
       title="Evaluation Progress"
       description="Track evaluation status across exams and students"
     >
+      <InfoBanner
+        title="About Evaluation Progress"
+        message="Track detailed metrics on your evaluation speed and completion rates to ensure all grading deadlines are met efficiently."
+      />
       <GridPanel
         data={data}
         columns={[

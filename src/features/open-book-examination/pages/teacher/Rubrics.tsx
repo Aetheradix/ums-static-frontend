@@ -4,6 +4,7 @@ import { NumberBox, TextBox } from 'shared/components/forms';
 import { FormPage, FormPopup, GridPanel } from 'shared/new-components';
 import type { RubricCriterion } from '../../data';
 import { mockQuestions, mockRubrics } from '../../data';
+import { InfoBanner } from '../../components';
 
 export default function Rubrics() {
   const [data, setData] = useState(mockRubrics);
@@ -80,6 +81,10 @@ export default function Rubrics() {
       title="Rubrics Management"
       description="Define evaluation rubrics for questions"
     >
+      <InfoBanner
+        title="About Rubrics"
+        message="Define detailed grading rubrics for subjective questions to ensure consistent, fair, and transparent evaluations."
+      />
       <GridPanel
         data={data}
         columns={[

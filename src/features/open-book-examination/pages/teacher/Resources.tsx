@@ -3,6 +3,7 @@ import { Button } from 'shared/components/buttons';
 import { DropDownList, TextBox } from 'shared/components/forms';
 import { FormPage, FormPopup, GridPanel } from 'shared/new-components';
 import { mockExams, mockStudyMaterials } from '../../data';
+import { InfoBanner } from '../../components';
 
 export default function Resources() {
   const [data, setData] = useState(
@@ -78,6 +79,10 @@ export default function Resources() {
       title="Study Resources"
       description="Upload and manage open book exam resources"
     >
+      <InfoBanner
+        title="About Exam Resources"
+        message="Manage the digital materials, notes, and references that students are permitted to access during specific open book examinations."
+      />
       <GridPanel
         title="Study Resources"
         data={filtered}

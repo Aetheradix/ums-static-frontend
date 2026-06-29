@@ -10,6 +10,7 @@ import {
 } from 'shared/new-components';
 import type { Course, Semester, Subject } from '../../data';
 import { mockCourses, mockSemesters, mockSubjects } from '../../data';
+import { InfoBanner } from '../../components';
 
 export default function Courses() {
   const [courses, setCourses] = useState(mockCourses);
@@ -230,6 +231,10 @@ export default function Courses() {
       title="Courses & Subjects"
       description="Manage courses, semesters, and subjects"
     >
+      <InfoBanner
+        title="About Courses & Subjects"
+        message="Configure and manage the university curriculum. You can define complete courses, organize them into semesters, and manage individual subjects and their respective departments."
+      />
       <Tabs tabs={tabs} />
       {cPopup.mode !== 'closed' && (
         <FormPopup

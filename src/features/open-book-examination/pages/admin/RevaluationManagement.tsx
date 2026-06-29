@@ -7,6 +7,7 @@ import {
   StatCard,
 } from 'shared/new-components';
 import { mockRevaluationRequests } from '../../data';
+import { InfoBanner } from '../../components';
 
 export default function RevaluationManagement() {
   const [data, setData] = useState(mockRevaluationRequests);
@@ -42,6 +43,10 @@ export default function RevaluationManagement() {
       title="Revaluation Management"
       description="Manage revaluation requests from students"
     >
+      <InfoBanner
+        title="About Revaluation Management"
+        message="Track and manage student requests for exam revaluations. Oversee the assignment of re-evaluators and monitor the status of pending requests."
+      />
       <div className="grid grid-cols-3 gap-4 mb-6">
         <StatCard
           title="Pending"

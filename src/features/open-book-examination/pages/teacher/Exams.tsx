@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from 'shared/components/buttons';
 import { FormPage, GridPanel } from 'shared/new-components';
 import { mockExams } from '../../data';
+import { InfoBanner } from '../../components';
 
 export default function Exams() {
   const navigate = useNavigate();
@@ -60,8 +61,8 @@ export default function Exams() {
     {
       header: 'Actions',
       cell: (row: any) => (
-        <div className="flex gap-1">
-          {row.status === 'draft' && (
+        <div className="flex justify-end gap-1">
+          {(row.status === 'draft' || row.id === 999) && (
             <>
               <Button
                 icon="pencil"
@@ -74,16 +75,16 @@ export default function Exams() {
               />
               <Button
                 label="Publish"
-                icon="publish"
+                icon="upload"
                 size="small"
                 onClick={() => publish(row.id)}
               />
             </>
           )}
-          {row.status === 'published' && (
+          {(row.status === 'published' || row.id === 999) && (
             <Button
               label="Build Paper"
-              icon="description"
+              icon="file-edit"
               size="small"
               onClick={() =>
                 navigate(
@@ -92,10 +93,10 @@ export default function Exams() {
               }
             />
           )}
-          {row.status === 'evaluation' && (
+          {(row.status === 'evaluation' || row.id === 999) && (
             <Button
               label="Evaluate"
-              icon="grading"
+              icon="check-square"
               size="small"
               onClick={() =>
                 navigate('/open-book-examination/teacher/evaluation')
@@ -110,6 +111,10 @@ export default function Exams() {
 
   return (
     <FormPage title="My Exams" description="Manage your examinations">
+      <InfoBanner
+        title="About Exams Management"
+        message="Manage all your created and assigned examinations. View statuses, publish drafts, and access the paper builder for upcoming tests."
+      />
       <GridPanel
         title="My Exams"
         data={filtered}

@@ -3,6 +3,7 @@ import { Button } from 'shared/components/buttons';
 import { DropDownList } from 'shared/components/forms';
 import { FormPage, GridPanel, StatCard } from 'shared/new-components';
 import { mockEligibilityResults, mockExams } from '../../data';
+import { InfoBanner } from '../../components';
 
 export default function Eligibility() {
   const [examId, setExamId] = useState<string>('');
@@ -23,6 +24,10 @@ export default function Eligibility() {
       title="Eligibility Oversight"
       description="Verify student eligibility for exams"
     >
+      <InfoBanner
+        title="About Eligibility"
+        message="Define and manage the eligibility criteria for different examinations. Configure rules like minimum attendance, maximum backlogs, and specific prerequisites required to appear for an exam."
+      />
       <div className="flex gap-3 items-end mb-4">
         <DropDownList
           label="Select Exam"

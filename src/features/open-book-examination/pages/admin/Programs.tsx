@@ -9,6 +9,7 @@ import {
 } from 'shared/new-components';
 import type { Program } from '../../data';
 import { mockPrograms } from '../../data';
+import { InfoBanner } from '../../components';
 
 export default function Programs() {
   const [data, setData] = useState(mockPrograms);
@@ -57,6 +58,10 @@ export default function Programs() {
 
   return (
     <FormPage title="Programs" description="Manage academic programs">
+      <InfoBanner
+        title="About Programs"
+        message="Manage the various academic programs and degrees offered by the university. Define program structures, durations, and department affiliations."
+      />
       <GridPanel
         title="Programs"
         data={data}

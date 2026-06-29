@@ -9,6 +9,7 @@ import {
 } from 'shared/new-components';
 import type { ExamType } from '../../data';
 import { mockExamTypes } from '../../data';
+import { InfoBanner } from '../../components';
 
 export default function ExamTypes() {
   const [data, setData] = useState(mockExamTypes);
@@ -55,6 +56,10 @@ export default function ExamTypes() {
 
   return (
     <FormPage title="Exam Types" description="Configure types of examinations">
+      <InfoBanner
+        title="About Exam Types"
+        message="Configure the different types of examinations offered (e.g., Midterm, Final, Quiz) and define their properties such as weightage and open-book allowances."
+      />
       <GridPanel
         title="Exam Types"
         data={data}

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'shared/components/buttons';
 import { FormPage, GridPanel } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import { mockExams, mockRegistrations } from '../../data';
 
 export default function Schedule() {
@@ -21,6 +22,10 @@ export default function Schedule() {
       title="Exam Schedule"
       description="View your upcoming examination schedule"
     >
+      <InfoBanner
+        title="About Exam Schedule"
+        message="View the complete timetable for your upcoming examinations, including dates, times, and venue details."
+      />
       <GridPanel
         data={sorted}
         columns={[

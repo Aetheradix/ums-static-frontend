@@ -3,6 +3,8 @@ import { Button } from 'shared/components/buttons';
 import { FormCard, FormPage } from 'shared/new-components';
 import { mockAttempts, mockExams, mockStudentAnswers } from '../../data';
 
+import { InfoBanner } from '../../components';
+
 export default function Receipt() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -21,6 +23,7 @@ export default function Receipt() {
   if (!exam || !attempt) {
     return (
       <FormPage title="Receipt">
+        <InfoBanner message="Your payment receipt is shown below." />
         <p className="text-gray-500">Submission receipt not found.</p>
       </FormPage>
     );

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { FormCard, FormPage } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 
 export default function BulkImport() {
   const [file, setFile] = useState<File | null>(null);
@@ -16,6 +17,10 @@ export default function BulkImport() {
       title="Bulk Import Questions"
       description="Upload questions via CSV/Excel"
     >
+      <InfoBanner
+        title="About Bulk Import"
+        message="Import questions and resources in bulk using standard CSV or Excel templates to quickly build up your question bank and course materials."
+      />
       <FormCard title="Upload File">
         <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
           <input

@@ -9,6 +9,7 @@ import {
 } from 'shared/new-components';
 import type { AcademicSession } from '../../data';
 import { mockAcademicSessions } from '../../data';
+import { InfoBanner } from '../../components';
 
 export default function AcademicSessions() {
   const [data, setData] = useState(mockAcademicSessions);
@@ -56,6 +57,10 @@ export default function AcademicSessions() {
       title="Academic Sessions"
       description="Manage academic years and sessions"
     >
+      <InfoBanner
+        title="About Academic Sessions"
+        message="Configure and manage the academic years and terms for the university. You can set the currently active session which will be used as the default for all exam-related activities."
+      />
       <GridPanel
         title="Academic Sessions"
         data={data}
@@ -66,12 +71,12 @@ export default function AcademicSessions() {
           <Button label="Create Session" icon="plus" onClick={openCreate} />
         }
         columns={[
-          { field: 'name', header: 'Name' },
+          { field: 'name', header: 'Session' },
           { field: 'startDate', header: 'Start' },
           { field: 'endDate', header: 'End' },
           {
             field: 'isCurrent',
-            header: 'Current',
+            header: 'Status',
             cell: (row: AcademicSession) => (
               <StatusButton
                 value={row.isCurrent}

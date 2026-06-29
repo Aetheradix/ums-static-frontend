@@ -9,6 +9,7 @@ import {
 } from 'shared/new-components';
 import type { User } from '../../data';
 import { mockUsers } from '../../data';
+import { InfoBanner } from '../../components';
 
 export default function Users() {
   const [data, setData] = useState(mockUsers);
@@ -55,6 +56,10 @@ export default function Users() {
 
   return (
     <FormPage title="Users" description="Manage system users">
+      <InfoBanner
+        title="About User Management"
+        message="Manage all university accounts including students, teachers, and administrators. You can create new users, update their roles, assign departments, and activate or deactivate accounts as needed."
+      />
       <GridPanel
         title="Users"
         data={filtered}
@@ -76,7 +81,14 @@ export default function Users() {
               textField="label"
               valueField="value"
             />
-            <Button label="Create User" icon="plus" onClick={openCreate} />
+            <div className="flex">
+              <Button
+                label="Create User"
+                icon="plus"
+                onClick={openCreate}
+                className="whitespace-nowrap"
+              />
+            </div>
           </>
         }
         columns={[

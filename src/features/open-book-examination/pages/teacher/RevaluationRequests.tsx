@@ -4,6 +4,7 @@ import { NumberBox, TextArea } from 'shared/components/forms';
 import { FormPage, FormPopup, GridPanel } from 'shared/new-components';
 import type { RevaluationStatus } from '../../data';
 import { mockResults, mockRevaluationRequests } from '../../data';
+import { InfoBanner } from '../../components';
 
 export default function RevaluationRequests() {
   const [data, setData] = useState(mockRevaluationRequests);
@@ -38,6 +39,10 @@ export default function RevaluationRequests() {
       title="Revaluation Requests"
       description="Review and process student revaluation requests"
     >
+      <InfoBanner
+        title="About Revaluation Requests"
+        message="Review and process revaluation requests assigned to you by administrators. Re-assess the flagged answers and submit updated scores."
+      />
       <GridPanel
         data={data}
         columns={[

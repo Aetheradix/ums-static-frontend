@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { DropDownList } from 'shared/components/forms';
 import { FormPage, GridPanel, StatCard } from 'shared/new-components';
 import { mockAttempts, mockExams, mockRegistrations } from '../../data';
+import { InfoBanner } from '../../components';
 
 export default function SubmissionMonitor() {
   const [examId, setExamId] = useState<string>('');
@@ -44,6 +45,10 @@ export default function SubmissionMonitor() {
       title="Submission Monitor"
       description="Real-time exam submission tracking"
     >
+      <InfoBanner
+        title="About Submission Monitor"
+        message="Track real-time exam submissions for active examinations. You can see who is currently taking the exam, monitor tab switches, and track auto-save progress to identify potential issues."
+      />
       <div className="mb-4">
         <DropDownList
           label="Select Exam"

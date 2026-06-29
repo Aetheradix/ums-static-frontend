@@ -3,6 +3,7 @@ import { Button } from 'shared/components/buttons';
 import { DropDownList } from 'shared/components/forms';
 import { FormCard, FormPage, GridPanel, StatCard } from 'shared/new-components';
 import { mockExams, mockResults } from '../../data';
+import { InfoBanner } from '../../components';
 
 type Step = 'select' | 'draft' | 'review' | 'published';
 
@@ -35,6 +36,10 @@ export default function ResultPublishing() {
       title="Result Publishing"
       description="Generate, review, and publish exam results"
     >
+      <InfoBanner
+        title="About Result Publishing"
+        message="Review finalized results before making them available to students. This serves as the final gateway to ensure all evaluations are complete and moderated before publication."
+      />
       <div className="flex gap-3 items-end mb-4">
         <DropDownList
           label="Select Exam"
@@ -100,7 +105,7 @@ export default function ResultPublishing() {
             />
             <Button
               label="Review & Publish"
-              icon="publish"
+              icon="upload"
               onClick={() => setStep('review')}
             />
           </div>
@@ -116,7 +121,7 @@ export default function ResultPublishing() {
           toolbar={
             <Button
               label="Publish Results"
-              icon="publish"
+              icon="upload"
               onClick={() => setStep('published')}
             />
           }
@@ -172,13 +177,13 @@ export default function ResultPublishing() {
           <div className="flex gap-2 mt-4">
             <Button
               label="Back to Dashboard"
-              icon="dashboard"
+              icon="home"
               onClick={() => {
                 setStep('select');
                 setExamId('');
               }}
             />
-            <Button label="Generate Grade Cards" icon="description" />
+            <Button label="Generate Grade Cards" icon="file" />
           </div>
         </FormCard>
       )}

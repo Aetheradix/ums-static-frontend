@@ -9,6 +9,7 @@ import {
   TextBox,
 } from 'shared/components/forms';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import {
   mockCourses,
   mockExamTypes,
@@ -73,6 +74,10 @@ export default function ExamForm() {
       title={isEdit ? 'Edit Exam' : 'Create Exam'}
       description="Configure examination details"
     >
+      <InfoBanner
+        title="About Exam Creation"
+        message="Create and configure new examinations. Set up the schedule, instructions, passing criteria, and select the appropriate open book policies."
+      />
       <FormCard>
         <FormGrid>
           <TextBox

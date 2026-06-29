@@ -4,6 +4,8 @@ import { Button } from 'shared/components/buttons';
 import { FormCard, FormPage, GridPanel, StatCard } from 'shared/new-components';
 import { mockExams, mockRegistrations, mockResults } from '../../data';
 
+import { InfoBanner } from '../../components';
+
 export default function StudentDashboard() {
   const navigate = useNavigate();
   const studentId = 8;
@@ -83,10 +85,14 @@ export default function StudentDashboard() {
       title="Student Dashboard"
       description="Overview of your examinations and results"
       breadcrumbs={[
-        { label: 'Open Book Examination' },
+        {
+          label: 'Open Book Examination',
+          to: '/home/sub-menu/open-book-examination',
+        },
         { label: 'Student Dashboard' },
       ]}
     >
+      <InfoBanner message="View your examination schedule and latest updates here." />
       <div className="flex flex-col gap-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <StatCard
@@ -136,7 +142,7 @@ export default function StudentDashboard() {
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           <FormCard
             title="My Performance"
-            icon="pie_chart"
+            icon="chart-pie"
             subtitle="Grade distribution across completed exams"
           >
             <div className="w-full h-64">

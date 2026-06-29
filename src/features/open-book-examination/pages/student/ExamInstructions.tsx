@@ -4,6 +4,8 @@ import { Button } from 'shared/components/buttons';
 import { FormCard, FormPage } from 'shared/new-components';
 import { mockExams } from '../../data';
 
+import { InfoBanner } from '../../components';
+
 export default function ExamInstructions() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -13,6 +15,7 @@ export default function ExamInstructions() {
   if (!exam) {
     return (
       <FormPage title="Exam Instructions">
+        <InfoBanner message="Please read all instructions carefully before starting the exam." />
         <p className="text-gray-500">Exam not found.</p>
       </FormPage>
     );

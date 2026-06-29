@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from 'shared/components/buttons';
 import { FormPage, GridPanel, StatCard } from 'shared/new-components';
 import { mockAttempts, mockEvaluations, mockExams } from '../../data';
+import { InfoBanner } from '../../components';
 
 export default function EvaluationDashboard() {
   const navigate = useNavigate();
@@ -54,6 +55,10 @@ export default function EvaluationDashboard() {
       title="Evaluation Dashboard"
       description="Overview of evaluation progress across exams"
     >
+      <InfoBanner
+        title="About Evaluation Dashboard"
+        message="Access all your assigned evaluations in one place. Monitor your grading progress, view pending assignments, and access student submissions for grading."
+      />
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <StatCard
           title="Total Attempts"

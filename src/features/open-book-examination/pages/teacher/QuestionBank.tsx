@@ -3,7 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from 'shared/components/buttons';
 import { DropDownList } from 'shared/components/forms';
 import { FormPage, GridPanel } from 'shared/new-components';
-import { DifficultyBadge, QuestionTypeIcon } from '../../components';
+import {
+  DifficultyBadge,
+  InfoBanner,
+  QuestionTypeIcon,
+} from '../../components';
 import type { Difficulty } from '../../data';
 import { mockQuestions } from '../../data';
 
@@ -83,6 +87,10 @@ export default function QuestionBank() {
       title="Question Bank"
       description="Manage your question repository"
     >
+      <InfoBanner
+        title="About Question Bank"
+        message="Create, organize, and manage your repository of questions. Tag questions by subject, difficulty, and Blooms taxonomy level for easy retrieval."
+      />
       <GridPanel
         title="Question Bank"
         data={filtered}
@@ -138,20 +146,30 @@ export default function QuestionBank() {
               textField="label"
               valueField="value"
             />
-            <Button
-              label="Create Question"
-              icon="plus"
-              onClick={() =>
-                navigate('/open-book-examination/teacher/question-bank/create')
-              }
-            />
-            <Button
-              label="Import CSV"
-              icon="upload"
-              onClick={() =>
-                navigate('/open-book-examination/teacher/question-bank/import')
-              }
-            />
+            <div className="flex">
+              <Button
+                label="Create Question"
+                icon="plus"
+                onClick={() =>
+                  navigate(
+                    '/open-book-examination/teacher/question-bank/create'
+                  )
+                }
+                className="whitespace-nowrap"
+              />
+            </div>
+            <div className="flex">
+              <Button
+                label="Import CSV"
+                icon="upload"
+                onClick={() =>
+                  navigate(
+                    '/open-book-examination/teacher/question-bank/import'
+                  )
+                }
+                className="whitespace-nowrap"
+              />
+            </div>
           </div>
         }
       />

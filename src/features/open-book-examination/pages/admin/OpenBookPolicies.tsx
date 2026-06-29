@@ -9,6 +9,7 @@ import {
 } from 'shared/new-components';
 import type { OpenBookPolicy } from '../../data';
 import { mockPolicies } from '../../data';
+import { InfoBanner } from '../../components';
 
 export default function OpenBookPolicies() {
   const [data, setData] = useState(mockPolicies);
@@ -60,6 +61,10 @@ export default function OpenBookPolicies() {
       title="Open Book Policies"
       description="Configure open book examination policies"
     >
+      <InfoBanner
+        title="About Open Book Policies"
+        message="Establish and enforce the rules and guidelines specific to Open Book Examinations, such as allowed materials, plagiarism thresholds, and tab switching limits."
+      />
       <GridPanel
         title="Open Book Policies"
         data={data}

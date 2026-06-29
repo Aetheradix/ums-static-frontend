@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { FormPage, FormPopup, GridPanel } from 'shared/new-components';
 import { mockMaterialApprovals, mockStudyMaterials } from '../../data';
+import { InfoBanner } from '../../components';
 
 export default function StudentApprovals() {
   const [data, setData] = useState(
@@ -70,6 +71,10 @@ export default function StudentApprovals() {
       title="Student Material Approvals"
       description="Review and approve student-uploaded resources"
     >
+      <InfoBanner
+        title="About Student Approvals"
+        message="Review and approve student registrations for your exams. Verify their eligibility before granting them access to the examination."
+      />
       <GridPanel
         data={data}
         columns={columns}

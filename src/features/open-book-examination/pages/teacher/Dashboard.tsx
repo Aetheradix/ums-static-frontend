@@ -78,7 +78,10 @@ export default function TeacherDashboard() {
       title="Teacher Dashboard"
       description="Overview of your examinations, resources, and evaluation tasks"
       breadcrumbs={[
-        { label: 'Open Book Examination' },
+        {
+          label: 'Open Book Examination',
+          to: '/home/sub-menu/open-book-examination',
+        },
         { label: 'Teacher Dashboard' },
       ]}
     >
@@ -145,7 +148,7 @@ export default function TeacherDashboard() {
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           <FormCard
             title="Evaluation Progress"
-            icon="bar_chart"
+            icon="chart-bar"
             subtitle="Breakdown of evaluation status across your exams"
           >
             <div className="w-full h-72">

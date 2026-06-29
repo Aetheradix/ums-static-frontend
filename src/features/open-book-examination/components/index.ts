@@ -8,3 +8,5 @@ export { default as ProctoringStatusBadge } from './ProctoringStatusBadge';
 export { default as QuestionTypeIcon } from './QuestionTypeIcon';
 export { default as ResourceLink } from './ResourceLink';
 export { default as RubricViewer } from './RubricViewer';
+export { default as InfoBanner } from './InfoBanner';
+export { default as ReportLayout } from './ReportLayout';

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { DropDownList } from 'shared/components/forms';
 import { FormPage, GridPanel } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import { mockAuditLogs } from '../../data';
 
 export default function AuditLogs() {
@@ -17,6 +18,10 @@ export default function AuditLogs() {
       title="Audit Logs"
       description="Complete activity trail for all system changes"
     >
+      <InfoBanner
+        title="About Audit Logs"
+        message="Review a complete, immutable trail of all system activities. You can filter logs by action type to track down who created, updated, or deleted specific records across the university system."
+      />
       <GridPanel
         title="Audit Logs"
         data={filtered}
@@ -37,7 +42,13 @@ export default function AuditLogs() {
               textField="label"
               valueField="value"
             />
-            <Button label="Export CSV" icon="file_download" />
+            <div className="flex justify-center">
+              <Button
+                label="Export CSV"
+                icon="download"
+                className="whitespace-nowrap"
+              />
+            </div>
           </>
         }
         columns={

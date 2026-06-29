@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { DropDownList } from 'shared/components/forms';
 import { FormPage, GridPanel, StatCard } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import { mockExams, mockResults } from '../../data';
 
 export default function GradeCards() {
@@ -20,6 +21,10 @@ export default function GradeCards() {
       title="Grade Card Generator"
       description="Generate grade cards for published results"
     >
+      <InfoBanner
+        title="About Grade Cards"
+        message="Generate, manage, and distribute student grade cards. You can view academic performance across semesters and publish official transcripts."
+      />
       <div className="flex gap-3 items-end mb-4">
         <DropDownList
           label="Select Exam"
@@ -61,7 +66,7 @@ export default function GradeCards() {
             dataKey="id"
             pagination={{ rows: 10 }}
             searchBox
-            toolbar={<Button label="Download All (ZIP)" icon="file_download" />}
+            toolbar={<Button label="Download All (ZIP)" icon="download" />}
             columns={
               [
                 { field: 'studentName', header: 'Student' },
@@ -77,7 +82,7 @@ export default function GradeCards() {
                 { field: 'gradePoint', header: 'Grade Point' },
                 {
                   header: 'Actions',
-                  cell: () => <Button icon="file_download" variant="text" />,
+                  cell: () => <Button icon="download" variant="text" />,
                 },
               ] as any
             }

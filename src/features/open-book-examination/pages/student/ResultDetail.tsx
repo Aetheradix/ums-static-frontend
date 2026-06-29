@@ -3,6 +3,8 @@ import { Button } from 'shared/components/buttons';
 import { FormCard, FormPage, GridPanel } from 'shared/new-components';
 import { mockResults, mockStudentAnswers } from '../../data';
 
+import { InfoBanner } from '../../components';
+
 export default function ResultDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -11,6 +13,7 @@ export default function ResultDetail() {
   if (!result) {
     return (
       <FormPage title="Result Detail">
+        <InfoBanner message="View the detailed breakdown of your examination result." />
         <p className="text-gray-500">Result not found.</p>
       </FormPage>
     );
