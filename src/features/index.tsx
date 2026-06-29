@@ -4,6 +4,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import MainLayout from 'shared/components/layout/MainLayout';
 import { UniversityLoader } from 'shared/components/progress';
 import Academics from './academics';
+import EssentialServices from './essential-services';
 import AdmissionPortal from './admission-portal';
 import AdmissionsManagement from './admissions-management';
 import AffiliationManagementSystem from './affiliation-management-system';
@@ -18,13 +19,18 @@ import GrievanceManagement from './grievance-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
 import InfrastructureProjectManagement from './infrastructure-project-management';
+import ResearchManagement from './research-management';
+import ResidentialAllocationManagement from './residential-allocation-management';
 import LeaveManagement from './leave-management';
+import ScholarshipDbt from './scholarship-dbt';
 import Lms from './lms';
 import Master from './master';
+import OpenBookExamination from './open-book-examination';
 import ProgrammeManagement from './programme-management';
 import PublicPortalLayout, {
   PublicRouteWrapper,
 } from './public-portal/layout/PublicPortalLayout';
+import RTIManagement from './rti-management';
 import Settings from './settings';
 import Sis from './sis';
 import StudentFeedbackManagement from './student-feedback-management';
@@ -148,12 +154,24 @@ export default function Features() {
                       />
                       <Route path="academics/*" element={<Academics />} />
                       <Route
+                        path="essential-services/*"
+                        element={<EssentialServices />}
+                      />
+                      <Route
                         path="programme-management/*"
                         element={<ProgrammeManagement />}
                       />
                       <Route
                         path="hostel-management/*"
                         element={<HostelManagement />}
+                      />
+                      <Route
+                        path="research-management/*"
+                        element={<ResearchManagement />}
+                      />
+                      <Route
+                        path="residential-allocation-management/*"
+                        element={<ResidentialAllocationManagement />}
                       />
                       <Route
                         path="grievance-management/*"
@@ -165,8 +183,16 @@ export default function Features() {
                         element={<StudentFeedbackManagement />}
                       />
                       <Route
+                        path="rti-management/*"
+                        element={<RTIManagement />}
+                      />
+                      <Route
                         path="leave-management/*"
                         element={<LeaveManagement />}
+                      />
+                      <Route
+                        path="scholarship-dbt/*"
+                        element={<ScholarshipDbt />}
                       />
                       <Route
                         path="trainer-development/*"
@@ -175,6 +201,10 @@ export default function Features() {
                       <Route
                         path="alumni-management/*"
                         element={<AlumniManagement />}
+                      />
+                      <Route
+                        path="open-book-examination/*"
+                        element={<OpenBookExamination />}
                       />
                       <Route
                         path="payroll-management/*"

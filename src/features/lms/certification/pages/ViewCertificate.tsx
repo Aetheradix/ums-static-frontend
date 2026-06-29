@@ -28,7 +28,7 @@ export default function ViewCertificate() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Learning Management System', to: learningUrls.portal },
-        { label: 'Certificate Designer' }
+        { label: 'Certificate Designer' },
       ]}
     >
       <div className="flex justify-end gap-2 mb-4">
