@@ -6,6 +6,7 @@ export const activitiesUrls = {
     clubManagement: '/student-activities-clubs/admin/clubs',
     eventManagement: '/student-activities-clubs/admin/events',
     memberships: '/student-activities-clubs/admin/memberships',
+    activityMaster: '/student-activities-clubs/admin/activities',
   },
   student: {
     dashboard: '/student-activities-clubs/student/dashboard',

@@ -68,6 +68,17 @@ export default function Memberships() {
   };
 
   const handleSave = () => {
+    if (
+      !form.studentName ||
+      !form.enrollmentNo ||
+      !form.club ||
+      !form.role ||
+      !form.joinDate
+    ) {
+      ToastService.error('Please fill in all required fields.');
+      return;
+    }
+
     if (popup.mode === 'create') {
       const newItem: MembershipData = {
         id: Date.now(),

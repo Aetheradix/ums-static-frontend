@@ -4017,7 +4017,7 @@ export const menuConfig: Menu.MenuItem[] = [
   },
   // === STUDENT ACTIVITIES & CLUBS MODULE ===
   {
-    label: 'Student Activities\n& Clubs',
+    label: 'Student Activities\n& Clubs Management',
     slug: 'student-activities-clubs',
     category: 'Student Services',
     icon: 'celebration',
@@ -4061,6 +4061,13 @@ export const menuConfig: Menu.MenuItem[] = [
             description: 'Track student club memberships',
             path: '/student-activities-clubs/admin/memberships',
             icon: 'badge',
+            colorScheme: 'purple',
+          },
+          {
+            label: 'Activity Master',
+            description: 'Create and manage all student activities',
+            path: '/student-activities-clubs/admin/activities',
+            icon: 'local_activity',
             colorScheme: 'purple',
           },
         ],

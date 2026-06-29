@@ -102,3 +102,44 @@ export const clubMembers = [
     joinDate: '2024-09-01',
   },
 ];
+
+export const activityMasterList = [
+  {
+    id: 1,
+    name: 'Inter-College Basketball Tournament',
+    type: 'Sports',
+    description:
+      'Annual basketball tournament with 10+ colleges participating.',
+    startDate: '2024-11-10',
+    endDate: '2024-11-12',
+    venue: 'University Indoor Stadium',
+    maxParticipants: 150,
+    coordinator: 'Mr. Vikram Singh',
+    status: 'Active',
+  },
+  {
+    id: 2,
+    name: 'Tech Horizon Hackathon',
+    type: 'Hackathon',
+    description: '48-hour coding hackathon focusing on AI and Web3.',
+    startDate: '2024-12-05',
+    endDate: '2024-12-07',
+    venue: 'CS Block, Lab 2',
+    maxParticipants: 100,
+    coordinator: 'Dr. Amit Sharma',
+    status: 'Active',
+  },
+  {
+    id: 3,
+    name: 'Blood Donation Camp',
+    type: 'Social Activities',
+    description:
+      'University-wide blood donation drive organized with Red Cross.',
+    startDate: '2024-10-25',
+    endDate: '2024-10-25',
+    venue: 'Medical Campus Ground',
+    maxParticipants: 500,
+    coordinator: 'Mrs. Neha Patel',
+    status: 'Inactive',
+  },
+];

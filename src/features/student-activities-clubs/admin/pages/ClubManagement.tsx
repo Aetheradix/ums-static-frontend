@@ -74,6 +74,11 @@ export default function ClubManagement() {
   };
 
   const handleSave = () => {
+    if (!form.name || !form.category || !form.president || !form.status) {
+      ToastService.error('Please fill in all required fields.');
+      return;
+    }
+
     if (popup.mode === 'create') {
       const newItem: ClubData = {
         id: Date.now(),
