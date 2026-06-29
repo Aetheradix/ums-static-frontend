@@ -5,6 +5,7 @@ import MainLayout from 'shared/components/layout/MainLayout';
 import { UniversityLoader } from 'shared/components/progress';
 import Academics from './academics';
 import AdmissionPortal from './admission-portal';
+import AdmissionsManagement from './admissions-management';
 import AffiliationManagementSystem from './affiliation-management-system';
 import AlumniManagement from './alumni-management';
 import CareerAdvancement from './career-advancement';
@@ -24,9 +25,15 @@ import ProgrammeManagement from './programme-management';
 import PublicPortalLayout, {
   PublicRouteWrapper,
 } from './public-portal/layout/PublicPortalLayout';
+import RTIManagement from './rti-management';
 import Settings from './settings';
 import Sis from './sis';
 import StudentFeedbackManagement from './student-feedback-management';
+import StudentManagement from './student-management';
+
+import PayrollRoutes from './payroll';
+
+import TrainerDevelopment from './trainer-development';
 
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
@@ -105,6 +112,14 @@ export default function Features() {
                       <Route path="settings/*" element={<Settings />} />
                       <Route path="sis/*" element={<Sis />} />
                       <Route
+                        path="student-management/*"
+                        element={<StudentManagement />}
+                      />
+                      <Route
+                        path="admissions-management/*"
+                        element={<AdmissionsManagement />}
+                      />
+                      <Route
                         path="affiliation-management-system/*"
                         element={<AffiliationManagementSystem />}
                       />
@@ -151,8 +166,16 @@ export default function Features() {
                         element={<StudentFeedbackManagement />}
                       />
                       <Route
+                        path="rti-management/*"
+                        element={<RTIManagement />}
+                      />
+                      <Route
                         path="leave-management/*"
                         element={<LeaveManagement />}
+                      />
+                      <Route
+                        path="trainer-development/*"
+                        element={<TrainerDevelopment />}
                       />
                       <Route
                         path="alumni-management/*"
@@ -161,6 +184,10 @@ export default function Features() {
                       <Route
                         path="open-book-examination/*"
                         element={<OpenBookExamination />}
+                      />
+                      <Route
+                        path="payroll-management/*"
+                        element={<PayrollRoutes />}
                       />
                     </Routes>
                   </MainLayout>

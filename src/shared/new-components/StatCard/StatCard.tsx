@@ -43,12 +43,12 @@ export default function StatCard({
   return (
     <div className="stat-card">
       <div className="stat-card-body">
-        <div className={`stat-card-icon bg-${colorScheme}`}>
+        <div className={`stat-card-icon color-${colorScheme}`}>
           <Icon name={icon} />
         </div>
         <div className="stat-card-info">
-          <span className="stat-card-value">{value}</span>
           <span className="stat-card-title">{title}</span>
+          <span className="stat-card-value">{value}</span>
           {subtitle && <span className="stat-card-subtitle">{subtitle}</span>}
         </div>
       </div>

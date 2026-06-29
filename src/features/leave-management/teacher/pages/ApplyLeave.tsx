@@ -79,7 +79,7 @@ export default function ApplyLeave() {
         { label: 'Apply Leave' },
       ]}
     >
-      <div style={{ maxWidth: '900px' }}>
+      <div className="w-full">
         {/* Leave Details */}
         <FormCard
           title="Leave Details"
