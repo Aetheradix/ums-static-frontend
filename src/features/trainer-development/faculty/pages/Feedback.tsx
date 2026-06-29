@@ -22,7 +22,7 @@ export default function SubmitFeedbackPage() {
         { label: 'Feedback' },
       ]}
     >
-      <div style={{ maxWidth: '800px', width: '100%' }}>
+      <div className="w-full">
         <FormCard title="Feedback Form">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <DropDownList
