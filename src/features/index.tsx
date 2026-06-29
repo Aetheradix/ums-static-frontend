@@ -20,6 +20,7 @@ import ProgrammeManagement from './programme-management';
 import PublicPortalLayout, {
   PublicRouteWrapper,
 } from './public-portal/layout/PublicPortalLayout';
+import RecruitmentManagement from './recruitment-management';
 import Settings from './settings';
 import Sis from './sis';
 import StudentFeedbackManagement from './student-feedback-management';
@@ -115,6 +116,10 @@ export default function Features() {
                       <Route
                         path="employee-management/*"
                         element={<EmployeeManagement />}
+                      />
+                      <Route
+                        path="recruitment-management/*"
+                        element={<RecruitmentManagement />}
                       />
                       <Route
                         path="employee-reports/*"
