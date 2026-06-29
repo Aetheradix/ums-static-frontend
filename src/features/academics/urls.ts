@@ -12,6 +12,8 @@ export const academicsUrls = {
   },
   student: {
     portal: '/academics/student',
+    studentProfile: '/academics/student/student-profile',
+    studentApplicationForm: '/academics/student/student-application-form',
     myCourses: '/academics/student/my-courses',
     myGrades: '/academics/student/my-grades',
     termReport: '/academics/student/term-report',

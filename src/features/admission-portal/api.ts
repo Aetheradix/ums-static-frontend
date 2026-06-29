@@ -13,57 +13,36 @@ export async function sendOtp(email: string) {
 }
 
 export async function verifyOtp(email: string, otp: string) {
-  const apiRoot = ApiService.getApiRoot();
-  const response = await fetch(`${apiRoot}${BASE_URL}/verify-otp`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, otp }),
+  const result = await ApiService.post<any>(`${BASE_URL}/verify-otp`, {
+    email,
+    otp,
   });
-  const result = await response.json();
-  if (!response.ok) {
-    throw new Error(result.title || result.detail || 'OTP verification failed');
+  if (result.error) {
+    throw new Error('OTP verification failed');
   }
-  return result;
+  return result.data;
 }
 
-export async function getSessionInfo(token: string) {
-  const apiRoot = ApiService.getApiRoot();
-  const response = await fetch(`${apiRoot}${BASE_URL}/protected/session`, {
-    headers: { 'X-Admission-Token': token },
-  });
-  if (!response.ok) throw new Error('Session expired');
-  return response.json();
+export async function getSessionInfo(_token: string) {
+  const res = await ApiService.get<any>(`${BASE_URL}/protected/session`);
+  if (res.error) throw new Error('Session expired');
+  return res.data;
 }
 
-async function getWithToken<T>(token: string, path: string): Promise<T> {
-  const apiRoot = ApiService.getApiRoot();
-  const response = await fetch(`${apiRoot}${BASE_URL}/protected${path}`, {
-    headers: { 'X-Admission-Token': token },
-  });
-  if (!response.ok) throw new Error('Session expired or request failed');
-  return response.json();
+async function getWithToken<T>(_token: string, path: string): Promise<T> {
+  const res = await ApiService.get<T>(`${BASE_URL}/protected${path}`);
+  if (res.error) throw new Error('Session expired or request failed');
+  return res.data as T;
 }
 
 async function postWithToken<T>(
-  token: string,
+  _token: string,
   path: string,
   body: unknown
 ): Promise<T> {
-  const apiRoot = ApiService.getApiRoot();
-  const response = await fetch(`${apiRoot}${BASE_URL}/protected${path}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-Admission-Token': token },
-    body: JSON.stringify(body),
-  });
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(error.title || error.detail || 'Request failed');
-  }
-  const contentLength = response.headers.get('content-length');
-  if (response.status === 204 || contentLength === '0') {
-    return undefined as T;
-  }
-  return response.json();
+  const res = await ApiService.post<T>(`${BASE_URL}/protected${path}`, body);
+  if (res.error) throw new Error('Request failed');
+  return res.data as T;
 }
 
 export async function getSubjectSelectionInfo(token: string) {

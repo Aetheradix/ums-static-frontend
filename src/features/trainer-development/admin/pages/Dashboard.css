@@ -1,0 +1,319 @@
+/* ── TDM Admin Dashboard Styles ─────────────────────────────────────────── */
+
+.tdm-dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.tdm-dashboard-stats-2 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.tdm-charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.tdm-bottom-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Bar Chart */
+.tdm-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.375rem 0.5rem;
+  border-radius: 6px;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+  cursor: pointer;
+}
+
+.tdm-bar-row:hover {
+  background-color: #f9fafb;
+  transform: translateX(4px);
+}
+
+.tdm-bar-label {
+  width: 6rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  flex-shrink: 0;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tdm-bar-track {
+  flex: 1;
+  background: #f3f4f6;
+  border-radius: 9999px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.tdm-bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.5s ease;
+}
+
+.tdm-bar-value {
+  width: 2rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #111827;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Monthly trend chart */
+.tdm-trend-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 120px;
+  padding-top: 0.5rem;
+}
+
+.tdm-trend-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.tdm-trend-col:hover {
+  background-color: #f3f4f6;
+}
+
+.tdm-trend-col:hover .tdm-trend-bar {
+  filter: brightness(1.1);
+}
+
+.tdm-trend-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  flex: 1;
+  width: 100%;
+}
+
+.tdm-trend-bar {
+  flex: 1;
+  border-radius: 3px 3px 0 0;
+  min-height: 4px;
+  transition: height 0.4s ease;
+}
+
+.tdm-trend-month {
+  font-size: 0.55rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-top: 2px;
+}
+
+/* Dist chart */
+.tdm-dist-row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.375rem 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.tdm-dist-row:hover {
+  background-color: #f9fafb;
+}
+
+.tdm-dist-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.tdm-dist-label {
+  flex: 1;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.tdm-dist-track {
+  width: 80px;
+  background: #f3f4f6;
+  border-radius: 9999px;
+  height: 6px;
+  overflow: hidden;
+}
+
+.tdm-dist-fill {
+  height: 100%;
+  border-radius: 9999px;
+}
+
+.tdm-dist-count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #111827;
+  width: 2rem;
+  text-align: right;
+}
+
+/* Quick Actions */
+.tdm-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+
+.tdm-quick-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.813rem;
+  font-weight: 500;
+  color: #111827;
+  transition: all 0.15s ease;
+}
+
+.tdm-quick-action-btn:hover {
+  background: #f9fafb;
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.tdm-quick-action-btn i {
+  font-size: 0.875rem;
+}
+
+/* Table */
+.tdm-table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow-x: auto;
+  display: block;
+  min-width: 500px;
+}
+
+.tdm-table th {
+  font-size: 0.688rem;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  background: none;
+}
+
+.tdm-table td {
+  font-size: 0.813rem;
+  color: #111827;
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: middle;
+}
+
+.tdm-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Status Pills */
+.tdm-status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.688rem;
+  font-weight: 600;
+}
+
+.tdm-status-pill.completed {
+  background: #dcfce7;
+  color: #15803d;
+}
+.tdm-status-pill.ongoing {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.tdm-status-pill.scheduled {
+  background: #fef3c7;
+  color: #b45309;
+}
+.tdm-status-pill.planned {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+.tdm-status-pill.cancelled {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.tdm-status-pill.postponed {
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+.tdm-status-pill.approved {
+  background: #dcfce7;
+  color: #15803d;
+}
+.tdm-status-pill.pending {
+  background: #fef3c7;
+  color: #b45309;
+}
+.tdm-status-pill.rejected {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .tdm-dashboard-stats,
+  .tdm-dashboard-stats-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .tdm-charts-row,
+  .tdm-bottom-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .tdm-dashboard-stats,
+  .tdm-dashboard-stats-2 {
+    grid-template-columns: 1fr;
+  }
+  .tdm-table {
+    font-size: 0.75rem;
+  }
+}
