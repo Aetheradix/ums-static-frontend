@@ -4,8 +4,6 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import MainLayout from 'shared/components/layout/MainLayout';
 import { UniversityLoader } from 'shared/components/progress';
 import Academics from './academics';
-import EssentialServices from './essential-services';
-import EstateManagement from './estate-management';
 import AdmissionPortal from './admission-portal';
 import AdmissionsManagement from './admissions-management';
 import AffiliationManagementSystem from './affiliation-management-system';
@@ -14,17 +12,17 @@ import CareerAdvancement from './career-advancement';
 import CertificateManagementSystem from './certificate-management-system';
 import EmployeeManagement from './employee-management';
 import EmployeeReports from './employee-reports';
+import EssentialServices from './essential-services';
+import EstateManagement from './estate-management';
 import ExaminationManagement from './examination-management';
+import FileManagementTracking from './file-management-tracking';
 import FinanceSupplyChain from './finance-supply-chain';
 import GrievanceManagement from './grievance-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
 import InfrastructureProjectManagement from './infrastructure-project-management';
 import ItServiceDesk from './it-service-desk';
-import ResearchManagement from './research-management';
-import ResidentialAllocationManagement from './residential-allocation-management';
 import LeaveManagement from './leave-management';
-import ScholarshipDbt from './scholarship-dbt';
 import Lms from './lms';
 import Master from './master';
 import OpenBookExamination from './open-book-examination';
@@ -32,12 +30,15 @@ import ProgrammeManagement from './programme-management';
 import PublicPortalLayout, {
   PublicRouteWrapper,
 } from './public-portal/layout/PublicPortalLayout';
+import ResearchManagement from './research-management';
+import ResidentialAllocationManagement from './residential-allocation-management';
 import RTIManagement from './rti-management';
+import ScholarshipDbt from './scholarship-dbt';
 import Settings from './settings';
 import Sis from './sis';
+import StudentActivitiesClubs from './student-activities-clubs';
 import StudentFeedbackManagement from './student-feedback-management';
 import StudentManagement from './student-management';
-import StudentActivitiesClubs from './student-activities-clubs';
 
 import PayrollRoutes from './payroll';
 
@@ -228,6 +229,10 @@ export default function Features() {
                       <Route
                         path="infrastructure-project-management/*"
                         element={<InfrastructureProjectManagement />}
+                      />
+                      <Route
+                        path="file-management-tracking/*"
+                        element={<FileManagementTracking />}
                       />
                     </Routes>
                   </MainLayout>
