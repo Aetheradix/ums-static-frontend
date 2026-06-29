@@ -26,6 +26,7 @@ import PublicPortalLayout, {
 } from './public-portal/layout/PublicPortalLayout';
 import Settings from './settings';
 import Sis from './sis';
+import RTIManagement from './rti-management';
 import StudentFeedbackManagement from './student-feedback-management';
 import StudentManagement from './student-management';
 import StudentActivitiesClubs from './student-activities-clubs';
@@ -167,6 +168,10 @@ export default function Features() {
                       <Route
                         path="student-activities-clubs/*"
                         element={<StudentActivitiesClubs />}
+                      />
+                      <Route
+                        path="rti-management/*"
+                        element={<RTIManagement />}
                       />
                       <Route
                         path="leave-management/*"
