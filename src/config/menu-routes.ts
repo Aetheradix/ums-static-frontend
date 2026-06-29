@@ -3902,6 +3902,82 @@ export const menuConfig: Menu.MenuItem[] = [
       },
     ],
   },
+  // === STUDENT ACTIVITIES & CLUBS MODULE ===
+  {
+    label: 'Student Activities\n& Clubs',
+    slug: 'student-activities-clubs',
+    category: 'Student Services',
+    icon: 'celebration',
+    colorScheme: 'purple',
+    description:
+      'Manage clubs, events, and memberships for student activities.',
+    navigationStyle: 'sidebar',
+    path: '/student-activities-clubs',
+    children: [
+      {
+        label: 'Admin Portal',
+        slug: 'activities-admin',
+        description: 'Manage clubs, events, and track student memberships.',
+        icon: 'admin_panel_settings',
+        colorScheme: 'purple',
+        path: '/student-activities-clubs/admin',
+        children: [
+          {
+            label: 'Dashboard',
+            description: 'Overview of clubs and activities',
+            path: '/student-activities-clubs/admin/dashboard',
+            icon: 'dashboard',
+            colorScheme: 'purple',
+          },
+          {
+            label: 'Club Management',
+            description: 'Manage registered clubs',
+            path: '/student-activities-clubs/admin/clubs',
+            icon: 'groups',
+            colorScheme: 'purple',
+          },
+          {
+            label: 'Event Management',
+            description: 'Schedule and track club events',
+            path: '/student-activities-clubs/admin/events',
+            icon: 'event',
+            colorScheme: 'purple',
+          },
+          {
+            label: 'Memberships',
+            description: 'Track student club memberships',
+            path: '/student-activities-clubs/admin/memberships',
+            icon: 'badge',
+            colorScheme: 'purple',
+          },
+        ],
+      },
+      {
+        label: 'Student Portal',
+        slug: 'activities-student',
+        description: 'Join clubs and view upcoming events.',
+        icon: 'person',
+        colorScheme: 'purple',
+        path: '/student-activities-clubs/student',
+        children: [
+          {
+            label: 'My Activities',
+            description: 'Dashboard of my clubs and events',
+            path: '/student-activities-clubs/student/dashboard',
+            icon: 'dashboard',
+            colorScheme: 'purple',
+          },
+          {
+            label: 'Browse Clubs',
+            description: 'Explore and join clubs',
+            path: '/student-activities-clubs/student/browse',
+            icon: 'travel_explore',
+            colorScheme: 'purple',
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export function useMenu() {

@@ -15,6 +15,7 @@ const PORTAL_PATHS: string[] = [
   '/academics',
   '/admissions-management',
   '/student-management',
+  '/student-activities-clubs',
 ];
 
 function isPortalPath(pathname: string): boolean {
