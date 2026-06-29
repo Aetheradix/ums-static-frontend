@@ -4,6 +4,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import MainLayout from 'shared/components/layout/MainLayout';
 import { UniversityLoader } from 'shared/components/progress';
 import Academics from './academics';
+import EssentialServices from './essential-services';
 import AdmissionPortal from './admission-portal';
 import AdmissionsManagement from './admissions-management';
 import AffiliationManagementSystem from './affiliation-management-system';
@@ -149,6 +150,10 @@ export default function Features() {
                         element={<ExaminationManagement />}
                       />
                       <Route path="academics/*" element={<Academics />} />
+                      <Route
+                        path="essential-services/*"
+                        element={<EssentialServices />}
+                      />
                       <Route
                         path="programme-management/*"
                         element={<ProgrammeManagement />}

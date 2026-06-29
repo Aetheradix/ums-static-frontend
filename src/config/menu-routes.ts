@@ -4438,6 +4438,182 @@ export const menuConfig: Menu.MenuItem[] = [
       },
     ],
   },
+  // === STUDENT MANAGEMENT MODULE ===
+  {
+    label: 'Student\nManagement',
+    slug: 'student-management',
+    category: 'Student Services',
+    icon: 'school',
+    colorScheme: 'orange',
+    description:
+      'Manage all student lifecycle activities from admission to graduation.',
+    navigationStyle: 'sidebar',
+    path: '/student-management',
+    children: [
+      {
+        label: 'Admin Portal',
+        slug: 'student-admin',
+        description:
+          'Manage students, bulk import, and perform administrative actions.',
+        icon: 'admin_panel_settings',
+        colorScheme: 'indigo',
+        path: '/student-management/admin',
+        children: [
+          {
+            label: 'Student Directory',
+            description: 'View and manage all students',
+            path: '/student-management/admin',
+            icon: 'people',
+            colorScheme: 'indigo',
+          },
+          {
+            label: 'Import Students',
+            description: 'Bulk import students',
+            path: '/student-management/admin/import',
+            icon: 'upload_file',
+            colorScheme: 'indigo',
+          },
+        ],
+      },
+      {
+        label: 'Student Portal',
+        slug: 'student-student',
+        description:
+          'Enrolled student self-service for courses, grades, and profile.',
+        icon: 'school',
+        colorScheme: 'orange',
+        path: '/student-management/student',
+        children: [
+          {
+            label: 'Dashboard',
+            description: 'Student Dashboard',
+            path: '/student-management/student',
+            icon: 'dashboard',
+            colorScheme: 'orange',
+          },
+          {
+            label: 'My Profile',
+            description: 'View and edit profile',
+            path: '/student-management/student/profile',
+            icon: 'person',
+            colorScheme: 'orange',
+          },
+          {
+            label: 'Link ABC Account',
+            description: 'Link academic bank of credits',
+            path: '/student-management/student/link-abc',
+            icon: 'link',
+            colorScheme: 'orange',
+          },
+        ],
+      },
+    ],
+  },
+  // === ESSENTIAL SERVICES MANAGEMENT ===
+  {
+    label: 'Essential Services',
+    slug: 'essential-services',
+    category: 'Governance',
+    icon: 'build',
+    colorScheme: 'indigo',
+    description:
+      'Lodging stays • Seminar halls • Parking spaces • Fleet transport',
+    path: '/essential-services',
+    children: [
+      {
+        label: 'Admin Portal',
+        slug: 'essential-services-admin',
+        description:
+          'Manage allocations, modify selections, define hierarchies and view stay details.',
+        icon: 'admin_panel_settings',
+        colorScheme: 'indigo',
+        path: '/essential-services/admin',
+        children: [
+          {
+            label: 'Dashboard',
+            description: 'Essential Services dashboard overview',
+            path: '/essential-services/admin/dashboard',
+            icon: 'dashboard',
+            colorScheme: 'indigo',
+          },
+          {
+            label: 'Approval Hierarchy',
+            description: 'Set verifiers and final approver details',
+            path: '/essential-services/admin/hierarchy',
+            icon: 'flowchart',
+            colorScheme: 'indigo',
+          },
+          {
+            label: 'Email Templates',
+            description: 'Customize subjects and description body',
+            path: '/essential-services/admin/templates',
+            icon: 'mail',
+            colorScheme: 'indigo',
+          },
+          {
+            label: 'Parking Section',
+            description: 'Manage year limits and slot numbers',
+            path: '/essential-services/admin/parking',
+            icon: 'local_parking',
+            colorScheme: 'indigo',
+          },
+          {
+            label: 'Conference Halls',
+            description: 'Define incharge details and published rooms',
+            path: '/essential-services/admin/conference',
+            icon: 'co_present',
+            colorScheme: 'indigo',
+          },
+          {
+            label: 'Guest House Section',
+            description: 'Set room types, payment configs, taxes and stays',
+            path: '/essential-services/admin/guest-house',
+            icon: 'hotel',
+            colorScheme: 'indigo',
+          },
+          {
+            label: 'Transport Division',
+            description: 'Assign university fleet vehicle details and driver',
+            path: '/essential-services/admin/transport',
+            icon: 'directions_bus',
+            colorScheme: 'indigo',
+          },
+          {
+            label: 'System Logs',
+            description: 'Audit transaction and alert logs',
+            path: '/essential-services/admin/logs',
+            icon: 'list_alt',
+            colorScheme: 'indigo',
+          },
+          {
+            label: 'Analytical Reports',
+            description: 'PDF/CSV export filterable summaries',
+            path: '/essential-services/admin/reports',
+            icon: 'analytics',
+            colorScheme: 'indigo',
+          },
+        ],
+      },
+      {
+        label: 'Employee Portal',
+        slug: 'essential-services-employee',
+        description:
+          'Submit lodging/transport booking requests and track hierarchy.',
+        icon: 'badge',
+        colorScheme: 'teal',
+        path: '/essential-services/employee',
+        children: [
+          {
+            label: 'My Bookings',
+            description: 'New booking forms and ticket histories',
+            path: '/essential-services/employee/bookings',
+            icon: 'receipt_long',
+            colorScheme: 'teal',
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export function useMenu() {
