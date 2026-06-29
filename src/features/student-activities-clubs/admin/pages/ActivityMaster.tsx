@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import { TextBox, DropDownList } from 'shared/components/forms';
+import { TextBox, DropDownList, DatePicker } from 'shared/components/forms';
 import {
   FormCard,
   FormGrid,
@@ -224,18 +224,22 @@ export default function ActivityMaster() {
                 onChange={v => setForm(f => ({ ...f, description: v }))}
               />
             </div>
-            <TextBox
+            <DatePicker
               label="Start Date"
-              type="date"
-              value={form.startDate}
-              onChange={v => setForm(f => ({ ...f, startDate: v }))}
+              value={form.startDate ? new Date(form.startDate) : undefined}
+              onChange={(v: Date | null | undefined) => {
+                const str = v ? v.toLocaleDateString('en-CA') : '';
+                setForm(f => ({ ...f, startDate: str }));
+              }}
               required
             />
-            <TextBox
+            <DatePicker
               label="End Date"
-              type="date"
-              value={form.endDate}
-              onChange={v => setForm(f => ({ ...f, endDate: v }))}
+              value={form.endDate ? new Date(form.endDate) : undefined}
+              onChange={(v: Date | null | undefined) => {
+                const str = v ? v.toLocaleDateString('en-CA') : '';
+                setForm(f => ({ ...f, endDate: str }));
+              }}
               required
             />
             <TextBox

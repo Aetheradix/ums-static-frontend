@@ -84,6 +84,8 @@ export const clubMembers = [
     club: 'Robotics Club',
     role: 'Member',
     joinDate: '2024-08-01',
+    status: 'Approved',
+    remarks: '',
   },
   {
     id: 102,
@@ -92,6 +94,8 @@ export const clubMembers = [
     club: 'Cultural Committee',
     role: 'Coordinator',
     joinDate: '2023-08-15',
+    status: 'Approved',
+    remarks: 'Active member',
   },
   {
     id: 103,
@@ -100,6 +104,8 @@ export const clubMembers = [
     club: 'Debating Society',
     role: 'Member',
     joinDate: '2024-09-01',
+    status: 'Pending',
+    remarks: '',
   },
 ];
 

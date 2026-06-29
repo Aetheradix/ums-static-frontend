@@ -16,6 +16,19 @@ export default function StudentDashboard() {
     e => myClubs.includes(e.club) && e.status !== 'Completed'
   );
 
+  const myApplications = [
+    {
+      activity: 'Inter-College Basketball Tournament',
+      appliedDate: '2024-11-05',
+      status: 'Approved',
+    },
+    {
+      activity: 'Tech Horizon Hackathon',
+      appliedDate: '2024-11-20',
+      status: 'Pending',
+    },
+  ];
+
   const handleLeaveClub = (clubName: string) => {
     setMemberships(prev => prev.filter(m => m.club !== clubName));
     ToastService.success(`You have successfully left the ${clubName}.`);
@@ -102,6 +115,50 @@ export default function StudentDashboard() {
             </div>
           )}
         </FormCard>
+
+        <div className="lg:col-span-2">
+          <FormCard title="My Activity Applications">
+            {myApplications.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {myApplications.map((app, idx) => {
+                  let colorClass = '';
+                  if (app.status === 'Approved')
+                    colorClass = 'bg-green-100 text-green-700';
+                  else if (app.status === 'Rejected')
+                    colorClass = 'bg-red-100 text-red-700';
+                  else if (app.status === 'Pending')
+                    colorClass = 'bg-yellow-100 text-yellow-700';
+                  else colorClass = 'bg-gray-100 text-gray-700';
+
+                  return (
+                    <div
+                      key={idx}
+                      className="p-4 border border-gray-100 rounded-lg bg-white shadow-sm flex flex-col gap-2"
+                    >
+                      <div className="flex justify-between items-start">
+                        <h4 className="font-semibold text-gray-900">
+                          {app.activity}
+                        </h4>
+                        <span
+                          className={`px-2 py-1 text-xs font-semibold rounded-full ${colorClass}`}
+                        >
+                          {app.status}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-500 mt-2">
+                        Applied on: {app.appliedDate}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-gray-500 text-sm py-4">
+                You have not applied for any activities yet.
+              </div>
+            )}
+          </FormCard>
+        </div>
       </div>
     </FormPage>
   );

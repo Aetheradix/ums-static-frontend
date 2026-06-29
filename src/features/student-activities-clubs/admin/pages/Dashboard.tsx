@@ -114,6 +114,31 @@ export default function Dashboard() {
     value,
   }));
 
+  // Mock data for new features
+  const totalActivities = 3;
+  const pendingRegistrations = 1;
+
+  const recentRegistrations = [
+    {
+      studentName: 'Aarav Patel',
+      activityName: 'Tech Horizon Hackathon',
+      status: 'Pending',
+      date: '2024-11-20',
+    },
+    {
+      studentName: 'Priya Sharma',
+      activityName: 'Basketball Tournament',
+      status: 'Approved',
+      date: '2024-11-05',
+    },
+    {
+      studentName: 'Neha Gupta',
+      activityName: 'Tech Horizon Hackathon',
+      status: 'Rejected',
+      date: '2024-11-21',
+    },
+  ];
+
   return (
     <FormPage
       title="Activities & Clubs Dashboard"
@@ -125,13 +150,23 @@ export default function Dashboard() {
         { label: 'Dashboard' },
       ]}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
         <KpiCard label="Total Clubs" value={totalClubs} color="purple" />
         <KpiCard label="Active Events" value={activeEvents} color="blue" />
         <KpiCard label="Total Members" value={totalMembers} color="green" />
         <KpiCard
           label="Upcoming Events"
           value={totalUpcomingEvents}
+          color="orange"
+        />
+        <KpiCard
+          label="Total Activities"
+          value={totalActivities}
+          color="blue"
+        />
+        <KpiCard
+          label="Pending Registrations"
+          value={pendingRegistrations}
           color="orange"
         />
       </div>
@@ -163,6 +198,47 @@ export default function Dashboard() {
                 </div>
               </div>
             ))}
+          </div>
+        </FormCard>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 mb-6">
+        <FormCard title="Recent Activity Registrations">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {recentRegistrations.map((reg, i) => {
+              let colorClass = '';
+              if (reg.status === 'Approved')
+                colorClass = 'bg-green-100 text-green-700';
+              else if (reg.status === 'Rejected')
+                colorClass = 'bg-red-100 text-red-700';
+              else if (reg.status === 'Pending')
+                colorClass = 'bg-yellow-100 text-yellow-700';
+              else colorClass = 'bg-gray-100 text-gray-700';
+
+              return (
+                <div
+                  key={i}
+                  className="flex justify-between items-start p-4 rounded-lg border border-gray-100 bg-white"
+                >
+                  <div>
+                    <div className="font-medium text-gray-900">
+                      {reg.studentName}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {reg.activityName}
+                    </div>
+                    <div className="text-xs text-gray-400 mt-1">{reg.date}</div>
+                  </div>
+                  <div>
+                    <span
+                      className={`px-2 py-1 text-xs font-semibold rounded-full ${colorClass}`}
+                    >
+                      {reg.status}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </FormCard>
       </div>

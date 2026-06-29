@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import { TextBox, DropDownList } from 'shared/components/forms';
+import { TextBox, DropDownList, DatePicker } from 'shared/components/forms';
 import {
   FormCard,
   FormGrid,
@@ -200,11 +200,13 @@ export default function EventManagement() {
               onChange={v => setForm(f => ({ ...f, club: String(v ?? '') }))}
               required
             />
-            <TextBox
+            <DatePicker
               label="Date"
-              type="date"
-              value={form.date}
-              onChange={v => setForm(f => ({ ...f, date: v }))}
+              value={form.date ? new Date(form.date) : undefined}
+              onChange={(v: Date | null | undefined) => {
+                const str = v ? v.toLocaleDateString('en-CA') : '';
+                setForm(f => ({ ...f, date: str }));
+              }}
               required
             />
             <TextBox

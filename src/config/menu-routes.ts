@@ -4511,7 +4511,7 @@ export const menuConfig: Menu.MenuItem[] = [
   },
   // === STUDENT ACTIVITIES & CLUBS MODULE ===
   {
-    label: 'Student Activities\n& Clubs Management',
+    label: 'Student Activity\nand Club Management',
     slug: 'student-activities-clubs',
     category: 'Student Services',
     icon: 'celebration',
@@ -4551,7 +4551,7 @@ export const menuConfig: Menu.MenuItem[] = [
             colorScheme: 'purple',
           },
           {
-            label: 'Memberships',
+            label: 'Club Join Approvals',
             description: 'Track student club memberships',
             path: '/student-activities-clubs/admin/memberships',
             icon: 'badge',
@@ -4562,6 +4562,13 @@ export const menuConfig: Menu.MenuItem[] = [
             description: 'Create and manage all student activities',
             path: '/student-activities-clubs/admin/activities',
             icon: 'local_activity',
+            colorScheme: 'purple',
+          },
+          {
+            label: 'Activity Registration Approvals',
+            description: 'Manage student activity applications',
+            path: '/student-activities-clubs/admin/registrations',
+            icon: 'assignment_turned_in',
             colorScheme: 'purple',
           },
         ],
@@ -4586,6 +4593,13 @@ export const menuConfig: Menu.MenuItem[] = [
             description: 'Explore and join clubs',
             path: '/student-activities-clubs/student/browse',
             icon: 'travel_explore',
+            colorScheme: 'purple',
+          },
+          {
+            label: 'Apply Activity',
+            description: 'Submit activity applications',
+            path: '/student-activities-clubs/student/apply',
+            icon: 'assignment',
             colorScheme: 'purple',
           },
         ],
