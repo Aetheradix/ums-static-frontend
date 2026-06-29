@@ -25,6 +25,7 @@ import PublicPortalLayout, {
 } from './public-portal/layout/PublicPortalLayout';
 import Settings from './settings';
 import Sis from './sis';
+import RTIManagement from './rti-management';
 import StudentFeedbackManagement from './student-feedback-management';
 
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
@@ -148,6 +149,10 @@ export default function Features() {
                       <Route
                         path="student-feedback-management/*"
                         element={<StudentFeedbackManagement />}
+                      />
+                      <Route
+                        path="rti-management/*"
+                        element={<RTIManagement />}
                       />
                       <Route
                         path="leave-management/*"
