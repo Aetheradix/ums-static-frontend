@@ -5,6 +5,7 @@ import MainLayout from 'shared/components/layout/MainLayout';
 import { UniversityLoader } from 'shared/components/progress';
 import Academics from './academics';
 import EssentialServices from './essential-services';
+import EstateManagement from './estate-management';
 import AdmissionPortal from './admission-portal';
 import AdmissionsManagement from './admissions-management';
 import AffiliationManagementSystem from './affiliation-management-system';
@@ -158,6 +159,10 @@ export default function Features() {
                       <Route
                         path="essential-services/*"
                         element={<EssentialServices />}
+                      />
+                      <Route
+                        path="estate-management/*"
+                        element={<EstateManagement />}
                       />
                       <Route
                         path="programme-management/*"
