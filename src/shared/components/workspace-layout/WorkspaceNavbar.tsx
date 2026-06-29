@@ -1,63 +1,23 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { useMenu } from 'config/menu-routes';
 import { TieredMenu } from 'primereact/tieredmenu';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Icon } from 'shared/components/Icon/Icon';
 import './WorkspaceNavbar.css';
 
-const getIcon = (iconName?: any) => {
-  if (!iconName || typeof iconName !== 'string') return 'folder';
-
-  const iconMap: Record<string, string> = {
-    person_add: 'user-plus',
-    assignment: 'file-edit',
-    manage_accounts: 'user',
-    users: 'users',
-    employee: 'user',
-    employees: 'users',
-    settings: 'cog',
-    department: 'building',
-    designation: 'id-card',
-    person: 'user',
-    badge: 'id-card',
-    vpn_key: 'key',
-    assignment_ind: 'user-edit',
-    edit_location: 'map-marker',
-    globe: 'globe',
-    folder: 'folder',
-    map: 'map',
-    location_city: 'building',
-    grid_view: 'th-large',
-    menu_book: 'book',
-    apartment: 'building',
-    domain: 'home',
-    groups: 'users',
-    work: 'briefcase',
-    class: 'users',
-    segment: 'align-justify',
-    category: 'tags',
-    article: 'file',
-    school: 'book',
-    bar_chart: 'chart-bar',
-    notifications: 'bell',
-    download: 'download',
-    image: 'image',
-    feed: 'list',
-    assignment_turned_in: 'check-square',
-    workspace_premium: 'star-fill',
-    settings_accessibility: 'user',
-    description: 'file',
-    account_tree: 'sitemap',
-    travel_explore: 'compass',
-    trending_up: 'chart-line',
-    event: 'calendar',
-    'th-large': 'th-large',
-  };
-
-  return iconMap[iconName] || iconName;
-};
-
 export const WorkspaceNavbar: React.FC = () => {
-  const menuItems = useMenu();
+  const baseMenuItems = useMenu();
+  const menuItems = useMemo(
+    () => [
+      {
+        label: 'Home',
+        icon: 'home',
+        path: '/home/menu',
+      },
+      ...baseMenuItems,
+    ],
+    [baseMenuItems]
+  );
   const navigate = useNavigate();
   const location = useLocation();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -94,8 +54,17 @@ export const WorkspaceNavbar: React.FC = () => {
   };
 
   useEffect(() => {
-    const widths = itemRefs.current.map(ref => ref?.offsetWidth || 0);
-    setItemWidths(widths);
+    const updateWidths = () => {
+      const widths = itemRefs.current.map(ref => ref?.offsetWidth || 0);
+      setItemWidths(widths);
+    };
+
+    updateWidths();
+
+    // Re-measure after fonts load to ensure icon widths (Material Symbols) are correctly calculated
+    if (document.fonts) {
+      document.fonts.ready.then(updateWidths);
+    }
   }, [menuItems]);
 
   useEffect(() => {
@@ -172,9 +141,32 @@ export const WorkspaceNavbar: React.FC = () => {
     const hasChildren = item.children && item.children.length > 0;
     return {
       label: item.label?.replace('\n', ' '),
-      icon: `pi pi-${getIcon(item.icon)}`,
       command: hasChildren ? undefined : () => handleItemClick(item),
       items: hasChildren ? item.children.map(mapToPrimeMenuItem) : undefined,
+      template: (menuItem: any, options: any) => {
+        return (
+          <div
+            className={options.className}
+            onClick={e => options.onClick(e)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              padding: '0.75rem 1rem',
+              cursor: 'pointer',
+            }}
+          >
+            <Icon
+              name={(item.icon as string) || 'folder'}
+              className="text-lg opacity-80"
+            />
+            <span className={options.labelClassName}>{menuItem.label}</span>
+            {hasChildren && (
+              <i className="pi pi-angle-right ml-auto text-xs opacity-70" />
+            )}
+          </div>
+        );
+      },
     };
   };
 
@@ -208,7 +200,7 @@ export const WorkspaceNavbar: React.FC = () => {
                 style={{ display: isHidden ? 'none' : 'flex' }}
                 onClick={e => handleVisibleItemClick(e, item)}
               >
-                <i className={`pi pi-${getIcon(item.icon)}`} />
+                <Icon name={(item.icon as string) || 'folder'} />
                 <span>{item.label?.replace('\n', ' ')}</span>
                 {hasChildren && (
                   <i className="pi pi-angle-down text-[10px] ml-1 opacity-70" />
