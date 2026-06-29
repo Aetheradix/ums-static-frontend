@@ -3351,6 +3351,8 @@ export const menuConfig: Menu.MenuItem[] = [
             icon: 'admin_panel_settings',
             colorScheme: 'blue',
             navigationStyle: 'sidebar',
+            feature: '@rti-management/admin',
+            action: 'read',
             children: [
               {
                 label: 'Dashboard',
@@ -3408,6 +3410,28 @@ export const menuConfig: Menu.MenuItem[] = [
                 path: '/rti-management/admin/settings',
                 icon: 'settings',
                 colorScheme: 'blue',
+              },
+            ],
+          },
+          {
+            label: 'Department Portal',
+            slug: 'department-portal',
+            description:
+              'View assigned RTIs and submit departmental responses.',
+            path: '/rti-management/department/inbox',
+            icon: 'assignment_ind',
+            colorScheme: 'green',
+            navigationStyle: 'sidebar',
+            feature: '@rti-management/department',
+            action: 'read',
+            children: [
+              {
+                label: 'RTI Inbox',
+                slug: 'department-inbox',
+                description: 'View assigned RTIs and submit responses.',
+                path: '/rti-management/department/inbox',
+                icon: 'inbox',
+                colorScheme: 'green',
               },
             ],
           },

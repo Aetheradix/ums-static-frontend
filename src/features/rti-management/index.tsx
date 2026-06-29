@@ -21,6 +21,8 @@ export default function RTIManagement() {
       <Route path="admin/appeals" element={<Appeals />} />
       <Route path="admin/reports" element={<ReportsAnalytics />} />
       <Route path="admin/settings" element={<Settings />} />
+
+      <Route path="department/inbox" element={<RTIInbox />} />
     </Routes>
   );
 }

@@ -10,4 +10,8 @@ export const rtiUrls = {
     reports: '/rti-management/admin/reports',
     settings: '/rti-management/admin/settings',
   },
+  department: {
+    portal: '/rti-management/department',
+    inbox: '/rti-management/department/inbox',
+  },
 };

@@ -21,7 +21,7 @@ export default function RTIPortalPage() {
           description: 'View assigned RTIs and submit departmental responses.',
           icon: 'assignment_ind',
           colorScheme: 'green',
-          path: rtiUrls.admin.portal,
+          path: rtiUrls.department.inbox,
         },
         {
           title: 'First Appellate Authority',
