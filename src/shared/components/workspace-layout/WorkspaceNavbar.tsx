@@ -137,6 +137,69 @@ export const WorkspaceNavbar: React.FC = () => {
     };
   }, [menuItems, visibleCount, itemWidths]);
 
+  // Advanced dynamic submenu scroll handling
+  useEffect(() => {
+    const handleMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const menuItem = target.closest('.p-menuitem');
+
+      // 1. If we hovered a menu item that opens a submenu, calculate and save its safe max-height
+      if (menuItem) {
+        const childSubmenu = menuItem.querySelector(
+          ':scope > .p-submenu-list'
+        ) as HTMLElement;
+        if (childSubmenu) {
+          const rect = menuItem.getBoundingClientRect();
+          const spaceBelow = window.innerHeight - rect.top - 20;
+          const spaceAbove = rect.bottom - 20;
+          // Use max space so PrimeReact can safely flip up or down
+          const maxHeight = Math.max(spaceBelow, spaceAbove, 200);
+          childSubmenu.dataset.calculatedMaxHeight = `${maxHeight}px`;
+        }
+      }
+
+      // 2. Evaluate ALL open menus independently so scrollbars don't disappear when moving between them
+      document
+        .querySelectorAll(
+          '.ws-navbar-dropdown .p-submenu-list, .ws-navbar-dropdown .p-tieredmenu-root-list'
+        )
+        .forEach(el => {
+          const htmlEl = el as HTMLElement;
+          let maxHStr = htmlEl.dataset.calculatedMaxHeight;
+
+          // Root list always opens downwards, calculate dynamically
+          if (htmlEl.classList.contains('p-tieredmenu-root-list')) {
+            const rect = htmlEl.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.top - 20;
+            maxHStr = `${Math.max(spaceBelow, 200)}px`;
+          }
+
+          if (maxHStr) {
+            const maxH = parseInt(maxHStr);
+
+            // Estimate true height based on number of items to avoid absolute child false scrollbar issues
+            const numItems = htmlEl.querySelectorAll(
+              ':scope > .p-menuitem'
+            ).length;
+            const trueHeight = numItems * 45; // Approx 45px per item
+
+            if (trueHeight > maxH) {
+              // It genuinely needs scrolling
+              htmlEl.style.maxHeight = maxHStr;
+              htmlEl.style.overflowY = 'auto';
+            } else {
+              // Short menu: remove overflow to prevent horizontal clipping of its child flyouts
+              htmlEl.style.maxHeight = 'none';
+              htmlEl.style.overflowY = 'visible';
+            }
+          }
+        });
+    };
+
+    document.addEventListener('mouseover', handleMouseOver);
+    return () => document.removeEventListener('mouseover', handleMouseOver);
+  }, []);
+
   const mapToPrimeMenuItem = (item: any): any => {
     const hasChildren = item.children && item.children.length > 0;
     return {
