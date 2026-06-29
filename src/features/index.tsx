@@ -6,15 +6,18 @@ import { UniversityLoader } from 'shared/components/progress';
 import Academics from './academics';
 import AdmissionPortal from './admission-portal';
 import AffiliationManagementSystem from './affiliation-management-system';
+import AlumniManagement from './alumni-management';
 import CareerAdvancement from './career-advancement';
 import CertificateManagementSystem from './certificate-management-system';
 import EmployeeManagement from './employee-management';
+import EmployeeReports from './employee-reports';
 import ExaminationManagement from './examination-management';
+import FinanceSupplyChain from './finance-supply-chain';
+import GrievanceManagement from './grievance-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
-import Lms from './lms';
 import LeaveManagement from './leave-management';
-import TrainerDevelopment from './trainer-development';
+import Lms from './lms';
 import Master from './master';
 import ProgrammeManagement from './programme-management';
 import PublicPortalLayout, {
@@ -22,6 +25,8 @@ import PublicPortalLayout, {
 } from './public-portal/layout/PublicPortalLayout';
 import Settings from './settings';
 import Sis from './sis';
+import StudentFeedbackManagement from './student-feedback-management';
+import TrainerDevelopment from './trainer-development';
 
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
@@ -116,6 +121,14 @@ export default function Features() {
                         element={<EmployeeManagement />}
                       />
                       <Route
+                        path="finance-supply-chain/*"
+                        element={<FinanceSupplyChain />}
+                      />
+                      <Route
+                        path="employee-reports/*"
+                        element={<EmployeeReports />}
+                      />
+                      <Route
                         path="examination-management/*"
                         element={<ExaminationManagement />}
                       />
@@ -128,7 +141,15 @@ export default function Features() {
                         path="hostel-management/*"
                         element={<HostelManagement />}
                       />
+                      <Route
+                        path="grievance-management/*"
+                        element={<GrievanceManagement />}
+                      />
                       <Route path="lms/*" element={<Lms />} />
+                      <Route
+                        path="student-feedback-management/*"
+                        element={<StudentFeedbackManagement />}
+                      />
                       <Route
                         path="leave-management/*"
                         element={<LeaveManagement />}
@@ -136,6 +157,10 @@ export default function Features() {
                       <Route
                         path="trainer-development/*"
                         element={<TrainerDevelopment />}
+                      />
+                      <Route
+                        path="alumni-management/*"
+                        element={<AlumniManagement />}
                       />
                     </Routes>
                   </MainLayout>

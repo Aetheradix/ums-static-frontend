@@ -105,11 +105,26 @@
   margin-bottom: 0.25rem;
 }
 
-.approval-timeline-action-label.approved { background: #dcfce7; color: #15803d; }
-.approval-timeline-action-label.rejected { background: #fee2e2; color: #b91c1c; }
-.approval-timeline-action-label.pending { background: #fef3c7; color: #b45309; }
-.approval-timeline-action-label.submitted { background: #dbeafe; color: #1d4ed8; }
-.approval-timeline-action-label.forwarded { background: #f3e8ff; color: #7c3aed; }
+.approval-timeline-action-label.approved {
+  background: #dcfce7;
+  color: #15803d;
+}
+.approval-timeline-action-label.rejected {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.approval-timeline-action-label.pending {
+  background: #fef3c7;
+  color: #b45309;
+}
+.approval-timeline-action-label.submitted {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.approval-timeline-action-label.forwarded {
+  background: #f3e8ff;
+  color: #7c3aed;
+}
 
 .approval-timeline-remarks {
   font-size: 0.75rem;

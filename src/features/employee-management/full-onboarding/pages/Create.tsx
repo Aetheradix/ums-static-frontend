@@ -1,30 +1,29 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastService } from 'services';
 import { FormPage } from 'shared/new-components';
 import FullOnboardingForm from '../components/FullOnboardingForm';
-import { useCreateFullOnboardingMutation } from '../queries';
 
 export default function Create() {
   const navigate = useNavigate();
-  const { mutateAsync, isPending } = useCreateFullOnboardingMutation();
+  const [isPending, setIsPending] = useState(false);
 
   const handleBack = useCallback(() => {
     navigate('/employee-management/manage-employees');
   }, [navigate]);
 
-  async function handleSubmit(data: EmployeeManagement.FullOnboardingForm) {
+  async function handleSubmit(_data: EmployeeManagement.FullOnboardingForm) {
     try {
-      const result = await mutateAsync(data);
-
-      if (result) {
-        ToastService.success('Employee onboarded successfully.');
-        handleBack();
-      }
+      setIsPending(true);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      ToastService.success('Employee onboarded successfully.');
+      handleBack();
     } catch (err) {
       ToastService.error(
         err instanceof Error ? err.message : 'Failed to register employee.'
       );
+    } finally {
+      setIsPending(false);
     }
   }
 

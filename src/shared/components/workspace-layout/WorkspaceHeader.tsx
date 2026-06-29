@@ -2,8 +2,8 @@ import { useAuth } from 'auth';
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { WaffleMenu } from 'shared/new-components';
-import './WorkspaceHeader.css';
 import { ThemeSettingsSidebar } from './ThemeSettingsSidebar';
+import './WorkspaceHeader.css';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -74,8 +74,33 @@ const Header: React.FC = () => {
       .substring(0, 2)
       .toUpperCase() || 'U';
 
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = (e: Event) => {
+      const target = e.target as HTMLElement | Document;
+      let scrollTop = 0;
+
+      if (target === document) {
+        scrollTop = window.scrollY || document.documentElement.scrollTop;
+      } else {
+        scrollTop = (target as HTMLElement).scrollTop || 0;
+      }
+
+      if (scrollTop > 20 && !isScrolled) {
+        setIsScrolled(true);
+      } else if (scrollTop <= 20 && isScrolled) {
+        setIsScrolled(false);
+      }
+    };
+
+    // Use capture: true to catch scroll events from any scrollable child container (like #root)
+    window.addEventListener('scroll', handleScroll, true);
+    return () => window.removeEventListener('scroll', handleScroll, true);
+  }, [isScrolled]);
+
   return (
-    <header className="ws-header">
+    <header className={`ws-header ${isScrolled ? 'scrolled' : ''}`}>
       <div className="ws-header-inner">
         {/* Logo */}
         <div className="ws-logo-section">
@@ -129,11 +154,6 @@ const Header: React.FC = () => {
               title="Toggle Dark Mode"
             >
               <i className={`pi ${isDarkMode ? 'pi-sun' : 'pi-moon'}`} />
-            </div>
-
-            {/* Help */}
-            <div className="ws-icon-btn mobile-hidden">
-              <i className="pi pi-question-circle" />
             </div>
 
             {/* Notification */}

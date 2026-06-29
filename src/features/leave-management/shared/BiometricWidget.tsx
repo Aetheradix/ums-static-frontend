@@ -22,13 +22,17 @@ export default function BiometricWidget({
   biometricStatus = 'OK',
 }: BiometricWidgetProps) {
   const statusDot =
-    biometricStatus === 'OK' ? 'ok'
-      : biometricStatus === 'Missing Punch' ? 'missing'
+    biometricStatus === 'OK'
+      ? 'ok'
+      : biometricStatus === 'Missing Punch'
+        ? 'missing'
         : 'late';
 
   const attColor =
-    attendancePct >= 85 ? '#16a34a'
-      : attendancePct >= 75 ? '#f59e0b'
+    attendancePct >= 85
+      ? '#16a34a'
+      : attendancePct >= 75
+        ? '#f59e0b'
         : '#ef4444';
 
   return (
@@ -50,15 +54,21 @@ export default function BiometricWidget({
       {/* Stats row */}
       <div className="biometric-stats-row">
         <div className="biometric-stat-item">
-          <span className="biometric-stat-value" style={{ color: '#16a34a' }}>{presentDays}</span>
+          <span className="biometric-stat-value" style={{ color: '#16a34a' }}>
+            {presentDays}
+          </span>
           <span className="biometric-stat-label">Present</span>
         </div>
         <div className="biometric-stat-item">
-          <span className="biometric-stat-value" style={{ color: '#ef4444' }}>{absentDays}</span>
+          <span className="biometric-stat-value" style={{ color: '#ef4444' }}>
+            {absentDays}
+          </span>
           <span className="biometric-stat-label">Absent</span>
         </div>
         <div className="biometric-stat-item">
-          <span className="biometric-stat-value" style={{ color: '#f59e0b' }}>{lateEntries}</span>
+          <span className="biometric-stat-value" style={{ color: '#f59e0b' }}>
+            {lateEntries}
+          </span>
           <span className="biometric-stat-label">Late</span>
         </div>
       </div>
@@ -66,9 +76,7 @@ export default function BiometricWidget({
       {/* Status */}
       <div className="biometric-status-bar">
         <span className={`biometric-status-dot ${statusDot}`} />
-        <span className="biometric-status-text">
-          {biometricStatus}
-        </span>
+        <span className="biometric-status-text">{biometricStatus}</span>
         <span className="biometric-status-sub">Biometric Status</span>
       </div>
 
@@ -76,7 +84,9 @@ export default function BiometricWidget({
       <div className="biometric-attendance-bar">
         <div className="biometric-att-label-row">
           <span className="biometric-att-label">Attendance Percentage</span>
-          <span className="biometric-att-pct" style={{ color: attColor }}>{attendancePct}%</span>
+          <span className="biometric-att-pct" style={{ color: attColor }}>
+            {attendancePct}%
+          </span>
         </div>
         <div className="biometric-att-track">
           <div

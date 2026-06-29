@@ -11,7 +11,8 @@ export default function TeacherPortalPage() {
       portals={[
         {
           title: 'Dashboard',
-          description: 'Leave balance, attendance, biometric status and quick actions.',
+          description:
+            'Leave balance, attendance, biometric status and quick actions.',
           icon: 'dashboard',
           colorScheme: 'blue',
           path: lmsUrls.teacher.dashboard,
