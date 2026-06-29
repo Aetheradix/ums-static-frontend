@@ -3016,6 +3016,7 @@ export const menuConfig: Menu.MenuItem[] = [
     category: 'Admission',
     icon: 'how_to_reg',
     colorScheme: 'blue',
+    path: '/admissions-management',
     description:
       'Manage student admissions, applications, fees, and portal configuration.',
     navigationStyle: 'sidebar',
@@ -3670,6 +3671,77 @@ export const menuConfig: Menu.MenuItem[] = [
             colorScheme: 'red',
             feature: '@alumni-portal/privacy',
             action: 'read',
+          },
+        ],
+      },
+    ],
+  },
+  // === STUDENT MANAGEMENT MODULE ===
+  {
+    label: 'Student\nManagement',
+    slug: 'student-management',
+    category: 'Student Services',
+    icon: 'school',
+    colorScheme: 'orange',
+    description:
+      'Manage all student lifecycle activities from admission to graduation.',
+    navigationStyle: 'sidebar',
+    path: '/student-management',
+    children: [
+      {
+        label: 'Admin Portal',
+        slug: 'student-admin',
+        description:
+          'Manage students, bulk import, and perform administrative actions.',
+        icon: 'admin_panel_settings',
+        colorScheme: 'indigo',
+        path: '/student-management/admin',
+        children: [
+          {
+            label: 'Student Directory',
+            description: 'View and manage all students',
+            path: '/student-management/admin',
+            icon: 'people',
+            colorScheme: 'indigo',
+          },
+          {
+            label: 'Import Students',
+            description: 'Bulk import students',
+            path: '/student-management/admin/import',
+            icon: 'upload_file',
+            colorScheme: 'indigo',
+          },
+        ],
+      },
+      {
+        label: 'Student Portal',
+        slug: 'student-student',
+        description:
+          'Enrolled student self-service for courses, grades, and profile.',
+        icon: 'school',
+        colorScheme: 'orange',
+        path: '/student-management/student',
+        children: [
+          {
+            label: 'Dashboard',
+            description: 'Student Dashboard',
+            path: '/student-management/student',
+            icon: 'dashboard',
+            colorScheme: 'orange',
+          },
+          {
+            label: 'My Profile',
+            description: 'View and edit profile',
+            path: '/student-management/student/profile',
+            icon: 'person',
+            colorScheme: 'orange',
+          },
+          {
+            label: 'Link ABC Account',
+            description: 'Link academic bank of credits',
+            path: '/student-management/student/link-abc',
+            icon: 'link',
+            colorScheme: 'orange',
           },
         ],
       },
