@@ -711,13 +711,11 @@ export default function RTIInbox() {
                 label="Departments"
                 data={departmentOptions.map(d => ({ name: d, value: d }))}
                 textField="name"
-                value={departmentOptions
-                  .filter(d => forwardForm.departments.includes(d))
-                  .map(d => ({ name: d, value: d }))}
+                value={forwardForm.departments as any}
                 onChange={v =>
                   setForwardForm(f => ({
                     ...f,
-                    departments: v.map(x => x.value),
+                    departments: (v as any) || [],
                   }))
                 }
                 placeholder="Select departments..."
@@ -766,13 +764,11 @@ export default function RTIInbox() {
                 label="CC Departments"
                 data={departmentOptions.map(d => ({ name: d, value: d }))}
                 textField="name"
-                value={departmentOptions
-                  .filter(d => forwardForm.ccDepartments.includes(d))
-                  .map(d => ({ name: d, value: d }))}
+                value={forwardForm.ccDepartments as any}
                 onChange={v =>
                   setForwardForm(f => ({
                     ...f,
-                    ccDepartments: v.map(x => x.value),
+                    ccDepartments: (v as any) || [],
                   }))
                 }
                 placeholder="CC (optional)..."
