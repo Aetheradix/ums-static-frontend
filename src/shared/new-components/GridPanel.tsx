@@ -2,7 +2,10 @@ import { useState } from 'react';
 import { Grid } from '../components/grid';
 import './GridPanel.css';
 
-interface GridPanelProps<T> extends Controls.GridProps<T> {
+interface GridPanelProps<T> extends Omit<
+  Controls.GridProps<T>,
+  'emptyMessage'
+> {
   title?: string;
   toolbar?: React.ReactElement;
   searchBox?: boolean;
@@ -20,7 +23,7 @@ interface GridPanelProps<T> extends Controls.GridProps<T> {
   onFilter?: (e: { globalFilter?: string }) => void;
   sortField?: string | null;
   sortOrder?: number | null;
-  emptyMessage?: string;
+  emptyMessage?: React.ReactNode;
 }
 
 export default function GridPanel<T>({
@@ -41,6 +44,7 @@ export default function GridPanel<T>({
   onFilter,
   sortField,
   sortOrder,
+  emptyMessage,
   ...rest
 }: GridPanelProps<T>) {
   const [internalGlobalFilter, setInternalGlobalFilter] = useState('');
@@ -94,6 +98,7 @@ export default function GridPanel<T>({
         onFilter={onFilter}
         sortField={sortField}
         sortOrder={sortOrder}
+        emptyMessage={emptyMessage as any}
       />
     </div>
   );

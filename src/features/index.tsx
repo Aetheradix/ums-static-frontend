@@ -28,6 +28,7 @@ import Sis from './sis';
 import StudentManagement from './student-management';
 import AdmissionsManagement from './admissions-management';
 import StudentFeedbackManagement from './student-feedback-management';
+import TrainingPlacement from './training-placement';
 
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
@@ -166,6 +167,10 @@ export default function Features() {
                       <Route
                         path="alumni-management/*"
                         element={<AlumniManagement />}
+                      />
+                      <Route
+                        path="training-placement/*"
+                        element={<TrainingPlacement />}
                       />
                     </Routes>
                   </MainLayout>

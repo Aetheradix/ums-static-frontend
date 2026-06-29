@@ -25,6 +25,18 @@ interface StatCardProps {
   trend?: StatCardTrend;
 }
 
+const colorClassMap: Record<string, string> = {
+  blue: 'bg-blue-100 text-blue-600',
+  green: 'bg-green-100 text-green-600',
+  purple: 'bg-purple-100 text-purple-600',
+  orange: 'bg-orange-100 text-orange-600',
+  red: 'bg-red-100 text-red-600',
+  teal: 'bg-teal-100 text-teal-600',
+  indigo: 'bg-indigo-100 text-indigo-600',
+  amber: 'bg-amber-100 text-amber-600',
+  pink: 'bg-pink-100 text-pink-600',
+};
+
 export default function StatCard({
   title,
   value,
@@ -40,10 +52,12 @@ export default function StatCard({
         ? 'arrow-down-right'
         : 'minus';
 
+  const iconClasses = colorClassMap[colorScheme] || colorClassMap.blue;
+
   return (
     <div className="stat-card">
       <div className="stat-card-body">
-        <div className={`stat-card-icon bg-${colorScheme}`}>
+        <div className={`stat-card-icon ${iconClasses}`}>
           <Icon name={icon} />
         </div>
         <div className="stat-card-info">
