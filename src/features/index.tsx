@@ -17,6 +17,7 @@ import FinanceSupplyChain from './finance-supply-chain';
 import GrievanceManagement from './grievance-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
+import InfrastructureProjectManagement from './infrastructure-project-management';
 import LeaveManagement from './leave-management';
 import Lms from './lms';
 import Master from './master';
@@ -178,6 +179,10 @@ export default function Features() {
                       <Route
                         path="payroll-management/*"
                         element={<PayrollRoutes />}
+                      />
+                      <Route
+                        path="infrastructure-project-management/*"
+                        element={<InfrastructureProjectManagement />}
                       />
                     </Routes>
                   </MainLayout>
