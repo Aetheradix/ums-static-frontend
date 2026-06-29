@@ -192,3 +192,17 @@
     display: none !important;
   }
 }
+
+/* Layout Customizations */
+/* Layout Customizations */
+.ws-root.layout-boxed {
+  background-color: #f8faff;
+}
+
+.dark .ws-root.layout-boxed {
+  background-color: var(--color-black, #0a0a0a);
+}
+
+.ws-root.layout-boxed .ws-main {
+  @apply max-w-[1440px] mx-auto w-full;
+}
