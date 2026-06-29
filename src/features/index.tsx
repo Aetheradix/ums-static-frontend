@@ -6,11 +6,13 @@ import { UniversityLoader } from 'shared/components/progress';
 import Academics from './academics';
 import AdmissionPortal from './admission-portal';
 import AffiliationManagementSystem from './affiliation-management-system';
+import AlumniManagement from './alumni-management';
 import CareerAdvancement from './career-advancement';
 import CertificateManagementSystem from './certificate-management-system';
 import EmployeeManagement from './employee-management';
 import EmployeeReports from './employee-reports';
 import ExaminationManagement from './examination-management';
+import FinanceSupplyChain from './finance-supply-chain';
 import GrievanceManagement from './grievance-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
@@ -128,6 +130,10 @@ export default function Features() {
                         element={<EmployeeManagement />}
                       />
                       <Route
+                        path="finance-supply-chain/*"
+                        element={<FinanceSupplyChain />}
+                      />
+                      <Route
                         path="employee-reports/*"
                         element={<EmployeeReports />}
                       />
@@ -156,6 +162,10 @@ export default function Features() {
                       <Route
                         path="leave-management/*"
                         element={<LeaveManagement />}
+                      />
+                      <Route
+                        path="alumni-management/*"
+                        element={<AlumniManagement />}
                       />
                     </Routes>
                   </MainLayout>

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
 import { useMenu } from 'config/menu-routes';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Icon } from 'shared/components/Icon/Icon';
 import './Sidebar.css';
 
 export interface SidebarItem {
@@ -18,32 +19,6 @@ export interface SidebarProps {
   activeIndex: number;
   onItemClick: (index: number) => void;
 }
-
-const mapToPiIcon = (icon: any) => {
-  if (typeof icon !== 'string') return 'pi-th-large';
-
-  const map: Record<string, string> = {
-    school: 'pi-book',
-    groups: 'pi-users',
-    grid_view: 'pi-th-large',
-    menu_book: 'pi-bookmark',
-    bolt: 'pi-bolt',
-    work: 'pi-briefcase',
-    science: 'pi-compass',
-    accessible: 'pi-user',
-    credit_card: 'pi-id-card',
-    desktop_windows: 'pi-desktop',
-    build: 'pi-cog',
-    workspace_premium: 'pi-star-fill',
-    settings: 'pi-sliders-v',
-    apartment: 'pi-building',
-    edit_location: 'pi-map-marker',
-    domain: 'pi-home',
-    badge: 'pi-id-card',
-  };
-
-  return map[icon || ''] || `pi-${icon || 'th-large'}`;
-};
 
 const matchPath = (currentPath: string, targetPath?: string) => {
   if (!targetPath) return false;
@@ -131,58 +106,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
   }, [location.pathname, menuConfig]);
 
-  const getIcon = (iconName?: any) => {
-    if (!iconName || typeof iconName !== 'string') return 'circle';
-
-    const iconMap: Record<string, string> = {
-      person_add: 'user-plus',
-      assignment: 'file-edit',
-      manage_accounts: 'user',
-      users: 'users',
-      employee: 'user',
-      employees: 'users',
-      settings: 'cog',
-      department: 'building',
-      designation: 'id-card',
-      person: 'user',
-      badge: 'id-card',
-      vpn_key: 'key',
-      assignment_ind: 'user-edit',
-      edit_location: 'map-marker',
-      globe: 'globe',
-      folder: 'folder',
-      map: 'map',
-      location_city: 'building',
-      grid_view: 'th-large',
-      menu_book: 'book',
-      apartment: 'building',
-      domain: 'home',
-      groups: 'users',
-      work: 'briefcase',
-      class: 'users',
-      segment: 'align-justify',
-      category: 'tags',
-      article: 'file',
-      school: 'book',
-      bar_chart: 'chart-bar',
-      notifications: 'bell',
-      download: 'download',
-      image: 'image',
-      feed: 'list',
-      assignment_turned_in: 'check-square',
-      workspace_premium: 'star-fill',
-      settings_accessibility: 'user',
-      description: 'file',
-      account_tree: 'sitemap',
-      travel_explore: 'compass',
-      trending_up: 'chart-line',
-      event: 'calendar',
-      'th-large': 'th-large',
-    };
-
-    return iconMap[iconName] || 'circle'; // Default to circle if icon doesn't exist in PrimeIcons
-  };
-
   return (
     <aside
       className={`app-sidebar-container ${isCollapsed ? 'collapsed' : ''}`}
@@ -199,7 +122,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
       <div className="app-sidebar-header">
         <span className="app-sidebar-header-icon hidden lg:flex">
-          <i className={`pi pi-${getIcon(headerIcon)}`} />
+          <Icon name={(headerIcon as string) || 'user'} />
         </span>
 
         <div className="app-sidebar-header-text hidden lg:block">
@@ -233,7 +156,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                 onClick={() => onItemClick(idx)}
                 aria-current={isActive ? 'page' : undefined}
               >
-                <i className={`pi pi-${getIcon(item.icon)} app-sidebar-icon`} />
+                <Icon
+                  name={(item.icon as string) || 'circle'}
+                  className="app-sidebar-icon"
+                />
 
                 <span className="app-sidebar-label">{item.label}</span>
 
@@ -278,7 +204,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   }}
                 >
                   <span className={`app-sidebar-module-icon ${iconColorClass}`}>
-                    <i className={`pi ${mapToPiIcon(module.icon)}`} />
+                    <Icon name={(module.icon as string) || 'th-large'} />
                   </span>
                   <span className="app-sidebar-module-label">
                     {module.label}
@@ -326,8 +252,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                                 }
                               }}
                             >
-                              <i
-                                className={`pi pi-${getIcon(subMenu.icon)} app-sidebar-submenu-icon`}
+                              <Icon
+                                name={(subMenu.icon as string) || 'circle'}
+                                className="app-sidebar-submenu-icon"
                               />
                               <span className="app-sidebar-submenu-label">
                                 {subMenu.label}

@@ -26,7 +26,7 @@
 
 /* WorkspaceHeader */
 .ws-header {
-  @apply border-b border-slate-200 py-3 bg-[var(--bg-white)] sticky top-0 z-50;
+  @apply border-b border-slate-200 py-3 bg-(--bg-white) sticky top-0 z-50;
 }
 
 /* .ws-header-inner {
@@ -97,7 +97,7 @@
 } */
 
 .ws-avatar {
-  @apply bg-[var(--primary-color)] text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-[13px];
+  @apply bg-(--primary-color) text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-[13px];
 }
 
 .ws-username {
@@ -106,7 +106,7 @@
 
 /* WorkspaceFooterNav */
 .ws-footer-nav {
-  @apply py-5 border-t border-slate-200 bg-[var(--bg-white)];
+  @apply py-5 border-t border-slate-200 bg-(--bg-white);
 }
 /* .ws-footer-nav-inner {
   @apply max-w-[1440px] mx-auto px-6 flex items-center flex-wrap gap-4 max-md:gap-3 max-md:justify-center;
