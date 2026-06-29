@@ -22,6 +22,7 @@ import ItServiceDesk from './it-service-desk';
 import ResearchManagement from './research-management';
 import ResidentialAllocationManagement from './residential-allocation-management';
 import LeaveManagement from './leave-management';
+import ScholarshipDbt from './scholarship-dbt';
 import Lms from './lms';
 import Master from './master';
 import OpenBookExamination from './open-book-examination';
@@ -192,6 +193,10 @@ export default function Features() {
                       <Route
                         path="leave-management/*"
                         element={<LeaveManagement />}
+                      />
+                      <Route
+                        path="scholarship-dbt/*"
+                        element={<ScholarshipDbt />}
                       />
                       <Route
                         path="trainer-development/*"
