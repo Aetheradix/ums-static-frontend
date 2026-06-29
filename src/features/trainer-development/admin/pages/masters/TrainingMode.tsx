@@ -10,13 +10,29 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
-import { type TrainingMode, trainingModes as initialData } from '../../../mocks';
+import {
+  type TrainingMode,
+  trainingModes as initialData,
+} from '../../../mocks';
 import { tdmUrls } from '../../../urls';
 
-type PopupState = { mode: 'closed' } | { mode: 'create' } | { mode: 'edit'; item: TrainingMode } | { mode: 'view'; item: TrainingMode };
+type PopupState =
+  | { mode: 'closed' }
+  | { mode: 'create' }
+  | { mode: 'edit'; item: TrainingMode }
+  | { mode: 'view'; item: TrainingMode };
 
-const EMPTY: Partial<TrainingMode> = { code: '', name: '', description: '', attendanceType: 'Online Tracking', status: 'Active' };
-const STATUS_OPTIONS = [{ name: 'Active', value: 'Active' }, { name: 'Inactive', value: 'Inactive' }];
+const EMPTY: Partial<TrainingMode> = {
+  code: '',
+  name: '',
+  description: '',
+  attendanceType: 'Online Tracking',
+  status: 'Active',
+};
+const STATUS_OPTIONS = [
+  { name: 'Active', value: 'Active' },
+  { name: 'Inactive', value: 'Inactive' },
+];
 const ATTENDANCE_OPTIONS = [
   { name: 'Online Tracking', value: 'Online Tracking' },
   { name: 'QR Code', value: 'QR Code' },
@@ -29,15 +45,30 @@ export default function TrainingModeMaster() {
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
   const [form, setForm] = useState<Partial<TrainingMode>>(EMPTY);
 
-  const close = useCallback(() => { setPopup({ mode: 'closed' }); setForm(EMPTY); }, []);
+  const close = useCallback(() => {
+    setPopup({ mode: 'closed' });
+    setForm(EMPTY);
+  }, []);
 
   const handleSave = () => {
-    if (!form.code || !form.name) { ToastService.error('Code and Name are required.'); return; }
+    if (!form.code || !form.name) {
+      ToastService.error('Code and Name are required.');
+      return;
+    }
     if (popup.mode === 'create') {
-      setData(prev => [...prev, { ...form, id: String(Date.now()) } as TrainingMode]);
+      setData(prev => [
+        ...prev,
+        { ...form, id: String(Date.now()) } as TrainingMode,
+      ]);
       ToastService.success('Training mode created.');
     } else if (popup.mode === 'edit') {
-      setData(prev => prev.map(d => d.id === (popup as any).item.id ? { ...d, ...form } as TrainingMode : d));
+      setData(prev =>
+        prev.map(d =>
+          d.id === (popup as any).item.id
+            ? ({ ...d, ...form } as TrainingMode)
+            : d
+        )
+      );
       ToastService.success('Training mode updated.');
     }
     close();
@@ -70,23 +101,63 @@ export default function TrainingModeMaster() {
             { field: 'name', header: 'Mode Name' },
             { field: 'attendanceType', header: 'Attendance Type' },
             {
-              field: 'status', header: 'Status',
+              field: 'status',
+              header: 'Status',
               cell: (item: TrainingMode) => (
-                <StatusBadge label={item.status} variant={item.status === 'Active' ? 'approved' : 'neutral'} />
+                <StatusBadge
+                  label={item.status}
+                  variant={item.status === 'Active' ? 'approved' : 'neutral'}
+                />
               ),
             },
             {
-              field: 'id', header: 'Actions', sortable: false,
+              field: 'id',
+              header: 'Actions',
+              sortable: false,
               cell: (item: TrainingMode) => (
                 <div style={{ display: 'flex', gap: '0.375rem' }}>
-                  <Button size="small" label="" icon="eye" variant="outlined" onClick={() => { setForm(item); setPopup({ mode: 'view', item }); }} />
-                  <Button size="small" label="" icon="pencil" variant="primary" onClick={() => { setForm(item); setPopup({ mode: 'edit', item }); }} />
-                  <Button size="small" label="" icon="trash" variant="danger" onClick={() => handleDelete(item)} />
+                  <Button
+                    size="small"
+                    label=""
+                    icon="eye"
+                    variant="outlined"
+                    onClick={() => {
+                      setForm(item);
+                      setPopup({ mode: 'view', item });
+                    }}
+                  />
+                  <Button
+                    size="small"
+                    label=""
+                    icon="pencil"
+                    variant="primary"
+                    onClick={() => {
+                      setForm(item);
+                      setPopup({ mode: 'edit', item });
+                    }}
+                  />
+                  <Button
+                    size="small"
+                    label=""
+                    icon="trash"
+                    variant="danger"
+                    onClick={() => handleDelete(item)}
+                  />
                 </div>
               ),
             },
           ]}
-          toolbar={<Button label="Add Mode" icon="plus" variant="primary" onClick={() => { setForm(EMPTY); setPopup({ mode: 'create' }); }} />}
+          toolbar={
+            <Button
+              label="Add Mode"
+              icon="plus"
+              variant="primary"
+              onClick={() => {
+                setForm(EMPTY);
+                setPopup({ mode: 'create' });
+              }}
+            />
+          }
           searchBox
         />
       </FormCard>
@@ -94,19 +165,61 @@ export default function TrainingModeMaster() {
       <FormPopup
         visible={popup.mode !== 'closed'}
         onHide={close}
-        title={popup.mode === 'create' ? 'Add Training Mode' : popup.mode === 'edit' ? 'Edit Mode' : 'View Mode'}
+        title={
+          popup.mode === 'create'
+            ? 'Add Training Mode'
+            : popup.mode === 'edit'
+              ? 'Edit Mode'
+              : 'View Mode'
+        }
       >
         <FormGrid columns={2}>
-          <TextBox label="Mode Code" value={form.code ?? ''} onChange={v => setForm(f => ({ ...f, code: v }))} required readOnly={isReadOnly} />
-          <TextBox label="Mode Name" value={form.name ?? ''} onChange={v => setForm(f => ({ ...f, name: v }))} required readOnly={isReadOnly} />
-          <DropDownList label="Attendance Type" data={ATTENDANCE_OPTIONS} textField="name" optionValue="value" value={form.attendanceType} onChange={v => setForm(f => ({ ...f, attendanceType: v as any }))} />
-          <DropDownList label="Status" data={STATUS_OPTIONS} textField="name" optionValue="value" value={form.status} onChange={v => setForm(f => ({ ...f, status: v as any }))} />
+          <TextBox
+            label="Mode Code"
+            value={form.code ?? ''}
+            onChange={v => setForm(f => ({ ...f, code: v }))}
+            required
+            readOnly={isReadOnly}
+          />
+          <TextBox
+            label="Mode Name"
+            value={form.name ?? ''}
+            onChange={v => setForm(f => ({ ...f, name: v }))}
+            required
+            readOnly={isReadOnly}
+          />
+          <DropDownList
+            label="Attendance Type"
+            data={ATTENDANCE_OPTIONS}
+            textField="name"
+            optionValue="value"
+            value={form.attendanceType}
+            onChange={v => setForm(f => ({ ...f, attendanceType: v as any }))}
+          />
+          <DropDownList
+            label="Status"
+            data={STATUS_OPTIONS}
+            textField="name"
+            optionValue="value"
+            value={form.status}
+            onChange={v => setForm(f => ({ ...f, status: v as any }))}
+          />
         </FormGrid>
-        <TextArea label="Description" value={form.description ?? ''} onChange={v => setForm(f => ({ ...f, description: v }))} rows={3} />
+        <TextArea
+          label="Description"
+          value={form.description ?? ''}
+          onChange={v => setForm(f => ({ ...f, description: v }))}
+          rows={3}
+        />
         {!isReadOnly && (
           <div className="flex justify-end gap-3 mt-4">
             <Button label="Cancel" variant="outlined" onClick={close} />
-            <Button label={popup.mode === 'create' ? 'Create' : 'Save Changes'} variant="primary" icon="check" onClick={handleSave} />
+            <Button
+              label={popup.mode === 'create' ? 'Create' : 'Save Changes'}
+              variant="primary"
+              icon="check"
+              onClick={handleSave}
+            />
           </div>
         )}
       </FormPopup>

@@ -53,12 +53,24 @@ export default function TrainerDevelopmentRoutes() {
       {/* ── Admin ── */}
       <Route path="admin" element={<AdminPortalPage />} />
       <Route path="admin/dashboard" element={<AdminDashboard />} />
-      <Route path="admin/masters/training-category" element={<TrainingCategoryMaster />} />
-      <Route path="admin/masters/training-mode" element={<TrainingModeMaster />} />
+      <Route
+        path="admin/masters/training-category"
+        element={<TrainingCategoryMaster />}
+      />
+      <Route
+        path="admin/masters/training-mode"
+        element={<TrainingModeMaster />}
+      />
       <Route path="admin/masters/competency" element={<CompetencyMaster />} />
-      <Route path="admin/masters/certification" element={<CertificationMaster />} />
+      <Route
+        path="admin/masters/certification"
+        element={<CertificationMaster />}
+      />
       <Route path="admin/masters/venue" element={<VenueMaster />} />
-      <Route path="admin/trainer-registration" element={<TrainerRegistration />} />
+      <Route
+        path="admin/trainer-registration"
+        element={<TrainerRegistration />}
+      />
       <Route path="admin/training-planning" element={<TrainingPlanning />} />
 
       <Route path="admin/training-sessions" element={<TrainingSessions />} />
@@ -85,7 +97,10 @@ export default function TrainerDevelopmentRoutes() {
       {/* ── External Trainer ── */}
       <Route path="external" element={<ExternalPortalPage />} />
       <Route path="external/dashboard" element={<ExternalDashboard />} />
-      <Route path="external/assigned-trainings" element={<AssignedTrainings />} />
+      <Route
+        path="external/assigned-trainings"
+        element={<AssignedTrainings />}
+      />
       <Route path="external/schedule" element={<Schedule />} />
       <Route path="external/attendance" element={<ExternalAttendance />} />
       <Route path="external/materials" element={<Materials />} />

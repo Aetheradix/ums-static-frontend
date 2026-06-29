@@ -11,21 +11,24 @@ export default function TdmPortalPage() {
       portals={[
         {
           title: 'Admin Portal',
-          description: 'Manage trainer registrations, training programmes, certificates and approvals.',
+          description:
+            'Manage trainer registrations, training programmes, certificates and approvals.',
           icon: 'admin_panel_settings',
           colorScheme: 'blue',
           path: tdmUrls.admin.portal,
         },
         {
           title: 'Faculty / Employee Portal',
-          description: 'View your trainings, apply for programmes, track competencies and download certificates.',
+          description:
+            'View your trainings, apply for programmes, track competencies and download certificates.',
           icon: 'groups',
           colorScheme: 'green',
           path: tdmUrls.faculty.portal,
         },
         {
           title: 'External Trainer Portal',
-          description: 'Access assigned training sessions, upload materials, submit attendance and view honorarium.',
+          description:
+            'Access assigned training sessions, upload materials, submit attendance and view honorarium.',
           icon: 'person_pin',
           colorScheme: 'orange',
           path: tdmUrls.external.portal,
