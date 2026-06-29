@@ -1,0 +1,238 @@
+.ems-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.ems-charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.ems-bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.ems-full-row {
+  margin-bottom: 1.5rem;
+}
+
+.ems-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+.ems-bar-label {
+  width: 12rem;
+  font-size: 0.813rem;
+  color: var(--color-text-secondary, #6b7280);
+  text-align: right;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ems-bar-track {
+  flex: 1;
+  background: #f3f4f6;
+  border-radius: 9999px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.ems-bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.4s ease;
+}
+
+.ems-bar-value {
+  width: 2.5rem;
+  font-size: 0.813rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.ems-bar-pct {
+  width: 2.75rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted, #9ca3af);
+  flex-shrink: 0;
+}
+
+.ems-split-row {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.ems-split-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.ems-split-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+}
+
+.ems-split-name {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #6b7280);
+  font-weight: 500;
+}
+
+.ems-info-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0;
+  border-bottom: 1px solid var(--color-border, #f3f4f6);
+}
+
+.ems-info-row:last-child {
+  border-bottom: none;
+}
+
+.ems-info-label {
+  width: 12rem;
+  font-size: 0.813rem;
+  color: var(--color-text-secondary, #6b7280);
+  flex-shrink: 0;
+}
+
+.ems-info-track {
+  flex: 1;
+  background: #f3f4f6;
+  border-radius: 9999px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.ems-info-fill {
+  height: 100%;
+  border-radius: 9999px;
+}
+
+.ems-info-pct {
+  width: 3rem;
+  font-size: 0.813rem;
+  font-weight: 600;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.ems-recent-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ems-recent-table th {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted, #9ca3af);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-border, #e5e7eb);
+  text-align: left;
+}
+
+.ems-recent-table td {
+  font-size: 0.813rem;
+  color: var(--color-text-primary, #111827);
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--color-border, #f3f4f6);
+}
+
+.ems-recent-table tr:last-child td {
+  border-bottom: none;
+}
+
+.ems-status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.ems-status-active {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.ems-status-inactive {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.ems-facility-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+
+.ems-facility-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.625rem 1rem;
+  border-radius: 10px;
+  min-width: 68px;
+  border: 1px solid var(--color-border, #e5e7eb);
+}
+
+.ems-facility-chip-icon {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ems-facility-chip-label {
+  font-size: 0.688rem;
+  color: var(--color-text-muted, #9ca3af);
+  margin-top: 0.125rem;
+  text-align: center;
+}
+
+.ems-facility-chip-value {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 1200px) {
+  .ems-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .ems-charts-row,
+  .ems-bottom-row {
+    grid-template-columns: 1fr;
+  }
+}
