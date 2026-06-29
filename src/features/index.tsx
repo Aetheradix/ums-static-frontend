@@ -18,6 +18,7 @@ import GrievanceManagement from './grievance-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
 import LeaveManagement from './leave-management';
+import ScholarshipDbt from './scholarship-dbt';
 import Lms from './lms';
 import Master from './master';
 import ProgrammeManagement from './programme-management';
@@ -166,6 +167,10 @@ export default function Features() {
                       <Route
                         path="leave-management/*"
                         element={<LeaveManagement />}
+                      />
+                      <Route
+                        path="scholarship-dbt/*"
+                        element={<ScholarshipDbt />}
                       />
                       <Route
                         path="trainer-development/*"
