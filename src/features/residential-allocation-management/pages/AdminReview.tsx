@@ -117,7 +117,6 @@ export default function AdminReview() {
                   ),
                 },
                 {
-                  field: 'action',
                   header: 'Action',
                   cell: (
                     item: ResidentialAllocationManagement.StaffApplication
@@ -213,12 +212,12 @@ export default function AdminReview() {
                   <div className="grid grid-cols-2 gap-2">
                     <Button
                       label="Flag for Correction"
-                      variant="secondary"
+                      variant="outlined"
                       onClick={() => handleReviewAction('Sent Back')}
                     />
                     <Button
                       label="Reject Application"
-                      variant="secondary"
+                      variant="danger"
                       onClick={() => handleReviewAction('Rejected')}
                     />
                   </div>
