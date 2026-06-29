@@ -4,13 +4,16 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
-import { myGrades, myStudentCourses } from '../../data';
-import { academicsUrls } from '../../urls';
+import { myGrades, myStudentCourses } from '../../../academics/data';
+import { studentManagementUrls } from '../../urls';
 
-const totalCredits = myStudentCourses.reduce((sum, c) => sum + c.credits, 0);
-const totalMarks = myGrades.reduce((sum, g) => sum + g.total, 0);
+const totalCredits = myStudentCourses.reduce(
+  (sum: number, c: any) => sum + c.credits,
+  0
+);
+const totalMarks = myGrades.reduce((sum: number, g: any) => sum + g.total, 0);
 const sgpa =
-  myGrades.reduce((sum, g) => {
+  myGrades.reduce((sum: number, g: any) => {
     const credits =
       myStudentCourses.find(c => c.code === g.courseCode)?.credits ?? 0;
     return sum + g.gradePoints * credits;
@@ -30,8 +33,8 @@ export default function TermReport() {
       description="Your semester performance summary and SGPA."
       breadcrumbs={[
         { label: 'Home', to: '/home' },
-        { label: 'Academic Management', to: academicsUrls.portal },
-        { label: 'Student Portal', to: academicsUrls.student.portal },
+        { label: 'Student Management', to: '/student-management' },
+        { label: 'Student Portal', to: studentManagementUrls.student.root },
         { label: 'Term Report' },
       ]}
     >

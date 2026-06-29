@@ -1312,14 +1312,12 @@ export const menuConfig: Menu.MenuItem[] = [
     ],
   },
   {
-    label: 'Admission\nManagement',
-
-    slug: 'admission-management',
-    category: 'Admission',
-    icon: 'how_to_reg',
+    label: 'Academic\nExaminations',
+    slug: 'academic-examinations',
+    category: 'Academics',
+    icon: 'school',
     colorScheme: 'red',
-    description:
-      'Manage student admissions, applications, and enrollment processes',
+    description: 'Manage exams, grading, evaluations, and certifications',
     navigationStyle: 'sidebar',
     children: [
       {
@@ -1801,26 +1799,6 @@ export const menuConfig: Menu.MenuItem[] = [
         path: '/sis/student-profile',
         icon: 'person_add',
         colorScheme: 'red',
-      },
-      {
-        label: 'Student Application Form',
-        slug: 'student-application-form',
-        description: 'Create and submit student applications.',
-        path: '/sis/student-application-form',
-        icon: 'assignment',
-        colorScheme: 'red',
-        feature: '@sis/StudentApplicationForm',
-        action: 'read',
-      },
-      {
-        label: 'Fee Payment Approval (Temp)',
-        slug: 'student-fee-approval',
-        description: 'Approve student application fee payments.',
-        path: '/sis/student-fee-approval',
-        icon: 'check_circle',
-        colorScheme: 'red',
-        feature: '@sis/StudentFeeApproval',
-        action: 'read',
       },
     ],
   },
@@ -3049,6 +3027,112 @@ export const menuConfig: Menu.MenuItem[] = [
       },
     ],
   },
+  // === ADMISSIONS MANAGEMENT MODULE ===
+  {
+    label: 'Admissions\nManagement',
+    slug: 'admissions-management',
+    category: 'Admission',
+    icon: 'how_to_reg',
+    colorScheme: 'blue',
+    path: '/admissions-management',
+    description:
+      'Manage student admissions, applications, fees, and portal configuration.',
+    navigationStyle: 'sidebar',
+    children: [
+      {
+        label: 'Admin Portal',
+        slug: 'admissions-admin',
+        description:
+          'Configure programmes, review applications, and manage the portal.',
+        icon: 'admin_panel_settings',
+        colorScheme: 'blue',
+        path: '/admissions-management/admin',
+        children: [
+          {
+            label: 'All Applications',
+            description: 'View and manage all admission applications.',
+            path: '/admissions-management/admin/applications',
+            icon: 'folder_open',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Fee Approval',
+            description: 'Approve or reject pending fee payments.',
+            path: '/admissions-management/admin/fee-approval',
+            icon: 'payments',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Programme Config',
+            description: 'Set admission criteria per programme.',
+            path: '/admissions-management/admin/programme-config',
+            icon: 'schema',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Fee Configuration',
+            description: 'Configure fees per programme and category.',
+            path: '/admissions-management/admin/fee-config',
+            icon: 'receipt_long',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Portal Settings',
+            description: 'Manage portal content, deadlines, and FAQs.',
+            path: '/admissions-management/admin/portal-settings',
+            icon: 'settings',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Notifications',
+            description: 'Publish public notices and announcements.',
+            path: '/admissions-management/admin/notifications',
+            icon: 'campaign',
+            colorScheme: 'blue',
+          },
+        ],
+      },
+      {
+        label: 'Student Portal',
+        slug: 'admissions-student',
+        description:
+          'Student self-service for applications, fee payment, and subject selection.',
+        icon: 'school',
+        colorScheme: 'blue',
+        path: '/admissions-management/student',
+        children: [
+          {
+            label: 'Apply Now',
+            description: 'Fill and submit admission application form.',
+            path: '/admissions-management/student/apply',
+            icon: 'assignment',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Application Status',
+            description: 'Track the status of your application.',
+            path: '/admissions-management/student/status',
+            icon: 'track_changes',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Fee Payment',
+            description: 'Pay your admission fee online.',
+            path: '/admissions-management/student/fee-payment',
+            icon: 'credit_card',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Subject Selection',
+            description: 'Choose subjects and electives.',
+            path: '/admissions-management/student/subject-selection',
+            icon: 'checklist',
+            colorScheme: 'blue',
+          },
+        ],
+      },
+    ],
+  },
   {
     label: 'Certificate Management',
     slug: 'certificate-management',
@@ -3605,6 +3689,77 @@ export const menuConfig: Menu.MenuItem[] = [
             colorScheme: 'red',
             feature: '@alumni-portal/privacy',
             action: 'read',
+          },
+        ],
+      },
+    ],
+  },
+  // === STUDENT MANAGEMENT MODULE ===
+  {
+    label: 'Student\nManagement',
+    slug: 'student-management',
+    category: 'Student Services',
+    icon: 'school',
+    colorScheme: 'orange',
+    description:
+      'Manage all student lifecycle activities from admission to graduation.',
+    navigationStyle: 'sidebar',
+    path: '/student-management',
+    children: [
+      {
+        label: 'Admin Portal',
+        slug: 'student-admin',
+        description:
+          'Manage students, bulk import, and perform administrative actions.',
+        icon: 'admin_panel_settings',
+        colorScheme: 'indigo',
+        path: '/student-management/admin',
+        children: [
+          {
+            label: 'Student Directory',
+            description: 'View and manage all students',
+            path: '/student-management/admin',
+            icon: 'people',
+            colorScheme: 'indigo',
+          },
+          {
+            label: 'Import Students',
+            description: 'Bulk import students',
+            path: '/student-management/admin/import',
+            icon: 'upload_file',
+            colorScheme: 'indigo',
+          },
+        ],
+      },
+      {
+        label: 'Student Portal',
+        slug: 'student-student',
+        description:
+          'Enrolled student self-service for courses, grades, and profile.',
+        icon: 'school',
+        colorScheme: 'orange',
+        path: '/student-management/student',
+        children: [
+          {
+            label: 'Dashboard',
+            description: 'Student Dashboard',
+            path: '/student-management/student',
+            icon: 'dashboard',
+            colorScheme: 'orange',
+          },
+          {
+            label: 'My Profile',
+            description: 'View and edit profile',
+            path: '/student-management/student/profile',
+            icon: 'person',
+            colorScheme: 'orange',
+          },
+          {
+            label: 'Link ABC Account',
+            description: 'Link academic bank of credits',
+            path: '/student-management/student/link-abc',
+            icon: 'link',
+            colorScheme: 'orange',
           },
         ],
       },

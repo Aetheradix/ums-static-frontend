@@ -25,6 +25,8 @@ import PublicPortalLayout, {
 } from './public-portal/layout/PublicPortalLayout';
 import Settings from './settings';
 import Sis from './sis';
+import StudentManagement from './student-management';
+import AdmissionsManagement from './admissions-management';
 import StudentFeedbackManagement from './student-feedback-management';
 import TrainerDevelopment from './trainer-development';
 
@@ -104,6 +106,14 @@ export default function Features() {
                       <Route path="master/*" element={<Master />} />
                       <Route path="settings/*" element={<Settings />} />
                       <Route path="sis/*" element={<Sis />} />
+                      <Route
+                        path="student-management/*"
+                        element={<StudentManagement />}
+                      />
+                      <Route
+                        path="admissions-management/*"
+                        element={<AdmissionsManagement />}
+                      />
                       <Route
                         path="affiliation-management-system/*"
                         element={<AffiliationManagementSystem />}
