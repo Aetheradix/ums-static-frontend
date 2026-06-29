@@ -19,6 +19,7 @@ import GrievanceManagement from './grievance-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
 import ResearchManagement from './research-management';
+import ResidentialAllocationManagement from './residential-allocation-management';
 import LeaveManagement from './leave-management';
 import Lms from './lms';
 import Master from './master';
@@ -165,6 +166,10 @@ export default function Features() {
                       <Route
                         path="research-management/*"
                         element={<ResearchManagement />}
+                      />
+                      <Route
+                        path="residential-allocation-management/*"
+                        element={<ResidentialAllocationManagement />}
                       />
                       <Route
                         path="grievance-management/*"
