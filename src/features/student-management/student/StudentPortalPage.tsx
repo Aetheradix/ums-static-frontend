@@ -10,6 +10,13 @@ export default function StudentPortalPage() {
       backLabel="Home"
       portals={[
         {
+          title: 'My Dashboard',
+          description: 'View your academic progress and recent updates.',
+          icon: 'dashboard',
+          colorScheme: 'teal',
+          path: studentManagementUrls.student.dashboard,
+        },
+        {
           title: 'Student Profile',
           description: 'Manage your personal and academic profile.',
           icon: 'person',

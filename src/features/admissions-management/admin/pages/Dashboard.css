@@ -1,0 +1,265 @@
+.dashboard-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .dashboard-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-stats-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.dashboard-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-charts-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.chart-container {
+  height: 250px;
+  position: relative;
+}
+
+.enrollment-progress-container {
+  padding: 1rem 0;
+}
+
+.enrollment-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 0.75rem;
+}
+
+.enrollment-progress-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.enrollment-progress-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.enrollment-progress-track {
+  width: 100%;
+  height: 0.75rem;
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.enrollment-progress-fill {
+  height: 100%;
+  background-color: #10b981;
+  transition: width 0.5s ease-out;
+}
+
+.enrollment-progress-subtitle {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+  text-align: right;
+}
+
+.dashboard-full-row {
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-content-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-content-split {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.timeline-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
+
+.timeline-list::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 2rem;
+  width: 2px;
+  background-color: #e5e7eb;
+}
+
+.timeline-list li {
+  display: flex;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.timeline-list li:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-date {
+  width: 4rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #3b82f6;
+  text-align: right;
+  padding-right: 1.5rem;
+  position: relative;
+}
+
+.timeline-date::after {
+  content: '';
+  position: absolute;
+  top: 0.25rem;
+  right: -5px;
+  width: 12px;
+  height: 12px;
+  background-color: #3b82f6;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.timeline-content {
+  flex: 1;
+  padding-left: 1.5rem;
+}
+
+.timeline-content strong {
+  display: block;
+  font-size: 0.875rem;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.timeline-content p {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+}
+
+.leaderboard-item .rank {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #d1d5db;
+  width: 2rem;
+  text-align: center;
+}
+
+.leaderboard-item:nth-child(1) .rank {
+  color: #fbbf24;
+}
+.leaderboard-item:nth-child(2) .rank {
+  color: #9ca3af;
+}
+.leaderboard-item:nth-child(3) .rank {
+  color: #b45309;
+}
+
+.program-details strong {
+  display: block;
+  font-size: 0.875rem;
+  color: #111827;
+}
+
+.program-details p {
+  font-size: 0.75rem;
+  color: #10b981;
+  margin: 0;
+  margin-top: 0.25rem;
+}
+
+.recent-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.recent-table th {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  color: #6b7280;
+  font-weight: 600;
+  background-color: #f9fafb;
+}
+
+.recent-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  color: #374151;
+  vertical-align: middle;
+}
+
+.recent-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status-pill-green {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status-pill-orange {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-pill-red {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.status-pill-blue {
+  background-color: #dbeafe;
+  color: #1e40af;
+}

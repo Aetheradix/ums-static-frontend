@@ -10,6 +10,13 @@ export default function AdminPortalPage() {
       backLabel="Admissions Management"
       portals={[
         {
+          title: 'Dashboard',
+          description: 'View admissions overview and recent activities.',
+          icon: 'dashboard',
+          colorScheme: 'teal',
+          path: admissionsUrls.admin.dashboard,
+        },
+        {
           title: 'All Applications',
           description:
             'View all admission applications and update their status.',

@@ -10,6 +10,13 @@ export default function StudentPortalPage() {
       backLabel="Admissions Management"
       portals={[
         {
+          title: 'My Dashboard',
+          description: 'Track your application status and progress.',
+          icon: 'dashboard',
+          colorScheme: 'teal',
+          path: admissionsUrls.student.dashboard,
+        },
+        {
           title: 'Apply Now',
           description: 'Fill and submit your admission application form.',
           icon: 'assignment',

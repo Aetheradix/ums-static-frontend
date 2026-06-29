@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import AdmissionsPortalPage from './AdmissionsPortalPage';
 import AdminPortalPage from './admin/AdminPortalPage';
+import Dashboard from './admin/pages/Dashboard';
 import ApplicationList from './admin/pages/ApplicationList';
 import FeeApproval from './admin/pages/FeeApproval';
 import ProgrammeConfig from './admin/pages/ProgrammeConfig';
@@ -8,6 +9,7 @@ import FeeConfig from './admin/pages/FeeConfig';
 import PortalSettings from './admin/pages/PortalSettings';
 import NotificationList from './admin/pages/NotificationList';
 import StudentPortalPage from './student/StudentPortalPage';
+import AdmissionsStudentDashboard from './student/pages/Dashboard';
 import ApplicationStatus from './student/pages/ApplicationStatus';
 import ApplicationForm from './student/application-form/pages/ApplicationForm';
 import FeePayment from 'features/admission-portal/pages/FeePayment';
@@ -19,6 +21,7 @@ export default function AdmissionsManagement() {
 
       {/* Admin routes */}
       <Route path="admin" element={<AdminPortalPage />} />
+      <Route path="admin/dashboard" element={<Dashboard />} />
       <Route path="admin/applications" element={<ApplicationList />} />
       <Route path="admin/fee-approval" element={<FeeApproval />} />
       <Route path="admin/programme-config" element={<ProgrammeConfig />} />
@@ -28,6 +31,10 @@ export default function AdmissionsManagement() {
 
       {/* Student routes */}
       <Route path="student" element={<StudentPortalPage />} />
+      <Route
+        path="student/dashboard"
+        element={<AdmissionsStudentDashboard />}
+      />
       <Route path="student/apply/*" element={<ApplicationForm />} />
       <Route path="student/status" element={<ApplicationStatus />} />
       <Route

@@ -12,7 +12,7 @@ export default function StudentManagementPortalPage() {
             'Manage students, bulk import, and perform administrative actions.',
           icon: 'admin_panel_settings',
           colorScheme: 'indigo',
-          path: '/student-management/admin',
+          path: '/student-management/admin/dashboard',
         },
         {
           title: 'Student Portal',
