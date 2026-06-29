@@ -26,6 +26,7 @@ import PublicPortalLayout, {
 import Settings from './settings';
 import Sis from './sis';
 import StudentFeedbackManagement from './student-feedback-management';
+import PayrollRoutes from './payroll';
 
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
@@ -156,6 +157,10 @@ export default function Features() {
                       <Route
                         path="alumni-management/*"
                         element={<AlumniManagement />}
+                      />
+                      <Route
+                        path="payroll-management/*"
+                        element={<PayrollRoutes />}
                       />
                     </Routes>
                   </MainLayout>
