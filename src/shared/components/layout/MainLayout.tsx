@@ -15,8 +15,11 @@ const PORTAL_PATHS: string[] = [
   '/academics',
   '/admissions-management',
   '/student-management',
+
   '/infrastructure-project-management',
   '/infrastructure-project-management/reports',
+
+  '/student-activities-clubs',
   '/essential-services',
   '/essential-services/admin',
   '/essential-services/employee',

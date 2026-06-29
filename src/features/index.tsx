@@ -19,6 +19,7 @@ import GrievanceManagement from './grievance-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
 import InfrastructureProjectManagement from './infrastructure-project-management';
+import ItServiceDesk from './it-service-desk';
 import ResearchManagement from './research-management';
 import ResidentialAllocationManagement from './residential-allocation-management';
 import LeaveManagement from './leave-management';
@@ -35,6 +36,7 @@ import Settings from './settings';
 import Sis from './sis';
 import StudentFeedbackManagement from './student-feedback-management';
 import StudentManagement from './student-management';
+import StudentActivitiesClubs from './student-activities-clubs';
 
 import PayrollRoutes from './payroll';
 
@@ -166,6 +168,10 @@ export default function Features() {
                         element={<HostelManagement />}
                       />
                       <Route
+                        path="it-service-desk/*"
+                        element={<ItServiceDesk />}
+                      />
+                      <Route
                         path="research-management/*"
                         element={<ResearchManagement />}
                       />
@@ -181,6 +187,10 @@ export default function Features() {
                       <Route
                         path="student-feedback-management/*"
                         element={<StudentFeedbackManagement />}
+                      />
+                      <Route
+                        path="student-activities-clubs/*"
+                        element={<StudentActivitiesClubs />}
                       />
                       <Route
                         path="rti-management/*"
