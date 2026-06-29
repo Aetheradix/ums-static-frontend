@@ -60,7 +60,7 @@ export default function QuizManagement() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Learning Management System', to: learningUrls.portal },
-        { label: 'Quiz Management' }
+        { label: 'Quiz Management' },
       ]}
     >
       <FormCard>

@@ -50,7 +50,7 @@ export default function CourseProgress() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Learning Management System', to: learningUrls.portal },
-        { label: 'Course Progress Report' }
+        { label: 'Course Progress Report' },
       ]}
     >
       <FormCard>

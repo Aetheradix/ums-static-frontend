@@ -99,6 +99,8 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
         toPath = '/home/sub-menu/affiliation-management-system';
       } else if (path.toLowerCase() === 'affiliation-settings') {
         toPath = '/home/sub-menu/affiliation-settings';
+      } else if (path.toLowerCase() === 'open-book-examination') {
+        toPath = '/home/sub-menu/open-book-examination';
       }
 
       generatedItems.push({
