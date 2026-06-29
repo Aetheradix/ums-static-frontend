@@ -9,6 +9,7 @@ import {
 import { TextBox, DropDownList, TextArea } from 'shared/components/forms';
 import StatusButton from 'shared/components/buttons/StatusButton';
 import { ToastService } from 'services';
+import { learningUrls } from '../../urls';
 
 const MOCK_DATA = [
   {
@@ -73,6 +74,11 @@ export default function CourseMasterList() {
     <FormPage
       title="Course Master"
       description="Manage courses across the institution."
+      breadcrumbs={[
+        { label: 'Home', to: '/home' },
+        { label: 'Learning Management System', to: learningUrls.portal },
+        { label: 'Course Master' }
+      ]}
     >
       <FormCard>
         <GridPanel

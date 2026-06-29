@@ -5,8 +5,8 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
-import { type StudentCourse, myStudentCourses } from '../../data';
-import { academicsUrls } from '../../urls';
+import { type StudentCourse, myStudentCourses } from '../../../academics/data';
+import { studentManagementUrls } from '../../urls';
 
 export default function MyCourses() {
   const [data] = useState<StudentCourse[]>(myStudentCourses);
@@ -17,8 +17,8 @@ export default function MyCourses() {
       description="View all courses you are currently enrolled in."
       breadcrumbs={[
         { label: 'Home', to: '/home' },
-        { label: 'Academic Management', to: academicsUrls.portal },
-        { label: 'Student Portal', to: academicsUrls.student.portal },
+        { label: 'Student Management', to: '/student-management' },
+        { label: 'Student Portal', to: studentManagementUrls.student.root },
         { label: 'My Courses' },
       ]}
     >

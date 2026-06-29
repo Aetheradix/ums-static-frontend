@@ -11,10 +11,6 @@ import FacultyPortalPage from './faculty/FacultyPortalPage';
 import MarkEntry from './faculty/pages/MarkEntry';
 import FacultyMyCourses from './faculty/pages/MyCourses';
 import AcademicsPortalPage from './portal/AcademicsPortalPage';
-import StudentPortalPage from './student/StudentPortalPage';
-import MyCourses from './student/pages/MyCourses';
-import MyGrades from './student/pages/MyGrades';
-import TermReport from './student/pages/TermReport';
 
 export default function Academics() {
   return (
@@ -28,10 +24,7 @@ export default function Academics() {
       <Route path="admin/academic-sessions" element={<AcademicSessions />} />
       <Route path="admin/evaluation" element={<Evaluation />} />
       <Route path="admin/grading" element={<GradingScales />} />
-      <Route path="student" element={<StudentPortalPage />} />
-      <Route path="student/my-courses" element={<MyCourses />} />
-      <Route path="student/my-grades" element={<MyGrades />} />
-      <Route path="student/term-report" element={<TermReport />} />
+
       <Route path="faculty" element={<FacultyPortalPage />} />
       <Route path="faculty/my-courses" element={<FacultyMyCourses />} />
       <Route path="faculty/mark-entry" element={<MarkEntry />} />

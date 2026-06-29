@@ -8,6 +8,7 @@ import {
 } from 'shared/new-components';
 import { TextBox, TextArea } from 'shared/components/forms';
 import { ToastService } from 'services';
+import { learningUrls } from '../../urls';
 
 const MOCK_DATA = [
   {
@@ -49,6 +50,11 @@ export default function AssignmentSubmissions() {
     <FormPage
       title="Assignment Submissions Review"
       description="Review and grade student assignment submissions."
+      breadcrumbs={[
+        { label: 'Home', to: '/home' },
+        { label: 'Learning Management System', to: learningUrls.portal },
+        { label: 'Assignment Submissions Review' }
+      ]}
     >
       <FormCard>
         <GridPanel
