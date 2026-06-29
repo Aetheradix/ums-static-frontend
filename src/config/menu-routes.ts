@@ -1312,6 +1312,63 @@ export const menuConfig: Menu.MenuItem[] = [
     ],
   },
   {
+    label: 'Scholarship\n& DBT',
+    slug: 'scholarship-dbt',
+    category: 'Student Services',
+    icon: 'workspace_premium',
+    colorScheme: 'blue',
+    description: 'Scholarships • Direct Benefit Transfer (DBT) • Portals',
+    path: '/scholarship-dbt',
+    children: [
+      {
+        label: 'Scholarship & DBT Transfer',
+        slug: 'scholarship-dbt-system',
+        description:
+          'Manage applications, verifications, eligibility and portal syncing.',
+        path: '/scholarship-dbt',
+        icon: 'workspace_premium',
+        colorScheme: 'blue',
+        children: [
+          {
+            label: 'Student Portal',
+            description: 'Apply, verify Aadhaar/bank and track DBT.',
+            path: '/scholarship-dbt/student',
+            icon: 'school',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Teacher Portal',
+            description: 'Verify attendance, academic and document records.',
+            path: '/scholarship-dbt/teacher',
+            icon: 'groups',
+            colorScheme: 'green',
+          },
+          {
+            label: 'Scholarship Cell',
+            description: 'Verify documents, run engine, and sync portals.',
+            path: '/scholarship-dbt/scholarship-cell',
+            icon: 'account_balance',
+            colorScheme: 'purple',
+          },
+          {
+            label: 'Finance Portal',
+            description: 'Receipts, adjustments, ledger and reconciliation.',
+            path: '/scholarship-dbt/finance',
+            icon: 'payments',
+            colorScheme: 'teal',
+          },
+          {
+            label: 'Admin Portal',
+            description: 'Masters, eligibility rules, integration and logs.',
+            path: '/scholarship-dbt/admin',
+            icon: 'admin_panel_settings',
+            colorScheme: 'orange',
+          },
+        ],
+      },
+    ],
+  },
+  {
     label: 'Academic\nExaminations',
     slug: 'academic-examinations',
     category: 'Academics',
@@ -4353,6 +4410,7 @@ export const menuConfig: Menu.MenuItem[] = [
     icon: 'credit_card',
     colorScheme: 'red',
     description: 'Earnings • Deductions • Salary processing • Reports',
+    path: '/payroll-management',
     children: [
       {
         label: 'Dashboard',
