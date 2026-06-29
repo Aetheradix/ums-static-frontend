@@ -2332,6 +2332,60 @@ export const menuConfig: Menu.MenuItem[] = [
     ],
   },
   {
+    label: 'Research\nManagement',
+    slug: 'research-management',
+    category: 'Research',
+    description:
+      'End-to-end research grant lifecycle — proposal submission, compliance review, ethics gating and milestone disbursement.',
+    path: '/home/sub-menu/research-management',
+    icon: 'science',
+    colorScheme: 'indigo',
+    children: [
+      {
+        label: 'Dashboard',
+        slug: 'research-dashboard',
+        description:
+          'Overview of active projects, proposals and disbursements.',
+        path: '/research-management/dashboard',
+        icon: 'dashboard',
+        colorScheme: 'indigo',
+      },
+      {
+        label: 'Project Registry',
+        slug: 'project-registry',
+        description: 'Register and manage sponsored research projects.',
+        path: '/research-management/project-registry',
+        icon: 'book',
+        colorScheme: 'indigo',
+      },
+      {
+        label: 'Proposal Wizard',
+        slug: 'proposal-wizard',
+        description: 'Submit a 9-step research grant proposal.',
+        path: '/research-management/proposal-wizard',
+        icon: 'assignment',
+        colorScheme: 'indigo',
+      },
+      {
+        label: 'Admin Review',
+        slug: 'admin-review',
+        description:
+          'Compliance screening — plagiarism, ethics and approval desk.',
+        path: '/research-management/admin-review',
+        icon: 'fact_check',
+        colorScheme: 'indigo',
+      },
+      {
+        label: 'Ledger Disbursement',
+        slug: 'ledger-disbursement',
+        description: 'Authorize milestone tranches with ethics-lock guards.',
+        path: '/research-management/ledger-disbursement',
+        icon: 'receipt',
+        colorScheme: 'indigo',
+      },
+    ],
+  },
+  {
     label: 'Governance',
     slug: 'governance',
     category: 'Governance',
