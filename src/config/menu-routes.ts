@@ -4656,13 +4656,13 @@ export const menuConfig: Menu.MenuItem[] = [
         icon: 'assignment',
         colorScheme: 'red',
       },
-      {
-        label: 'About Payroll',
-        description: 'Payroll details and documentation.',
-        path: '/payroll-management/about-payroll',
-        icon: 'article',
-        colorScheme: 'red',
-      },
+      // {
+      //   label: 'About Payroll',
+      //   description: 'Payroll details and documentation.',
+      //   path: '/payroll-management/about-payroll',
+      //   icon: 'article',
+      //   colorScheme: 'red',
+      // },
       {
         label: 'Set Head Value',
         slug: 'set-head-value',
@@ -4747,13 +4747,13 @@ export const menuConfig: Menu.MenuItem[] = [
           },
         ],
       },
-      {
-        label: 'Payroll Reports',
-        description: 'Access various payroll statements and reports.',
-        path: '/payroll-management/payroll-reports',
-        icon: 'bar_chart',
-        colorScheme: 'red',
-      },
+      // {
+      //   label: 'Payroll Reports',
+      //   description: 'Access various payroll statements and reports.',
+      //   path: '/payroll-management/payroll-reports',
+      //   icon: 'bar_chart',
+      //   colorScheme: 'red',
+      // },
       {
         label: 'Gratuity',
         description: 'Manage gratuity definitions and details.',
