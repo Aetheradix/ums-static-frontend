@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextBox } from 'shared/components/forms';
@@ -211,7 +211,7 @@ export default function StaffApply() {
             />
             <Button
               label="Pull Profile"
-              variant="secondary"
+              variant="outlined"
               onClick={handleRetrieveCorrectionProfile}
             />
           </div>
@@ -531,7 +531,7 @@ export default function StaffApply() {
             <div className="flex justify-between pt-4 border-t border-slate-100">
               <Button
                 label="← Previous Step"
-                variant="secondary"
+                variant="outlined"
                 onClick={handleApplyPrev}
                 disabled={applyStep === 1}
               />

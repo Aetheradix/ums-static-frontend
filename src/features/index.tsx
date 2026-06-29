@@ -18,6 +18,7 @@ import FinanceSupplyChain from './finance-supply-chain';
 import GrievanceManagement from './grievance-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
+import ItServiceDesk from './it-service-desk';
 import ResearchManagement from './research-management';
 import ResidentialAllocationManagement from './residential-allocation-management';
 import LeaveManagement from './leave-management';
@@ -162,6 +163,10 @@ export default function Features() {
                       <Route
                         path="hostel-management/*"
                         element={<HostelManagement />}
+                      />
+                      <Route
+                        path="it-service-desk/*"
+                        element={<ItServiceDesk />}
                       />
                       <Route
                         path="research-management/*"
