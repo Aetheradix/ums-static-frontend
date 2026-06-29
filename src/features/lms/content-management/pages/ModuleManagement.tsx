@@ -41,7 +41,7 @@ export default function ModuleManagement() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Learning Management System', to: learningUrls.portal },
-        { label: 'Module Management' }
+        { label: 'Module Management' },
       ]}
     >
       <div className="flex justify-end mb-4">

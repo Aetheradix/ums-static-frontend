@@ -41,7 +41,7 @@ export default function ContentTypeList() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Learning Management System', to: learningUrls.portal },
-        { label: 'Content Type Master' }
+        { label: 'Content Type Master' },
       ]}
     >
       <FormCard>

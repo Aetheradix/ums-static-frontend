@@ -59,7 +59,7 @@ export default function CertificationMasterList() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Learning Management System', to: learningUrls.portal },
-        { label: 'Certification Master' }
+        { label: 'Certification Master' },
       ]}
     >
       <FormCard>

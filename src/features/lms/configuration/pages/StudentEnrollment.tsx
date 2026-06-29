@@ -52,7 +52,7 @@ export default function StudentEnrollment() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Learning Management System', to: learningUrls.portal },
-        { label: 'Student Enrollment' }
+        { label: 'Student Enrollment' },
       ]}
     >
       <FormCard>

@@ -21,13 +21,14 @@ import ResearchManagement from './research-management';
 import LeaveManagement from './leave-management';
 import Lms from './lms';
 import Master from './master';
+import OpenBookExamination from './open-book-examination';
 import ProgrammeManagement from './programme-management';
 import PublicPortalLayout, {
   PublicRouteWrapper,
 } from './public-portal/layout/PublicPortalLayout';
+import RTIManagement from './rti-management';
 import Settings from './settings';
 import Sis from './sis';
-import RTIManagement from './rti-management';
 import StudentFeedbackManagement from './student-feedback-management';
 import StudentManagement from './student-management';
 
@@ -184,6 +185,10 @@ export default function Features() {
                       <Route
                         path="alumni-management/*"
                         element={<AlumniManagement />}
+                      />
+                      <Route
+                        path="open-book-examination/*"
+                        element={<OpenBookExamination />}
                       />
                       <Route
                         path="payroll-management/*"
