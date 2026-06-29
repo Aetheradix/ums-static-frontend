@@ -32,6 +32,14 @@ export default function CandidatePortalPage() {
           colorScheme: 'orange',
           path: '/recruitment-management/candidate/choice-filling',
         },
+        {
+          title: 'Joining Request',
+          description:
+            'Submit your joining request to your allocated school after receiving the order.',
+          icon: 'assignment_turned_in',
+          colorScheme: 'indigo',
+          path: '/recruitment-management/candidate/joining-request',
+        },
       ]}
     />
   );

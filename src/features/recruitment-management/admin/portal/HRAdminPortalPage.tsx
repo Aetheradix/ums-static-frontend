@@ -63,6 +63,14 @@ export default function HRAdminPortalPage() {
           colorScheme: 'purple',
           path: '/recruitment-management/admin/approvals',
         },
+        {
+          title: 'Create Joining Order',
+          description:
+            'Generate joining orders for allocated candidates (DO/JD/DPI access).',
+          icon: 'post_add',
+          colorScheme: 'indigo',
+          path: '/recruitment-management/admin/joining-order',
+        },
       ]}
     />
   );

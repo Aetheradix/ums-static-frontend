@@ -3,6 +3,7 @@ import RecruitmentPortalPage from './portal/RecruitmentPortalPage';
 
 // Candidate
 import CandidateChoiceFillingPage from './candidate/pages/CandidateChoiceFillingPage';
+import CandidateJoiningRequestPage from './candidate/pages/CandidateJoiningRequestPage';
 import DocumentUploadPage from './candidate/pages/DocumentUploadPage';
 import CandidatePortalPage from './candidate/portal/CandidatePortalPage';
 
@@ -15,6 +16,7 @@ import VerificationCenterPortalPage from './verification-center/portal/Verificat
 import DocumentConfigPage from './admin/pages/DocumentConfigPage';
 import HOVerificationPage from './admin/pages/HOVerificationPage';
 import HRAdminDashboard from './admin/pages/HRAdminDashboard';
+import JoiningOrderPage from './admin/pages/JoiningOrderPage';
 import MeritListUploadPage from './admin/pages/MeritListUploadPage';
 import VacancyUploadPage from './admin/pages/VacancyUploadPage';
 import VerificationCenterUploadPage from './admin/pages/VerificationCenterUploadPage';
@@ -33,6 +35,10 @@ export default function RecruitmentManagement() {
       <Route
         path="candidate/choice-filling"
         element={<CandidateChoiceFillingPage />}
+      />
+      <Route
+        path="candidate/joining-request"
+        element={<CandidateJoiningRequestPage />}
       />
 
       {/* Verification Center routes — sidebar active */}
@@ -60,6 +66,7 @@ export default function RecruitmentManagement() {
         element={<VerificationCenterUploadPage />}
       />
       <Route path="admin/ho-verification" element={<HOVerificationPage />} />
+      <Route path="admin/joining-order" element={<JoiningOrderPage />} />
       <Route path="admin/approvals" element={<HRAdminDashboard />} />
 
       <Route path="*" element={<RecruitmentPortalPage />} />
