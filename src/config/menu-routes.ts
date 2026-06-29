@@ -2082,7 +2082,7 @@ export const menuConfig: Menu.MenuItem[] = [
         ],
       },
       {
-        label: 'Inventory',
+        label: 'Inventory Management ',
         slug: 'fsc-inventory',
         description: 'Manage items, stock issues and transfers.',
         path: '/home/sub-menu/fsc-inventory',
