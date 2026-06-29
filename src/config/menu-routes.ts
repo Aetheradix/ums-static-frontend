@@ -2612,6 +2612,24 @@ export const menuConfig: Menu.MenuItem[] = [
       },
     ],
   },
+  {
+    label: 'Trainer\nDevelopment',
+    slug: 'trainer-development',
+    category: 'Employee',
+    icon: 'psychology',
+    colorScheme: 'indigo',
+    description: 'Trainings • Competencies • Feedback • Certifications',
+    children: [
+      {
+        label: 'Trainer Development Management',
+        slug: 'trainer-development-system',
+        description: 'Complete administration of training programmes, registrations, competency mapping and certificates.',
+        path: '/trainer-development',
+        icon: 'model_training',
+        colorScheme: 'indigo',
+      }
+    ]
+  },
   // {
   //   label: 'Career\nGateway',
   //   slug: 'career-gateway',
