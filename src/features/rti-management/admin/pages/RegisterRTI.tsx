@@ -109,9 +109,15 @@ export default function RegisterRTI() {
           />
           <TextBox
             label="Mobile"
-            placeholder="10-digit mobile number"
+            placeholder="Mobile number"
             value={form.applicantMobile}
-            onChange={v => setForm(f => ({ ...f, applicantMobile: v }))}
+            maxLength={15}
+            onChange={v => {
+              const numericValue = v.replace(/\D/g, '');
+              if (numericValue.length <= 15) {
+                setForm(f => ({ ...f, applicantMobile: numericValue }));
+              }
+            }}
           />
           <TextBox
             label="Address"

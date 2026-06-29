@@ -41,7 +41,10 @@ export default function PayrollRoutes() {
   return (
     <Suspense fallback={<Loader />}>
       <Routes>
-        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route
+          index
+          element={<Navigate to="/home/sub-menu/payroll-management" replace />}
+        />
 
         <Route path="dashboard" element={<PayrollDashboard />} />
         <Route path="earning-deduction" element={<EarningAndDeduction />} />
