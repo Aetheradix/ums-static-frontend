@@ -3,6 +3,7 @@ import { Button } from 'shared/components/buttons';
 import { FormPage, FormCard, FormPopup } from 'shared/new-components';
 import { TextBox, DropDownList } from 'shared/components/forms';
 import { ToastService } from 'services';
+import { learningUrls } from '../../urls';
 
 const MOCK_MODULES = [
   {
@@ -37,6 +38,11 @@ export default function ModuleManagement() {
     <FormPage
       title="Module Management"
       description="Manage modules and their topics."
+      breadcrumbs={[
+        { label: 'Home', to: '/home' },
+        { label: 'Learning Management System', to: learningUrls.portal },
+        { label: 'Module Management' }
+      ]}
     >
       <div className="flex justify-end mb-4">
         <Button
