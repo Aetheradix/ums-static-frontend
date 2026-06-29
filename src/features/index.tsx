@@ -35,6 +35,7 @@ import Settings from './settings';
 import Sis from './sis';
 import StudentFeedbackManagement from './student-feedback-management';
 import StudentManagement from './student-management';
+import StudentActivitiesClubs from './student-activities-clubs';
 
 import PayrollRoutes from './payroll';
 
@@ -185,6 +186,10 @@ export default function Features() {
                       <Route
                         path="student-feedback-management/*"
                         element={<StudentFeedbackManagement />}
+                      />
+                      <Route
+                        path="student-activities-clubs/*"
+                        element={<StudentActivitiesClubs />}
                       />
                       <Route
                         path="rti-management/*"
