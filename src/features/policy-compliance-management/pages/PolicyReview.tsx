@@ -55,6 +55,7 @@ export default function PolicyReview() {
       title="Policy Review"
       description="Review draft policies — approve, reject, or send back for changes"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Policy & Compliance',
           to: '/policy-compliance-management/dashboard',

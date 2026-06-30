@@ -7,6 +7,7 @@ export default function Acknowledgements() {
       title="Policy Acknowledgements"
       description="Track user acknowledgements — User ID, Date, Time, IP Address, and Version Accepted"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Policy & Compliance',
           to: '/policy-compliance-management/dashboard',

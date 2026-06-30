@@ -99,6 +99,7 @@ export default function AuditManagement() {
       title="Audit Management"
       description="Schedule, conduct, and manage internal audits"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Policy & Compliance',
           to: '/policy-compliance-management/dashboard',

@@ -34,6 +34,7 @@ export default function PublishedPolicies() {
       title="Published Policies"
       description="Read and acknowledge published university policies"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Policy & Compliance',
           to: '/policy-compliance-management/dashboard',

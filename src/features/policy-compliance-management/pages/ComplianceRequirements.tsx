@@ -96,6 +96,7 @@ export default function ComplianceRequirements() {
       title="Compliance Requirements"
       description="Compliance Officer creates compliance activities with defined frequency"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Policy & Compliance',
           to: '/policy-compliance-management/dashboard',

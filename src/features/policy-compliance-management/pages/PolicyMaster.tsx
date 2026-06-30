@@ -156,6 +156,7 @@ export default function PolicyMaster() {
       title="Policy Master"
       description="Create and manage university policies — all policies start as Draft"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Policy & Compliance',
           to: '/policy-compliance-management/dashboard',
@@ -230,30 +231,33 @@ export default function PolicyMaster() {
           setShowForm(false);
           resetForm();
         }}
+        size="lg"
       >
-        <FormGrid columns={2}>
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700">
+        <FormGrid columns={2} className="gap-y-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-slate-800">
               Policy Name *
             </label>
             <InputText
               value={formData.name}
               onChange={e => setFormData({ ...formData, name: e.target.value })}
               placeholder="Enter policy name"
+              className="w-full"
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-slate-800">
               Policy Code *
             </label>
             <InputText
               value={formData.code}
               onChange={e => setFormData({ ...formData, code: e.target.value })}
               placeholder="e.g. ARP-2026"
+              className="w-full"
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-slate-800">
               Category *
             </label>
             <Dropdown
@@ -261,10 +265,11 @@ export default function PolicyMaster() {
               options={categoryOptions}
               onChange={e => setFormData({ ...formData, category: e.value })}
               placeholder="Select category"
+              className="w-full"
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-slate-800">
               Department *
             </label>
             <Dropdown
@@ -272,10 +277,11 @@ export default function PolicyMaster() {
               options={departmentOptions}
               onChange={e => setFormData({ ...formData, department: e.value })}
               placeholder="Select department"
+              className="w-full"
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-slate-800">
               Effective Date *
             </label>
             <Calendar
@@ -286,10 +292,11 @@ export default function PolicyMaster() {
               dateFormat="yy-mm-dd"
               placeholder="Select date"
               showIcon
+              className="w-full"
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-slate-800">
               Expiry Date (Optional)
             </label>
             <Calendar
@@ -300,10 +307,11 @@ export default function PolicyMaster() {
               dateFormat="yy-mm-dd"
               placeholder="Select date"
               showIcon
+              className="w-full"
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-slate-800">
               Applicable To *
             </label>
             <MultiSelect
@@ -314,10 +322,11 @@ export default function PolicyMaster() {
               }
               placeholder="Select applicable groups"
               display="chip"
+              className="w-full"
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-slate-800">
               Version Number
             </label>
             <InputText
@@ -326,10 +335,11 @@ export default function PolicyMaster() {
                 setFormData({ ...formData, versionNumber: e.target.value })
               }
               placeholder="e.g. 1.0"
+              className="w-full"
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-slate-800">
               Attachment (PDF/Word)
             </label>
             <InputText
@@ -338,10 +348,19 @@ export default function PolicyMaster() {
                 setFormData({ ...formData, attachment: e.target.value })
               }
               placeholder="Upload file name"
+              className="w-full"
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700">
+          <div className="flex items-center justify-between h-10 mt-6 px-1">
+            <label
+              className="text-sm font-medium text-slate-800 cursor-pointer"
+              onClick={() =>
+                setFormData({
+                  ...formData,
+                  approvalRequired: !formData.approvalRequired,
+                })
+              }
+            >
               Approval Required
             </label>
             <InputSwitch
@@ -349,11 +368,12 @@ export default function PolicyMaster() {
               onChange={e =>
                 setFormData({ ...formData, approvalRequired: e.value })
               }
+              className="scale-90"
             />
           </div>
         </FormGrid>
-        <div className="flex flex-col gap-2 mt-4">
-          <label className="text-sm font-semibold text-gray-700">
+        <div className="flex flex-col gap-1.5 mt-5">
+          <label className="text-sm font-medium text-slate-800">
             Description *
           </label>
           <InputTextarea
@@ -363,13 +383,16 @@ export default function PolicyMaster() {
             }
             rows={4}
             placeholder="Enter policy description"
+            className="w-full"
           />
         </div>
-        <FormActions
-          isEditMode={!!editingPolicy}
-          onSave={handleSave}
-          onReset={resetForm}
-        />
+        <div className="mt-8 mb-2">
+          <FormActions
+            isEditMode={!!editingPolicy}
+            onSave={handleSave}
+            onReset={resetForm}
+          />
+        </div>
       </FormPopup>
 
       {/* ── Policy Preview ── */}

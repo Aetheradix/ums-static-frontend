@@ -71,6 +71,7 @@ export default function Dashboard() {
       title="Policy & Compliance Dashboard"
       description="Real-time overview of policy lifecycle, compliance status, and audit findings"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Policy & Compliance',
           to: '/policy-compliance-management/dashboard',

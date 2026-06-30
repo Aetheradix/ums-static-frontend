@@ -84,6 +84,7 @@ export default function CorrectiveActions() {
       title="Corrective Actions (CAPA)"
       description="Manage corrective and preventive actions for non-compliance issues"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Policy & Compliance',
           to: '/policy-compliance-management/dashboard',

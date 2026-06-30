@@ -76,6 +76,7 @@ export default function Reports() {
       title="Reports & Analytics"
       description="Comprehensive reports on policy lifecycle, compliance, audits, and corrective actions"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Policy & Compliance',
           to: '/policy-compliance-management/dashboard',

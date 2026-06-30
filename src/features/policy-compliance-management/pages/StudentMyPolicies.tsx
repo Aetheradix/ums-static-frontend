@@ -70,6 +70,7 @@ export default function StudentMyPolicies() {
       title="My Policies"
       description="View applicable policies and complete acknowledgements"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Policy & Compliance',
           to: '/policy-compliance-management/my-policies',
@@ -77,12 +78,12 @@ export default function StudentMyPolicies() {
         { label: 'My Policies' },
       ]}
     >
-      <FormCard title="Applicable Policies" icon="article">
+      <FormCard title="Applicable Policies" icon="file">
         <GridPanel
           data={policies}
           columns={[
             { field: 'code', header: 'Policy Code', width: '120px' },
-            { field: 'name', header: 'Policy Name' },
+            { field: 'name', header: 'Policy Name', width: '35%' },
             {
               field: 'effectiveDate',
               header: 'Effective Date',

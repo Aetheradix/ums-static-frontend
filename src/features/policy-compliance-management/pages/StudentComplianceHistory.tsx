@@ -29,6 +29,7 @@ export default function StudentComplianceHistory() {
       title="Compliance History"
       description="View records of accepted policies and submitted compliance documents"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Policy & Compliance',
           to: '/policy-compliance-management/my-policies',
@@ -37,11 +38,11 @@ export default function StudentComplianceHistory() {
       ]}
     >
       <div className="space-y-6">
-        <FormCard title="Accepted Policies" icon="check_circle">
+        <FormCard title="Accepted Policies" icon="check-circle">
           <GridPanel
             data={acknowledgements}
             columns={[
-              { field: 'policyName', header: 'Policy Name' },
+              { field: 'policyName', header: 'Policy Name', width: '35%' },
               {
                 field: 'versionAccepted',
                 header: 'Version Accepted',
@@ -49,7 +50,7 @@ export default function StudentComplianceHistory() {
               },
               { field: 'date', header: 'Date', width: '120px' },
               { field: 'time', header: 'Time', width: '120px' },
-              { field: 'ipAddress', header: 'IP Address', width: '150px' },
+              { field: 'ipAddress', header: 'IP Address', width: '160px' },
             ]}
             searchBox={false}
           />
@@ -59,7 +60,11 @@ export default function StudentComplianceHistory() {
           <GridPanel
             data={submissions.filter(s => s.submittedBy === studentInfo.name)}
             columns={[
-              { field: 'complianceName', header: 'Compliance Task' },
+              {
+                field: 'complianceName',
+                header: 'Compliance Task',
+                width: '35%',
+              },
               {
                 field: 'submittedDate',
                 header: 'Submitted Date',
@@ -77,7 +82,7 @@ export default function StudentComplianceHistory() {
               {
                 field: 'status',
                 header: 'Final Status',
-                width: '150px',
+                width: '160px',
                 cell: (item: any) => {
                   const variant =
                     item.status === 'Verified' || item.status === 'Approved'

@@ -107,6 +107,7 @@ export default function StudentMyTasks() {
       title="My Compliance Tasks"
       description="View assigned compliance requirements, submit documents, and track status"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Policy & Compliance',
           to: '/policy-compliance-management/my-policies',
@@ -114,16 +115,16 @@ export default function StudentMyTasks() {
         { label: 'My Compliance Tasks' },
       ]}
     >
-      <FormCard title="Assigned Compliance Tasks" icon="assignment">
+      <FormCard title="Assigned Compliance Tasks" icon="list">
         <GridPanel
           data={assignments}
           columns={[
-            { field: 'complianceName', header: 'Task Name' },
+            { field: 'complianceName', header: 'Task Name', width: '35%' },
             { field: 'deadline', header: 'Due Date', width: '130px' },
             {
               field: 'status',
               header: 'Status',
-              width: '150px',
+              width: '160px',
               cell: (item: any) => {
                 const variant =
                   item.status === 'Verified'

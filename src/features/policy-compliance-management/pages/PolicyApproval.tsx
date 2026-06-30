@@ -51,6 +51,7 @@ export default function PolicyApproval() {
       title="Policy Approval"
       description="Registrar / Vice Chancellor / Management — approve or reject reviewed policies"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Policy & Compliance',
           to: '/policy-compliance-management/dashboard',

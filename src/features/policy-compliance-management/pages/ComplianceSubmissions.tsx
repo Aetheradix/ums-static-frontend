@@ -71,6 +71,7 @@ export default function ComplianceSubmissions() {
       title="Compliance Submissions"
       description="Submit compliance documents, reports, certificates, and evidence"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Policy & Compliance',
           to: '/policy-compliance-management/dashboard',

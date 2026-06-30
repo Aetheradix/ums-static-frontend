@@ -86,6 +86,7 @@ export default function NonComplianceManagement() {
       title="Non-Compliance Management"
       description="Track and manage non-compliance issues found during audits"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Policy & Compliance',
           to: '/policy-compliance-management/dashboard',

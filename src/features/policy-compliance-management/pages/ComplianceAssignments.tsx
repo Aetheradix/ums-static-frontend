@@ -88,6 +88,7 @@ export default function ComplianceAssignments() {
       title="Compliance Assignments"
       description="Assign compliance requirements to departments, colleges, faculty, staff, or students"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Policy & Compliance',
           to: '/policy-compliance-management/dashboard',

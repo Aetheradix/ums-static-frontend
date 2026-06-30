@@ -440,6 +440,20 @@ export const INITIAL_COMPLIANCE_ASSIGNMENTS: ComplianceAssignment[] = [
 
 export const INITIAL_COMPLIANCE_SUBMISSIONS: ComplianceSubmission[] = [
   {
+    id: 'SUB-STU-001',
+    assignmentId: 'ASGN-STU-001',
+    complianceName: 'Anti Ragging Declaration',
+    submittedBy: 'Aditya Pratap Singh',
+    department: 'Computer Science',
+    documents: ['anti_ragging_form.pdf'],
+    remarks: 'Signed and uploaded as requested.',
+    status: 'Verified',
+    submittedDate: '2026-06-16',
+    verifiedBy: 'Dr. Anita Sharma',
+    verifiedDate: '2026-06-18',
+    verificationRemarks: 'Document is in order.',
+  },
+  {
     id: 'SUB-001',
     assignmentId: 'ASGN-002',
     complianceName: 'Fire Safety Audit',

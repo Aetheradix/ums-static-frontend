@@ -56,6 +56,7 @@ export default function ComplianceVerification() {
       title="Compliance Verification"
       description="Compliance Officer verifies submitted compliance — approve or reject"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Policy & Compliance',
           to: '/policy-compliance-management/dashboard',
