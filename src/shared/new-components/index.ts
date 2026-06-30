@@ -21,6 +21,7 @@ import Stepper from './Stepper';
 import Tabs from './Tabs';
 import WaffleMenu from './WaffleMenu';
 import StatCard from './StatCard/StatCard';
+import ProgressBar from './ProgressBar';
 
 export {
   ActionOverlay,
@@ -45,4 +46,5 @@ export {
   Stepper,
   Tabs,
   WaffleMenu,
+  ProgressBar,
 };
