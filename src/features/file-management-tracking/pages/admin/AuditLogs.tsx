@@ -16,6 +16,14 @@ export default function AuditLogs() {
 
   return (
     <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Admin' },
+        { label: 'Audit Logs' },
+      ]}
       title="Audit Logs"
       description="View and filter system audit trail"
     >

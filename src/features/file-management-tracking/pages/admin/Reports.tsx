@@ -1,9 +1,9 @@
 import { Chart } from 'chart.js/auto';
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from 'shared/components/buttons';
-import { FormCard, FormPage } from 'shared/new-components';
-import { mockDepartments, mockFileMovements, mockFiles } from '../../data';
+import { Icon } from 'shared/components/Icon/Icon';
+import { FormPage } from 'shared/new-components';
+import { mockDepartments, mockFiles } from '../../data';
 
 export default function AdminReports() {
   const navigate = useNavigate();
@@ -13,7 +13,6 @@ export default function AdminReports() {
   const barChartRef = useRef<Chart | null>(null);
 
   const totalFiles = mockFiles.length;
-  const totalMovements = mockFileMovements.length;
   const pendingFiles = mockFiles.filter(
     f => f.currentStatus === 'Under Review' || f.currentStatus === 'Forwarded'
   ).length;
@@ -115,112 +114,294 @@ export default function AdminReports() {
 
   return (
     <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Admin' },
+        { label: 'Reports & Analytics' },
+      ]}
       title="Reports & Analytics"
       description="Central access to all FMTS reports"
     >
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <FormCard title="File Status Overview" icon="pie_chart">
-          <div className="relative h-[260px]">
-            <canvas ref={pieRef} className="w-full h-[260px]" />
-          </div>
-        </FormCard>
-        <FormCard title="Files by Department" icon="business">
-          <div className="relative h-[260px]">
-            <canvas ref={barRef} className="w-full h-[260px]" />
-          </div>
-        </FormCard>
+      {/* Top Row KPIs */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <KpiCard
+          label="Total Files"
+          value={totalFiles}
+          color="blue"
+          icon="folder"
+        />
+        <KpiCard
+          label="Pending Review"
+          value={pendingFiles}
+          color="orange"
+          icon="hourglass_empty"
+        />
+        <KpiCard
+          label="Approved / Closed"
+          value={approvedFiles}
+          color="green"
+          icon="check_circle"
+        />
+        <KpiCard
+          label="Rejected"
+          value={rejectedFiles}
+          color="red"
+          icon="cancel"
+        />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <FormCard title="Quick Stats" icon="analytics">
-          <div className="space-y-3 text-sm">
-            <div className="flex justify-between items-center p-2 bg-gray-50 rounded">
-              <span>Total Files</span>
-              <span className="font-bold text-lg">{totalFiles}</span>
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 relative overflow-hidden group">
+          <div className="absolute top-0 left-0 w-full h-1 bg-indigo-500 opacity-80" />
+          <h3 className="text-sm font-bold text-gray-800 mb-6 flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+              <Icon name="pie_chart" className="text-[18px]" />
             </div>
-            <div className="flex justify-between items-center p-2 bg-blue-50 rounded">
-              <span>Total Movements</span>
-              <span className="font-bold text-lg text-blue-600">
-                {totalMovements}
-              </span>
-            </div>
-            <div className="flex justify-between items-center p-2 bg-orange-50 rounded">
-              <span>Pending Review</span>
-              <span className="font-bold text-lg text-orange-600">
-                {pendingFiles}
-              </span>
-            </div>
-            <div className="flex justify-between items-center p-2 bg-green-50 rounded">
-              <span>Approved / Closed</span>
-              <span className="font-bold text-lg text-green-600">
-                {approvedFiles}
-              </span>
-            </div>
-            <div className="flex justify-between items-center p-2 bg-red-50 rounded">
-              <span>Rejected</span>
-              <span className="font-bold text-lg text-red-600">
-                {rejectedFiles}
-              </span>
-            </div>
+            File Status Overview
+          </h3>
+          <div className="relative h-[280px]">
+            <canvas ref={pieRef} className="w-full h-[280px]" />
           </div>
-        </FormCard>
+        </div>
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 relative overflow-hidden group">
+          <div className="absolute top-0 left-0 w-full h-1 bg-teal-500 opacity-80" />
+          <h3 className="text-sm font-bold text-gray-800 mb-6 flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center text-teal-600">
+              <Icon name="business" className="text-[18px]" />
+            </div>
+            Files by Department
+          </h3>
+          <div className="relative h-[280px]">
+            <canvas ref={barRef} className="w-full h-[280px]" />
+          </div>
+        </div>
+      </div>
 
-        <FormCard title="Report Categories" icon="bar_chart">
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              label="File Movement"
-              icon="swap_horiz"
-              onClick={() =>
-                navigate('/file-management-tracking/reports/file-movement')
-              }
-            />
-            <Button
-              label="Avg Approval Time"
-              icon="timer"
-              onClick={() =>
-                navigate('/file-management-tracking/reports/avg-approval-time')
-              }
-            />
-            <Button
-              label="Pending Files"
-              icon="hourglass_empty"
-              onClick={() =>
-                navigate('/file-management-tracking/reports/pending-files')
-              }
-            />
-            <Button
-              label="Employee Productivity"
-              icon="person"
-              onClick={() =>
-                navigate(
-                  '/file-management-tracking/reports/employee-productivity'
-                )
-              }
-            />
-            <Button
-              label="SLA Violations"
-              icon="warning"
-              onClick={() =>
-                navigate('/file-management-tracking/reports/sla-violations')
-              }
-            />
-            <Button
-              label="Rejection Rate"
-              icon="cancel"
-              onClick={() =>
-                navigate('/file-management-tracking/reports/rejection-rate')
-              }
-            />
-            <Button
-              label="Audit Log Export"
-              icon="history"
-              onClick={() =>
-                navigate('/file-management-tracking/reports/audit-log-export')
-              }
-            />
-          </div>
-        </FormCard>
+      {/* Report Categories */}
+      <div className="mb-6">
+        <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+          <Icon name="grid_view" className="text-blue-600" /> Report Library
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          <ReportTile
+            title="File Movement"
+            desc="Track the full journey and lifecycle of files"
+            icon="swap_horiz"
+            color="blue"
+            onClick={() =>
+              navigate('/file-management-tracking/reports/file-movement')
+            }
+          />
+          <ReportTile
+            title="Avg Approval Time"
+            desc="Analyze processing speeds and SLAs"
+            icon="timer"
+            color="orange"
+            onClick={() =>
+              navigate('/file-management-tracking/reports/avg-approval-time')
+            }
+          />
+          <ReportTile
+            title="Pending Files"
+            desc="View bottlenecks in the system"
+            icon="hourglass_empty"
+            color="purple"
+            onClick={() =>
+              navigate('/file-management-tracking/reports/pending-files')
+            }
+          />
+          <ReportTile
+            title="Employee Productivity"
+            desc="Review individual staff metrics"
+            icon="person"
+            color="teal"
+            onClick={() =>
+              navigate(
+                '/file-management-tracking/reports/employee-productivity'
+              )
+            }
+          />
+          <ReportTile
+            title="SLA Violations"
+            desc="Identify overdue deadlines"
+            icon="warning"
+            color="red"
+            onClick={() =>
+              navigate('/file-management-tracking/reports/sla-violations')
+            }
+          />
+          <ReportTile
+            title="Rejection Rate"
+            desc="Analyze reasons for rejections"
+            icon="cancel"
+            color="pink"
+            onClick={() =>
+              navigate('/file-management-tracking/reports/rejection-rate')
+            }
+          />
+          <ReportTile
+            title="Audit Log Export"
+            desc="Download complete system logs"
+            icon="history"
+            color="slate"
+            onClick={() =>
+              navigate('/file-management-tracking/reports/audit-log-export')
+            }
+          />
+        </div>
       </div>
     </FormPage>
+  );
+}
+
+/* ── Sub-components ── */
+
+const KPI_COLORS: Record<
+  string,
+  { bg: string; border: string; text: string; iconBg: string; iconText: string }
+> = {
+  blue: {
+    bg: 'bg-blue-50',
+    border: 'border-blue-200',
+    text: 'text-blue-700',
+    iconBg: 'bg-blue-100',
+    iconText: 'text-blue-600',
+  },
+  green: {
+    bg: 'bg-green-50',
+    border: 'border-green-200',
+    text: 'text-green-700',
+    iconBg: 'bg-green-100',
+    iconText: 'text-green-600',
+  },
+  purple: {
+    bg: 'bg-purple-50',
+    border: 'border-purple-200',
+    text: 'text-purple-700',
+    iconBg: 'bg-purple-100',
+    iconText: 'text-purple-600',
+  },
+  orange: {
+    bg: 'bg-orange-50',
+    border: 'border-orange-200',
+    text: 'text-orange-700',
+    iconBg: 'bg-orange-100',
+    iconText: 'text-orange-600',
+  },
+  teal: {
+    bg: 'bg-teal-50',
+    border: 'border-teal-200',
+    text: 'text-teal-700',
+    iconBg: 'bg-teal-100',
+    iconText: 'text-teal-600',
+  },
+  amber: {
+    bg: 'bg-amber-50',
+    border: 'border-amber-200',
+    text: 'text-amber-700',
+    iconBg: 'bg-amber-100',
+    iconText: 'text-amber-600',
+  },
+  red: {
+    bg: 'bg-red-50',
+    border: 'border-red-200',
+    text: 'text-red-700',
+    iconBg: 'bg-red-100',
+    iconText: 'text-red-600',
+  },
+  pink: {
+    bg: 'bg-pink-50',
+    border: 'border-pink-200',
+    text: 'text-pink-700',
+    iconBg: 'bg-pink-100',
+    iconText: 'text-pink-600',
+  },
+  slate: {
+    bg: 'bg-slate-50',
+    border: 'border-slate-200',
+    text: 'text-slate-700',
+    iconBg: 'bg-slate-200',
+    iconText: 'text-slate-600',
+  },
+};
+
+function KpiCard({
+  label,
+  value,
+  color,
+  icon,
+}: {
+  label: string;
+  value: string | number;
+  color: string;
+  icon: string;
+}) {
+  const c = KPI_COLORS[color] || KPI_COLORS.blue;
+  return (
+    <div
+      className={`rounded-2xl border p-5 shadow-sm transition-transform hover:-translate-y-1 relative overflow-hidden ${c.bg} ${c.border}`}
+    >
+      <div className="flex justify-between items-start mb-2">
+        <div
+          className={`text-xs font-bold uppercase tracking-wider ${c.text} opacity-80`}
+        >
+          {label}
+        </div>
+        <div
+          className={`w-8 h-8 rounded-lg flex items-center justify-center ${c.iconBg} ${c.iconText}`}
+        >
+          <Icon name={icon} className="text-lg" />
+        </div>
+      </div>
+      <div
+        className={`text-3xl sm:text-4xl font-black tracking-tight ${c.text}`}
+      >
+        {value}
+      </div>
+    </div>
+  );
+}
+
+function ReportTile({
+  title,
+  desc,
+  icon,
+  color,
+  onClick,
+}: {
+  title: string;
+  desc: string;
+  icon: string;
+  color: string;
+  onClick: () => void;
+}) {
+  const c = KPI_COLORS[color] || KPI_COLORS.blue;
+  return (
+    <div
+      onClick={onClick}
+      className="group cursor-pointer bg-white rounded-2xl border border-gray-200 p-5 hover:border-blue-300 hover:shadow-md transition-all duration-300 flex flex-col h-full relative overflow-hidden"
+    >
+      <div
+        className={`w-12 h-12 rounded-xl mb-4 flex items-center justify-center transition-transform ${c.iconBg} ${c.iconText} group-hover:scale-110 duration-300 shadow-sm`}
+      >
+        <Icon name={icon} className="text-2xl" />
+      </div>
+      <h4 className="text-base font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
+        {title}
+      </h4>
+      <p className="text-sm text-gray-500 mb-4 flex-1">{desc}</p>
+      <div className="flex items-center gap-1 text-sm font-semibold text-blue-600 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 mt-auto">
+        Generate <Icon name="arrow_forward" className="text-[16px]" />
+      </div>
+
+      {/* Decorative background element */}
+      <div
+        className={`absolute -bottom-6 -right-6 w-24 h-24 rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-500 pointer-events-none ${c.text.replace('text-', 'bg-')}`}
+      />
+    </div>
   );
 }

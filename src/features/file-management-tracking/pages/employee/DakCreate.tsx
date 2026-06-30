@@ -36,6 +36,14 @@ export default function DakCreate() {
 
   return (
     <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Employee' },
+        { label: 'Create DAK Receipt' },
+      ]}
       title="Create DAK Receipt"
       description="Register a new incoming DAK (Diary & Dak)"
     >

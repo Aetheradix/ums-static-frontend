@@ -8,6 +8,14 @@ export default function DakList() {
 
   return (
     <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Employee' },
+        { label: 'DAK Receipts' },
+      ]}
       title="DAK Receipts"
       description="View and manage DAK (Diary & Dak) receipts"
     >
@@ -52,13 +60,14 @@ export default function DakList() {
             },
             {
               header: 'Actions',
-              cell: () => (
+              cell: (row: any) => (
                 <Button
                   icon="visibility"
-                  variant="text"
-                  size="small"
+                  label="View"
                   onClick={() =>
-                    navigate('/file-management-tracking/employee/dak/create')
+                    navigate(
+                      `/file-management-tracking/employee/dak/view/${row.id}`
+                    )
                   }
                 />
               ),

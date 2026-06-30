@@ -56,6 +56,14 @@ export default function Users() {
 
   return (
     <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Admin' },
+        { label: 'Users & Roles' },
+      ]}
       title="Users & Roles"
       description="Manage FMTS users and role assignments"
     >

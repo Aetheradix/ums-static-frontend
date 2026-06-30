@@ -70,6 +70,14 @@ export default function CreateFile() {
 
   return (
     <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Employee' },
+        { label: 'Create New File' },
+      ]}
       title="Create New File"
       description="Fill in the details to create a new eFile"
     >

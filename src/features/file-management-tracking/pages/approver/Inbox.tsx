@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextArea } from 'shared/components/forms';
-import { FormCard, FormPage, GridPanel } from 'shared/new-components';
+import { FormPage, GridPanel } from 'shared/new-components';
+import FormPopup from 'shared/new-components/FormPopup';
 import { FileStatusBadge, PriorityBadge } from '../../components';
 import {
   mockFileMovements,
@@ -54,114 +55,116 @@ export default function Inbox() {
 
   return (
     <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Approver' },
+        { label: 'Approver Inbox' },
+      ]}
       title="Approver Inbox"
       description="Review and take action on files"
     >
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2">
-          <GridPanel
-            title="Pending Files"
-            data={pendingFiles}
-            columns={
-              [
-                { field: 'fileNumber', header: 'File #' },
-                { field: 'title', header: 'Title' },
-                {
-                  header: 'Priority',
-                  cell: (row: any) => (
-                    <PriorityBadge priority={row.priorityName} />
-                  ),
-                },
-                {
-                  header: 'Status',
-                  cell: (row: any) => (
-                    <FileStatusBadge status={row.currentStatus} />
-                  ),
-                },
-                {
-                  field: 'dueDate',
-                  header: 'Due',
-                  cell: (row: any) => (
-                    <span className="text-xs">{row.dueDate || '—'}</span>
-                  ),
-                },
-                {
-                  header: 'Actions',
-                  cell: (row: any) => (
-                    <div className="flex gap-1">
-                      <Button
-                        icon="visibility"
-                        variant="text"
-                        size="small"
-                        onClick={() =>
-                          navigate(
-                            `/file-management-tracking/approver/file-details/${row.id}`
-                          )
-                        }
-                      />
-                      <Button
-                        icon="rate_review"
-                        variant="text"
-                        size="small"
-                        onClick={() => {
-                          setSelectedFileId(row.id);
-                        }}
-                        tooltip="Take Action"
-                      />
-                    </div>
-                  ),
-                },
-              ] as any
-            }
-            dataKey="id"
-            searchBox
-            pagination={{ rows: 10 }}
+      <div className="mb-6">
+        <GridPanel
+          title="Pending Files"
+          data={pendingFiles}
+          columns={
+            [
+              { field: 'fileNumber', header: 'File #' },
+              { field: 'title', header: 'Title' },
+              {
+                header: 'Priority',
+                cell: (row: any) => (
+                  <PriorityBadge priority={row.priorityName} />
+                ),
+              },
+              {
+                header: 'Status',
+                cell: (row: any) => (
+                  <FileStatusBadge status={row.currentStatus} />
+                ),
+              },
+              {
+                field: 'dueDate',
+                header: 'Due',
+                cell: (row: any) => (
+                  <span className="text-xs">{row.dueDate || '—'}</span>
+                ),
+              },
+              {
+                header: 'Actions',
+                cell: (row: any) => (
+                  <div className="flex gap-1">
+                    <Button
+                      icon="visibility"
+                      label="View"
+                      onClick={() =>
+                        navigate(
+                          `/file-management-tracking/approver/file-details/${row.id}`
+                        )
+                      }
+                    />
+                    <Button
+                      icon="rate_review"
+                      label="Take Action"
+                      onClick={() => {
+                        setSelectedFileId(row.id);
+                      }}
+                    />
+                  </div>
+                ),
+              },
+            ] as any
+          }
+          dataKey="id"
+          searchBox
+          pagination={{ rows: 10 }}
+        />
+      </div>
+
+      <FormPopup
+        visible={!!selectedFile}
+        onHide={() => setSelectedFileId(null)}
+        title="Take Action"
+        subtitle={
+          selectedFile
+            ? `${selectedFile.fileNumber} — ${selectedFile.title}`
+            : undefined
+        }
+        footer={
+          <div className="flex justify-end gap-3 w-full">
+            <Button
+              label="Cancel"
+              variant="outlined"
+              onClick={() => setSelectedFileId(null)}
+            />
+            <Button label="Submit Action" icon="send" onClick={submitAction} />
+          </div>
+        }
+      >
+        <div className="flex flex-col gap-6 py-2">
+          <DropDownList
+            label="Action"
+            value={actionType}
+            onChange={v => setActionType(v as string)}
+            data={['Approved', 'Rejected', 'Sent Back'].map(a => ({
+              value: a,
+              label: a,
+            }))}
+            textField="label"
+            valueField="value"
+          />
+          <TextArea
+            label="Remarks"
+            value={remark}
+            onChange={v => setRemark(v)}
+            placeholder="Add detailed remarks or justification..."
+            rows={4}
           />
         </div>
-
-        <div>
-          {selectedFile ? (
-            <FormCard
-              title="Take Action"
-              subtitle={`${selectedFile.fileNumber} — ${selectedFile.title}`}
-            >
-              <div className="flex flex-col gap-3">
-                <DropDownList
-                  label="Action"
-                  value={actionType}
-                  onChange={v => setActionType(v as string)}
-                  data={['Approved', 'Rejected', 'Sent Back'].map(a => ({
-                    value: a,
-                    label: a,
-                  }))}
-                  textField="label"
-                  valueField="value"
-                />
-                <TextArea
-                  label="Remarks"
-                  value={remark}
-                  onChange={v => setRemark(v)}
-                  placeholder="Add remarks..."
-                />
-              </div>
-              <div className="flex justify-end gap-2 mt-4">
-                <Button label="Submit" icon="send" onClick={submitAction} />
-                <Button
-                  label="Cancel"
-                  variant="outlined"
-                  onClick={() => setSelectedFileId(null)}
-                />
-              </div>
-            </FormCard>
-          ) : (
-            <FormCard title="Take Action">
-              <div className="text-center text-sm text-gray-400 py-4">
-                Select a file to take action
-              </div>
-            </FormCard>
-          )}
-        </div>
-      </div>
+      </FormPopup>
     </FormPage>
   );
 }

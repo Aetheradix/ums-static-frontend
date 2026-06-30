@@ -4,10 +4,8 @@ import QuickAccessStatus from './QuickAccessStatus';
 export default function PublicPages() {
   return (
     <Routes>
-      <Route
-        index
-        element={<Navigate to="/file-management-tracking" replace />}
-      />
+      <Route index element={<Navigate to=".." replace />} />
+      <Route path="quick-status" element={<QuickAccessStatus />} />
       <Route path="quick-status/:code" element={<QuickAccessStatus />} />
     </Routes>
   );

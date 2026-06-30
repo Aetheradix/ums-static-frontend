@@ -139,6 +139,14 @@ export default function Inbox() {
 
   return (
     <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Admin' },
+        { label: 'File Inbox' },
+      ]}
       title="File Inbox"
       description="Review and process all system files"
     >
@@ -206,7 +214,6 @@ export default function Inbox() {
               cell: (row: any) => (
                 <Button
                   icon="rate_review"
-                  variant="text"
                   size="small"
                   onClick={() => {
                     setSelectedFileId(row.id);
@@ -214,7 +221,7 @@ export default function Inbox() {
                     setActionType('Forward');
                     setRemark('');
                   }}
-                  tooltip="Take Action"
+                  label="Take Action"
                 />
               ),
             },

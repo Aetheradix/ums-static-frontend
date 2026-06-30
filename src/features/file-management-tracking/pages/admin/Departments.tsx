@@ -42,6 +42,14 @@ export default function Departments() {
 
   return (
     <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Admin' },
+        { label: 'Departments' },
+      ]}
       title="Departments"
       description="Manage departments and their mappings"
     >

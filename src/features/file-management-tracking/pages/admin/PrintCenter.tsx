@@ -31,6 +31,14 @@ export default function PrintCenter() {
 
   return (
     <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Admin' },
+        { label: 'Print Center' },
+      ]}
       title="Print Center"
       description="Print any file details, notesheet, or history"
     >

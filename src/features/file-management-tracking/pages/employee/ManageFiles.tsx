@@ -15,6 +15,14 @@ export default function ManageFiles() {
 
   return (
     <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Employee' },
+        { label: 'My Files' },
+      ]}
       title="My Files"
       description="View, create, and manage your eFiles"
     >
@@ -54,9 +62,8 @@ export default function ManageFiles() {
               cell: (row: any) => (
                 <div className="flex gap-1">
                   <Button
+                    label="View"
                     icon="visibility"
-                    variant="text"
-                    size="small"
                     onClick={() =>
                       navigate(
                         `/file-management-tracking/employee/view/${row.id}`
@@ -64,9 +71,8 @@ export default function ManageFiles() {
                     }
                   />
                   <Button
+                    label="Part-file"
                     icon="alt_route"
-                    variant="text"
-                    size="small"
                     tooltip="Create Part File"
                     onClick={() =>
                       navigate(

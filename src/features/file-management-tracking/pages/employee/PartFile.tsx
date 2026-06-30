@@ -29,7 +29,17 @@ export default function PartFile() {
 
   if (!parent)
     return (
-      <FormPage title="Part File">
+      <FormPage
+        breadcrumbs={[
+          {
+            label: 'File Management Tracking',
+            to: '/home/sub-menu/file-management-tracking',
+          },
+          { label: 'Employee' },
+          { label: 'Part File' },
+        ]}
+        title="Part File"
+      >
         <FormCard title="Not Found">
           <div className="text-center text-gray-500 py-8">
             Parent file not found
@@ -72,6 +82,14 @@ export default function PartFile() {
 
   return (
     <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Employee' },
+        { label: 'Create Part File' },
+      ]}
       title="Create Part File"
       description={`Parent File: ${parent.fileNumber}`}
     >

@@ -1,6 +1,8 @@
 import { Chart } from 'chart.js/auto';
 import { useEffect, useRef } from 'react';
-import { FormCard, FormPage, GridPanel } from 'shared/new-components';
+import { Icon } from 'shared/components/Icon/Icon';
+import { FormPage, GridPanel } from 'shared/new-components';
+import StatCard from 'shared/new-components/StatCard/StatCard';
 import { ReportExportButtons } from '../../components';
 import { mockFileMovements } from '../../data';
 
@@ -13,10 +15,16 @@ export default function SlaViolationsReport() {
   );
 
   useEffect(() => {
-    requestAnimationFrame(() => {
+    let frameId: number;
+    frameId = requestAnimationFrame(() => {
       if (!canvasRef.current) return;
       const ctx = canvasRef.current.getContext('2d');
       if (!ctx) return;
+
+      if (chartRef.current) {
+        chartRef.current.destroy();
+      }
+
       const onTrack = mockFileMovements.filter(
         m => m.slaStatus === 'OnTrack'
       ).length;
@@ -49,54 +57,71 @@ export default function SlaViolationsReport() {
         },
       });
     });
-    return () => chartRef.current?.destroy();
+    return () => {
+      cancelAnimationFrame(frameId);
+      chartRef.current?.destroy();
+    };
   }, []);
 
   const onTrack = mockFileMovements.filter(
     m => m.slaStatus === 'OnTrack'
   ).length;
-  const noSla = mockFileMovements.filter(m => !m.slaStatus).length;
 
   return (
     <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Reports' },
+        { label: 'SLA Violations Report' },
+      ]}
       title="SLA Violations Report"
       description="Monitor SLA compliance across file movements"
     >
-      <ReportExportButtons />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <FormCard title="SLA Overview">
-          <div className="relative h-[280px]">
-            <canvas ref={canvasRef} className="w-full h-[280px]" />
+      <div className="mb-6 flex justify-end">
+        <ReportExportButtons />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <StatCard
+          title="Total Movements"
+          value={mockFileMovements.length}
+          icon="swap_horiz"
+          colorScheme="blue"
+        />
+        <StatCard
+          title="On Track"
+          value={onTrack}
+          icon="check_circle"
+          colorScheme="green"
+        />
+        <StatCard
+          title="Approaching"
+          value={approaching.length}
+          icon="warning"
+          colorScheme="orange"
+        />
+        <StatCard
+          title="Violated"
+          value={violations.length}
+          icon="cancel"
+          colorScheme="red"
+        />
+      </div>
+
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 relative overflow-hidden flex flex-col mb-8">
+        <div className="absolute top-0 left-0 w-full h-1 bg-indigo-500 opacity-80" />
+        <h3 className="text-base font-bold text-gray-800 mb-6 flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0">
+            <Icon name="pie_chart" className="text-[18px]" />
           </div>
-        </FormCard>
-        <FormCard title="Summary">
-          <div className="space-y-3 text-sm">
-            <div className="flex justify-between items-center p-2 bg-green-50 rounded">
-              <span>On Track</span>
-              <span className="font-bold text-green-600">{onTrack}</span>
-            </div>
-            <div className="flex justify-between items-center p-2 bg-yellow-50 rounded">
-              <span>Approaching SLA</span>
-              <span className="font-bold text-yellow-600">
-                {approaching.length}
-              </span>
-            </div>
-            <div className="flex justify-between items-center p-2 bg-red-50 rounded">
-              <span>Violations</span>
-              <span className="font-bold text-red-600">
-                {violations.length}
-              </span>
-            </div>
-            <div className="flex justify-between items-center p-2 bg-gray-50 rounded">
-              <span>No SLA Set</span>
-              <span className="font-bold text-gray-400">{noSla}</span>
-            </div>
-            <div className="border-t pt-2 mt-2 flex justify-between">
-              <span>Total Movements</span>
-              <span className="font-bold">{mockFileMovements.length}</span>
-            </div>
-          </div>
-        </FormCard>
+          SLA Overview
+        </h3>
+        <div className="relative h-[280px]">
+          <canvas ref={canvasRef} className="w-full h-[280px]" />
+        </div>
       </div>
       {violations.length > 0 && (
         <GridPanel

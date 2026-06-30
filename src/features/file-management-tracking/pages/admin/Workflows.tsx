@@ -8,7 +8,7 @@ import {
   TextBox,
 } from 'shared/components/forms';
 import { Icon } from 'shared/components/Icon/Icon';
-import { FormGrid, FormPage, FormPopup, StatCard } from 'shared/new-components';
+import { FormGrid, FormPage, FormPopup } from 'shared/new-components';
 import {
   mockDepartments,
   mockEscalationRules,
@@ -258,434 +258,446 @@ export default function Workflows() {
 
   return (
     <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Admin' },
+        { label: 'Workflow Management' },
+      ]}
       title="Workflow Management"
       description="Design and manage approval chains for file processing"
     >
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <StatCard
-          title="Total Workflows"
-          value={data.length}
-          icon="alt_route"
-          colorScheme="blue"
-          subtitle="All workflows"
-        />
-        <StatCard
-          title="Active"
-          value={activeCount}
-          icon="check_circle"
-          colorScheme="green"
-          subtitle={`${Math.round((activeCount / data.length) * 100)}% of total`}
-        />
-        <StatCard
-          title="Total Steps"
-          value={totalSteps}
-          icon="stairs"
-          colorScheme="purple"
-          subtitle={`Avg ${(totalSteps / data.length).toFixed(1)} per workflow`}
-        />
-        <StatCard
-          title="Departments"
-          value={deptCount}
-          icon="business"
-          colorScheme="amber"
-          subtitle="Departments using workflows"
-        />
+        <KpiCard label="Total Workflows" value={data.length} color="blue" />
+        <KpiCard label="Active" value={activeCount} color="green" />
+        <KpiCard label="Total Steps" value={totalSteps} color="purple" />
+        <KpiCard label="Departments" value={deptCount} color="amber" />
       </div>
 
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-3 mb-6 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-        <div className="flex-1 min-w-[200px]">
-          <TextBox
-            placeholder="Search workflows..."
+      <div className="flex flex-col xl:flex-row items-center gap-4 mb-6 p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
+        <div className="flex-1 w-full min-w-[200px] relative">
+          <Icon
+            name="search"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+          />
+          <input
+            type="text"
+            placeholder="Search workflows by name or description..."
             value={search}
-            onChange={v => setSearch(v)}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
           />
         </div>
-        <DropDownList
-          value={deptFilter}
-          onChange={v => setDeptFilter(v as string)}
-          data={[
-            { value: 'all', label: 'All Departments' },
-            ...[...new Set(data.map(w => w.departmentName || 'All'))].map(
-              d => ({
-                value: d,
-                label: d,
-              })
-            ),
-          ]}
-          textField="label"
-          valueField="value"
-        />
-        <DropDownList
-          value={statusFilter}
-          onChange={v => setStatusFilter(v as string)}
-          data={[
-            { value: 'all', label: 'All Status' },
-            { value: 'active', label: 'Active' },
-            { value: 'inactive', label: 'Inactive' },
-          ]}
-          textField="label"
-          valueField="value"
-        />
-        <Button label="Add Workflow" icon="add" onClick={openCreate} />
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full xl:w-auto">
+          <DropDownList
+            value={deptFilter}
+            onChange={v => setDeptFilter(v as string)}
+            data={[
+              { value: 'all', label: 'All Departments' },
+              ...[...new Set(data.map(w => w.departmentName || 'All'))].map(
+                d => ({ value: d, label: d })
+              ),
+            ]}
+            textField="label"
+            valueField="value"
+          />
+          <DropDownList
+            value={statusFilter}
+            onChange={v => setStatusFilter(v as string)}
+            data={[
+              { value: 'all', label: 'All Status' },
+              { value: 'active', label: 'Active' },
+              { value: 'inactive', label: 'Inactive' },
+            ]}
+            textField="label"
+            valueField="value"
+          />
+          <Button
+            label="Add Workflow"
+            icon="add"
+            onClick={openCreate}
+            className="shrink-0"
+          />
+        </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="bg-gray-50 border-b border-gray-200">
-              <th className="w-10 px-4 py-3"></th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Name
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Description
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Department
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Steps
-              </th>
-              <th className="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length === 0 ? (
-              <tr>
-                <td colSpan={7} className="text-center py-12 text-gray-400">
-                  No workflows match your filters.
-                </td>
-              </tr>
-            ) : (
-              filtered.map(wf => {
-                const isExpanded = expandedId === wf.id;
-                const wfSteps = workflowSteps(wf.id);
-                return (
-                  <tbody
-                    key={wf.id}
-                    className="border-b border-gray-100 last:border-b-0"
-                  >
-                    <tr
-                      className={`cursor-pointer transition-colors ${isExpanded ? 'bg-blue-50/50' : 'hover:bg-gray-50/50'}`}
-                      onClick={() => setExpandedId(isExpanded ? null : wf.id)}
+      {/* Workflow Accordion List */}
+      <div className="flex flex-col gap-4 mb-6">
+        {filtered.length === 0 ? (
+          <div className="text-center py-16 bg-white border border-dashed border-gray-300 rounded-xl text-gray-400">
+            <Icon
+              name="search_off"
+              className="text-4xl text-gray-300 mb-3 block"
+            />
+            <p className="text-sm">No workflows match your filters.</p>
+          </div>
+        ) : (
+          filtered.map(wf => {
+            const isExpanded = expandedId === wf.id;
+            const wfSteps = workflowSteps(wf.id);
+            return (
+              <div
+                key={wf.id}
+                className={`bg-white border transition-all duration-300 overflow-hidden ${isExpanded ? 'border-blue-300 shadow-md rounded-2xl' : 'border-gray-200 shadow-sm rounded-xl hover:border-blue-200 hover:shadow'}`}
+              >
+                {/* Accordion Header */}
+                <div
+                  className={`flex flex-col lg:flex-row lg:items-center gap-4 p-4 md:p-5 cursor-pointer ${isExpanded ? 'bg-blue-50/30' : ''}`}
+                  onClick={e => {
+                    if ((e.target as HTMLElement).closest('.actions-group'))
+                      return;
+                    setExpandedId(isExpanded ? null : wf.id);
+                  }}
+                >
+                  <div className="flex items-center gap-4 flex-1 min-w-0">
+                    <div
+                      className={`w-12 h-12 shrink-0 rounded-xl flex items-center justify-center text-lg border ${wf.isActive ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-gray-50 text-gray-400 border-gray-200'}`}
                     >
-                      <td className="px-4 py-3">
-                        <Icon
-                          name="chevron_right"
-                          className={`block p-1 rounded transition-transform duration-200 cursor-pointer ${isExpanded ? 'rotate-90 text-blue-600' : 'text-gray-300 hover:text-gray-500'}`}
-                        />
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`w-9 h-9 rounded-lg flex items-center justify-center text-sm border ${wf.isActive ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-gray-50 text-gray-400 border-gray-200'}`}
-                          >
-                            <Icon
-                              name={
-                                wf.name.includes('Purchase')
-                                  ? 'shopping_cart'
-                                  : wf.name.includes('Leave')
-                                    ? 'logout'
-                                    : wf.name.includes('Student')
-                                      ? 'school'
-                                      : 'admin_panel_settings'
-                              }
-                              className="text-lg"
-                            />
-                          </div>
-                          <div className="text-sm font-medium text-gray-900">
-                            {wf.name}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-500">
-                        {wf.description}
-                      </td>
-                      <td className="px-4 py-3">
+                      <Icon
+                        name={
+                          wf.name.includes('Purchase')
+                            ? 'shopping_cart'
+                            : wf.name.includes('Leave')
+                              ? 'logout'
+                              : wf.name.includes('Student')
+                                ? 'school'
+                                : 'account_tree'
+                        }
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0 pr-4">
+                      <div className="flex items-center gap-3 mb-1">
+                        <h3 className="text-base font-semibold text-gray-900 truncate">
+                          {wf.name}
+                        </h3>
                         <span
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium ${
-                            wf.departmentName === 'Finance'
-                              ? 'bg-blue-50 text-blue-700 border border-blue-100'
-                              : 'bg-gray-50 text-gray-600 border border-gray-200'
-                          }`}
-                        >
-                          <Icon name="business" className="text-[14px]" />
-                          {wf.departmentName || 'All'}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
-                            wf.isActive
-                              ? 'bg-green-50 text-green-700 border border-green-200'
-                              : 'bg-gray-100 text-gray-500 border border-gray-200'
-                          }`}
+                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide flex items-center gap-1 ${wf.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}
                         >
                           <span
                             className={`w-1.5 h-1.5 rounded-full ${wf.isActive ? 'bg-green-500' : 'bg-gray-400'}`}
                           ></span>
                           {wf.isActive ? 'Active' : 'Inactive'}
                         </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="inline-flex items-center gap-1.5 text-sm text-gray-500">
+                      </div>
+                      <p className="text-sm text-gray-500 truncate">
+                        {wf.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between lg:justify-end gap-6 md:gap-8 shrink-0 border-t lg:border-t-0 border-gray-100 pt-3 lg:pt-0">
+                    <div className="flex items-center gap-6">
+                      <div className="flex flex-col lg:items-end">
+                        <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-0.5">
+                          Department
+                        </span>
+                        <span className="text-sm font-medium text-gray-700 flex items-center gap-1.5">
+                          <Icon
+                            name="business"
+                            className="text-[14px] text-blue-500"
+                          />
+                          {wf.departmentName || 'All'}
+                        </span>
+                      </div>
+                      <div className="w-px h-8 bg-gray-200 hidden lg:block"></div>
+                      <div className="flex flex-col lg:items-end">
+                        <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-0.5">
+                          Steps
+                        </span>
+                        <span className="text-sm font-medium text-gray-700 flex items-center gap-1.5">
                           <Icon
                             name="alt_route"
-                            className="text-lg text-blue-500"
+                            className="text-[14px] text-purple-500"
                           />
-                          {wfSteps.length} step{wfSteps.length !== 1 ? 's' : ''}
+                          {wfSteps.length}
                         </span>
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <div className="flex items-center justify-end gap-0.5">
-                          <Button
-                            icon="visibility"
-                            variant="text"
-                            size="small"
-                            onClick={() =>
-                              setExpandedId(isExpanded ? null : wf.id)
-                            }
-                          />
-                          <Button
-                            icon="edit"
-                            variant="text"
-                            size="small"
-                            onClick={() => openEdit(wf)}
-                          />
-                          <Button
-                            icon="file_copy"
-                            variant="text"
-                            size="small"
-                            onClick={() => duplicate(wf)}
-                          />
-                          <Button
-                            icon="delete"
-                            variant="text"
-                            size="small"
-                            onClick={() => remove(wf.id)}
-                          />
+                      </div>
+                    </div>
+
+                    <div className="actions-group flex items-center gap-1 shrink-0 bg-white lg:bg-transparent rounded-lg border lg:border-none border-gray-100 p-1 lg:p-0 shadow-sm lg:shadow-none">
+                      <button
+                        onClick={e => {
+                          e.stopPropagation();
+                          openEdit(wf);
+                        }}
+                        className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                      >
+                        <Icon name="edit" className="text-[15px]" />
+                      </button>
+                      <button
+                        onClick={e => {
+                          e.stopPropagation();
+                          duplicate(wf);
+                        }}
+                        className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                      >
+                        <Icon name="file_copy" className="text-[15px]" />
+                      </button>
+                      <button
+                        onClick={e => {
+                          e.stopPropagation();
+                          remove(wf.id);
+                        }}
+                        className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-red-600 hover:bg-red-50 transition-colors"
+                      >
+                        <Icon name="delete" className="text-[15px]" />
+                      </button>
+                      <div
+                        className="w-8 h-8 flex items-center justify-center text-gray-400 transition-transform duration-300"
+                        style={{
+                          transform: isExpanded
+                            ? 'rotate(180deg)'
+                            : 'rotate(0)',
+                        }}
+                      >
+                        <Icon name="expand_more" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Expanded State: Visual Stepper */}
+                <div
+                  className={`grid transition-all duration-300 ease-in-out ${isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
+                >
+                  <div className="overflow-hidden">
+                    <div className="border-t border-blue-100 bg-slate-50/50 p-4 sm:p-6 md:p-8">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                        <div>
+                          <h4 className="text-sm font-bold text-gray-800 flex items-center gap-2">
+                            <Icon
+                              name="linear_scale"
+                              className="text-blue-600"
+                            />
+                            Approval Workflow Sequence
+                          </h4>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Configure the sequential steps for this workflow's
+                            lifecycle.
+                          </p>
                         </div>
-                      </td>
-                    </tr>
+                        <Button
+                          label="Add Step"
+                          icon="add"
+                          variant="outlined"
+                          size="small"
+                          onClick={() => openAddStep(wf.id)}
+                          className="bg-white"
+                        />
+                      </div>
 
-                    {/* Expanded steps panel */}
-                    <tr>
-                      <td colSpan={7} className="p-0">
-                        <div
-                          className={`overflow-hidden transition-all duration-300 ${isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}
-                        >
-                          <div className="bg-gray-50/50 border-t border-gray-100 px-6 py-5">
-                            <div className="flex items-center justify-between mb-4">
-                              <h4 className="text-xs font-semibold text-gray-600 uppercase tracking-wider flex items-center gap-2">
-                                <Icon
-                                  name="alt_route"
-                                  className="text-sm text-blue-500"
-                                />
-                                Approval Chain — {wfSteps.length} Step
-                                {wfSteps.length !== 1 ? 's' : ''}
-                              </h4>
-                              <Button
-                                label="Add Step"
-                                icon="add"
-                                variant="text"
-                                size="small"
-                                onClick={() => openAddStep(wf.id)}
-                                className="text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 px-3 py-1.5"
-                              />
-                            </div>
+                      {wfSteps.length === 0 ? (
+                        <div className="text-center py-10 border-2 border-dashed border-gray-200 rounded-xl bg-white shadow-sm">
+                          <Icon
+                            name="timeline"
+                            className="text-4xl text-gray-300 mb-2 block"
+                          />
+                          <p className="text-sm text-gray-500 font-medium">
+                            No steps defined yet.
+                          </p>
+                          <p className="text-xs text-gray-400 mt-1">
+                            Add a step to start building this workflow.
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="relative pl-1 sm:pl-4">
+                          {/* Vertical connecting line */}
+                          <div className="absolute left-7 sm:left-10 top-6 bottom-6 w-0.5 bg-blue-200 rounded-full" />
 
-                            {wfSteps.length === 0 ? (
-                              <div className="text-center py-8 text-sm text-gray-400 border-2 border-dashed border-gray-200 rounded-lg">
-                                <Icon
-                                  name="alt_route"
-                                  className="text-3xl text-gray-300 mb-2 block"
-                                />
-                                No steps defined yet.
-                              </div>
-                            ) : (
-                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                {wfSteps.map((s, idx) => {
-                                  const sla = mockSLAs.find(
-                                    sla => sla.workflowStepId === s.id
-                                  );
-                                  const escalations =
-                                    mockEscalationRules.filter(
-                                      e => e.workflowStepId === s.id
-                                    );
-                                  return (
+                          <div className="space-y-6">
+                            {wfSteps.map((s, idx) => {
+                              const sla = mockSLAs.find(
+                                sla => sla.workflowStepId === s.id
+                              );
+                              const escalations = mockEscalationRules.filter(
+                                e => e.workflowStepId === s.id
+                              );
+                              return (
+                                <div
+                                  key={s.id}
+                                  className="relative flex flex-col sm:flex-row items-start sm:items-stretch gap-4 sm:gap-6"
+                                >
+                                  {/* Sequence Node */}
+                                  <div className="relative z-10 shrink-0 w-12 h-12 rounded-full bg-white border-[3px] border-blue-100 flex items-center justify-center shadow-sm mx-auto sm:mx-0">
                                     <div
-                                      key={s.id}
-                                      className={`relative bg-white border rounded-lg p-4 transition-shadow hover:shadow-md ${s.isMandatory ? 'border-l-4 border-l-blue-500 border-gray-200' : 'border-gray-200 border-l-4 border-l-gray-300'}`}
+                                      className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${s.isMandatory ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500 border border-slate-200'}`}
                                     >
-                                      <div className="flex items-start justify-between gap-2 mb-3">
-                                        <div className="flex items-center gap-2">
-                                          <span
-                                            className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${s.isMandatory ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'}`}
-                                          >
-                                            {s.stepSequence}
-                                          </span>
-                                          <span className="text-sm font-semibold text-gray-900">
-                                            {s.stepName}
-                                          </span>
-                                        </div>
-                                        <div className="flex gap-0.5 shrink-0">
-                                          <Button
-                                            icon="edit"
-                                            variant="text"
-                                            size="small"
-                                            onClick={() => openEditStep(s)}
-                                          />
-                                          <Button
-                                            icon="delete"
-                                            variant="text"
-                                            size="small"
-                                            onClick={() => removeStep(s.id)}
-                                          />
-                                        </div>
-                                      </div>
+                                      {s.stepSequence}
+                                    </div>
+                                  </div>
 
-                                      <div className="space-y-1.5 text-xs text-gray-500">
-                                        <div className="flex items-center gap-1.5">
-                                          <Icon
-                                            name="badge"
-                                            className="text-sm text-gray-400"
-                                          />
-                                          <span>
-                                            {s.approverRoleName || 'Any Role'}
-                                          </span>
-                                        </div>
-                                        {s.approverUserName && (
-                                          <div className="flex items-center gap-1.5">
-                                            <Icon
-                                              name="person"
-                                              className="text-sm text-gray-400"
-                                            />
-                                            <span>{s.approverUserName}</span>
-                                          </div>
-                                        )}
-                                        {sla && (
-                                          <div className="flex items-center gap-1.5">
-                                            <Icon
-                                              name="timer"
-                                              className="text-sm text-gray-400"
-                                            />
-                                            <span>
-                                              SLA: {sla.expectedCompletionHours}
-                                              h
-                                            </span>
-                                          </div>
-                                        )}
-                                      </div>
-
-                                      <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+                                  {/* Step Content Card */}
+                                  <div
+                                    className={`flex-1 w-full bg-white rounded-xl border p-5 shadow-sm hover:shadow-md transition-shadow relative ${s.isMandatory ? 'border-gray-200' : 'border-gray-200 border-dashed'}`}
+                                  >
+                                    {/* Top Right Badges & Actions */}
+                                    <div className="sm:absolute relative sm:top-4 sm:right-4 flex items-center justify-between sm:justify-end gap-3 mb-4 sm:mb-0">
+                                      <div className="flex items-center gap-1.5">
                                         <span
-                                          className={`px-2 py-0.5 rounded text-[10px] font-medium ${s.isMandatory ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-gray-50 text-gray-500 border border-gray-200'}`}
+                                          className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${s.isMandatory ? 'bg-red-50 text-red-600' : 'bg-gray-100 text-gray-500'}`}
                                         >
                                           {s.isMandatory
                                             ? 'Required'
                                             : 'Optional'}
                                         </span>
                                         {idx === 0 && (
-                                          <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-green-50 text-green-600 border border-green-100">
-                                            First Step
+                                          <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600">
+                                            Start
                                           </span>
                                         )}
                                         {idx === wfSteps.length - 1 && (
-                                          <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-purple-50 text-purple-600 border border-purple-100">
-                                            Final Step
+                                          <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-purple-50 text-purple-600">
+                                            End
                                           </span>
                                         )}
                                       </div>
+                                      <div className="flex items-center gap-2">
+                                        <div className="w-px h-4 bg-gray-200 hidden sm:block" />
+                                        <div className="flex gap-0.5">
+                                          <button
+                                            onClick={() => openEditStep(s)}
+                                            className="w-7 h-7 flex items-center justify-center rounded bg-gray-50 text-gray-500 hover:text-blue-600 hover:bg-blue-50"
+                                          >
+                                            <Icon
+                                              name="edit"
+                                              className="text-[14px]"
+                                            />
+                                          </button>
+                                          <button
+                                            onClick={() => removeStep(s.id)}
+                                            className="w-7 h-7 flex items-center justify-center rounded bg-gray-50 text-gray-500 hover:text-red-600 hover:bg-red-50"
+                                          >
+                                            <Icon
+                                              name="delete"
+                                              className="text-[14px]"
+                                            />
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
 
-                                      {escalations.length > 0 && (
-                                        <div className="mt-2 pt-2 border-t border-gray-50 space-y-1">
-                                          {escalations.map(e => (
-                                            <div
-                                              key={e.id}
-                                              className="flex items-center gap-1 text-[10px] text-orange-600 bg-orange-50 px-2 py-1 rounded"
-                                            >
-                                              <Icon
-                                                name="arrow_upward"
-                                                className="text-[12px]"
-                                              />
-                                              Escalate in {e.delayHours}h →{' '}
-                                              {e.targetRoleName ||
-                                                e.targetUserName ||
-                                                'Overdue'}
-                                            </div>
-                                          ))}
+                                    <h5 className="text-base font-bold text-gray-900 mb-4">
+                                      {s.stepName}
+                                    </h5>
+
+                                    <div className="flex flex-wrap gap-x-8 gap-y-4">
+                                      <div className="flex items-center gap-3">
+                                        <div className="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                                          <Icon
+                                            name="badge"
+                                            className="text-[18px]"
+                                          />
+                                        </div>
+                                        <div>
+                                          <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-0.5">
+                                            Assigned Role
+                                          </p>
+                                          <p className="text-sm font-medium text-gray-800">
+                                            {s.approverRoleName || 'Any Role'}
+                                          </p>
+                                        </div>
+                                      </div>
+                                      {s.approverUserName && (
+                                        <div className="flex items-center gap-3">
+                                          <div className="w-9 h-9 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center">
+                                            <Icon
+                                              name="person"
+                                              className="text-[18px]"
+                                            />
+                                          </div>
+                                          <div>
+                                            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-0.5">
+                                              Specific User
+                                            </p>
+                                            <p className="text-sm font-medium text-gray-800">
+                                              {s.approverUserName}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      )}
+                                      {sla && (
+                                        <div className="flex items-center gap-3">
+                                          <div className="w-9 h-9 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center">
+                                            <Icon
+                                              name="timer"
+                                              className="text-[18px]"
+                                            />
+                                          </div>
+                                          <div>
+                                            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-0.5">
+                                              SLA Timeline
+                                            </p>
+                                            <p className="text-sm font-medium text-gray-800">
+                                              {sla.expectedCompletionHours}{' '}
+                                              hours
+                                            </p>
+                                          </div>
                                         </div>
                                       )}
                                     </div>
-                                  );
-                                })}
-                              </div>
-                            )}
 
-                            {wfSteps.length > 1 && (
-                              <div className="mt-4 p-3 bg-blue-50/50 border border-blue-100 rounded-lg">
-                                <div className="flex items-center gap-2 text-xs text-blue-700">
-                                  <Icon name="timeline" className="text-sm" />
-                                  <span className="font-medium">Flow:</span>
-                                  {wfSteps.map((s, idx) => (
-                                    <span
-                                      key={s.id}
-                                      className="flex items-center gap-1"
-                                    >
-                                      <span className="font-semibold">
-                                        {s.stepName}
-                                      </span>
-                                      {idx < wfSteps.length - 1 && (
-                                        <span className="text-blue-300">→</span>
-                                      )}
-                                    </span>
-                                  ))}
+                                    {escalations.length > 0 && (
+                                      <div className="mt-5 pt-3 border-t border-gray-100 flex flex-wrap gap-2">
+                                        {escalations.map(e => (
+                                          <div
+                                            key={e.id}
+                                            className="flex items-center gap-1.5 text-xs font-medium text-rose-600 bg-rose-50 px-3 py-1.5 rounded-md border border-rose-100"
+                                          >
+                                            <Icon
+                                              name="warning"
+                                              className="text-[15px]"
+                                            />
+                                            Escalates in {e.delayHours}h →{' '}
+                                            {e.targetRoleName ||
+                                              e.targetUserName ||
+                                              'Overdue'}
+                                          </div>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
-                              </div>
-                            )}
+                              );
+                            })}
                           </div>
                         </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                );
-              })
-            )}
-          </tbody>
-        </table>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
 
-        {/* Pagination */}
-        <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 bg-gray-50/50">
-          <div className="text-xs text-gray-400">
-            Showing {filtered.length} of {data.length} workflows
-          </div>
-          <div className="flex items-center gap-1">
-            <Button
-              icon="chevron_left"
-              variant="text"
-              size="small"
-              disabled
-              onClick={() => {}}
-            />
-            <span className="w-7 h-7 flex items-center justify-center text-xs font-medium bg-blue-600 text-white rounded">
-              1
-            </span>
-            <Button
-              icon="chevron_right"
-              variant="text"
-              size="small"
-              disabled
-              onClick={() => {}}
-            />
-          </div>
+      {/* Pagination */}
+      <div className="flex items-center justify-between px-4 py-3 mt-4">
+        <div className="text-xs text-gray-500 font-medium">
+          Showing {filtered.length} of {data.length} workflows
+        </div>
+        <div className="flex items-center gap-1">
+          <Button
+            icon="chevron_left"
+            variant="text"
+            size="small"
+            disabled
+            onClick={() => {}}
+          />
+          <span className="w-8 h-8 flex items-center justify-center text-sm font-bold bg-blue-50 text-blue-600 rounded-lg border border-blue-100">
+            1
+          </span>
+          <Button
+            icon="chevron_right"
+            variant="text"
+            size="small"
+            disabled
+            onClick={() => {}}
+          />
         </div>
       </div>
 
@@ -881,5 +893,67 @@ export default function Workflows() {
         </FormPopup>
       )}
     </FormPage>
+  );
+}
+
+/* ── Sub-components ── */
+
+const KPI_COLORS: Record<string, { bg: string; border: string; text: string }> =
+  {
+    blue: {
+      bg: 'bg-blue-50',
+      border: 'border-blue-200',
+      text: 'text-blue-700',
+    },
+    green: {
+      bg: 'bg-green-50',
+      border: 'border-green-200',
+      text: 'text-green-700',
+    },
+    purple: {
+      bg: 'bg-purple-50',
+      border: 'border-purple-200',
+      text: 'text-purple-700',
+    },
+    orange: {
+      bg: 'bg-orange-50',
+      border: 'border-orange-200',
+      text: 'text-orange-700',
+    },
+    teal: {
+      bg: 'bg-teal-50',
+      border: 'border-teal-200',
+      text: 'text-teal-700',
+    },
+    amber: {
+      bg: 'bg-amber-50',
+      border: 'border-amber-200',
+      text: 'text-amber-700',
+    },
+  };
+
+function KpiCard({
+  label,
+  value,
+  color,
+}: {
+  label: string;
+  value: string | number;
+  color: string;
+}) {
+  const c = KPI_COLORS[color] || KPI_COLORS.blue;
+  return (
+    <div
+      className={`rounded-xl border p-5 shadow-sm transition-transform hover:-translate-y-0.5 ${c.bg} ${c.border}`}
+    >
+      <div
+        className={`text-xs font-bold uppercase tracking-wider mb-2 ${c.text} opacity-70`}
+      >
+        {label}
+      </div>
+      <div className={`text-3xl font-black tracking-tight ${c.text}`}>
+        {value}
+      </div>
+    </div>
   );
 }

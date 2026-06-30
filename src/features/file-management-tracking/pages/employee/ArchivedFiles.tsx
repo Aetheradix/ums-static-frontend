@@ -15,6 +15,14 @@ export default function ArchivedFiles() {
 
   return (
     <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Employee' },
+        { label: 'Archived Files' },
+      ]}
       title="Archived Files"
       description="View your closed and archived files"
     >
@@ -58,8 +66,7 @@ export default function ArchivedFiles() {
               cell: (row: any) => (
                 <Button
                   icon="visibility"
-                  variant="text"
-                  size="small"
+                  label="View"
                   onClick={() =>
                     navigate(
                       `/file-management-tracking/employee/view/${row.id}`

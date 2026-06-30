@@ -28,6 +28,14 @@ export default function IncomingFiles() {
 
   return (
     <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Employee' },
+        { label: 'Incoming Files' },
+      ]}
       title="Incoming Files"
       description="Files forwarded to you for action"
     >
@@ -60,8 +68,7 @@ export default function IncomingFiles() {
               cell: (row: any) => (
                 <Button
                   icon="visibility"
-                  variant="text"
-                  size="small"
+                  label="View"
                   onClick={() =>
                     navigate(
                       `/file-management-tracking/employee/view/${row.id}`

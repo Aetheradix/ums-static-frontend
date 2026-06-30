@@ -22,6 +22,14 @@ export default function FileHistory() {
 
   return (
     <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Employee' },
+        { label: 'File History' },
+      ]}
       title="File History"
       description="Complete movement history across all files"
     >

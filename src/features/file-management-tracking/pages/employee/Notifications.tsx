@@ -21,6 +21,14 @@ export default function Notifications() {
 
   return (
     <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Employee' },
+        { label: 'Notifications' },
+      ]}
       title="Notifications"
       description="View and manage your in-app notifications"
     >
@@ -87,17 +95,14 @@ export default function Notifications() {
                   {!row.isRead && (
                     <Button
                       icon="mark_email_read"
-                      variant="text"
-                      size="small"
+                      label="Mark as Read"
                       onClick={() => markAsRead(row.id)}
-                      tooltip="Mark as Read"
                     />
                   )}
                   {row.fileId && (
                     <Button
                       icon="visibility"
-                      variant="text"
-                      size="small"
+                      label="View"
                       onClick={() =>
                         navigate(
                           `/file-management-tracking/employee/view/${row.fileId}`

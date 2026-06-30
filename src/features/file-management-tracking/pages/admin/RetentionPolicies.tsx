@@ -44,6 +44,14 @@ export default function RetentionPolicies() {
 
   return (
     <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Admin' },
+        { label: 'Retention Policies' },
+      ]}
       title="Retention Policies"
       description="Configure document retention schedules"
     >

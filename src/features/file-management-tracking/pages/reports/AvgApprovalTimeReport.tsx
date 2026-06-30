@@ -1,6 +1,8 @@
 import { Chart } from 'chart.js/auto';
 import { useEffect, useRef } from 'react';
-import { FormCard, FormPage } from 'shared/new-components';
+import { Icon } from 'shared/components/Icon/Icon';
+import { FormPage } from 'shared/new-components';
+import StatCard from 'shared/new-components/StatCard/StatCard';
 import { ReportExportButtons } from '../../components';
 import { mockFileMovements, mockFiles } from '../../data';
 
@@ -9,10 +11,16 @@ export default function AvgApprovalTimeReport() {
   const chartRef = useRef<Chart | null>(null);
 
   useEffect(() => {
-    requestAnimationFrame(() => {
+    let frameId: number;
+    frameId = requestAnimationFrame(() => {
       if (!canvasRef.current) return;
       const ctx = canvasRef.current.getContext('2d');
       if (!ctx) return;
+
+      if (chartRef.current) {
+        chartRef.current.destroy();
+      }
+
       const depts = [...new Set(mockFiles.map(f => f.departmentName))];
       const avgTimes = depts.map(dept => {
         const deptFiles = mockFiles.filter(f => f.departmentName === dept);
@@ -70,7 +78,10 @@ export default function AvgApprovalTimeReport() {
         },
       });
     });
-    return () => chartRef.current?.destroy();
+    return () => {
+      cancelAnimationFrame(frameId);
+      chartRef.current?.destroy();
+    };
   }, []);
 
   const totalApprovals = mockFileMovements.filter(
@@ -80,30 +91,53 @@ export default function AvgApprovalTimeReport() {
 
   return (
     <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Reports' },
+        { label: 'Average Approval Time Report' },
+      ]}
       title="Average Approval Time Report"
       description="Track file approval efficiency across departments"
     >
-      <ReportExportButtons />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <FormCard title="Total Approvals">
-          <div className="text-2xl font-bold text-green-600">
-            {totalApprovals}
-          </div>
-        </FormCard>
-        <FormCard title="Departments">
-          <div className="text-2xl font-bold text-blue-600">{depts.length}</div>
-        </FormCard>
-        <FormCard title="Files Tracked">
-          <div className="text-2xl font-bold text-purple-600">
-            {mockFiles.length}
-          </div>
-        </FormCard>
+      <div className="mb-6 flex justify-end">
+        <ReportExportButtons />
       </div>
-      <FormCard title="Avg Approval Time by Department">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <StatCard
+          title="Total Approvals"
+          value={totalApprovals}
+          icon="check_circle"
+          colorScheme="green"
+        />
+        <StatCard
+          title="Departments"
+          value={depts.length}
+          icon="domain"
+          colorScheme="blue"
+        />
+        <StatCard
+          title="Files Tracked"
+          value={mockFiles.length}
+          icon="description"
+          colorScheme="purple"
+        />
+      </div>
+
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 relative overflow-hidden flex flex-col">
+        <div className="absolute top-0 left-0 w-full h-1 bg-indigo-500 opacity-80" />
+        <h3 className="text-base font-bold text-gray-800 mb-6 flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0">
+            <Icon name="stacked_bar_chart" className="text-[18px]" />
+          </div>
+          Average Approval Time by Department
+        </h3>
         <div className="relative h-[300px]">
           <canvas ref={canvasRef} className="w-full h-[300px]" />
         </div>
-      </FormCard>
+      </div>
     </FormPage>
   );
 }

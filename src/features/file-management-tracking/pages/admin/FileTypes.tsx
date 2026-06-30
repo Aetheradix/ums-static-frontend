@@ -41,7 +41,18 @@ export default function FileTypes() {
   const remove = (id: number) => setData(data.filter(d => d.id !== id));
 
   return (
-    <FormPage title="File Types" description="Manage file type master data">
+    <FormPage
+      breadcrumbs={[
+        {
+          label: 'File Management Tracking',
+          to: '/home/sub-menu/file-management-tracking',
+        },
+        { label: 'Admin' },
+        { label: 'File Types' },
+      ]}
+      title="File Types"
+      description="Manage file type master data"
+    >
       <GridPanel
         title="File Types"
         data={data}
