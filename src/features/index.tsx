@@ -238,6 +238,10 @@ export default function Features() {
                         path="transport-management/*"
                         element={<TransportManagement />}
                       />
+                      <Route
+                        path="affiliation-management-system/*"
+                        element={<AffiliationManagementSystem />}
+                      />
                     </Routes>
                   </MainLayout>
                 }
