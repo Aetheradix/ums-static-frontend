@@ -5680,6 +5680,100 @@ export const menuConfig: Menu.MenuItem[] = [
       },
     ],
   },
+  // === ESTATE MANAGEMENT SYSTEM ===
+  {
+    label: 'Estate Management',
+    slug: 'estate-management',
+    category: 'Governance',
+    icon: 'domain',
+    colorScheme: 'blue',
+    description:
+      'Manage properties • Buildings & blocks • Open areas • Roads • Maintenance',
+    path: '/estate-management',
+    children: [
+      {
+        label: 'Admin Portal',
+        slug: 'estate-management-admin',
+        description:
+          'Estate administration — manage buildings, floors, rooms, roads, and maintenance requests.',
+        icon: 'admin_panel_settings',
+        colorScheme: 'blue',
+        path: '/estate-management/admin',
+        children: [
+          {
+            label: 'Dashboard',
+            description: 'Overview of estate metrics and statistics',
+            path: '/estate-management/admin/dashboard',
+            icon: 'dashboard',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Manage Buildings',
+            description: 'Manage buildings, floors, rooms, and houses',
+            path: '/estate-management/admin/manage-buildings',
+            icon: 'apartment',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Open Areas',
+            description: 'Manage open spaces, parks, and grounds',
+            path: '/estate-management/admin/open-areas',
+            icon: 'park',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Roads & Footpaths',
+            description: 'Manage roads, footpaths, and street lighting',
+            path: '/estate-management/admin/roads-footpaths',
+            icon: 'add_road',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Settings',
+            description: 'Configure wall types, foundations, roofs, and blocks',
+            path: '/estate-management/admin/settings',
+            icon: 'settings',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Maintenance Requests',
+            description: 'Manage requests, maintainers, and hierarchies',
+            path: '/estate-management/admin/maintenance-requests',
+            icon: 'build',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Assigned Requests',
+            description: 'View maintenance requests assigned to maintainers',
+            path: '/estate-management/admin/assigned-requests',
+            icon: 'assignment_ind',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Work Orders',
+            description: 'Verify and approve work orders',
+            path: '/estate-management/admin/work-orders',
+            icon: 'engineering',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Work Order Tasks',
+            description: 'Manage sub-tasks of active work orders',
+            path: '/estate-management/admin/work-order-tasks',
+            icon: 'task_alt',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Reports',
+            description: 'Export building and maintenance summaries',
+            path: '/estate-management/admin/reports',
+            icon: 'assessment',
+            colorScheme: 'blue',
+          },
+        ],
+      },
+    ],
+  },
   // === TRANSPORT MANAGEMENT MODULE ===
   {
     label: 'Transport\nManagement',
