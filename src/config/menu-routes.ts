@@ -6697,6 +6697,68 @@ export const menuConfig: Menu.MenuItem[] = [
       },
     ],
   },
+  {
+    label: 'Thesis\nManagement',
+    slug: 'thesis-management',
+    category: 'Research Services',
+    icon: 'menu_book',
+    colorScheme: 'purple',
+    description:
+      'Registration • Proposal • Plagiarism • Evaluation • Repository',
+    path: '/thesis-management',
+    children: [
+      {
+        label: 'Thesis Management System',
+        slug: 'thesis-management-system',
+        description:
+          'Manage thesis registrations, guide allocations, plagiarism verification, defense scheduling, and repositories.',
+        path: '/thesis-management',
+        icon: 'menu_book',
+        colorScheme: 'purple',
+        children: [
+          {
+            label: 'Student Portal',
+            description:
+              'Apply, view supervisor logs, track progress milestones, submit thesis.',
+            path: '/thesis-management/student',
+            icon: 'school',
+            colorScheme: 'purple',
+          },
+          {
+            label: 'Supervisor Portal',
+            description:
+              'Review assigned scholars progress, proposals, plagiarism reports.',
+            path: '/thesis-management/supervisor',
+            icon: 'groups',
+            colorScheme: 'green',
+          },
+          {
+            label: 'HOD Portal',
+            description:
+              'Endorse proposals, allocations, department synopsis signoffs.',
+            path: '/thesis-management/hod',
+            icon: 'admin_panel_settings',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Research Cell',
+            description:
+              'Registration codes, external jury assignments, repository setup.',
+            path: '/thesis-management/cell',
+            icon: 'account_balance',
+            colorScheme: 'teal',
+          },
+          {
+            label: 'Admin Portal',
+            description: 'Masters, milestone config, workflows, and templates.',
+            path: '/thesis-management/admin',
+            icon: 'cog',
+            colorScheme: 'orange',
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export function useMenu() {
