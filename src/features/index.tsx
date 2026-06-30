@@ -15,6 +15,7 @@ import EmployeeReports from './employee-reports';
 import EssentialServices from './essential-services';
 import EstateManagement from './estate-management';
 import ExaminationManagement from './examination-management';
+import FileManagementTracking from './file-management-tracking';
 import FinanceSupplyChain from './finance-supply-chain';
 import GrievanceManagement from './grievance-management';
 import HealthManagement from './health-management';
@@ -26,6 +27,7 @@ import LeaveManagement from './leave-management';
 import Lms from './lms';
 import Master from './master';
 import OpenBookExamination from './open-book-examination';
+import PayrollRoutes from './payroll';
 import ProgrammeManagement from './programme-management';
 import PublicPortalLayout, {
   PublicRouteWrapper,
@@ -41,8 +43,6 @@ import StudentActivitiesClubs from './student-activities-clubs';
 import StudentFeedbackManagement from './student-feedback-management';
 import StudentManagement from './student-management';
 import TrainingPlacement from './training-placement';
-
-import PayrollRoutes from './payroll';
 
 import ContentFederationSystem from './content-federation-system';
 import SecurityManagement from './security-management';
@@ -254,6 +254,10 @@ export default function Features() {
                       <Route
                         path="infrastructure-project-management/*"
                         element={<InfrastructureProjectManagement />}
+                      />
+                      <Route
+                        path="file-management-tracking/*"
+                        element={<FileManagementTracking />}
                       />
                       <Route
                         path="transport-management/*"
