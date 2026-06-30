@@ -18,6 +18,7 @@ import ExaminationManagement from './examination-management';
 import FileManagementTracking from './file-management-tracking';
 import FinanceSupplyChain from './finance-supply-chain';
 import GrievanceManagement from './grievance-management';
+import HealthManagement from './health-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
 import InfrastructureProjectManagement from './infrastructure-project-management';
@@ -31,6 +32,7 @@ import ProgrammeManagement from './programme-management';
 import PublicPortalLayout, {
   PublicRouteWrapper,
 } from './public-portal/layout/PublicPortalLayout';
+import RecruitmentManagement from './recruitment-management';
 import ResearchManagement from './research-management';
 import ResidentialAllocationManagement from './residential-allocation-management';
 import RTIManagement from './rti-management';
@@ -42,6 +44,7 @@ import StudentFeedbackManagement from './student-feedback-management';
 import StudentManagement from './student-management';
 import TrainingPlacement from './training-placement';
 
+import ContentFederationSystem from './content-federation-system';
 import SecurityManagement from './security-management';
 import TrainerDevelopment from './trainer-development';
 import TransportManagement from './transport-management';
@@ -146,6 +149,10 @@ export default function Features() {
                         element={<EmployeeManagement />}
                       />
                       <Route
+                        path="recruitment-management/*"
+                        element={<RecruitmentManagement />}
+                      />
+                      <Route
                         path="finance-supply-chain/*"
                         element={<FinanceSupplyChain />}
                       />
@@ -190,6 +197,10 @@ export default function Features() {
                         path="grievance-management/*"
                         element={<GrievanceManagement />}
                       />
+                      <Route
+                        path="health-management/*"
+                        element={<HealthManagement />}
+                      />
                       <Route path="lms/*" element={<Lms />} />
                       <Route
                         path="student-feedback-management/*"
@@ -230,6 +241,10 @@ export default function Features() {
                       <Route
                         path="payroll-management/*"
                         element={<PayrollRoutes />}
+                      />
+                      <Route
+                        path="content-federation/*"
+                        element={<ContentFederationSystem />}
                       />
                       <Route
                         path="infrastructure-project-management/*"
