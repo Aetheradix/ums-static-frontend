@@ -43,7 +43,7 @@ import TrainingPlacement from './training-placement';
 import PayrollRoutes from './payroll';
 
 import TrainerDevelopment from './trainer-development';
-
+import TransportManagement from './transport-management';
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
   () => import('./public-portal/pages/Solutions')
@@ -233,6 +233,10 @@ export default function Features() {
                       <Route
                         path="infrastructure-project-management/*"
                         element={<InfrastructureProjectManagement />}
+                      />
+                      <Route
+                        path="transport-management/*"
+                        element={<TransportManagement />}
                       />
                     </Routes>
                   </MainLayout>

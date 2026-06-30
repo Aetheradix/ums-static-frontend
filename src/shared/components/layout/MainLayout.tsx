@@ -30,6 +30,10 @@ const PORTAL_PATHS: string[] = [
   '/essential-services/employee',
   '/estate-management',
   '/estate-management/admin',
+  '/transport-management',
+  '/transport-management/admin-login',
+  '/transport-management/college-login',
+  '/transport-management/reports',
 ];
 
 function isPortalPath(pathname: string): boolean {
