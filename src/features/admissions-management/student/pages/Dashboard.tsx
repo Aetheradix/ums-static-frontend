@@ -11,6 +11,31 @@ const studentAppStats = {
   totalDocuments: 5,
 };
 
+function DocumentVerificationProgress() {
+  const percentage = Math.round(
+    (studentAppStats.documentsVerified / studentAppStats.totalDocuments) * 100
+  );
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex justify-between text-sm font-medium text-gray-700">
+        <span>Documents Verified</span>
+        <span>
+          {studentAppStats.documentsVerified} / {studentAppStats.totalDocuments}
+        </span>
+      </div>
+      <div className="h-3 w-full overflow-hidden rounded-full bg-gray-200">
+        <div
+          className="h-3 rounded-full bg-indigo-600 transition-all duration-500"
+          style={{ width: `${percentage}%` }}
+        ></div>
+      </div>
+      <p className="text-xs text-gray-500 text-right mt-1">
+        {percentage}% complete
+      </p>
+    </div>
+  );
+}
+
 function ApplicationProgressDoughnut() {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -103,10 +128,6 @@ function EligibilityPieChart() {
 }
 
 export default function StudentDashboard() {
-  const docPct = Math.round(
-    (studentAppStats.documentsVerified / studentAppStats.totalDocuments) * 100
-  );
-
   return (
     <FormPage
       title="Admissions Student Dashboard"
@@ -162,31 +183,15 @@ export default function StudentDashboard() {
           </div>
         </FormCard>
 
-        <FormCard title="Eligibility Match" className="chart-card">
+        <FormCard title="Application Eligibility" className="chart-card">
           <div className="student-chart-container">
             <EligibilityPieChart />
           </div>
         </FormCard>
 
         <FormCard title="Profile Completeness" className="completeness-card">
-          <div className="completeness-progress-container">
-            <div className="completeness-progress-header">
-              <span className="completeness-progress-label">
-                Documents Verified
-              </span>
-              <span className="completeness-progress-value">{docPct}%</span>
-            </div>
-            <div className="completeness-progress-track">
-              <div
-                className="completeness-progress-fill"
-                style={{ width: `${docPct}%` }}
-              ></div>
-            </div>
-            <p className="completeness-progress-subtitle">
-              {studentAppStats.totalDocuments -
-                studentAppStats.documentsVerified}{' '}
-              document(s) pending verification.
-            </p>
+          <div className="p-4 flex flex-col justify-center h-full">
+            <DocumentVerificationProgress />
           </div>
         </FormCard>
       </div>

@@ -11,9 +11,19 @@ import ProfileDetails from './Profile-details';
 import ApprovalStatusReport from './approval-status-report';
 import InspectionStatusReport from './inspection-status-report';
 
+import PublicPortalPage from './PublicPortalPage';
+import CollegePortalPage from './CollegePortalPage';
+import AdminPortalPage from './AdminPortalPage';
+import AffiliationPortalPage from './AffiliationPortalPage';
+
 export default function AffiliationManagementSystem() {
   return (
     <Routes>
+      <Route path="" element={<AffiliationPortalPage />} />
+      <Route path="public" element={<PublicPortalPage />} />
+      <Route path="college-login" element={<CollegePortalPage />} />
+      <Route path="admin-login" element={<AdminPortalPage />} />
+
       <Route
         path="registration-approval/*"
         element={<CollegeRegistrationApproval />}

@@ -13,8 +13,14 @@ const PORTAL_PATHS: string[] = [
   '/employee-management',
   '/employee-management/admin-portal',
   '/academics',
+  '/recruitment-management',
   '/admissions-management',
   '/student-management',
+  '/training-placement',
+  '/training-placement/admin',
+  '/training-placement/dept',
+  '/training-placement/company',
+  '/training-placement/student',
 
   '/infrastructure-project-management',
   '/infrastructure-project-management/reports',
@@ -25,6 +31,15 @@ const PORTAL_PATHS: string[] = [
   '/essential-services/employee',
   '/estate-management',
   '/estate-management/admin',
+  '/transport-management',
+  '/transport-management/admin-login',
+  '/transport-management/college-login',
+  '/transport-management/reports',
+
+  '/affiliation-management-system',
+  '/affiliation-management-system/public',
+  '/affiliation-management-system/college-login',
+  '/affiliation-management-system/admin-login',
 ];
 
 function isPortalPath(pathname: string): boolean {

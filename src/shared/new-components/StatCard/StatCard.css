@@ -30,7 +30,7 @@
 }
 
 .stat-card-icon {
-  @apply w-12 h-12 rounded-xl flex items-center justify-center shrink-0 text-white shadow-sm;
+  @apply w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-sm;
   /* colorScheme is applied via inline styles or classes in the TSX */
 }
 
