@@ -44,6 +44,7 @@ import StudentFeedbackManagement from './student-feedback-management';
 import StudentManagement from './student-management';
 import TrainingPlacement from './training-placement';
 
+import BillTracking from './bill-tracking';
 import ContentFederationSystem from './content-federation-system';
 import SecurityManagement from './security-management';
 import ThesisManagementRoutes from './thesis-management';
@@ -270,6 +271,10 @@ export default function Features() {
                       <Route
                         path="security-management/*"
                         element={<SecurityManagement />}
+                      />
+                      <Route
+                        path="bill-tracking/*"
+                        element={<BillTracking />}
                       />
                     </Routes>
                   </MainLayout>
