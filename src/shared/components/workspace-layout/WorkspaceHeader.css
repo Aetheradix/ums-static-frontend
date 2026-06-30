@@ -168,6 +168,59 @@
   display: none; /* hidden on desktop */
 }
 
+/* ----------------------------------
+   Search Dropdown Styles
+   ---------------------------------- */
+.ws-search-dropdown {
+  @apply absolute left-0 right-0 top-full mt-2 bg-white border border-slate-200 rounded-lg shadow-lg py-2 z-50 max-h-[400px] overflow-y-auto;
+}
+
+.dark .ws-search-dropdown {
+  @apply bg-zinc-900 border-zinc-800 shadow-xl;
+}
+
+.ws-search-result-item {
+  @apply flex items-center gap-4 px-4 py-3 cursor-pointer transition-colors border-l-2 border-transparent;
+}
+
+.ws-search-result-item:hover,
+.ws-search-result-item.selected {
+  @apply bg-slate-50 border-(--color-primary);
+}
+
+.dark .ws-search-result-item:hover,
+.dark .ws-search-result-item.selected {
+  @apply bg-zinc-800/80 border-(--color-primary);
+}
+
+.ws-search-item-icon {
+  @apply flex items-center justify-center w-10 h-10 rounded-md bg-slate-100 shrink-0 text-slate-500;
+}
+
+.dark .ws-search-item-icon {
+  @apply bg-zinc-800 text-zinc-400;
+}
+
+.ws-search-item-content {
+  @apply flex flex-col min-w-0 flex-1;
+}
+
+.ws-search-item-title {
+  @apply text-sm font-semibold text-slate-800 truncate;
+}
+
+.dark .ws-search-item-title {
+  @apply text-zinc-200;
+}
+
+.ws-search-item-path {
+  @apply text-[11px] text-slate-400 font-medium truncate mt-0.5;
+}
+
+.dark .ws-search-item-path {
+  @apply text-zinc-500;
+}
+
 @media (max-width: 1023px) {
   .ws-hamburger-btn {
     @apply flex items-center justify-center w-9 h-9 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 cursor-pointer transition-all duration-200 shrink-0;

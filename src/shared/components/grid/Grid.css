@@ -128,7 +128,9 @@
 
 /* Active page */
 .p-paginator-page.p-highlight {
-  @apply rounded-lg border border-black bg-black text-white;
+  @apply rounded-lg text-white;
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
 }
 
 /* Ellipsis */

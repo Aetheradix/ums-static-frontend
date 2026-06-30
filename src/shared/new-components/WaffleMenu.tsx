@@ -1,37 +1,12 @@
 import { useMenu } from 'config/menu-routes';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Icon } from 'shared/components/Icon/Icon';
 import './WaffleMenu.css';
 
 interface WaffleMenuProps {
   isDarkMode?: boolean;
 }
-
-const mapToPiIcon = (icon: any) => {
-  if (typeof icon !== 'string') return 'pi-th-large';
-
-  const map: Record<string, string> = {
-    school: 'pi-book',
-    groups: 'pi-users',
-    grid_view: 'pi-th-large',
-    menu_book: 'pi-bookmark',
-    bolt: 'pi-bolt',
-    work: 'pi-briefcase',
-    science: 'pi-compass',
-    accessible: 'pi-user',
-    credit_card: 'pi-id-card',
-    desktop_windows: 'pi-desktop',
-    build: 'pi-cog',
-    workspace_premium: 'pi-star-fill',
-    settings: 'pi-sliders-v',
-    apartment: 'pi-building',
-    edit_location: 'pi-map-marker',
-    domain: 'pi-home',
-    badge: 'pi-id-card',
-  };
-
-  return map[icon || ''] || `pi-${icon || 'th-large'}`;
-};
 
 const mapColorScheme = (
   colorScheme: string | undefined,
@@ -113,7 +88,7 @@ export default function WaffleMenu({ isDarkMode = false }: WaffleMenuProps) {
                       isDarkMode
                     )}`}
                   >
-                    <i className={`pi ${mapToPiIcon(item.icon)}`} />
+                    <Icon name={(item.icon as string) || 'grid_view'} />
                   </div>
 
                   <p className="ws-waffle-card-label">{item.label}</p>
@@ -146,7 +121,7 @@ export default function WaffleMenu({ isDarkMode = false }: WaffleMenuProps) {
                         isDarkMode
                       )}`}
                     >
-                      <i className={`pi ${mapToPiIcon(item.icon)}`} />
+                      <Icon name={(item.icon as string) || 'grid_view'} />
                     </div>
 
                     <div>

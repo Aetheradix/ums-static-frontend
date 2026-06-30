@@ -29,6 +29,7 @@ const ICON_MAPPING: Record<string, string> = {
   'arrow-up-right': 'trending_up',
   'arrow-down-right': 'trending_down',
   minus: 'remove',
+  'th-large': 'grid_view',
 };
 
 export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {

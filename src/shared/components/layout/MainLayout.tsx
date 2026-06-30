@@ -140,7 +140,7 @@ export default function MainLayout({ children }: React.PropsWithChildren) {
     <WorkspaceLayout>
       {/* Main Page Content */}
       <div className="main-layout-content">
-        <div className="mx-auto px-6 py-6 pb-16 flex flex-col lg:flex-row gap-8 relative">
+        <div className="mx-auto px-4 md:px-6 py-6 flex flex-col lg:flex-row gap-8 relative">
           {/* Mobile Drawer Backdrop Overlay */}
           {isMobileDrawerOpen && (
             <div

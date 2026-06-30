@@ -1,3 +1,5 @@
+@reference "tailwindcss";
+
 .ws-navbar {
   display: flex;
   align-items: center;
@@ -80,9 +82,9 @@
 }
 
 /* Dark Mode Overrides if needed */
-body.dark .ws-navbar {
-  background-color: var(--color-primary, #1b2b3d);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+body.dark .ws-navbar,
+.dark .ws-navbar {
+  @apply bg-zinc-950 border-b border-zinc-800;
 }
 
 /* TieredMenu Popup Styling Overrides */
