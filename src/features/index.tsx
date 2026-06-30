@@ -46,6 +46,7 @@ import PayrollRoutes from './payroll';
 
 import ContentFederationSystem from './content-federation-system';
 import SecurityManagement from './security-management';
+import ThesisManagementRoutes from './thesis-management';
 import TrainerDevelopment from './trainer-development';
 import TransportManagement from './transport-management';
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
@@ -221,6 +222,10 @@ export default function Features() {
                       <Route
                         path="scholarship-dbt/*"
                         element={<ScholarshipDbt />}
+                      />
+                      <Route
+                        path="thesis-management/*"
+                        element={<ThesisManagementRoutes />}
                       />
                       <Route
                         path="trainer-development/*"
