@@ -15,7 +15,7 @@ import RadioButtonList from './RadioList';
 import Switch from './Switch';
 import TextArea from './TextArea';
 import TextBox from './TextBox';
-
+import TimePicker from './TimePicker';
 export {
   Captcha,
   Checkbox,
@@ -34,4 +34,5 @@ export {
   Switch,
   TextArea,
   TextBox,
+  TimePicker,
 };

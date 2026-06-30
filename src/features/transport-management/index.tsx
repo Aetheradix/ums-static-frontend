@@ -1,22 +1,27 @@
 import { Route, Routes } from 'react-router-dom';
 import AdminDashboard from './admin/Dashboard';
+import AdminMenuPage from './admin/AdminMenuPage';
 import TransporterRegistration from './admin/TransporterRegistration';
 import VehicleRegistration from './admin/VehicleRegistration';
 import DriverAttenderRegistration from './admin/DriverAttenderRegistration';
 import TransporterCollegeMapping from './admin/TransporterCollegeMapping';
 import VehicleCollegeMapping from './admin/VehicleCollegeMapping';
 import TransporterBillUpload from './admin/TransporterBillUpload';
-
-// New Admin Operations
 import VehicleInsurance from './admin/operations/VehicleInsurance';
 import VehicleAllotment from './admin/operations/VehicleAllotment';
 import VehicleDeAllocationTransfer from './admin/operations/VehicleDeAllocationTransfer';
-
-// New Admin Maintenance
 import VehicleMaintenanceApproval from './admin/maintenance/VehicleMaintenanceApproval';
 
-// College imports
+import StudentDashboard from './student/Dashboard';
+import StudentMenuPage from './student/StudentMenuPage';
+import StudentBusLiveTracking from './student/BusLiveTracking';
+import StudentLeaveEntryStudent from './student/StudentLeaveEntry';
+import StudentBusStopEnrollment from './student/BusStopEnrollment';
+import StudentPickupDropRoute from './student/StudentPickupDrop';
+import StudentPickupCancellation from './student/PickupCancellationDetails';
+
 import CollegeDashboard from './college/Dashboard';
+import CollegeMenuPage from './college/CollegeMenuPage';
 import InchargeRegistration from './college/InchargeRegistration';
 import RouteBusStopMapping from './college/RouteBusStopMapping';
 import BusGatePass from './college/BusGatePass';
@@ -27,15 +32,12 @@ import StudentRouteMapping from './college/StudentRouteMapping';
 import StudentLeaveEntry from './college/StudentLeaveEntry';
 import StudentPickupDrop from './college/StudentPickupDrop';
 import BusLiveTracking from './college/BusLiveTracking';
-
-// New College Operations
 import VehicleMaintenanceRequest from './college/maintenance/VehicleMaintenanceRequest';
 import VehicleMaintenance from './college/maintenance/VehicleMaintenance';
 import DriverAttenderLeaveEntry from './college/DriverAttenderLeaveEntry';
 import PickupCancellationDetails from './college/PickupCancellationDetails';
 import BusStopEnrollment from './college/BusStopEnrollment';
 
-// Reports & Others
 import GatePassReport from './reports/GatePassReport';
 import AboutTransportManagement from './AboutTransportManagement';
 import TransportManagementPortalPage from './TransportManagementPortalPage';
@@ -46,6 +48,7 @@ export default function TransportManagement() {
       <Route path="" element={<TransportManagementPortalPage />} />
 
       {/* Admin */}
+      <Route path="admin-login" element={<AdminMenuPage />} />
       <Route path="admin-login/dashboard" element={<AdminDashboard />} />
       <Route
         path="admin-login/transporter-registration"
@@ -88,7 +91,32 @@ export default function TransportManagement() {
         element={<VehicleMaintenanceApproval />}
       />
 
+      {/* Student */}
+      <Route path="student-login" element={<StudentMenuPage />} />
+      <Route path="student-login/dashboard" element={<StudentDashboard />} />
+      <Route
+        path="student-login/live-tracking"
+        element={<StudentBusLiveTracking />}
+      />
+      <Route
+        path="student-login/student-leave"
+        element={<StudentLeaveEntryStudent />}
+      />
+      <Route
+        path="student-login/bus-stop-enrollment"
+        element={<StudentBusStopEnrollment />}
+      />
+      <Route
+        path="student-login/pickup-drop"
+        element={<StudentPickupDropRoute />}
+      />
+      <Route
+        path="student-login/pickup-cancellation"
+        element={<StudentPickupCancellation />}
+      />
+
       {/* College */}
+      <Route path="college-login" element={<CollegeMenuPage />} />
       <Route path="college-login/dashboard" element={<CollegeDashboard />} />
       <Route
         path="college-login/incharge-registration"
