@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { DropDownList } from 'shared/components/forms';
 import { FormPage, GridPanel, StatusBadge } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import { mockAuditLogs, mockUsers } from '../../data';
 
 export default function AuditLogs() {
@@ -27,6 +28,10 @@ export default function AuditLogs() {
       title="Audit Logs"
       description="View and filter system audit trail"
     >
+      <InfoBanner
+        title="About Audit Logs"
+        message="Ensure complete accountability by tracing every system modification, login, and file movement."
+      />
       <GridPanel
         title="Audit Logs"
         data={filtered}

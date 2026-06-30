@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import {
   DropDownList,
@@ -9,6 +10,7 @@ import {
 } from 'shared/components/forms';
 import { Icon } from 'shared/components/Icon/Icon';
 import { FormGrid, FormPage, FormPopup } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import {
   mockDepartments,
   mockEscalationRules,
@@ -95,6 +97,7 @@ export default function Workflows() {
   };
 
   const save = () => {
+    ToastService.success('Configuration saved successfully.');
     if (popup.item) {
       const idx = data.findIndex(d => d.id === popup.item!.id);
       if (idx !== -1) {
@@ -269,6 +272,10 @@ export default function Workflows() {
       title="Workflow Management"
       description="Design and manage approval chains for file processing"
     >
+      <InfoBanner
+        title="About Workflow Management"
+        message="Design and configure the movement rules, hierarchical paths, and approval logic for different file types."
+      />
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <KpiCard label="Total Workflows" value={data.length} color="blue" />
@@ -447,12 +454,9 @@ export default function Workflows() {
                         <Icon name="delete" className="text-[15px]" />
                       </button>
                       <div
-                        className="w-8 h-8 flex items-center justify-center text-gray-400 transition-transform duration-300"
-                        style={{
-                          transform: isExpanded
-                            ? 'rotate(180deg)'
-                            : 'rotate(0)',
-                        }}
+                        className={`w-8 h-8 flex items-center justify-center text-gray-400 transition-transform duration-300 ${
+                          isExpanded ? 'rotate-180' : ''
+                        }`}
                       >
                         <Icon name="expand_more" />
                       </div>

@@ -4,6 +4,7 @@ import { FormPage, GridPanel } from 'shared/new-components';
 import {
   ConfidentialityBadge,
   FileStatusBadge,
+  InfoBanner,
   PriorityBadge,
 } from '../../components';
 import { mockFiles, mockUsers } from '../../data';
@@ -26,6 +27,10 @@ export default function ManageFiles() {
       title="My Files"
       description="View, create, and manage your eFiles"
     >
+      <InfoBanner
+        title="About My Files"
+        message="Access your active desk. Review, update, and process the files currently assigned to you."
+      />
       <GridPanel
         title="My Files"
         data={myFiles}

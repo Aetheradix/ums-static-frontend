@@ -1,8 +1,9 @@
-import Chart from 'chart.js/auto';
-import { useEffect, useRef } from 'react';
+import { Chart } from 'primereact/chart';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from 'shared/components/Icon/Icon';
 import { FormCard, FormPage } from 'shared/new-components';
+import StatCard from 'shared/new-components/StatCard/StatCard';
+import { InfoBanner } from '../../components';
 import { mockDepartments, mockFileMovements, mockFiles } from '../../data';
 
 export default function FMTSAdminDashboard() {
@@ -21,6 +22,9 @@ export default function FMTSAdminDashboard() {
       new Date(f.dueDate) < new Date() &&
       !['Closed', 'Archived', 'Approved'].includes(f.currentStatus)
   );
+  const rejectedCount = mockFiles.filter(
+    f => f.currentStatus === 'Rejected'
+  ).length;
 
   const statusLabels = [
     'Draft',
@@ -35,18 +39,231 @@ export default function FMTSAdminDashboard() {
   const statusCounts = statusLabels.map(
     s => mockFiles.filter(f => f.currentStatus === s).length
   );
+  const statusColors = [
+    'rgba(148,163,184,0.8)',
+    'rgba(96,165,250,0.8)',
+    'rgba(251,191,36,0.8)',
+    'rgba(129,140,248,0.8)',
+    'rgba(52,211,153,0.8)',
+    'rgba(248,113,113,0.8)',
+    'rgba(156,163,175,0.8)',
+    'rgba(167,139,250,0.8)',
+  ];
 
   const deptLabels = mockDepartments.filter(d => d.isActive).map(d => d.name);
   const deptCounts = deptLabels.map(
     d => mockFiles.filter(f => f.departmentName === d).length
   );
+  const deptColors = [
+    'rgba(99,102,241,0.8)',
+    'rgba(16,185,129,0.8)',
+    'rgba(245,158,11,0.8)',
+    'rgba(236,72,153,0.8)',
+    'rgba(168,85,247,0.8)',
+    'rgba(251,146,60,0.8)',
+  ];
 
   const recentMovements = [...mockFileMovements]
     .sort(
       (a, b) =>
         new Date(b.actionDate).getTime() - new Date(a.actionDate).getTime()
     )
-    .slice(0, 5);
+    .slice(0, 6);
+
+  // Action distribution for pie chart
+  const actionCounts: Record<string, number> = {};
+  mockFileMovements.forEach(m => {
+    actionCounts[m.action] = (actionCounts[m.action] || 0) + 1;
+  });
+  const actionColors = [
+    'rgba(16,185,129,0.85)',
+    'rgba(239,68,68,0.85)',
+    'rgba(59,130,246,0.85)',
+    'rgba(245,158,11,0.85)',
+    'rgba(168,85,247,0.85)',
+    'rgba(236,72,153,0.85)',
+  ];
+
+  // Daily file movement trend
+  const dateGroups: Record<string, number> = {};
+  mockFileMovements.forEach(m => {
+    const date = m.actionDate.split('T')[0];
+    dateGroups[date] = (dateGroups[date] || 0) + 1;
+  });
+  const sortedDates = Object.keys(dateGroups).sort();
+
+  const statusBarData = {
+    labels: statusLabels,
+    datasets: [
+      {
+        label: 'Files',
+        data: statusCounts,
+        backgroundColor: statusColors,
+        borderRadius: 6,
+        barThickness: 28,
+      },
+    ],
+  };
+
+  const statusBarOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: 'rgba(15,23,42,0.9)',
+        titleFont: { size: 13, weight: 'bold' },
+        bodyFont: { size: 12 },
+        padding: 12,
+        cornerRadius: 8,
+      },
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { color: '#64748b', font: { size: 10, weight: '500' } },
+        border: { display: false },
+      },
+      y: {
+        beginAtZero: true,
+        ticks: { stepSize: 1, color: '#94a3b8', font: { size: 11 } },
+        grid: { color: 'rgba(148,163,184,0.08)', drawBorder: false },
+        border: { display: false },
+      },
+    },
+  };
+
+  const deptBarData = {
+    labels: deptLabels,
+    datasets: [
+      {
+        label: 'Files',
+        data: deptCounts,
+        backgroundColor: deptColors.slice(0, deptLabels.length),
+        borderRadius: 6,
+        barThickness: 28,
+      },
+    ],
+  };
+
+  const deptBarOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    indexAxis: 'y',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: 'rgba(15,23,42,0.9)',
+        padding: 12,
+        cornerRadius: 8,
+      },
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+        ticks: { stepSize: 1, color: '#94a3b8', font: { size: 11 } },
+        grid: { color: 'rgba(148,163,184,0.08)', drawBorder: false },
+        border: { display: false },
+      },
+      y: {
+        grid: { display: false },
+        ticks: { color: '#64748b', font: { size: 11, weight: '500' } },
+        border: { display: false },
+      },
+    },
+  };
+
+  const actionPieData = {
+    labels: Object.keys(actionCounts),
+    datasets: [
+      {
+        data: Object.values(actionCounts),
+        backgroundColor: actionColors.slice(
+          0,
+          Object.keys(actionCounts).length
+        ),
+        borderWidth: 0,
+        hoverOffset: 8,
+      },
+    ],
+  };
+
+  const actionPieOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '65%',
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom',
+        labels: {
+          usePointStyle: true,
+          font: { size: 11, weight: '500' },
+          color: '#64748b',
+          padding: 14,
+        },
+      },
+      tooltip: {
+        backgroundColor: 'rgba(15,23,42,0.9)',
+        padding: 12,
+        cornerRadius: 8,
+      },
+    },
+  };
+
+  const trendData = {
+    labels: sortedDates.map(d => {
+      const dt = new Date(d);
+      return `${dt.getDate()}/${dt.getMonth() + 1}`;
+    }),
+    datasets: [
+      {
+        label: 'Daily Activity',
+        data: sortedDates.map(d => dateGroups[d]),
+        borderColor: 'rgba(99,102,241,0.8)',
+        backgroundColor: 'rgba(99,102,241,0.06)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+        pointBackgroundColor: 'rgba(99,102,241,1)',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointHoverRadius: 6,
+        borderWidth: 2.5,
+      },
+    ],
+  };
+
+  const trendOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: 'rgba(15,23,42,0.9)',
+        titleFont: { size: 13, weight: 'bold' },
+        bodyFont: { size: 12 },
+        padding: 12,
+        cornerRadius: 8,
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { stepSize: 1, color: '#94a3b8', font: { size: 11 } },
+        grid: { color: 'rgba(148,163,184,0.08)', drawBorder: false },
+        border: { display: false },
+      },
+      x: {
+        ticks: { color: '#64748b', font: { size: 10 } },
+        grid: { display: false },
+        border: { display: false },
+      },
+    },
+  };
+
+  const completionRate =
+    totalFiles > 0 ? Math.round((approvedFiles.length / totalFiles) * 100) : 0;
 
   return (
     <FormPage
@@ -61,37 +278,183 @@ export default function FMTSAdminDashboard() {
       title="File Management Dashboard"
       description="System-wide overview of eFile tracking, approvals, and compliance"
     >
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <KpiCard label="Total Files" value={totalFiles} color="blue" />
-        <KpiCard label="Pending" value={pendingFiles.length} color="orange" />
-        <KpiCard
-          label="Approved / Closed"
-          value={approvedFiles.length}
-          color="green"
+      <InfoBanner
+        title="About File Management Dashboard"
+        message="Get a bird's-eye view of system-wide file tracking, overdue items, and key operational metrics."
+      />
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
+        <StatCard
+          title="Total Files"
+          value={totalFiles}
+          icon="folder"
+          colorScheme="blue"
+          subtitle="Across all departments"
+          trend={{ value: 12, direction: 'up', label: 'vs last month' }}
         />
-        <KpiCard label="Overdue" value={overdueFiles.length} color="red" />
+        <StatCard
+          title="Pending"
+          value={pendingFiles.length}
+          icon="hourglass_empty"
+          colorScheme="orange"
+          subtitle="Awaiting action"
+          trend={{ value: 5, direction: 'down', label: 'vs last week' }}
+        />
+        <StatCard
+          title="Approved / Closed"
+          value={approvedFiles.length}
+          icon="check_circle"
+          colorScheme="green"
+          subtitle="Fully processed"
+          trend={{ value: 8, direction: 'up', label: 'clearance rate' }}
+        />
+        <StatCard
+          title="Overdue"
+          value={overdueFiles.length}
+          icon="warning"
+          colorScheme="red"
+          subtitle="Requires attention"
+          trend={{ value: 2, direction: 'up', label: 'escalated' }}
+        />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <FormCard title="Files by Status" icon="bar_chart">
-          <div className="relative h-64">
-            <FilesByStatusChart labels={statusLabels} data={statusCounts} />
+      {/* Completion Rate Banner */}
+      <div
+        className={`rounded-2xl p-5 mb-8 flex items-center gap-5 ${
+          completionRate >= 70
+            ? 'bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200'
+            : completionRate >= 40
+              ? 'bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200'
+              : 'bg-gradient-to-r from-red-50 to-rose-50 border border-red-200'
+        }`}
+      >
+        <div
+          className={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 ${
+            completionRate >= 70
+              ? 'bg-emerald-100 text-emerald-700'
+              : completionRate >= 40
+                ? 'bg-amber-100 text-amber-700'
+                : 'bg-red-100 text-red-700'
+          }`}
+        >
+          <span className="text-2xl font-black">{completionRate}%</span>
+        </div>
+        <div className="flex-1 min-w-0">
+          <h4 className="font-bold text-gray-900 text-base">
+            File Completion Rate
+          </h4>
+          <p className="text-sm text-gray-600 mt-0.5">
+            {approvedFiles.length} of {totalFiles} files fully processed.{' '}
+            {pendingFiles.length} pending, {rejectedCount} rejected,{' '}
+            {overdueFiles.length} overdue.
+          </p>
+          <div className="w-full bg-white/60 rounded-full h-2.5 mt-2 overflow-hidden">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-500 transition-all"
+              style={{ width: `${completionRate}%` }}
+            />
           </div>
-        </FormCard>
-        <FormCard title="Files by Department" icon="business">
-          <div className="relative h-64">
-            <FilesByDepartmentChart labels={deptLabels} data={deptCounts} />
-          </div>
-        </FormCard>
+        </div>
       </div>
 
+      {/* Activity Trend */}
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 relative overflow-hidden mb-8">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-violet-500 opacity-80" />
+        <h3 className="text-sm font-bold text-gray-800 mb-5 flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0">
+            <Icon name="timeline" className="text-[18px]" />
+          </div>
+          Activity Trend
+          <span className="ml-auto text-[11px] font-medium text-gray-400 uppercase tracking-wider">
+            Daily Movements
+          </span>
+        </h3>
+        <div className="w-full h-56">
+          <Chart
+            type="line"
+            data={trendData}
+            options={trendOptions}
+            className="w-full h-full"
+          />
+        </div>
+      </div>
+
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="lg:col-span-1 bg-white rounded-2xl border border-gray-200 shadow-sm p-6 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 to-rose-500 opacity-80" />
+          <h3 className="text-sm font-bold text-gray-800 mb-5 flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-pink-50 flex items-center justify-center text-pink-600 shrink-0">
+              <Icon name="donut_large" className="text-[18px]" />
+            </div>
+            Action Distribution
+          </h3>
+          <div className="w-full h-72 relative">
+            <Chart
+              type="doughnut"
+              data={actionPieData}
+              options={actionPieOptions}
+              className="w-full h-full"
+            />
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none -mt-8">
+              <div className="text-center">
+                <p className="text-2xl font-black text-gray-900">
+                  {mockFileMovements.length}
+                </p>
+                <p className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">
+                  Actions
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500 opacity-80" />
+          <h3 className="text-sm font-bold text-gray-800 mb-5 flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+              <Icon name="bar_chart" className="text-[18px]" />
+            </div>
+            Files by Status
+          </h3>
+          <div className="w-full h-72">
+            <Chart
+              type="bar"
+              data={statusBarData}
+              options={statusBarOptions}
+              className="w-full h-full"
+            />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-500 to-emerald-500 opacity-80" />
+          <h3 className="text-sm font-bold text-gray-800 mb-5 flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center text-teal-600 shrink-0">
+              <Icon name="leaderboard" className="text-[18px]" />
+            </div>
+            Files by Department
+          </h3>
+          <div className="w-full h-72">
+            <Chart
+              type="bar"
+              data={deptBarData}
+              options={deptBarOptions}
+              className="w-full h-full"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Row: Activity + Overdue + Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <FormCard
           title="Recent Activity"
           icon="history"
           className="lg:col-span-1"
         >
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {recentMovements.length === 0 ? (
               <p className="text-sm text-gray-400">No recent activity.</p>
             ) : (
@@ -113,11 +476,17 @@ export default function FMTSAdminDashboard() {
           icon="warning"
           className="lg:col-span-1"
         >
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {overdueFiles.length === 0 ? (
-              <p className="text-sm text-gray-400">
-                No overdue files. All on track.
-              </p>
+              <div className="flex flex-col items-center justify-center py-8 text-gray-400">
+                <Icon
+                  name="check_circle"
+                  className="text-3xl mb-2 text-emerald-300"
+                />
+                <p className="text-sm font-medium">
+                  No overdue files. All on track!
+                </p>
+              </div>
             ) : (
               overdueFiles.map(f => {
                 const daysOverdue = f.dueDate
@@ -146,10 +515,11 @@ export default function FMTSAdminDashboard() {
         </FormCard>
 
         <FormCard title="Quick Actions" icon="bolt" className="lg:col-span-1">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2.5">
             <QuickActionBtn
               label="File Types"
               icon="description"
+              color="indigo"
               onClick={() =>
                 navigate('/file-management-tracking/admin/file-types')
               }
@@ -157,6 +527,7 @@ export default function FMTSAdminDashboard() {
             <QuickActionBtn
               label="Departments"
               icon="business"
+              color="teal"
               onClick={() =>
                 navigate('/file-management-tracking/admin/departments')
               }
@@ -164,25 +535,21 @@ export default function FMTSAdminDashboard() {
             <QuickActionBtn
               label="Users"
               icon="people"
+              color="blue"
               onClick={() => navigate('/file-management-tracking/admin/users')}
             />
             <QuickActionBtn
               label="Workflows"
               icon="alt_route"
+              color="violet"
               onClick={() =>
                 navigate('/file-management-tracking/admin/workflows')
               }
             />
             <QuickActionBtn
-              label="Diary Config"
-              icon="settings"
-              onClick={() =>
-                navigate('/file-management-tracking/admin/diary-config')
-              }
-            />
-            <QuickActionBtn
               label="Audit Logs"
               icon="history"
+              color="amber"
               onClick={() =>
                 navigate('/file-management-tracking/admin/audit-logs')
               }
@@ -190,13 +557,23 @@ export default function FMTSAdminDashboard() {
             <QuickActionBtn
               label="Retention"
               icon="archive"
+              color="rose"
               onClick={() =>
                 navigate('/file-management-tracking/admin/retention-policies')
               }
             />
             <QuickActionBtn
+              label="Diary Config"
+              icon="settings"
+              color="gray"
+              onClick={() =>
+                navigate('/file-management-tracking/admin/diary-config')
+              }
+            />
+            <QuickActionBtn
               label="Print Center"
               icon="print"
+              color="emerald"
               onClick={() =>
                 navigate('/file-management-tracking/admin/print-center')
               }
@@ -210,189 +587,6 @@ export default function FMTSAdminDashboard() {
 
 /* ── Sub-components ── */
 
-const KPI_COLORS: Record<string, { bg: string; border: string; text: string }> =
-  {
-    blue: {
-      bg: 'bg-blue-50',
-      border: 'border-blue-200',
-      text: 'text-blue-700',
-    },
-    green: {
-      bg: 'bg-green-50',
-      border: 'border-green-200',
-      text: 'text-green-700',
-    },
-    purple: {
-      bg: 'bg-purple-50',
-      border: 'border-purple-200',
-      text: 'text-purple-700',
-    },
-    orange: {
-      bg: 'bg-orange-50',
-      border: 'border-orange-200',
-      text: 'text-orange-700',
-    },
-    teal: {
-      bg: 'bg-teal-50',
-      border: 'border-teal-200',
-      text: 'text-teal-700',
-    },
-    indigo: {
-      bg: 'bg-indigo-50',
-      border: 'border-indigo-200',
-      text: 'text-indigo-700',
-    },
-    pink: {
-      bg: 'bg-pink-50',
-      border: 'border-pink-200',
-      text: 'text-pink-700',
-    },
-    red: { bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-700' },
-  };
-
-function KpiCard({
-  label,
-  value,
-  color,
-}: {
-  label: string;
-  value: string | number;
-  color: string;
-}) {
-  const c = KPI_COLORS[color] || KPI_COLORS.blue;
-  return (
-    <div className={`rounded-xl border p-4 ${c.bg} ${c.border}`}>
-      <div className={`text-xs font-medium mb-1 ${c.text} opacity-70`}>
-        {label}
-      </div>
-      <div className={`text-2xl font-bold ${c.text}`}>{value}</div>
-    </div>
-  );
-}
-
-function FilesByStatusChart({
-  labels,
-  data,
-}: {
-  labels: string[];
-  data: number[];
-}) {
-  const ref = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    if (!ref.current || !data) return;
-    const ctx = ref.current.getContext('2d');
-    if (!ctx) return;
-    const existingChart = Chart.getChart(ref.current);
-    if (existingChart) existingChart.destroy();
-
-    const colors = [
-      '#94a3b8',
-      '#60a5fa',
-      '#fbbf24',
-      '#818cf8',
-      '#34d399',
-      '#f87171',
-      '#9ca3af',
-      '#a78bfa',
-    ];
-    const chart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: 'Files',
-            data: data,
-            backgroundColor: colors,
-            borderRadius: 4,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          x: {
-            grid: { display: false },
-            ticks: { color: '#94a3b8', font: { size: 11 } },
-          },
-          y: {
-            beginAtZero: true,
-            ticks: { stepSize: 1, color: '#94a3b8' },
-            grid: { color: 'rgba(148,163,184,0.1)' },
-          },
-        },
-        plugins: { legend: { display: false } },
-      },
-    });
-    return () => chart.destroy();
-  }, [labels, data]);
-
-  return <canvas ref={ref} className="w-full h-full" />;
-}
-
-function FilesByDepartmentChart({
-  labels,
-  data,
-}: {
-  labels: string[];
-  data: number[];
-}) {
-  const ref = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    if (!ref.current || !data) return;
-    const ctx = ref.current.getContext('2d');
-    if (!ctx) return;
-    const existingChart = Chart.getChart(ref.current);
-    if (existingChart) existingChart.destroy();
-
-    const colors = [
-      '#60a5fa',
-      '#34d399',
-      '#fbbf24',
-      '#f472b6',
-      '#a78bfa',
-      '#fb923c',
-    ];
-    const chart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: 'Files',
-            data: data,
-            backgroundColor: colors,
-            borderRadius: 4,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        indexAxis: 'y',
-        scales: {
-          x: {
-            beginAtZero: true,
-            ticks: { stepSize: 1, color: '#94a3b8' },
-            grid: { color: 'rgba(148,163,184,0.1)' },
-          },
-          y: {
-            grid: { display: false },
-            ticks: { color: '#94a3b8', font: { size: 11 } },
-          },
-        },
-        plugins: { legend: { display: false } },
-      },
-    });
-    return () => chart.destroy();
-  }, [labels, data]);
-
-  return <canvas ref={ref} className="w-full h-full" />;
-}
-
 function ActivityItem({
   text,
   time,
@@ -404,22 +598,36 @@ function ActivityItem({
   type: string;
   subText?: string;
 }) {
-  let colorClass = 'bg-gray-400';
-  if (type === 'Approved' || type === 'Created') colorClass = 'bg-green-400';
-  else if (type === 'Rejected' || type === 'Revoked') colorClass = 'bg-red-400';
-  else if (type === 'Forwarded') colorClass = 'bg-blue-400';
+  const iconMap: Record<string, { icon: string; bg: string; color: string }> = {
+    Approved: {
+      icon: 'check_circle',
+      bg: 'bg-emerald-50',
+      color: 'text-emerald-600',
+    },
+    Created: { icon: 'add_circle', bg: 'bg-blue-50', color: 'text-blue-600' },
+    Rejected: { icon: 'cancel', bg: 'bg-red-50', color: 'text-red-600' },
+    Revoked: { icon: 'undo', bg: 'bg-red-50', color: 'text-red-600' },
+    Forwarded: { icon: 'send', bg: 'bg-indigo-50', color: 'text-indigo-600' },
+  };
+  const style = iconMap[type] || {
+    icon: 'swap_horiz',
+    bg: 'bg-gray-50',
+    color: 'text-gray-600',
+  };
 
   return (
-    <div className="flex items-start gap-3 p-3 rounded-lg border border-gray-100">
+    <div className="flex items-start gap-3 p-3 rounded-xl border border-gray-100 hover:bg-gray-50/60 transition-colors">
       <div
-        className={`w-2.5 h-2.5 mt-1.5 rounded-full shrink-0 ${colorClass}`}
-      />
+        className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${style.bg} ${style.color}`}
+      >
+        <Icon name={style.icon} className="text-[16px]" />
+      </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-gray-800 truncate">{text}</p>
+        <p className="text-sm font-semibold text-gray-800 truncate">{text}</p>
         {subText && (
           <p className="text-xs text-gray-500 mt-0.5 truncate">{subText}</p>
         )}
-        <p className="text-[10px] text-gray-400 mt-1">{time}</p>
+        <p className="text-[10px] text-gray-400 mt-1 font-medium">{time}</p>
       </div>
     </div>
   );
@@ -439,9 +647,9 @@ function OverdueFileItem({
   onClick: () => void;
 }) {
   const priorityStyles = {
-    high: 'border-l-red-500 bg-red-50 hover:bg-red-100',
-    medium: 'border-l-amber-500 bg-amber-50 hover:bg-amber-100',
-    low: 'border-l-blue-500 bg-blue-50 hover:bg-blue-100',
+    high: 'border-l-red-500 bg-red-50/80 hover:bg-red-100/80',
+    medium: 'border-l-amber-500 bg-amber-50/80 hover:bg-amber-100/80',
+    low: 'border-l-blue-500 bg-blue-50/80 hover:bg-blue-100/80',
   };
   const badgeStyles = {
     high: 'bg-red-100 text-red-700',
@@ -451,16 +659,16 @@ function OverdueFileItem({
   return (
     <div
       onClick={onClick}
-      className={`flex items-center justify-between p-3 rounded-lg border-l-4 cursor-pointer transition-colors ${priorityStyles[priority]}`}
+      className={`flex items-center justify-between p-3 rounded-xl border-l-4 cursor-pointer transition-colors ${priorityStyles[priority]}`}
     >
       <div className="flex-1 min-w-0 pr-4">
-        <p className="text-sm font-medium text-gray-800 truncate">
+        <p className="text-sm font-semibold text-gray-800 truncate">
           {fileNumber}
         </p>
         <p className="text-xs text-gray-500 truncate">{title}</p>
       </div>
       <span
-        className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap shrink-0 ${badgeStyles[priority]}`}
+        className={`text-[11px] font-bold px-2.5 py-1 rounded-full whitespace-nowrap shrink-0 ${badgeStyles[priority]}`}
       >
         {daysLeft > 0 ? `${daysLeft}d left` : `${-daysLeft}d overdue`}
       </span>
@@ -468,22 +676,75 @@ function OverdueFileItem({
   );
 }
 
+const QA_COLORS: Record<
+  string,
+  { bg: string; hover: string; iconColor: string }
+> = {
+  indigo: {
+    bg: 'bg-indigo-50/60',
+    hover: 'hover:bg-indigo-100 hover:border-indigo-300',
+    iconColor: 'text-indigo-600',
+  },
+  teal: {
+    bg: 'bg-teal-50/60',
+    hover: 'hover:bg-teal-100 hover:border-teal-300',
+    iconColor: 'text-teal-600',
+  },
+  blue: {
+    bg: 'bg-blue-50/60',
+    hover: 'hover:bg-blue-100 hover:border-blue-300',
+    iconColor: 'text-blue-600',
+  },
+  violet: {
+    bg: 'bg-violet-50/60',
+    hover: 'hover:bg-violet-100 hover:border-violet-300',
+    iconColor: 'text-violet-600',
+  },
+  amber: {
+    bg: 'bg-amber-50/60',
+    hover: 'hover:bg-amber-100 hover:border-amber-300',
+    iconColor: 'text-amber-600',
+  },
+  rose: {
+    bg: 'bg-rose-50/60',
+    hover: 'hover:bg-rose-100 hover:border-rose-300',
+    iconColor: 'text-rose-600',
+  },
+  gray: {
+    bg: 'bg-gray-50/60',
+    hover: 'hover:bg-gray-100 hover:border-gray-300',
+    iconColor: 'text-gray-600',
+  },
+  emerald: {
+    bg: 'bg-emerald-50/60',
+    hover: 'hover:bg-emerald-100 hover:border-emerald-300',
+    iconColor: 'text-emerald-600',
+  },
+};
+
 function QuickActionBtn({
   icon = 'chevron_right',
   label,
   onClick,
+  color = 'indigo',
 }: {
   icon?: string;
   label: string;
   onClick: () => void;
+  color?: string;
 }) {
+  const c = QA_COLORS[color] || QA_COLORS.indigo;
   return (
     <button
       onClick={onClick}
-      className="flex flex-col items-center justify-center text-center gap-2 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-blue-300 transition-all cursor-pointer"
+      className={`flex flex-col items-center justify-center text-center gap-2 p-3.5 border border-gray-200 rounded-xl transition-all cursor-pointer ${c.bg} ${c.hover}`}
     >
-      <Icon name={icon} className="text-[24px] text-blue-600" />
-      <span className="text-[11px] leading-tight font-medium text-gray-700">
+      <div
+        className={`w-9 h-9 rounded-xl bg-white/80 border border-gray-100 shadow-sm flex items-center justify-center ${c.iconColor}`}
+      >
+        <Icon name={icon} className="text-[20px]" />
+      </div>
+      <span className="text-[11px] leading-tight font-semibold text-gray-700">
         {label}
       </span>
     </button>

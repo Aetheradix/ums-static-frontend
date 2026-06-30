@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import {
   mockDAKReceipts,
   mockDepartments,
@@ -20,6 +22,7 @@ export default function DakCreate() {
   const user = mockUsers[9];
 
   const save = () => {
+    ToastService.success('Dak registered successfully.');
     const seq = (mockDAKReceipts.length + 1).toString().padStart(5, '0');
     mockDAKReceipts.push({
       ...form,
@@ -47,6 +50,10 @@ export default function DakCreate() {
       title="Create DAK Receipt"
       description="Register a new incoming DAK (Diary & Dak)"
     >
+      <InfoBanner
+        title="About Create DAK Receipt"
+        message="Review the list of incoming physical postal documents (Dak) dispatched to your office."
+      />
       <FormCard title="DAK Details">
         <FormGrid>
           <TextBox

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'shared/components/buttons';
 import { FormPage, GridPanel, StatusBadge } from 'shared/new-components';
-import { ConfidentialityBadge } from '../../components';
+import { ConfidentialityBadge, InfoBanner } from '../../components';
 import { mockFiles, mockUsers } from '../../data';
 
 export default function ArchivedFiles() {
@@ -26,6 +26,10 @@ export default function ArchivedFiles() {
       title="Archived Files"
       description="View your closed and archived files"
     >
+      <InfoBanner
+        title="About Archived Files"
+        message="View and manage archived files efficiently. Ensure all information is accurate and fully up to date."
+      />
       <GridPanel
         title="Archived Files"
         data={archivedFiles}

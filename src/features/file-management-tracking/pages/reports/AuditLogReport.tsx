@@ -3,7 +3,7 @@ import { DropDownList } from 'shared/components/forms';
 import { Icon } from 'shared/components/Icon/Icon';
 import { FormPage, GridPanel, StatusBadge } from 'shared/new-components';
 import StatCard from 'shared/new-components/StatCard/StatCard';
-import { ReportExportButtons } from '../../components';
+import { InfoBanner, ReportExportButtons } from '../../components';
 import { mockAuditLogs, mockUsers } from '../../data';
 
 export default function AuditLogReport() {
@@ -30,6 +30,10 @@ export default function AuditLogReport() {
       title="Audit Log Export"
       description="View and export system audit logs"
     >
+      <InfoBanner
+        title="About Audit Log Export"
+        message="Ensure complete accountability by tracing every system modification, login, and file movement."
+      />
       <div className="mb-6 flex justify-end">
         <ReportExportButtons />
       </div>

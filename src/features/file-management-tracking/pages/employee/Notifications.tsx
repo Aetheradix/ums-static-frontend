@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'shared/components/buttons';
 import { FormPage, GridPanel } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import { mockNotifications, mockUsers } from '../../data';
 
 export default function Notifications() {
@@ -32,6 +33,10 @@ export default function Notifications() {
       title="Notifications"
       description="View and manage your in-app notifications"
     >
+      <InfoBanner
+        title="About Notifications"
+        message="Stay informed about urgent file updates, SLA warnings, and system alerts relevant to your account."
+      />
       <GridPanel
         title="Notifications"
         data={notifs}

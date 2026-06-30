@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'shared/components/buttons';
 import { FormPage, GridPanel, StatusBadge } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import { mockDAKReceipts } from '../../data';
 
 export default function DakList() {
@@ -19,6 +20,10 @@ export default function DakList() {
       title="DAK Receipts"
       description="View and manage DAK (Diary & Dak) receipts"
     >
+      <InfoBanner
+        title="About DAK Receipts"
+        message="Review the list of incoming physical postal documents (Dak) dispatched to your office."
+      />
       <GridPanel
         title="DAK Receipts"
         data={mockDAKReceipts}

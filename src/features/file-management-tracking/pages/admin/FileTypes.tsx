@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { Switch, TextBox } from 'shared/components/forms';
 import {
@@ -8,6 +9,7 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import { mockFileTypes, type FileType } from '../../data';
 
 export default function FileTypes() {
@@ -26,6 +28,7 @@ export default function FileTypes() {
     setPopup({ open: true, item });
   };
   const save = () => {
+    ToastService.success('Configuration saved successfully.');
     if (popup.item) {
       const idx = data.findIndex(d => d.id === popup.item!.id);
       if (idx !== -1) data[idx] = { ...data[idx], ...form } as FileType;
@@ -53,6 +56,10 @@ export default function FileTypes() {
       title="File Types"
       description="Manage file type master data"
     >
+      <InfoBanner
+        title="About File Types"
+        message="Classify documents by defining new file types, categorizations, and their associated metadata."
+      />
       <GridPanel
         title="File Types"
         data={data}

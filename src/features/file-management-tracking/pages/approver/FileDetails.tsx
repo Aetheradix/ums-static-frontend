@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextArea } from 'shared/components/forms';
 import { Icon } from 'shared/components/Icon/Icon';
@@ -9,6 +10,7 @@ import {
   ConfidentialityBadge,
   FileMovementTimeline,
   FileStatusBadge,
+  InfoBanner,
   NotesheetViewer,
   PriorityBadge,
   QRAccessCodeDisplay,
@@ -43,6 +45,10 @@ export default function ApproverFileDetails() {
         ]}
         title="File Details"
       >
+        <InfoBanner
+          title="About File Details"
+          message="Review the complete notesheet, attached documents, and historical movement of this specific file."
+        />
         <FormCard title="Not Found">
           <div className="text-center text-gray-500 py-8">File not found</div>
         </FormCard>
@@ -61,6 +67,7 @@ export default function ApproverFileDetails() {
   const notings = mockDigitalNotings.filter(n => n.fileId === file.id);
 
   const submitAction = () => {
+    ToastService.success('File action submitted successfully.');
     const idx = mockFiles.findIndex(f => f.id === file.id);
     if (idx === -1) return;
     if (actionType === 'Approved') mockFiles[idx].currentStatus = 'Approved';

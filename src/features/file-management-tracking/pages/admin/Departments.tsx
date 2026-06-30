@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { Switch, TextBox } from 'shared/components/forms';
 import {
@@ -8,6 +9,7 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import { mockDepartments, type Department } from '../../data';
 
 export default function Departments() {
@@ -26,6 +28,7 @@ export default function Departments() {
     setPopup({ open: true, item });
   };
   const save = () => {
+    ToastService.success('Configuration saved successfully.');
     if (popup.item) {
       const idx = data.findIndex(d => d.id === popup.item!.id);
       if (idx !== -1) data[idx] = { ...data[idx], ...form } as Department;
@@ -53,6 +56,10 @@ export default function Departments() {
       title="Departments"
       description="Manage departments and their mappings"
     >
+      <InfoBanner
+        title="About Departments"
+        message="Maintain the organizational structure by managing departments and their hierarchical relationships."
+      />
       <GridPanel
         title="Departments"
         data={data}

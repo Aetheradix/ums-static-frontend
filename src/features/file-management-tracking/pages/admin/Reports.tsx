@@ -1,16 +1,12 @@
-import { Chart } from 'chart.js/auto';
-import { useEffect, useRef } from 'react';
+import { Chart } from 'primereact/chart';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from 'shared/components/Icon/Icon';
 import { FormPage } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import { mockDepartments, mockFiles } from '../../data';
 
 export default function AdminReports() {
   const navigate = useNavigate();
-  const pieRef = useRef<HTMLCanvasElement>(null);
-  const barRef = useRef<HTMLCanvasElement>(null);
-  const pieChartRef = useRef<Chart | null>(null);
-  const barChartRef = useRef<Chart | null>(null);
 
   const totalFiles = mockFiles.length;
   const pendingFiles = mockFiles.filter(
@@ -24,93 +20,61 @@ export default function AdminReports() {
   ).length;
   const draftFiles = mockFiles.filter(f => f.currentStatus === 'Draft').length;
 
-  useEffect(() => {
-    requestAnimationFrame(() => {
-      if (pieRef.current) {
-        const ctx = pieRef.current.getContext('2d');
-        if (ctx) {
-          pieChartRef.current = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-              labels: [
-                'Draft',
-                'Pending Review',
-                'Approved/Closed',
-                'Rejected',
-              ],
-              datasets: [
-                {
-                  data: [
-                    draftFiles,
-                    pendingFiles,
-                    approvedFiles,
-                    rejectedFiles,
-                  ],
-                  backgroundColor: ['#94a3b8', '#f59e0b', '#10b981', '#ef4444'],
-                  borderWidth: 0,
-                },
-              ],
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: {
-                legend: {
-                  position: 'bottom',
-                  labels: { font: { size: 11 }, color: '#64748b' },
-                },
-              },
-            },
-          });
-        }
-      }
-      if (barRef.current) {
-        const ctx = barRef.current.getContext('2d');
-        if (ctx) {
-          const depts = mockDepartments
-            .filter(d => d.isActive)
-            .map(d => d.name);
-          const counts = depts.map(
-            d => mockFiles.filter(f => f.departmentName === d).length
-          );
-          barChartRef.current = new Chart(ctx, {
-            type: 'bar',
-            data: {
-              labels: depts,
-              datasets: [
-                {
-                  label: 'Files',
-                  data: counts,
-                  backgroundColor: '#3b82f6',
-                  borderRadius: 4,
-                },
-              ],
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: { legend: { display: false } },
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  ticks: { stepSize: 1, color: '#94a3b8' },
-                  grid: { color: 'rgba(148,163,184,0.1)' },
-                },
-                x: {
-                  ticks: { color: '#94a3b8', font: { size: 10 } },
-                  grid: { display: false },
-                },
-              },
-            },
-          });
-        }
-      }
-    });
-    return () => {
-      pieChartRef.current?.destroy();
-      barChartRef.current?.destroy();
-    };
-  }, []);
+  const depts = mockDepartments.filter(d => d.isActive).map(d => d.name);
+  const counts = depts.map(
+    d => mockFiles.filter(f => f.departmentName === d).length
+  );
+
+  const pieChartData = {
+    labels: ['Draft', 'Pending Review', 'Approved/Closed', 'Rejected'],
+    datasets: [
+      {
+        data: [draftFiles, pendingFiles, approvedFiles, rejectedFiles],
+        backgroundColor: ['#94a3b8', '#f59e0b', '#10b981', '#ef4444'],
+        borderWidth: 0,
+      },
+    ],
+  };
+
+  const pieChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: { font: { size: 11 }, color: '#64748b' },
+      },
+    },
+  };
+
+  const barChartData = {
+    labels: depts,
+    datasets: [
+      {
+        label: 'Files',
+        data: counts,
+        backgroundColor: '#3b82f6',
+        borderRadius: 4,
+      },
+    ],
+  };
+
+  const barChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { stepSize: 1, color: '#94a3b8' },
+        grid: { color: 'rgba(148,163,184,0.1)' },
+      },
+      x: {
+        ticks: { color: '#94a3b8', font: { size: 10 } },
+        grid: { display: false },
+      },
+    },
+  };
 
   return (
     <FormPage
@@ -125,6 +89,10 @@ export default function AdminReports() {
       title="Reports & Analytics"
       description="Central access to all FMTS reports"
     >
+      <InfoBanner
+        title="About Reports & Analytics"
+        message="View and manage reports & analytics efficiently. Ensure all information is accurate and fully up to date."
+      />
       {/* Top Row KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <KpiCard
@@ -163,8 +131,13 @@ export default function AdminReports() {
             </div>
             File Status Overview
           </h3>
-          <div className="relative h-[280px]">
-            <canvas ref={pieRef} className="w-full h-[280px]" />
+          <div className="w-full h-72">
+            <Chart
+              type="doughnut"
+              data={pieChartData}
+              options={pieChartOptions}
+              className="w-full h-full"
+            />
           </div>
         </div>
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 relative overflow-hidden group">
@@ -175,8 +148,13 @@ export default function AdminReports() {
             </div>
             Files by Department
           </h3>
-          <div className="relative h-[280px]">
-            <canvas ref={barRef} className="w-full h-[280px]" />
+          <div className="w-full h-72">
+            <Chart
+              type="bar"
+              data={barChartData}
+              options={barChartOptions}
+              className="w-full h-full"
+            />
           </div>
         </div>
       </div>

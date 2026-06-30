@@ -1,15 +1,23 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import { TextArea } from 'shared/components/forms';
+import { DropDownList, TextArea } from 'shared/components/forms';
 import { Icon } from 'shared/components/Icon/Icon';
-import { FormCard, FormPage, StatusBadge, Tabs } from 'shared/new-components';
+import {
+  FormCard,
+  FormPage,
+  FormPopup,
+  StatusBadge,
+  Tabs,
+} from 'shared/new-components';
 import {
   AttachmentVersionViewer,
   ConfidentialityBadge,
   FileActionButtons,
   FileMovementTimeline,
   FileStatusBadge,
+  InfoBanner,
   NotesheetViewer,
   PriorityBadge,
   QRAccessCodeDisplay,
@@ -19,6 +27,7 @@ import {
   mockFileAttachments,
   mockFileMovements,
   mockFiles,
+  mockUsers,
 } from '../../data';
 
 export default function FileDetails() {
@@ -26,6 +35,55 @@ export default function FileDetails() {
   const navigate = useNavigate();
   const file = mockFiles.find(f => f.id === Number(id));
   const [remark, setRemark] = useState('');
+  const [showForwardPopup, setShowForwardPopup] = useState(false);
+  const [targetUserId, setTargetUserId] = useState<number | null>(null);
+  const employee = mockUsers[2]; // assuming Employee is index 2
+
+  const handleForward = () => {
+    if (!targetUserId) {
+      ToastService.error('Please select a user to forward to.');
+      return;
+    }
+    const targetUser = mockUsers.find(u => u.id === targetUserId);
+    if (!targetUser || !file) return;
+
+    // Update File Status
+    const fileIdx = mockFiles.findIndex(f => f.id === file.id);
+    if (fileIdx > -1) {
+      mockFiles[fileIdx].currentStatus = 'Forwarded';
+      mockFiles[fileIdx].currentHolderUserId = targetUser.id;
+      mockFiles[fileIdx].currentHolderUserName = targetUser.name;
+    }
+
+    // Add movement
+    mockFileMovements.push({
+      id: Math.max(...mockFileMovements.map(m => m.id), 0) + 1,
+      fileId: file.id,
+      fileNumber: file.fileNumber,
+      fromUserId: employee.id,
+      fromUserName: employee.name,
+      toUserId: targetUser.id,
+      toUserName: targetUser.name,
+      action: 'Forwarded' as any,
+      remarks: remark,
+      actionDate: new Date().toISOString().slice(0, 16).replace('T', ' '),
+    });
+
+    if (remark) {
+      mockDigitalNotings.push({
+        id: Math.max(...mockDigitalNotings.map(n => n.id), 0) + 1,
+        fileId: file.id,
+        notingContent: `[Forward] ${remark}`,
+        notedBy: employee.id,
+        notedByName: employee.name,
+        notedAt: new Date().toISOString().slice(0, 16).replace('T', ' '),
+      });
+    }
+
+    ToastService.success(`File forwarded successfully to ${targetUser.name}`);
+    setShowForwardPopup(false);
+    navigate('/home/sub-menu/file-management-tracking/employee/manage-files');
+  };
 
   if (!file)
     return (
@@ -40,6 +98,10 @@ export default function FileDetails() {
         ]}
         title="File Details"
       >
+        <InfoBanner
+          title="About File Details"
+          message="Review the complete notesheet, attached documents, and historical movement of this specific file."
+        />
         <FormCard title="Not Found">
           <div className="text-center text-gray-500 py-8">File not found</div>
         </FormCard>
@@ -354,8 +416,50 @@ export default function FileDetails() {
           />
         </div>
         <FileActionButtons file={file} />
+        {file.currentStatus === 'Draft' ||
+        file.currentStatus === 'Returned for Clarification' ? (
+          <Button
+            label="Forward File"
+            icon="send"
+            onClick={() => setShowForwardPopup(true)}
+          />
+        ) : null}
       </div>
       <Tabs tabs={tabs} />
+
+      <FormPopup
+        visible={showForwardPopup}
+        onHide={() => setShowForwardPopup(false)}
+        title="Forward File"
+        subtitle={`Forwarding ${file.fileNumber}`}
+        footer={
+          <div className="flex justify-end gap-3 w-full">
+            <Button
+              label="Cancel"
+              variant="outlined"
+              onClick={() => setShowForwardPopup(false)}
+            />
+            <Button label="Forward" icon="send" onClick={handleForward} />
+          </div>
+        }
+      >
+        <div className="flex flex-col gap-6 py-2">
+          <DropDownList
+            label="Forward To"
+            value={targetUserId}
+            onChange={v => setTargetUserId(v as number)}
+            data={mockUsers.filter(u => u.id !== employee.id)}
+            textField="name"
+            valueField="id"
+          />
+          <TextArea
+            label="Remarks (Notesheet)"
+            value={remark}
+            onChange={v => setRemark(v)}
+            placeholder="Enter any official remarks to be added to the notesheet..."
+          />
+        </div>
+      </FormPopup>
     </FormPage>
   );
 }

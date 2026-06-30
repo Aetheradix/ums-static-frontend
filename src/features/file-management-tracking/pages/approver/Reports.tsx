@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Icon } from 'shared/components/Icon/Icon';
 import { FormPage } from 'shared/new-components';
 import StatCard from 'shared/new-components/StatCard/StatCard';
+import { InfoBanner } from '../../components';
 import { mockFiles } from '../../data';
 
 export default function ApproverReports() {
@@ -60,6 +61,10 @@ export default function ApproverReports() {
       title="Approver Reports"
       description="File processing analytics for approvers"
     >
+      <InfoBanner
+        title="About Approver Reports"
+        message="View and manage approver reports efficiently. Ensure all information is accurate and fully up to date."
+      />
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <StatCard
           title="Total Files"

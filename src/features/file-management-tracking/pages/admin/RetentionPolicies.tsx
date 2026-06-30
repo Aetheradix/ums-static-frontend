@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { NumberBox, TextBox } from 'shared/components/forms';
 import {
@@ -7,6 +8,7 @@ import {
   FormPopup,
   GridPanel,
 } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import { mockRetentionPolicies, type RetentionPolicy } from '../../data';
 
 export default function RetentionPolicies() {
@@ -25,6 +27,7 @@ export default function RetentionPolicies() {
     setPopup({ open: true, item });
   };
   const save = () => {
+    ToastService.success('Configuration saved successfully.');
     if (popup.item) {
       const idx = data.findIndex(d => d.id === popup.item!.id);
       if (idx !== -1) data[idx] = { ...data[idx], ...form } as RetentionPolicy;
@@ -55,6 +58,10 @@ export default function RetentionPolicies() {
       title="Retention Policies"
       description="Configure document retention schedules"
     >
+      <InfoBanner
+        title="About Retention Policies"
+        message="Set up legal and operational retention policies for automated archiving and permanent file storage."
+      />
       <GridPanel
         title="Retention Policies"
         data={data}

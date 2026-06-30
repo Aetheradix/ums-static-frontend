@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, Switch, TextBox } from 'shared/components/forms';
 import {
@@ -8,6 +9,7 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import { mockDepartments, mockRoles, mockUsers, type User } from '../../data';
 
 export default function Users() {
@@ -29,6 +31,7 @@ export default function Users() {
   };
   const openEdit = (item: User) => setForm({ ...item });
   const save = () => {
+    ToastService.success('Configuration saved successfully.');
     const role = mockRoles.find(r => r.id === form.roleId);
     const dept = mockDepartments.find(d => d.id === form.departmentId);
     const updated = {
@@ -67,6 +70,10 @@ export default function Users() {
       title="Users & Roles"
       description="Manage FMTS users and role assignments"
     >
+      <InfoBanner
+        title="About Users & Roles"
+        message="Manage user access controls, assign roles, and ensure secure permissions across the module."
+      />
       <GridPanel
         title="Users"
         data={data}

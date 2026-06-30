@@ -3,6 +3,7 @@ import { Button } from 'shared/components/buttons';
 import { DropDownList, Switch, TextBox } from 'shared/components/forms';
 import { Icon } from 'shared/components/Icon/Icon';
 import { FormGrid, FormPage, FormPopup } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import {
   mockDiaryTemplates,
   mockSystemConfig,
@@ -74,6 +75,10 @@ export default function DiaryConfig() {
       title="Diary Number Configuration"
       description="Design and configure diary numbering rules for DAK receipts"
     >
+      <InfoBanner
+        title="About Diary Number Configuration"
+        message="Configure system-wide file diary numbering formats, prefixes, and tracking identifiers."
+      />
       {/* Global Settings Section */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-4">

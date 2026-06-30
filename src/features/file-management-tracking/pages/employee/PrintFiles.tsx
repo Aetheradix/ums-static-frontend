@@ -3,7 +3,11 @@ import { Button } from 'shared/components/buttons';
 import { DropDownList } from 'shared/components/forms';
 import { Icon } from 'shared/components/Icon/Icon';
 import { FormPage } from 'shared/new-components';
-import { FileMovementTimeline, NotesheetViewer } from '../../components';
+import {
+  FileMovementTimeline,
+  InfoBanner,
+  NotesheetViewer,
+} from '../../components';
 import { mockDigitalNotings, mockFileMovements, mockFiles } from '../../data';
 
 export default function PrintFiles() {
@@ -24,6 +28,10 @@ export default function PrintFiles() {
       description="Print file details, notesheets, or movement history"
       className="print:p-0 print:bg-white"
     >
+      <InfoBanner
+        title="About Print Files"
+        message="Queue up electronic documents to be officially printed and dispatched as physical hard copies."
+      />
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 mb-6 relative overflow-hidden print:hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-indigo-500 opacity-80" />
         <h3 className="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">

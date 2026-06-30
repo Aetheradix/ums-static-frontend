@@ -5,6 +5,7 @@ import { FormCard, FormGrid, FormPage } from 'shared/new-components';
 import {
   FileMovementTimeline,
   FileStatusBadge,
+  InfoBanner,
   NotesheetViewer,
 } from '../../components';
 import { mockDigitalNotings, mockFileMovements, mockFiles } from '../../data';
@@ -42,6 +43,10 @@ export default function PrintCenter() {
       title="Print Center"
       description="Print any file details, notesheet, or history"
     >
+      <InfoBanner
+        title="About Print Center"
+        message="Oversee official printing tasks, track active print jobs, and manage printer resources."
+      />
       <FormCard title="Search File">
         <div className="flex gap-2 items-end">
           <TextBox

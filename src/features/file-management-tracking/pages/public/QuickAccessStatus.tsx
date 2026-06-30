@@ -2,7 +2,11 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Icon } from 'shared/components/Icon/Icon';
 import { FormPage } from 'shared/new-components';
-import { FileMovementTimeline, FileStatusBadge } from '../../components';
+import {
+  FileMovementTimeline,
+  FileStatusBadge,
+  InfoBanner,
+} from '../../components';
 import { mockFileMovements, mockFiles } from '../../data';
 
 export default function QuickAccessStatus() {
@@ -47,6 +51,10 @@ export default function QuickAccessStatus() {
       title="Quick Access — File Status"
       description="Public file tracking and search"
     >
+      <InfoBanner
+        title="About Quick Access — File Status"
+        message="Instantly locate the current desk, status, and timeline of any file using its unique reference number."
+      />
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-8 relative">
         <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 to-indigo-600" />
         <div className="p-8 md:p-12 text-center bg-gradient-to-b from-indigo-50/50 to-white">

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextArea } from 'shared/components/forms';
 import {
@@ -7,7 +8,7 @@ import {
   FormPopup,
   GridPanel,
 } from 'shared/new-components';
-import { FileStatusBadge, PriorityBadge } from '../../components';
+import { FileStatusBadge, InfoBanner, PriorityBadge } from '../../components';
 import {
   mockDigitalNotings,
   mockFileMovements,
@@ -33,10 +34,6 @@ export default function Inbox() {
   const [remark, setRemark] = useState('');
   const [actionType, setActionType] = useState('Forward');
   const [targetUserId, setTargetUserId] = useState<number | null>(null);
-  const [toast, setToast] = useState<{
-    type: 'success' | 'danger';
-    message: string;
-  } | null>(null);
   const adminUser = mockUsers[0];
   const needsTarget = actionType === 'Forward' || actionType === 'Reassigned';
 
@@ -45,11 +42,6 @@ export default function Inbox() {
       !['Closed', 'Archived', 'Approved', 'Rejected'].includes(f.currentStatus)
   );
   const selectedFile = activeFiles.find(f => f.id === selectedFileId);
-
-  const showToast = (type: 'success' | 'danger', message: string) => {
-    setToast({ type, message });
-    setTimeout(() => setToast(null), 3000);
-  };
 
   const closePopup = () => {
     setSelectedFileId(null);
@@ -130,8 +122,7 @@ export default function Inbox() {
       notedAt: new Date().toISOString().slice(0, 16).replace('T', ' '),
     });
 
-    showToast(
-      'success',
+    ToastService.success(
       `File ${selectedFile.fileNumber} — ${actionType} successfully`
     );
     closePopup();
@@ -150,13 +141,10 @@ export default function Inbox() {
       title="File Inbox"
       description="Review and process all system files"
     >
-      {toast && (
-        <div
-          className={`fixed top-4 right-4 z-50 px-4 py-2 rounded shadow-lg text-xs text-white ${toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'}`}
-        >
-          {toast.message}
-        </div>
-      )}
+      <InfoBanner
+        title="About File Inbox"
+        message="Review newly forwarded files that have arrived at your desk and require your immediate attention."
+      />
 
       <GridPanel
         title="Active Files"

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { DropDownList } from 'shared/components/forms';
 import { FormPage, GridPanel } from 'shared/new-components';
 import { mockFileMovements, mockFiles } from '../../data';
+import { InfoBanner } from '../../components';
 
 export default function FileHistory() {
   const navigate = useNavigate();
@@ -33,6 +34,10 @@ export default function FileHistory() {
       title="File History"
       description="Complete movement history across all files"
     >
+      <InfoBanner
+        title="About File History"
+        message="Look up your past actions, closed files, and historical document interactions."
+      />
       <GridPanel
         title="History"
         data={filtered}

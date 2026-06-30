@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextArea } from 'shared/components/forms';
 import { FormPage, GridPanel } from 'shared/new-components';
 import FormPopup from 'shared/new-components/FormPopup';
-import { FileStatusBadge, PriorityBadge } from '../../components';
+import { FileStatusBadge, InfoBanner, PriorityBadge } from '../../components';
 import {
   mockFileMovements,
   mockFiles,
@@ -27,6 +28,7 @@ export default function Inbox() {
   const selectedFile = pendingFiles.find(f => f.id === selectedFileId);
 
   const submitAction = () => {
+    ToastService.success(`File action submitted successfully.`);
     if (!selectedFile) return;
     const idx = mockFiles.findIndex(f => f.id === selectedFile.id);
     if (idx === -1) return;
@@ -66,6 +68,10 @@ export default function Inbox() {
       title="Approver Inbox"
       description="Review and take action on files"
     >
+      <InfoBanner
+        title="About Approver Inbox"
+        message="Review newly forwarded files that have arrived at your desk and require your immediate attention."
+      />
       <div className="mb-6">
         <GridPanel
           title="Pending Files"

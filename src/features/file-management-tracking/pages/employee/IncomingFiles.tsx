@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'shared/components/buttons';
 import { FormPage, GridPanel } from 'shared/new-components';
-import { FileStatusBadge, PriorityBadge } from '../../components';
+import { FileStatusBadge, InfoBanner, PriorityBadge } from '../../components';
 import { mockFileMovements, mockFiles, mockUsers } from '../../data';
 
 export default function IncomingFiles() {
@@ -39,6 +39,10 @@ export default function IncomingFiles() {
       title="Incoming Files"
       description="Files forwarded to you for action"
     >
+      <InfoBanner
+        title="About Incoming Files"
+        message="Review newly forwarded files that have arrived at your desk and require your immediate attention."
+      />
       <GridPanel
         title="Incoming Files"
         data={incomingFiles}

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import {
   DropDownList,
@@ -8,6 +9,7 @@ import {
   TextBox,
 } from 'shared/components/forms';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import {
   mockConfidentialityLevels,
   mockDepartments,
@@ -40,6 +42,7 @@ export default function CreateFile() {
   }, [form.departmentId]);
 
   const save = () => {
+    ToastService.success('File created successfully.');
     const newId = Math.max(...mockFiles.map(f => f.id)) + 1;
     const dept = mockDepartments.find(d => d.id === form.departmentId);
     mockFiles.push({
@@ -81,6 +84,10 @@ export default function CreateFile() {
       title="Create New File"
       description="Fill in the details to create a new eFile"
     >
+      <InfoBanner
+        title="About Create New File"
+        message="Initiate a brand new electronic file, assign its classification, and prepare its first notesheet."
+      />
       <FormCard title="File Details">
         {previewFileNumber && (
           <FormCard title="File Number" className="mb-4 text-sm">

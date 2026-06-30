@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
+import { InfoBanner } from '../../components';
 import {
   mockConfidentialityLevels,
   mockFileCategories,
@@ -40,6 +42,10 @@ export default function PartFile() {
         ]}
         title="Part File"
       >
+        <InfoBanner
+          title="About Part File"
+          message="Manage supplementary folders (part-files) linked to a main parent file for better organization."
+        />
         <FormCard title="Not Found">
           <div className="text-center text-gray-500 py-8">
             Parent file not found
@@ -50,6 +56,7 @@ export default function PartFile() {
 
   const user = mockUsers[9];
   const save = () => {
+    ToastService.success('Part file created successfully.');
     const newId = Math.max(...mockFiles.map(f => f.id)) + 1;
     mockFiles.push({
       ...form,
