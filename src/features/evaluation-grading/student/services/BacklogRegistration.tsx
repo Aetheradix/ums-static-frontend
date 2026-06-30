@@ -1,6 +1,12 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
+import {
+  FormActions,
+  FormPage,
+  FormCard,
+  FormGrid,
+} from 'shared/new-components';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import { DropDownList } from 'shared/components/forms';
 
 export default function BacklogRegistration() {
@@ -9,6 +15,45 @@ export default function BacklogRegistration() {
     subject: '',
     semester: '',
   });
+
+  const [records, setRecords] = useState<any[]>([
+    {
+      id: 1,
+      student: 'Mock student 1',
+      subject: 'Mock subject 1',
+      semester: 'Mock semester 1',
+    },
+    {
+      id: 2,
+      student: 'Mock student 2',
+      subject: 'Mock subject 2',
+      semester: 'Mock semester 2',
+    },
+    {
+      id: 3,
+      student: 'Mock student 3',
+      subject: 'Mock subject 3',
+      semester: 'Mock semester 3',
+    },
+  ]);
+
+  const handleSave = () => {
+    const newRecord = { id: records.length + 1, ...form };
+    setRecords([newRecord, ...records]);
+    setForm({
+      student: '',
+      subject: '',
+      semester: '',
+    });
+  };
+
+  const handleClear = () => {
+    setForm({
+      student: '',
+      subject: '',
+      semester: '',
+    });
+  };
 
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -59,18 +104,22 @@ export default function BacklogRegistration() {
             placeholder="Select Semester"
           />
         </FormGrid>
+        <FormActions onSave={handleSave} onReset={handleClear} />
       </FormCard>
 
-      <FormCard>
-        <div className="flex items-center gap-4 mt-8">
-          <Button label="Save" variant="success" className="min-w-[150px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() => window.location.reload()}
-          />
-        </div>
+      <FormCard title="Records List" className="mt-8">
+        <DataTable
+          value={records}
+          stripedRows
+          paginator
+          rows={5}
+          className="w-full"
+        >
+          <Column field="id" header="ID" />
+          <Column field="student" header="Student" />
+          <Column field="subject" header="Subject" />
+          <Column field="semester" header="Semester" />
+        </DataTable>
       </FormCard>
     </FormPage>
   );

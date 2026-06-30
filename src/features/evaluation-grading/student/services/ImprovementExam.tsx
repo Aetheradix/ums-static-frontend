@@ -1,6 +1,12 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
+import {
+  FormActions,
+  FormPage,
+  FormCard,
+  FormGrid,
+} from 'shared/new-components';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import { DropDownList, NumberBox } from 'shared/components/forms';
 
 export default function ImprovementExam() {
@@ -9,6 +15,45 @@ export default function ImprovementExam() {
     subject: '',
     attempt: undefined,
   });
+
+  const [records, setRecords] = useState<any[]>([
+    {
+      id: 1,
+      student: 'Mock student 1',
+      subject: 'Mock subject 1',
+      attempt: 'Mock attempt 1',
+    },
+    {
+      id: 2,
+      student: 'Mock student 2',
+      subject: 'Mock subject 2',
+      attempt: 'Mock attempt 2',
+    },
+    {
+      id: 3,
+      student: 'Mock student 3',
+      subject: 'Mock subject 3',
+      attempt: 'Mock attempt 3',
+    },
+  ]);
+
+  const handleSave = () => {
+    const newRecord = { id: records.length + 1, ...form };
+    setRecords([newRecord, ...records]);
+    setForm({
+      student: '',
+      subject: '',
+      attempt: undefined,
+    });
+  };
+
+  const handleClear = () => {
+    setForm({
+      student: '',
+      subject: '',
+      attempt: undefined,
+    });
+  };
 
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -53,18 +98,22 @@ export default function ImprovementExam() {
             placeholder="Enter Attempt"
           />
         </FormGrid>
+        <FormActions onSave={handleSave} onReset={handleClear} />
       </FormCard>
 
-      <FormCard>
-        <div className="flex items-center gap-4 mt-8">
-          <Button label="Save" variant="success" className="min-w-[150px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() => window.location.reload()}
-          />
-        </div>
+      <FormCard title="Records List" className="mt-8">
+        <DataTable
+          value={records}
+          stripedRows
+          paginator
+          rows={5}
+          className="w-full"
+        >
+          <Column field="id" header="ID" />
+          <Column field="student" header="Student" />
+          <Column field="subject" header="Subject" />
+          <Column field="attempt" header="Attempt" />
+        </DataTable>
       </FormCard>
     </FormPage>
   );

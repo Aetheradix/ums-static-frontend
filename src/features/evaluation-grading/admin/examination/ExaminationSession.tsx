@@ -1,6 +1,12 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
+import {
+  FormActions,
+  FormPage,
+  FormCard,
+  FormGrid,
+} from 'shared/new-components';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import { TextBox, DropDownList, DatePicker } from 'shared/components/forms';
 
 export default function ExaminationSession() {
@@ -12,6 +18,60 @@ export default function ExaminationSession() {
     resultDate: undefined,
     status: '',
   });
+
+  const [records, setRecords] = useState<any[]>([
+    {
+      id: 1,
+      session: 'Mock session 1',
+      examSession: 'Mock examSession 1',
+      startDate: '01/01/2024',
+      endDate: '01/01/2024',
+      resultDate: '01/01/2024',
+      status: 'Active',
+    },
+    {
+      id: 2,
+      session: 'Mock session 2',
+      examSession: 'Mock examSession 2',
+      startDate: '01/01/2024',
+      endDate: '01/01/2024',
+      resultDate: '01/01/2024',
+      status: 'Active',
+    },
+    {
+      id: 3,
+      session: 'Mock session 3',
+      examSession: 'Mock examSession 3',
+      startDate: '01/01/2024',
+      endDate: '01/01/2024',
+      resultDate: '01/01/2024',
+      status: 'Active',
+    },
+  ]);
+
+  const handleSave = () => {
+    const newRecord = { id: records.length + 1, ...form };
+    setRecords([newRecord, ...records]);
+    setForm({
+      session: '',
+      examSession: '',
+      startDate: undefined,
+      endDate: undefined,
+      resultDate: undefined,
+      status: '',
+    });
+  };
+
+  const handleClear = () => {
+    setForm({
+      session: '',
+      examSession: '',
+      startDate: undefined,
+      endDate: undefined,
+      resultDate: undefined,
+      status: '',
+    });
+  };
 
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -74,18 +134,25 @@ export default function ExaminationSession() {
             placeholder="Select Status"
           />
         </FormGrid>
+        <FormActions onSave={handleSave} onReset={handleClear} />
       </FormCard>
 
-      <FormCard>
-        <div className="flex items-center gap-4 mt-8">
-          <Button label="Save" variant="success" className="min-w-[150px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() => window.location.reload()}
-          />
-        </div>
+      <FormCard title="Records List" className="mt-8">
+        <DataTable
+          value={records}
+          stripedRows
+          paginator
+          rows={5}
+          className="w-full"
+        >
+          <Column field="id" header="ID" />
+          <Column field="session" header="Session" />
+          <Column field="examSession" header="Exam Session" />
+          <Column field="startDate" header="Start Date" />
+          <Column field="endDate" header="End Date" />
+          <Column field="resultDate" header="Result Date" />
+          <Column field="status" header="Status" />
+        </DataTable>
       </FormCard>
     </FormPage>
   );

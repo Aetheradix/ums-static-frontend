@@ -1,6 +1,12 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
+import {
+  FormActions,
+  FormPage,
+  FormCard,
+  FormGrid,
+} from 'shared/new-components';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import { DropDownList, NumberBox } from 'shared/components/forms';
 
 export default function GradeRuleMaster() {
@@ -12,6 +18,60 @@ export default function GradeRuleMaster() {
     gradePoint: undefined,
     resultStatus: '',
   });
+
+  const [records, setRecords] = useState<any[]>([
+    {
+      id: 1,
+      gradeGroup: 'Mock gradeGroup 1',
+      fromMarks: 10,
+      toMarks: 10,
+      gradeLetter: 'Mock gradeLetter 1',
+      gradePoint: 'Mock gradePoint 1',
+      resultStatus: 'Active',
+    },
+    {
+      id: 2,
+      gradeGroup: 'Mock gradeGroup 2',
+      fromMarks: 20,
+      toMarks: 20,
+      gradeLetter: 'Mock gradeLetter 2',
+      gradePoint: 'Mock gradePoint 2',
+      resultStatus: 'Active',
+    },
+    {
+      id: 3,
+      gradeGroup: 'Mock gradeGroup 3',
+      fromMarks: 30,
+      toMarks: 30,
+      gradeLetter: 'Mock gradeLetter 3',
+      gradePoint: 'Mock gradePoint 3',
+      resultStatus: 'Active',
+    },
+  ]);
+
+  const handleSave = () => {
+    const newRecord = { id: records.length + 1, ...form };
+    setRecords([newRecord, ...records]);
+    setForm({
+      gradeGroup: '',
+      fromMarks: undefined,
+      toMarks: undefined,
+      gradeLetter: '',
+      gradePoint: undefined,
+      resultStatus: '',
+    });
+  };
+
+  const handleClear = () => {
+    setForm({
+      gradeGroup: '',
+      fromMarks: undefined,
+      toMarks: undefined,
+      gradeLetter: '',
+      gradePoint: undefined,
+      resultStatus: '',
+    });
+  };
 
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -87,18 +147,25 @@ export default function GradeRuleMaster() {
             placeholder="Select Status"
           />
         </FormGrid>
+        <FormActions onSave={handleSave} onReset={handleClear} />
       </FormCard>
 
-      <FormCard>
-        <div className="flex items-center gap-4 mt-8">
-          <Button label="Save" variant="success" className="min-w-[120px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() => window.location.reload()}
-          />
-        </div>
+      <FormCard title="Records List" className="mt-8">
+        <DataTable
+          value={records}
+          stripedRows
+          paginator
+          rows={5}
+          className="w-full"
+        >
+          <Column field="id" header="ID" />
+          <Column field="gradeGroup" header="Grade Group" />
+          <Column field="fromMarks" header="From Marks" />
+          <Column field="toMarks" header="To Marks" />
+          <Column field="gradeLetter" header="Grade Letter" />
+          <Column field="gradePoint" header="Grade Point" />
+          <Column field="resultStatus" header="Result Status" />
+        </DataTable>
       </FormCard>
     </FormPage>
   );

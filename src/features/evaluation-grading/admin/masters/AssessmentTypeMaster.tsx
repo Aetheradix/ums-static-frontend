@@ -1,6 +1,12 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
+import {
+  FormActions,
+  FormPage,
+  FormCard,
+  FormGrid,
+} from 'shared/new-components';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import {
   TextBox,
   DropDownList,
@@ -26,6 +32,100 @@ export default function AssessmentTypeMaster() {
     status: '',
     description: '',
   });
+
+  const [records, setRecords] = useState<any[]>([
+    {
+      id: 1,
+      assessmentCode: 'Mock assessmentCode 1',
+      assessmentName: 'Mock assessmentName 1',
+      assessmentCategory: 'Mock assessmentCategory 1',
+      theory: true,
+      practical: true,
+      viva: true,
+      assignment: true,
+      attendance: true,
+      project: true,
+      seminar: true,
+      isAggregate: true,
+      displayOrder: 10,
+      status: 'Active',
+      description: 'Mock description 1',
+    },
+    {
+      id: 2,
+      assessmentCode: 'Mock assessmentCode 2',
+      assessmentName: 'Mock assessmentName 2',
+      assessmentCategory: 'Mock assessmentCategory 2',
+      theory: true,
+      practical: true,
+      viva: true,
+      assignment: true,
+      attendance: true,
+      project: true,
+      seminar: true,
+      isAggregate: true,
+      displayOrder: 20,
+      status: 'Active',
+      description: 'Mock description 2',
+    },
+    {
+      id: 3,
+      assessmentCode: 'Mock assessmentCode 3',
+      assessmentName: 'Mock assessmentName 3',
+      assessmentCategory: 'Mock assessmentCategory 3',
+      theory: true,
+      practical: true,
+      viva: true,
+      assignment: true,
+      attendance: true,
+      project: true,
+      seminar: true,
+      isAggregate: true,
+      displayOrder: 30,
+      status: 'Active',
+      description: 'Mock description 3',
+    },
+  ]);
+
+  const handleSave = () => {
+    const newRecord = { id: records.length + 1, ...form };
+    setRecords([newRecord, ...records]);
+    setForm({
+      assessmentCode: '',
+      assessmentName: '',
+      assessmentCategory: '',
+      theory: false,
+      practical: false,
+      viva: false,
+      assignment: false,
+      attendance: false,
+      project: false,
+      seminar: false,
+      isAggregate: false,
+      displayOrder: undefined,
+      status: '',
+      description: '',
+    });
+  };
+
+  const handleClear = () => {
+    setForm({
+      assessmentCode: '',
+      assessmentName: '',
+      assessmentCategory: '',
+      theory: false,
+      practical: false,
+      viva: false,
+      assignment: false,
+      attendance: false,
+      project: false,
+      seminar: false,
+      isAggregate: false,
+      displayOrder: undefined,
+      status: '',
+      description: '',
+    });
+  };
 
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -160,18 +260,33 @@ export default function AssessmentTypeMaster() {
             </div>
           </div>
         </FormGrid>
+        <FormActions onSave={handleSave} onReset={handleClear} />
       </FormCard>
 
-      <FormCard>
-        <div className="flex items-center gap-4 mt-8">
-          <Button label="Save" variant="success" className="min-w-[120px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() => window.location.reload()}
-          />
-        </div>
+      <FormCard title="Records List" className="mt-8">
+        <DataTable
+          value={records}
+          stripedRows
+          paginator
+          rows={5}
+          className="w-full"
+        >
+          <Column field="id" header="ID" />
+          <Column field="assessmentCode" header="Assessment Code" />
+          <Column field="assessmentName" header="Assessment Name" />
+          <Column field="assessmentCategory" header="Assessment Category" />
+          <Column field="theory" header="Theory" />
+          <Column field="practical" header="Practical" />
+          <Column field="viva" header="Viva" />
+          <Column field="assignment" header="Assignment" />
+          <Column field="attendance" header="Attendance" />
+          <Column field="project" header="Project" />
+          <Column field="seminar" header="Seminar" />
+          <Column field="isAggregate" header="Is Aggregate" />
+          <Column field="displayOrder" header="Display Order" />
+          <Column field="status" header="Status" />
+          <Column field="description" header="Description" />
+        </DataTable>
       </FormCard>
     </FormPage>
   );

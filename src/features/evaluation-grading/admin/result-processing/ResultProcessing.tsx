@@ -1,6 +1,12 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
+import {
+  FormActions,
+  FormPage,
+  FormCard,
+  FormGrid,
+} from 'shared/new-components';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import { DropDownList } from 'shared/components/forms';
 
 export default function ResultProcessing() {
@@ -10,6 +16,50 @@ export default function ResultProcessing() {
     semester: '',
     batch: '',
   });
+
+  const [records, setRecords] = useState<any[]>([
+    {
+      id: 1,
+      session: 'Mock session 1',
+      programme: 'Mock programme 1',
+      semester: 'Mock semester 1',
+      batch: 'Mock batch 1',
+    },
+    {
+      id: 2,
+      session: 'Mock session 2',
+      programme: 'Mock programme 2',
+      semester: 'Mock semester 2',
+      batch: 'Mock batch 2',
+    },
+    {
+      id: 3,
+      session: 'Mock session 3',
+      programme: 'Mock programme 3',
+      semester: 'Mock semester 3',
+      batch: 'Mock batch 3',
+    },
+  ]);
+
+  const handleSave = () => {
+    const newRecord = { id: records.length + 1, ...form };
+    setRecords([newRecord, ...records]);
+    setForm({
+      session: '',
+      programme: '',
+      semester: '',
+      batch: '',
+    });
+  };
+
+  const handleClear = () => {
+    setForm({
+      session: '',
+      programme: '',
+      semester: '',
+      batch: '',
+    });
+  };
 
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -72,18 +122,23 @@ export default function ResultProcessing() {
             placeholder="Select Batch"
           />
         </FormGrid>
+        <FormActions onSave={handleSave} onReset={handleClear} />
       </FormCard>
 
-      <FormCard>
-        <div className="flex items-center gap-4 mt-8">
-          <Button label="Save" variant="success" className="min-w-[150px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() => window.location.reload()}
-          />
-        </div>
+      <FormCard title="Records List" className="mt-8">
+        <DataTable
+          value={records}
+          stripedRows
+          paginator
+          rows={5}
+          className="w-full"
+        >
+          <Column field="id" header="ID" />
+          <Column field="session" header="Session" />
+          <Column field="programme" header="Programme" />
+          <Column field="semester" header="Semester" />
+          <Column field="batch" header="Batch" />
+        </DataTable>
       </FormCard>
     </FormPage>
   );

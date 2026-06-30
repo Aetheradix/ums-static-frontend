@@ -1,6 +1,12 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
+import {
+  FormActions,
+  FormPage,
+  FormCard,
+  FormGrid,
+} from 'shared/new-components';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import {
   TextBox,
   DropDownList,
@@ -15,6 +21,50 @@ export default function GradeLetterMaster() {
     status: '',
     description: '',
   });
+
+  const [records, setRecords] = useState<any[]>([
+    {
+      id: 1,
+      gradeLetter: 'Mock gradeLetter 1',
+      gradePoint: 'Mock gradePoint 1',
+      status: 'Active',
+      description: 'Mock description 1',
+    },
+    {
+      id: 2,
+      gradeLetter: 'Mock gradeLetter 2',
+      gradePoint: 'Mock gradePoint 2',
+      status: 'Active',
+      description: 'Mock description 2',
+    },
+    {
+      id: 3,
+      gradeLetter: 'Mock gradeLetter 3',
+      gradePoint: 'Mock gradePoint 3',
+      status: 'Active',
+      description: 'Mock description 3',
+    },
+  ]);
+
+  const handleSave = () => {
+    const newRecord = { id: records.length + 1, ...form };
+    setRecords([newRecord, ...records]);
+    setForm({
+      gradeLetter: '',
+      gradePoint: undefined,
+      status: '',
+      description: '',
+    });
+  };
+
+  const handleClear = () => {
+    setForm({
+      gradeLetter: '',
+      gradePoint: undefined,
+      status: '',
+      description: '',
+    });
+  };
 
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -63,18 +113,23 @@ export default function GradeLetterMaster() {
             />
           </div>
         </FormGrid>
+        <FormActions onSave={handleSave} onReset={handleClear} />
       </FormCard>
 
-      <FormCard>
-        <div className="flex items-center gap-4 mt-8">
-          <Button label="Save" variant="success" className="min-w-[120px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() => window.location.reload()}
-          />
-        </div>
+      <FormCard title="Records List" className="mt-8">
+        <DataTable
+          value={records}
+          stripedRows
+          paginator
+          rows={5}
+          className="w-full"
+        >
+          <Column field="id" header="ID" />
+          <Column field="gradeLetter" header="Grade Letter" />
+          <Column field="gradePoint" header="Grade Point" />
+          <Column field="status" header="Status" />
+          <Column field="description" header="Description" />
+        </DataTable>
       </FormCard>
     </FormPage>
   );

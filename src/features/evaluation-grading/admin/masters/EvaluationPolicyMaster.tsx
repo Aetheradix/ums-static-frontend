@@ -1,6 +1,12 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
+import {
+  FormActions,
+  FormPage,
+  FormCard,
+  FormGrid,
+} from 'shared/new-components';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import {
   TextBox,
   DropDownList,
@@ -17,6 +23,60 @@ export default function EvaluationPolicyMaster() {
     evaluationRules: '',
     status: '',
   });
+
+  const [records, setRecords] = useState<any[]>([
+    {
+      id: 1,
+      policyCode: 'Mock policyCode 1',
+      policyName: 'Mock policyName 1',
+      applicableBatch: 'Mock applicableBatch 1',
+      graceMarksAllowed: 10,
+      evaluationRules: 'Mock evaluationRules 1',
+      status: 'Active',
+    },
+    {
+      id: 2,
+      policyCode: 'Mock policyCode 2',
+      policyName: 'Mock policyName 2',
+      applicableBatch: 'Mock applicableBatch 2',
+      graceMarksAllowed: 20,
+      evaluationRules: 'Mock evaluationRules 2',
+      status: 'Active',
+    },
+    {
+      id: 3,
+      policyCode: 'Mock policyCode 3',
+      policyName: 'Mock policyName 3',
+      applicableBatch: 'Mock applicableBatch 3',
+      graceMarksAllowed: 30,
+      evaluationRules: 'Mock evaluationRules 3',
+      status: 'Active',
+    },
+  ]);
+
+  const handleSave = () => {
+    const newRecord = { id: records.length + 1, ...form };
+    setRecords([newRecord, ...records]);
+    setForm({
+      policyCode: '',
+      policyName: '',
+      applicableBatch: '',
+      graceMarksAllowed: undefined,
+      evaluationRules: '',
+      status: '',
+    });
+  };
+
+  const handleClear = () => {
+    setForm({
+      policyCode: '',
+      policyName: '',
+      applicableBatch: '',
+      graceMarksAllowed: undefined,
+      evaluationRules: '',
+      status: '',
+    });
+  };
 
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -84,18 +144,25 @@ export default function EvaluationPolicyMaster() {
             />
           </div>
         </FormGrid>
+        <FormActions onSave={handleSave} onReset={handleClear} />
       </FormCard>
 
-      <FormCard>
-        <div className="flex items-center gap-4 mt-8">
-          <Button label="Save" variant="success" className="min-w-[120px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() => window.location.reload()}
-          />
-        </div>
+      <FormCard title="Records List" className="mt-8">
+        <DataTable
+          value={records}
+          stripedRows
+          paginator
+          rows={5}
+          className="w-full"
+        >
+          <Column field="id" header="ID" />
+          <Column field="policyCode" header="Policy Code" />
+          <Column field="policyName" header="Policy Name" />
+          <Column field="applicableBatch" header="Applicable Batch" />
+          <Column field="graceMarksAllowed" header="Grace Marks Allowed" />
+          <Column field="evaluationRules" header="Evaluation Rules" />
+          <Column field="status" header="Status" />
+        </DataTable>
       </FormCard>
     </FormPage>
   );

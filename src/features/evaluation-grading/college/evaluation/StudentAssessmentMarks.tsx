@@ -1,6 +1,12 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
+import {
+  FormActions,
+  FormPage,
+  FormCard,
+  FormGrid,
+} from 'shared/new-components';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import { DropDownList, TextBox } from 'shared/components/forms';
 
 export default function StudentAssessmentMarks() {
@@ -13,6 +19,65 @@ export default function StudentAssessmentMarks() {
     student: '',
     marks: '',
   });
+
+  const [records, setRecords] = useState<any[]>([
+    {
+      id: 1,
+      programme: 'Mock programme 1',
+      batch: 'Mock batch 1',
+      semester: 'Mock semester 1',
+      subject: 'Mock subject 1',
+      assessmentType: 'Mock assessmentType 1',
+      student: 'Mock student 1',
+      marks: 10,
+    },
+    {
+      id: 2,
+      programme: 'Mock programme 2',
+      batch: 'Mock batch 2',
+      semester: 'Mock semester 2',
+      subject: 'Mock subject 2',
+      assessmentType: 'Mock assessmentType 2',
+      student: 'Mock student 2',
+      marks: 20,
+    },
+    {
+      id: 3,
+      programme: 'Mock programme 3',
+      batch: 'Mock batch 3',
+      semester: 'Mock semester 3',
+      subject: 'Mock subject 3',
+      assessmentType: 'Mock assessmentType 3',
+      student: 'Mock student 3',
+      marks: 30,
+    },
+  ]);
+
+  const handleSave = () => {
+    const newRecord = { id: records.length + 1, ...form };
+    setRecords([newRecord, ...records]);
+    setForm({
+      programme: '',
+      batch: '',
+      semester: '',
+      subject: '',
+      assessmentType: '',
+      student: '',
+      marks: '',
+    });
+  };
+
+  const handleClear = () => {
+    setForm({
+      programme: '',
+      batch: '',
+      semester: '',
+      subject: '',
+      assessmentType: '',
+      student: '',
+      marks: '',
+    });
+  };
 
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -101,18 +166,26 @@ export default function StudentAssessmentMarks() {
             placeholder="Enter Marks"
           />
         </FormGrid>
+        <FormActions onSave={handleSave} onReset={handleClear} />
       </FormCard>
 
-      <FormCard>
-        <div className="flex items-center gap-4 mt-8">
-          <Button label="Save" variant="success" className="min-w-[120px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() => window.location.reload()}
-          />
-        </div>
+      <FormCard title="Records List" className="mt-8">
+        <DataTable
+          value={records}
+          stripedRows
+          paginator
+          rows={5}
+          className="w-full"
+        >
+          <Column field="id" header="ID" />
+          <Column field="programme" header="Programme" />
+          <Column field="batch" header="Batch" />
+          <Column field="semester" header="Semester" />
+          <Column field="subject" header="Subject" />
+          <Column field="assessmentType" header="Assessment Type" />
+          <Column field="student" header="Student" />
+          <Column field="marks" header="Marks" />
+        </DataTable>
       </FormCard>
     </FormPage>
   );

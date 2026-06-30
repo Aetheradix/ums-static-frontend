@@ -1,6 +1,12 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
+import {
+  FormActions,
+  FormPage,
+  FormCard,
+  FormGrid,
+} from 'shared/new-components';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import { TextBox, Checkbox } from 'shared/components/forms';
 
 export default function StudentPromotion() {
@@ -11,6 +17,55 @@ export default function StudentPromotion() {
     hold: false,
     detain: false,
   });
+
+  const [records, setRecords] = useState<any[]>([
+    {
+      id: 1,
+      currentSemester: 'Mock currentSemester 1',
+      nextSemester: 'Mock nextSemester 1',
+      promote: true,
+      hold: true,
+      detain: true,
+    },
+    {
+      id: 2,
+      currentSemester: 'Mock currentSemester 2',
+      nextSemester: 'Mock nextSemester 2',
+      promote: true,
+      hold: true,
+      detain: true,
+    },
+    {
+      id: 3,
+      currentSemester: 'Mock currentSemester 3',
+      nextSemester: 'Mock nextSemester 3',
+      promote: true,
+      hold: true,
+      detain: true,
+    },
+  ]);
+
+  const handleSave = () => {
+    const newRecord = { id: records.length + 1, ...form };
+    setRecords([newRecord, ...records]);
+    setForm({
+      currentSemester: '',
+      nextSemester: '',
+      promote: false,
+      hold: false,
+      detain: false,
+    });
+  };
+
+  const handleClear = () => {
+    setForm({
+      currentSemester: '',
+      nextSemester: '',
+      promote: false,
+      hold: false,
+      detain: false,
+    });
+  };
 
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -62,18 +117,24 @@ export default function StudentPromotion() {
             />
           </div>
         </FormGrid>
+        <FormActions onSave={handleSave} onReset={handleClear} />
       </FormCard>
 
-      <FormCard>
-        <div className="flex items-center gap-4 mt-8">
-          <Button label="Save" variant="success" className="min-w-[150px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() => window.location.reload()}
-          />
-        </div>
+      <FormCard title="Records List" className="mt-8">
+        <DataTable
+          value={records}
+          stripedRows
+          paginator
+          rows={5}
+          className="w-full"
+        >
+          <Column field="id" header="ID" />
+          <Column field="currentSemester" header="Current Semester" />
+          <Column field="nextSemester" header="Next Semester" />
+          <Column field="promote" header="Promote" />
+          <Column field="hold" header="Hold" />
+          <Column field="detain" header="Detain" />
+        </DataTable>
       </FormCard>
     </FormPage>
   );

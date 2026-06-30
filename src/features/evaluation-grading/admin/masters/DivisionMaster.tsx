@@ -1,6 +1,12 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
+import {
+  FormActions,
+  FormPage,
+  FormCard,
+  FormGrid,
+} from 'shared/new-components';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import { TextBox, DropDownList, NumberBox } from 'shared/components/forms';
 
 export default function DivisionMaster() {
@@ -11,6 +17,55 @@ export default function DivisionMaster() {
     upperPercentage: undefined,
     status: '',
   });
+
+  const [records, setRecords] = useState<any[]>([
+    {
+      id: 1,
+      divisionName: 'Mock divisionName 1',
+      divisionCode: 'Mock divisionCode 1',
+      lowerPercentage: 'Mock lowerPercentage 1',
+      upperPercentage: 'Mock upperPercentage 1',
+      status: 'Active',
+    },
+    {
+      id: 2,
+      divisionName: 'Mock divisionName 2',
+      divisionCode: 'Mock divisionCode 2',
+      lowerPercentage: 'Mock lowerPercentage 2',
+      upperPercentage: 'Mock upperPercentage 2',
+      status: 'Active',
+    },
+    {
+      id: 3,
+      divisionName: 'Mock divisionName 3',
+      divisionCode: 'Mock divisionCode 3',
+      lowerPercentage: 'Mock lowerPercentage 3',
+      upperPercentage: 'Mock upperPercentage 3',
+      status: 'Active',
+    },
+  ]);
+
+  const handleSave = () => {
+    const newRecord = { id: records.length + 1, ...form };
+    setRecords([newRecord, ...records]);
+    setForm({
+      divisionName: '',
+      divisionCode: '',
+      lowerPercentage: undefined,
+      upperPercentage: undefined,
+      status: '',
+    });
+  };
+
+  const handleClear = () => {
+    setForm({
+      divisionName: '',
+      divisionCode: '',
+      lowerPercentage: undefined,
+      upperPercentage: undefined,
+      status: '',
+    });
+  };
 
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -63,18 +118,24 @@ export default function DivisionMaster() {
             placeholder="Select Status"
           />
         </FormGrid>
+        <FormActions onSave={handleSave} onReset={handleClear} />
       </FormCard>
 
-      <FormCard>
-        <div className="flex items-center gap-4 mt-8">
-          <Button label="Save" variant="success" className="min-w-[120px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() => window.location.reload()}
-          />
-        </div>
+      <FormCard title="Records List" className="mt-8">
+        <DataTable
+          value={records}
+          stripedRows
+          paginator
+          rows={5}
+          className="w-full"
+        >
+          <Column field="id" header="ID" />
+          <Column field="divisionName" header="Division Name" />
+          <Column field="divisionCode" header="Division Code" />
+          <Column field="lowerPercentage" header="Lower Percentage" />
+          <Column field="upperPercentage" header="Upper Percentage" />
+          <Column field="status" header="Status" />
+        </DataTable>
       </FormCard>
     </FormPage>
   );

@@ -1,6 +1,12 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
+import {
+  FormActions,
+  FormPage,
+  FormCard,
+  FormGrid,
+} from 'shared/new-components';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import { TextBox, DropDownList } from 'shared/components/forms';
 
 export default function ProgrammeEvaluationSchemeMapping() {
@@ -12,6 +18,60 @@ export default function ProgrammeEvaluationSchemeMapping() {
     subject: '',
     evaluationScheme: '',
   });
+
+  const [records, setRecords] = useState<any[]>([
+    {
+      id: 1,
+      academicSession: 'Mock academicSession 1',
+      programme: 'Mock programme 1',
+      batch: 'Mock batch 1',
+      semester: 'Mock semester 1',
+      subject: 'Mock subject 1',
+      evaluationScheme: 'Mock evaluationScheme 1',
+    },
+    {
+      id: 2,
+      academicSession: 'Mock academicSession 2',
+      programme: 'Mock programme 2',
+      batch: 'Mock batch 2',
+      semester: 'Mock semester 2',
+      subject: 'Mock subject 2',
+      evaluationScheme: 'Mock evaluationScheme 2',
+    },
+    {
+      id: 3,
+      academicSession: 'Mock academicSession 3',
+      programme: 'Mock programme 3',
+      batch: 'Mock batch 3',
+      semester: 'Mock semester 3',
+      subject: 'Mock subject 3',
+      evaluationScheme: 'Mock evaluationScheme 3',
+    },
+  ]);
+
+  const handleSave = () => {
+    const newRecord = { id: records.length + 1, ...form };
+    setRecords([newRecord, ...records]);
+    setForm({
+      academicSession: '',
+      programme: '',
+      batch: '',
+      semester: '',
+      subject: '',
+      evaluationScheme: '',
+    });
+  };
+
+  const handleClear = () => {
+    setForm({
+      academicSession: '',
+      programme: '',
+      batch: '',
+      semester: '',
+      subject: '',
+      evaluationScheme: '',
+    });
+  };
 
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -90,18 +150,25 @@ export default function ProgrammeEvaluationSchemeMapping() {
             placeholder="Select Evaluation Scheme"
           />
         </FormGrid>
+        <FormActions onSave={handleSave} onReset={handleClear} />
       </FormCard>
 
-      <FormCard>
-        <div className="flex items-center gap-4 mt-8">
-          <Button label="Save" variant="success" className="min-w-[150px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() => window.location.reload()}
-          />
-        </div>
+      <FormCard title="Records List" className="mt-8">
+        <DataTable
+          value={records}
+          stripedRows
+          paginator
+          rows={5}
+          className="w-full"
+        >
+          <Column field="id" header="ID" />
+          <Column field="academicSession" header="Academic Session" />
+          <Column field="programme" header="Programme" />
+          <Column field="batch" header="Batch" />
+          <Column field="semester" header="Semester" />
+          <Column field="subject" header="Subject" />
+          <Column field="evaluationScheme" header="Evaluation Scheme" />
+        </DataTable>
       </FormCard>
     </FormPage>
   );

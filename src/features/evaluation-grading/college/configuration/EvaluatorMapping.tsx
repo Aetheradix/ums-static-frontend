@@ -1,6 +1,12 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
+import {
+  FormActions,
+  FormPage,
+  FormCard,
+  FormGrid,
+} from 'shared/new-components';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import { DropDownList, DatePicker } from 'shared/components/forms';
 
 export default function EvaluatorMapping() {
@@ -13,6 +19,65 @@ export default function EvaluatorMapping() {
     effectiveFrom: undefined,
     effectiveTo: undefined,
   });
+
+  const [records, setRecords] = useState<any[]>([
+    {
+      id: 1,
+      faculty: 'Mock faculty 1',
+      programme: 'Mock programme 1',
+      semester: 'Mock semester 1',
+      subject: 'Mock subject 1',
+      assessmentType: 'Mock assessmentType 1',
+      effectiveFrom: 'Mock effectiveFrom 1',
+      effectiveTo: 'Mock effectiveTo 1',
+    },
+    {
+      id: 2,
+      faculty: 'Mock faculty 2',
+      programme: 'Mock programme 2',
+      semester: 'Mock semester 2',
+      subject: 'Mock subject 2',
+      assessmentType: 'Mock assessmentType 2',
+      effectiveFrom: 'Mock effectiveFrom 2',
+      effectiveTo: 'Mock effectiveTo 2',
+    },
+    {
+      id: 3,
+      faculty: 'Mock faculty 3',
+      programme: 'Mock programme 3',
+      semester: 'Mock semester 3',
+      subject: 'Mock subject 3',
+      assessmentType: 'Mock assessmentType 3',
+      effectiveFrom: 'Mock effectiveFrom 3',
+      effectiveTo: 'Mock effectiveTo 3',
+    },
+  ]);
+
+  const handleSave = () => {
+    const newRecord = { id: records.length + 1, ...form };
+    setRecords([newRecord, ...records]);
+    setForm({
+      faculty: '',
+      programme: '',
+      semester: '',
+      subject: '',
+      assessmentType: '',
+      effectiveFrom: undefined,
+      effectiveTo: undefined,
+    });
+  };
+
+  const handleClear = () => {
+    setForm({
+      faculty: '',
+      programme: '',
+      semester: '',
+      subject: '',
+      assessmentType: '',
+      effectiveFrom: undefined,
+      effectiveTo: undefined,
+    });
+  };
 
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -96,18 +161,26 @@ export default function EvaluatorMapping() {
             placeholder="Select Effective To"
           />
         </FormGrid>
+        <FormActions onSave={handleSave} onReset={handleClear} />
       </FormCard>
 
-      <FormCard>
-        <div className="flex items-center gap-4 mt-8">
-          <Button label="Save" variant="success" className="min-w-[150px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() => window.location.reload()}
-          />
-        </div>
+      <FormCard title="Records List" className="mt-8">
+        <DataTable
+          value={records}
+          stripedRows
+          paginator
+          rows={5}
+          className="w-full"
+        >
+          <Column field="id" header="ID" />
+          <Column field="faculty" header="Faculty" />
+          <Column field="programme" header="Programme" />
+          <Column field="semester" header="Semester" />
+          <Column field="subject" header="Subject" />
+          <Column field="assessmentType" header="Assessment Type" />
+          <Column field="effectiveFrom" header="Effective From" />
+          <Column field="effectiveTo" header="Effective To" />
+        </DataTable>
       </FormCard>
     </FormPage>
   );

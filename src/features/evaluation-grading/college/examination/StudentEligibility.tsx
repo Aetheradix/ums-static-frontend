@@ -1,6 +1,12 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
+import {
+  FormActions,
+  FormPage,
+  FormCard,
+  FormGrid,
+} from 'shared/new-components';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import {
   TextBox,
   DropDownList,
@@ -17,6 +23,60 @@ export default function StudentEligibility() {
     eligible: false,
     debarred: false,
   });
+
+  const [records, setRecords] = useState<any[]>([
+    {
+      id: 1,
+      student: 'Mock student 1',
+      attendancePercentage: 'Mock attendancePercentage 1',
+      feeStatus: 'Active',
+      hallTicketStatus: 'Active',
+      eligible: true,
+      debarred: true,
+    },
+    {
+      id: 2,
+      student: 'Mock student 2',
+      attendancePercentage: 'Mock attendancePercentage 2',
+      feeStatus: 'Active',
+      hallTicketStatus: 'Active',
+      eligible: true,
+      debarred: true,
+    },
+    {
+      id: 3,
+      student: 'Mock student 3',
+      attendancePercentage: 'Mock attendancePercentage 3',
+      feeStatus: 'Active',
+      hallTicketStatus: 'Active',
+      eligible: true,
+      debarred: true,
+    },
+  ]);
+
+  const handleSave = () => {
+    const newRecord = { id: records.length + 1, ...form };
+    setRecords([newRecord, ...records]);
+    setForm({
+      student: '',
+      attendancePercentage: undefined,
+      feeStatus: '',
+      hallTicketStatus: '',
+      eligible: false,
+      debarred: false,
+    });
+  };
+
+  const handleClear = () => {
+    setForm({
+      student: '',
+      attendancePercentage: undefined,
+      feeStatus: '',
+      hallTicketStatus: '',
+      eligible: false,
+      debarred: false,
+    });
+  };
 
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -77,18 +137,25 @@ export default function StudentEligibility() {
             />
           </div>
         </FormGrid>
+        <FormActions onSave={handleSave} onReset={handleClear} />
       </FormCard>
 
-      <FormCard>
-        <div className="flex items-center gap-4 mt-8">
-          <Button label="Save" variant="success" className="min-w-[150px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() => window.location.reload()}
-          />
-        </div>
+      <FormCard title="Records List" className="mt-8">
+        <DataTable
+          value={records}
+          stripedRows
+          paginator
+          rows={5}
+          className="w-full"
+        >
+          <Column field="id" header="ID" />
+          <Column field="student" header="Student" />
+          <Column field="attendancePercentage" header="Attendance Percentage" />
+          <Column field="feeStatus" header="Fee Status" />
+          <Column field="hallTicketStatus" header="Hall Ticket Status" />
+          <Column field="eligible" header="Eligible" />
+          <Column field="debarred" header="Debarred" />
+        </DataTable>
       </FormCard>
     </FormPage>
   );

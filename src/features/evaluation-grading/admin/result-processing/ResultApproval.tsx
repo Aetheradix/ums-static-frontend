@@ -1,6 +1,12 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
+import {
+  FormActions,
+  FormPage,
+  FormCard,
+  FormGrid,
+} from 'shared/new-components';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import { DropDownList } from 'shared/components/forms';
 
 export default function ResultApproval() {
@@ -9,6 +15,45 @@ export default function ResultApproval() {
     semester: '',
     resultStatus: '',
   });
+
+  const [records, setRecords] = useState<any[]>([
+    {
+      id: 1,
+      programme: 'Mock programme 1',
+      semester: 'Mock semester 1',
+      resultStatus: 'Active',
+    },
+    {
+      id: 2,
+      programme: 'Mock programme 2',
+      semester: 'Mock semester 2',
+      resultStatus: 'Active',
+    },
+    {
+      id: 3,
+      programme: 'Mock programme 3',
+      semester: 'Mock semester 3',
+      resultStatus: 'Active',
+    },
+  ]);
+
+  const handleSave = () => {
+    const newRecord = { id: records.length + 1, ...form };
+    setRecords([newRecord, ...records]);
+    setForm({
+      programme: '',
+      semester: '',
+      resultStatus: '',
+    });
+  };
+
+  const handleClear = () => {
+    setForm({
+      programme: '',
+      semester: '',
+      resultStatus: '',
+    });
+  };
 
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -60,18 +105,22 @@ export default function ResultApproval() {
             placeholder="Select Result Status"
           />
         </FormGrid>
+        <FormActions onSave={handleSave} onReset={handleClear} />
       </FormCard>
 
-      <FormCard>
-        <div className="flex items-center gap-4 mt-8">
-          <Button label="Save" variant="success" className="min-w-[150px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() => window.location.reload()}
-          />
-        </div>
+      <FormCard title="Records List" className="mt-8">
+        <DataTable
+          value={records}
+          stripedRows
+          paginator
+          rows={5}
+          className="w-full"
+        >
+          <Column field="id" header="ID" />
+          <Column field="programme" header="Programme" />
+          <Column field="semester" header="Semester" />
+          <Column field="resultStatus" header="Result Status" />
+        </DataTable>
       </FormCard>
     </FormPage>
   );
