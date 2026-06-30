@@ -6,6 +6,7 @@ import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextBox } from 'shared/components/forms';
 import { FormCard, FormPage, FormPopup } from 'shared/new-components';
+import { learningUrls } from '../../urls';
 
 const BCA_NODES = [
   {
@@ -168,6 +169,11 @@ export default function CourseStructureMapping() {
     <FormPage
       title="Course Structure Mapping"
       description="Map modules and topics to a specific course."
+      breadcrumbs={[
+        { label: 'Home', to: '/home' },
+        { label: 'Learning Management System', to: learningUrls.portal },
+        { label: 'Edit Node' },
+      ]}
     >
       <div className="flex flex-col gap-4">
         <FormCard title="Select Course">

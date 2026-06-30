@@ -9,6 +9,7 @@ import {
   GridPanel,
 } from 'shared/new-components';
 // import { useNavigate } from 'react-router-dom';
+import { learningUrls } from '../../urls';
 
 const MOCK_DATA = [
   {
@@ -46,6 +47,11 @@ export default function GenerateCertificate() {
     <FormPage
       title="Certificate Generation"
       description="Generate and issue certificates for completed courses."
+      breadcrumbs={[
+        { label: 'Home', to: '/home' },
+        { label: 'Learning Management System', to: learningUrls.portal },
+        { label: 'Certificate Generation' },
+      ]}
     >
       <FormCard>
         <GridPanel

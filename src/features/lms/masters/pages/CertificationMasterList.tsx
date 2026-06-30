@@ -9,6 +9,7 @@ import {
 import { TextBox, TextArea } from 'shared/components/forms';
 import StatusButton from 'shared/components/buttons/StatusButton';
 import { ToastService } from 'services';
+import { learningUrls } from '../../urls';
 
 const MOCK_DATA = [
   {
@@ -55,6 +56,11 @@ export default function CertificationMasterList() {
     <FormPage
       title="Certification Master"
       description="Manage certificate templates and definitions."
+      breadcrumbs={[
+        { label: 'Home', to: '/home' },
+        { label: 'Learning Management System', to: learningUrls.portal },
+        { label: 'Certification Master' },
+      ]}
     >
       <FormCard>
         <GridPanel

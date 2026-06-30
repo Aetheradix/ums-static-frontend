@@ -8,6 +8,7 @@ import {
 } from 'shared/new-components';
 import { TextBox } from 'shared/components/forms';
 import { ToastService } from 'services';
+import { learningUrls } from '../../urls';
 
 const MOCK_DATA = [
   { id: 1, name: 'Quiz' },
@@ -36,6 +37,11 @@ export default function AssessmentTypeList() {
     <FormPage
       title="Assessment Type Master"
       description="Manage different types of assessments."
+      breadcrumbs={[
+        { label: 'Home', to: '/home' },
+        { label: 'Learning Management System', to: learningUrls.portal },
+        { label: 'Assessment Type Master' },
+      ]}
     >
       <FormCard>
         <GridPanel

@@ -11,7 +11,8 @@ export default function ExternalPortalPage() {
       portals={[
         {
           title: 'Dashboard',
-          description: 'Overview of assigned trainings, upcoming sessions and performance.',
+          description:
+            'Overview of assigned trainings, upcoming sessions and performance.',
           icon: 'dashboard',
           colorScheme: 'blue',
           path: tdmUrls.external.dashboard,
@@ -25,14 +26,16 @@ export default function ExternalPortalPage() {
         },
         {
           title: 'Training Schedule',
-          description: 'Upcoming session schedule with venue and timing details.',
+          description:
+            'Upcoming session schedule with venue and timing details.',
           icon: 'event',
           colorScheme: 'purple',
           path: tdmUrls.external.schedule,
         },
         {
           title: 'Attendance Management',
-          description: 'Mark and manage participant attendance for your sessions.',
+          description:
+            'Mark and manage participant attendance for your sessions.',
           icon: 'fact_check',
           colorScheme: 'teal',
           path: tdmUrls.external.attendance,
@@ -53,7 +56,8 @@ export default function ExternalPortalPage() {
         },
         {
           title: 'Honorarium',
-          description: 'View payment details, session-wise honorarium and payment status.',
+          description:
+            'View payment details, session-wise honorarium and payment status.',
           icon: 'payments',
           colorScheme: 'red',
           path: tdmUrls.external.honorarium,

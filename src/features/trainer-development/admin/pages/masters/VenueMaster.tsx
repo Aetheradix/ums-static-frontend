@@ -13,9 +13,21 @@ import {
 import { type VenueMaster, venueMasters as initialData } from '../../../mocks';
 import { tdmUrls } from '../../../urls';
 
-type PopupState = { mode: 'closed' } | { mode: 'create' } | { mode: 'edit'; item: VenueMaster } | { mode: 'view'; item: VenueMaster };
+type PopupState =
+  | { mode: 'closed' }
+  | { mode: 'create' }
+  | { mode: 'edit'; item: VenueMaster }
+  | { mode: 'view'; item: VenueMaster };
 
-const EMPTY: Partial<VenueMaster> = { code: '', name: '', building: '', room: '', capacity: 30, facilities: [], status: 'Available' };
+const EMPTY: Partial<VenueMaster> = {
+  code: '',
+  name: '',
+  building: '',
+  room: '',
+  capacity: 30,
+  facilities: [],
+  status: 'Available',
+};
 const STATUS_OPTIONS = [
   { name: 'Available', value: 'Available' },
   { name: 'Occupied', value: 'Occupied' },
@@ -27,15 +39,34 @@ export default function VenueMasterPage() {
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
   const [form, setForm] = useState<Partial<VenueMaster>>(EMPTY);
 
-  const close = useCallback(() => { setPopup({ mode: 'closed' }); setForm(EMPTY); }, []);
+  const close = useCallback(() => {
+    setPopup({ mode: 'closed' });
+    setForm(EMPTY);
+  }, []);
 
   const handleSave = () => {
-    if (!form.code || !form.name) { ToastService.error('Code and Name are required.'); return; }
+    if (!form.code || !form.name) {
+      ToastService.error('Code and Name are required.');
+      return;
+    }
     if (popup.mode === 'create') {
-      setData(prev => [...prev, { ...form, id: String(Date.now()), facilities: form.facilities || [] } as VenueMaster]);
+      setData(prev => [
+        ...prev,
+        {
+          ...form,
+          id: String(Date.now()),
+          facilities: form.facilities || [],
+        } as VenueMaster,
+      ]);
       ToastService.success('Venue created.');
     } else if (popup.mode === 'edit') {
-      setData(prev => prev.map(d => d.id === (popup as any).item.id ? { ...d, ...form } as VenueMaster : d));
+      setData(prev =>
+        prev.map(d =>
+          d.id === (popup as any).item.id
+            ? ({ ...d, ...form } as VenueMaster)
+            : d
+        )
+      );
       ToastService.success('Venue updated.');
     }
     close();
@@ -69,23 +100,69 @@ export default function VenueMasterPage() {
             { field: 'building', header: 'Building' },
             { field: 'capacity', header: 'Capacity' },
             {
-              field: 'status', header: 'Status',
+              field: 'status',
+              header: 'Status',
               cell: (item: VenueMaster) => (
-                <StatusBadge label={item.status} variant={item.status === 'Available' ? 'approved' : item.status === 'Occupied' ? 'pending' : 'rejected'} />
+                <StatusBadge
+                  label={item.status}
+                  variant={
+                    item.status === 'Available'
+                      ? 'approved'
+                      : item.status === 'Occupied'
+                        ? 'pending'
+                        : 'rejected'
+                  }
+                />
               ),
             },
             {
-              field: 'id', header: 'Actions', sortable: false,
+              field: 'id',
+              header: 'Actions',
+              sortable: false,
               cell: (item: VenueMaster) => (
                 <div style={{ display: 'flex', gap: '0.375rem' }}>
-                  <Button size="small" label="" icon="eye" variant="outlined" onClick={() => { setForm(item); setPopup({ mode: 'view', item }); }} />
-                  <Button size="small" label="" icon="pencil" variant="primary" onClick={() => { setForm(item); setPopup({ mode: 'edit', item }); }} />
-                  <Button size="small" label="" icon="trash" variant="danger" onClick={() => handleDelete(item)} />
+                  <Button
+                    size="small"
+                    label=""
+                    icon="eye"
+                    variant="outlined"
+                    onClick={() => {
+                      setForm(item);
+                      setPopup({ mode: 'view', item });
+                    }}
+                  />
+                  <Button
+                    size="small"
+                    label=""
+                    icon="pencil"
+                    variant="primary"
+                    onClick={() => {
+                      setForm(item);
+                      setPopup({ mode: 'edit', item });
+                    }}
+                  />
+                  <Button
+                    size="small"
+                    label=""
+                    icon="trash"
+                    variant="danger"
+                    onClick={() => handleDelete(item)}
+                  />
                 </div>
               ),
             },
           ]}
-          toolbar={<Button label="Add Venue" icon="plus" variant="primary" onClick={() => { setForm(EMPTY); setPopup({ mode: 'create' }); }} />}
+          toolbar={
+            <Button
+              label="Add Venue"
+              icon="plus"
+              variant="primary"
+              onClick={() => {
+                setForm(EMPTY);
+                setPopup({ mode: 'create' });
+              }}
+            />
+          }
           searchBox
         />
       </FormCard>
@@ -93,20 +170,66 @@ export default function VenueMasterPage() {
       <FormPopup
         visible={popup.mode !== 'closed'}
         onHide={close}
-        title={popup.mode === 'create' ? 'Add Venue' : popup.mode === 'edit' ? 'Edit Venue' : 'View Venue'}
+        title={
+          popup.mode === 'create'
+            ? 'Add Venue'
+            : popup.mode === 'edit'
+              ? 'Edit Venue'
+              : 'View Venue'
+        }
       >
         <FormGrid columns={2}>
-          <TextBox label="Code" value={form.code ?? ''} onChange={v => setForm(f => ({ ...f, code: v }))} required readOnly={isReadOnly} />
-          <TextBox label="Venue Name" value={form.name ?? ''} onChange={v => setForm(f => ({ ...f, name: v }))} required readOnly={isReadOnly} />
-          <TextBox label="Building" value={form.building ?? ''} onChange={v => setForm(f => ({ ...f, building: v }))} readOnly={isReadOnly} />
-          <TextBox label="Room" value={form.room ?? ''} onChange={v => setForm(f => ({ ...f, room: v }))} readOnly={isReadOnly} />
-          <TextBox label="Capacity" type="number" value={form.capacity?.toString() ?? ''} onChange={v => setForm(f => ({ ...f, capacity: Number(v) }))} readOnly={isReadOnly} />
-          <DropDownList label="Status" data={STATUS_OPTIONS} textField="name" optionValue="value" value={form.status} onChange={v => setForm(f => ({ ...f, status: v as any }))} />
+          <TextBox
+            label="Code"
+            value={form.code ?? ''}
+            onChange={v => setForm(f => ({ ...f, code: v }))}
+            required
+            readOnly={isReadOnly}
+          />
+          <TextBox
+            label="Venue Name"
+            value={form.name ?? ''}
+            onChange={v => setForm(f => ({ ...f, name: v }))}
+            required
+            readOnly={isReadOnly}
+          />
+          <TextBox
+            label="Building"
+            value={form.building ?? ''}
+            onChange={v => setForm(f => ({ ...f, building: v }))}
+            readOnly={isReadOnly}
+          />
+          <TextBox
+            label="Room"
+            value={form.room ?? ''}
+            onChange={v => setForm(f => ({ ...f, room: v }))}
+            readOnly={isReadOnly}
+          />
+          <TextBox
+            label="Capacity"
+            type="number"
+            value={form.capacity?.toString() ?? ''}
+            onChange={v => setForm(f => ({ ...f, capacity: Number(v) }))}
+            readOnly={isReadOnly}
+          />
+          <DropDownList
+            label="Status"
+            data={STATUS_OPTIONS}
+            textField="name"
+            optionValue="value"
+            value={form.status}
+            onChange={v => setForm(f => ({ ...f, status: v as any }))}
+          />
         </FormGrid>
         {!isReadOnly && (
           <div className="flex justify-end gap-3 mt-4">
             <Button label="Cancel" variant="outlined" onClick={close} />
-            <Button label={popup.mode === 'create' ? 'Create' : 'Save Changes'} variant="primary" icon="check" onClick={handleSave} />
+            <Button
+              label={popup.mode === 'create' ? 'Create' : 'Save Changes'}
+              variant="primary"
+              icon="check"
+              onClick={handleSave}
+            />
           </div>
         )}
       </FormPopup>

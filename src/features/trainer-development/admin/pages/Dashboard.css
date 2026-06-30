@@ -35,7 +35,9 @@
   gap: 0.75rem;
   padding: 0.375rem 0.5rem;
   border-radius: 6px;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
   cursor: pointer;
 }
 
@@ -254,15 +256,42 @@
   font-weight: 600;
 }
 
-.tdm-status-pill.completed { background: #dcfce7; color: #15803d; }
-.tdm-status-pill.ongoing { background: #dbeafe; color: #1d4ed8; }
-.tdm-status-pill.scheduled { background: #fef3c7; color: #b45309; }
-.tdm-status-pill.planned { background: #f3f4f6; color: #6b7280; }
-.tdm-status-pill.cancelled { background: #fee2e2; color: #b91c1c; }
-.tdm-status-pill.postponed { background: #f5f3ff; color: #7c3aed; }
-.tdm-status-pill.approved { background: #dcfce7; color: #15803d; }
-.tdm-status-pill.pending { background: #fef3c7; color: #b45309; }
-.tdm-status-pill.rejected { background: #fee2e2; color: #b91c1c; }
+.tdm-status-pill.completed {
+  background: #dcfce7;
+  color: #15803d;
+}
+.tdm-status-pill.ongoing {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.tdm-status-pill.scheduled {
+  background: #fef3c7;
+  color: #b45309;
+}
+.tdm-status-pill.planned {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+.tdm-status-pill.cancelled {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.tdm-status-pill.postponed {
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+.tdm-status-pill.approved {
+  background: #dcfce7;
+  color: #15803d;
+}
+.tdm-status-pill.pending {
+  background: #fef3c7;
+  color: #b45309;
+}
+.tdm-status-pill.rejected {
+  background: #fee2e2;
+  color: #b91c1c;
+}
 
 /* Responsive */
 @media (max-width: 1200px) {

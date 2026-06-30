@@ -74,7 +74,7 @@ export const WorkspaceLayout: React.FC<{ children: React.ReactNode }> = ({
             <Sidebar
               headerTitle="Services Portal"
               headerSubtitle="Access all administrative services"
-              headerIcon="th-large"
+              headerIcon="grid_view"
               items={[]}
               activeIndex={-1}
               onItemClick={() => {}}

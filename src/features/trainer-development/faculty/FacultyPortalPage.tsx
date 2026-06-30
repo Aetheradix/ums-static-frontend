@@ -11,14 +11,16 @@ export default function FacultyPortalPage() {
       portals={[
         {
           title: 'Dashboard',
-          description: 'Your training overview, upcoming sessions, certificates and skill growth.',
+          description:
+            'Your training overview, upcoming sessions, certificates and skill growth.',
           icon: 'dashboard',
           colorScheme: 'blue',
           path: tdmUrls.faculty.dashboard,
         },
         {
           title: 'My Trainings',
-          description: 'View upcoming, completed and cancelled training programmes.',
+          description:
+            'View upcoming, completed and cancelled training programmes.',
           icon: 'school',
           colorScheme: 'green',
           path: tdmUrls.faculty.myTrainings,
@@ -39,35 +41,40 @@ export default function FacultyPortalPage() {
         },
         {
           title: 'Competencies & Skills',
-          description: 'Review your competency levels, skill gaps and development roadmap.',
+          description:
+            'Review your competency levels, skill gaps and development roadmap.',
           icon: 'psychology',
           colorScheme: 'teal',
           path: tdmUrls.faculty.competencies,
         },
         {
           title: 'Self Assessment',
-          description: 'Complete self-assessment for teaching, research and leadership skills.',
+          description:
+            'Complete self-assessment for teaching, research and leadership skills.',
           icon: 'self_improvement',
           colorScheme: 'orange',
           path: tdmUrls.faculty.selfAssessment,
         },
         {
           title: 'My Attendance',
-          description: 'Track your training attendance and participation records.',
+          description:
+            'Track your training attendance and participation records.',
           icon: 'fact_check',
           colorScheme: 'indigo',
           path: tdmUrls.faculty.attendance,
         },
         {
           title: 'Submit Feedback',
-          description: 'Rate training sessions and provide feedback on content and trainer.',
+          description:
+            'Rate training sessions and provide feedback on content and trainer.',
           icon: 'rate_review',
           colorScheme: 'red',
           path: tdmUrls.faculty.feedback,
         },
         {
           title: 'My Profile',
-          description: 'View and update your academic profile, qualifications and achievements.',
+          description:
+            'View and update your academic profile, qualifications and achievements.',
           icon: 'person',
           colorScheme: 'gray',
           path: tdmUrls.faculty.profile,
