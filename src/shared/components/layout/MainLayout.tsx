@@ -15,10 +15,16 @@ const PORTAL_PATHS: string[] = [
   '/academics',
   '/admissions-management',
   '/student-management',
+
+  '/infrastructure-project-management',
+  '/infrastructure-project-management/reports',
+
   '/student-activities-clubs',
   '/essential-services',
   '/essential-services/admin',
   '/essential-services/employee',
+  '/estate-management',
+  '/estate-management/admin',
 ];
 
 function isPortalPath(pathname: string): boolean {
@@ -96,8 +102,6 @@ export default function MainLayout({ children }: React.PropsWithChildren) {
     handleTabChange({ index });
   };
 
-  const sidebarIcon = 'th-large';
-
   useEffect(() => {
     const handleToggle = () => {
       setIsMobileDrawerOpen(prev => !prev);
@@ -148,7 +152,7 @@ export default function MainLayout({ children }: React.PropsWithChildren) {
               <Sidebar
                 headerTitle={activeModuleInfo?.parent?.label || 'Navigation'}
                 headerSubtitle={activeModuleInfo?.parent?.description || ''}
-                headerIcon={sidebarIcon}
+                headerIcon={activeModuleInfo?.parent?.icon || 'grid_view'}
                 items={masterTabs}
                 activeIndex={activeIndex}
                 onItemClick={idx => {

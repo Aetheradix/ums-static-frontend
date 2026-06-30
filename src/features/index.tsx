@@ -5,6 +5,7 @@ import MainLayout from 'shared/components/layout/MainLayout';
 import { UniversityLoader } from 'shared/components/progress';
 import Academics from './academics';
 import EssentialServices from './essential-services';
+import EstateManagement from './estate-management';
 import AdmissionPortal from './admission-portal';
 import AdmissionsManagement from './admissions-management';
 import AffiliationManagementSystem from './affiliation-management-system';
@@ -18,6 +19,7 @@ import FinanceSupplyChain from './finance-supply-chain';
 import GrievanceManagement from './grievance-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
+import InfrastructureProjectManagement from './infrastructure-project-management';
 import ItServiceDesk from './it-service-desk';
 import ResearchManagement from './research-management';
 import ResidentialAllocationManagement from './residential-allocation-management';
@@ -159,6 +161,10 @@ export default function Features() {
                         element={<EssentialServices />}
                       />
                       <Route
+                        path="estate-management/*"
+                        element={<EstateManagement />}
+                      />
+                      <Route
                         path="programme-management/*"
                         element={<ProgrammeManagement />}
                       />
@@ -218,6 +224,10 @@ export default function Features() {
                       <Route
                         path="payroll-management/*"
                         element={<PayrollRoutes />}
+                      />
+                      <Route
+                        path="infrastructure-project-management/*"
+                        element={<InfrastructureProjectManagement />}
                       />
                     </Routes>
                   </MainLayout>

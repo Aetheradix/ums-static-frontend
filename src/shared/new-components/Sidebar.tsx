@@ -237,7 +237,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   }}
                 >
                   <span className={`app-sidebar-module-icon ${iconColorClass}`}>
-                    <Icon name={(module.icon as string) || 'th-large'} />
+                    <Icon name={(module.icon as string) || 'grid_view'} />
                   </span>
                   <span className="app-sidebar-module-label">
                     {module.label}
