@@ -24,6 +24,7 @@ const ICON_MAPPING: Record<string, string> = {
   'calendar-times': 'event_busy',
   file: 'description',
   'check-circle': 'check_circle',
+  'th-large': 'grid_view',
 };
 
 export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {

@@ -33,7 +33,12 @@ const Sidebar: React.FC<SidebarProps> = ({
   activeIndex,
   onItemClick,
 }) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(
+    () => localStorage.getItem('sidebarMode') === 'collapsed'
+  );
+  const [isHidden, setIsHidden] = useState(
+    () => localStorage.getItem('sidebarMode') === 'hidden'
+  );
   const menuConfig = useMenu();
   const navigate = useNavigate();
   const location = useLocation();
@@ -53,7 +58,31 @@ const Sidebar: React.FC<SidebarProps> = ({
       attributes: true,
       attributeFilter: ['class'],
     });
-    return () => observer.disconnect();
+
+    const handleGlobalSidebarMode = (e: Event) => {
+      const mode = (e as CustomEvent).detail;
+      if (mode === 'collapsed') {
+        setIsCollapsed(true);
+        setIsHidden(false);
+      } else if (mode === 'hidden') {
+        setIsHidden(true);
+      } else {
+        setIsCollapsed(false);
+        setIsHidden(false);
+      }
+    };
+    window.addEventListener(
+      'global-sidebar-mode-changed',
+      handleGlobalSidebarMode
+    );
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener(
+        'global-sidebar-mode-changed',
+        handleGlobalSidebarMode
+      );
+    };
   }, []);
 
   // Auto-expand accordion modules and submenus matching current route path
@@ -105,6 +134,10 @@ const Sidebar: React.FC<SidebarProps> = ({
       setOpenSubMenuSlug(foundSubMenuSlug);
     }
   }, [location.pathname, menuConfig]);
+
+  if (isHidden) {
+    return null;
+  }
 
   return (
     <aside
