@@ -14,6 +14,8 @@ export const WorkspaceLayout: React.FC<{ children: React.ReactNode }> = ({
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [hasActiveSidebar, setHasActiveSidebar] = useState(false);
   const [showTopNavbar, setShowTopNavbar] = useState(false);
+  const [layoutWidth, setLayoutWidth] = useState('fluid');
+  const [headerBehavior, setHeaderBehavior] = useState('sticky');
   const location = useLocation();
 
   useEffect(() => {
@@ -22,6 +24,11 @@ export const WorkspaceLayout: React.FC<{ children: React.ReactNode }> = ({
     if (savedNavbarSetting === 'true') {
       setShowTopNavbar(true);
     }
+    const savedLayoutWidth = localStorage.getItem('layoutWidth');
+    if (savedLayoutWidth) setLayoutWidth(savedLayoutWidth);
+
+    const savedHeaderBehavior = localStorage.getItem('headerBehavior');
+    if (savedHeaderBehavior) setHeaderBehavior(savedHeaderBehavior);
 
     const handleToggle = () => {
       setIsMobileDrawerOpen(prev => !prev);
@@ -35,14 +42,35 @@ export const WorkspaceLayout: React.FC<{ children: React.ReactNode }> = ({
       setShowTopNavbar((e as CustomEvent).detail);
     };
 
+    const handleLayoutWidthChange = (e: Event) => {
+      setLayoutWidth((e as CustomEvent).detail);
+    };
+
+    const handleHeaderBehaviorChange = (e: Event) => {
+      setHeaderBehavior((e as CustomEvent).detail);
+    };
+
     window.addEventListener('toggle-mobile-sidebar', handleToggle);
     window.addEventListener('sidebar-mode-changed', handleSidebarChange);
     window.addEventListener('toggle-top-navbar', handleTopNavbarChange);
+    window.addEventListener('layout-width-changed', handleLayoutWidthChange);
+    window.addEventListener(
+      'header-behavior-changed',
+      handleHeaderBehaviorChange
+    );
 
     return () => {
       window.removeEventListener('toggle-mobile-sidebar', handleToggle);
       window.removeEventListener('sidebar-mode-changed', handleSidebarChange);
       window.removeEventListener('toggle-top-navbar', handleTopNavbarChange);
+      window.removeEventListener(
+        'layout-width-changed',
+        handleLayoutWidthChange
+      );
+      window.removeEventListener(
+        'header-behavior-changed',
+        handleHeaderBehaviorChange
+      );
     };
   }, []);
 
@@ -52,9 +80,11 @@ export const WorkspaceLayout: React.FC<{ children: React.ReactNode }> = ({
   }, [location.pathname]);
 
   return (
-    <div className="ws-root">
+    <div className={`ws-root layout-${layoutWidth}`}>
       <WorkspaceTopBar />
-      <div className="sticky top-0 z-50 flex flex-col w-full shadow-sm">
+      <div
+        className={`${headerBehavior === 'sticky' ? 'sticky' : 'relative'} top-0 z-50 flex flex-col w-full shadow-sm`}
+      >
         <WorkspaceHeader />
         {showTopNavbar && <WorkspaceNavbar />}
       </div>
@@ -74,7 +104,7 @@ export const WorkspaceLayout: React.FC<{ children: React.ReactNode }> = ({
             <Sidebar
               headerTitle="Services Portal"
               headerSubtitle="Access all administrative services"
-              headerIcon="th-large"
+              headerIcon="grid_view"
               items={[]}
               activeIndex={-1}
               onItemClick={() => {}}

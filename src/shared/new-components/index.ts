@@ -13,6 +13,7 @@ import PortalSelector from './PortalSelector/PortalSelector';
 import PreviewField from './PreviewField/PreviewField';
 import PreviewSection from './PreviewSection/PreviewSection';
 import PreviewSummary from './PreviewSummary/PreviewSummary';
+import ProgressBar from './ProgressBar';
 import ReceiptDialog from './ReceiptDialog';
 import Sidebar from './Sidebar';
 import SkeletonLoader from './skeleton/SkeletonLoader';
@@ -45,6 +46,7 @@ export {
   PreviewField,
   PreviewSection,
   PreviewSummary,
+  ProgressBar,
   ReceiptDialog,
   Sidebar,
   SkeletonLoader,

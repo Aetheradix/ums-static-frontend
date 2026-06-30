@@ -1,63 +1,23 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { useMenu } from 'config/menu-routes';
 import { TieredMenu } from 'primereact/tieredmenu';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Icon } from 'shared/components/Icon/Icon';
 import './WorkspaceNavbar.css';
 
-const getIcon = (iconName?: any) => {
-  if (!iconName || typeof iconName !== 'string') return 'folder';
-
-  const iconMap: Record<string, string> = {
-    person_add: 'user-plus',
-    assignment: 'file-edit',
-    manage_accounts: 'user',
-    users: 'users',
-    employee: 'user',
-    employees: 'users',
-    settings: 'cog',
-    department: 'building',
-    designation: 'id-card',
-    person: 'user',
-    badge: 'id-card',
-    vpn_key: 'key',
-    assignment_ind: 'user-edit',
-    edit_location: 'map-marker',
-    globe: 'globe',
-    folder: 'folder',
-    map: 'map',
-    location_city: 'building',
-    grid_view: 'th-large',
-    menu_book: 'book',
-    apartment: 'building',
-    domain: 'home',
-    groups: 'users',
-    work: 'briefcase',
-    class: 'users',
-    segment: 'align-justify',
-    category: 'tags',
-    article: 'file',
-    school: 'book',
-    bar_chart: 'chart-bar',
-    notifications: 'bell',
-    download: 'download',
-    image: 'image',
-    feed: 'list',
-    assignment_turned_in: 'check-square',
-    workspace_premium: 'star-fill',
-    settings_accessibility: 'user',
-    description: 'file',
-    account_tree: 'sitemap',
-    travel_explore: 'compass',
-    trending_up: 'chart-line',
-    event: 'calendar',
-    'th-large': 'th-large',
-  };
-
-  return iconMap[iconName] || iconName;
-};
-
 export const WorkspaceNavbar: React.FC = () => {
-  const menuItems = useMenu();
+  const baseMenuItems = useMenu();
+  const menuItems = useMemo(
+    () => [
+      {
+        label: 'Home',
+        icon: 'home',
+        path: '/home/menu',
+      },
+      ...baseMenuItems,
+    ],
+    [baseMenuItems]
+  );
   const navigate = useNavigate();
   const location = useLocation();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -94,8 +54,17 @@ export const WorkspaceNavbar: React.FC = () => {
   };
 
   useEffect(() => {
-    const widths = itemRefs.current.map(ref => ref?.offsetWidth || 0);
-    setItemWidths(widths);
+    const updateWidths = () => {
+      const widths = itemRefs.current.map(ref => ref?.offsetWidth || 0);
+      setItemWidths(widths);
+    };
+
+    updateWidths();
+
+    // Re-measure after fonts load to ensure icon widths (Material Symbols) are correctly calculated
+    if (document.fonts) {
+      document.fonts.ready.then(updateWidths);
+    }
   }, [menuItems]);
 
   useEffect(() => {
@@ -168,13 +137,99 @@ export const WorkspaceNavbar: React.FC = () => {
     };
   }, [menuItems, visibleCount, itemWidths]);
 
+  // Advanced dynamic submenu scroll handling
+  useEffect(() => {
+    const handleMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const menuItem = target.closest('.p-menuitem');
+
+      // 1. If we hovered a menu item that opens a submenu, calculate and save its safe max-height
+      if (menuItem) {
+        const childSubmenu = menuItem.querySelector(
+          ':scope > .p-submenu-list'
+        ) as HTMLElement;
+        if (childSubmenu) {
+          const rect = menuItem.getBoundingClientRect();
+          const spaceBelow = window.innerHeight - rect.top - 20;
+          const spaceAbove = rect.bottom - 20;
+          // Use max space so PrimeReact can safely flip up or down
+          const maxHeight = Math.max(spaceBelow, spaceAbove, 200);
+          childSubmenu.dataset.calculatedMaxHeight = `${maxHeight}px`;
+        }
+      }
+
+      // 2. Evaluate ALL open menus independently so scrollbars don't disappear when moving between them
+      document
+        .querySelectorAll(
+          '.ws-navbar-dropdown .p-submenu-list, .ws-navbar-dropdown .p-tieredmenu-root-list'
+        )
+        .forEach(el => {
+          const htmlEl = el as HTMLElement;
+          let maxHStr = htmlEl.dataset.calculatedMaxHeight;
+
+          // Root list always opens downwards, calculate dynamically
+          if (htmlEl.classList.contains('p-tieredmenu-root-list')) {
+            const rect = htmlEl.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.top - 20;
+            maxHStr = `${Math.max(spaceBelow, 200)}px`;
+          }
+
+          if (maxHStr) {
+            const maxH = parseInt(maxHStr);
+
+            // Estimate true height based on number of items to avoid absolute child false scrollbar issues
+            const numItems = htmlEl.querySelectorAll(
+              ':scope > .p-menuitem'
+            ).length;
+            const trueHeight = numItems * 45; // Approx 45px per item
+
+            if (trueHeight > maxH) {
+              // It genuinely needs scrolling
+              htmlEl.style.maxHeight = maxHStr;
+              htmlEl.style.overflowY = 'auto';
+            } else {
+              // Short menu: remove overflow to prevent horizontal clipping of its child flyouts
+              htmlEl.style.maxHeight = 'none';
+              htmlEl.style.overflowY = 'visible';
+            }
+          }
+        });
+    };
+
+    document.addEventListener('mouseover', handleMouseOver);
+    return () => document.removeEventListener('mouseover', handleMouseOver);
+  }, []);
+
   const mapToPrimeMenuItem = (item: any): any => {
     const hasChildren = item.children && item.children.length > 0;
     return {
       label: item.label?.replace('\n', ' '),
-      icon: `pi pi-${getIcon(item.icon)}`,
       command: hasChildren ? undefined : () => handleItemClick(item),
       items: hasChildren ? item.children.map(mapToPrimeMenuItem) : undefined,
+      template: (menuItem: any, options: any) => {
+        return (
+          <div
+            className={options.className}
+            onClick={e => options.onClick(e)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              padding: '0.75rem 1rem',
+              cursor: 'pointer',
+            }}
+          >
+            <Icon
+              name={(item.icon as string) || 'folder'}
+              className="text-lg opacity-80"
+            />
+            <span className={options.labelClassName}>{menuItem.label}</span>
+            {hasChildren && (
+              <i className="pi pi-angle-right ml-auto text-xs opacity-70" />
+            )}
+          </div>
+        );
+      },
     };
   };
 
@@ -208,7 +263,7 @@ export const WorkspaceNavbar: React.FC = () => {
                 style={{ display: isHidden ? 'none' : 'flex' }}
                 onClick={e => handleVisibleItemClick(e, item)}
               >
-                <i className={`pi pi-${getIcon(item.icon)}`} />
+                <Icon name={(item.icon as string) || 'folder'} />
                 <span>{item.label?.replace('\n', ' ')}</span>
                 {hasChildren && (
                   <i className="pi pi-angle-down text-[10px] ml-1 opacity-70" />

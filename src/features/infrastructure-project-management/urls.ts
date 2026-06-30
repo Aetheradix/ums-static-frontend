@@ -1,0 +1,25 @@
+const BASE = '/infrastructure-project-management';
+
+export const infraUrls = {
+  portal: BASE,
+  dashboard: `${BASE}/dashboard`,
+  projectMaster: `${BASE}/project-master`,
+  projectProposal: `${BASE}/project-proposal`,
+  budgetAllocation: `${BASE}/budget-allocation`,
+  tenderManagement: `${BASE}/tender-management`,
+  contractorManagement: `${BASE}/contractor-management`,
+  workOrders: `${BASE}/work-orders`,
+  projectMilestones: `${BASE}/project-milestones`,
+  progressMonitoring: `${BASE}/progress-monitoring`,
+  materialManagement: `${BASE}/material-management`,
+  billManagement: `${BASE}/bill-management`,
+  paymentTracking: `${BASE}/payment-tracking`,
+  inspections: `${BASE}/inspections`,
+  completionHandover: `${BASE}/completion-handover`,
+  documents: `${BASE}/documents`,
+  reports: `${BASE}/reports`,
+  reportsProjectProgress: `${BASE}/reports/project-progress`,
+  reportsBudgetUtilization: `${BASE}/reports/budget-utilization`,
+  reportsContractorPerformance: `${BASE}/reports/contractor-performance`,
+  reportsProjectCompletion: `${BASE}/reports/project-completion`,
+};

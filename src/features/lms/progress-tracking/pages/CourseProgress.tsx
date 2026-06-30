@@ -6,6 +6,7 @@ import {
   FormPopup,
 } from 'shared/new-components';
 import { Button } from 'shared/components/buttons';
+import { learningUrls } from '../../urls';
 
 const MOCK_DATA = [
   {
@@ -46,6 +47,11 @@ export default function CourseProgress() {
     <FormPage
       title="Course Progress Report"
       description="Monitor student progression across courses."
+      breadcrumbs={[
+        { label: 'Home', to: '/home' },
+        { label: 'Learning Management System', to: learningUrls.portal },
+        { label: 'Course Progress Report' },
+      ]}
     >
       <FormCard>
         <GridPanel

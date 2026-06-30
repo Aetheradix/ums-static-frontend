@@ -6,7 +6,8 @@
 }
 
 .role-permission-check {
-  @apply mx-auto block h-5 w-5 cursor-default rounded-md border border-slate-300 accent-black;
+  @apply mx-auto block h-5 w-5 cursor-default rounded-md border border-slate-300;
+  accent-color: var(--primary-color);
 }
 
 /* Feature Name header/body left */

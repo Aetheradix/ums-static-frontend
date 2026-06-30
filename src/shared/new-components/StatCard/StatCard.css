@@ -11,15 +11,81 @@
 }
 
 .stat-card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.625rem;
+}
+
+.stat-card-icon {
+  width: 52px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.125rem;
   @apply flex items-center gap-4 relative z-10;
 }
 
 .stat-card-icon {
-  @apply w-12 h-12 rounded-xl flex items-center justify-center shrink-0 text-white shadow-sm;
+  @apply w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-sm;
   /* colorScheme is applied via inline styles or classes in the TSX */
 }
 
+/* Color Schemes */
+.stat-card-icon.color-blue {
+  background-color: #dbeafe;
+  color: #3b82f6;
+}
+.stat-card-icon.color-green {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+.stat-card-icon.color-purple {
+  background-color: #f3e8ff;
+  color: #9333ea;
+}
+.stat-card-icon.color-orange {
+  background-color: #ffedd5;
+  color: #ea580c;
+}
+.stat-card-icon.color-red {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+.stat-card-icon.color-teal {
+  background-color: #ccfbf1;
+  color: #0d9488;
+}
+.stat-card-icon.color-indigo {
+  background-color: #e0e7ff;
+  color: #4f46e5;
+}
+.stat-card-icon.color-amber {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+.stat-card-icon.color-pink {
+  background-color: #fce7f3;
+  color: #db2777;
+}
+
 .stat-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.stat-card-title {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #6b7280);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   @apply flex flex-col gap-1 min-w-0;
 }
 
@@ -31,7 +97,18 @@
   @apply text-sm font-medium text-slate-500 whitespace-nowrap overflow-hidden text-ellipsis;
 }
 
+.stat-card-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary, #111827);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
 .stat-card-subtitle {
+  font-size: 0.688rem;
+  color: var(--color-text-muted, #9ca3af);
+  margin-top: 0.125rem;
   @apply text-xs text-slate-400;
 }
 
