@@ -17,6 +17,7 @@ import EstateManagement from './estate-management';
 import ExaminationManagement from './examination-management';
 import FinanceSupplyChain from './finance-supply-chain';
 import GrievanceManagement from './grievance-management';
+import PolicyComplianceManagement from './policy-compliance-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
 import InfrastructureProjectManagement from './infrastructure-project-management';
@@ -188,6 +189,10 @@ export default function Features() {
                       <Route
                         path="grievance-management/*"
                         element={<GrievanceManagement />}
+                      />
+                      <Route
+                        path="policy-compliance-management/*"
+                        element={<PolicyComplianceManagement />}
                       />
                       <Route path="lms/*" element={<Lms />} />
                       <Route

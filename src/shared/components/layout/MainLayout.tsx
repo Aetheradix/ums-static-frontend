@@ -39,6 +39,7 @@ const PORTAL_PATHS: string[] = [
   '/affiliation-management-system/public',
   '/affiliation-management-system/college-login',
   '/affiliation-management-system/admin-login',
+  '/policy-compliance-management',
 ];
 
 function isPortalPath(pathname: string): boolean {
