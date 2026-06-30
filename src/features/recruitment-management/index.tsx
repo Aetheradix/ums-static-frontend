@@ -10,6 +10,7 @@ import CandidatePortalPage from './candidate/portal/CandidatePortalPage';
 // Verification Center
 import CandidateQueuePage from './verification-center/pages/CandidateQueue/CandidateQueuePage';
 import VerificationCenterDashboard from './verification-center/pages/Dashboard/VerificationCenterDashboard';
+import VerificationReportsPage from './verification-center/pages/Reports/VerificationReportsPage';
 import VerificationCenterPortalPage from './verification-center/portal/VerificationCenterPortalPage';
 
 // HR Admin
@@ -18,6 +19,7 @@ import HRAdminDashboard from './admin/pages/Dashboard/HRAdminDashboard';
 import DocumentConfigPage from './admin/pages/DocumentConfiguration/DocumentConfigPage';
 import HOVerificationPage from './admin/pages/DocumentVerificationByHO/HOVerificationPage';
 import MeritListUploadPage from './admin/pages/MeritListUpload/MeritListUploadPage';
+import AdminReportsPage from './admin/pages/Reports/AdminReportsPage';
 import VacancyUploadPage from './admin/pages/VacancyUpload/VacancyUploadPage';
 import VerificationCenterUploadPage from './admin/pages/VerificationCenterUpload/VerificationCenterUploadPage';
 import HRAdminPortalPage from './admin/portal/HRAdminPortalPage';
@@ -53,6 +55,10 @@ export default function RecruitmentManagement() {
         path="verification-center/queue"
         element={<CandidateQueuePage />}
       />
+      <Route
+        path="verification-center/reports"
+        element={<VerificationReportsPage />}
+      />
 
       {/* HR/Admin routes — sidebar active */}
       <Route path="admin" element={<HRAdminPortalPage />} />
@@ -66,6 +72,7 @@ export default function RecruitmentManagement() {
       />
       <Route path="admin/ho-verification" element={<HOVerificationPage />} />
       <Route path="admin/joining-order" element={<JoiningOrderPage />} />
+      <Route path="admin/reports" element={<AdminReportsPage />} />
 
       <Route path="*" element={<RecruitmentPortalPage />} />
     </Routes>

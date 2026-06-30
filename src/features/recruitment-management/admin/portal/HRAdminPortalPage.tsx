@@ -64,6 +64,13 @@ export default function HRAdminPortalPage() {
           colorScheme: 'indigo',
           path: '/recruitment-management/admin/joining-order',
         },
+        {
+          title: 'Recruitment Reports',
+          description: 'Track recruitment metrics and candidate status.',
+          icon: 'assessment',
+          colorScheme: 'purple',
+          path: '/recruitment-management/admin/reports',
+        },
       ]}
     />
   );

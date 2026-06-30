@@ -23,6 +23,13 @@ export default function VerificationCenterPortalPage() {
           colorScheme: 'orange',
           path: '/recruitment-management/verification-center/queue',
         },
+        {
+          title: 'Verification Reports',
+          description: 'View verification reports and statistics.',
+          icon: 'assessment',
+          colorScheme: 'orange',
+          path: '/recruitment-management/verification-center/reports',
+        },
       ]}
     />
   );
