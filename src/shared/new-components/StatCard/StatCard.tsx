@@ -25,16 +25,16 @@ interface StatCardProps {
   trend?: StatCardTrend;
 }
 
-const colorClassMap: Record<string, string> = {
-  blue: 'bg-blue-100 text-blue-600',
-  green: 'bg-green-100 text-green-600',
-  purple: 'bg-purple-100 text-purple-600',
-  orange: 'bg-orange-100 text-orange-600',
-  red: 'bg-red-100 text-red-600',
-  teal: 'bg-teal-100 text-teal-600',
-  indigo: 'bg-indigo-100 text-indigo-600',
-  amber: 'bg-amber-100 text-amber-600',
-  pink: 'bg-pink-100 text-pink-600',
+const COLOR_MAP: Record<string, string> = {
+  blue: 'bg-blue-500 text-white',
+  green: 'bg-green-500 text-white',
+  purple: 'bg-purple-500 text-white',
+  orange: 'bg-orange-500 text-white',
+  red: 'bg-red-500 text-white',
+  teal: 'bg-teal-500 text-white',
+  indigo: 'bg-indigo-500 text-white',
+  amber: 'bg-amber-500 text-white',
+  pink: 'bg-pink-500 text-white',
 };
 
 export default function StatCard({
@@ -52,24 +52,24 @@ export default function StatCard({
         ? 'arrow-down-right'
         : 'minus';
 
-  const iconClasses = colorClassMap[colorScheme] || colorClassMap.blue;
-
   return (
     <div className="stat-card">
       <div className="stat-card-body">
-        <div className={`stat-card-icon ${iconClasses}`}>
+        <div
+          className={`stat-card-icon ${COLOR_MAP[colorScheme] || 'bg-blue-500 text-white'}`}
+        >
           <Icon name={icon} />
         </div>
         <div className="stat-card-info">
-          <span className="stat-card-value">{value}</span>
           <span className="stat-card-title">{title}</span>
+          <span className="stat-card-value">{value}</span>
           {subtitle && <span className="stat-card-subtitle">{subtitle}</span>}
         </div>
       </div>
 
       {trend && (
         <div className={`stat-card-trend stat-card-trend-${trend.direction}`}>
-          <i className={`pi pi-${trendIcon}`} />
+          <Icon name={trendIcon} className="text-xs" />
           <span>
             {trend.value}%{trend.label ? ` ${trend.label}` : ''}
           </span>

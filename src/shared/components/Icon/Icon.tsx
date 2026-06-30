@@ -26,6 +26,9 @@ const ICON_MAPPING: Record<string, string> = {
   'file-edit': 'edit_document',
   briefcase: 'work',
   'check-circle': 'check_circle',
+  'arrow-up-right': 'trending_up',
+  'arrow-down-right': 'trending_down',
+  minus: 'remove',
 };
 
 export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {

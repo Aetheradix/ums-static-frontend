@@ -5,30 +5,44 @@ import MainLayout from 'shared/components/layout/MainLayout';
 import { UniversityLoader } from 'shared/components/progress';
 import Academics from './academics';
 import AdmissionPortal from './admission-portal';
+import AdmissionsManagement from './admissions-management';
 import AffiliationManagementSystem from './affiliation-management-system';
 import AlumniManagement from './alumni-management';
 import CareerAdvancement from './career-advancement';
 import CertificateManagementSystem from './certificate-management-system';
 import EmployeeManagement from './employee-management';
 import EmployeeReports from './employee-reports';
+import EssentialServices from './essential-services';
+import EstateManagement from './estate-management';
 import ExaminationManagement from './examination-management';
 import FinanceSupplyChain from './finance-supply-chain';
 import GrievanceManagement from './grievance-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
+import InfrastructureProjectManagement from './infrastructure-project-management';
+import ItServiceDesk from './it-service-desk';
 import LeaveManagement from './leave-management';
 import Lms from './lms';
 import Master from './master';
+import OpenBookExamination from './open-book-examination';
 import ProgrammeManagement from './programme-management';
 import PublicPortalLayout, {
   PublicRouteWrapper,
 } from './public-portal/layout/PublicPortalLayout';
+import ResearchManagement from './research-management';
+import ResidentialAllocationManagement from './residential-allocation-management';
+import RTIManagement from './rti-management';
+import ScholarshipDbt from './scholarship-dbt';
 import Settings from './settings';
 import Sis from './sis';
-import StudentManagement from './student-management';
-import AdmissionsManagement from './admissions-management';
+import StudentActivitiesClubs from './student-activities-clubs';
 import StudentFeedbackManagement from './student-feedback-management';
+import StudentManagement from './student-management';
 import TrainingPlacement from './training-placement';
+
+import PayrollRoutes from './payroll';
+
+import TrainerDevelopment from './trainer-development';
 
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
@@ -144,12 +158,32 @@ export default function Features() {
                       />
                       <Route path="academics/*" element={<Academics />} />
                       <Route
+                        path="essential-services/*"
+                        element={<EssentialServices />}
+                      />
+                      <Route
+                        path="estate-management/*"
+                        element={<EstateManagement />}
+                      />
+                      <Route
                         path="programme-management/*"
                         element={<ProgrammeManagement />}
                       />
                       <Route
                         path="hostel-management/*"
                         element={<HostelManagement />}
+                      />
+                      <Route
+                        path="it-service-desk/*"
+                        element={<ItServiceDesk />}
+                      />
+                      <Route
+                        path="research-management/*"
+                        element={<ResearchManagement />}
+                      />
+                      <Route
+                        path="residential-allocation-management/*"
+                        element={<ResidentialAllocationManagement />}
                       />
                       <Route
                         path="grievance-management/*"
@@ -161,8 +195,24 @@ export default function Features() {
                         element={<StudentFeedbackManagement />}
                       />
                       <Route
+                        path="student-activities-clubs/*"
+                        element={<StudentActivitiesClubs />}
+                      />
+                      <Route
+                        path="rti-management/*"
+                        element={<RTIManagement />}
+                      />
+                      <Route
                         path="leave-management/*"
                         element={<LeaveManagement />}
+                      />
+                      <Route
+                        path="scholarship-dbt/*"
+                        element={<ScholarshipDbt />}
+                      />
+                      <Route
+                        path="trainer-development/*"
+                        element={<TrainerDevelopment />}
                       />
                       <Route
                         path="alumni-management/*"
@@ -171,6 +221,18 @@ export default function Features() {
                       <Route
                         path="training-placement/*"
                         element={<TrainingPlacement />}
+                      />
+                      <Route
+                        path="open-book-examination/*"
+                        element={<OpenBookExamination />}
+                      />
+                      <Route
+                        path="payroll-management/*"
+                        element={<PayrollRoutes />}
+                      />
+                      <Route
+                        path="infrastructure-project-management/*"
+                        element={<InfrastructureProjectManagement />}
                       />
                     </Routes>
                   </MainLayout>
