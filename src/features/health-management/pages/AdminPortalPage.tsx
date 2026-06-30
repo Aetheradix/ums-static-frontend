@@ -26,7 +26,7 @@ export default function AdminPortalPage() {
         {
           title: 'Health Records',
           description: 'View and create patient health records.',
-          icon: 'folder_medical',
+          icon: 'book',
           colorScheme: 'teal',
           path: hmsUrls.records,
         },
@@ -85,13 +85,6 @@ export default function AdminPortalPage() {
           icon: 'bar_chart',
           colorScheme: 'green',
           path: hmsUrls.reports,
-        },
-        {
-          title: 'Activity Logs',
-          description: 'Audit trail of all health operations.',
-          icon: 'history',
-          colorScheme: 'red',
-          path: hmsUrls.logs,
         },
         {
           title: 'Settings',
