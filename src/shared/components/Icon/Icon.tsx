@@ -23,7 +23,13 @@ const ICON_MAPPING: Record<string, string> = {
   'calendar-plus': 'calendar_add_on',
   'calendar-times': 'event_busy',
   file: 'description',
+  'file-edit': 'edit_document',
+  briefcase: 'work',
   'check-circle': 'check_circle',
+  'arrow-up-right': 'trending_up',
+  'arrow-down-right': 'trending_down',
+  minus: 'remove',
+  'th-large': 'grid_view',
 };
 
 export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {

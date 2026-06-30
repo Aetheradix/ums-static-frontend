@@ -15,6 +15,11 @@ const PORTAL_PATHS: string[] = [
   '/academics',
   '/admissions-management',
   '/student-management',
+  '/training-placement',
+  '/training-placement/admin',
+  '/training-placement/dept',
+  '/training-placement/company',
+  '/training-placement/student',
 
   '/infrastructure-project-management',
   '/infrastructure-project-management/reports',
@@ -25,6 +30,15 @@ const PORTAL_PATHS: string[] = [
   '/essential-services/employee',
   '/estate-management',
   '/estate-management/admin',
+  '/transport-management',
+  '/transport-management/admin-login',
+  '/transport-management/college-login',
+  '/transport-management/reports',
+
+  '/affiliation-management-system',
+  '/affiliation-management-system/public',
+  '/affiliation-management-system/college-login',
+  '/affiliation-management-system/admin-login',
 ];
 
 function isPortalPath(pathname: string): boolean {
@@ -135,7 +149,7 @@ export default function MainLayout({ children }: React.PropsWithChildren) {
     <WorkspaceLayout>
       {/* Main Page Content */}
       <div className="main-layout-content">
-        <div className="mx-auto px-6 py-6 pb-16 flex flex-col lg:flex-row gap-8 relative">
+        <div className="mx-auto px-4 md:px-6 py-6 flex flex-col lg:flex-row gap-8 relative">
           {/* Mobile Drawer Backdrop Overlay */}
           {isMobileDrawerOpen && (
             <div

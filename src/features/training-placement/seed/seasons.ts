@@ -1,0 +1,48 @@
+import type { PlacementSeason } from '../types';
+
+export const seedPlacementSeasons: PlacementSeason[] = [
+  {
+    id: 'season-2024-nov',
+    code: 'PL2024-NOV',
+    name: 'November-December 2024 Drive',
+    feeApplicableCompany: true,
+    companyFeeAmount: 20000,
+    feeApplicableStudent: false,
+    studentFeeAmount: 0,
+    status: 'Inactive',
+    academicYear: '2024-25',
+  },
+  {
+    id: 'season-2025-jun',
+    code: 'PL2025-JUN',
+    name: 'June-July 2025 Placement Drive',
+    feeApplicableCompany: true,
+    companyFeeAmount: 25000,
+    feeApplicableStudent: true,
+    studentFeeAmount: 500,
+    status: 'Active',
+    academicYear: '2024-25',
+  },
+  {
+    id: 'season-2025-dec',
+    code: 'PL2025-DEC',
+    name: 'December 2025 Internship Drive',
+    feeApplicableCompany: true,
+    companyFeeAmount: 15000,
+    feeApplicableStudent: true,
+    studentFeeAmount: 300,
+    status: 'Active',
+    academicYear: '2025-26',
+  },
+  {
+    id: 'season-2026-jun',
+    code: 'PL2026-JUN',
+    name: 'June 2026 Placement Drive',
+    feeApplicableCompany: false,
+    companyFeeAmount: 0,
+    feeApplicableStudent: false,
+    studentFeeAmount: 0,
+    status: 'Inactive',
+    academicYear: '2025-26',
+  },
+];

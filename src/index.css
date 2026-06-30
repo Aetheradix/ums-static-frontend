@@ -1080,7 +1080,8 @@ body {
 .p-checkbox .p-checkbox-box.p-highlight,
 .p-checkbox.p-highlight .p-checkbox-box,
 .p-checkbox.p-checkbox-checked .p-checkbox-box {
-  @apply border-slate-300 bg-black;
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
 }
 
 .p-checkbox .p-checkbox-box .p-checkbox-icon,

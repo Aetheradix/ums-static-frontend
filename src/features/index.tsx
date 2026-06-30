@@ -26,6 +26,7 @@ import LeaveManagement from './leave-management';
 import Lms from './lms';
 import Master from './master';
 import OpenBookExamination from './open-book-examination';
+import PayrollRoutes from './payroll';
 import ProgrammeManagement from './programme-management';
 import PublicPortalLayout, {
   PublicRouteWrapper,
@@ -39,11 +40,11 @@ import Sis from './sis';
 import StudentActivitiesClubs from './student-activities-clubs';
 import StudentFeedbackManagement from './student-feedback-management';
 import StudentManagement from './student-management';
+import TrainingPlacement from './training-placement';
 
-import PayrollRoutes from './payroll';
-
+import SecurityManagement from './security-management';
 import TrainerDevelopment from './trainer-development';
-
+import TransportManagement from './transport-management';
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
   () => import('./public-portal/pages/Solutions')
@@ -219,6 +220,10 @@ export default function Features() {
                         element={<AlumniManagement />}
                       />
                       <Route
+                        path="training-placement/*"
+                        element={<TrainingPlacement />}
+                      />
+                      <Route
                         path="open-book-examination/*"
                         element={<OpenBookExamination />}
                       />
@@ -233,6 +238,18 @@ export default function Features() {
                       <Route
                         path="file-management-tracking/*"
                         element={<FileManagementTracking />}
+                      />
+                      <Route
+                        path="transport-management/*"
+                        element={<TransportManagement />}
+                      />
+                      <Route
+                        path="affiliation-management-system/*"
+                        element={<AffiliationManagementSystem />}
+                      />
+                      <Route
+                        path="security-management/*"
+                        element={<SecurityManagement />}
                       />
                     </Routes>
                   </MainLayout>

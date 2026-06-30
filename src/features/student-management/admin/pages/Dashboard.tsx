@@ -219,6 +219,72 @@ function AttendanceLevelsPolarChart() {
   return <canvas ref={ref} />;
 }
 
+function CategoryDistributionDoughnutChart() {
+  const ref = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    if (!ref.current) return;
+    const ctx = ref.current.getContext('2d');
+    if (!ctx) return;
+    const chart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['General', 'OBC', 'SC', 'ST', 'Other'],
+        datasets: [
+          {
+            data: [6500, 4200, 2800, 1500, 420],
+            backgroundColor: [
+              '#6366f1',
+              '#3b82f6',
+              '#06b6d4',
+              '#10b981',
+              '#f59e0b',
+            ],
+            borderWidth: 0,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'right' } },
+      },
+    });
+    return () => chart.destroy();
+  }, []);
+  return <canvas ref={ref} />;
+}
+
+function FeeCollectionProgressBars() {
+  const data = [
+    { program: 'B.Tech', collected: 90, total: 100 },
+    { program: 'MBA', collected: 75, total: 100 },
+    { program: 'MCA', collected: 85, total: 100 },
+    { program: 'B.Sc', collected: 60, total: 100 },
+  ];
+
+  return (
+    <div className="flex flex-col gap-4">
+      {data.map(item => {
+        const percentage = Math.round((item.collected / item.total) * 100);
+        return (
+          <div key={item.program} className="flex flex-col gap-1">
+            <div className="flex justify-between text-sm font-medium text-gray-700">
+              <span>{item.program}</span>
+              <span>{percentage}%</span>
+            </div>
+            <div className="h-2.5 w-full overflow-hidden rounded-full bg-gray-200">
+              <div
+                className="h-2.5 rounded-full bg-indigo-600 transition-all duration-500"
+                style={{ width: `${percentage}%` }}
+              ></div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function AdminDashboard() {
   return (
     <FormPage
@@ -265,25 +331,45 @@ export default function AdminDashboard() {
         />
       </div>
 
-      <div className="student-admin-charts-grid">
-        <FormCard title="Students per Program">
-          <div className="chart-container">
-            <StudentsPerProgramChart />
-          </div>
-        </FormCard>
-
-        <FormCard title="Enrollment Trends">
-          <div className="chart-container">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <FormCard title="Enrollment Trend (Past 5 Years)">
+          <div className="h-64 p-4">
             <EnrollmentTrendChart />
           </div>
         </FormCard>
 
-        <FormCard title="ABC Account Linking Status">
-          <div className="chart-container">
+        <FormCard title="Students Per Program">
+          <div className="h-64 p-4">
+            <StudentsPerProgramChart />
+          </div>
+        </FormCard>
+
+        <FormCard title="ABC ID Linking Status">
+          <div className="h-64 p-4">
             <AbcLinkingDoughnutChart />
           </div>
         </FormCard>
 
+        <FormCard title="Gender Distribution">
+          <div className="h-64 p-4">
+            <GenderDistributionPieChart />
+          </div>
+        </FormCard>
+
+        <FormCard title="Category Distribution">
+          <div className="h-64 p-4">
+            <CategoryDistributionDoughnutChart />
+          </div>
+        </FormCard>
+
+        <FormCard title="Fee Collection Progress">
+          <div className="p-4">
+            <FeeCollectionProgressBars />
+          </div>
+        </FormCard>
+      </div>
+
+      <div className="student-admin-charts-grid mt-6">
         <FormCard title="Recent ABC Requests">
           <table className="abc-requests-table">
             <thead>
@@ -312,12 +398,6 @@ export default function AdminDashboard() {
             >
               View all requests &rarr;
             </a>
-          </div>
-        </FormCard>
-
-        <FormCard title="Gender Distribution">
-          <div className="chart-container">
-            <GenderDistributionPieChart />
           </div>
         </FormCard>
 
