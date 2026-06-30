@@ -1296,20 +1296,21 @@ export const menuConfig: Menu.MenuItem[] = [
             colorScheme: 'blue',
           },
           {
-            label: 'Verification Status',
-            slug: 'candidate-status',
-            description: 'Track your verification and approval status.',
-            path: '/recruitment-management/candidate/status',
-            icon: 'fact_check',
-            colorScheme: 'blue',
-          },
-          {
             label: 'Choice Filling',
             slug: 'candidate-choice',
             description: 'Fill your division and district preferences.',
             path: '/recruitment-management/candidate/choice-filling',
             icon: 'checklist',
             colorScheme: 'blue',
+          },
+          {
+            label: 'Joining Request',
+            slug: 'candidate-joining',
+            description:
+              'Submit your joining request after receiving the order.',
+            path: '/recruitment-management/candidate/joining-request',
+            icon: 'assignment_turned_in',
+            colorScheme: 'indigo',
           },
         ],
       },
@@ -1374,21 +1375,21 @@ export const menuConfig: Menu.MenuItem[] = [
             colorScheme: 'purple',
           },
           {
-            label: 'Document Configuration',
-            slug: 'admin-document-config',
-            description:
-              'Configure required documents per designation and subject.',
-            path: '/recruitment-management/admin/document-config',
-            icon: 'description',
-            colorScheme: 'purple',
-          },
-          {
             label: 'Verification Center Upload',
             slug: 'admin-verification-center',
             description:
               'Upload candidates and their assigned verification centers.',
             path: '/recruitment-management/admin/verification-center',
             icon: 'location_on',
+            colorScheme: 'purple',
+          },
+          {
+            label: 'Document Configuration',
+            slug: 'admin-document-config',
+            description:
+              'Configure required documents per designation and subject.',
+            path: '/recruitment-management/admin/document-config',
+            icon: 'description',
             colorScheme: 'purple',
           },
           {
@@ -1400,14 +1401,7 @@ export const menuConfig: Menu.MenuItem[] = [
             icon: 'fact_check',
             colorScheme: 'purple',
           },
-          {
-            label: 'Candidate Approvals',
-            slug: 'admin-approvals',
-            description: 'Multi-select bulk approve or reject candidates.',
-            path: '/recruitment-management/admin/approvals',
-            icon: 'how_to_reg',
-            colorScheme: 'purple',
-          },
+
           {
             label: 'Create Joining Order',
             slug: 'admin-joining-order',

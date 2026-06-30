@@ -17,14 +17,6 @@ export default function CandidatePortalPage() {
           path: '/recruitment-management/candidate/documents',
         },
         {
-          title: 'Verification Status',
-          description:
-            'Track your document verification and HR approval status.',
-          icon: 'fact_check',
-          colorScheme: 'green',
-          path: '/recruitment-management/candidate/status',
-        },
-        {
           title: 'Choice Filling',
           description:
             'Fill your division and district posting preferences (available after approval).',

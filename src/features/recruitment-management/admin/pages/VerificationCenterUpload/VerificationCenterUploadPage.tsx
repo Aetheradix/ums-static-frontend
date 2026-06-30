@@ -6,8 +6,9 @@ import {
   FormCard,
   FormGrid,
   FormPage,
+  FormPopup,
   GridPanel,
-  Tabs,
+  UploadValidationTabs,
 } from 'shared/new-components';
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
@@ -125,49 +126,14 @@ function EditInchargeModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-[1000] flex items-center justify-center backdrop-blur-sm">
-      <div className="bg-[#1e2433] border border-slate-400/20 rounded-2xl p-8 w-[520px] shadow-2xl">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-base font-bold text-white">Assign Incharge</h2>
-            <p className="text-xs text-slate-400 mt-0.5">{record.centerName}</p>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-slate-400 hover:text-white transition-colors material-symbols-rounded text-[20px] cursor-pointer bg-transparent border-none"
-          >
-            close
-          </button>
-        </div>
-
-        <div className="flex flex-col gap-4">
-          <TextBox
-            id="incharge-name"
-            label="Incharge Name"
-            required
-            value={name}
-            onChange={setName}
-            placeholder="Enter full name"
-          />
-          <TextBox
-            id="incharge-phone"
-            label="Incharge Phone Number"
-            required
-            value={phone}
-            onChange={setPhone}
-            placeholder="10-digit mobile number"
-            maxLength={10}
-          />
-          <TextBox
-            id="incharge-email"
-            label="Incharge Email Address"
-            value={email}
-            onChange={setEmail}
-            placeholder="email@example.com"
-          />
-        </div>
-
-        <div className="flex gap-3 mt-6">
+    <FormPopup
+      visible={true}
+      onHide={onClose}
+      title="Assign Incharge"
+      subtitle={record.centerName}
+      size="default"
+      footer={
+        <>
           <Button
             label="Save"
             icon="save"
@@ -181,9 +147,36 @@ function EditInchargeModal({
             variant="outlined"
             onClick={onClose}
           />
-        </div>
+        </>
+      }
+    >
+      <div className="flex flex-col gap-4">
+        <TextBox
+          id="incharge-name"
+          label="Incharge Name"
+          required
+          value={name}
+          onChange={setName}
+          placeholder="Enter full name"
+        />
+        <TextBox
+          id="incharge-phone"
+          label="Incharge Phone Number"
+          required
+          value={phone}
+          onChange={setPhone}
+          placeholder="10-digit mobile number"
+          maxLength={10}
+        />
+        <TextBox
+          id="incharge-email"
+          label="Incharge Email Address"
+          value={email}
+          onChange={setEmail}
+          placeholder="email@example.com"
+        />
       </div>
-    </div>
+    </FormPopup>
   );
 }
 
@@ -207,39 +200,33 @@ function ViewModal({
   ];
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-[1000] flex items-center justify-center backdrop-blur-sm">
-      <div className="bg-[#1e2433] border border-slate-400/20 rounded-2xl p-8 w-[560px] shadow-2xl">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-base font-bold text-white">
-            Verification Center Details
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-slate-400 hover:text-white transition-colors material-symbols-rounded text-[20px] cursor-pointer bg-transparent border-none"
-          >
-            close
-          </button>
-        </div>
-        <div className="flex flex-col divide-y divide-slate-400/10">
-          {rows.map(([label, value]) => (
-            <div key={label} className="flex py-2.5 gap-4">
-              <span className="text-[12px] text-slate-500 w-44 flex-shrink-0 font-medium">
-                {label}
-              </span>
-              <span className="text-[13px] text-slate-200">{value}</span>
-            </div>
-          ))}
-        </div>
-        <div className="mt-6">
-          <Button
-            label="Close"
-            type="button"
-            variant="outlined"
-            onClick={onClose}
-          />
-        </div>
+    <FormPopup
+      visible={true}
+      onHide={onClose}
+      title="Verification Center Details"
+      size="default"
+      footer={
+        <Button
+          label="Close"
+          type="button"
+          variant="outlined"
+          onClick={onClose}
+        />
+      }
+    >
+      <div className="flex flex-col divide-y">
+        {rows.map(([label, value]) => (
+          <div key={label} className="flex py-2.5 gap-4">
+            <span className="text-xs font-medium text-slate-400 w-44 flex-shrink-0">
+              {label}
+            </span>
+            <span className="text-sm font-semibold text-slate-200">
+              {value}
+            </span>
+          </div>
+        ))}
       </div>
-    </div>
+    </FormPopup>
   );
 }
 
@@ -461,30 +448,12 @@ export default function VerificationCenterUploadPage() {
         </p>
 
         {isParsed ? (
-          <Tabs
-            tabs={[
-              {
-                title: `Valid Data (${records.length})`,
-                content: (
-                  <div className="pt-4">
-                    <GridPanel
-                      data={records}
-                      columns={columns}
-                      searchBox
-                      searchPlaceholder="Search by test, district, center or incharge…"
-                    />
-                  </div>
-                ),
-              },
-              {
-                title: `Invalid Data (${MOCK_INVALID.length})`,
-                content: (
-                  <div className="pt-4">
-                    <GridPanel data={MOCK_INVALID} columns={invalidColumns} />
-                  </div>
-                ),
-              },
-            ]}
+          <UploadValidationTabs
+            isParsed={isParsed}
+            validData={records}
+            validColumns={columns}
+            invalidData={MOCK_INVALID}
+            invalidColumns={invalidColumns}
           />
         ) : (
           <GridPanel

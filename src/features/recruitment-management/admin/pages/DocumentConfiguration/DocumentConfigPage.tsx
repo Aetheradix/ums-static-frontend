@@ -1,11 +1,6 @@
 import { useState } from 'react';
 import { Button } from 'shared/components/buttons';
-import {
-  Checkbox,
-  DropDownList,
-  NumberBox,
-  TextBox,
-} from 'shared/components/forms';
+import { DropDownList, NumberBox, TextBox } from 'shared/components/forms';
 import {
   FormCard,
   FormGrid,
@@ -201,6 +196,12 @@ export default function DocumentConfigPage() {
     setEditId(null);
   };
 
+  const toggleActive = (id: number) => {
+    setDocuments(prev =>
+      prev.map(d => (d.id === id ? { ...d, isActive: !d.isActive } : d))
+    );
+  };
+
   const columns: Controls.ColumnProps<DocumentConfig>[] = [
     { field: 'documentName', header: 'Document Name' },
     { field: 'designation', header: 'Designation' },
@@ -210,13 +211,19 @@ export default function DocumentConfigPage() {
     { field: 'facultyType', header: 'Faculty Type' },
     { field: 'sequence', header: 'Sequence' },
     {
-      header: 'Active',
+      header: 'Status',
       cell: (row: DocumentConfig) => (
-        <span
-          className={`font-semibold text-xs ${row.isActive ? 'text-emerald-500' : 'text-slate-500'}`}
+        <button
+          type="button"
+          onClick={() => toggleActive(row.id)}
+          className={`px-2.5 py-1 rounded-md text-[11px] font-bold border transition-colors ${
+            row.isActive
+              ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20 hover:bg-emerald-500/20'
+              : 'bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20'
+          }`}
         >
-          {row.isActive ? 'Yes' : 'No'}
-        </span>
+          {row.isActive ? 'Active' : 'Inactive'}
+        </button>
       ),
     },
     {
@@ -354,7 +361,7 @@ export default function DocumentConfigPage() {
           />
         </FormGrid>
 
-        <FormGrid columns={4}>
+        <FormGrid columns={3}>
           <DropDownList
             id="doc-category"
             label="Category"
@@ -389,12 +396,6 @@ export default function DocumentConfigPage() {
               setForm(f => ({ ...f, sequence: v ?? 1 }))
             }
             min={1}
-          />
-          <Checkbox
-            id="doc-is-active"
-            label="Is Active"
-            checked={form.isActive}
-            onChange={(v: boolean) => setForm(f => ({ ...f, isActive: v }))}
           />
         </FormGrid>
       </FormPopup>

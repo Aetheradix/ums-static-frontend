@@ -32,20 +32,20 @@ export default function HRAdminPortalPage() {
           path: '/recruitment-management/admin/vacancies',
         },
         {
-          title: 'Document Configuration',
-          description:
-            'Configure required documents per designation and subject.',
-          icon: 'description',
-          colorScheme: 'orange',
-          path: '/recruitment-management/admin/document-config',
-        },
-        {
           title: 'Verification Center Upload',
           description:
             'Upload candidates and their assigned verification centers. Manually assign incharge details.',
           icon: 'location_on',
           colorScheme: 'teal',
           path: '/recruitment-management/admin/verification-center',
+        },
+        {
+          title: 'Document Configuration',
+          description:
+            'Configure required documents per designation and subject.',
+          icon: 'description',
+          colorScheme: 'orange',
+          path: '/recruitment-management/admin/document-config',
         },
         {
           title: 'Document Verification by HO',
@@ -55,14 +55,7 @@ export default function HRAdminPortalPage() {
           colorScheme: 'green',
           path: '/recruitment-management/admin/ho-verification',
         },
-        {
-          title: 'Candidate Approvals',
-          description:
-            'Multi-select candidates and bulk approve or reject after Tier 1 verification.',
-          icon: 'how_to_reg',
-          colorScheme: 'purple',
-          path: '/recruitment-management/admin/approvals',
-        },
+
         {
           title: 'Create Joining Order',
           description:

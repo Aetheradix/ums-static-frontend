@@ -12,7 +12,7 @@ import {
   FormGrid,
   FormPage,
   GridPanel,
-  Tabs,
+  UploadValidationTabs,
 } from 'shared/new-components';
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
@@ -108,6 +108,19 @@ export default function MeritListUploadPage() {
   };
 
   const handleSave = () => {
+    if (!selectedTest) {
+      ToastService.error('Please select a Test / Drive.');
+      return;
+    }
+    if (!meritDate) {
+      ToastService.error('Please select a Merit List Date.');
+      return;
+    }
+    if (!isParsed) {
+      ToastService.error('Please upload and parse a Merit List file.');
+      return;
+    }
+
     setIsSaving(true);
     setTimeout(() => {
       setIsSaving(false);
@@ -132,11 +145,11 @@ export default function MeritListUploadPage() {
     >
       <div className="flex flex-col gap-6">
         {/* ── Upload Form ── */}
-        <FormCard title="Upload Candidate Merit List" icon="upload">
+        <FormCard title="Upload Merit List File" icon="cloud_upload">
           <FormGrid columns={4}>
             <DropDownList
               id="test-select"
-              label="Test"
+              label="Test / Drive"
               required
               data={TESTS}
               textField="label"
@@ -147,7 +160,7 @@ export default function MeritListUploadPage() {
             />
             <TextBox
               id="exam-name"
-              label="Exam"
+              label="Exam Name"
               disabled
               value={examName}
               placeholder="Exam Name"
@@ -166,22 +179,25 @@ export default function MeritListUploadPage() {
               value={meritDate}
               onChange={v => setMeritDate(v ?? undefined)}
             />
+            <FileUpload
+              id="merit-file"
+              label="Upload Merit List File"
+              mode="file"
+              required
+              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+              onChange={handleFileChange}
+            />
           </FormGrid>
 
-          <FormGrid columns={1}>
-            <div className="max-w-md">
-              <FileUpload
-                id="merit-file"
-                label="Upload Merit List File"
-                mode="file"
-                required
-                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                onChange={handleFileChange}
-              />
-            </div>
-          </FormGrid>
-
-          <div className="form-actions-container form-actions-right mt-4">
+          <div className="flex gap-3 mt-6">
+            <Button
+              label="Save Merit List"
+              type="button"
+              icon="save"
+              variant="primary"
+              onClick={handleSave}
+              isLoading={isSaving}
+            />
             <Button
               label="Reset"
               type="button"
@@ -189,43 +205,54 @@ export default function MeritListUploadPage() {
               variant="outlined"
               onClick={handleReset}
             />
-            <Button
-              label="Save Merit List"
-              type="button"
-              icon="save"
-              variant="success"
-              disabled={!isParsed || !selectedTest || !meritDate}
-              onClick={handleSave}
-              isLoading={isSaving}
-            />
           </div>
         </FormCard>
 
-        {/* ── Validation Results ── */}
-        {isParsed && (
-          <FormCard title="Validation Results" icon="list">
-            <Tabs
-              tabs={[
-                {
-                  title: `Valid Data (${MOCK_VALID.length})`,
-                  content: (
-                    <div className="pt-4">
-                      <GridPanel data={MOCK_VALID} columns={validColumns} />
-                    </div>
-                  ),
-                },
-                {
-                  title: `Invalid Data (${MOCK_INVALID.length})`,
-                  content: (
-                    <div className="pt-4">
-                      <GridPanel data={MOCK_INVALID} columns={invalidColumns} />
-                    </div>
-                  ),
-                },
-              ]}
+        {/* ── Table / Validation Results ── */}
+        <FormCard
+          title="Candidate Merit List Details"
+          icon="fact_check"
+          headerAction={
+            <div className="flex items-center gap-2">
+              <Button
+                label="Download Template"
+                icon="download"
+                type="button"
+                variant="outlined"
+                onClick={() => ToastService.success('Template downloading…')}
+              />
+              <Button
+                label="Upload Merit List Details"
+                icon="upload"
+                type="button"
+                variant="primary"
+                onClick={() => ToastService.success('Upload dialog opening…')}
+              />
+            </div>
+          }
+        >
+          <p className="text-[11px] text-slate-500 mb-4">
+            * Download the template, fill in the candidate merit list details,
+            and upload using the &apos;Upload Merit List Details&apos; button.
+          </p>
+
+          {isParsed ? (
+            <UploadValidationTabs
+              isParsed={isParsed}
+              validData={MOCK_VALID}
+              validColumns={validColumns}
+              invalidData={MOCK_INVALID}
+              invalidColumns={invalidColumns}
             />
-          </FormCard>
-        )}
+          ) : (
+            <GridPanel
+              data={MOCK_VALID}
+              columns={validColumns}
+              searchBox
+              searchPlaceholder="Search by name, roll no, application no..."
+            />
+          )}
+        </FormCard>
       </div>
     </FormPage>
   );

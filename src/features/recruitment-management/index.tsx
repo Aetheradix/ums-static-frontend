@@ -2,24 +2,24 @@ import { Route, Routes } from 'react-router-dom';
 import RecruitmentPortalPage from './portal/RecruitmentPortalPage';
 
 // Candidate
-import CandidateChoiceFillingPage from './candidate/pages/CandidateChoiceFillingPage';
-import CandidateJoiningRequestPage from './candidate/pages/CandidateJoiningRequestPage';
-import DocumentUploadPage from './candidate/pages/DocumentUploadPage';
+import CandidateChoiceFillingPage from './candidate/pages/ChoiceFilling/CandidateChoiceFillingPage';
+import DocumentUploadPage from './candidate/pages/DocumentUpload/DocumentUploadPage';
+import CandidateJoiningRequestPage from './candidate/pages/JoiningRequest/CandidateJoiningRequestPage';
 import CandidatePortalPage from './candidate/portal/CandidatePortalPage';
 
 // Verification Center
-import CandidateQueuePage from './verification-center/pages/CandidateQueuePage';
-import VerificationCenterDashboard from './verification-center/pages/VerificationCenterDashboard';
+import CandidateQueuePage from './verification-center/pages/CandidateQueue/CandidateQueuePage';
+import VerificationCenterDashboard from './verification-center/pages/Dashboard/VerificationCenterDashboard';
 import VerificationCenterPortalPage from './verification-center/portal/VerificationCenterPortalPage';
 
 // HR Admin
-import DocumentConfigPage from './admin/pages/DocumentConfigPage';
-import HOVerificationPage from './admin/pages/HOVerificationPage';
-import HRAdminDashboard from './admin/pages/HRAdminDashboard';
-import JoiningOrderPage from './admin/pages/JoiningOrderPage';
-import MeritListUploadPage from './admin/pages/MeritListUploadPage';
-import VacancyUploadPage from './admin/pages/VacancyUploadPage';
-import VerificationCenterUploadPage from './admin/pages/VerificationCenterUploadPage';
+import JoiningOrderPage from './admin/pages/CreateJoiningOrder/JoiningOrderPage';
+import HRAdminDashboard from './admin/pages/Dashboard/HRAdminDashboard';
+import DocumentConfigPage from './admin/pages/DocumentConfiguration/DocumentConfigPage';
+import HOVerificationPage from './admin/pages/DocumentVerificationByHO/HOVerificationPage';
+import MeritListUploadPage from './admin/pages/MeritListUpload/MeritListUploadPage';
+import VacancyUploadPage from './admin/pages/VacancyUpload/VacancyUploadPage';
+import VerificationCenterUploadPage from './admin/pages/VerificationCenterUpload/VerificationCenterUploadPage';
 import HRAdminPortalPage from './admin/portal/HRAdminPortalPage';
 
 export default function RecruitmentManagement() {
@@ -31,7 +31,6 @@ export default function RecruitmentManagement() {
       {/* Candidate routes — sidebar active */}
       <Route path="candidate" element={<CandidatePortalPage />} />
       <Route path="candidate/documents" element={<DocumentUploadPage />} />
-      <Route path="candidate/status" element={<DocumentUploadPage />} />
       <Route
         path="candidate/choice-filling"
         element={<CandidateChoiceFillingPage />}
@@ -67,7 +66,6 @@ export default function RecruitmentManagement() {
       />
       <Route path="admin/ho-verification" element={<HOVerificationPage />} />
       <Route path="admin/joining-order" element={<JoiningOrderPage />} />
-      <Route path="admin/approvals" element={<HRAdminDashboard />} />
 
       <Route path="*" element={<RecruitmentPortalPage />} />
     </Routes>
