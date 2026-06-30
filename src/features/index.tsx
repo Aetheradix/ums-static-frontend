@@ -45,6 +45,7 @@ import PayrollRoutes from './payroll';
 import TrainerDevelopment from './trainer-development';
 import TransportManagement from './transport-management';
 import SecurityManagement from './security-management';
+import ContentFederationSystem from './content-federation-system';
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
   () => import('./public-portal/pages/Solutions')
@@ -230,6 +231,10 @@ export default function Features() {
                       <Route
                         path="payroll-management/*"
                         element={<PayrollRoutes />}
+                      />
+                      <Route
+                        path="content-federation/*"
+                        element={<ContentFederationSystem />}
                       />
                       <Route
                         path="infrastructure-project-management/*"
