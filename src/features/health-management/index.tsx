@@ -21,7 +21,6 @@ import AppointmentsPage from './pages/appointments/AppointmentsPage';
 import GuestUsersPage from './pages/guest-users/GuestUsersPage';
 import AddGuestUserPage from './pages/guest-users/AddGuestUserPage';
 import ReportsPage from './pages/reports/ReportsPage';
-import ActivityLogsPage from './pages/logs/ActivityLogsPage';
 
 const Placeholder = ({ title }: { title: string }) => (
   <div className="flex items-center justify-center h-64 text-gray-400 text-lg">
@@ -68,7 +67,6 @@ export default function HealthManagement() {
         element={<Placeholder title="Subscriptions" />}
       />
       <Route path="reports" element={<ReportsPage />} />
-      <Route path="logs" element={<ActivityLogsPage />} />
     </Routes>
   );
 }
