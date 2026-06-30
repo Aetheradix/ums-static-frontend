@@ -1,6 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { FormCard, FormPage, StatCard } from 'shared/new-components';
-import { awarenessPrograms, guidelines, incidents, incidentStats } from '../../mocks';
+import {
+  awarenessPrograms,
+  guidelines,
+  incidents,
+  incidentStats,
+} from '../../mocks';
 import { smsUrls } from '../../urls';
 import './Dashboard.css';
 
@@ -48,24 +53,75 @@ export default function SuperAdminDashboard() {
     >
       {/* KPI Row 1 */}
       <div className="sms-dashboard-stats">
-        <StatCard title="Total Incidents" value={incidentStats.total} icon="report_problem" colorScheme="blue" subtitle="All time" />
-        <StatCard title="Open Incidents" value={incidentStats.open} icon="error" colorScheme="red" trend={{ value: 20, direction: 'up', label: 'vs last week' }} />
-        <StatCard title="Closed Incidents" value={incidentStats.closed} icon="check_circle" colorScheme="green" subtitle="Successfully resolved" />
-        <StatCard title="Pending Investigation" value={incidentStats.underInvestigation + incidentStats.assigned} icon="pending_actions" colorScheme="amber" subtitle="Needs attention" />
+        <StatCard
+          title="Total Incidents"
+          value={incidentStats.total}
+          icon="report_problem"
+          colorScheme="blue"
+          subtitle="All time"
+        />
+        <StatCard
+          title="Open Incidents"
+          value={incidentStats.open}
+          icon="error"
+          colorScheme="red"
+          trend={{ value: 20, direction: 'up', label: 'vs last week' }}
+        />
+        <StatCard
+          title="Closed Incidents"
+          value={incidentStats.closed}
+          icon="check_circle"
+          colorScheme="green"
+          subtitle="Successfully resolved"
+        />
+        <StatCard
+          title="Pending Investigation"
+          value={incidentStats.underInvestigation + incidentStats.assigned}
+          icon="pending_actions"
+          colorScheme="amber"
+          subtitle="Needs attention"
+        />
       </div>
 
       {/* KPI Row 2 */}
       <div className="sms-dashboard-stats">
-        <StatCard title="High Priority" value={incidentStats.highPriority} icon="priority_high" colorScheme="orange" subtitle="High + Critical" />
-        <StatCard title="Today's Incidents" value={incidentStats.todayIncidents} icon="today" colorScheme="purple" trend={{ value: 5, direction: 'up', label: 'vs yesterday' }} />
-        <StatCard title="Emergency Helplines" value="8" icon="phone_in_talk" colorScheme="teal" subtitle="Active helplines" />
-        <StatCard title="Upcoming Programs" value={awarenessPrograms.filter(p => p.status === 'Upcoming').length} icon="campaign" colorScheme="indigo" subtitle="Awareness programs" />
+        <StatCard
+          title="High Priority"
+          value={incidentStats.highPriority}
+          icon="priority_high"
+          colorScheme="orange"
+          subtitle="High + Critical"
+        />
+        <StatCard
+          title="Today's Incidents"
+          value={incidentStats.todayIncidents}
+          icon="today"
+          colorScheme="purple"
+          trend={{ value: 5, direction: 'up', label: 'vs yesterday' }}
+        />
+        <StatCard
+          title="Emergency Helplines"
+          value="8"
+          icon="phone_in_talk"
+          colorScheme="teal"
+          subtitle="Active helplines"
+        />
+        <StatCard
+          title="Upcoming Programs"
+          value={awarenessPrograms.filter(p => p.status === 'Upcoming').length}
+          icon="campaign"
+          colorScheme="indigo"
+          subtitle="Awareness programs"
+        />
       </div>
 
       {/* Charts Row */}
       <div className="sms-charts-row">
         {/* Monthly Trend */}
-        <FormCard title="Monthly Incident Trend" subtitle="Incidents reported per month">
+        <FormCard
+          title="Monthly Incident Trend"
+          subtitle="Incidents reported per month"
+        >
           <div className="sms-trend-chart">
             {monthlyTrend.map(m => (
               <div key={m.month} className="sms-trend-col">
@@ -73,7 +129,10 @@ export default function SuperAdminDashboard() {
                 <div className="sms-trend-bars">
                   <div
                     className="sms-trend-bar"
-                    style={{ height: `${(m.count / maxTrend) * 100}px`, background: '#3b82f6' }}
+                    style={{
+                      height: `${(m.count / maxTrend) * 100}px`,
+                      background: '#3b82f6',
+                    }}
                   />
                 </div>
                 <span className="sms-trend-month">{m.month}</span>
@@ -88,7 +147,13 @@ export default function SuperAdminDashboard() {
             <div key={c.label} className="sms-bar-row">
               <span className="sms-bar-label">{c.label}</span>
               <div className="sms-bar-track">
-                <div className="sms-bar-fill" style={{ width: `${(c.count / maxCat) * 100}%`, background: c.color }} />
+                <div
+                  className="sms-bar-fill"
+                  style={{
+                    width: `${(c.count / maxCat) * 100}%`,
+                    background: c.color,
+                  }}
+                />
               </div>
               <span className="sms-bar-value">{c.count}</span>
             </div>
@@ -100,7 +165,10 @@ export default function SuperAdminDashboard() {
           {[
             { label: 'Open', count: incidentStats.open },
             { label: 'Assigned', count: incidentStats.assigned },
-            { label: 'Under Investigation', count: incidentStats.underInvestigation },
+            {
+              label: 'Under Investigation',
+              count: incidentStats.underInvestigation,
+            },
             { label: 'Action Taken', count: incidentStats.actionTaken },
             { label: 'Resolved', count: incidentStats.resolved },
             { label: 'Closed', count: incidentStats.closed },
@@ -108,7 +176,13 @@ export default function SuperAdminDashboard() {
             <div key={s.label} className="sms-bar-row">
               <span className="sms-bar-label">{s.label}</span>
               <div className="sms-bar-track">
-                <div className="sms-bar-fill" style={{ width: `${s.count > 0 ? (s.count / incidentStats.total) * 100 : 0}%`, background: STATUS_COLOR[s.label] ?? '#6b7280' }} />
+                <div
+                  className="sms-bar-fill"
+                  style={{
+                    width: `${s.count > 0 ? (s.count / incidentStats.total) * 100 : 0}%`,
+                    background: STATUS_COLOR[s.label] ?? '#6b7280',
+                  }}
+                />
               </div>
               <span className="sms-bar-value">{s.count}</span>
             </div>
@@ -135,15 +209,25 @@ export default function SuperAdminDashboard() {
             <tbody>
               {incidents.slice(0, 5).map(inc => (
                 <tr key={inc.id}>
-                  <td><strong>{inc.incidentId}</strong></td>
+                  <td>
+                    <strong>{inc.incidentId}</strong>
+                  </td>
                   <td>{inc.reportedBy}</td>
                   <td>{inc.category}</td>
                   <td>{inc.location}</td>
                   <td>
-                    <span className={`sms-priority-chip priority-${inc.priority.toLowerCase()}`}>{inc.priority}</span>
+                    <span
+                      className={`sms-priority-chip priority-${inc.priority.toLowerCase()}`}
+                    >
+                      {inc.priority}
+                    </span>
                   </td>
                   <td>
-                    <span className={`sms-status-pill status-${inc.status.toLowerCase().replace(/ /g, '-')}`}>{inc.status}</span>
+                    <span
+                      className={`sms-status-pill status-${inc.status.toLowerCase().replace(/ /g, '-')}`}
+                    >
+                      {inc.status}
+                    </span>
                   </td>
                   <td>
                     <button
@@ -167,18 +251,31 @@ export default function SuperAdminDashboard() {
             <div className="sms-list">
               {guidelines.slice(0, 4).map(g => (
                 <div key={g.id} className="sms-list-item">
-                  <div className="sms-list-icon" style={{ background: '#dbeafe' }}>
+                  <div
+                    className="sms-list-icon"
+                    style={{ background: '#dbeafe' }}
+                  >
                     <i className="pi pi-book" style={{ color: '#2563eb' }} />
                   </div>
                   <div className="sms-list-text">
                     <span className="sms-list-title">{g.title}</span>
-                    <span className="sms-list-sub">{g.category} · {g.effectiveDate}</span>
+                    <span className="sms-list-sub">
+                      {g.category} · {g.effectiveDate}
+                    </span>
                   </div>
-                  <span className={`sms-status-pill status-${g.status.toLowerCase()}`}>{g.status}</span>
+                  <span
+                    className={`sms-status-pill status-${g.status.toLowerCase()}`}
+                  >
+                    {g.status}
+                  </span>
                 </div>
               ))}
             </div>
-            <button type="button" className="sms-view-all-btn" onClick={() => navigate(smsUrls.superAdmin.guidelines)}>
+            <button
+              type="button"
+              className="sms-view-all-btn"
+              onClick={() => navigate(smsUrls.superAdmin.guidelines)}
+            >
               View All Guidelines →
             </button>
           </FormCard>
@@ -186,19 +283,33 @@ export default function SuperAdminDashboard() {
           {/* Upcoming Programs */}
           <FormCard title="Upcoming Awareness Programs">
             <div className="sms-list">
-              {awarenessPrograms.filter(p => p.status === 'Upcoming').map(p => (
-                <div key={p.id} className="sms-list-item">
-                  <div className="sms-list-icon" style={{ background: '#ede9fe' }}>
-                    <i className="pi pi-megaphone" style={{ color: '#7c3aed' }} />
+              {awarenessPrograms
+                .filter(p => p.status === 'Upcoming')
+                .map(p => (
+                  <div key={p.id} className="sms-list-item">
+                    <div
+                      className="sms-list-icon"
+                      style={{ background: '#ede9fe' }}
+                    >
+                      <i
+                        className="pi pi-megaphone"
+                        style={{ color: '#7c3aed' }}
+                      />
+                    </div>
+                    <div className="sms-list-text">
+                      <span className="sms-list-title">{p.programName}</span>
+                      <span className="sms-list-sub">
+                        {p.date} · {p.venue}
+                      </span>
+                    </div>
                   </div>
-                  <div className="sms-list-text">
-                    <span className="sms-list-title">{p.programName}</span>
-                    <span className="sms-list-sub">{p.date} · {p.venue}</span>
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
-            <button type="button" className="sms-view-all-btn" onClick={() => navigate(smsUrls.superAdmin.awareness)}>
+            <button
+              type="button"
+              className="sms-view-all-btn"
+              onClick={() => navigate(smsUrls.superAdmin.awareness)}
+            >
               View All Programs →
             </button>
           </FormCard>

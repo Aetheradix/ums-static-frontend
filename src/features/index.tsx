@@ -29,6 +29,7 @@ import ProgrammeManagement from './programme-management';
 import PublicPortalLayout, {
   PublicRouteWrapper,
 } from './public-portal/layout/PublicPortalLayout';
+import RecruitmentManagement from './recruitment-management';
 import ResearchManagement from './research-management';
 import ResidentialAllocationManagement from './residential-allocation-management';
 import RTIManagement from './rti-management';
@@ -42,10 +43,10 @@ import TrainingPlacement from './training-placement';
 
 import PayrollRoutes from './payroll';
 
+import ContentFederationSystem from './content-federation-system';
+import SecurityManagement from './security-management';
 import TrainerDevelopment from './trainer-development';
 import TransportManagement from './transport-management';
-import SecurityManagement from './security-management';
-import ContentFederationSystem from './content-federation-system';
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
   () => import('./public-portal/pages/Solutions')
@@ -145,6 +146,10 @@ export default function Features() {
                       <Route
                         path="employee-management/*"
                         element={<EmployeeManagement />}
+                      />
+                      <Route
+                        path="recruitment-management/*"
+                        element={<RecruitmentManagement />}
                       />
                       <Route
                         path="finance-supply-chain/*"

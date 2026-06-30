@@ -11,14 +11,16 @@ export default function SecurityOfficerPortalPage() {
       portals={[
         {
           title: 'Dashboard',
-          description: 'My assigned cases, pending investigations and today\'s summary.',
+          description:
+            "My assigned cases, pending investigations and today's summary.",
           icon: 'dashboard',
           colorScheme: 'blue',
           path: smsUrls.officer.dashboard,
         },
         {
           title: 'Assigned Incidents',
-          description: 'View and manage your assigned incidents, investigations and resolutions.',
+          description:
+            'View and manage your assigned incidents, investigations and resolutions.',
           icon: 'assignment',
           colorScheme: 'orange',
           path: smsUrls.officer.assignedIncidents,

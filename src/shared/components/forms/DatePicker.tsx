@@ -41,6 +41,7 @@ function InnerDatePicker({
   checkboxChecked,
   onCheckboxChange,
   defaultValue,
+  placeholder = 'dd/mm/yyyy',
   ...rest
 }: DatePickerProps<FieldValues>) {
   const inputId = id ?? name;
@@ -72,6 +73,7 @@ function InnerDatePicker({
           inputId={inputId}
           value={internalValue}
           dateFormat="dd/mm/yy"
+          placeholder={placeholder}
           onChange={e => {
             setInternalValue(e.value);
             onChange?.(e.value);

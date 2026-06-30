@@ -46,7 +46,9 @@ export default function IncidentTimeline({ steps }: IncidentTimelineProps) {
             <div className={`incident-timeline-dot ${step.action}`}>
               <i className={`pi pi-${ACTION_ICONS[step.action]}`} />
             </div>
-            {idx < steps.length - 1 && <div className="incident-timeline-line" />}
+            {idx < steps.length - 1 && (
+              <div className="incident-timeline-line" />
+            )}
           </div>
           <div className="incident-timeline-content">
             <div className="incident-timeline-header">
@@ -57,7 +59,9 @@ export default function IncidentTimeline({ steps }: IncidentTimelineProps) {
               {ACTION_LABELS[step.action]}
             </span>
             {step.remarks && (
-              <p className="incident-timeline-remarks">&ldquo;{step.remarks}&rdquo;</p>
+              <p className="incident-timeline-remarks">
+                &ldquo;{step.remarks}&rdquo;
+              </p>
             )}
           </div>
         </div>

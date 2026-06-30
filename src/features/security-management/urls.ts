@@ -5,15 +5,18 @@ export const smsUrls = {
     portal: '/security-management/super-admin',
     dashboard: '/security-management/super-admin/dashboard',
     // Masters
-    incidentCategory: '/security-management/super-admin/masters/incident-category',
+    incidentCategory:
+      '/security-management/super-admin/masters/incident-category',
     incidentType: '/security-management/super-admin/masters/incident-type',
     priority: '/security-management/super-admin/masters/priority',
     severity: '/security-management/super-admin/masters/severity',
     status: '/security-management/super-admin/masters/status',
     building: '/security-management/super-admin/masters/building',
     location: '/security-management/super-admin/masters/location',
-    departmentMapping: '/security-management/super-admin/masters/department-mapping',
-    emergencyContactType: '/security-management/super-admin/masters/emergency-contact-type',
+    departmentMapping:
+      '/security-management/super-admin/masters/department-mapping',
+    emergencyContactType:
+      '/security-management/super-admin/masters/emergency-contact-type',
     // Operations
     helpline: '/security-management/super-admin/helpline',
     guidelines: '/security-management/super-admin/guidelines',
