@@ -272,8 +272,11 @@ export default function Features() {
                         path="security-management/*"
                         element={<SecurityManagement />}
                       />
+                      <Route
+                        path="bill-tracking/*"
+                        element={<BillTracking />}
+                      />
                     </Routes>
-                    <Route path="bill-tracking/*" element={<BillTracking />} />
                   </MainLayout>
                 }
               />
