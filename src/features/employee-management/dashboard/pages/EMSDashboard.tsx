@@ -241,6 +241,7 @@ export default function EMSDashboard() {
       description="HR command center — real-time overview of workforce health, leave activity, career events, and onboarding pipeline."
       breadcrumbs={[
         { label: 'Employee Management', to: '/employee-management' },
+        { label: 'EMS Portal', to: '/employee-management/dashboard' },
         { label: 'Dashboard' },
       ]}
     >
@@ -279,21 +280,7 @@ export default function EMSDashboard() {
 
         {/* ── Row 2: Headcount Bar + Leave Trend Line ── */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <FormCard
-            title="Departmental Headcount"
-            icon="bar_chart"
-            headerAction={
-              <Button
-                label="Manage Headcount"
-                variant="text"
-                size="small"
-                icon="arrow-right"
-                onClick={() =>
-                  navigate('/employee-management/headcount-control')
-                }
-              />
-            }
-          >
+          <FormCard title="Departmental Headcount" icon="bar_chart">
             <div className="w-full h-72">
               <Chart
                 type="bar"

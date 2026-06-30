@@ -627,16 +627,6 @@ export const menuConfig: Menu.MenuItem[] = [
             action: 'write',
           },
           {
-            label: 'Headcount Control',
-            slug: 'headcount-control',
-            description: 'Manage sanctioned positions and headcount limits.',
-            path: '/employee-management/headcount-control',
-            icon: 'badge',
-            colorScheme: 'red',
-            feature: '@employee-management/headcount-control',
-            action: 'write',
-          },
-          {
             label: 'Settings',
             slug: 'settings',
             description:
