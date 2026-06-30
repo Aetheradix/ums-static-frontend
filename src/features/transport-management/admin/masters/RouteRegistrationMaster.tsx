@@ -77,15 +77,17 @@ export default function RouteRegistrationMaster() {
                 />
               </div>
             </FormGrid>
-            <div className="flex items-center gap-4 mt-6">
-              <Button label="Save" variant="success" className="w-full" />
-              <Button
-                label="Clear"
-                variant="danger"
-                className="w-full"
-                onClick={() => window.location.reload()}
-              />
-            </div>
+            <FormCard>
+              <div className="flex items-center gap-4 mt-6">
+                <Button label="Save" variant="success" className="w-full" />
+                <Button
+                  label="Clear"
+                  variant="danger"
+                  className="w-full"
+                  onClick={() => window.location.reload()}
+                />
+              </div>
+            </FormCard>
           </FormCard>
         </div>
 

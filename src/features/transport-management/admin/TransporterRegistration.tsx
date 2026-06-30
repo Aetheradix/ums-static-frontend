@@ -42,10 +42,36 @@ export default function TransporterRegistration() {
     bankDocument: null,
 
     districtMapping: '',
-    agreementDocument: null,
-    agreementValidity: undefined,
+    agreementDocument: null as File | null,
+    agreementValidity: undefined as Date | undefined,
     declaration: false,
   });
+
+  const [agreements, setAgreements] = useState<any[]>([]);
+
+  const handleAddAgreement = () => {
+    if (!form.districtMapping || !form.agreementValidity) return;
+
+    const newAgreement = {
+      district: form.districtMapping,
+      validity: form.agreementValidity,
+      document: form.agreementDocument,
+    };
+
+    setAgreements(prev => [...prev, newAgreement]);
+
+    // Clear the fields
+    setForm(prev => ({
+      ...prev,
+      districtMapping: '',
+      agreementDocument: null,
+      agreementValidity: undefined,
+    }));
+  };
+
+  const handleRemoveAgreement = (index: number) => {
+    setAgreements(prev => prev.filter((_, i) => i !== index));
+  };
 
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -228,7 +254,13 @@ export default function TransporterRegistration() {
               />
             </div>
             <div className="pb-1">
-              <Button label="Add" variant="success" className="min-w-[80px]" />
+              <Button
+                label="Add"
+                variant="success"
+                className="min-w-[80px]"
+                onClick={handleAddAgreement}
+                disabled={!form.districtMapping || !form.agreementValidity}
+              />
             </div>
           </div>
         </FormGrid>
@@ -250,39 +282,77 @@ export default function TransporterRegistration() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td
-                  colSpan={4}
-                  className="px-4 py-12 text-center text-gray-400 bg-white"
-                >
-                  No records found.
-                </td>
-              </tr>
+              {agreements.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="px-4 py-12 text-center text-gray-400 bg-white"
+                  >
+                    No records found.
+                  </td>
+                </tr>
+              ) : (
+                agreements.map((item, index) => {
+                  const districtName =
+                    districtOptions.find(d => d.value === item.district)
+                      ?.name || item.district;
+                  const dateStr =
+                    item.validity instanceof Date
+                      ? item.validity.toLocaleDateString()
+                      : String(item.validity);
+
+                  return (
+                    <tr
+                      key={index}
+                      className="bg-white border-b border-gray-100"
+                    >
+                      <td className="px-4 py-3 text-center">{districtName}</td>
+                      <td className="px-4 py-3 text-center">{dateStr}</td>
+                      <td className="px-4 py-3 text-center">
+                        {item.document
+                          ? (item.document as File).name
+                          : 'No file'}
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <Button
+                          label=""
+                          icon="delete"
+                          variant="danger"
+                          className="px-2 py-1 min-w-0"
+                          onClick={() => handleRemoveAgreement(index)}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>
       </FormCard>
 
-      <div className="mt-8 border-t border-gray-200 pt-6">
-        <Checkbox
-          label="I have verified all the information entered, and there are no errors in the data or documents provided."
-          checked={form.declaration}
-          onChange={(e: any) => handleChange('declaration', e.target.checked)}
-        />
-        <p className="mt-4 text-xs font-bold text-red-600">
-          Note: All Asterisk (*) Marked Fields Are Mandatory
-        </p>
-      </div>
+      <FormCard>
+        <div className="flex flex-col gap-4">
+          <Checkbox
+            label="I have verified all the information entered, and there are no errors in the data or documents provided."
+            checked={form.declaration}
+            onChange={(e: any) => handleChange('declaration', e.target.checked)}
+          />
+          <p className="text-xs font-bold text-red-600">
+            Note: All Asterisk (*) Marked Fields Are Mandatory
+          </p>
+        </div>
 
-      <div className="flex items-center gap-4 mt-6">
-        <Button label="Save" variant="success" className="min-w-[120px]" />
-        <Button
-          label="Clear"
-          variant="danger"
-          className="min-w-[120px]"
-          onClick={() => window.location.reload()}
-        />
-      </div>
+        <div className="flex items-center gap-4 mt-6">
+          <Button label="Save" variant="success" className="min-w-[120px]" />
+          <Button
+            label="Clear"
+            variant="danger"
+            className="min-w-[120px]"
+            onClick={() => window.location.reload()}
+          />
+        </div>
+      </FormCard>
     </FormPage>
   );
 }

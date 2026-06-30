@@ -11,7 +11,16 @@ export default function TransportManagementPortalPage() {
           description: 'College transport configuration and setup.',
           icon: 'domain',
           colorScheme: 'orange',
-          path: '/transport-management/college-login/dashboard',
+          path: '/transport-management/college-login',
+        },
+
+        {
+          title: 'Student Login',
+          description:
+            'Track bus, apply for transport leave, and view pickup details.',
+          icon: 'person',
+          colorScheme: 'green',
+          path: '/transport-management/student-login',
         },
         {
           title: 'Admin Login',
@@ -19,7 +28,7 @@ export default function TransportManagementPortalPage() {
             'Manage transporters, vehicles, and global transport settings.',
           icon: 'admin_panel_settings',
           colorScheme: 'indigo',
-          path: '/transport-management/admin-login/dashboard',
+          path: '/transport-management/admin-login',
         },
       ]}
     />

@@ -94,15 +94,17 @@ export default function TransporterCollegeMapping() {
         </FormGrid>
       </FormCard>
 
-      <div className="flex items-center gap-4 mt-8">
-        <Button label="Save" variant="success" className="min-w-[120px]" />
-        <Button
-          label="Clear"
-          variant="danger"
-          className="min-w-[120px]"
-          onClick={() => window.location.reload()}
-        />
-      </div>
+      <FormCard>
+        <div className="flex items-center gap-4 mt-8">
+          <Button label="Save" variant="success" className="min-w-[120px]" />
+          <Button
+            label="Clear"
+            variant="danger"
+            className="min-w-[120px]"
+            onClick={() => window.location.reload()}
+          />
+        </div>
+      </FormCard>
     </FormPage>
   );
 }

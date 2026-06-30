@@ -26,8 +26,8 @@ export default function StudentLeaveEntry() {
         { label: 'Home', to: '/home' },
         { label: 'Transport Management', to: '/transport-management' },
         {
-          label: 'College Login',
-          to: '/transport-management/college-login/dashboard',
+          label: 'Student Login',
+          to: '/transport-management/student-login/dashboard',
         },
         { label: 'Student Leave Entry' },
       ]}
