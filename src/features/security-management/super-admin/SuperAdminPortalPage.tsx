@@ -11,7 +11,8 @@ export default function SuperAdminPortalPage() {
       portals={[
         {
           title: 'Dashboard',
-          description: 'KPI cards, recent incidents, guidelines and awareness programs overview.',
+          description:
+            'KPI cards, recent incidents, guidelines and awareness programs overview.',
           icon: 'dashboard',
           colorScheme: 'blue',
           path: smsUrls.superAdmin.dashboard,
@@ -81,7 +82,8 @@ export default function SuperAdminPortalPage() {
         },
         {
           title: 'Helpline Management',
-          description: 'Manage all university helplines and emergency contacts.',
+          description:
+            'Manage all university helplines and emergency contacts.',
           icon: 'phone_in_talk',
           colorScheme: 'blue',
           path: smsUrls.superAdmin.helpline,
@@ -116,7 +118,8 @@ export default function SuperAdminPortalPage() {
         },
         {
           title: 'Settings',
-          description: 'System configuration, notifications and workflow settings.',
+          description:
+            'System configuration, notifications and workflow settings.',
           icon: 'settings',
           colorScheme: 'indigo',
           path: smsUrls.superAdmin.settings,

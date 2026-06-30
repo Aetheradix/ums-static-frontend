@@ -1,0 +1,51 @@
+const baseUrl = '/file-management-tracking';
+
+export const fmtsUrls = {
+  admin: {
+    dashboard: `${baseUrl}/admin/dashboard`,
+    inbox: `${baseUrl}/admin/inbox`,
+    fileTypes: `${baseUrl}/admin/file-types`,
+    diaryConfig: `${baseUrl}/admin/diary-config`,
+    retentionPolicies: `${baseUrl}/admin/retention-policies`,
+    departments: `${baseUrl}/admin/departments`,
+    users: `${baseUrl}/admin/users`,
+    workflows: `${baseUrl}/admin/workflows`,
+    workflowSteps: (id: number) => `${baseUrl}/admin/workflows/${id}/steps`,
+    systemConfig: `${baseUrl}/admin/config`,
+    auditLogs: `${baseUrl}/admin/audit-logs`,
+    printCenter: `${baseUrl}/admin/print-center`,
+    reports: `${baseUrl}/admin/reports`,
+  },
+  employee: {
+    dashboard: `${baseUrl}/employee/dashboard`,
+    createFile: `${baseUrl}/employee/create`,
+    manageFiles: `${baseUrl}/employee/manage`,
+    fileDetails: (id: number) => `${baseUrl}/employee/view/${id}`,
+    incomingFiles: `${baseUrl}/employee/incoming`,
+    fileHistory: `${baseUrl}/employee/history`,
+    printFiles: `${baseUrl}/employee/print`,
+    partFile: (parentId: number) => `${baseUrl}/employee/part-file/${parentId}`,
+    dakCreate: `${baseUrl}/employee/dak/create`,
+    dakList: `${baseUrl}/employee/dak/list`,
+    archivedFiles: `${baseUrl}/employee/archive`,
+    notifications: `${baseUrl}/employee/notifications`,
+  },
+  approver: {
+    dashboard: `${baseUrl}/approver/dashboard`,
+    inbox: `${baseUrl}/approver/inbox`,
+    fileDetails: (id: number) => `${baseUrl}/approver/file-details/${id}`,
+    reports: `${baseUrl}/approver/reports`,
+  },
+  public: {
+    quickStatus: (code: string) => `${baseUrl}/public/quick-status/${code}`,
+  },
+  reports: {
+    fileMovement: `${baseUrl}/reports/file-movement`,
+    avgApprovalTime: `${baseUrl}/reports/avg-approval-time`,
+    pendingFiles: `${baseUrl}/reports/pending-files`,
+    employeeProductivity: `${baseUrl}/reports/employee-productivity`,
+    slaViolations: `${baseUrl}/reports/sla-violations`,
+    rejectionRate: `${baseUrl}/reports/rejection-rate`,
+    auditLogExport: `${baseUrl}/reports/audit-log-export`,
+  },
+};

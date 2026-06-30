@@ -11,14 +11,16 @@ export default function SecurityAdminPortalPage() {
       portals={[
         {
           title: 'Dashboard',
-          description: 'Overview of assigned, pending, high-priority and today\'s cases.',
+          description:
+            "Overview of assigned, pending, high-priority and today's cases.",
           icon: 'dashboard',
           colorScheme: 'blue',
           path: smsUrls.securityAdmin.dashboard,
         },
         {
           title: 'Incident Management',
-          description: 'Assign incidents, track investigations and manage resolutions.',
+          description:
+            'Assign incidents, track investigations and manage resolutions.',
           icon: 'report_problem',
           colorScheme: 'orange',
           path: smsUrls.securityAdmin.incidents,

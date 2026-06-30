@@ -13,6 +13,7 @@ const PORTAL_PATHS: string[] = [
   '/employee-management',
   '/employee-management/admin-portal',
   '/academics',
+  '/recruitment-management',
   '/admissions-management',
   '/student-management',
   '/training-placement',

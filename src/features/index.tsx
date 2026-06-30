@@ -15,6 +15,7 @@ import EmployeeReports from './employee-reports';
 import EssentialServices from './essential-services';
 import EstateManagement from './estate-management';
 import ExaminationManagement from './examination-management';
+import FileManagementTracking from './file-management-tracking';
 import FinanceSupplyChain from './finance-supply-chain';
 import GrievanceManagement from './grievance-management';
 import PolicyComplianceManagement from './policy-compliance-management';
@@ -26,10 +27,12 @@ import LeaveManagement from './leave-management';
 import Lms from './lms';
 import Master from './master';
 import OpenBookExamination from './open-book-examination';
+import PayrollRoutes from './payroll';
 import ProgrammeManagement from './programme-management';
 import PublicPortalLayout, {
   PublicRouteWrapper,
 } from './public-portal/layout/PublicPortalLayout';
+import RecruitmentManagement from './recruitment-management';
 import ResearchManagement from './research-management';
 import ResidentialAllocationManagement from './residential-allocation-management';
 import RTIManagement from './rti-management';
@@ -41,11 +44,12 @@ import StudentFeedbackManagement from './student-feedback-management';
 import StudentManagement from './student-management';
 import TrainingPlacement from './training-placement';
 
-import PayrollRoutes from './payroll';
-
+import ContentFederationSystem from './content-federation-system';
+import SecurityManagement from './security-management';
+import ThesisManagementRoutes from './thesis-management';
 import TrainerDevelopment from './trainer-development';
 import TransportManagement from './transport-management';
-import SecurityManagement from './security-management';
+import HealthManagement from './health-management';
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
   () => import('./public-portal/pages/Solutions')
@@ -147,6 +151,10 @@ export default function Features() {
                         element={<EmployeeManagement />}
                       />
                       <Route
+                        path="recruitment-management/*"
+                        element={<RecruitmentManagement />}
+                      />
+                      <Route
                         path="finance-supply-chain/*"
                         element={<FinanceSupplyChain />}
                       />
@@ -195,6 +203,10 @@ export default function Features() {
                         path="policy-compliance-management/*"
                         element={<PolicyComplianceManagement />}
                       />
+                      <Route
+                        path="health-management/*"
+                        element={<HealthManagement />}
+                      />
                       <Route path="lms/*" element={<Lms />} />
                       <Route
                         path="student-feedback-management/*"
@@ -217,6 +229,10 @@ export default function Features() {
                         element={<ScholarshipDbt />}
                       />
                       <Route
+                        path="thesis-management/*"
+                        element={<ThesisManagementRoutes />}
+                      />
+                      <Route
                         path="trainer-development/*"
                         element={<TrainerDevelopment />}
                       />
@@ -237,8 +253,16 @@ export default function Features() {
                         element={<PayrollRoutes />}
                       />
                       <Route
+                        path="content-federation/*"
+                        element={<ContentFederationSystem />}
+                      />
+                      <Route
                         path="infrastructure-project-management/*"
                         element={<InfrastructureProjectManagement />}
+                      />
+                      <Route
+                        path="file-management-tracking/*"
+                        element={<FileManagementTracking />}
                       />
                       <Route
                         path="transport-management/*"

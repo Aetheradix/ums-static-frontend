@@ -1,0 +1,154 @@
+@reference "tailwindcss";
+
+/* ── Wrapper ─────────────────────────────────────────────────────────────── */
+.bst-wrapper {
+  @apply flex flex-col gap-3;
+}
+
+/* ── Search bar ───────────────────────────────────────────────────────────── */
+.bst-search-row {
+  @apply flex items-center justify-start;
+}
+
+.bst-search-wrap {
+  @apply relative;
+}
+
+/* ── Bulk action bar ─────────────────────────────────────────────────────── */
+.bst-bulk-bar {
+  @apply flex items-center justify-between gap-4 px-5 py-3 
+         bg-violet-50 border border-violet-200 rounded-xl;
+}
+
+.bst-bulk-bar-left {
+  @apply flex items-center gap-2;
+}
+
+.bst-bulk-bar-icon {
+  @apply text-violet-500;
+  font-family: 'Material Symbols Rounded', sans-serif;
+  font-size: 18px;
+}
+
+.bst-bulk-bar-text {
+  @apply text-sm font-semibold text-violet-700;
+}
+
+.bst-bulk-bar-actions {
+  @apply flex items-center gap-2;
+}
+
+/* ── Table ───────────────────────────────────────────────────────────────── */
+.bst-table-wrap {
+  @apply overflow-x-auto rounded-xl border border-slate-200 bg-white;
+}
+
+.bst-table {
+  @apply w-full border-collapse text-sm;
+}
+
+/* Head */
+.bst-thead tr {
+  @apply bg-slate-50/80 border-b border-slate-200;
+}
+
+.bst-th-check {
+  @apply p-4 w-12 text-center;
+}
+
+.bst-th {
+  @apply p-4 text-left font-semibold text-slate-800 whitespace-nowrap align-middle;
+}
+
+/* Body rows */
+.bst-tr {
+  @apply border-b border-slate-100 cursor-pointer transition-colors duration-100 bg-white;
+}
+
+.bst-tr:hover {
+  @apply bg-slate-50;
+}
+
+.bst-tr-selected {
+  @apply bg-violet-50/50;
+}
+
+.bst-tr-selected:hover {
+  @apply bg-violet-100/50;
+}
+
+.bst-td-check {
+  @apply p-4 text-center align-middle;
+}
+
+.bst-td {
+  @apply p-4 text-slate-700 align-middle;
+}
+
+/* Checkbox accent */
+.bst-checkbox {
+  @apply w-4 h-4 cursor-pointer accent-violet-600 rounded border-slate-300;
+}
+
+/* Empty state */
+.bst-empty td {
+  @apply py-12 text-center text-slate-400;
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────────── */
+.bst-footer {
+  @apply flex items-center justify-between text-xs text-zinc-400;
+}
+
+.bst-footer-count {
+  @apply font-semibold text-violet-600;
+}
+
+/* ── Dark mode ───────────────────────────────────────────────────────────── */
+.dark .bst-search-input {
+  @apply bg-zinc-800 border-zinc-700 text-zinc-200 placeholder:text-zinc-500;
+}
+.dark .bst-search-input:focus {
+  @apply border-violet-500 bg-zinc-800 ring-violet-500/20;
+}
+
+.dark .bst-bulk-bar {
+  @apply bg-violet-500/10 border-violet-500/20;
+}
+.dark .bst-bulk-bar-icon {
+  @apply text-violet-400;
+}
+.dark .bst-bulk-bar-text {
+  @apply text-violet-300;
+}
+
+.dark .bst-table-wrap {
+  @apply border-white/10 bg-transparent;
+}
+.dark .bst-thead tr {
+  @apply bg-white/5 border-white/10;
+}
+.dark .bst-th {
+  @apply text-zinc-300;
+}
+.dark .bst-tr {
+  @apply border-white/5 bg-transparent;
+}
+.dark .bst-tr:hover {
+  @apply bg-white/5;
+}
+.dark .bst-tr-selected {
+  @apply bg-violet-500/10;
+}
+.dark .bst-tr-selected:hover {
+  @apply bg-violet-500/15;
+}
+.dark .bst-td {
+  @apply text-zinc-400;
+}
+.dark .bst-footer {
+  @apply text-zinc-500;
+}
+.dark .bst-footer-count {
+  @apply text-violet-400;
+}
