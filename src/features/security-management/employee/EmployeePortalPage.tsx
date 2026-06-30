@@ -11,7 +11,8 @@ export default function EmployeePortalPage() {
       portals={[
         {
           title: 'Dashboard',
-          description: 'Your incidents, emergency contacts and upcoming awareness programs.',
+          description:
+            'Your incidents, emergency contacts and upcoming awareness programs.',
           icon: 'dashboard',
           colorScheme: 'blue',
           path: smsUrls.employee.dashboard,
@@ -39,7 +40,8 @@ export default function EmployeePortalPage() {
         },
         {
           title: 'Safety Guidelines',
-          description: 'University safety guidelines and standard operating procedures.',
+          description:
+            'University safety guidelines and standard operating procedures.',
           icon: 'menu_book',
           colorScheme: 'teal',
           path: smsUrls.employee.guidelines,

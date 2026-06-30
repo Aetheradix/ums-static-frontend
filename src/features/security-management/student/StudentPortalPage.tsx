@@ -11,7 +11,8 @@ export default function StudentSecurityPortalPage() {
       portals={[
         {
           title: 'Dashboard',
-          description: 'Your incidents, emergency contacts and upcoming awareness programs.',
+          description:
+            'Your incidents, emergency contacts and upcoming awareness programs.',
           icon: 'dashboard',
           colorScheme: 'blue',
           path: smsUrls.student.dashboard,
@@ -39,7 +40,8 @@ export default function StudentSecurityPortalPage() {
         },
         {
           title: 'Safety Guidelines',
-          description: 'University safety guidelines and standard operating procedures.',
+          description:
+            'University safety guidelines and standard operating procedures.',
           icon: 'menu_book',
           colorScheme: 'teal',
           path: smsUrls.student.guidelines,
