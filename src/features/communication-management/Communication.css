@@ -1,0 +1,29 @@
+@reference "tailwindcss";
+
+/* Stat-card grid — 1 / 2 / 4 columns responsive */
+.comm-stats-grid {
+  @apply grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4;
+  margin-bottom: 1.5rem;
+}
+
+/* Two-up chart row */
+.comm-charts-row {
+  @apply grid grid-cols-1 gap-4 lg:grid-cols-2;
+  margin-bottom: 1.5rem;
+}
+
+/* Fixed-height wrapper for chart canvases (avoids inline height styles) */
+.comm-chart-box {
+  position: relative;
+  height: 240px;
+}
+
+.comm-chart-box-sm {
+  position: relative;
+  height: 200px;
+}
+
+/* Compose helper text row */
+.comm-helper {
+  @apply mb-4 flex items-start gap-3 rounded-lg border border-sky-200 bg-sky-50 p-3 text-sm text-sky-800;
+}

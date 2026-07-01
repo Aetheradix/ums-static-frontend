@@ -45,7 +45,11 @@ import StudentManagement from './student-management';
 import TrainingPlacement from './training-placement';
 
 import BillTracking from './bill-tracking';
+import CommunicationManagementRoutes from './communication-management';
 import ContentFederationSystem from './content-federation-system';
+import EventTicketingRoutes from './event-ticketing-management';
+import LegalCaseManagementRoutes from './legal-case-management';
+import TimetableManagementRoutes from './timetable-management';
 import SecurityManagement from './security-management';
 import ThesisManagementRoutes from './thesis-management';
 import TrainerDevelopment from './trainer-development';
@@ -227,6 +231,22 @@ export default function Features() {
                       <Route
                         path="thesis-management/*"
                         element={<ThesisManagementRoutes />}
+                      />
+                      <Route
+                        path="legal-case-management/*"
+                        element={<LegalCaseManagementRoutes />}
+                      />
+                      <Route
+                        path="communication-management/*"
+                        element={<CommunicationManagementRoutes />}
+                      />
+                      <Route
+                        path="event-ticketing-management/*"
+                        element={<EventTicketingRoutes />}
+                      />
+                      <Route
+                        path="timetable-management/*"
+                        element={<TimetableManagementRoutes />}
                       />
                       <Route
                         path="trainer-development/*"
