@@ -1,12 +1,17 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
 import {
-  TextBox,
-  DropDownList,
-  DatePicker,
   Checkbox,
+  DatePicker,
+  DropDownList,
+  TextBox,
 } from 'shared/components/forms';
+import Grid from 'shared/components/grid/Grid';
+import {
+  FormActions,
+  FormCard,
+  FormGrid,
+  FormPage,
+} from 'shared/new-components';
 
 const vehicleTypes = [
   { name: 'Bus', value: 'bus' },
@@ -38,12 +43,81 @@ export default function VehicleRegistration() {
     insuranceExpiry: undefined,
     fitnessExpiry: undefined,
     pucExpiry: undefined,
-    registrationDate: undefined,
+    registrationDate: undefined as Date | undefined,
     isActive: true,
   });
 
+  const [records, setRecords] = useState([
+    {
+      vehicleNumber: 'MP04 AB 1234',
+      type: 'Bus',
+      fuelType: 'Diesel',
+      capacity: '50',
+      registrationDate: '12/05/2021',
+      isActive: true,
+    },
+    {
+      vehicleNumber: 'MP04 XY 9876',
+      type: 'Van',
+      fuelType: 'CNG',
+      capacity: '15',
+      registrationDate: '23/08/2023',
+      isActive: true,
+    },
+    {
+      vehicleNumber: 'MP04 ZQ 1122',
+      type: 'Car',
+      fuelType: 'Petrol',
+      capacity: '4',
+      registrationDate: '05/01/2024',
+      isActive: false,
+    },
+  ]);
+
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSave = () => {
+    if (!form.vehicleNumber || !form.vehicleType) return;
+    setRecords(prev => [
+      ...prev,
+      {
+        vehicleNumber: form.vehicleNumber,
+        type:
+          vehicleTypes.find(v => String(v.value) === String(form.vehicleType))
+            ?.name || form.vehicleType,
+        fuelType:
+          fuelTypes.find(f => String(f.value) === String(form.fuelType))
+            ?.name || form.fuelType,
+        capacity: form.seatingCapacity,
+        registrationDate:
+          form.registrationDate instanceof Date
+            ? (form.registrationDate as Date).toLocaleDateString('en-GB')
+            : '-',
+        isActive: form.isActive,
+      },
+    ]);
+
+    setForm({
+      vehicleNumber: '',
+      vehicleType: '',
+      vehicleCompany: '',
+      model: '',
+      manufacturingYear: '',
+      fuelType: '',
+      seatingCapacity: '',
+      engineNumber: '',
+      chassisNumber: '',
+      rcNumber: '',
+      insuranceCompany: '',
+      insuranceNumber: '',
+      insuranceExpiry: undefined,
+      fitnessExpiry: undefined,
+      pucExpiry: undefined,
+      registrationDate: undefined,
+      isActive: true,
+    });
   };
 
   return (
@@ -187,14 +261,36 @@ export default function VehicleRegistration() {
         </FormGrid>
       </FormCard>
 
-      <FormCard>
-        <div className="flex items-center gap-4 mt-8">
-          <Button label="Save" variant="success" className="min-w-[120px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() => window.location.reload()}
+      <FormCard title="Registered Vehicles (Dummy Data)" className="mt-4">
+        <Grid
+          data={records}
+          columns={[
+            { field: 'vehicleNumber', header: 'Vehicle Number' },
+            { field: 'type', header: 'Type' },
+            { field: 'fuelType', header: 'Fuel Type' },
+            { field: 'capacity', header: 'Capacity' },
+            { field: 'registrationDate', header: 'Registration Date' },
+            {
+              field: 'isActive',
+              header: 'Status',
+              cell: (rowData: any) => (
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${rowData.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+                >
+                  {rowData.isActive ? 'Active' : 'Inactive'}
+                </span>
+              ),
+            },
+          ]}
+          onEdit={() => {}}
+          onRemove={() => {}}
+        />
+
+        <div className="mt-4 border-t border-gray-200 pt-4">
+          <FormActions
+            align="left"
+            onSave={handleSave}
+            onReset={() => window.location.reload()}
           />
         </div>
       </FormCard>

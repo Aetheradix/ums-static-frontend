@@ -3104,21 +3104,24 @@ export const menuConfig: Menu.MenuItem[] = [
         children: [
           {
             label: 'Admin Portal',
-            description: 'Configure courses, map faculty and students, manage masters and view reports.',
+            description:
+              'Configure courses, map faculty and students, manage masters and view reports.',
             path: '/lms/admin',
             icon: 'admin_panel_settings',
             colorScheme: 'blue',
           },
           {
             label: 'Teacher Portal',
-            description: 'Manage course content, modules, topics, assignments, evaluate results, and track progress.',
+            description:
+              'Manage course content, modules, topics, assignments, evaluate results, and track progress.',
             path: '/lms/teacher',
             icon: 'groups',
             colorScheme: 'green',
           },
           {
             label: 'Student Portal',
-            description: 'View enrolled courses, modules, watch video lectures, download notes, submit assignments, and take quizzes.',
+            description:
+              'View enrolled courses, modules, watch video lectures, download notes, submit assignments, and take quizzes.',
             path: '/lms/student',
             icon: 'school',
             colorScheme: 'purple',
@@ -5685,7 +5688,7 @@ export const menuConfig: Menu.MenuItem[] = [
     children: [
       {
         label: 'College Login',
-        slug: 'college-login',
+        slug: 'transport-college-login',
         description: 'College transport configuration and setup.',
         icon: 'domain',
         colorScheme: 'orange',
@@ -5852,7 +5855,7 @@ export const menuConfig: Menu.MenuItem[] = [
       },
       {
         label: 'Admin Login',
-        slug: 'admin-login',
+        slug: 'transport-admin-login',
         description:
           'Manage transporters, vehicles, and global transport settings.',
         icon: 'admin_panel_settings',
@@ -5942,7 +5945,7 @@ export const menuConfig: Menu.MenuItem[] = [
       // === REPORTS AND ABOUT ===
       {
         label: 'Reports & More',
-        slug: 'reports',
+        slug: 'transport-reports',
         description: 'Transport reports and system info.',
         icon: 'bar_chart',
         colorScheme: 'teal',
