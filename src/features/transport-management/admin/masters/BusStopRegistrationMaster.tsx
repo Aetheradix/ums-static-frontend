@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
+import {
+  FormPage,
+  FormCard,
+  FormGrid,
+  FormActions,
+} from 'shared/new-components';
 import { Button } from 'shared/components/buttons';
 import { TextBox, Checkbox } from 'shared/components/forms';
 
@@ -69,17 +74,10 @@ export default function BusStopRegistrationMaster() {
                 />
               </div>
             </FormGrid>
-            <FormCard>
-              <div className="flex items-center gap-4 mt-6">
-                <Button label="Save" variant="success" className="w-full" />
-                <Button
-                  label="Clear"
-                  variant="danger"
-                  className="w-full"
-                  onClick={() => window.location.reload()}
-                />
-              </div>
-            </FormCard>
+            <FormActions
+              align="left"
+              onReset={() => window.location.reload()}
+            />
           </FormCard>
         </div>
 

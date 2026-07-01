@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
+import {
+  FormPage,
+  FormCard,
+  FormGrid,
+  FormActions,
+} from 'shared/new-components';
 import { Button } from 'shared/components/buttons';
 import { TextBox, DatePicker, Checkbox } from 'shared/components/forms';
 
@@ -127,13 +132,10 @@ export default function InchargeRegistration() {
         </p>
       </FormCard>
 
-      <div className="flex items-center gap-4 mt-6">
-        <Button label="Save" variant="success" className="min-w-[120px]" />
-        <Button
-          label="Clear"
-          variant="danger"
-          className="min-w-[120px]"
-          onClick={() =>
+      <div className="mt-4">
+        <FormActions
+          align="left"
+          onReset={() =>
             setForm({
               inchargeName: '',
               dob: null,

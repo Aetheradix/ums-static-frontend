@@ -1,6 +1,15 @@
 import './StatusBadge.css';
 
-type StatusBadgeVariant = 'pending' | 'approved' | 'rejected' | 'neutral';
+type StatusBadgeVariant =
+  | 'pending'
+  | 'approved'
+  | 'rejected'
+  | 'neutral'
+  | 'success'
+  | 'danger'
+  | 'warning'
+  | 'info'
+  | 'muted';
 
 interface StatusBadgeProps {
   label: string;

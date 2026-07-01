@@ -40,16 +40,23 @@ import ScholarshipDbt from './scholarship-dbt';
 import Settings from './settings';
 import Sis from './sis';
 import StudentActivitiesClubs from './student-activities-clubs';
+import SportsManagement from './sports-management';
 import StudentFeedbackManagement from './student-feedback-management';
 import StudentManagement from './student-management';
 import TrainingPlacement from './training-placement';
 
+import BillTracking from './bill-tracking';
+import CommunicationManagementRoutes from './communication-management';
 import ContentFederationSystem from './content-federation-system';
+import EventTicketingRoutes from './event-ticketing-management';
+import LegalCaseManagementRoutes from './legal-case-management';
+import TimetableManagementRoutes from './timetable-management';
 import SecurityManagement from './security-management';
 import ThesisManagementRoutes from './thesis-management';
 import TrainerDevelopment from './trainer-development';
 import TransportManagement from './transport-management';
 import HealthManagement from './health-management';
+import EvaluationGrading from './evaluation-grading';
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
   () => import('./public-portal/pages/Solutions')
@@ -217,6 +224,10 @@ export default function Features() {
                         element={<StudentActivitiesClubs />}
                       />
                       <Route
+                        path="sports-management/*"
+                        element={<SportsManagement />}
+                      />
+                      <Route
                         path="rti-management/*"
                         element={<RTIManagement />}
                       />
@@ -231,6 +242,22 @@ export default function Features() {
                       <Route
                         path="thesis-management/*"
                         element={<ThesisManagementRoutes />}
+                      />
+                      <Route
+                        path="legal-case-management/*"
+                        element={<LegalCaseManagementRoutes />}
+                      />
+                      <Route
+                        path="communication-management/*"
+                        element={<CommunicationManagementRoutes />}
+                      />
+                      <Route
+                        path="event-ticketing-management/*"
+                        element={<EventTicketingRoutes />}
+                      />
+                      <Route
+                        path="timetable-management/*"
+                        element={<TimetableManagementRoutes />}
                       />
                       <Route
                         path="trainer-development/*"
@@ -275,6 +302,14 @@ export default function Features() {
                       <Route
                         path="security-management/*"
                         element={<SecurityManagement />}
+                      />
+                      <Route
+                        path="bill-tracking/*"
+                        element={<BillTracking />}
+                      />
+                      <Route
+                        path="evaluation-grading/*"
+                        element={<EvaluationGrading />}
                       />
                     </Routes>
                   </MainLayout>

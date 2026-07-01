@@ -66,8 +66,9 @@ export default function SubjectSelection({ token }: { token: string }) {
       setLoadingSubjects(true);
       try {
         const data = await getSubjectsBySemester(token, semesterName);
-        setSubjects(data);
-        setSelectedPssIds(data.filter(s => s.isSelected).map(s => s.pssId));
+        const arr = Array.isArray(data) ? data : [];
+        setSubjects(arr);
+        setSelectedPssIds(arr.filter(s => s.isSelected).map(s => s.pssId));
       } catch {
         toast.current?.show({
           severity: 'error',
@@ -138,7 +139,8 @@ export default function SubjectSelection({ token }: { token: string }) {
   };
 
   // ── Group subjects by category ──────────────────────────────────────────
-  const categoryGroups = subjects.reduce<Record<string, SubjectDto[]>>(
+  const safeSubjects = Array.isArray(subjects) ? subjects : [];
+  const categoryGroups = safeSubjects.reduce<Record<string, SubjectDto[]>>(
     (acc, subj) => {
       (acc[subj.categoryName] ??= []).push(subj);
       return acc;
@@ -146,7 +148,7 @@ export default function SubjectSelection({ token }: { token: string }) {
     {}
   );
 
-  const totalSelectedCredits = subjects
+  const totalSelectedCredits = safeSubjects
     .filter(s => selectedPssIds.includes(s.pssId))
     .reduce((sum, s) => sum + s.totalCredits, 0);
 

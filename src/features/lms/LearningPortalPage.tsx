@@ -5,58 +5,33 @@ export default function LearningPortalPage() {
   return (
     <PortalSelector
       moduleTitle="Learning Management System"
-      moduleDescription="Manage your courses, content, assessments and certifications."
+      moduleDescription="Access the learning management system based on your role."
       backPath="/home"
       backLabel="Home"
       portals={[
         {
-          title: 'Dashboard',
-          description: 'Overview of learning progress and analytics.',
-          icon: 'dashboard',
+          title: 'Admin Portal',
+          description:
+            'Configure courses, map faculty and students, manage masters and view reports.',
+          icon: 'admin_panel_settings',
           colorScheme: 'blue',
-          path: learningUrls.dashboard,
+          path: learningUrls.admin.portal,
         },
         {
-          title: 'Masters',
-          description: 'Manage master data for courses and categories.',
-          icon: 'category',
-          colorScheme: 'purple',
-          path: learningUrls.masters,
-        },
-        {
-          title: 'Configuration',
-          description: 'System configurations and settings.',
-          icon: 'settings',
-          colorScheme: 'gray',
-          path: learningUrls.configuration,
-        },
-        {
-          title: 'Content Management',
-          description: 'Manage course content and materials.',
-          icon: 'library_books',
-          colorScheme: 'indigo',
-          path: learningUrls.contentManagement,
-        },
-        {
-          title: 'Assessment',
-          description: 'Create and manage assessments and quizzes.',
-          icon: 'quiz',
-          colorScheme: 'orange',
-          path: learningUrls.assessment,
-        },
-        {
-          title: 'Progress Tracking',
-          description: 'Track student progress and performance.',
-          icon: 'trending_up',
+          title: 'Teacher Portal',
+          description:
+            'Manage course content, modules, topics, assignments, evaluate results, and track progress.',
+          icon: 'groups',
           colorScheme: 'green',
-          path: learningUrls.progressTracking,
+          path: learningUrls.teacher.portal,
         },
         {
-          title: 'Certification',
-          description: 'Manage certificates and awards.',
-          icon: 'workspace_premium',
-          colorScheme: 'amber',
-          path: learningUrls.certification,
+          title: 'Student Portal',
+          description:
+            'View enrolled courses, modules, watch video lectures, download notes, submit assignments, and take quizzes.',
+          icon: 'school',
+          colorScheme: 'purple',
+          path: learningUrls.student.portal,
         },
       ]}
     />

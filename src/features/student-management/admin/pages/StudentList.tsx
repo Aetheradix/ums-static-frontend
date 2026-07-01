@@ -12,12 +12,14 @@ import { StudentSeedService } from '../../seed/students';
 import StudentDetailModal from '../components/StudentDetailModal';
 import { ToastService } from 'services';
 import { Modal } from 'shared/components/popups';
+import { exportToCSV } from 'shared/utils/exportToCSV';
 
 export default function StudentList() {
   const navigate = useNavigate();
   const [students, setStudents] = useState<SeedStudent[]>([]);
   const [loading, setLoading] = useState(true);
   const [editStudentId, setEditStudentId] = useState<string | null>(null);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [deleteStudentId, setDeleteStudentId] = useState<string | null>(null);
 
   const loadStudents = async () => {
@@ -53,7 +55,7 @@ export default function StudentList() {
         <GridPanel
           data={students}
           loading={loading}
-          pagination={false}
+          pagination={true}
           columns={[
             {
               cell: (_, option) => <span>{option.rowIndex + 1}</span>,
@@ -78,16 +80,19 @@ export default function StudentList() {
               header: 'Programme',
               field: 'programmeName',
               sortable: true,
+              filter: true,
             },
             {
               header: 'Session',
               field: 'academicSession',
               sortable: true,
+              filter: true,
             },
             {
               header: 'Status',
               field: 'status',
               sortable: true,
+              filter: true,
               cell: (item: SeedStudent) => (
                 <StatusBadge
                   label={item.status}
@@ -121,13 +126,26 @@ export default function StudentList() {
             },
           ]}
           toolbar={
-            <Button
-              label="Import Students"
-              icon="pi pi-upload"
-              variant="primary"
-              className="ml-auto"
-              onClick={() => navigate('/student-management/admin/import')}
-            />
+            <div className="flex gap-2 ml-auto">
+              <Button
+                label="Export"
+                icon="pi pi-download"
+                variant="outlined"
+                onClick={() => exportToCSV(students, 'Students_Export')}
+              />
+              <Button
+                label="Add Student"
+                icon="pi pi-plus"
+                variant="outlined"
+                onClick={() => setShowAddModal(true)}
+              />
+              <Button
+                label="Import Students"
+                icon="pi pi-upload"
+                variant="primary"
+                onClick={() => navigate('/student-management/admin/import')}
+              />
+            </div>
           }
           searchBox={true}
         />
@@ -139,6 +157,16 @@ export default function StudentList() {
           onHide={() => setEditStudentId(null)}
           onSave={() => {
             setEditStudentId(null);
+            loadStudents();
+          }}
+        />
+      )}
+
+      {showAddModal && (
+        <StudentDetailModal
+          onHide={() => setShowAddModal(false)}
+          onSave={() => {
+            setShowAddModal(false);
             loadStudents();
           }}
         />
