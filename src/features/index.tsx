@@ -37,6 +37,7 @@ import ScholarshipDbt from './scholarship-dbt';
 import Settings from './settings';
 import Sis from './sis';
 import StudentActivitiesClubs from './student-activities-clubs';
+import SportsManagement from './sports-management';
 import StudentFeedbackManagement from './student-feedback-management';
 import StudentManagement from './student-management';
 import TrainingPlacement from './training-placement';
@@ -204,6 +205,10 @@ export default function Features() {
                       <Route
                         path="student-activities-clubs/*"
                         element={<StudentActivitiesClubs />}
+                      />
+                      <Route
+                        path="sports-management/*"
+                        element={<SportsManagement />}
                       />
                       <Route
                         path="rti-management/*"
