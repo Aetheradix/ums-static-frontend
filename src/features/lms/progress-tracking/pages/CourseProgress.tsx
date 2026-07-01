@@ -50,6 +50,8 @@ export default function CourseProgress() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Learning Management System', to: learningUrls.portal },
+        { label: 'Teacher Portal', to: learningUrls.teacher.portal },
+        { label: 'Progress Tracking', to: learningUrls.teacher.progress },
         { label: 'Course Progress Report' },
       ]}
     >

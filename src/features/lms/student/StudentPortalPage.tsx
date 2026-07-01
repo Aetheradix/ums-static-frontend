@@ -7,7 +7,7 @@ export default function StudentPortalPage() {
       moduleTitle="Student Portal — Learning Management"
       moduleDescription="Attend class lectures, download resources, attempt assessments and view your achievements."
       backPath={learningUrls.portal}
-      backLabel="LMS Role Selection"
+      backLabel="Learning Management System"
       portals={[
         {
           title: 'Dashboard',

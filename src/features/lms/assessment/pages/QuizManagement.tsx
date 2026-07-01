@@ -60,6 +60,8 @@ export default function QuizManagement() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Learning Management System', to: learningUrls.portal },
+        { label: 'Teacher Portal', to: learningUrls.teacher.portal },
+        { label: 'Assessment Management', to: learningUrls.teacher.assessment },
         { label: 'Quiz Management' },
       ]}
     >

@@ -7,7 +7,7 @@ export default function TeacherPortalPage() {
       moduleTitle="Teacher Portal — Learning Management"
       moduleDescription="Manage your courses, content uploads, assessments, student progress and certifications."
       backPath={learningUrls.portal}
-      backLabel="LMS Role Selection"
+      backLabel="Learning Management System"
       portals={[
         {
           title: 'Dashboard',

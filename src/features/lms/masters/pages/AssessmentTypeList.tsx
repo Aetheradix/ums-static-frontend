@@ -40,6 +40,8 @@ export default function AssessmentTypeList() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Learning Management System', to: learningUrls.portal },
+        { label: 'Admin Portal', to: learningUrls.admin.portal },
+        { label: 'Masters', to: learningUrls.admin.masters },
         { label: 'Assessment Type Master' },
       ]}
     >
