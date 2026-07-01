@@ -13,6 +13,7 @@ import AdmissionsStudentDashboard from './student/pages/Dashboard';
 import ApplicationStatus from './student/pages/ApplicationStatus';
 import ApplicationForm from './student/application-form/pages/ApplicationForm';
 import FeePayment from 'features/admission-portal/pages/FeePayment';
+import SubjectSelection from 'features/admission-portal/pages/SubjectSelection';
 
 export default function AdmissionsManagement() {
   return (
@@ -40,6 +41,10 @@ export default function AdmissionsManagement() {
       <Route
         path="student/fee-payment"
         element={<FeePayment token="mock-token" />}
+      />
+      <Route
+        path="student/subject-selection"
+        element={<SubjectSelection token="mock-token" />}
       />
     </Routes>
   );

@@ -7,7 +7,7 @@ import { StudentSeedService } from '../../seed/students';
 import { ToastService } from 'services';
 
 interface Props {
-  studentId: string;
+  studentId?: string; // If undefined, modal is in Add mode
   onHide: () => void;
   onSave: () => void;
 }
@@ -17,41 +17,72 @@ export default function StudentDetailModal({
   onHide,
   onSave,
 }: Props) {
-  const [student, setStudent] = useState<SeedStudent | null>(null);
-  const [loading, setLoading] = useState(true);
+  const isEdit = !!studentId;
+  const [student, setStudent] = useState<Partial<SeedStudent>>({
+    firstName: '',
+    lastName: '',
+    enrolmentNo: '',
+    rollNo: '',
+    email: '',
+    phone: '',
+    gender: 'Male',
+    dateOfBirth: '',
+    programmeName: '',
+    academicSession: '2024-25',
+    status: 'Active',
+    abcLinked: false,
+    programmeId: 1, // default
+  });
+  const [loading, setLoading] = useState(isEdit);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    const loadStudent = async () => {
-      setLoading(true);
-      const data = await StudentSeedService.getById(studentId);
-      setStudent(data);
-      setLoading(false);
-    };
-    loadStudent();
-  }, [studentId]);
+    if (isEdit) {
+      const loadStudent = async () => {
+        setLoading(true);
+        const data = await StudentSeedService.getById(studentId!);
+        if (data) {
+          setStudent(data);
+        }
+        setLoading(false);
+      };
+      loadStudent();
+    }
+  }, [studentId, isEdit]);
 
   const handleChange = (field: keyof SeedStudent, value: any) => {
-    if (student) {
-      setStudent({ ...student, [field]: value });
-    }
+    setStudent({ ...student, [field]: value });
   };
 
   const handleSave = async () => {
-    if (!student) return;
+    // Basic validation
+    if (!student.firstName || !student.enrolmentNo || !student.email) {
+      ToastService.error(
+        'First Name, Enrolment Number, and Email are required.'
+      );
+      return;
+    }
+
     setSaving(true);
     try {
-      await StudentSeedService.update(studentId, student);
-      ToastService.success('Student updated successfully');
+      if (isEdit) {
+        await StudentSeedService.update(studentId!, student);
+        ToastService.success('Student updated successfully');
+      } else {
+        await StudentSeedService.add(student as Omit<SeedStudent, 'id'>);
+        ToastService.success('Student added successfully');
+      }
       onSave();
     } catch (err) {
-      ToastService.error('Failed to update student');
+      ToastService.error(
+        isEdit ? 'Failed to update student' : 'Failed to add student'
+      );
     } finally {
       setSaving(false);
     }
   };
 
-  if (loading || !student) {
+  if (loading) {
     return (
       <Modal header="Edit Student" visible onHide={onHide}>
         <div className="p-4 text-center">Loading...</div>
@@ -60,48 +91,52 @@ export default function StudentDetailModal({
   }
 
   return (
-    <Modal header="Edit Student" visible onHide={onHide}>
+    <Modal
+      header={isEdit ? 'Edit Student' : 'Add Student'}
+      visible
+      onHide={onHide}
+    >
       <div className="flex flex-col gap-4 p-4">
         <div className="grid grid-cols-2 gap-4">
           <TextBox
-            label="First Name"
-            value={student.firstName}
+            label="First Name *"
+            value={student.firstName || ''}
             onChange={(v: any) => handleChange('firstName', v)}
           />
           <TextBox
             label="Last Name"
-            value={student.lastName}
+            value={student.lastName || ''}
             onChange={(v: any) => handleChange('lastName', v)}
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <TextBox
-            label="Enrolment Number"
-            value={student.enrolmentNo}
+            label="Enrolment Number *"
+            value={student.enrolmentNo || ''}
             onChange={(v: any) => handleChange('enrolmentNo', v)}
           />
           <TextBox
             label="Roll Number"
-            value={student.rollNo}
+            value={student.rollNo || ''}
             onChange={(v: any) => handleChange('rollNo', v)}
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <TextBox
-            label="Email"
-            value={student.email}
+            label="Email *"
+            value={student.email || ''}
             onChange={(v: any) => handleChange('email', v)}
           />
           <TextBox
             label="Phone"
-            value={student.phone}
+            value={student.phone || ''}
             onChange={(v: any) => handleChange('phone', v)}
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <DropDownList
             label="Gender"
-            value={student.gender}
+            value={student.gender || 'Male'}
             data={[
               { label: 'Male', value: 'Male' },
               { label: 'Female', value: 'Female' },
@@ -113,7 +148,7 @@ export default function StudentDetailModal({
           />
           <DropDownList
             label="Status"
-            value={student.status}
+            value={student.status || 'Active'}
             data={[
               { label: 'Active', value: 'Active' },
               { label: 'Inactive', value: 'Inactive' },
@@ -127,19 +162,19 @@ export default function StudentDetailModal({
         <div className="grid grid-cols-2 gap-4">
           <TextBox
             label="Programme"
-            value={student.programmeName}
+            value={student.programmeName || ''}
             onChange={(v: any) => handleChange('programmeName', v)}
           />
           <TextBox
             label="Academic Session"
-            value={student.academicSession}
+            value={student.academicSession || ''}
             onChange={(v: any) => handleChange('academicSession', v)}
           />
         </div>
         <div className="flex justify-end gap-2 mt-4">
           <Button label="Cancel" variant="outlined" onClick={onHide} />
           <Button
-            label="Save Changes"
+            label={isEdit ? 'Save Changes' : 'Add Student'}
             variant="primary"
             onClick={handleSave}
             isLoading={saving}
