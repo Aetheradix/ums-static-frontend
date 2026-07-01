@@ -59,6 +59,18 @@ export default function GridPanel<T>({
     }
   };
 
+  const defaultEmptyState = (
+    <div className="flex flex-col items-center justify-center p-12 text-gray-400">
+      <i className="pi pi-folder-open text-5xl mb-4 text-gray-300"></i>
+      <h3 className="text-lg font-semibold text-gray-600 mb-1">
+        No Records Found
+      </h3>
+      <p className="text-sm">
+        There is no data available to display in this table.
+      </p>
+    </div>
+  );
+
   return (
     <div className="grid-panel-wrapper">
       <div className="grid-panel-header mb-3">
@@ -98,7 +110,7 @@ export default function GridPanel<T>({
         onFilter={onFilter}
         sortField={sortField}
         sortOrder={sortOrder}
-        emptyMessage={emptyMessage as any}
+        emptyMessage={(emptyMessage || defaultEmptyState) as any}
       />
     </div>
   );

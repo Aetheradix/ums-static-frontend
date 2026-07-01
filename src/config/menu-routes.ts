@@ -3434,6 +3434,13 @@ export const menuConfig: Menu.MenuItem[] = [
         path: '/admissions-management/admin',
         children: [
           {
+            label: 'Dashboard',
+            description: 'Overview of admissions, applications, and revenue.',
+            path: '/admissions-management/admin/dashboard',
+            icon: 'dashboard',
+            colorScheme: 'blue',
+          },
+          {
             label: 'All Applications',
             description: 'View and manage all admission applications.',
             path: '/admissions-management/admin/applications',
@@ -3487,6 +3494,13 @@ export const menuConfig: Menu.MenuItem[] = [
         path: '/admissions-management/student',
         children: [
           {
+            label: 'Dashboard',
+            description: 'Student Admissions Dashboard.',
+            path: '/admissions-management/student/dashboard',
+            icon: 'dashboard',
+            colorScheme: 'blue',
+          },
+          {
             label: 'Apply Now',
             description: 'Fill and submit admission application form.',
             path: '/admissions-management/student/apply',
@@ -3502,16 +3516,16 @@ export const menuConfig: Menu.MenuItem[] = [
           },
           {
             label: 'Fee Payment',
-            description: 'Pay your admission fee online.',
+            description: 'Pay admission and semester fees online.',
             path: '/admissions-management/student/fee-payment',
-            icon: 'credit_card',
+            icon: 'payments',
             colorScheme: 'blue',
           },
           {
             label: 'Subject Selection',
-            description: 'Choose subjects and electives.',
+            description: 'Select semester subjects and electives.',
             path: '/admissions-management/student/subject-selection',
-            icon: 'checklist',
+            icon: 'rule',
             colorScheme: 'blue',
           },
         ],
@@ -5418,9 +5432,16 @@ export const menuConfig: Menu.MenuItem[] = [
         path: '/student-management/admin',
         children: [
           {
+            label: 'Dashboard',
+            description: 'Administrative overview and statistics',
+            path: '/student-management/admin/dashboard',
+            icon: 'dashboard',
+            colorScheme: 'indigo',
+          },
+          {
             label: 'Student Directory',
             description: 'View and manage all students',
-            path: '/student-management/admin',
+            path: '/student-management/admin/directory',
             icon: 'people',
             colorScheme: 'indigo',
           },
@@ -5445,7 +5466,7 @@ export const menuConfig: Menu.MenuItem[] = [
           {
             label: 'Dashboard',
             description: 'Student Dashboard',
-            path: '/student-management/student',
+            path: '/student-management/student/dashboard',
             icon: 'dashboard',
             colorScheme: 'orange',
           },
@@ -5454,6 +5475,34 @@ export const menuConfig: Menu.MenuItem[] = [
             description: 'View and edit profile',
             path: '/student-management/student/profile',
             icon: 'person',
+            colorScheme: 'orange',
+          },
+          {
+            label: 'My Courses',
+            description: 'Enrolled courses and syllabus',
+            path: '/student-management/student/my-courses',
+            icon: 'menu_book',
+            colorScheme: 'orange',
+          },
+          {
+            label: 'My Grades',
+            description: 'Academic grades and evaluations',
+            path: '/student-management/student/my-grades',
+            icon: 'grade',
+            colorScheme: 'orange',
+          },
+          {
+            label: 'Term Report',
+            description: 'Download semester term report',
+            path: '/student-management/student/term-report',
+            icon: 'assessment',
+            colorScheme: 'orange',
+          },
+          {
+            label: 'Subject Selection',
+            description: 'Select elective courses',
+            path: '/student-management/student/subject-selection',
+            icon: 'rule',
             colorScheme: 'orange',
           },
           {
