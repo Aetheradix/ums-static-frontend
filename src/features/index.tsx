@@ -51,6 +51,7 @@ import SecurityManagement from './security-management';
 import ThesisManagementRoutes from './thesis-management';
 import TrainerDevelopment from './trainer-development';
 import TransportManagement from './transport-management';
+import EvaluationGrading from './evaluation-grading';
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
   () => import('./public-portal/pages/Solutions')
@@ -280,6 +281,10 @@ export default function Features() {
                       <Route
                         path="bill-tracking/*"
                         element={<BillTracking />}
+                      />
+                      <Route
+                        path="evaluation-grading/*"
+                        element={<EvaluationGrading />}
                       />
                     </Routes>
                   </MainLayout>
