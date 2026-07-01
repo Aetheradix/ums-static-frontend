@@ -27,7 +27,8 @@ export default function StudentAssessments() {
   const [quizScore, setQuizScore] = useState<number | null>(null);
 
   // Assignment Upload State
-  const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
+  const [selectedAssignment, setSelectedAssignment] =
+    useState<Assignment | null>(null);
 
   const startQuiz = (quiz: Quiz) => {
     setActiveQuiz(quiz);
@@ -41,7 +42,9 @@ export default function StudentAssessments() {
   };
 
   const submitQuiz = () => {
-    const questions = mockQuizQuestions.filter(q => q.quizId === activeQuiz?.id);
+    const questions = mockQuizQuestions.filter(
+      q => q.quizId === activeQuiz?.id
+    );
     let correctCount = 0;
     questions.forEach(q => {
       if (answers[q.id] === q.correctAnswer) {
@@ -50,7 +53,9 @@ export default function StudentAssessments() {
     });
 
     setQuizScore(correctCount);
-    ToastService.success(`Quiz completed! You scored ${correctCount}/${questions.length}`);
+    ToastService.success(
+      `Quiz completed! You scored ${correctCount}/${questions.length}`
+    );
   };
 
   const closeQuiz = () => {
@@ -75,7 +80,9 @@ export default function StudentAssessments() {
           : a
       )
     );
-    ToastService.success(`Assignment "${selectedAssignment.title}" submitted successfully!`);
+    ToastService.success(
+      `Assignment "${selectedAssignment.title}" submitted successfully!`
+    );
     setSelectedAssignment(null);
   };
 
@@ -96,7 +103,9 @@ export default function StudentAssessments() {
           { title: 'Assignments', content: <></> },
         ]}
         activeIndex={activeTab === 'quizzes' ? 0 : 1}
-        onTabChange={e => setActiveTab(e.index === 0 ? 'quizzes' : 'assignments')}
+        onTabChange={e =>
+          setActiveTab(e.index === 0 ? 'quizzes' : 'assignments')
+        }
       />
 
       <div className="mt-4">
@@ -115,9 +124,16 @@ export default function StudentAssessments() {
                 </thead>
                 <tbody className="text-xs text-gray-700 font-medium">
                   {quizzes.map(q => (
-                    <tr key={q.id} className="border-b last:border-0 hover:bg-gray-50">
-                      <td className="py-3 px-3 font-semibold text-gray-900">{q.title}</td>
-                      <td className="py-3 px-3">{q.totalQuestions} Questions</td>
+                    <tr
+                      key={q.id}
+                      className="border-b last:border-0 hover:bg-gray-50"
+                    >
+                      <td className="py-3 px-3 font-semibold text-gray-900">
+                        {q.title}
+                      </td>
+                      <td className="py-3 px-3">
+                        {q.totalQuestions} Questions
+                      </td>
                       <td className="py-3 px-3">{q.durationMinutes} mins</td>
                       <td className="py-3 px-3 text-red-500">{q.dueDate}</td>
                       <td className="py-3 px-3 text-right">
@@ -150,10 +166,17 @@ export default function StudentAssessments() {
                 </thead>
                 <tbody className="text-xs text-gray-700 font-medium">
                   {assignments.map(a => (
-                    <tr key={a.id} className="border-b last:border-0 hover:bg-gray-50">
+                    <tr
+                      key={a.id}
+                      className="border-b last:border-0 hover:bg-gray-50"
+                    >
                       <td className="py-3 px-3">
-                        <div className="font-semibold text-gray-900">{a.title}</div>
-                        <div className="text-xxs text-gray-400 mt-0.5">{a.description}</div>
+                        <div className="font-semibold text-gray-900">
+                          {a.title}
+                        </div>
+                        <div className="text-xxs text-gray-400 mt-0.5">
+                          {a.description}
+                        </div>
                       </td>
                       <td className="py-3 px-3">{a.totalPoints} pts</td>
                       <td className="py-3 px-3">{a.dueDate}</td>
@@ -163,14 +186,16 @@ export default function StudentAssessments() {
                             a.status === 'Graded'
                               ? 'bg-green-100 text-green-700'
                               : a.status === 'Submitted'
-                              ? 'bg-blue-100 text-blue-700'
-                              : 'bg-yellow-100 text-yellow-700'
+                                ? 'bg-blue-100 text-blue-700'
+                                : 'bg-yellow-100 text-yellow-700'
                           }`}
                         >
                           {a.status}
                         </span>
                       </td>
-                      <td className="py-3 px-3 text-gray-800 font-semibold">{a.grade || '-'}</td>
+                      <td className="py-3 px-3 text-gray-800 font-semibold">
+                        {a.grade || '-'}
+                      </td>
                       <td className="py-3 px-3 text-right">
                         {a.status === 'Pending' ? (
                           <Button
@@ -180,7 +205,9 @@ export default function StudentAssessments() {
                             onClick={() => handleUploadAssignment(a)}
                           />
                         ) : (
-                          <span className="text-xxs text-gray-400 font-bold">Completed</span>
+                          <span className="text-xxs text-gray-400 font-bold">
+                            Completed
+                          </span>
                         )}
                       </td>
                     </tr>
@@ -204,7 +231,9 @@ export default function StudentAssessments() {
             <div>
               {/* Question list */}
               {(() => {
-                const questions = mockQuizQuestions.filter(q => q.quizId === activeQuiz.id);
+                const questions = mockQuizQuestions.filter(
+                  q => q.quizId === activeQuiz.id
+                );
                 if (questions.length === 0) {
                   return (
                     <div className="text-center py-6 text-gray-500 font-semibold text-xs">
@@ -216,11 +245,18 @@ export default function StudentAssessments() {
                 return (
                   <div>
                     <div className="flex justify-between items-center bg-gray-50 p-2.5 rounded-lg mb-4 text-xxs font-bold text-gray-500">
-                      <span>QUESTION {currentQuestionIndex + 1} OF {questions.length}</span>
-                      <span className="text-indigo-600">TIME REMAINING: 14:52</span>
+                      <span>
+                        QUESTION {currentQuestionIndex + 1} OF{' '}
+                        {questions.length}
+                      </span>
+                      <span className="text-indigo-600">
+                        TIME REMAINING: 14:52
+                      </span>
                     </div>
 
-                    <h4 className="font-bold text-gray-800 text-sm mb-4">{q.questionText}</h4>
+                    <h4 className="font-bold text-gray-800 text-sm mb-4">
+                      {q.questionText}
+                    </h4>
 
                     <div className="space-y-2 mb-6">
                       {q.options.map((opt, oIdx) => (
@@ -247,7 +283,9 @@ export default function StudentAssessments() {
                         variant="outlined"
                         size="small"
                         disabled={currentQuestionIndex === 0}
-                        onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
+                        onClick={() =>
+                          setCurrentQuestionIndex(prev => prev - 1)
+                        }
                       />
                       {currentQuestionIndex < questions.length - 1 ? (
                         <Button
@@ -255,7 +293,9 @@ export default function StudentAssessments() {
                           variant="primary"
                           size="small"
                           disabled={answers[q.id] === undefined}
-                          onClick={() => setCurrentQuestionIndex(prev => prev + 1)}
+                          onClick={() =>
+                            setCurrentQuestionIndex(prev => prev + 1)
+                          }
                         />
                       ) : (
                         <Button
@@ -275,19 +315,36 @@ export default function StudentAssessments() {
             // Quiz Score Card Screen
             <div className="text-center py-6">
               <Icon name="verified" className="text-5xl text-green-500 mb-3" />
-              <h3 className="text-lg font-bold text-gray-800">Quiz Completed!</h3>
-              <p className="text-xs text-gray-500 mt-1">Your responses have been processed.</p>
+              <h3 className="text-lg font-bold text-gray-800">
+                Quiz Completed!
+              </h3>
+              <p className="text-xs text-gray-500 mt-1">
+                Your responses have been processed.
+              </p>
 
               <div className="my-6 bg-green-50 rounded-xl p-4 inline-block border border-green-100">
-                <span className="text-xxs text-green-600 uppercase tracking-wider font-bold">YOUR SCORE</span>
+                <span className="text-xxs text-green-600 uppercase tracking-wider font-bold">
+                  YOUR SCORE
+                </span>
                 <div className="text-3xl font-extrabold text-green-700 mt-1">
-                  {quizScore} / {mockQuizQuestions.filter(q => q.quizId === activeQuiz.id).length}
+                  {quizScore} /{' '}
+                  {
+                    mockQuizQuestions.filter(q => q.quizId === activeQuiz.id)
+                      .length
+                  }
                 </div>
-                <span className="text-xxs text-green-600 font-bold block mt-1">PASSED (Passing Score: 70%)</span>
+                <span className="text-xxs text-green-600 font-bold block mt-1">
+                  PASSED (Passing Score: 70%)
+                </span>
               </div>
 
               <div className="flex justify-center">
-                <Button label="Close Review" variant="outlined" size="small" onClick={closeQuiz} />
+                <Button
+                  label="Close Review"
+                  variant="outlined"
+                  size="small"
+                  onClick={closeQuiz}
+                />
               </div>
             </div>
           )}
@@ -303,7 +360,9 @@ export default function StudentAssessments() {
         >
           <div className="space-y-4">
             <div>
-              <h4 className="font-semibold text-gray-700 text-xs">Instructions</h4>
+              <h4 className="font-semibold text-gray-700 text-xs">
+                Instructions
+              </h4>
               <p className="text-xxs text-gray-500 leading-relaxed mt-1">
                 {selectedAssignment.description}
               </p>

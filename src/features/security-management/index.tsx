@@ -71,7 +71,10 @@ export default function SecurityManagementRoutes() {
       {/* ── Super Admin ── */}
       <Route path="super-admin" element={<SuperAdminPortalPage />} />
       <Route path="super-admin/dashboard" element={<SuperAdminDashboard />} />
-      <Route path="super-admin/masters" element={<SuperAdminMastersPortalPage />} />
+      <Route
+        path="super-admin/masters"
+        element={<SuperAdminMastersPortalPage />}
+      />
       {/* Masters */}
       <Route
         path="super-admin/masters/incident-category"

@@ -11,14 +11,16 @@ export default function CertificatePortal() {
       portals={[
         {
           title: 'Recommend Certificate / View Eligible Students',
-          description: 'Evaluate students who completed courses and recommend them for verification.',
+          description:
+            'Evaluate students who completed courses and recommend them for verification.',
           icon: 'reviews',
           colorScheme: 'amber',
           path: `${learningUrls.teacher.certificate}/recommend`,
         },
         {
           title: 'Certificate Status & View',
-          description: 'Track generated certificates and verify system hash IDs.',
+          description:
+            'Track generated certificates and verify system hash IDs.',
           icon: 'workspace_premium',
           colorScheme: 'purple',
           path: `${learningUrls.teacher.certificate}/status`,

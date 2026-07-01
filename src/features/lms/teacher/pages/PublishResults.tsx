@@ -1,16 +1,33 @@
 import { useState } from 'react';
 import { ToastService } from 'services';
-import {
-  FormPage,
-  FormCard,
-  GridPanel,
-} from 'shared/new-components';
+import { FormPage, FormCard, GridPanel } from 'shared/new-components';
 import { learningUrls } from '../../urls';
 
 const INITIAL_RESULTS = [
-  { id: 1, title: 'Quiz 1: C++ Syntax', type: 'Quiz', course: 'B.Tech Computer Science', gradedCount: '150/150', status: 'Draft' },
-  { id: 2, title: 'Assignment 1: Logic Building', type: 'Assignment', course: 'B.Tech Computer Science', gradedCount: '148/150', status: 'Published' },
-  { id: 3, title: 'Quiz 2: DBMS Joins', type: 'Quiz', course: 'B.Tech Computer Science', gradedCount: '140/150', status: 'Draft' },
+  {
+    id: 1,
+    title: 'Quiz 1: C++ Syntax',
+    type: 'Quiz',
+    course: 'B.Tech Computer Science',
+    gradedCount: '150/150',
+    status: 'Draft',
+  },
+  {
+    id: 2,
+    title: 'Assignment 1: Logic Building',
+    type: 'Assignment',
+    course: 'B.Tech Computer Science',
+    gradedCount: '148/150',
+    status: 'Published',
+  },
+  {
+    id: 3,
+    title: 'Quiz 2: DBMS Joins',
+    type: 'Quiz',
+    course: 'B.Tech Computer Science',
+    gradedCount: '140/150',
+    status: 'Draft',
+  },
 ];
 
 export default function PublishResults() {
@@ -21,7 +38,9 @@ export default function PublishResults() {
       ToastService.error('Results are already published.');
       return;
     }
-    setData(prev => prev.map(r => r.id === item.id ? { ...r, status: 'Published' } : r));
+    setData(prev =>
+      prev.map(r => (r.id === item.id ? { ...r, status: 'Published' } : r))
+    );
     ToastService.success(`Successfully published results for: ${item.title}`);
   };
 
@@ -52,7 +71,9 @@ export default function PublishResults() {
               cell: (item: any) => (
                 <span
                   className={`px-2 py-0.5 rounded text-xs font-semibold ${
-                    item.status === 'Published' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                    item.status === 'Published'
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-yellow-100 text-yellow-700'
                   }`}
                 >
                   {item.status}

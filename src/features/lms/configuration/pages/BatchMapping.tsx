@@ -11,17 +11,43 @@ import { ToastService } from 'services';
 import { learningUrls } from '../../urls';
 
 const MOCK_MAPPINGS = [
-  { id: 1, batch: '2023-2027', course: 'B.Tech Computer Science', semester: '5th Sem', section: 'Section A', status: 'Active' },
-  { id: 2, batch: '2024-2027', course: 'Bachelor of Computer Applications', semester: '3rd Sem', section: 'Section B', status: 'Active' },
-  { id: 3, batch: '2025-2027', course: 'Master of Business Administration', semester: '1st Sem', section: 'Section A', status: 'Active' },
+  {
+    id: 1,
+    batch: '2023-2027',
+    course: 'B.Tech Computer Science',
+    semester: '5th Sem',
+    section: 'Section A',
+    status: 'Active',
+  },
+  {
+    id: 2,
+    batch: '2024-2027',
+    course: 'Bachelor of Computer Applications',
+    semester: '3rd Sem',
+    section: 'Section B',
+    status: 'Active',
+  },
+  {
+    id: 3,
+    batch: '2025-2027',
+    course: 'Master of Business Administration',
+    semester: '1st Sem',
+    section: 'Section A',
+    status: 'Active',
+  },
 ];
 
 export default function BatchMapping() {
   const [data] = useState(MOCK_MAPPINGS);
-  const [popup, setPopup] = useState<{ mode: 'closed' | 'create' | 'edit'; item?: any }>({ mode: 'closed' });
+  const [popup, setPopup] = useState<{
+    mode: 'closed' | 'create' | 'edit';
+    item?: any;
+  }>({ mode: 'closed' });
 
   const handleSave = () => {
-    ToastService.success(`Batch mapping ${popup.mode === 'create' ? 'created' : 'updated'} successfully!`);
+    ToastService.success(
+      `Batch mapping ${popup.mode === 'create' ? 'created' : 'updated'} successfully!`
+    );
     setPopup({ mode: 'closed' });
   };
 
@@ -64,7 +90,9 @@ export default function BatchMapping() {
       <FormPopup
         visible={popup.mode !== 'closed'}
         onHide={() => setPopup({ mode: 'closed' })}
-        title={popup.mode === 'create' ? 'New Batch Mapping' : 'Edit Batch Mapping'}
+        title={
+          popup.mode === 'create' ? 'New Batch Mapping' : 'Edit Batch Mapping'
+        }
       >
         <div className="grid grid-cols-1 gap-4">
           <TextBox label="Batch / Session (e.g. 2023-2027)" required />

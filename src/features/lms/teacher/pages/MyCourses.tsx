@@ -1,15 +1,38 @@
 import { useState } from 'react';
-import {
-  FormPage,
-  FormCard,
-  GridPanel,
-} from 'shared/new-components';
+import { FormPage, FormCard, GridPanel } from 'shared/new-components';
 import { learningUrls } from '../../urls';
 
 const MOCK_TEACHER_COURSES = [
-  { id: 'c1', code: 'BTECH-CS', name: 'B.Tech Computer Science', category: 'Technical', semester: '5th Sem', modules: 12, students: 240, status: 'Active' },
-  { id: 'c2', code: 'BCA', name: 'Bachelor of Computer Applications', category: 'Technical', semester: '3rd Sem', modules: 6, students: 120, status: 'Active' },
-  { id: 'c3', code: 'MBA', name: 'Master of Business Administration', category: 'Management', semester: '1st Sem', modules: 8, students: 85, status: 'Active' },
+  {
+    id: 'c1',
+    code: 'BTECH-CS',
+    name: 'B.Tech Computer Science',
+    category: 'Technical',
+    semester: '5th Sem',
+    modules: 12,
+    students: 240,
+    status: 'Active',
+  },
+  {
+    id: 'c2',
+    code: 'BCA',
+    name: 'Bachelor of Computer Applications',
+    category: 'Technical',
+    semester: '3rd Sem',
+    modules: 6,
+    students: 120,
+    status: 'Active',
+  },
+  {
+    id: 'c3',
+    code: 'MBA',
+    name: 'Master of Business Administration',
+    category: 'Management',
+    semester: '1st Sem',
+    modules: 8,
+    students: 85,
+    status: 'Active',
+  },
 ];
 
 export default function MyCourses() {

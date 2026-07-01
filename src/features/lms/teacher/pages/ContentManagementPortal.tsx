@@ -18,21 +18,24 @@ export default function ContentManagementPortal() {
         },
         {
           title: 'Module & Topic Management',
-          description: 'Create and structure modules and topics for your courses.',
+          description:
+            'Create and structure modules and topics for your courses.',
           icon: 'view_module',
           colorScheme: 'indigo',
           path: `${learningUrls.teacher.content}/modules`,
         },
         {
           title: 'Upload Learning Content',
-          description: 'Upload new learning materials, assignments, and lectures.',
+          description:
+            'Upload new learning materials, assignments, and lectures.',
           icon: 'cloud_upload',
           colorScheme: 'blue',
           path: `${learningUrls.teacher.content}/upload`,
         },
         {
           title: 'Manage Learning Materials',
-          description: 'Organize and update existing Videos, PDFs, Notes, and PPTs.',
+          description:
+            'Organize and update existing Videos, PDFs, Notes, and PPTs.',
           icon: 'folder_open',
           colorScheme: 'purple',
           path: `${learningUrls.teacher.content}/materials`,

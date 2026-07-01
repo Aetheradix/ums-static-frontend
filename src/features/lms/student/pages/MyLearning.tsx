@@ -15,9 +15,13 @@ export default function MyLearning() {
   const [selectedCourse, setSelectedCourse] = useState(mockCourses[2]); // B.Tech CS by default
   const [selectedModule, setSelectedModule] = useState(mockModules[0]); // Programming Basics
   const [selectedTopic, setSelectedTopic] = useState(mockTopics[0]); // Introduction to C++
-  const [selectedContent, setSelectedContent] = useState<ContentItem | null>(mockContent[0]);
+  const [selectedContent, setSelectedContent] = useState<ContentItem | null>(
+    mockContent[0]
+  );
 
-  const courseModules = mockModules.filter(m => m.courseId === selectedCourse.id);
+  const courseModules = mockModules.filter(
+    m => m.courseId === selectedCourse.id
+  );
   const moduleTopics = mockTopics.filter(t => t.moduleId === selectedModule.id);
   const topicContents = mockContent.filter(c => c.topicId === selectedTopic.id);
 
@@ -91,15 +95,26 @@ export default function MyLearning() {
           <FormCard title="Course Syllabus" className="p-2">
             <div className="space-y-3">
               {courseModules.map(mod => (
-                <div key={mod.id} className="border-b last:border-0 pb-3 last:pb-0">
+                <div
+                  key={mod.id}
+                  className="border-b last:border-0 pb-3 last:pb-0"
+                >
                   <button
                     onClick={() => handleModuleChange(mod)}
                     className={`w-full text-left font-bold text-sm py-1 flex items-center justify-between cursor-pointer ${
-                      selectedModule.id === mod.id ? 'text-indigo-600' : 'text-gray-800'
+                      selectedModule.id === mod.id
+                        ? 'text-indigo-600'
+                        : 'text-gray-800'
                     }`}
                   >
                     <span>{mod.name}</span>
-                    <Icon name={selectedModule.id === mod.id ? 'keyboard_arrow_down' : 'keyboard_arrow_right'} />
+                    <Icon
+                      name={
+                        selectedModule.id === mod.id
+                          ? 'keyboard_arrow_down'
+                          : 'keyboard_arrow_right'
+                      }
+                    />
                   </button>
 
                   {selectedModule.id === mod.id && (
@@ -109,10 +124,15 @@ export default function MyLearning() {
                           key={topic.id}
                           onClick={() => handleTopicChange(topic)}
                           className={`w-full text-left py-1 text-xs transition-colors flex items-center gap-1.5 cursor-pointer ${
-                            selectedTopic.id === topic.id ? 'text-indigo-600 font-semibold' : 'text-gray-600 hover:text-indigo-50'
+                            selectedTopic.id === topic.id
+                              ? 'text-indigo-600 font-semibold'
+                              : 'text-gray-600 hover:text-indigo-50'
                           }`}
                         >
-                          <Icon name="subdirectory_arrow_right" className="text-xxs text-gray-400" />
+                          <Icon
+                            name="subdirectory_arrow_right"
+                            className="text-xxs text-gray-400"
+                          />
                           <span>{topic.name}</span>
                         </button>
                       ))}
@@ -129,7 +149,9 @@ export default function MyLearning() {
           <FormCard title="Module Topics & Material List">
             <div className="flex gap-2 flex-wrap mb-4">
               {topicContents.length === 0 ? (
-                <span className="text-xs text-gray-400 font-medium">No files uploaded for this topic.</span>
+                <span className="text-xs text-gray-400 font-medium">
+                  No files uploaded for this topic.
+                </span>
               ) : (
                 topicContents.map(c => (
                   <button
@@ -146,10 +168,10 @@ export default function MyLearning() {
                         c.type === 'Video'
                           ? 'play_circle'
                           : c.type === 'PDF'
-                          ? 'picture_as_pdf'
-                          : c.type === 'PPT'
-                          ? 'slideshow'
-                          : 'description'
+                            ? 'picture_as_pdf'
+                            : c.type === 'PPT'
+                              ? 'slideshow'
+                              : 'description'
                       }
                       className="text-sm"
                     />
@@ -165,8 +187,12 @@ export default function MyLearning() {
                 <div className="flex-1 flex flex-col">
                   <div className="flex justify-between items-center mb-4 pb-2 border-b border-gray-200">
                     <div>
-                      <h4 className="font-bold text-gray-800 text-sm">{selectedContent.title}</h4>
-                      <p className="text-xxs text-gray-500 mt-0.5">{selectedContent.description}</p>
+                      <h4 className="font-bold text-gray-800 text-sm">
+                        {selectedContent.title}
+                      </h4>
+                      <p className="text-xxs text-gray-500 mt-0.5">
+                        {selectedContent.description}
+                      </p>
                     </div>
                     <span className="px-2 py-0.5 rounded text-xxs font-bold bg-indigo-100 text-indigo-700">
                       {selectedContent.type}
@@ -185,11 +211,20 @@ export default function MyLearning() {
                       </div>
                     ) : selectedContent.type === 'PDF' ? (
                       <div className="w-full text-center py-6 flex flex-col items-center justify-center">
-                        <Icon name="picture_as_pdf" className="text-5xl text-red-500 mb-2" />
-                        <h5 className="font-bold text-gray-800 text-sm">{selectedContent.title}</h5>
-                        <p className="text-xxs text-gray-400 mt-1">Size: {selectedContent.size || '1.5 MB'}</p>
+                        <Icon
+                          name="picture_as_pdf"
+                          className="text-5xl text-red-500 mb-2"
+                        />
+                        <h5 className="font-bold text-gray-800 text-sm">
+                          {selectedContent.title}
+                        </h5>
+                        <p className="text-xxs text-gray-400 mt-1">
+                          Size: {selectedContent.size || '1.5 MB'}
+                        </p>
                         <button
-                          onClick={() => window.open(selectedContent.url, '_blank')}
+                          onClick={() =>
+                            window.open(selectedContent.url, '_blank')
+                          }
                           className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded text-xs font-semibold hover:bg-indigo-700 transition-colors cursor-pointer"
                         >
                           Open Document Viewer
@@ -199,16 +234,30 @@ export default function MyLearning() {
                       // PPT or Notes Viewer
                       <div className="w-full bg-white p-6 rounded-lg border border-gray-200 shadow-xs">
                         <div className="flex items-center gap-2 mb-4 text-indigo-600">
-                          <Icon name={selectedContent.type === 'PPT' ? 'slideshow' : 'description'} />
-                          <span className="text-xs font-bold uppercase tracking-wider">{selectedContent.type} Reader</span>
+                          <Icon
+                            name={
+                              selectedContent.type === 'PPT'
+                                ? 'slideshow'
+                                : 'description'
+                            }
+                          />
+                          <span className="text-xs font-bold uppercase tracking-wider">
+                            {selectedContent.type} Reader
+                          </span>
                         </div>
                         <p className="text-xs text-gray-700 leading-relaxed font-medium">
                           {selectedContent.description}
                         </p>
                         <div className="mt-6 p-3 bg-gray-50 rounded-lg border border-dashed flex justify-between items-center">
-                          <span className="text-xxs text-gray-500 font-semibold">Download file for offline use.</span>
+                          <span className="text-xxs text-gray-500 font-semibold">
+                            Download file for offline use.
+                          </span>
                           <button
-                            onClick={() => ToastService.success('File downloaded successfully.')}
+                            onClick={() =>
+                              ToastService.success(
+                                'File downloaded successfully.'
+                              )
+                            }
                             className="px-3 py-1 bg-gray-800 text-white text-xxs font-bold rounded cursor-pointer"
                           >
                             Download
@@ -221,7 +270,9 @@ export default function MyLearning() {
               ) : (
                 <div className="text-center text-gray-400">
                   <Icon name="local_library" className="text-4xl mb-2" />
-                  <p className="text-xs font-semibold">Please select a topic material to view content.</p>
+                  <p className="text-xs font-semibold">
+                    Please select a topic material to view content.
+                  </p>
                 </div>
               )}
             </div>

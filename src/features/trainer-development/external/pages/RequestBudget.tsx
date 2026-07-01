@@ -4,7 +4,11 @@ import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextBox, TextArea } from 'shared/components/forms';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
-import { approvalRequests, venueMasters, type ApprovalRequest } from '../../mocks';
+import {
+  approvalRequests,
+  venueMasters,
+  type ApprovalRequest,
+} from '../../mocks';
 import { tdmUrls } from '../../urls';
 
 export default function RequestBudget() {
@@ -66,7 +70,10 @@ export default function RequestBudget() {
           />
           <DropDownList
             label="Training Venue"
-            data={venueMasters.map(v => ({ name: `${v.name} (${v.building} - Rm ${v.room})`, value: v.name }))}
+            data={venueMasters.map(v => ({
+              name: `${v.name} (${v.building} - Rm ${v.room})`,
+              value: v.name,
+            }))}
             textField="name"
             optionValue="value"
             value={form.venue}

@@ -11,7 +11,8 @@ export default function AssessmentPortal() {
       portals={[
         {
           title: 'Question Bank',
-          description: 'Manage institutional question repositories and categories.',
+          description:
+            'Manage institutional question repositories and categories.',
           icon: 'menu_book',
           colorScheme: 'purple',
           path: `${learningUrls.teacher.assessment}/question-bank`,
@@ -25,7 +26,8 @@ export default function AssessmentPortal() {
         },
         {
           title: 'Evaluate Assignments',
-          description: 'Grade submitted student assignments and provide feedback.',
+          description:
+            'Grade submitted student assignments and provide feedback.',
           icon: 'assignment_turned_in',
           colorScheme: 'green',
           path: `${learningUrls.teacher.assessment}/assignments`,
