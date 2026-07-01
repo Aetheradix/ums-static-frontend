@@ -6836,7 +6836,7 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Admin Portal',
             description: 'Masters, milestone config, workflows, and templates.',
             path: '/thesis-management/admin',
-            icon: 'cog',
+            icon: 'admin_panel_settings',
             colorScheme: 'orange',
           },
         ],
