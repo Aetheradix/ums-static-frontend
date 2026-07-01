@@ -135,7 +135,7 @@ export default function StudentApply() {
         ))}
       </div>
 
-      <div style={{ maxWidth: 900 }}>
+      <div className="w-full">
         {/* Step 0: Personal + Scheme */}
         {currentStep === 0 && (
           <>
