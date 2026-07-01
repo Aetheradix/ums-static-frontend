@@ -4,6 +4,7 @@ export const lmsUrls = {
   admin: {
     portal: '/leave-management/admin',
     dashboard: '/leave-management/admin/dashboard',
+    mastersPortal: '/leave-management/admin/masters',
     // Masters
     leaveTypes: '/leave-management/admin/masters/leave-types',
     leavePolicy: '/leave-management/admin/masters/leave-policy',

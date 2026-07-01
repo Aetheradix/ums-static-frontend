@@ -5,6 +5,7 @@ import TdmPortalPage from './portal/TdmPortalPage';
 
 // Admin Portal
 import AdminPortalPage from './admin/AdminPortalPage';
+import AdminMastersPortalPage from './admin/AdminMastersPortalPage';
 import AdminDashboard from './admin/pages/Dashboard';
 import TrainingCategoryMaster from './admin/pages/masters/TrainingCategory';
 import TrainingModeMaster from './admin/pages/masters/TrainingMode';
@@ -53,6 +54,7 @@ export default function TrainerDevelopmentRoutes() {
       {/* ── Admin ── */}
       <Route path="admin" element={<AdminPortalPage />} />
       <Route path="admin/dashboard" element={<AdminDashboard />} />
+      <Route path="admin/masters" element={<AdminMastersPortalPage />} />
       <Route
         path="admin/masters/training-category"
         element={<TrainingCategoryMaster />}
