@@ -5,6 +5,7 @@ import LmsPortalPage from './portal/LmsPortalPage';
 
 // Admin Portal
 import AdminPortalPage from './admin/AdminPortalPage';
+import AdminMastersPortalPage from './admin/AdminMastersPortalPage';
 import AdminDashboard from './admin/pages/Dashboard';
 import LeaveTypeMaster from './admin/pages/masters/LeaveTypeMaster';
 import LeavePolicyMaster from './admin/pages/masters/LeavePolicyMaster';
@@ -51,6 +52,7 @@ export default function LeaveManagementRoutes() {
       {/* ── Admin ── */}
       <Route path="admin" element={<AdminPortalPage />} />
       <Route path="admin/dashboard" element={<AdminDashboard />} />
+      <Route path="admin/masters" element={<AdminMastersPortalPage />} />
       <Route path="admin/masters/leave-types" element={<LeaveTypeMaster />} />
       <Route
         path="admin/masters/leave-policy"

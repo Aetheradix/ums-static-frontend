@@ -16,7 +16,7 @@ function findModuleBySlug(items: any[], slug: string): any {
 
 export default function CollegeMenuPage() {
   const menuConfig = useMenu();
-  const service = findModuleBySlug(menuConfig, 'college-login');
+  const service = findModuleBySlug(menuConfig, 'transport-college-login');
 
   if (!service || !service.children) {
     return (

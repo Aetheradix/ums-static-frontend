@@ -16,7 +16,7 @@ function findModuleBySlug(items: any[], slug: string): any {
 
 export default function AdminMenuPage() {
   const menuConfig = useMenu();
-  const service = findModuleBySlug(menuConfig, 'admin-login');
+  const service = findModuleBySlug(menuConfig, 'transport-admin-login');
 
   if (!service || !service.children) {
     return (

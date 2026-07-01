@@ -40,7 +40,20 @@ export default function ApplicationStatus() {
     ? STEPS.findIndex(s => s.status === application.status)
     : -1;
 
-  if (loading) return null;
+  if (loading)
+    return (
+      <FormPage
+        title="Application Status"
+        description="Track your admission application."
+      >
+        <FormCard>
+          <div className="p-12 flex flex-col items-center justify-center gap-3 text-gray-400">
+            <i className="pi pi-spin pi-spinner text-4xl" />
+            <p className="text-sm">Loading your application...</p>
+          </div>
+        </FormCard>
+      </FormPage>
+    );
 
   if (!application) {
     return (
@@ -112,20 +125,22 @@ export default function ApplicationStatus() {
             </p>
           </div>
         ) : (
-          <div className="flex items-center justify-between px-4 py-6">
+          <div className="relative flex items-start justify-between px-4 py-6">
+            {/* Connector line behind the steps */}
+            <div className="absolute top-[54px] left-[10%] right-[10%] h-0.5 bg-gray-200 z-0" />
             {STEPS.map((step, index) => {
               const isCompleted = index < currentStepIndex;
               const isActive = index === currentStepIndex;
               return (
                 <div
                   key={step.status}
-                  className="flex flex-col items-center gap-2 flex-1"
+                  className="relative flex flex-col items-center gap-2 flex-1 z-10"
                 >
                   <div
                     className={`w-12 h-12 rounded-full flex items-center justify-center border-2 font-bold text-sm transition-all
                       ${isCompleted ? 'bg-green-500 border-green-500 text-white' : ''}
                       ${isActive ? 'bg-blue-500 border-blue-500 text-white ring-4 ring-blue-100' : ''}
-                      ${!isCompleted && !isActive ? 'bg-gray-100 border-gray-300 text-gray-400' : ''}
+                      ${!isCompleted && !isActive ? 'bg-white border-gray-300 text-gray-400' : ''}
                     `}
                   >
                     <i
@@ -143,14 +158,56 @@ export default function ApplicationStatus() {
                   >
                     {step.status}
                   </span>
-                  {index < STEPS.length - 1 && (
-                    <div
-                      className={`h-0.5 w-full absolute mt-6 ${isCompleted ? 'bg-green-400' : 'bg-gray-200'}`}
-                    />
-                  )}
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {/* Contextual CTAs based on status */}
+        {application.status === 'Fee Pending' && (
+          <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg flex items-center justify-between">
+            <div>
+              <p className="font-semibold text-amber-800">Payment Required</p>
+              <p className="text-sm text-amber-600">
+                Your application is awaiting fee payment.
+              </p>
+            </div>
+            <a
+              href="/admissions-management/student/fee-payment"
+              className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-medium text-sm transition"
+            >
+              Proceed to Fee Payment →
+            </a>
+          </div>
+        )}
+
+        {application.status === 'Approved' && (
+          <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center justify-between">
+            <div>
+              <p className="font-semibold text-green-800">
+                Application Approved!
+              </p>
+              <p className="text-sm text-green-600">
+                Your admit card is ready to download.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                const content = `ADMIT CARD\nApplication: ${application.applicationNo}\nApplicant: ${application.applicantName}\nProgramme: ${application.programmeName}\nSession: ${application.academicSession}`;
+                const blob = new Blob([content], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${application.applicationNo}_admit_card.txt`;
+                a.click();
+                URL.revokeObjectURL(url);
+              }}
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium text-sm transition flex items-center gap-2"
+            >
+              <i className="pi pi-download" /> Download Admit Card
+            </button>
           </div>
         )}
       </FormCard>

@@ -40,6 +40,7 @@ import ScholarshipDbt from './scholarship-dbt';
 import Settings from './settings';
 import Sis from './sis';
 import StudentActivitiesClubs from './student-activities-clubs';
+import SportsManagement from './sports-management';
 import StudentFeedbackManagement from './student-feedback-management';
 import StudentManagement from './student-management';
 import TrainingPlacement from './training-placement';
@@ -54,6 +55,7 @@ import SecurityManagement from './security-management';
 import ThesisManagementRoutes from './thesis-management';
 import TrainerDevelopment from './trainer-development';
 import TransportManagement from './transport-management';
+import EvaluationGrading from './evaluation-grading';
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
   () => import('./public-portal/pages/Solutions')
@@ -217,6 +219,10 @@ export default function Features() {
                         element={<StudentActivitiesClubs />}
                       />
                       <Route
+                        path="sports-management/*"
+                        element={<SportsManagement />}
+                      />
+                      <Route
                         path="rti-management/*"
                         element={<RTIManagement />}
                       />
@@ -295,6 +301,10 @@ export default function Features() {
                       <Route
                         path="bill-tracking/*"
                         element={<BillTracking />}
+                      />
+                      <Route
+                        path="evaluation-grading/*"
+                        element={<EvaluationGrading />}
                       />
                     </Routes>
                   </MainLayout>

@@ -62,6 +62,14 @@ export default function ExternalPortalPage() {
           colorScheme: 'red',
           path: tdmUrls.external.honorarium,
         },
+        {
+          title: 'Request Budget',
+          description:
+            'Request a training budget according to training venue, timing, resources and materials.',
+          icon: 'monetization_on',
+          colorScheme: 'orange',
+          path: tdmUrls.external.requestBudget,
+        },
       ]}
     />
   );

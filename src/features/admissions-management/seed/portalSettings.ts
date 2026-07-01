@@ -259,6 +259,14 @@ export const PortalSettingsSeedService = {
 
 export const ProgrammeConfigSeedService = {
   getAll: async () => Promise.resolve([...MOCK_PROGRAMME_CONFIG]),
+  add: async (data: Omit<SeedProgrammeConfig, 'id'>) => {
+    const newP = {
+      ...data,
+      id: `PRG${String(MOCK_PROGRAMME_CONFIG.length + 1).padStart(3, '0')}`,
+    };
+    MOCK_PROGRAMME_CONFIG.push(newP);
+    return Promise.resolve(newP);
+  },
   update: async (id: string, data: Partial<SeedProgrammeConfig>) => {
     MOCK_PROGRAMME_CONFIG = MOCK_PROGRAMME_CONFIG.map(p =>
       p.id === id ? { ...p, ...data } : p
@@ -267,14 +275,30 @@ export const ProgrammeConfigSeedService = {
       MOCK_PROGRAMME_CONFIG.find(p => p.id === id) ?? null
     );
   },
+  delete: async (id: string) => {
+    MOCK_PROGRAMME_CONFIG = MOCK_PROGRAMME_CONFIG.filter(p => p.id !== id);
+    return Promise.resolve(true);
+  },
 };
 
 export const FeeConfigSeedService = {
   getAll: async () => Promise.resolve([...MOCK_FEE_CONFIG]),
+  add: async (data: Omit<SeedFeeConfig, 'id'>) => {
+    const newF = {
+      ...data,
+      id: `FEE${String(MOCK_FEE_CONFIG.length + 1).padStart(3, '0')}`,
+    };
+    MOCK_FEE_CONFIG.push(newF);
+    return Promise.resolve(newF);
+  },
   update: async (id: string, data: Partial<SeedFeeConfig>) => {
     MOCK_FEE_CONFIG = MOCK_FEE_CONFIG.map(f =>
       f.id === id ? { ...f, ...data } : f
     );
     return Promise.resolve(MOCK_FEE_CONFIG.find(f => f.id === id) ?? null);
+  },
+  delete: async (id: string) => {
+    MOCK_FEE_CONFIG = MOCK_FEE_CONFIG.filter(f => f.id !== id);
+    return Promise.resolve(true);
   },
 };

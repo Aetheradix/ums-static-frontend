@@ -18,44 +18,12 @@ export default function AdminPortalPage() {
           path: tdmUrls.admin.dashboard,
         },
         {
-          title: 'Training Category',
+          title: 'Masters',
           description:
-            'Manage FDP, workshop, seminar and other training category masters.',
+            'Configure training categories, mode settings, competency frameworks, venue details, and certification policies.',
           icon: 'category',
           colorScheme: 'purple',
-          path: tdmUrls.admin.trainingCategory,
-        },
-        {
-          title: 'Competency Master',
-          description:
-            'Define and manage competency frameworks and skill levels.',
-          icon: 'psychology',
-          colorScheme: 'teal',
-          path: tdmUrls.admin.competencyMaster,
-        },
-        {
-          title: 'Certification Master',
-          description:
-            'Manage certification types, templates and renewal policies.',
-          icon: 'workspace_premium',
-          colorScheme: 'indigo',
-          path: tdmUrls.admin.certificationMaster,
-        },
-        {
-          title: 'Venue Master',
-          description:
-            'Training venues, halls and labs with capacity and facilities.',
-          icon: 'meeting_room',
-          colorScheme: 'amber',
-          path: tdmUrls.admin.venueMaster,
-        },
-        {
-          title: 'Training Mode',
-          description:
-            'Configure online, offline and hybrid training mode settings.',
-          icon: 'cast_for_education',
-          colorScheme: 'orange',
-          path: tdmUrls.admin.trainingMode,
+          path: tdmUrls.admin.mastersPortal,
         },
         {
           title: 'Trainer Registration',
