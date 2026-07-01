@@ -52,5 +52,6 @@ export const tdmUrls = {
     materials: '/trainer-development/external/materials',
     feedbackView: '/trainer-development/external/feedback',
     honorarium: '/trainer-development/external/honorarium',
+    requestBudget: '/trainer-development/external/request-budget',
   },
 };

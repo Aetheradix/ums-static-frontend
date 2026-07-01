@@ -9,7 +9,7 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
-import { type TrainingSession, trainingSessions } from '../../mocks';
+import { type TrainingSession, trainingSessions, trainers, venueMasters } from '../../mocks';
 import { tdmUrls } from '../../urls';
 
 const STATUS_VARIANTS: Record<
@@ -201,12 +201,15 @@ export default function TrainingSessionsPage() {
             required
             readOnly={isReadOnly}
           />
-          <TextBox
+          <DropDownList
             label="Trainer Name"
+            data={trainers.map(t => ({ name: t.name, value: t.name }))}
+            textField="name"
+            optionValue="value"
             value={form.trainer ?? ''}
-            onChange={v => setForm(f => ({ ...f, trainer: v }))}
+            onChange={v => setForm(f => ({ ...f, trainer: v as string }))}
+            disabled={isReadOnly}
             required
-            readOnly={isReadOnly}
           />
           <TextBox
             label="Date"
@@ -232,12 +235,15 @@ export default function TrainingSessionsPage() {
             required
             readOnly={isReadOnly}
           />
-          <TextBox
+          <DropDownList
             label="Venue"
+            data={venueMasters.map(v => ({ name: `${v.name} (${v.building} - Rm ${v.room})`, value: v.name }))}
+            textField="name"
+            optionValue="value"
             value={form.venue ?? ''}
-            onChange={v => setForm(f => ({ ...f, venue: v }))}
+            onChange={v => setForm(f => ({ ...f, venue: v as string }))}
+            disabled={isReadOnly}
             required
-            readOnly={isReadOnly}
           />
           <DropDownList
             label="Status"
