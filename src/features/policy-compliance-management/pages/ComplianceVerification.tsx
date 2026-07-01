@@ -6,6 +6,7 @@ import {
   FormPopup,
   GridPanel,
   StatusBadge,
+  PreviewField,
 } from 'shared/new-components';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Button } from 'shared/components/buttons';
@@ -66,7 +67,7 @@ export default function ComplianceVerification() {
     >
       <FormCard
         title="Submissions Pending Verification"
-        icon="verified_user"
+        icon="shield"
         subtitle="Review and verify submitted compliance documents"
       >
         <GridPanel
@@ -76,7 +77,19 @@ export default function ComplianceVerification() {
             { field: 'complianceName', header: 'Compliance' },
             { field: 'submittedBy', header: 'Submitted By' },
             { field: 'department', header: 'Department' },
-            { field: 'submittedDate', header: 'Submitted', width: '110px' },
+            {
+              field: 'submittedDate',
+              header: 'Submitted',
+              width: '110px',
+              cell: (item: any) => {
+                if (!item.submittedDate) return '';
+                const parts = item.submittedDate.split('-');
+                if (parts.length === 3) {
+                  return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                }
+                return item.submittedDate;
+              },
+            },
             {
               field: 'documents',
               header: 'Documents',
@@ -130,58 +143,55 @@ export default function ComplianceVerification() {
         }}
       >
         {selectedItem && (
-          <div className="space-y-4">
+          <div className="flex flex-col gap-4">
             <FormGrid columns={2}>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Submitted By
-                </span>
-                <span className="text-sm font-medium">
-                  {selectedItem.submittedBy}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Department
-                </span>
-                <span className="text-sm font-medium">
-                  {selectedItem.department}
-                </span>
-              </div>
+              <PreviewField
+                label="Submitted By"
+                value={selectedItem.submittedBy}
+              />
+              <PreviewField
+                label="Department"
+                value={selectedItem.department}
+              />
             </FormGrid>
 
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-semibold text-gray-500 uppercase">
-                Documents
-              </span>
-              <div className="flex flex-col gap-2">
-                {selectedItem.documents.map((doc, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-2 p-2 bg-blue-50 rounded"
-                  >
-                    <i className="pi pi-file text-blue-500"></i>
-                    <span className="text-sm text-blue-700 font-medium">
-                      {doc}
-                    </span>
-                    <button className="ml-auto text-xs text-blue-600 hover:text-blue-800">
-                      <i className="pi pi-download"></i>
-                    </button>
-                  </div>
-                ))}
+            {selectedItem.documents && selectedItem.documents.length > 0 && (
+              <div className="flex flex-col gap-1.5 mt-2">
+                <span className="text-xs font-bold leading-4 text-slate-800 uppercase tracking-wider">
+                  Documents
+                </span>
+                <div className="flex flex-col gap-3">
+                  {selectedItem.documents.map((doc, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between px-4 py-3 border border-blue-100 rounded-xl bg-blue-50/50"
+                    >
+                      <div className="flex items-center gap-3">
+                        <i className="pi pi-file-pdf text-red-500 text-xl"></i>
+                        <span className="text-sm font-medium text-blue-600">
+                          {doc}
+                        </span>
+                      </div>
+                      <button className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors">
+                        <i className="pi pi-download"></i>
+                        Download
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-semibold text-gray-500 uppercase">
+            <div className="flex flex-col gap-1.5 mt-2">
+              <span className="text-xs font-bold leading-4 text-slate-800 uppercase tracking-wider">
                 Submission Remarks
               </span>
-              <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg">
+              <p className="text-sm font-normal leading-5 text-slate-800 bg-gray-50 p-4 rounded-xl border border-gray-100">
                 {selectedItem.remarks}
               </p>
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 mt-4">
               <label className="text-sm font-semibold text-gray-700">
                 Verification Remarks
               </label>

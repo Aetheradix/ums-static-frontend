@@ -9,8 +9,9 @@ import {
   FormActions,
 } from 'shared/new-components';
 import { Button } from 'shared/components/buttons';
-import { InputText } from 'primereact/inputtext';
+
 import { InputTextarea } from 'primereact/inputtextarea';
+import { FileUpload } from 'primereact/fileupload';
 import { type ComplianceAssignment } from '../data';
 
 export default function StudentMyTasks() {
@@ -48,6 +49,7 @@ export default function StudentMyTasks() {
   const [selectedAssignment, setSelectedAssignment] =
     useState<ComplianceAssignment | null>(null);
   const [submitForm, setSubmitForm] = useState({ documents: '', remarks: '' });
+  const [formErrors, setFormErrors] = useState({ documents: '', remarks: '' });
 
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [trackAssignment, setTrackAssignment] =
@@ -56,11 +58,28 @@ export default function StudentMyTasks() {
   const handleOpenSubmit = (item: ComplianceAssignment) => {
     setSelectedAssignment(item);
     setSubmitForm({ documents: '', remarks: '' });
+    setFormErrors({ documents: '', remarks: '' });
     setShowSubmitModal(true);
   };
 
   const handleSubmitCompliance = () => {
     if (!selectedAssignment) return;
+
+    const errors = { documents: '', remarks: '' };
+    let hasError = false;
+
+    if (!submitForm.documents) {
+      errors.documents = 'Please upload the required document.';
+      hasError = true;
+    }
+    if (!submitForm.remarks.trim()) {
+      errors.remarks = 'Remarks are mandatory.';
+      hasError = true;
+    }
+
+    setFormErrors(errors);
+
+    if (hasError) return;
 
     setAssignments(prev =>
       prev.map(a =>
@@ -120,7 +139,19 @@ export default function StudentMyTasks() {
           data={assignments}
           columns={[
             { field: 'complianceName', header: 'Task Name', width: '35%' },
-            { field: 'deadline', header: 'Due Date', width: '130px' },
+            {
+              field: 'deadline',
+              header: 'Due Date',
+              width: '130px',
+              cell: (item: any) => {
+                if (!item.deadline) return '';
+                const parts = item.deadline.split('-');
+                if (parts.length === 3) {
+                  return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                }
+                return item.deadline;
+              },
+            },
             {
               field: 'status',
               header: 'Status',
@@ -182,34 +213,66 @@ export default function StudentMyTasks() {
               Due Date:{' '}
             </span>
             <span className="text-sm text-blue-900 font-bold">
-              {selectedAssignment?.deadline}
+              {selectedAssignment?.deadline
+                ? selectedAssignment.deadline.split('-').reverse().join('-')
+                : ''}
             </span>
           </div>
 
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700">
-              Required Documents (comma separated file names for demo) *
+              Required Documents <span className="text-red-500">*</span>
             </label>
-            <InputText
-              value={submitForm.documents}
-              onChange={e =>
-                setSubmitForm({ ...submitForm, documents: e.target.value })
-              }
-              placeholder="e.g. signed_affidavit.pdf"
+            <FileUpload
+              mode="basic"
+              name="documents[]"
+              url="/api/upload"
+              accept=".pdf,.doc,.docx"
+              maxFileSize={10000000}
+              onUpload={e => {
+                setSubmitForm({ ...submitForm, documents: e.files[0].name });
+                if (formErrors.documents)
+                  setFormErrors({ ...formErrors, documents: '' });
+              }}
+              onSelect={e => {
+                setSubmitForm({ ...submitForm, documents: e.files[0].name });
+                if (formErrors.documents)
+                  setFormErrors({ ...formErrors, documents: '' });
+              }}
+              chooseLabel="Browse Files"
             />
+            {submitForm.documents && (
+              <span className="text-sm text-green-600 font-medium">
+                <i className="pi pi-check-circle mr-1"></i>{' '}
+                {submitForm.documents} selected
+              </span>
+            )}
+            {formErrors.documents && (
+              <span className="text-sm text-red-500 font-medium">
+                {formErrors.documents}
+              </span>
+            )}
           </div>
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700">
-              Remarks (Optional)
+              Remarks <span className="text-red-500">*</span>
             </label>
             <InputTextarea
               value={submitForm.remarks}
-              onChange={e =>
-                setSubmitForm({ ...submitForm, remarks: e.target.value })
-              }
+              onChange={e => {
+                setSubmitForm({ ...submitForm, remarks: e.target.value });
+                if (formErrors.remarks)
+                  setFormErrors({ ...formErrors, remarks: '' });
+              }}
               rows={3}
               placeholder="Enter any additional remarks..."
+              className={formErrors.remarks ? 'p-invalid' : ''}
             />
+            {formErrors.remarks && (
+              <span className="text-sm text-red-500 font-medium">
+                {formErrors.remarks}
+              </span>
+            )}
           </div>
           <FormActions
             onSave={handleSubmitCompliance}

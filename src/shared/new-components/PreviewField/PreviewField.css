@@ -9,17 +9,11 @@
 }
 
 .preview-field-label {
-  @apply text-xs font-medium leading-4 text-zinc-700;
-  letter-spacing: 0;
-  text-transform: none;
+  @apply text-xs font-bold leading-4 text-slate-800 uppercase tracking-wider;
 }
 
 .preview-field-value {
-  @apply break-words text-sm font-bold leading-5 text-zinc-900;
-}
-
-.preview-field-break-word .preview-field-value {
-  @apply break-all;
+  @apply break-words text-sm font-normal leading-5 text-slate-800;
 }
 
 /* Dark mode */

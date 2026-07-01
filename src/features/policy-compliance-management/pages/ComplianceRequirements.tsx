@@ -7,6 +7,7 @@ import {
   FormActions,
   GridPanel,
   StatusBadge,
+  PreviewField,
 } from 'shared/new-components';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
@@ -25,7 +26,11 @@ export default function ComplianceRequirements() {
     INITIAL_COMPLIANCE_REQUIREMENTS
   );
   const [showForm, setShowForm] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
+  const [selectedRequirement, setSelectedRequirement] =
+    useState<ComplianceRequirement | null>(null);
   const [editing, setEditing] = useState<ComplianceRequirement | null>(null);
+  const [formError, setFormError] = useState('');
 
   const [formData, setFormData] = useState({
     name: '',
@@ -44,6 +49,7 @@ export default function ComplianceRequirements() {
       applicableTo: '',
     });
     setEditing(null);
+    setFormError('');
   };
 
   const handleCreate = () => {
@@ -63,7 +69,23 @@ export default function ComplianceRequirements() {
     setShowForm(true);
   };
 
+  const handleView = (item: ComplianceRequirement) => {
+    setSelectedRequirement(item);
+    setShowDetail(true);
+  };
+
   const handleSave = () => {
+    if (
+      !formData.name ||
+      !formData.frequency ||
+      !formData.department ||
+      !formData.applicableTo ||
+      !formData.description
+    ) {
+      setFormError('Please fill all required fields before saving.');
+      return;
+    }
+
     if (editing) {
       setRequirements(prev =>
         prev.map(r => (r.id === editing.id ? { ...r, ...formData } : r))
@@ -107,7 +129,7 @@ export default function ComplianceRequirements() {
         <Button label="Create Compliance" icon="add" onClick={handleCreate} />
       }
     >
-      <FormCard title="All Compliance Requirements" icon="assignment">
+      <FormCard title="All Compliance Requirements" icon="check-square">
         <GridPanel
           data={requirements}
           columns={[
@@ -127,18 +149,40 @@ export default function ComplianceRequirements() {
                 />
               ),
             },
-            { field: 'createdDate', header: 'Created', width: '110px' },
+            {
+              field: 'createdDate',
+              header: 'Created',
+              width: '110px',
+              cell: (item: any) => {
+                if (!item.createdDate) return '';
+                const parts = item.createdDate.split('-');
+                if (parts.length === 3) {
+                  return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                }
+                return item.createdDate;
+              },
+            },
             {
               field: 'actions',
               header: 'Actions',
               width: '100px',
               cell: (item: any) => (
-                <button
-                  className="text-amber-600 hover:text-amber-800 text-sm font-medium"
-                  onClick={() => handleEdit(item)}
-                >
-                  <i className="pi pi-pencil mr-1"></i>Edit
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    className="text-amber-600 hover:text-amber-800 text-lg transition-colors p-1"
+                    onClick={() => handleEdit(item)}
+                    title="Edit"
+                  >
+                    <i className="pi pi-pencil"></i>
+                  </button>
+                  <button
+                    className="text-blue-600 hover:text-blue-800 text-lg transition-colors p-1"
+                    onClick={() => handleView(item)}
+                    title="View"
+                  >
+                    <i className="pi pi-eye"></i>
+                  </button>
+                </div>
               ),
             },
           ]}
@@ -159,43 +203,59 @@ export default function ComplianceRequirements() {
           setShowForm(false);
           resetForm();
         }}
+        footer={
+          <FormActions
+            onSave={handleSave}
+            onReset={resetForm}
+            saveLabel={editing ? 'Save Changes' : 'Create'}
+          />
+        }
       >
-        <FormGrid columns={2}>
+        {formError && (
+          <div className="mb-4 p-3 bg-red-50 text-red-700 rounded border border-red-200 text-sm flex items-center gap-2">
+            <i className="pi pi-exclamation-circle"></i>
+            {formError}
+          </div>
+        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-2">
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700">
-              Compliance Name *
+              Compliance Name <span className="text-red-500">*</span>
             </label>
             <InputText
               value={formData.name}
               onChange={e => setFormData({ ...formData, name: e.target.value })}
               placeholder="Enter compliance name"
+              className="w-full"
             />
           </div>
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700">
-              Frequency *
+              Frequency <span className="text-red-500">*</span>
             </label>
             <Dropdown
               value={formData.frequency}
               options={frequencyOptions}
               onChange={e => setFormData({ ...formData, frequency: e.value })}
               placeholder="Select frequency"
+              className="w-full"
             />
           </div>
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700">
-              Department *
+              Department <span className="text-red-500">*</span>
             </label>
             <Dropdown
               value={formData.department}
               options={departmentOptions}
               onChange={e => setFormData({ ...formData, department: e.value })}
               placeholder="Select department"
+              className="w-full"
             />
           </div>
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700">
-              Applicable To *
+              Applicable To <span className="text-red-500">*</span>
             </label>
             <Dropdown
               value={formData.applicableTo}
@@ -204,12 +264,13 @@ export default function ComplianceRequirements() {
                 setFormData({ ...formData, applicableTo: e.value })
               }
               placeholder="Select applicable group"
+              className="w-full"
             />
           </div>
-        </FormGrid>
+        </div>
         <div className="flex flex-col gap-2 mt-4">
           <label className="text-sm font-semibold text-gray-700">
-            Description *
+            Description <span className="text-red-500">*</span>
           </label>
           <InputTextarea
             value={formData.description}
@@ -218,13 +279,72 @@ export default function ComplianceRequirements() {
             }
             rows={3}
             placeholder="Enter compliance description"
+            className="w-full"
           />
         </div>
-        <FormActions
-          isEditMode={!!editing}
-          onSave={handleSave}
-          onReset={resetForm}
-        />
+      </FormPopup>
+
+      {/* ── Detail View ── */}
+      <FormPopup
+        title={`Compliance Requirement: ${selectedRequirement?.id || ''}`}
+        visible={showDetail}
+        onHide={() => {
+          setShowDetail(false);
+          setSelectedRequirement(null);
+        }}
+      >
+        {selectedRequirement && (
+          <div className="space-y-4">
+            <FormGrid columns={2}>
+              <PreviewField
+                label="Compliance Name"
+                value={selectedRequirement.name}
+                className="border-none pb-0"
+              />
+              <PreviewField
+                label="Frequency"
+                value={selectedRequirement.frequency}
+                className="border-none pb-0"
+              />
+              <PreviewField
+                label="Department"
+                value={selectedRequirement.department}
+                className="border-none pb-0"
+              />
+              <PreviewField
+                label="Applicable To"
+                value={selectedRequirement.applicableTo}
+                className="border-none pb-0"
+              />
+              <PreviewField
+                label="Created Date"
+                value={selectedRequirement.createdDate}
+                className="border-none pb-0"
+              />
+              <PreviewField
+                label="Status"
+                className="border-none pb-0"
+                value={
+                  <StatusBadge
+                    label={selectedRequirement.status}
+                    variant={
+                      selectedRequirement.status === 'Active'
+                        ? 'approved'
+                        : 'neutral'
+                    }
+                  />
+                }
+              />
+            </FormGrid>
+            <div className="mt-4">
+              <PreviewField
+                label="Description"
+                value={selectedRequirement.description}
+                className="border-none pb-0"
+              />
+            </div>
+          </div>
+        )}
       </FormPopup>
     </FormPage>
   );

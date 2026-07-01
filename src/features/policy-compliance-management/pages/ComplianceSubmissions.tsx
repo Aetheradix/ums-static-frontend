@@ -7,6 +7,7 @@ import {
   FormActions,
   GridPanel,
   StatusBadge,
+  PreviewField,
 } from 'shared/new-components';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
@@ -25,6 +26,10 @@ export default function ComplianceSubmissions() {
   const [previewItem, setPreviewItem] = useState<ComplianceSubmission | null>(
     null
   );
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [formData, setFormData] = useState({
     complianceName: '',
@@ -42,23 +47,69 @@ export default function ComplianceSubmissions() {
       documents: '',
       remarks: '',
     });
+    setErrors({});
+    setIsEditMode(false);
+    setEditingId(null);
   };
 
   const handleSubmit = () => {
-    const newSubmission: ComplianceSubmission = {
-      id: `SUB-${String(submissions.length + 1).padStart(3, '0')}`,
-      assignmentId: `ASGN-${String(submissions.length + 1).padStart(3, '0')}`,
-      complianceName: formData.complianceName,
-      submittedBy: formData.submittedBy,
-      department: formData.department,
-      documents: formData.documents.split(',').map(d => d.trim()),
-      remarks: formData.remarks,
-      status: 'Submitted',
-      submittedDate: new Date().toISOString().split('T')[0],
-    };
-    setSubmissions(prev => [...prev, newSubmission]);
+    const newErrors: Record<string, string> = {};
+    if (!formData.complianceName.trim())
+      newErrors.complianceName = 'Compliance Name is required';
+    if (!formData.submittedBy.trim())
+      newErrors.submittedBy = 'Submitted By is required';
+    if (!formData.department.trim())
+      newErrors.department = 'Department is required';
+    if (!formData.remarks.trim()) newErrors.remarks = 'Remarks are required';
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    if (isEditMode && editingId) {
+      setSubmissions(prev =>
+        prev.map(sub =>
+          sub.id === editingId
+            ? {
+                ...sub,
+                complianceName: formData.complianceName,
+                submittedBy: formData.submittedBy,
+                department: formData.department,
+                documents: formData.documents.split(',').map(d => d.trim()),
+                remarks: formData.remarks,
+              }
+            : sub
+        )
+      );
+    } else {
+      const newSubmission: ComplianceSubmission = {
+        id: `SUB-${String(submissions.length + 1).padStart(3, '0')}`,
+        assignmentId: `ASGN-${String(submissions.length + 1).padStart(3, '0')}`,
+        complianceName: formData.complianceName,
+        submittedBy: formData.submittedBy,
+        department: formData.department,
+        documents: formData.documents.split(',').map(d => d.trim()),
+        remarks: formData.remarks,
+        status: 'Submitted',
+        submittedDate: new Date().toISOString().split('T')[0],
+      };
+      setSubmissions(prev => [...prev, newSubmission]);
+    }
     setShowForm(false);
     resetForm();
+  };
+
+  const handleEdit = (item: ComplianceSubmission) => {
+    setFormData({
+      complianceName: item.complianceName,
+      submittedBy: item.submittedBy,
+      department: item.department,
+      documents: item.documents.join(', '),
+      remarks: item.remarks || '',
+    });
+    setEditingId(item.id);
+    setIsEditMode(true);
+    setShowForm(true);
   };
 
   const handleView = (item: ComplianceSubmission) => {
@@ -89,15 +140,27 @@ export default function ComplianceSubmissions() {
         />
       }
     >
-      <FormCard title="All Submissions" icon="upload_file">
+      <FormCard title="All Submissions" icon="file">
         <GridPanel
           data={submissions}
           columns={[
-            { field: 'id', header: 'Sub ID', width: '90px' },
+            { field: 'id', header: 'Sub ID', width: '120px' },
             { field: 'complianceName', header: 'Compliance' },
             { field: 'submittedBy', header: 'Submitted By' },
             { field: 'department', header: 'Department' },
-            { field: 'submittedDate', header: 'Submitted', width: '110px' },
+            {
+              field: 'submittedDate',
+              header: 'Submitted',
+              width: '110px',
+              cell: (item: any) => {
+                if (!item.submittedDate) return '';
+                const parts = item.submittedDate.split('-');
+                if (parts.length === 3) {
+                  return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                }
+                return item.submittedDate;
+              },
+            },
             {
               field: 'status',
               header: 'Status',
@@ -119,12 +182,22 @@ export default function ComplianceSubmissions() {
               header: 'Actions',
               width: '100px',
               cell: (item: any) => (
-                <button
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                  onClick={() => handleView(item)}
-                >
-                  <i className="pi pi-eye mr-1"></i>View
-                </button>
+                <div className="flex gap-4">
+                  <button
+                    className="text-blue-600 hover:text-blue-800 text-lg transition-colors p-1"
+                    onClick={() => handleView(item)}
+                    title="View"
+                  >
+                    <i className="pi pi-eye"></i>
+                  </button>
+                  <button
+                    className="text-green-600 hover:text-green-800 text-lg transition-colors p-1"
+                    onClick={() => handleEdit(item)}
+                    title="Edit"
+                  >
+                    <i className="pi pi-pencil"></i>
+                  </button>
+                </div>
               ),
             },
           ]}
@@ -135,49 +208,74 @@ export default function ComplianceSubmissions() {
 
       {/* ── Submit Form ── */}
       <FormPopup
-        title="Submit Compliance"
+        title={isEditMode ? 'Update Compliance' : 'Submit Compliance'}
         visible={showForm}
         onHide={() => {
           setShowForm(false);
           resetForm();
         }}
+        footer={
+          <FormActions
+            isEditMode={isEditMode}
+            onSave={handleSubmit}
+            onReset={resetForm}
+            saveLabel={isEditMode ? 'Update' : 'Submit'}
+          />
+        }
       >
-        <FormGrid columns={2}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-2">
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700">
-              Compliance Name *
+              Compliance Name <span className="text-red-500">*</span>
             </label>
             <InputText
               value={formData.complianceName}
-              onChange={e =>
-                setFormData({ ...formData, complianceName: e.target.value })
-              }
+              onChange={e => {
+                setFormData({ ...formData, complianceName: e.target.value });
+                if (errors.complianceName)
+                  setErrors({ ...errors, complianceName: '' });
+              }}
               placeholder="Enter compliance name"
+              className={`w-full ${errors.complianceName ? 'p-invalid' : ''}`}
             />
+            {errors.complianceName && (
+              <small className="text-red-500">{errors.complianceName}</small>
+            )}
           </div>
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700">
-              Submitted By *
+              Submitted By <span className="text-red-500">*</span>
             </label>
             <InputText
               value={formData.submittedBy}
-              onChange={e =>
-                setFormData({ ...formData, submittedBy: e.target.value })
-              }
+              onChange={e => {
+                setFormData({ ...formData, submittedBy: e.target.value });
+                if (errors.submittedBy)
+                  setErrors({ ...errors, submittedBy: '' });
+              }}
               placeholder="Enter name"
+              className={`w-full ${errors.submittedBy ? 'p-invalid' : ''}`}
             />
+            {errors.submittedBy && (
+              <small className="text-red-500">{errors.submittedBy}</small>
+            )}
           </div>
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700">
-              Department *
+              Department <span className="text-red-500">*</span>
             </label>
             <InputText
               value={formData.department}
-              onChange={e =>
-                setFormData({ ...formData, department: e.target.value })
-              }
+              onChange={e => {
+                setFormData({ ...formData, department: e.target.value });
+                if (errors.department) setErrors({ ...errors, department: '' });
+              }}
               placeholder="Enter department"
+              className={`w-full ${errors.department ? 'p-invalid' : ''}`}
             />
+            {errors.department && (
+              <small className="text-red-500">{errors.department}</small>
+            )}
           </div>
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700">
@@ -189,25 +287,28 @@ export default function ComplianceSubmissions() {
                 setFormData({ ...formData, documents: e.target.value })
               }
               placeholder="e.g. report.pdf, certificate.pdf"
+              className="w-full"
             />
           </div>
-        </FormGrid>
+        </div>
         <div className="flex flex-col gap-2 mt-4">
-          <label className="text-sm font-semibold text-gray-700">Remarks</label>
+          <label className="text-sm font-semibold text-gray-700">
+            Remarks <span className="text-red-500">*</span>
+          </label>
           <InputTextarea
             value={formData.remarks}
-            onChange={e =>
-              setFormData({ ...formData, remarks: e.target.value })
-            }
+            onChange={e => {
+              setFormData({ ...formData, remarks: e.target.value });
+              if (errors.remarks) setErrors({ ...errors, remarks: '' });
+            }}
             rows={3}
             placeholder="Enter remarks..."
+            className={`w-full ${errors.remarks ? 'p-invalid' : ''}`}
           />
+          {errors.remarks && (
+            <small className="text-red-500">{errors.remarks}</small>
+          )}
         </div>
-        <FormActions
-          onSave={handleSubmit}
-          onReset={resetForm}
-          saveLabel="Submit"
-        />
       </FormPopup>
 
       {/* ── Preview Dialog ── */}
@@ -220,89 +321,86 @@ export default function ComplianceSubmissions() {
         }}
       >
         {previewItem && (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <FormGrid columns={2}>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Compliance
-                </span>
-                <span className="text-sm font-medium">
-                  {previewItem.complianceName}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Submitted By
-                </span>
-                <span className="text-sm font-medium">
-                  {previewItem.submittedBy}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Department
-                </span>
-                <span className="text-sm font-medium">
-                  {previewItem.department}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Status
-                </span>
-                <StatusBadge
-                  label={previewItem.status}
-                  variant={
-                    previewItem.status === 'Verified'
-                      ? 'approved'
-                      : previewItem.status === 'Rejected'
-                        ? 'rejected'
-                        : 'pending'
-                  }
-                />
-              </div>
+              <PreviewField
+                label="Compliance"
+                value={previewItem.complianceName}
+              />
+              <PreviewField
+                label="Submitted By"
+                value={previewItem.submittedBy}
+              />
+              <PreviewField label="Department" value={previewItem.department} />
+              <PreviewField
+                label="Status"
+                value={
+                  <StatusBadge
+                    label={previewItem.status}
+                    variant={
+                      previewItem.status === 'Verified'
+                        ? 'approved'
+                        : previewItem.status === 'Rejected'
+                          ? 'rejected'
+                          : 'pending'
+                    }
+                  />
+                }
+              />
             </FormGrid>
 
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-semibold text-gray-500 uppercase">
-                Documents
-              </span>
-              <div className="flex flex-col gap-2">
-                {previewItem.documents.map((doc, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-2 p-2 bg-gray-50 rounded"
-                  >
-                    <i className="pi pi-file text-blue-500"></i>
-                    <span className="text-sm text-gray-700">{doc}</span>
-                  </div>
-                ))}
+            {previewItem.documents && previewItem.documents.length > 0 && (
+              <div className="flex flex-col gap-1.5 mt-2">
+                <span className="text-xs font-bold leading-4 text-slate-800 uppercase tracking-wider">
+                  Documents
+                </span>
+                <div className="flex flex-col gap-3">
+                  {previewItem.documents.map((doc, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between px-4 py-3 border border-blue-100 rounded-xl bg-blue-50/50"
+                    >
+                      <div className="flex items-center gap-3">
+                        <i className="pi pi-file-pdf text-red-500 text-xl"></i>
+                        <span className="text-sm font-medium text-blue-600">
+                          {doc}
+                        </span>
+                      </div>
+                      <button className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors">
+                        <i className="pi pi-download"></i>
+                        Download
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-semibold text-gray-500 uppercase">
-                Remarks
-              </span>
-              <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg">
-                {previewItem.remarks}
-              </p>
-            </div>
+            {previewItem.remarks && (
+              <div className="flex flex-col gap-1.5 mt-2">
+                <span className="text-xs font-bold leading-4 text-slate-800 uppercase tracking-wider">
+                  Remarks
+                </span>
+                <div className="p-4 bg-white border border-slate-200 rounded-xl text-slate-700 text-sm leading-relaxed shadow-sm">
+                  {previewItem.remarks}
+                </div>
+              </div>
+            )}
 
             {previewItem.verificationRemarks && (
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
+              <div className="flex flex-col gap-1.5 mt-2">
+                <span className="text-xs font-bold leading-4 text-slate-800 uppercase tracking-wider">
                   Verification Remarks
                 </span>
-                <p
-                  className={`text-sm p-3 rounded-lg ${
+                <div
+                  className={`p-4 border rounded-xl text-sm leading-relaxed shadow-sm ${
                     previewItem.status === 'Rejected'
-                      ? 'text-red-700 bg-red-50'
-                      : 'text-green-700 bg-green-50'
+                      ? 'bg-red-50/50 border-red-200 text-red-700'
+                      : 'bg-green-50/50 border-green-200 text-green-700'
                   }`}
                 >
                   {previewItem.verificationRemarks}
-                </p>
+                </div>
               </div>
             )}
           </div>

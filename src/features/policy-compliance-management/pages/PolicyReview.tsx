@@ -6,6 +6,7 @@ import {
   FormPopup,
   GridPanel,
   StatusBadge,
+  PreviewField,
 } from 'shared/new-components';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Button } from 'shared/components/buttons';
@@ -65,7 +66,7 @@ export default function PolicyReview() {
     >
       <FormCard
         title="Policies Pending Review"
-        icon="rate_review"
+        icon="eye"
         subtitle="Draft and Under Review policies"
       >
         <GridPanel
@@ -76,7 +77,18 @@ export default function PolicyReview() {
             { field: 'category', header: 'Category' },
             { field: 'department', header: 'Department' },
             { field: 'createdBy', header: 'Created By' },
-            { field: 'createdDate', header: 'Created Date' },
+            {
+              field: 'createdDate',
+              header: 'Created Date',
+              cell: (item: any) => {
+                if (!item.createdDate) return '';
+                const parts = item.createdDate.split('-');
+                if (parts.length === 3) {
+                  return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                }
+                return item.createdDate;
+              },
+            },
             {
               field: 'status',
               header: 'Status',
@@ -117,50 +129,25 @@ export default function PolicyReview() {
         }}
       >
         {selectedPolicy && (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <FormGrid columns={2}>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Policy Code
-                </span>
-                <span className="text-sm font-medium">
-                  {selectedPolicy.code}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Category
-                </span>
-                <span className="text-sm font-medium">
-                  {selectedPolicy.category}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Department
-                </span>
-                <span className="text-sm font-medium">
-                  {selectedPolicy.department}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Version
-                </span>
-                <span className="text-sm font-medium">
-                  {selectedPolicy.versionNumber}
-                </span>
-              </div>
+              <PreviewField label="Policy Code" value={selectedPolicy.code} />
+              <PreviewField label="Category" value={selectedPolicy.category} />
+              <PreviewField
+                label="Department"
+                value={selectedPolicy.department}
+              />
+              <PreviewField
+                label="Version"
+                value={selectedPolicy.versionNumber}
+              />
             </FormGrid>
 
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-semibold text-gray-500 uppercase">
-                Description
-              </span>
-              <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg">
-                {selectedPolicy.description}
-              </p>
-            </div>
+            <PreviewField
+              label="Description"
+              value={selectedPolicy.description}
+              fullWidth
+            />
 
             <div className="flex flex-col gap-2">
               <label className="text-sm font-semibold text-gray-700">

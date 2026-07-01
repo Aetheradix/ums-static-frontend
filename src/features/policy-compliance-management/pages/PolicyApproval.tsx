@@ -6,6 +6,7 @@ import {
   FormPopup,
   GridPanel,
   StatusBadge,
+  PreviewField,
 } from 'shared/new-components';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Button } from 'shared/components/buttons';
@@ -61,7 +62,7 @@ export default function PolicyApproval() {
     >
       <FormCard
         title="Policies Awaiting Approval"
-        icon="approval"
+        icon="check-circle"
         subtitle="Reviewed policies pending final approval"
       >
         <GridPanel
@@ -122,60 +123,36 @@ export default function PolicyApproval() {
         }}
       >
         {selectedPolicy && (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <FormGrid columns={2}>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Policy Code
-                </span>
-                <span className="text-sm font-medium">
-                  {selectedPolicy.code}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Category
-                </span>
-                <span className="text-sm font-medium">
-                  {selectedPolicy.category}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Department
-                </span>
-                <span className="text-sm font-medium">
-                  {selectedPolicy.department}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Version
-                </span>
-                <span className="text-sm font-medium">
-                  {selectedPolicy.versionNumber}
-                </span>
-              </div>
+              <PreviewField label="Policy Code" value={selectedPolicy.code} />
+              <PreviewField label="Category" value={selectedPolicy.category} />
+              <PreviewField
+                label="Department"
+                value={selectedPolicy.department}
+              />
+              <PreviewField
+                label="Version"
+                value={selectedPolicy.versionNumber}
+              />
             </FormGrid>
 
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-semibold text-gray-500 uppercase">
-                Description
-              </span>
-              <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg">
-                {selectedPolicy.description}
-              </p>
-            </div>
+            <PreviewField
+              label="Description"
+              value={selectedPolicy.description}
+              fullWidth
+            />
 
             {selectedPolicy.reviewerComments && (
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Reviewer Comments
-                </span>
-                <p className="text-sm text-blue-700 bg-blue-50 p-3 rounded-lg">
-                  {selectedPolicy.reviewerComments}
-                </p>
-              </div>
+              <PreviewField
+                label="Reviewer Comments"
+                value={
+                  <span className="text-blue-700 italic">
+                    "{selectedPolicy.reviewerComments}"
+                  </span>
+                }
+                fullWidth
+              />
             )}
 
             <div className="flex flex-col gap-2">

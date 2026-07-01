@@ -5,7 +5,7 @@ export default function Acknowledgements() {
   return (
     <FormPage
       title="Policy Acknowledgements"
-      description="Track user acknowledgements — User ID, Date, Time, IP Address, and Version Accepted"
+      description="Track user acknowledgements — User ID, Date, Time, and Version Accepted"
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         {
@@ -15,7 +15,7 @@ export default function Acknowledgements() {
         { label: 'Acknowledgements' },
       ]}
     >
-      <FormCard title="Acknowledgement Log" icon="how_to_reg">
+      <FormCard title="Acknowledgement Log" icon="check-circle">
         <GridPanel
           data={INITIAL_ACKNOWLEDGEMENTS}
           columns={[
@@ -41,10 +41,21 @@ export default function Acknowledgements() {
                 </span>
               ),
             },
-            { field: 'date', header: 'Date', width: '110px' },
-            { field: 'time', header: 'Time', width: '100px' },
-            { field: 'ipAddress', header: 'IP Address', width: '130px' },
-            { field: 'versionAccepted', header: 'Version', width: '80px' },
+            {
+              field: 'date',
+              header: 'Date',
+              width: '120px',
+              cell: (item: any) => {
+                if (!item.date) return '';
+                const parts = item.date.split('-');
+                if (parts.length === 3) {
+                  return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                }
+                return item.date;
+              },
+            },
+            { field: 'time', header: 'Time', width: '110px' },
+            { field: 'versionAccepted', header: 'Version', width: '90px' },
           ]}
           searchBox
           searchPlaceholder="Search acknowledgements..."

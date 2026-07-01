@@ -8,6 +8,7 @@ import {
   GridPanel,
   StatusBadge,
   Stepper,
+  PreviewField,
 } from 'shared/new-components';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
@@ -21,6 +22,8 @@ export default function AuditManagement() {
   const [showForm, setShowForm] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
   const [selectedAudit, setSelectedAudit] = useState<Audit | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [formError, setFormError] = useState('');
 
   const [formData, setFormData] = useState({
     name: '',
@@ -38,6 +41,8 @@ export default function AuditManagement() {
       auditor: '',
       checklist: '',
     });
+    setEditingId(null);
+    setFormError('');
   };
 
   const handleCreate = () => {
@@ -45,22 +50,65 @@ export default function AuditManagement() {
     setShowForm(true);
   };
 
+  const handleEdit = (item: Audit) => {
+    setFormData({
+      name: item.name,
+      department: item.department,
+      auditDate: item.auditDate ? new Date(item.auditDate) : null,
+      auditor: item.auditor,
+      checklist: item.checklist.join('\n'),
+    });
+    setEditingId(item.id);
+    setShowForm(true);
+  };
+
   const handleSave = () => {
-    const newAudit: Audit = {
-      id: `AUD-${String(audits.length + 1).padStart(3, '0')}`,
-      name: formData.name,
-      department: formData.department,
-      auditDate: formData.auditDate
-        ? formData.auditDate.toISOString().split('T')[0]
-        : '',
-      auditor: formData.auditor,
-      checklist: formData.checklist.split('\n').filter(c => c.trim()),
-      findings: '',
-      status: 'Scheduled',
-    };
-    setAudits(prev => [...prev, newAudit]);
+    if (
+      !formData.name ||
+      !formData.department ||
+      !formData.auditDate ||
+      !formData.auditor ||
+      !formData.checklist
+    ) {
+      setFormError('Please fill all required fields before saving.');
+      return;
+    }
+
+    if (editingId) {
+      setAudits(prev =>
+        prev.map(audit =>
+          audit.id === editingId
+            ? {
+                ...audit,
+                name: formData.name,
+                department: formData.department,
+                auditDate: formData.auditDate
+                  ? formData.auditDate.toISOString().split('T')[0]
+                  : '',
+                auditor: formData.auditor,
+                checklist: formData.checklist.split('\n').filter(c => c.trim()),
+              }
+            : audit
+        )
+      );
+    } else {
+      const newAudit: Audit = {
+        id: `AUD-${String(audits.length + 1).padStart(3, '0')}`,
+        name: formData.name,
+        department: formData.department,
+        auditDate: formData.auditDate
+          ? formData.auditDate.toISOString().split('T')[0]
+          : '',
+        auditor: formData.auditor,
+        checklist: formData.checklist.split('\n').filter(c => c.trim()),
+        findings: '',
+        status: 'Scheduled',
+      };
+      setAudits(prev => [...prev, newAudit]);
+    }
     setShowForm(false);
     resetForm();
+    setEditingId(null);
   };
 
   const handleView = (audit: Audit) => {
@@ -110,14 +158,26 @@ export default function AuditManagement() {
         <Button label="Schedule Audit" icon="add" onClick={handleCreate} />
       }
     >
-      <FormCard title="All Audits" icon="fact_check">
+      <FormCard title="All Audits" icon="check-square">
         <GridPanel
           data={audits}
           columns={[
             { field: 'id', header: 'Audit ID', width: '100px' },
             { field: 'name', header: 'Audit Name' },
             { field: 'department', header: 'Department' },
-            { field: 'auditDate', header: 'Audit Date', width: '110px' },
+            {
+              field: 'auditDate',
+              header: 'Audit Date',
+              width: '110px',
+              cell: (item: any) => {
+                if (!item.auditDate) return '';
+                const parts = item.auditDate.split('-');
+                if (parts.length === 3) {
+                  return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                }
+                return item.auditDate;
+              },
+            },
             { field: 'auditor', header: 'Auditor' },
             {
               field: 'status',
@@ -138,12 +198,22 @@ export default function AuditManagement() {
               header: 'Actions',
               width: '100px',
               cell: (item: any) => (
-                <button
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                  onClick={() => handleView(item)}
-                >
-                  <i className="pi pi-eye mr-1"></i>View
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    className="text-amber-600 hover:text-amber-800 text-lg transition-colors p-1"
+                    onClick={() => handleEdit(item)}
+                    title="Edit"
+                  >
+                    <i className="pi pi-pencil"></i>
+                  </button>
+                  <button
+                    className="text-blue-600 hover:text-blue-800 text-lg transition-colors p-1"
+                    onClick={() => handleView(item)}
+                    title="View"
+                  >
+                    <i className="pi pi-eye"></i>
+                  </button>
+                </div>
               ),
             },
           ]}
@@ -152,54 +222,70 @@ export default function AuditManagement() {
         />
       </FormCard>
 
-      {/* ── Schedule Audit Form ── */}
+      {/* ── Schedule / Edit Audit Form ── */}
       <FormPopup
-        title="Schedule New Audit"
+        title={editingId ? 'Edit Audit Details' : 'Schedule New Audit'}
         visible={showForm}
         onHide={() => {
           setShowForm(false);
           resetForm();
         }}
+        footer={
+          <FormActions
+            onSave={handleSave}
+            onReset={resetForm}
+            saveLabel={editingId ? 'Save Changes' : 'Schedule'}
+          />
+        }
       >
-        <FormGrid columns={2}>
+        {formError && (
+          <div className="mb-4 p-3 bg-red-50 text-red-700 rounded border border-red-200 text-sm flex items-center gap-2">
+            <i className="pi pi-exclamation-circle"></i>
+            {formError}
+          </div>
+        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-2">
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700">
-              Audit Name *
+              Audit Name <span className="text-red-500">*</span>
             </label>
             <InputText
               value={formData.name}
               onChange={e => setFormData({ ...formData, name: e.target.value })}
               placeholder="Enter audit name"
+              className="w-full"
             />
           </div>
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700">
-              Department *
+              Department <span className="text-red-500">*</span>
             </label>
             <Dropdown
               value={formData.department}
               options={departmentOptions}
               onChange={e => setFormData({ ...formData, department: e.value })}
               placeholder="Select department"
+              className="w-full"
             />
           </div>
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700">
-              Audit Date *
+              Audit Date <span className="text-red-500">*</span>
             </label>
             <Calendar
               value={formData.auditDate}
               onChange={e =>
                 setFormData({ ...formData, auditDate: e.value as Date })
               }
-              dateFormat="yy-mm-dd"
+              dateFormat="dd-mm-yy"
               placeholder="Select date"
               showIcon
+              className="w-full"
             />
           </div>
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700">
-              Auditor *
+              Auditor <span className="text-red-500">*</span>
             </label>
             <InputText
               value={formData.auditor}
@@ -207,12 +293,14 @@ export default function AuditManagement() {
                 setFormData({ ...formData, auditor: e.target.value })
               }
               placeholder="Enter auditor name"
+              className="w-full"
             />
           </div>
-        </FormGrid>
+        </div>
         <div className="flex flex-col gap-2 mt-4">
           <label className="text-sm font-semibold text-gray-700">
-            Checklist Items (one per line) *
+            Checklist Items (one per line){' '}
+            <span className="text-red-500">*</span>
           </label>
           <InputTextarea
             value={formData.checklist}
@@ -221,13 +309,9 @@ export default function AuditManagement() {
             }
             rows={5}
             placeholder="Enter checklist items, one per line..."
+            className="w-full"
           />
         </div>
-        <FormActions
-          onSave={handleSave}
-          onReset={resetForm}
-          saveLabel="Schedule"
-        />
       </FormPopup>
 
       {/* ── Audit Detail View ── */}
@@ -250,58 +334,50 @@ export default function AuditManagement() {
             </div>
 
             <FormGrid columns={2}>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Department
-                </span>
-                <span className="text-sm font-medium">
-                  {selectedAudit.department}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Audit Date
-                </span>
-                <span className="text-sm font-medium">
-                  {selectedAudit.auditDate}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Auditor
-                </span>
-                <span className="text-sm font-medium">
-                  {selectedAudit.auditor}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Status
-                </span>
-                <StatusBadge
-                  label={selectedAudit.status}
-                  variant={
-                    selectedAudit.status === 'Completed'
-                      ? 'approved'
-                      : selectedAudit.status === 'In Progress'
-                        ? 'pending'
-                        : 'neutral'
-                  }
-                />
-              </div>
+              <PreviewField
+                label="Department"
+                value={selectedAudit.department}
+                className="border-none pb-0"
+              />
+              <PreviewField
+                label="Audit Date"
+                value={selectedAudit.auditDate}
+                className="border-none pb-0"
+              />
+              <PreviewField
+                label="Auditor"
+                value={selectedAudit.auditor}
+                className="border-none pb-0"
+              />
+              <PreviewField
+                label="Status"
+                className="border-none pb-0"
+                value={
+                  <StatusBadge
+                    label={selectedAudit.status}
+                    variant={
+                      selectedAudit.status === 'Completed'
+                        ? 'approved'
+                        : selectedAudit.status === 'In Progress'
+                          ? 'pending'
+                          : 'neutral'
+                    }
+                  />
+                }
+              />
             </FormGrid>
 
-            <div className="flex flex-col gap-2">
-              <span className="text-xs font-semibold text-gray-500 uppercase">
+            <div className="flex flex-col gap-2 mt-2">
+              <span className="text-xs font-bold leading-4 text-slate-800 uppercase tracking-wider">
                 Audit Checklist
               </span>
-              <div className="space-y-2">
+              <div className="space-y-2 mt-1">
                 {selectedAudit.checklist.map((item, i) => (
                   <div
                     key={i}
-                    className="flex items-center gap-2 p-2 bg-gray-50 rounded text-sm"
+                    className="flex items-center gap-2 p-3 bg-gray-50 border border-gray-100 rounded-lg text-sm text-slate-800"
                   >
-                    <i className="pi pi-check-circle text-green-500"></i>
+                    <i className="pi pi-check-circle text-green-500 text-lg"></i>
                     <span>{item}</span>
                   </div>
                 ))}
@@ -309,8 +385,8 @@ export default function AuditManagement() {
             </div>
 
             {selectedAudit.findings && (
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">
+              <div className="flex flex-col gap-2 mt-2">
+                <span className="text-xs font-bold leading-4 text-slate-800 uppercase tracking-wider">
                   Findings
                 </span>
                 <p className="text-sm text-amber-700 bg-amber-50 p-3 rounded-lg">

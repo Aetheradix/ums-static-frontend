@@ -48,9 +48,20 @@ export default function StudentComplianceHistory() {
                 header: 'Version Accepted',
                 width: '150px',
               },
-              { field: 'date', header: 'Date', width: '120px' },
+              {
+                field: 'date',
+                header: 'Date',
+                width: '120px',
+                cell: (item: any) => {
+                  if (!item.date) return '';
+                  const parts = item.date.split('-');
+                  if (parts.length === 3) {
+                    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                  }
+                  return item.date;
+                },
+              },
               { field: 'time', header: 'Time', width: '120px' },
-              { field: 'ipAddress', header: 'IP Address', width: '160px' },
             ]}
             searchBox={false}
           />
@@ -69,6 +80,14 @@ export default function StudentComplianceHistory() {
                 field: 'submittedDate',
                 header: 'Submitted Date',
                 width: '140px',
+                cell: (item: any) => {
+                  if (!item.submittedDate) return '';
+                  const parts = item.submittedDate.split('-');
+                  if (parts.length === 3) {
+                    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                  }
+                  return item.submittedDate;
+                },
               },
               {
                 field: 'documents',

@@ -3,8 +3,10 @@ import {
   FormCard,
   FormPage,
   FormPopup,
+  FormGrid,
   GridPanel,
   StatusBadge,
+  PreviewField,
 } from 'shared/new-components';
 import { Button } from 'shared/components/buttons';
 import {
@@ -132,53 +134,74 @@ export default function StudentMyPolicies() {
         size="lg"
       >
         {selectedPolicy && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-              <div className="flex flex-col">
-                <span className="text-xs text-gray-500 uppercase font-bold">
-                  Policy Code
-                </span>
-                <span className="text-lg font-semibold">
-                  {selectedPolicy.code}
-                </span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xs text-gray-500 uppercase font-bold">
-                  Effective Date
-                </span>
-                <span className="text-lg font-semibold">
-                  {selectedPolicy.effectiveDate}
-                </span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xs text-gray-500 uppercase font-bold">
-                  Version
-                </span>
-                <span className="text-lg font-semibold">
-                  {selectedPolicy.versionNumber}
-                </span>
-              </div>
-              <Button
-                label="Download Document"
-                icon="download"
-                variant="outlined"
+          <div className="space-y-6">
+            <FormGrid columns={2}>
+              <PreviewField label="Policy Code" value={selectedPolicy.code} />
+              <PreviewField label="Category" value={selectedPolicy.category} />
+              <PreviewField
+                label="Department"
+                value={selectedPolicy.department}
               />
+              <PreviewField
+                label="Version"
+                value={selectedPolicy.versionNumber}
+              />
+              <PreviewField
+                label="Effective Date"
+                value={selectedPolicy.effectiveDate}
+              />
+              <PreviewField
+                label="Expiry Date"
+                value={selectedPolicy.expiryDate || 'N/A'}
+              />
+            </FormGrid>
+
+            <div className="flex flex-col gap-1.5 mt-2">
+              <span className="text-xs font-bold leading-4 text-slate-800 uppercase tracking-wider">
+                Policy Description
+              </span>
+              <div className="p-4 bg-white border border-slate-200 rounded-xl text-slate-700 text-sm leading-relaxed shadow-sm">
+                {selectedPolicy.description}
+              </div>
             </div>
 
-            <div className="p-4 bg-white border border-gray-200 rounded-lg h-64 overflow-y-auto shadow-inner">
-              <h3 className="font-bold mb-2">Policy Description</h3>
-              <p className="text-gray-700">{selectedPolicy.description}</p>
-              <p className="text-gray-700 mt-4">
-                (Simulated full document text would appear here. The student is
-                required to scroll and read the entire policy.)
-              </p>
+            <div className="flex items-center justify-between px-4 py-3 border border-blue-100 rounded-xl bg-blue-50/50 mt-4">
+              <div className="flex items-center gap-3">
+                <i className="pi pi-file-pdf text-red-500 text-xl"></i>
+                <span className="text-sm font-medium text-blue-600">
+                  {selectedPolicy.code.toLowerCase()}_policy_v
+                  {selectedPolicy.versionNumber}.pdf
+                </span>
+              </div>
+              <button className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors">
+                <i className="pi pi-download"></i>
+                Download
+              </button>
             </div>
+
+            <PreviewField
+              label="Applicable To"
+              value={
+                <div className="flex gap-2 flex-wrap mt-1">
+                  {selectedPolicy.applicableTo.map(a => (
+                    <span
+                      key={a}
+                      className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-medium"
+                    >
+                      {a}
+                    </span>
+                  ))}
+                </div>
+              }
+              fullWidth
+            />
 
             {!isPolicyAccepted(selectedPolicy.id) ? (
-              <div className="bg-indigo-50 p-4 rounded-lg border border-indigo-100 flex flex-col gap-3">
-                <h4 className="font-semibold text-indigo-900">
-                  Acknowledgement Required
-                </h4>
+              <div className="mt-4 pt-4 border-t border-slate-200 flex flex-col gap-4">
+                <p className="text-sm text-slate-600">
+                  By clicking "I Accept", you confirm that you have read and
+                  understood this policy.
+                </p>
                 <label className="flex items-center gap-3 cursor-pointer">
                   <input
                     type="checkbox"
@@ -187,13 +210,12 @@ export default function StudentMyPolicies() {
                     onChange={e => setAcceptChecked(e.target.checked)}
                   />
                   <span className="text-sm font-medium text-gray-800">
-                    I have read and understood the policy document in its
-                    entirety and agree to comply with it.
+                    I acknowledge and agree to comply.
                   </span>
                 </label>
-                <div className="mt-2 flex justify-end">
+                <div className="mt-2">
                   <Button
-                    label="Accept Policy"
+                    label="I Accept"
                     icon="check"
                     disabled={!acceptChecked}
                     onClick={handleAcceptPolicy}
@@ -201,7 +223,7 @@ export default function StudentMyPolicies() {
                 </div>
               </div>
             ) : (
-              <div className="bg-green-50 p-4 rounded-lg border border-green-200 flex items-center gap-3">
+              <div className="bg-green-50 p-4 rounded-lg border border-green-200 flex items-center gap-3 mt-4">
                 <i className="pi pi-check-circle text-green-600 text-xl"></i>
                 <div>
                   <h4 className="font-semibold text-green-900">
