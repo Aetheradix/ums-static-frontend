@@ -11,21 +11,24 @@ export default function ProgressPortal() {
       portals={[
         {
           title: 'Student Progress',
-          description: 'View learning status, quiz performance, and logs for individual students.',
+          description:
+            'View learning status, quiz performance, and logs for individual students.',
           icon: 'person',
           colorScheme: 'indigo',
           path: `${learningUrls.teacher.progress}/students`,
         },
         {
           title: 'Course Progress',
-          description: 'Monitor average class progress, video counts and grading status.',
+          description:
+            'Monitor average class progress, video counts and grading status.',
           icon: 'analytics',
           colorScheme: 'blue',
           path: `${learningUrls.teacher.progress}/courses`,
         },
         {
           title: 'Module Completion Status',
-          description: 'Review which modules have been completed by each section.',
+          description:
+            'Review which modules have been completed by each section.',
           icon: 'view_module',
           colorScheme: 'teal',
           path: `${learningUrls.teacher.progress}/modules`,

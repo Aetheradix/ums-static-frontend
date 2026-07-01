@@ -1,0 +1,110 @@
+@reference "tailwindcss";
+
+/* Stat-card grid — 1 / 2 / 4 columns responsive */
+.ttm-stats-grid {
+  @apply grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4;
+  margin-bottom: 1.5rem;
+}
+
+/* Two-up chart row */
+.ttm-charts-row {
+  @apply grid grid-cols-1 gap-4 lg:grid-cols-2;
+  margin-bottom: 1.5rem;
+}
+
+/* Fixed-height wrapper for chart canvases (avoids inline height styles) */
+.ttm-chart-box {
+  position: relative;
+  height: 240px;
+}
+
+/* Reports filter row */
+.ttm-filter-row {
+  @apply grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4;
+  margin-bottom: 1rem;
+}
+
+/* Simple two-column detail definition list */
+.ttm-detail-grid {
+  @apply grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2;
+}
+
+.ttm-detail-item {
+  @apply flex flex-col gap-1;
+}
+
+.ttm-detail-label {
+  @apply text-xs font-medium uppercase tracking-wide text-gray-400;
+}
+
+.ttm-detail-value {
+  @apply text-sm font-medium text-gray-700;
+}
+
+.dark .ttm-detail-value {
+  @apply text-gray-200;
+}
+
+/* ─── Weekly grid table ─────────────────────────────────────────────────── */
+.ttm-week-scroll {
+  @apply w-full overflow-x-auto;
+}
+
+.ttm-week-table {
+  @apply w-full border-collapse text-sm;
+  min-width: 760px;
+}
+
+.ttm-week-table th,
+.ttm-week-table td {
+  @apply border border-gray-200 p-2 text-left align-top;
+}
+
+.dark .ttm-week-table th,
+.dark .ttm-week-table td {
+  @apply border-gray-700;
+}
+
+.ttm-week-head {
+  @apply bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500;
+}
+
+.dark .ttm-week-head {
+  @apply bg-gray-800 text-gray-300;
+}
+
+.ttm-week-daycol {
+  @apply whitespace-nowrap bg-gray-50 text-xs font-semibold text-gray-600;
+}
+
+.dark .ttm-week-daycol {
+  @apply bg-gray-800 text-gray-300;
+}
+
+.ttm-week-cell {
+  @apply rounded-md bg-indigo-50 px-2 py-1;
+}
+
+.dark .ttm-week-cell {
+  @apply bg-indigo-950;
+}
+
+.ttm-week-course {
+  @apply text-xs font-semibold text-indigo-700;
+}
+
+.dark .ttm-week-course {
+  @apply text-indigo-300;
+}
+
+.ttm-week-meta {
+  @apply text-[11px] text-gray-500;
+}
+
+.dark .ttm-week-meta {
+  @apply text-gray-400;
+}
+
+.ttm-week-empty {
+  @apply text-center text-xs text-gray-300;
+}

@@ -11,22 +11,71 @@ import {
 import { learningUrls } from '../../urls';
 
 const INITIAL_MATERIALS = [
-  { id: 1, title: 'C++ Pointers Lecture', type: 'Video', module: 'Programming Basics', topic: 'Introduction to C++', date: '2026-06-25', status: 'Published' },
-  { id: 2, title: 'C++ OOP Concepts Slide Deck', type: 'PPT', module: 'Programming Basics', topic: 'Variables & Data Types', date: '2026-06-28', status: 'Published' },
-  { id: 3, title: 'Pointer Arithmetic Reference Sheet', type: 'PDF', module: 'Programming Basics', topic: 'Introduction to C++', date: '2026-06-29', status: 'Published' },
-  { id: 4, title: 'Structure vs Class Differences', type: 'Notes', module: 'Programming Basics', topic: 'Variables & Data Types', date: '2026-06-30', status: 'Published' },
-  { id: 5, title: 'Assignment 2: Pointer Reversals', type: 'Assignment', module: 'Programming Basics', topic: 'Introduction to C++', date: '2026-07-01', status: 'Draft' },
+  {
+    id: 1,
+    title: 'C++ Pointers Lecture',
+    type: 'Video',
+    module: 'Programming Basics',
+    topic: 'Introduction to C++',
+    date: '2026-06-25',
+    status: 'Published',
+  },
+  {
+    id: 2,
+    title: 'C++ OOP Concepts Slide Deck',
+    type: 'PPT',
+    module: 'Programming Basics',
+    topic: 'Variables & Data Types',
+    date: '2026-06-28',
+    status: 'Published',
+  },
+  {
+    id: 3,
+    title: 'Pointer Arithmetic Reference Sheet',
+    type: 'PDF',
+    module: 'Programming Basics',
+    topic: 'Introduction to C++',
+    date: '2026-06-29',
+    status: 'Published',
+  },
+  {
+    id: 4,
+    title: 'Structure vs Class Differences',
+    type: 'Notes',
+    module: 'Programming Basics',
+    topic: 'Variables & Data Types',
+    date: '2026-06-30',
+    status: 'Published',
+  },
+  {
+    id: 5,
+    title: 'Assignment 2: Pointer Reversals',
+    type: 'Assignment',
+    module: 'Programming Basics',
+    topic: 'Introduction to C++',
+    date: '2026-07-01',
+    status: 'Draft',
+  },
 ];
 
 export default function ManageMaterials() {
   const [data, setData] = useState(INITIAL_MATERIALS);
   const [filterType, setFilterType] = useState<string>('All');
-  const [popup, setPopup] = useState<{ mode: 'closed' | 'edit'; item?: any }>({ mode: 'closed' });
+  const [popup, setPopup] = useState<{ mode: 'closed' | 'edit'; item?: any }>({
+    mode: 'closed',
+  });
 
-  const filteredData = filterType === 'All' ? data : data.filter(item => item.type === filterType);
+  const filteredData =
+    filterType === 'All' ? data : data.filter(item => item.type === filterType);
 
   const handleToggleStatus = (item: any) => {
-    setData(prev => prev.map(m => m.id === item.id ? { ...m, status: m.status === 'Published' ? 'Draft' : 'Published' } : m));
+    setData(prev =>
+      prev.map(m =>
+        m.id === item.id
+          ? { ...m, status: m.status === 'Published' ? 'Draft' : 'Published' }
+          : m
+      )
+    );
     ToastService.success('Material status updated.');
   };
 
@@ -57,7 +106,9 @@ export default function ManageMaterials() {
             key={type}
             onClick={() => setFilterType(type)}
             className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
-              filterType === type ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              filterType === type
+                ? 'bg-indigo-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
             {type}s
@@ -83,7 +134,9 @@ export default function ManageMaterials() {
                 <button
                   onClick={() => handleToggleStatus(item)}
                   className={`px-2 py-0.5 rounded text-xxs font-semibold cursor-pointer ${
-                    item.status === 'Published' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                    item.status === 'Published'
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-yellow-100 text-yellow-700'
                   }`}
                 >
                   {item.status}

@@ -6935,6 +6935,206 @@ export const menuConfig: Menu.MenuItem[] = [
   },
 
   {
+    label: 'Legal Case Management',
+    slug: 'legal-case-management',
+    category: 'Governance',
+    icon: 'gavel',
+    colorScheme: 'red',
+    description:
+      'Registration • Hearings • Judgments • Advocate Payments • Reports',
+    path: '/legal-case-management',
+    children: [
+      {
+        label: 'Legal Case Management System',
+        slug: 'legal-case-management-system',
+        description:
+          'Track university legal cases from registration through disposal — hearings, judgments and advocate payments.',
+        path: '/legal-case-management',
+        icon: 'gavel',
+        colorScheme: 'red',
+        children: [
+          {
+            label: 'Case Administrator',
+            description:
+              'Register cases, schedule hearings, log advocate payments and generate reports.',
+            path: '/legal-case-management/admin',
+            icon: 'admin_panel_settings',
+            colorScheme: 'red',
+          },
+          {
+            label: 'Data Entry Operator',
+            description:
+              'Enter case details and record hearings under legal cell supervision.',
+            path: '/legal-case-management/data-entry',
+            icon: 'edit_note',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Case Viewer',
+            description:
+              'Read-only access to case dashboards, registers and reports.',
+            path: '/legal-case-management/viewer',
+            icon: 'visibility',
+            colorScheme: 'teal',
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    label: 'Networking & Communication Management',
+    slug: 'communication-management',
+    category: 'Administrative',
+    icon: 'campaign',
+    colorScheme: 'red',
+    description:
+      'Bulk Email • SMS • Groups • Mailing Lists • Delivery Logs • Reports',
+    path: '/communication-management',
+    children: [
+      {
+        label: 'Communication Management System',
+        slug: 'communication-management-system',
+        description:
+          'Send bulk email and SMS to employees and students, manage groups and mailing lists, and review the full communication log.',
+        path: '/communication-management',
+        icon: 'campaign',
+        colorScheme: 'red',
+        children: [
+          {
+            label: 'Communication Admin',
+            description:
+              'Full control — compose bulk email and SMS, manage groups and mailing lists, configure gateways and review logs.',
+            path: '/communication-management/admin',
+            icon: 'campaign',
+            colorScheme: 'red',
+          },
+          {
+            label: 'Read-only Viewer',
+            description:
+              'Read-only access to the communication dashboard and delivery logs.',
+            path: '/communication-management/viewer',
+            icon: 'visibility',
+            colorScheme: 'teal',
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    label: 'Event & Ticketing Management',
+    slug: 'event-ticketing-management',
+    category: 'Student Services',
+    icon: 'confirmation_number',
+    colorScheme: 'purple',
+    description:
+      'Events • Ticketing • Registrations • QR Check-in • Attendance • Reports',
+    path: '/event-ticketing-management',
+    children: [
+      {
+        label: 'Event & Ticketing Management System',
+        slug: 'event-ticketing-management-system',
+        description:
+          'Plan university events end-to-end — ticketing, registrations, QR check-in and attendance analytics.',
+        path: '/event-ticketing-management',
+        icon: 'confirmation_number',
+        colorScheme: 'purple',
+        children: [
+          {
+            label: 'Event Administrator',
+            description:
+              'Full control — create events, manage ticketing, review registrations and generate reports.',
+            path: '/event-ticketing-management/admin',
+            icon: 'admin_panel_settings',
+            colorScheme: 'red',
+          },
+          {
+            label: 'Organizer',
+            description:
+              'Create and manage your own events and monitor their registrations.',
+            path: '/event-ticketing-management/organizer',
+            icon: 'campaign',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Volunteer',
+            description:
+              'Scan tickets and check attendees in at the event entrance.',
+            path: '/event-ticketing-management/volunteer',
+            icon: 'how_to_reg',
+            colorScheme: 'green',
+          },
+          {
+            label: 'Attendee',
+            description:
+              'Browse upcoming events, register and view your tickets with QR passes.',
+            path: '/event-ticketing-management/attendee',
+            icon: 'confirmation_number',
+            colorScheme: 'purple',
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    label: 'Timetable Management',
+    slug: 'timetable-management',
+    category: 'Academics',
+    icon: 'calendar_month',
+    colorScheme: 'blue',
+    description:
+      'Sessions • Time-slots • Assignments • Clashes • Timetables • Reports',
+    path: '/timetable-management',
+    children: [
+      {
+        label: 'Timetable Management System',
+        slug: 'timetable-management-system',
+        description:
+          'Academic scheduling — configure sessions and time-slots, assign courses to faculty and rooms, detect clashes, publish and view timetables.',
+        path: '/timetable-management',
+        icon: 'calendar_month',
+        colorScheme: 'blue',
+        children: [
+          {
+            label: 'Timetable Admin',
+            description:
+              'Full control — set up sessions and periods, resolve clashes, publish timetables and view analytics.',
+            path: '/timetable-management/admin',
+            icon: 'admin_panel_settings',
+            colorScheme: 'red',
+          },
+          {
+            label: 'Scheduler',
+            description:
+              'Assign courses, faculty and rooms to time-slots and manage room allocation.',
+            path: '/timetable-management/scheduler',
+            icon: 'edit_calendar',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Faculty',
+            description:
+              'View your weekly teaching schedule and raise substitution requests.',
+            path: '/timetable-management/faculty',
+            icon: 'groups',
+            colorScheme: 'green',
+          },
+          {
+            label: 'Student',
+            description:
+              'View your class timetable and the semester examination schedule.',
+            path: '/timetable-management/student',
+            icon: 'school',
+            colorScheme: 'purple',
+          },
+        ],
+      },
+    ],
+  },
+
+  {
     label: 'Bill Management & Tracking',
     slug: 'bill-tracking',
     category: 'Finance',

@@ -30,12 +30,42 @@ export default function TeacherDashboard() {
   };
 
   const kpis = [
-    { label: 'Assigned Courses', value: '4', icon: 'menu_book', bg: 'bg-green-50 text-green-600' },
-    { label: 'Assigned Modules', value: '12', icon: 'view_module', bg: 'bg-blue-50 text-blue-600' },
-    { label: 'Total Students', value: '150', icon: 'people', bg: 'bg-purple-50 text-purple-600' },
-    { label: 'Pending Assessments', value: '15', icon: 'pending_actions', bg: 'bg-orange-50 text-orange-600' },
-    { label: 'Submitted Assignments', value: '32', icon: 'assignment', bg: 'bg-indigo-50 text-indigo-600' },
-    { label: 'Average Student Progress', value: '78%', icon: 'trending_up', bg: 'bg-teal-50 text-teal-600' },
+    {
+      label: 'Assigned Courses',
+      value: '4',
+      icon: 'menu_book',
+      bg: 'bg-green-50 text-green-600',
+    },
+    {
+      label: 'Assigned Modules',
+      value: '12',
+      icon: 'view_module',
+      bg: 'bg-blue-50 text-blue-600',
+    },
+    {
+      label: 'Total Students',
+      value: '150',
+      icon: 'people',
+      bg: 'bg-purple-50 text-purple-600',
+    },
+    {
+      label: 'Pending Assessments',
+      value: '15',
+      icon: 'pending_actions',
+      bg: 'bg-orange-50 text-orange-600',
+    },
+    {
+      label: 'Submitted Assignments',
+      value: '32',
+      icon: 'assignment',
+      bg: 'bg-indigo-50 text-indigo-600',
+    },
+    {
+      label: 'Average Student Progress',
+      value: '78%',
+      icon: 'trending_up',
+      bg: 'bg-teal-50 text-teal-600',
+    },
   ];
 
   return (
@@ -52,12 +82,18 @@ export default function TeacherDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 pb-6">
         {kpis.map((kpi, idx) => (
           <FormCard key={idx} className="flex items-center gap-4 p-4">
-            <div className={`${kpi.bg} p-3 rounded-lg flex items-center justify-center`}>
+            <div
+              className={`${kpi.bg} p-3 rounded-lg flex items-center justify-center`}
+            >
               <Icon name={kpi.icon} />
             </div>
             <div>
-              <div className="text-gray-500 text-xs font-medium">{kpi.label}</div>
-              <div className="text-xl font-bold text-gray-800 mt-0.5">{kpi.value}</div>
+              <div className="text-gray-500 text-xs font-medium">
+                {kpi.label}
+              </div>
+              <div className="text-xl font-bold text-gray-800 mt-0.5">
+                {kpi.value}
+              </div>
             </div>
           </FormCard>
         ))}
@@ -96,14 +132,22 @@ export default function TeacherDashboard() {
                 >
                   <div className="flex items-center gap-3">
                     <div className="bg-gray-100 p-2 rounded-full text-gray-600 flex items-center justify-center">
-                      <Icon name={act.role === 'Faculty' ? 'school' : 'person'} />
+                      <Icon
+                        name={act.role === 'Faculty' ? 'school' : 'person'}
+                      />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-gray-800">{act.user}</p>
-                      <p className="text-xs text-gray-500 mt-0.5">{act.action}</p>
+                      <p className="text-sm font-semibold text-gray-800">
+                        {act.user}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        {act.action}
+                      </p>
                     </div>
                   </div>
-                  <span className="text-xs text-gray-400 font-medium">{act.time}</span>
+                  <span className="text-xs text-gray-400 font-medium">
+                    {act.time}
+                  </span>
                 </div>
               ))}
           </div>

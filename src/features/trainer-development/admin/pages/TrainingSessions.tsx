@@ -9,7 +9,12 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
-import { type TrainingSession, trainingSessions, trainers, venueMasters } from '../../mocks';
+import {
+  type TrainingSession,
+  trainingSessions,
+  trainers,
+  venueMasters,
+} from '../../mocks';
 import { tdmUrls } from '../../urls';
 
 const STATUS_VARIANTS: Record<
@@ -237,7 +242,10 @@ export default function TrainingSessionsPage() {
           />
           <DropDownList
             label="Venue"
-            data={venueMasters.map(v => ({ name: `${v.name} (${v.building} - Rm ${v.room})`, value: v.name }))}
+            data={venueMasters.map(v => ({
+              name: `${v.name} (${v.building} - Rm ${v.room})`,
+              value: v.name,
+            }))}
             textField="name"
             optionValue="value"
             value={form.venue ?? ''}

@@ -19,7 +19,8 @@ export default function AdminPortalPage() {
         },
         {
           title: 'Masters',
-          description: 'Manage leave types, policy configurations, approval hierarchies, and academic calendars.',
+          description:
+            'Manage leave types, policy configurations, approval hierarchies, and academic calendars.',
           icon: 'category',
           colorScheme: 'purple',
           path: lmsUrls.admin.mastersPortal,
