@@ -2,8 +2,10 @@ import { Route, Routes } from 'react-router-dom';
 import AchievementsCertificatesPage from './admin/pages/achievements-certificates/AchievementsCertificatesPage';
 import EquipmentIssueReturnPage from './admin/pages/booking-management/EquipmentIssueReturnPage';
 import AdminGroundCourtBookingPage from './admin/pages/booking-management/GroundCourtBookingPage';
+import AdminDashboardPage from './admin/pages/dashboard/AdminDashboardPage';
 import EventCreationPage from './admin/pages/event-tournament/EventCreationPage';
 import FixturesResultsPage from './admin/pages/event-tournament/FixturesResultsPage';
+import AdminReportsPage from './admin/pages/reports/AdminReportsPage';
 import AchievementAwardTypeMasterPage from './admin/pages/sports-master/AchievementAwardTypeMasterPage';
 import EquipmentMasterPage from './admin/pages/sports-master/EquipmentMasterPage';
 import FacilityMasterPage from './admin/pages/sports-master/FacilityMasterPage';
@@ -18,21 +20,23 @@ import SportsManagementPortalPage from './portal/SportsManagementPortalPage';
 import StudentGroundCourtBookingPage from './student/pages/booking-management/GroundCourtBookingPage';
 import StudentSportsDashboardPage from './student/pages/dashboard/StudentSportsDashboardPage';
 import EventRegistrationPage from './student/pages/event-tournament/EventRegistrationPage';
+import StudentReportsPage from './student/pages/reports/StudentReportsPage';
 import SportsRegistrationPage from './student/pages/student-sports-profile/SportsRegistrationPage';
 import StudentPortalPage from './student/portal/StudentPortalPage';
 
 export default function SportsManagement() {
   return (
     <Routes>
-      {/* 1. Portal Landing Page */}
+      {/* Portal Landing Page */}
       <Route index element={<SportsManagementPortalPage />} />
 
-      {/* STUDENT PORTAL */}
+      {/* STUDENT */}
       <Route path="student" element={<StudentPortalPage />} />
       <Route
         path="student/dashboard"
         element={<StudentSportsDashboardPage />}
       />
+      <Route path="student/reports" element={<StudentReportsPage />} />
       <Route
         path="student/profile/registration"
         element={<SportsRegistrationPage />}
@@ -46,13 +50,13 @@ export default function SportsManagement() {
         element={<StudentGroundCourtBookingPage />}
       />
 
-      {/* ADMIN PORTAL */}
+      {/* ADMIN */}
       <Route path="admin" element={<AdminPortalPage />} />
+      <Route path="admin/dashboard" element={<AdminDashboardPage />} />
+      <Route path="admin/reports" element={<AdminReportsPage />} />
 
       {/* MASTER PORTAL */}
       <Route path="master" element={<MasterConfigurationPortalPage />} />
-
-      {/* Master Configuration */}
       <Route path="master/sports" element={<SportsGamesMasterPage />} />
       <Route path="master/facilities" element={<FacilityMasterPage />} />
       <Route path="master/equipment" element={<EquipmentMasterPage />} />

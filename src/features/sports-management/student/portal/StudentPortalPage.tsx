@@ -47,6 +47,14 @@ export default function StudentPortalPage() {
           colorScheme: 'teal',
           path: '/sports-management/student/booking/facility',
         },
+        {
+          title: 'My Reports',
+          description:
+            'View your activity summary, achievements, and booking history.',
+          icon: 'bar_chart',
+          colorScheme: 'indigo',
+          path: '/sports-management/student/reports',
+        },
       ]}
     />
   );

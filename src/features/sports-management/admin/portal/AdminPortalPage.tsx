@@ -9,6 +9,14 @@ export default function AdminPortalPage() {
       backLabel="Sports Management"
       portals={[
         {
+          title: 'Dashboard',
+          description:
+            'Overview of sports management metrics and pending actions.',
+          icon: 'dashboard',
+          colorScheme: 'blue',
+          path: '/sports-management/admin/dashboard',
+        },
+        {
           title: 'Team Creation',
           description: 'Approve or create official university sports teams.',
           icon: 'groups',
@@ -58,6 +66,14 @@ export default function AdminPortalPage() {
           icon: 'workspace_premium',
           colorScheme: 'orange',
           path: '/sports-management/admin/achievements/record',
+        },
+        {
+          title: 'Reports',
+          description:
+            'Comprehensive reports on events, bookings, and achievements.',
+          icon: 'bar_chart',
+          colorScheme: 'indigo',
+          path: '/sports-management/admin/reports',
         },
       ]}
     />

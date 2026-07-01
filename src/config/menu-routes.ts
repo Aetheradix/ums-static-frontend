@@ -5465,6 +5465,13 @@ export const menuConfig: Menu.MenuItem[] = [
             icon: 'edit_calendar',
             colorScheme: 'orange',
           },
+          {
+            label: 'Reports',
+            description: 'View your sports activity reports',
+            path: '/sports-management/student/reports',
+            icon: 'bar_chart',
+            colorScheme: 'orange',
+          },
         ],
       },
       {
@@ -5475,6 +5482,13 @@ export const menuConfig: Menu.MenuItem[] = [
         colorScheme: 'orange',
         path: '/sports-management/admin',
         children: [
+          {
+            label: 'Dashboard',
+            description: 'Overview of sports management metrics.',
+            path: '/sports-management/admin/dashboard',
+            icon: 'dashboard',
+            colorScheme: 'orange',
+          },
           {
             label: 'Team Creation',
             description: 'Create teams for sports',
@@ -5522,6 +5536,13 @@ export const menuConfig: Menu.MenuItem[] = [
             description: 'Record achievements and quota points',
             path: '/sports-management/admin/achievements/record',
             icon: 'workspace_premium',
+            colorScheme: 'orange',
+          },
+          {
+            label: 'Reports',
+            description: 'Comprehensive reports on sports management',
+            path: '/sports-management/admin/reports',
+            icon: 'bar_chart',
             colorScheme: 'orange',
           },
         ],
