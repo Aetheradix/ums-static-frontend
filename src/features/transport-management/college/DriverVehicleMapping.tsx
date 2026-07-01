@@ -1,6 +1,10 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
+import {
+  FormPage,
+  FormCard,
+  FormGrid,
+  FormActions,
+} from 'shared/new-components';
 import { DropDownList, DatePicker, Checkbox } from 'shared/components/forms';
 
 const drivers = [
@@ -98,17 +102,9 @@ export default function DriverVehicleMapping() {
             />
           </div>
         </FormGrid>
-      </FormCard>
 
-      <FormCard>
-        <div className="flex items-center gap-4 mt-8">
-          <Button label="Save" variant="success" className="min-w-[120px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() => window.location.reload()}
-          />
+        <div className="mt-4 border-t border-gray-200 pt-4">
+          <FormActions align="left" onReset={() => window.location.reload()} />
         </div>
       </FormCard>
     </FormPage>

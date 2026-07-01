@@ -1,7 +1,12 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
-import { TextBox, DropDownList, DatePicker } from 'shared/components/forms';
+import { DatePicker, DropDownList, TextBox } from 'shared/components/forms';
+import Grid from 'shared/components/grid/Grid';
+import {
+  FormActions,
+  FormCard,
+  FormGrid,
+  FormPage,
+} from 'shared/new-components';
 
 const routes = [
   { name: 'Route 1 (City Center)', value: 'r1' },
@@ -27,8 +32,60 @@ export default function StudentRouteMapping() {
     effectiveDate: undefined,
   });
 
+  const [records, setRecords] = useState([
+    {
+      studentName: 'Amit Kumar',
+      enrollmentNo: '1200456',
+      route: 'Route 1 (City Center)',
+      pickupStop: 'Stop A',
+      timing: '07:45 AM / 03:15 PM',
+    },
+    {
+      studentName: 'Sneha Patel',
+      enrollmentNo: '1200457',
+      route: 'Route 2 (South Zone)',
+      pickupStop: 'Stop B',
+      timing: '08:10 AM / 03:40 PM',
+    },
+    {
+      studentName: 'Rahul Verma',
+      enrollmentNo: '1200458',
+      route: 'Route 1 (City Center)',
+      pickupStop: 'Stop A',
+      timing: '07:45 AM / 03:15 PM',
+    },
+  ]);
+
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSave = () => {
+    if (!form.studentName || !form.route) return;
+    setRecords(prev => [
+      ...prev,
+      {
+        studentName: form.studentName,
+        enrollmentNo: form.admissionNumber || '-',
+        route: routes.find(r => r.value === form.route)?.name || form.route,
+        pickupStop:
+          stops.find(s => s.value === form.pickupStop)?.name || form.pickupStop,
+        timing: `${form.pickupTime || '-'} / ${form.dropTime || '-'}`,
+      },
+    ]);
+
+    setForm({
+      studentName: '',
+      class: '',
+      section: '',
+      admissionNumber: '',
+      route: '',
+      pickupStop: '',
+      dropStop: '',
+      pickupTime: '',
+      dropTime: '',
+      effectiveDate: undefined,
+    });
   };
 
   return (
@@ -130,14 +187,25 @@ export default function StudentRouteMapping() {
         </FormGrid>
       </FormCard>
 
-      <FormCard>
-        <div className="flex items-center gap-4 mt-8">
-          <Button label="Save" variant="success" className="min-w-[120px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() => window.location.reload()}
+      <FormCard title="Student Mapping Details (Dummy Data)" className="mt-4">
+        <Grid
+          data={records}
+          columns={[
+            { field: 'studentName', header: 'Student Name' },
+            { field: 'enrollmentNo', header: 'Enrollment No' },
+            { field: 'route', header: 'Route' },
+            { field: 'pickupStop', header: 'Pickup Stop' },
+            { field: 'timing', header: 'Timing' },
+          ]}
+          onEdit={() => {}}
+          onRemove={() => {}}
+        />
+
+        <div className="mt-4 border-t border-gray-200 pt-4">
+          <FormActions
+            align="left"
+            onSave={handleSave}
+            onReset={() => window.location.reload()}
           />
         </div>
       </FormCard>
