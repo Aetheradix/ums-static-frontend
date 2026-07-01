@@ -45,6 +45,7 @@ import ExternalAttendance from './external/pages/Attendance';
 import Materials from './external/pages/Materials';
 import FeedbackView from './external/pages/FeedbackView';
 import Honorarium from './external/pages/Honorarium';
+import RequestBudget from './external/pages/RequestBudget';
 
 export default function TrainerDevelopmentRoutes() {
   return (
@@ -108,6 +109,7 @@ export default function TrainerDevelopmentRoutes() {
       <Route path="external/materials" element={<Materials />} />
       <Route path="external/feedback" element={<FeedbackView />} />
       <Route path="external/honorarium" element={<Honorarium />} />
+      <Route path="external/request-budget" element={<RequestBudget />} />
     </Routes>
   );
 }
