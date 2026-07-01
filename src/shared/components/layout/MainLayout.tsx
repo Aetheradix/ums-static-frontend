@@ -12,6 +12,7 @@ import './MainLayout.css';
 const PORTAL_PATHS: string[] = [
   '/employee-management',
   '/employee-management/admin-portal',
+  '/employee-management/dashboard',
   '/academics',
   '/recruitment-management',
   '/admissions-management',

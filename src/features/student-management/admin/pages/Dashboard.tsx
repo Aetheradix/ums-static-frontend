@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import Chart from 'chart.js/auto';
 import { FormCard, FormPage, StatCard } from 'shared/new-components';
 import { studentManagementUrls } from '../../urls';
@@ -392,12 +393,12 @@ export default function AdminDashboard() {
             </tbody>
           </table>
           <div className="mt-4">
-            <a
-              href="#"
+            <Link
+              to={studentManagementUrls.admin.root}
               className="text-sm font-medium text-blue-600 hover:text-blue-500"
             >
-              View all requests &rarr;
-            </a>
+              View all students &rarr;
+            </Link>
           </div>
         </FormCard>
 

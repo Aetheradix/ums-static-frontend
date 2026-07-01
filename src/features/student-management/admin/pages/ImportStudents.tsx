@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FormPage, FormCard, Stepper } from 'shared/new-components';
 import { DropDownList } from 'shared/components/forms';
@@ -10,6 +10,9 @@ export default function ImportStudents() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [importing, setImporting] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     admissionType: '',
     academicSession: '',
@@ -18,6 +21,58 @@ export default function ImportStudents() {
 
   const handleNext = () => setStep(s => s + 1);
   const handlePrev = () => setStep(s => s - 1);
+
+  const ALLOWED_TYPES = [
+    'text/csv',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.ms-excel',
+  ];
+  const MAX_SIZE_MB = 10;
+
+  const handleFileSelect = (file: File) => {
+    if (
+      !ALLOWED_TYPES.includes(file.type) &&
+      !file.name.match(/\.(xlsx|csv)$/i)
+    ) {
+      ToastService.error(
+        'Invalid file type. Please upload a .xlsx or .csv file.'
+      );
+      return;
+    }
+    if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+      ToastService.error(`File too large. Maximum size is ${MAX_SIZE_MB}MB.`);
+      return;
+    }
+    setSelectedFile(file);
+    ToastService.success(`File "${file.name}" selected successfully.`);
+  };
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) handleFileSelect(file);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) handleFileSelect(file);
+  };
+
+  const handleDownloadTemplate = () => {
+    const headers =
+      'First Name,Last Name,Email,Phone,Gender,Date of Birth,Roll No,Enrolment No';
+    const sample =
+      'Ravi,Kumar,ravi.kumar@example.com,9876543210,Male,2002-05-15,RL001,EN001';
+    const csvContent = `${headers}\n${sample}`;
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'student_import_template.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const handleImport = async () => {
     setImporting(true);
@@ -63,7 +118,7 @@ export default function ImportStudents() {
           },
         ]);
         ToastService.success('Students imported successfully');
-        navigate('/student-management/admin');
+        navigate('/student-management/admin/directory');
       } catch (err) {
         ToastService.error('Failed to import students');
       } finally {
@@ -152,23 +207,72 @@ export default function ImportStudents() {
 
         {step === 2 && (
           <div className="flex flex-col items-center justify-center gap-6 py-8">
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center w-full max-w-2xl bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer">
-              <i className="pi pi-cloud-upload text-4xl text-gray-400 mb-4"></i>
-              <h3 className="text-lg font-semibold text-gray-700">
-                Click or drag Excel file to upload
-              </h3>
-              <p className="text-gray-500 mt-2">
-                Supports .xlsx, .csv (Max size 10MB)
-              </p>
-              <Button label="Browse File" variant="outlined" className="mt-6" />
+            {/* Hidden real file input */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".xlsx,.csv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              className="hidden"
+              onChange={handleFileInputChange}
+            />
+
+            <div
+              onDragOver={e => {
+                e.preventDefault();
+                setIsDragOver(true);
+              }}
+              onDragLeave={() => setIsDragOver(false)}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+              className={`border-2 border-dashed rounded-lg p-12 text-center w-full max-w-2xl transition-colors cursor-pointer
+                ${isDragOver ? 'border-blue-500 bg-blue-50' : selectedFile ? 'border-green-500 bg-green-50' : 'border-gray-300 bg-gray-50 hover:bg-gray-100'}
+              `}
+            >
+              {selectedFile ? (
+                <>
+                  <i className="pi pi-file-excel text-4xl text-green-500 mb-4 block" />
+                  <h3 className="text-lg font-semibold text-green-700">
+                    File Selected
+                  </h3>
+                  <p className="text-green-600 mt-1 font-medium">
+                    {selectedFile.name}
+                  </p>
+                  <p className="text-gray-400 text-sm mt-1">
+                    {(selectedFile.size / 1024).toFixed(1)} KB
+                  </p>
+                  <p className="text-sm text-gray-500 mt-3">
+                    Click to replace file
+                  </p>
+                </>
+              ) : (
+                <>
+                  <i className="pi pi-cloud-upload text-4xl text-gray-400 mb-4 block" />
+                  <h3 className="text-lg font-semibold text-gray-700">
+                    Click or drag Excel / CSV file to upload
+                  </h3>
+                  <p className="text-gray-500 mt-2">
+                    Supports .xlsx, .csv (Max size 10MB)
+                  </p>
+                  <Button
+                    label="Browse File"
+                    variant="outlined"
+                    className="mt-6"
+                    onClick={() => fileInputRef.current?.click()}
+                  />
+                </>
+              )}
             </div>
 
             <div className="text-sm text-gray-500 flex gap-2 items-center">
-              <i className="pi pi-info-circle"></i>
+              <i className="pi pi-info-circle" />
               Please ensure your file matches the required template structure.
-              <a href="#" className="text-primary hover:underline ml-1">
+              <button
+                type="button"
+                onClick={handleDownloadTemplate}
+                className="text-primary hover:underline ml-1 font-medium"
+              >
                 Download Template
-              </a>
+              </button>
             </div>
 
             <div className="flex justify-between w-full max-w-2xl mt-4">
@@ -177,11 +281,11 @@ export default function ImportStudents() {
                 variant="outlined"
                 onClick={handlePrev}
               />
-              {/* Simulating file upload step completion */}
               <Button
                 label="Next Step"
                 variant="primary"
                 onClick={handleNext}
+                disabled={!selectedFile}
               />
             </div>
           </div>

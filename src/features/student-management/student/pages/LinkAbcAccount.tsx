@@ -13,7 +13,8 @@ export default function LinkAbcAccount() {
 
   const handleLink = async (e: any) => {
     e.preventDefault();
-    if (abcId.length < 12) {
+    const cleanId = abcId.replace(/[-\s]/g, '');
+    if (cleanId.length !== 12 || !/^\d{12}$/.test(cleanId)) {
       ToastService.error('Enter a valid 12-digit ABC ID');
       return;
     }
@@ -77,6 +78,7 @@ export default function LinkAbcAccount() {
                   onChange={(v: any) => setAbcId(v)}
                   placeholder="e.g. 123-456-789-012"
                   maxLength={15}
+                  className="text-center tracking-widest font-mono text-lg"
                 />
 
                 <div className="bg-gray-50 p-4 rounded text-sm text-gray-600 mt-2">
