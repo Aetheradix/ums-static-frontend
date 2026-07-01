@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
+import {
+  FormActions,
+  FormPage,
+  FormCard,
+  FormGrid,
+} from 'shared/new-components';
 import { Button } from 'shared/components/buttons';
 import { DatePicker, DropDownList } from 'shared/components/forms';
 
@@ -93,18 +98,12 @@ export default function BusGatePass() {
             />
           </FormGrid>
 
-          <div className="flex items-center gap-4 mt-8">
-            <Button
-              label="Search"
-              variant="success"
-              className="min-w-[120px]"
-              onClick={handleSearch}
-            />
-            <Button
-              label="Clear"
-              variant="danger"
-              className="min-w-[120px]"
-              onClick={handleClear}
+          <div className="mt-4 border-t border-gray-200 pt-4">
+            <FormActions
+              align="left"
+              saveLabel="Search"
+              onSave={handleSearch}
+              onReset={handleClear}
             />
           </div>
         </FormCard>
@@ -274,19 +273,8 @@ export default function BusGatePass() {
           />
         </FormGrid>
 
-        <div className="flex items-center gap-4 mt-8">
-          <Button
-            label="Search"
-            variant="success"
-            className="min-w-[120px]"
-            onClick={handleSearch}
-          />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={handleClear}
-          />
+        <div className="mt-4 border-t border-gray-200 pt-4">
+          <FormActions align="left" saveLabel="Search" onReset={handleClear} />
         </div>
       </FormCard>
 

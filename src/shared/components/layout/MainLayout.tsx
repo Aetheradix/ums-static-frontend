@@ -12,7 +12,9 @@ import './MainLayout.css';
 const PORTAL_PATHS: string[] = [
   '/employee-management',
   '/employee-management/admin-portal',
+  '/employee-management/dashboard',
   '/academics',
+  '/recruitment-management',
   '/admissions-management',
   '/student-management',
   '/training-placement',
@@ -25,6 +27,10 @@ const PORTAL_PATHS: string[] = [
   '/infrastructure-project-management/reports',
 
   '/student-activities-clubs',
+  '/sports-management',
+  '/sports-management/student',
+  '/sports-management/admin',
+  '/sports-management/master',
   '/essential-services',
   '/essential-services/admin',
   '/essential-services/employee',

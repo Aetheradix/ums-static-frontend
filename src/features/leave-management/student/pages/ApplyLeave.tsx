@@ -103,7 +103,7 @@ export default function StudentApplyLeave() {
         </div>
       )}
 
-      <div style={{ maxWidth: '900px' }}>
+      <div className="w-full">
         {/* Student Info */}
         <FormCard title="Student Information" icon="school">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">

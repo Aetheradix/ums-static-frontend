@@ -6,6 +6,7 @@ export const tdmUrls = {
   admin: {
     portal: '/trainer-development/admin',
     dashboard: '/trainer-development/admin/dashboard',
+    mastersPortal: '/trainer-development/admin/masters',
     // Masters
     trainingCategory: '/trainer-development/admin/masters/training-category',
     trainingMode: '/trainer-development/admin/masters/training-mode',
@@ -51,5 +52,6 @@ export const tdmUrls = {
     materials: '/trainer-development/external/materials',
     feedbackView: '/trainer-development/external/feedback',
     honorarium: '/trainer-development/external/honorarium',
+    requestBudget: '/trainer-development/external/request-budget',
   },
 };

@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
+import {
+  FormPage,
+  FormCard,
+  FormGrid,
+  FormActions,
+} from 'shared/new-components';
 import { Button } from 'shared/components/buttons';
 import {
   TextBox,
@@ -75,6 +80,36 @@ export default function TransporterRegistration() {
 
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSave = () => {
+    if (!form.firmName || !form.contactNumber) return;
+    // Add save logic here
+
+    setForm({
+      firmName: '',
+      firmRegistrationNumber: '',
+      stateName: '',
+      gstinNumber: '',
+      panCardNumber: '',
+      firmAddress: '',
+      contactPersonName: '',
+      contactNumber: '',
+      firmLadlineNumber: '',
+      emailId: '',
+      firmDocument: null,
+      isActive: true,
+      ifscCode: '',
+      bankName: '',
+      branchName: '',
+      accountNo: '',
+      accountHolderName: '',
+      bankDocument: null,
+      districtMapping: '',
+      agreementDocument: null,
+      agreementValidity: undefined,
+      declaration: false,
+    });
   };
 
   return (
@@ -175,7 +210,7 @@ export default function TransporterRegistration() {
             <Checkbox
               label="Status (Active/InActive)"
               checked={form.isActive}
-              onChange={(e: any) => handleChange('isActive', e.target.checked)}
+              onChange={(checked: boolean) => handleChange('isActive', checked)}
             />
           </div>
         </FormGrid>
@@ -316,7 +351,7 @@ export default function TransporterRegistration() {
                       <td className="px-4 py-3 text-center">
                         <Button
                           label=""
-                          icon="delete"
+                          icon="trash"
                           variant="danger"
                           className="px-2 py-1 min-w-0"
                           onClick={() => handleRemoveAgreement(index)}
@@ -329,27 +364,24 @@ export default function TransporterRegistration() {
             </tbody>
           </table>
         </div>
-      </FormCard>
 
-      <FormCard>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 mt-6">
           <Checkbox
             label="I have verified all the information entered, and there are no errors in the data or documents provided."
             checked={form.declaration}
-            onChange={(e: any) => handleChange('declaration', e.target.checked)}
+            onChange={(checked: boolean) =>
+              handleChange('declaration', checked)
+            }
           />
           <p className="text-xs font-bold text-red-600">
             Note: All Asterisk (*) Marked Fields Are Mandatory
           </p>
         </div>
-
-        <div className="flex items-center gap-4 mt-6">
-          <Button label="Save" variant="success" className="min-w-[120px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() => window.location.reload()}
+        <div className="mt-4 border-t border-gray-200 pt-4">
+          <FormActions
+            align="left"
+            onSave={handleSave}
+            onReset={() => window.location.reload()}
           />
         </div>
       </FormCard>

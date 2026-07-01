@@ -1,0 +1,332 @@
+.sms-dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.sms-charts-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.sms-bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.sms-side-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Trend chart */
+.sms-trend-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  height: 120px;
+  padding: 0 0.25rem;
+}
+
+.sms-trend-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.sms-trend-val {
+  font-size: 0.625rem;
+  color: #9ca3af;
+  margin-bottom: 2px;
+}
+
+.sms-trend-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  width: 100%;
+  justify-content: center;
+}
+
+.sms-trend-bar {
+  width: 20px;
+  min-height: 4px;
+  border-radius: 3px 3px 0 0;
+  transition: height 0.3s ease;
+}
+
+.sms-trend-month {
+  font-size: 0.625rem;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+/* Bar chart */
+.sms-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.sms-bar-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  width: 130px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sms-bar-track {
+  flex: 1;
+  height: 8px;
+  background: #f3f4f6;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.sms-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.5s ease;
+  min-width: 4px;
+}
+
+.sms-bar-value {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #374151;
+  width: 20px;
+  text-align: right;
+}
+
+/* Table */
+.sms-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.813rem;
+}
+
+.sms-table thead tr {
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.sms-table th {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.688rem;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sms-table td {
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid #f9fafb;
+  color: #374151;
+  vertical-align: middle;
+}
+
+.sms-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* Priority chips */
+.sms-priority-chip {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.688rem;
+  font-weight: 600;
+}
+
+.priority-low {
+  background: #dcfce7;
+  color: #166534;
+}
+.priority-medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+.priority-high {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.priority-critical {
+  background: #ede9fe;
+  color: #4c1d95;
+}
+
+/* Status pills */
+.sms-status-pill {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.688rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-open {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.status-assigned {
+  background: #fef3c7;
+  color: #92400e;
+}
+.status-under-investigation {
+  background: #ede9fe;
+  color: #4c1d95;
+}
+.status-action-taken {
+  background: #ffedd5;
+  color: #9a3412;
+}
+.status-resolved {
+  background: #dcfce7;
+  color: #166534;
+}
+.status-closed {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+.status-active {
+  background: #dcfce7;
+  color: #166534;
+}
+.status-inactive {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+.status-draft {
+  background: #fef3c7;
+  color: #92400e;
+}
+.status-upcoming {
+  background: #dbeafe;
+  color: #1e40af;
+}
+.status-ongoing {
+  background: #dcfce7;
+  color: #166534;
+}
+.status-completed {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+.status-cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* List items */
+.sms-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sms-list-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sms-list-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+}
+
+.sms-list-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.sms-list-title {
+  font-size: 0.813rem;
+  font-weight: 500;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sms-list-sub {
+  font-size: 0.688rem;
+  color: #9ca3af;
+}
+
+/* Buttons */
+.sms-link-btn {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.sms-link-btn:hover {
+  color: #1d4ed8;
+}
+
+.sms-view-all-btn {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 0.75rem;
+}
+
+.sms-view-all-btn:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .sms-dashboard-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .sms-charts-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .sms-bottom-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .sms-dashboard-stats {
+    grid-template-columns: 1fr;
+  }
+  .sms-charts-row {
+    grid-template-columns: 1fr;
+  }
+}

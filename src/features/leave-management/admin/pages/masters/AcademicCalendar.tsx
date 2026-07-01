@@ -84,6 +84,7 @@ export default function AcademicCalendar() {
         { label: 'Home', to: '/home' },
         { label: 'Leave Management', to: lmsUrls.portal },
         { label: 'Admin Portal', to: lmsUrls.admin.portal },
+        { label: 'Masters', to: lmsUrls.admin.mastersPortal },
         { label: 'Academic Calendar' },
       ]}
     >
