@@ -7,4 +7,11 @@ export const learningUrls = {
   assessment: '/lms/assessment',
   progressTracking: '/lms/progress-tracking',
   certification: '/lms/certification',
+  student: {
+    lms: '/lms/student',
+    assignments: '/lms/student/assignments',
+  },
+  faculty: {
+    assignments: '/lms/faculty/assignments',
+  },
 };

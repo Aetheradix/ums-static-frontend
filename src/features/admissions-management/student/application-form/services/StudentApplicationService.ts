@@ -3,7 +3,6 @@ import type {
   CreateApplicationCommand,
   MasterLookups,
   PriorEducationApiEntry,
-  ChoiceFillingItemDto,
 } from '../types';
 import type { IStudentApplicationRepository } from '../repositories/IStudentApplicationRepository';
 
@@ -176,7 +175,6 @@ export class StudentApplicationService {
         landmark: data.landmark,
         zipcode: Number(data.zipcode),
       },
-      choices: (data.choiceFilling as ChoiceFillingItemDto[]) || [],
     };
 
     return this.repo.submitApplication(payload);

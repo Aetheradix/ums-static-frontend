@@ -113,7 +113,7 @@ export async function uploadCollegeDocuments(
   affidavitFile: File | null,
   regularAuthorityFile: File | null
 ) {
-  const docs = [];
+  const docs: any[] = [];
   if (nocFile) docs.push({ documentId: 'mock-noc', documentType: 'NocFile' });
   if (affidavitFile)
     docs.push({ documentId: 'mock-affidavit', documentType: 'AffidavitFile' });

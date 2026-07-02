@@ -40,6 +40,16 @@ import UserManagement from './user-management';
 import CmsManagement from '../cms-management';
 import AdmissionFee from './admission-fee';
 
+import CourseMaster from './academics/pages/CourseMaster';
+import ProgramMaster from './academics/pages/ProgramMaster';
+import BatchMaster from './academics/pages/BatchMaster';
+import SemesterMaster from './academics/pages/SemesterMaster';
+import SubjectMaster from './academics/pages/SubjectMaster';
+import SectionMaster from './academics/pages/SectionMaster';
+import AcademicSessionMaster from './academics/pages/AcademicSession';
+import CBCSConfiguration from './academics/pages/CBCSConfiguration';
+import PromotionRules from './academics/pages/PromotionRules';
+
 export default function Master() {
   return (
     <Routes>
@@ -119,6 +129,18 @@ export default function Master() {
           <Route path="travel-purpose/*" element={<TravelPurpose />} />
           <Route path="employee-group/*" element={<EmployeeGroup />} />
         </Route>
+      </Route>
+
+      <Route path="academics/*">
+        <Route path="course-master" element={<CourseMaster />} />
+        <Route path="program-master" element={<ProgramMaster />} />
+        <Route path="batch-master" element={<BatchMaster />} />
+        <Route path="semester-master" element={<SemesterMaster />} />
+        <Route path="subject-master" element={<SubjectMaster />} />
+        <Route path="section-master" element={<SectionMaster />} />
+        <Route path="academic-session" element={<AcademicSessionMaster />} />
+        <Route path="cbcs-config" element={<CBCSConfiguration />} />
+        <Route path="promotion-rules" element={<PromotionRules />} />
       </Route>
     </Routes>
   );

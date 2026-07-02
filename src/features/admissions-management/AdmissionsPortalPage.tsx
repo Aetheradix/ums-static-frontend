@@ -23,6 +23,14 @@ export default function AdmissionsPortalPage() {
           colorScheme: 'orange',
           path: admissionsUrls.student.root,
         },
+        {
+          title: 'Admission Cell',
+          description:
+            'Verify documents, manage merit lists, allocate seats, and track conversions.',
+          icon: 'how_to_reg',
+          colorScheme: 'teal',
+          path: admissionsUrls.cell.root,
+        },
       ]}
     />
   );

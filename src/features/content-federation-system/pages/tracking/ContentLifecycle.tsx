@@ -58,7 +58,7 @@ export default function ContentLifecycle() {
   const currentIndex = getStepIndex(item.status);
 
   const generateHistory = () => {
-    const history = [];
+    const history: any[] = [];
     if (currentIndex >= 4 || item.status === 'Published') {
       history.push({
         title: 'Published',

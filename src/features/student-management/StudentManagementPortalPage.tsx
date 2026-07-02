@@ -12,7 +12,7 @@ export default function StudentManagementPortalPage() {
             'Manage students, bulk import, and perform administrative actions.',
           icon: 'admin_panel_settings',
           colorScheme: 'indigo',
-          path: '/student-management/admin/dashboard',
+          path: '/student-management/admin',
         },
         {
           title: 'Student Portal',
@@ -21,6 +21,22 @@ export default function StudentManagementPortalPage() {
           icon: 'school',
           colorScheme: 'orange',
           path: '/student-management/student',
+        },
+        {
+          title: 'Faculty Portal',
+          description:
+            'Manage attendance, internal marks, and track student progress.',
+          icon: 'person',
+          colorScheme: 'green',
+          path: '/student-management/faculty',
+        },
+        {
+          title: 'Department Portal',
+          description:
+            'Manage department students, batches, sections, and promotions.',
+          icon: 'domain',
+          colorScheme: 'blue',
+          path: '/student-management/department',
         },
       ]}
     />

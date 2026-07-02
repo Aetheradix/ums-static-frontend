@@ -148,7 +148,7 @@ export default function StudentDashboard() {
           subtitle="Currently under review"
         />
         <StatCard
-          title="Registration Fee"
+          title="apply Fee"
           value={studentAppStats.feeStatus}
           icon="check_circle"
           colorScheme="green"
@@ -258,7 +258,7 @@ export default function StudentDashboard() {
               <i className="pi pi-chevron-right text-gray-400 text-xs" />
             </a>
             <a
-              href={admissionsUrls.student.feePayment}
+              href={'/finance-supply-chain/student-fees/fee-payment'}
               className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 border border-gray-200"
             >
               <div className="flex items-center gap-3 text-sm font-medium text-gray-700">

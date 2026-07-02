@@ -8,6 +8,13 @@ import ProgressTracking from './progress-tracking';
 import Certification from './certification';
 import LearningPortalPage from './LearningPortalPage';
 
+// Students
+import StudentLMS from './student/pages/LMS';
+import StudentAssignmentSubmission from './student/pages/AssignmentSubmission';
+
+// Faculty
+import FacultyAssignmentEvaluation from './faculty/pages/AssignmentEvaluation';
+
 export default function Lms() {
   return (
     <Routes>
@@ -19,6 +26,17 @@ export default function Lms() {
       <Route path="assessment/*" element={<Assessment />} />
       <Route path="progress-tracking/*" element={<ProgressTracking />} />
       <Route path="certification/*" element={<Certification />} />
+
+      <Route path="student" element={<StudentLMS />} />
+      <Route
+        path="student/assignments"
+        element={<StudentAssignmentSubmission />}
+      />
+
+      <Route
+        path="faculty/assignments"
+        element={<FacultyAssignmentEvaluation />}
+      />
     </Routes>
   );
 }

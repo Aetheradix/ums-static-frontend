@@ -6,6 +6,7 @@ import FormCard from './FormCard';
 import FormGrid from './FormGrid';
 import FormPage from './FormPage';
 import FormPopup from './FormPopup';
+import GenericDataTablePage from './GenericDataTablePage';
 import GridPanel from './GridPanel';
 import InlineCreatePanel from './InlineCreatePanel/InlineCreatePanel';
 import PaymentDialog from './PaymentDialog';
@@ -39,6 +40,7 @@ export {
   FormGrid,
   FormPage,
   FormPopup,
+  GenericDataTablePage,
   GridPanel,
   InlineCreatePanel,
   PaymentDialog,

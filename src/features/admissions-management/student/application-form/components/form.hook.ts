@@ -93,11 +93,13 @@ const schema = validation.create<ApplicationFormData>(o => ({
   addressLine2: o.string().required().max(150),
   landmark: o.string().required().max(40),
   zipcode: o.number().required().max(2147483647),
-  choiceFilling: o.array().items(o.any()).min(1).required().messages({
-    'array.min':
-      'Please lock at least one choice before proceeding to the next step.',
-    'any.required':
-      'Please lock at least one choice before proceeding to the next step.',
+  password: o.string().required().min(8).messages({
+    'string.min': 'Password must be at least 8 characters long',
+    'any.required': 'Password is required to create an account',
+  }),
+  confirmPassword: o.any().valid(o.ref('password')).required().messages({
+    'any.only': 'Passwords must match',
+    'any.required': 'Please confirm your password',
   }),
 }));
 

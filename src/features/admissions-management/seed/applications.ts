@@ -5,6 +5,16 @@ export type ApplicationStatus =
   | 'Approved'
   | 'Rejected';
 
+export type WorkflowActorRole = 'student' | 'admin' | 'system';
+
+export interface ApplicationHistoryEvent {
+  from: ApplicationStatus | 'DRAFT';
+  to: ApplicationStatus;
+  at: string;
+  actorRole: WorkflowActorRole;
+  reason?: string;
+}
+
 export interface SeedApplication {
   id: string;
   applicationNo: string;
@@ -24,6 +34,10 @@ export interface SeedApplication {
   feeAmount: number;
   entranceScore?: number;
   meritPercentage?: number;
+
+  // Workflow audit trail (Plan A)
+  history: ApplicationHistoryEvent[];
+  rejectionReason?: string;
 }
 
 let MOCK_APPLICATIONS: SeedApplication[] = [
@@ -45,6 +59,32 @@ let MOCK_APPLICATIONS: SeedApplication[] = [
     feePaid: true,
     feeAmount: 25000,
     entranceScore: 87,
+    history: [
+      {
+        from: 'DRAFT',
+        to: 'Submitted',
+        at: '2024-06-10',
+        actorRole: 'student',
+      },
+      {
+        from: 'Submitted',
+        to: 'Under Review',
+        at: '2024-06-12',
+        actorRole: 'admin',
+      },
+      {
+        from: 'Under Review',
+        to: 'Fee Pending',
+        at: '2024-06-14',
+        actorRole: 'admin',
+      },
+      {
+        from: 'Fee Pending',
+        to: 'Approved',
+        at: '2024-06-20',
+        actorRole: 'admin',
+      },
+    ],
   },
   {
     id: 'APP002',
@@ -64,6 +104,26 @@ let MOCK_APPLICATIONS: SeedApplication[] = [
     feePaid: false,
     feeAmount: 20000,
     meritPercentage: 92.4,
+    history: [
+      {
+        from: 'DRAFT',
+        to: 'Submitted',
+        at: '2024-06-11',
+        actorRole: 'student',
+      },
+      {
+        from: 'Submitted',
+        to: 'Under Review',
+        at: '2024-06-13',
+        actorRole: 'admin',
+      },
+      {
+        from: 'Under Review',
+        to: 'Fee Pending',
+        at: '2024-06-15',
+        actorRole: 'admin',
+      },
+    ],
   },
   {
     id: 'APP003',
@@ -83,6 +143,20 @@ let MOCK_APPLICATIONS: SeedApplication[] = [
     feePaid: false,
     feeAmount: 35000,
     entranceScore: 74,
+    history: [
+      {
+        from: 'DRAFT',
+        to: 'Submitted',
+        at: '2024-06-12',
+        actorRole: 'student',
+      },
+      {
+        from: 'Submitted',
+        to: 'Under Review',
+        at: '2024-06-13',
+        actorRole: 'admin',
+      },
+    ],
   },
   {
     id: 'APP004',
@@ -102,6 +176,14 @@ let MOCK_APPLICATIONS: SeedApplication[] = [
     feePaid: false,
     feeAmount: 15000,
     meritPercentage: 88.0,
+    history: [
+      {
+        from: 'DRAFT',
+        to: 'Submitted',
+        at: '2024-06-13',
+        actorRole: 'student',
+      },
+    ],
   },
   {
     id: 'APP005',
@@ -121,6 +203,28 @@ let MOCK_APPLICATIONS: SeedApplication[] = [
     feePaid: false,
     feeAmount: 25000,
     entranceScore: 42,
+    rejectionReason: 'Insufficient entrance score.',
+    history: [
+      {
+        from: 'DRAFT',
+        to: 'Submitted',
+        at: '2024-06-13',
+        actorRole: 'student',
+      },
+      {
+        from: 'Submitted',
+        to: 'Under Review',
+        at: '2024-06-15',
+        actorRole: 'admin',
+      },
+      {
+        from: 'Under Review',
+        to: 'Rejected',
+        at: '2024-06-18',
+        actorRole: 'admin',
+        reason: 'Insufficient entrance score.',
+      },
+    ],
   },
   {
     id: 'APP006',
@@ -140,6 +244,32 @@ let MOCK_APPLICATIONS: SeedApplication[] = [
     feePaid: true,
     feeAmount: 35000,
     meritPercentage: 95.2,
+    history: [
+      {
+        from: 'DRAFT',
+        to: 'Submitted',
+        at: '2024-06-14',
+        actorRole: 'student',
+      },
+      {
+        from: 'Submitted',
+        to: 'Under Review',
+        at: '2024-06-16',
+        actorRole: 'admin',
+      },
+      {
+        from: 'Under Review',
+        to: 'Fee Pending',
+        at: '2024-06-18',
+        actorRole: 'admin',
+      },
+      {
+        from: 'Fee Pending',
+        to: 'Approved',
+        at: '2024-06-22',
+        actorRole: 'admin',
+      },
+    ],
   },
   {
     id: 'APP007',
@@ -159,6 +289,26 @@ let MOCK_APPLICATIONS: SeedApplication[] = [
     feePaid: false,
     feeAmount: 15000,
     meritPercentage: 78.5,
+    history: [
+      {
+        from: 'DRAFT',
+        to: 'Submitted',
+        at: '2024-06-15',
+        actorRole: 'student',
+      },
+      {
+        from: 'Submitted',
+        to: 'Under Review',
+        at: '2024-06-16',
+        actorRole: 'admin',
+      },
+      {
+        from: 'Under Review',
+        to: 'Fee Pending',
+        at: '2024-06-18',
+        actorRole: 'admin',
+      },
+    ],
   },
   {
     id: 'APP008',
@@ -178,6 +328,20 @@ let MOCK_APPLICATIONS: SeedApplication[] = [
     feePaid: false,
     feeAmount: 20000,
     entranceScore: 81,
+    history: [
+      {
+        from: 'DRAFT',
+        to: 'Submitted',
+        at: '2024-06-16',
+        actorRole: 'student',
+      },
+      {
+        from: 'Submitted',
+        to: 'Under Review',
+        at: '2024-06-17',
+        actorRole: 'admin',
+      },
+    ],
   },
   {
     id: 'APP009',
@@ -197,6 +361,14 @@ let MOCK_APPLICATIONS: SeedApplication[] = [
     feePaid: false,
     feeAmount: 30000,
     entranceScore: 68,
+    history: [
+      {
+        from: 'DRAFT',
+        to: 'Submitted',
+        at: '2024-06-17',
+        actorRole: 'student',
+      },
+    ],
   },
   {
     id: 'APP010',
@@ -216,8 +388,55 @@ let MOCK_APPLICATIONS: SeedApplication[] = [
     feePaid: true,
     feeAmount: 15000,
     meritPercentage: 91.0,
+    history: [
+      {
+        from: 'DRAFT',
+        to: 'Submitted',
+        at: '2024-06-18',
+        actorRole: 'student',
+      },
+      {
+        from: 'Submitted',
+        to: 'Under Review',
+        at: '2024-06-19',
+        actorRole: 'admin',
+      },
+      {
+        from: 'Under Review',
+        to: 'Fee Pending',
+        at: '2024-06-20',
+        actorRole: 'admin',
+      },
+      {
+        from: 'Fee Pending',
+        to: 'Approved',
+        at: '2024-06-25',
+        actorRole: 'admin',
+      },
+    ],
   },
 ];
+
+function canTransition(from: ApplicationStatus, to: ApplicationStatus) {
+  // Plan A transition guardrails
+  if (from === to) return false;
+
+  if (from === 'Approved') return false; // terminal
+
+  if (from === 'Submitted' && to === 'Under Review') return true;
+  if (from === 'Under Review' && to === 'Fee Pending') return true;
+  if (from === 'Fee Pending' && to === 'Approved') return true;
+
+  // Any non-terminal state can be rejected
+  if (to === 'Rejected') return true;
+
+  return false;
+}
+
+function nowIso() {
+  // readable ISO; keeps mock simple
+  return new Date().toISOString();
+}
 
 export const ApplicationSeedService = {
   getAll: async () => Promise.resolve([...MOCK_APPLICATIONS]),
@@ -225,17 +444,65 @@ export const ApplicationSeedService = {
   getById: async (id: string) =>
     Promise.resolve(MOCK_APPLICATIONS.find(a => a.id === id) ?? null),
 
-  updateStatus: async (id: string, status: ApplicationStatus) => {
-    MOCK_APPLICATIONS = MOCK_APPLICATIONS.map(a =>
-      a.id === id ? { ...a, status } : a
-    );
+  updateStatus: async (
+    id: string,
+    status: ApplicationStatus,
+    actorRole: WorkflowActorRole = 'admin',
+    reason?: string
+  ) => {
+    const app = MOCK_APPLICATIONS.find(a => a.id === id);
+    if (!app) return Promise.resolve(null);
+
+    if (!canTransition(app.status, status)) {
+      throw new Error(
+        `Invalid transition from "${app.status}" to "${status}".`
+      );
+    }
+
+    const event: ApplicationHistoryEvent = {
+      from: app.status,
+      to: status,
+      at: nowIso(),
+      actorRole,
+      reason: status === 'Rejected' ? reason : undefined,
+    };
+
+    MOCK_APPLICATIONS = MOCK_APPLICATIONS.map(a => {
+      if (a.id !== id) return a;
+
+      return {
+        ...a,
+        status,
+        rejectionReason: status === 'Rejected' ? reason : a.rejectionReason,
+        history: [...(a.history ?? []), event],
+      };
+    });
+
     return Promise.resolve(MOCK_APPLICATIONS.find(a => a.id === id) ?? null);
   },
 
   approveAll: async (ids: string[]) => {
-    MOCK_APPLICATIONS = MOCK_APPLICATIONS.map(a =>
-      ids.includes(a.id) ? { ...a, status: 'Approved' as ApplicationStatus } : a
-    );
+    // Bulk approval should respect transition rules too.
+    // For simplicity, we only allow approving those currently in Fee Pending.
+    MOCK_APPLICATIONS = MOCK_APPLICATIONS.map(a => {
+      if (!ids.includes(a.id)) return a;
+
+      if (a.status !== 'Fee Pending') return a;
+
+      return {
+        ...a,
+        status: 'Approved',
+        history: [
+          ...(a.history ?? []),
+          {
+            from: a.status,
+            to: 'Approved',
+            at: nowIso(),
+            actorRole: 'admin',
+          },
+        ],
+      };
+    });
     return Promise.resolve(true);
   },
 
