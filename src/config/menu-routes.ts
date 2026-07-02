@@ -4927,13 +4927,6 @@ export const menuConfig: Menu.MenuItem[] = [
         colorScheme: 'red',
       },
       {
-        label: 'About Payroll',
-        description: 'Payroll details and documentation.',
-        path: '/payroll-management/about-payroll',
-        icon: 'article',
-        colorScheme: 'red',
-      },
-      {
         label: 'Set Head Value',
         slug: 'set-head-value',
         description: 'Configure and set values for payroll heads.',
@@ -5018,13 +5011,6 @@ export const menuConfig: Menu.MenuItem[] = [
         ],
       },
       {
-        label: 'Payroll Reports',
-        description: 'Access various payroll statements and reports.',
-        path: '/payroll-management/payroll-reports',
-        icon: 'bar_chart',
-        colorScheme: 'red',
-      },
-      {
         label: 'Gratuity',
         description: 'Manage gratuity definitions and details.',
         path: '/payroll-management/gratuity',
@@ -5050,6 +5036,22 @@ export const menuConfig: Menu.MenuItem[] = [
         description: 'Process arrear calculations and payments.',
         path: '/payroll-management/arrear-process',
         icon: 'bolt',
+        colorScheme: 'red',
+      },
+      {
+        label: 'Salary Increment',
+        description:
+          'Process annual, promotion and special increments with order tracking.',
+        path: '/payroll-management/salary-increment',
+        icon: 'trending_up',
+        colorScheme: 'red',
+      },
+      {
+        label: 'Income Tax Declaration',
+        description:
+          'Employee investment declarations, tax computation and quarterly TDS summary.',
+        path: '/payroll-management/income-tax-declaration',
+        icon: 'receipt_long',
         colorScheme: 'red',
       },
     ],
