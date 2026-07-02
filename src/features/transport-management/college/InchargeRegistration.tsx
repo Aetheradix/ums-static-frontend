@@ -5,7 +5,6 @@ import {
   FormGrid,
   FormActions,
 } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
 import { TextBox, DatePicker, Checkbox } from 'shared/components/forms';
 
 export default function InchargeRegistration() {
@@ -38,12 +37,7 @@ export default function InchargeRegistration() {
         { label: 'Transport Incharge Registration' },
       ]}
     >
-      <FormCard
-        title="College Transport Incharge Registration Master"
-        headerAction={
-          <Button label="Back to List" variant="primary" icon="undo" />
-        }
-      >
+      <FormCard title="College Transport Incharge Registration Master">
         <FormGrid columns={4}>
           <TextBox
             label="Incharge Name"
@@ -130,25 +124,24 @@ export default function InchargeRegistration() {
         <p className="mt-4 text-xs font-bold text-red-600">
           Note: All Asterisk (*) Marked Fields Are Mandatory
         </p>
+        <div className="mt-6 border-t border-gray-100 dark:border-slate-800 pt-6">
+          <FormActions
+            align="left"
+            onReset={() =>
+              setForm({
+                inchargeName: '',
+                dob: null,
+                contactNo: '',
+                emailId: '',
+                workingExperience: '',
+                fullAddress: '',
+                isActive: true,
+                declaration: false,
+              })
+            }
+          />
+        </div>
       </FormCard>
-
-      <div className="mt-4">
-        <FormActions
-          align="left"
-          onReset={() =>
-            setForm({
-              inchargeName: '',
-              dob: null,
-              contactNo: '',
-              emailId: '',
-              workingExperience: '',
-              fullAddress: '',
-              isActive: true,
-              declaration: false,
-            })
-          }
-        />
-      </div>
     </FormPage>
   );
 }

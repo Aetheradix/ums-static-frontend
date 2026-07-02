@@ -5924,6 +5924,8 @@ export const menuConfig: Menu.MenuItem[] = [
           },
           {
             label: 'Student Leave Entry',
+            description: 'Manage student leaves.',
+            path: '/transport-management/college-login/student-leave',
             icon: 'event_busy',
             colorScheme: 'orange',
           },
