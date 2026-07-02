@@ -5,82 +5,43 @@ interface IconProps {
   className?: string;
 }
 
+// Map common PrimeIcons / Kebab-case names back to valid Material Symbols ligatures
 const ICON_MAPPING: Record<string, string> = {
-  // Portal mappings
-  calculate: 'calculator',
-  folder_open: 'folder-open',
-  schema: 'sitemap',
-  receipt_long: 'receipt',
-  folder_shared: 'users',
-  payments: 'money-bill',
-  settings: 'cog',
-  campaign: 'megaphone',
-  dashboard: 'chart-pie',
-  plagiarism: 'file-check',
-  format_list_numbered: 'list',
-  event_seat: 'users',
-  swap_horiz: 'sync',
-  assignment: 'clipboard',
-  list_alt: 'list',
-  upload_file: 'upload',
-  track_changes: 'clock',
-  mail: 'envelope',
-  download: 'download',
-  admin_panel_settings: 'shield',
-  school: 'book',
-  person: 'user',
-  domain: 'building',
-  people: 'users',
-  upload: 'upload',
-  group_add: 'user-plus',
-  view_list: 'list',
-  account_tree: 'sitemap',
-  upgrade: 'arrow-up-right',
-  border_color: 'pencil',
-  trending_up: 'chart-line',
-  how_to_reg: 'user-plus',
-  checklist: 'check-square',
-  event_available: 'calendar-plus',
-  calendar_month: 'calendar',
-  menu_book: 'book',
-  grade: 'star',
-  history: 'history',
-  support_agent: 'headphones',
-
-  // generic
-  account_circle: 'user',
-  rule: 'check-square',
-  description: 'file',
-  calendar_today: 'calendar',
-  explore: 'compass',
-  groups: 'users',
-  library_books: 'book',
-  home: 'home',
-  users: 'users',
-  'user-minus': 'user-minus',
-  'user-edit': 'user-edit',
-  'user-check': 'user-plus',
-  compass: 'compass',
+  users: 'groups',
+  'user-minus': 'person_remove',
+  'user-edit': 'edit_note',
+  'user-check': 'person_check',
+  compass: 'explore',
   check: 'check',
-  clock: 'clock',
-  ban: 'ban',
-  book: 'book',
+  clock: 'schedule',
+  ban: 'block',
+  book: 'menu_book',
   bookmark: 'bookmark',
   verified: 'verified',
-  calendar: 'calendar',
-  'calendar-plus': 'calendar-plus',
-  'calendar-times': 'calendar-times',
-  file: 'file',
-  'file-edit': 'file-edit',
-  briefcase: 'briefcase',
-  'check-circle': 'check-circle',
-  'arrow-up-right': 'arrow-up-right',
-  'arrow-down-right': 'arrow-down-right',
-  minus: 'minus',
-  'th-large': 'th-large',
+  calendar: 'calendar_today',
+  'calendar-plus': 'calendar_add_on',
+  'calendar-times': 'event_busy',
+  file: 'description',
+  'file-edit': 'edit_document',
+  briefcase: 'work',
+  'check-circle': 'check_circle',
+  'arrow-up-right': 'trending_up',
+  'arrow-down-right': 'trending_down',
+  minus: 'remove',
+  'th-large': 'grid_view',
 };
 
 export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {
-  const mappedName = ICON_MAPPING[name] || name;
-  return <i className={`pi pi-${mappedName} ${className}`}></i>;
+  // If the name starts with "pi-", strip it so it gracefully degrades or fails visually (or map it)
+  let cleanName = name.replace(/^pi-/, '');
+  const mappedName = ICON_MAPPING[cleanName] || cleanName;
+
+  return (
+    <span
+      className={`material-symbols-outlined ${className}`}
+      style={{ fontSize: 'inherit' }}
+    >
+      {mappedName.replace(/-/g, '_')}
+    </span>
+  );
 };
