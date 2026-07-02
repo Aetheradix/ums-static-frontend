@@ -1,6 +1,11 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
+import {
+  FormPage,
+  FormCard,
+  FormGrid,
+  FormActions,
+} from 'shared/new-components';
+import Grid from 'shared/components/grid/Grid';
 import { TextBox, DropDownList, TimePicker } from 'shared/components/forms';
 
 const shifts = [
@@ -26,12 +31,75 @@ export default function RouteBusStopMapping() {
     routeDistance: '',
     busStop: '',
     busStopDistance: '',
-    arrivalTime: undefined,
-    departureTime: undefined,
+    arrivalTime: undefined as Date | undefined,
+    departureTime: undefined as Date | undefined,
   });
+
+  const [records, setRecords] = useState([
+    {
+      routeNumber: 'Route 1',
+      shift: 'Morning',
+      busStop: 'Stop A',
+      arrivalTime: '08:00 AM',
+      departureTime: '08:05 AM',
+    },
+    {
+      routeNumber: 'Route 1',
+      shift: 'Morning',
+      busStop: 'Stop B',
+      arrivalTime: '08:15 AM',
+      departureTime: '08:20 AM',
+    },
+    {
+      routeNumber: 'Route 2',
+      shift: 'Evening',
+      busStop: 'Stop A',
+      arrivalTime: '04:00 PM',
+      departureTime: '04:05 PM',
+    },
+  ]);
 
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleAdd = () => {
+    if (!form.routeNumber || !form.shift || !form.busStop) return;
+    setRecords(prev => [
+      ...prev,
+      {
+        routeNumber:
+          routes.find(r => r.value === form.routeNumber)?.name ||
+          form.routeNumber,
+        shift: shifts.find(s => s.value === form.shift)?.name || form.shift,
+        busStop:
+          busStops.find(s => s.value === form.busStop)?.name || form.busStop,
+        arrivalTime:
+          form.arrivalTime instanceof Date
+            ? (form.arrivalTime as Date).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              })
+            : '-',
+        departureTime:
+          form.departureTime instanceof Date
+            ? (form.departureTime as Date).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              })
+            : '-',
+      },
+    ]);
+
+    setForm({
+      shift: '',
+      routeNumber: '',
+      routeDistance: '',
+      busStop: '',
+      busStopDistance: '',
+      arrivalTime: undefined,
+      departureTime: undefined,
+    });
   };
 
   return (
@@ -48,12 +116,7 @@ export default function RouteBusStopMapping() {
         { label: 'Route to Bus Stop Mapping' },
       ]}
     >
-      <FormCard
-        title="Route To Bus Stop Mapping"
-        headerAction={
-          <Button label="Back to List" variant="primary" icon="undo" />
-        }
-      >
+      <FormCard title="Route To Bus Stop Mapping">
         <FormGrid columns={4}>
           <DropDownList
             label="Shift"
@@ -116,29 +179,32 @@ export default function RouteBusStopMapping() {
           />
         </FormGrid>
 
-        <div className="flex items-center gap-4 mt-8">
-          <Button label="Add" variant="success" className="min-w-[120px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() =>
-              setForm({
-                shift: '',
-                routeNumber: '',
-                routeDistance: '',
-                busStop: '',
-                busStopDistance: '',
-                arrivalTime: undefined,
-                departureTime: undefined,
-              })
-            }
-          />
-        </div>
-
         <p className="mt-4 text-xs font-bold text-red-600">
           Note: All Asterisk (*) Marked Fields Are Mandatory
         </p>
+
+        <div className="mt-4 border-t border-gray-200 pt-4">
+          <FormActions
+            align="left"
+            onSave={handleAdd}
+            onReset={() => window.location.reload()}
+          />
+        </div>
+      </FormCard>
+
+      <FormCard title="Mapped Route to Bus Stops (Dummy Data)" className="mt-4">
+        <Grid
+          data={records}
+          columns={[
+            { field: 'routeNumber', header: 'Route' },
+            { field: 'shift', header: 'Shift' },
+            { field: 'busStop', header: 'Bus Stop' },
+            { field: 'arrivalTime', header: 'Arrival Time' },
+            { field: 'departureTime', header: 'Departure Time' },
+          ]}
+          onEdit={() => {}}
+          onRemove={() => {}}
+        />
       </FormCard>
     </FormPage>
   );

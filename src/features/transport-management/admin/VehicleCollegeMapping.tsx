@@ -1,6 +1,10 @@
 import { useState } from 'react';
-import { FormPage, FormCard, FormGrid } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
+import {
+  FormPage,
+  FormCard,
+  FormGrid,
+  FormActions,
+} from 'shared/new-components';
 import { DropDownList, DatePicker, Checkbox } from 'shared/components/forms';
 
 const colleges = [
@@ -39,9 +43,6 @@ export default function VehicleCollegeMapping() {
         },
         { label: 'Vehicle to College Mapping' },
       ]}
-      headerAction={
-        <Button label="Back to List" variant="primary" icon="undo" />
-      }
     >
       <FormCard title="Mapping Details">
         <FormGrid columns={4}>
@@ -80,18 +81,8 @@ export default function VehicleCollegeMapping() {
             />
           </div>
         </FormGrid>
-      </FormCard>
 
-      <FormCard>
-        <div className="flex items-center gap-4 mt-8">
-          <Button label="Save" variant="success" className="min-w-[120px]" />
-          <Button
-            label="Clear"
-            variant="danger"
-            className="min-w-[120px]"
-            onClick={() => window.location.reload()}
-          />
-        </div>
+        <FormActions align="left" onReset={() => window.location.reload()} />
       </FormCard>
     </FormPage>
   );

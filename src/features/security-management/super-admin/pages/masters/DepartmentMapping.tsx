@@ -101,6 +101,7 @@ export default function DepartmentMappingMaster() {
         { label: 'Home', to: '/home' },
         { label: 'Security Management', to: smsUrls.portal },
         { label: 'Super Admin', to: smsUrls.superAdmin.portal },
+        { label: 'Masters', to: smsUrls.superAdmin.mastersPortal },
         { label: 'Department Mapping' },
       ]}
     >

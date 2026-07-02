@@ -11,10 +11,10 @@ import LeaveManagement from './employee-self-service/leave/pages/LeaveManagement
 import ResearchManagement from './employee-self-service/research/pages/ResearchManagement';
 import TravelManagement from './employee-self-service/travel/pages/TravelManagement';
 import FullOnboarding from './full-onboarding';
-import HeadcountControl from './headcount-control/pages/HeadcountControl';
 import ManageEmployees from './manage-employees';
 import EmployeePortalPage from './portal/EmployeePortalPage';
 import AdminPortalPage from './portal/AdminPortalPage';
+import EMSPortalPage from './portal/EMSPortalPage';
 import QuickOnboarding from './quick-onboarding';
 
 export default function EmployeeManagement() {
@@ -22,7 +22,8 @@ export default function EmployeeManagement() {
     <Routes>
       <Route index element={<EmployeePortalPage />} />
       <Route path="admin-portal" element={<AdminPortalPage />} />
-      <Route path="dashboard" element={<EMSDashboard />} />
+      <Route path="dashboard" element={<EMSPortalPage />} />
+      <Route path="dashboard/analytics" element={<EMSDashboard />} />
       <Route path="manage-employees/*" element={<ManageEmployees />} />
       <Route path="quick-onboarding/*" element={<QuickOnboarding />} />
       <Route path="full-onboarding/*" element={<FullOnboarding />} />
@@ -35,7 +36,6 @@ export default function EmployeeManagement() {
       <Route path="research" element={<ResearchManagement />} />
       <Route path="travel" element={<TravelManagement />} />
       <Route path="career-event-tracking" element={<CareerEventTracking />} />
-      <Route path="headcount-control" element={<HeadcountControl />} />
       <Route path="ess-dashboard" element={<ESSDashboard />} />
       <Route path="*" element={<EmployeePortalPage />} />
     </Routes>

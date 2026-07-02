@@ -5,6 +5,7 @@ import TdmPortalPage from './portal/TdmPortalPage';
 
 // Admin Portal
 import AdminPortalPage from './admin/AdminPortalPage';
+import AdminMastersPortalPage from './admin/AdminMastersPortalPage';
 import AdminDashboard from './admin/pages/Dashboard';
 import TrainingCategoryMaster from './admin/pages/masters/TrainingCategory';
 import TrainingModeMaster from './admin/pages/masters/TrainingMode';
@@ -44,6 +45,7 @@ import ExternalAttendance from './external/pages/Attendance';
 import Materials from './external/pages/Materials';
 import FeedbackView from './external/pages/FeedbackView';
 import Honorarium from './external/pages/Honorarium';
+import RequestBudget from './external/pages/RequestBudget';
 
 export default function TrainerDevelopmentRoutes() {
   return (
@@ -53,6 +55,7 @@ export default function TrainerDevelopmentRoutes() {
       {/* ── Admin ── */}
       <Route path="admin" element={<AdminPortalPage />} />
       <Route path="admin/dashboard" element={<AdminDashboard />} />
+      <Route path="admin/masters" element={<AdminMastersPortalPage />} />
       <Route
         path="admin/masters/training-category"
         element={<TrainingCategoryMaster />}
@@ -106,6 +109,7 @@ export default function TrainerDevelopmentRoutes() {
       <Route path="external/materials" element={<Materials />} />
       <Route path="external/feedback" element={<FeedbackView />} />
       <Route path="external/honorarium" element={<Honorarium />} />
+      <Route path="external/request-budget" element={<RequestBudget />} />
     </Routes>
   );
 }

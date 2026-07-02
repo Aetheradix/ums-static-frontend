@@ -89,6 +89,7 @@ export default function CertificationMasterPage() {
         { label: 'Home', to: '/home' },
         { label: 'Trainer Development', to: tdmUrls.portal },
         { label: 'Admin Portal', to: tdmUrls.admin.portal },
+        { label: 'Masters', to: tdmUrls.admin.mastersPortal },
         { label: 'Certification Master' },
       ]}
     >

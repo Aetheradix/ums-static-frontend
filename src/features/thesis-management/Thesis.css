@@ -1,0 +1,182 @@
+/* ============================================================
+   Thesis Management Module — Common Styles
+   ============================================================ */
+
+/* ── Status Pills ─────────────────────────────────────────── */
+.thesis-status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.688rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.thesis-status-pill.draft {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+.thesis-status-pill.submitted {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.thesis-status-pill.verified {
+  background: #d1fae5;
+  color: #065f46;
+}
+.thesis-status-pill.approved {
+  background: #dcfce7;
+  color: #15803d;
+}
+.thesis-status-pill.rejected {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.thesis-status-pill.pending {
+  background: #fef3c7;
+  color: #b45309;
+}
+.thesis-status-pill.active {
+  background: #d1fae5;
+  color: #065f46;
+}
+.thesis-status-pill.inactive {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+.thesis-status-pill.error {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* ── Kanban style Progress board ────────────────────────────── */
+.thesis-kanban-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+@media (max-width: 1024px) {
+  .thesis-kanban-board {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .thesis-kanban-board {
+    grid-template-columns: 1fr;
+  }
+}
+.thesis-kanban-col {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.875rem;
+  min-height: 220px;
+}
+.thesis-kanban-header {
+  font-size: 0.813rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.thesis-kanban-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 0.625rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  cursor: grab;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.thesis-kanban-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Integration status cards grid ─────────────────────────── */
+.thesis-integration-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+.thesis-integration-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1rem;
+  background: #fff;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease;
+}
+.thesis-integration-card:hover {
+  border-color: #3b82f6;
+  transform: translateY(-1px);
+}
+
+/* ── Interactive linear timeline track ─────────────────────── */
+.thesis-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  position: relative;
+  padding-left: 1.5rem;
+}
+.thesis-timeline::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  bottom: 5px;
+  width: 2px;
+  background: #e2e8f0;
+}
+.thesis-timeline-step {
+  position: relative;
+}
+.thesis-timeline-dot {
+  position: absolute;
+  left: -23px;
+  top: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 2px #cbd5e1;
+  transition: all 0.25s ease;
+}
+.thesis-timeline-step.completed .thesis-timeline-dot {
+  background: #10b981;
+  box-shadow: 0 0 0 2px #10b981;
+}
+.thesis-timeline-step.active .thesis-timeline-dot {
+  background: #3b82f6;
+  box-shadow: 0 0 0 2px #3b82f6;
+}
+
+/* ── Meeting Agenda List ────────────────────────────────────── */
+.thesis-agenda-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.thesis-agenda-item {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ── Reset Button Width in Flex Columns ────────────────────── */
+.form-card .p-button {
+  width: fit-content !important;
+}

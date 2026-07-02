@@ -52,10 +52,12 @@ function InnerDropDownList<TData = Data.DataItem<number>>({
   onCheckboxChange,
   ...rest
 }: InnerDropDownProps<TData, FieldValues>) {
-  const [internalValue, setInternalValue] = useState(rest.value ?? null);
+  const [internalValue, setInternalValue] = useState(
+    rest.value === '' ? null : (rest.value ?? null)
+  );
 
   useEffect(() => {
-    setInternalValue(rest.value ?? null);
+    setInternalValue(rest.value === '' ? null : (rest.value ?? null));
   }, [rest.value]);
 
   const optionsWithDefault = [

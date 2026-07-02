@@ -5,6 +5,7 @@ import SecurityPortalPage from './portal/SecurityPortalPage';
 
 // Super Admin
 import SuperAdminPortalPage from './super-admin/SuperAdminPortalPage';
+import SuperAdminMastersPortalPage from './super-admin/SuperAdminMastersPortalPage';
 import SuperAdminDashboard from './super-admin/pages/Dashboard';
 import IncidentCategoryMaster from './super-admin/pages/masters/IncidentCategoryMaster';
 import IncidentTypeMaster from './super-admin/pages/masters/IncidentTypeMaster';
@@ -70,6 +71,10 @@ export default function SecurityManagementRoutes() {
       {/* ── Super Admin ── */}
       <Route path="super-admin" element={<SuperAdminPortalPage />} />
       <Route path="super-admin/dashboard" element={<SuperAdminDashboard />} />
+      <Route
+        path="super-admin/masters"
+        element={<SuperAdminMastersPortalPage />}
+      />
       {/* Masters */}
       <Route
         path="super-admin/masters/incident-category"

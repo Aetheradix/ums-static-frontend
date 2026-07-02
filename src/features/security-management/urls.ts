@@ -4,6 +4,7 @@ export const smsUrls = {
   superAdmin: {
     portal: '/security-management/super-admin',
     dashboard: '/security-management/super-admin/dashboard',
+    mastersPortal: '/security-management/super-admin/masters',
     // Masters
     incidentCategory:
       '/security-management/super-admin/masters/incident-category',

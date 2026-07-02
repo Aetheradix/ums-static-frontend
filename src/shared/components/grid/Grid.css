@@ -5,7 +5,7 @@
 ========================= */
 
 .p-datatable {
-  @apply w-full overflow-hidden rounded-lg border border-slate-200 shadow-sm;
+  @apply w-full overflow-hidden rounded-lg border border-slate-200 shadow-sm bg-white;
 }
 
 .p-datatable .p-datatable-thead > tr > th {
@@ -13,7 +13,11 @@
 }
 
 .p-datatable .p-datatable-tbody > tr > td {
-  @apply border border-slate-200 px-4 py-3 text-sm text-black align-middle;
+  @apply border border-slate-200 px-4 py-3 text-sm text-black align-middle bg-white;
+}
+
+.p-datatable .p-datatable-tbody > tr:nth-child(even) > td {
+  @apply bg-gray-50;
 }
 
 /* Remove hover effects */
@@ -54,8 +58,7 @@
 ========================= */
 
 .p-paginator {
-  @apply flex min-h-[4rem] w-full items-center border-t px-4 py-2 text-sm;
-  background-color: var(--bg-white);
+  @apply flex min-h-[4rem] w-full items-center border-t px-4 py-2 text-sm bg-white;
   border-color: var(--color-gray-200);
   gap: 0.5rem;
 }

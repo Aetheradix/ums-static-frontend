@@ -86,7 +86,7 @@ export default function List() {
               cell: (i: VendorItem) => (
                 <div className="flex gap-2">
                   <Button
-                    icon="edit"
+                    icon="pencil"
                     variant="outlined"
                     onClick={() => setPopup({ mode: 'edit', item: i })}
                   />

@@ -1,0 +1,377 @@
+/* ==========================================================
+   TRANSPORT MANAGEMENT MODULE — SCOPED THEME
+   Amber × Slate — Clean, Integrated Fleet Aesthetic
+   All rules scoped under .transport-theme
+========================================================== */
+
+/* ─── CSS VARIABLES ─── */
+.transport-theme {
+  --transport-amber: #f59e0b;
+  --transport-amber-dark: #d97706;
+  --transport-amber-darker: #b45309;
+  --transport-amber-light: rgba(245, 158, 11, 0.1);
+
+  /* Override app primary tokens */
+  --primary-color: #f59e0b;
+  --bg-primary: #f59e0b;
+  --color-primary-hover: #d97706;
+  --color-primary-shadow: #b45309;
+  --text-primary: #f59e0b;
+}
+
+/* ─── SUBTLE MAP-GRID BACKGROUND ─── */
+.transport-theme {
+  background-image:
+    linear-gradient(to right, rgba(245, 158, 11, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 158, 11, 0.055) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ─── FORM CARDS — amber top accent only, clean ─── */
+.transport-theme .form-card {
+  border-top: 3px solid var(--transport-amber);
+  box-shadow:
+    0 2px 16px -4px rgba(245, 158, 11, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.05);
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.transport-theme .form-card:hover {
+  box-shadow:
+    0 8px 30px -8px rgba(245, 158, 11, 0.18),
+    0 2px 6px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+/* Card header: very subtle amber tint so it feels different */
+.transport-theme .form-card-header {
+  background: linear-gradient(
+    90deg,
+    rgba(245, 158, 11, 0.05) 0%,
+    transparent 50%
+  );
+}
+
+/* Card icon: amber background */
+.transport-theme .form-card-icon {
+  background: rgba(245, 158, 11, 0.12) !important;
+}
+
+.transport-theme .form-card-icon i,
+.transport-theme .form-card-icon .icon-base {
+  color: var(--transport-amber-dark) !important;
+}
+
+/* Dark mode card */
+.dark .transport-theme .form-card {
+  box-shadow:
+    0 2px 16px -4px rgba(245, 158, 11, 0.08),
+    0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.dark .transport-theme .form-card-header {
+  background: linear-gradient(
+    90deg,
+    rgba(245, 158, 11, 0.08) 0%,
+    transparent 50%
+  );
+}
+
+/* ─── BREADCRUMB: hide current-page item (last) to avoid
+       duplicating the h1 page title shown on the left ─── */
+.transport-theme .form-page-breadcrumb-container .breadcrumb-item-active {
+  display: none;
+}
+
+/* Also hide the trailing separator before the hidden last item */
+.transport-theme
+  .form-page-breadcrumb-container
+  .breadcrumb-separator:last-of-type {
+  display: none;
+}
+
+/* ─── DATA TABLES ─── */
+.transport-theme .p-datatable .p-datatable-thead > tr > th {
+  background-color: rgba(245, 158, 11, 0.07) !important;
+  color: #92400e !important;
+  border-bottom: 2px solid rgba(245, 158, 11, 0.25) !important;
+}
+
+.transport-theme .p-datatable .p-datatable-tbody > tr:hover > td {
+  background-color: rgba(245, 158, 11, 0.04) !important;
+}
+
+.dark .transport-theme .p-datatable .p-datatable-thead > tr > th {
+  background-color: rgba(245, 158, 11, 0.09) !important;
+  color: #fcd34d !important;
+}
+
+/* ─── INPUTS / DROPDOWNS: amber focus ring ─── */
+.transport-theme .p-inputtext:focus,
+.transport-theme .p-dropdown:not(.p-disabled).p-focus,
+.transport-theme .p-multiselect:not(.p-disabled).p-focus {
+  border-color: var(--transport-amber) !important;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.18) !important;
+}
+
+/* ─── PRIMARY BUTTONS — scoped, safe ─── */
+.transport-theme .button-variant-primary {
+  background-color: var(--transport-amber) !important;
+  border-color: var(--transport-amber) !important;
+  color: white !important;
+}
+
+.transport-theme .button-variant-primary:not(:disabled):hover {
+  background-color: var(--transport-amber-dark) !important;
+  border-color: var(--transport-amber-dark) !important;
+}
+
+/* ─── CHECKBOXES ─── */
+.transport-theme .p-checkbox.p-highlight .p-checkbox-box {
+  background-color: var(--transport-amber) !important;
+  border-color: var(--transport-amber) !important;
+}
+
+/* ─── DASHBOARD SERVICE TILES ─── */
+.transport-theme .db-service-card {
+  transition:
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.3s ease;
+}
+
+.transport-theme .db-service-card:hover {
+  box-shadow: 0 12px 36px -10px rgba(245, 158, 11, 0.25) !important;
+  transform: translateY(-4px);
+}
+
+.transport-theme .db-card-icon-box {
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.transport-theme .db-service-card:hover .db-card-icon-box {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+  transform: scale(1.08);
+}
+
+.transport-theme .db-service-card:hover .db-card-icon-box .icon-base {
+  color: var(--transport-amber-dark) !important;
+}
+
+.transport-theme .db-card-arrow {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.transport-theme .db-service-card:hover .db-card-arrow {
+  background-color: var(--transport-amber) !important;
+  color: white !important;
+}
+
+/* ─── DARK MODE ─── */
+.dark .transport-theme {
+  --transport-amber: #fbbf24;
+  --transport-amber-dark: #f59e0b;
+  background-image:
+    linear-gradient(to right, rgba(251, 191, 36, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(251, 191, 36, 0.05) 1px, transparent 1px);
+}
+
+/* ─── ANIMATIONS ─── */
+
+@keyframes panningGrid {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 40px 40px;
+  }
+}
+
+@keyframes fadeInUpPage {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes metricCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes routeLineDraw {
+  from {
+    stroke-dashoffset: 300;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes shimmerSlide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+@keyframes liveRipple {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 7px rgba(34, 197, 94, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+@keyframes hexPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+@keyframes iconFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes tileSlide {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ─── ANIMATION UTILITY CLASSES ─── */
+
+.panning-grid {
+  animation: panningGrid 6s linear infinite;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUpPage 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.transport-route-line {
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  animation: routeLineDraw 2.5s ease forwards;
+  animation-delay: 0.4s;
+}
+
+.transport-hero-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(245, 158, 11, 0.05) 40%,
+    rgba(245, 158, 11, 0.1) 50%,
+    rgba(245, 158, 11, 0.05) 60%,
+    transparent 100%
+  );
+  animation: shimmerSlide 3.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.transport-metric-card-enter {
+  animation: metricCardIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.transport-metric-card-enter:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.transport-metric-card-enter:nth-child(2) {
+  animation-delay: 0.12s;
+}
+.transport-metric-card-enter:nth-child(3) {
+  animation-delay: 0.19s;
+}
+.transport-metric-card-enter:nth-child(4) {
+  animation-delay: 0.26s;
+}
+
+.transport-portal-card-enter {
+  animation: metricCardIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.transport-portal-card-enter:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.transport-portal-card-enter:nth-child(2) {
+  animation-delay: 0.18s;
+}
+.transport-portal-card-enter:nth-child(3) {
+  animation-delay: 0.26s;
+}
+
+/* ─── STATUS BAR (landing page hero) ─── */
+.transport-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 8px 20px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  box-shadow: 0 4px 20px -6px rgba(245, 158, 11, 0.15);
+  width: fit-content;
+}
+
+.transport-status-bar .status-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.transport-status-bar .status-item .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #22c55e;
+  animation: liveRipple 2s infinite;
+}
+
+.transport-status-bar .status-value {
+  color: var(--transport-amber);
+  font-weight: 700;
+}
