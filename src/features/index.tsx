@@ -18,7 +18,7 @@ import ExaminationManagement from './examination-management';
 import FileManagementTracking from './file-management-tracking';
 import FinanceSupplyChain from './finance-supply-chain';
 import GrievanceManagement from './grievance-management';
-import HealthManagement from './health-management';
+import PolicyComplianceManagement from './policy-compliance-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
 import InfrastructureProjectManagement from './infrastructure-project-management';
@@ -55,6 +55,7 @@ import SecurityManagement from './security-management';
 import ThesisManagementRoutes from './thesis-management';
 import TrainerDevelopment from './trainer-development';
 import TransportManagement from './transport-management';
+import HealthManagement from './health-management';
 import EvaluationGrading from './evaluation-grading';
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
@@ -204,6 +205,10 @@ export default function Features() {
                       <Route
                         path="grievance-management/*"
                         element={<GrievanceManagement />}
+                      />
+                      <Route
+                        path="policy-compliance-management/*"
+                        element={<PolicyComplianceManagement />}
                       />
                       <Route
                         path="health-management/*"

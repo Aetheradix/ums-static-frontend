@@ -7,7 +7,7 @@ export default function AdminPortalPage() {
       moduleTitle="Admin Portal — Learning Management"
       moduleDescription="Configure courses, map faculty and students, manage masters and view reports."
       backPath={learningUrls.portal}
-      backLabel="LMS Role Selection"
+      backLabel="Learning Management System"
       portals={[
         {
           title: 'Dashboard',

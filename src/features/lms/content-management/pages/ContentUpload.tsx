@@ -62,6 +62,8 @@ export default function ContentUpload() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Learning Management System', to: learningUrls.portal },
+        { label: 'Teacher Portal', to: learningUrls.teacher.portal },
+        { label: 'Content Management', to: learningUrls.teacher.content },
         { label: 'Content Upload' },
       ]}
     >

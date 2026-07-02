@@ -77,6 +77,8 @@ export default function CourseMasterList() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Learning Management System', to: learningUrls.portal },
+        { label: 'Admin Portal', to: learningUrls.admin.portal },
+        { label: 'Masters', to: learningUrls.admin.masters },
         { label: 'Course Master' },
       ]}
     >
