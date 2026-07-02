@@ -1,4 +1,5 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
+import AdminPortalPage from './AdminPortalPage';
 import ApplicationReviewPage from './pages/applications/ApplicationReviewPage';
 import AdvancedConfigPage from './pages/configuration/AdvancedConfigPage';
 import ConvocationAdminDashboard from './pages/dashboard/ConvocationAdminDashboard';
@@ -10,7 +11,7 @@ import EventSetupPage from './pages/setup/EventSetupPage';
 export default function AdminRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="dashboard" replace />} />
+      <Route path="/" element={<AdminPortalPage />} />
       <Route path="dashboard" element={<ConvocationAdminDashboard />} />
       <Route path="setup" element={<EventSetupPage />} />
       <Route path="configuration" element={<AdvancedConfigPage />} />

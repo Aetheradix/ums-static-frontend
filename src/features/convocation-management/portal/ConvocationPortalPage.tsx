@@ -15,7 +15,7 @@ export default function ConvocationPortalPage() {
             'Create events, configure fees, verify student applications, and manage passes.',
           icon: 'admin_panel_settings',
           colorScheme: 'indigo',
-          path: CONVOCATION_URLS.ADMIN.DASHBOARD,
+          path: CONVOCATION_URLS.ADMIN.ROOT,
           badge: 'For University Staff',
         },
         {
@@ -24,7 +24,7 @@ export default function ConvocationPortalPage() {
             'Register for the ceremony, pay fees, upload documents, and download your pass.',
           icon: 'person',
           colorScheme: 'teal',
-          path: CONVOCATION_URLS.STUDENT.DASHBOARD,
+          path: CONVOCATION_URLS.STUDENT.ROOT,
           badge: 'For Graduating Students',
         },
       ]}
