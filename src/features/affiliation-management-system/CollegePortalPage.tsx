@@ -21,6 +21,20 @@ export default function CollegePortalPage() {
           colorScheme: 'blue',
           path: '/affiliation-management-system/inspection-report',
         },
+        {
+          title: 'Department Registration',
+          description: 'Register and manage college departments.',
+          icon: 'domain_add',
+          colorScheme: 'orange',
+          path: '/affiliation-management-system/department-registration/list',
+        },
+        {
+          title: 'Renewal Application',
+          description: 'Apply for annual affiliation renewal.',
+          icon: 'autorenew',
+          colorScheme: 'green',
+          path: '/affiliation-management-system/college-renewal/application',
+        },
       ]}
     />
   );
