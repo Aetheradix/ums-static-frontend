@@ -1,9 +1,15 @@
-import { useState } from 'react';
-import { FormPage, Tabs, FormCard, FormGrid } from 'shared/new-components';
 import { Button } from 'primereact/button';
-import { CONVOCATION_URLS } from '../../../urls';
+import { useState } from 'react';
 import { ToastService } from 'services';
-import { TextBox, NumberBox } from 'shared/components/forms';
+import {
+  DropDownList,
+  MultiSelectList,
+  NumberBox,
+  Switch,
+  TextBox,
+} from 'shared/components/forms';
+import { FormCard, FormGrid, FormPage, Tabs } from 'shared/new-components';
+import { CONVOCATION_URLS } from '../../../urls';
 
 export default function AdvancedConfigPage() {
   const [activeTab, setActiveTab] = useState(0);
@@ -12,6 +18,14 @@ export default function AdvancedConfigPage() {
   const handleSave = () => {
     ToastService.success('Configuration saved successfully!');
   };
+
+  const [inAbsentia, setInAbsentia] = useState(true);
+  const [proxy, setProxy] = useState(false);
+  const [reason, setReason] = useState(false);
+  const [postal, setPostal] = useState(true);
+
+  const [autoFetch, setAutoFetch] = useState(true);
+  const [fetchFields, setFetchFields] = useState(['Name', 'CGPA']);
 
   const tabsContent = [
     {
@@ -139,6 +153,145 @@ export default function AdvancedConfigPage() {
                 The generated QR code will be placed at the top right of the
                 pass.
               </p>
+            </div>
+          </div>
+        </FormCard>
+      ),
+    },
+    {
+      title: 'In-Absentia Settings',
+      content: (
+        <FormCard
+          title="In-Absentia Configuration"
+          subtitle="Configure options for students who cannot attend the ceremony in person."
+        >
+          <div className="flex flex-col gap-6 mt-4">
+            <FormGrid columns={2}>
+              <div className="flex items-center gap-4 border p-4 rounded-lg bg-gray-50">
+                <Switch
+                  checked={inAbsentia}
+                  onChange={val => setInAbsentia(val)}
+                />
+                <div>
+                  <h4 className="font-medium text-gray-800">
+                    Allow In-Absentia Option
+                  </h4>
+                  <p className="text-sm text-gray-500">
+                    Enable if students can opt out of attending.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4 border p-4 rounded-lg bg-gray-50">
+                <Switch checked={reason} onChange={val => setReason(val)} />
+                <div>
+                  <h4 className="font-medium text-gray-800">Reason Required</h4>
+                  <p className="text-sm text-gray-500">
+                    Require students to state why they can't attend.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4 border p-4 rounded-lg bg-gray-50">
+                <Switch checked={proxy} onChange={val => setProxy(val)} />
+                <div>
+                  <h4 className="font-medium text-gray-800">
+                    Allow Proxy Collection
+                  </h4>
+                  <p className="text-sm text-gray-500">
+                    Allow an authorized person to collect the degree.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4 border p-4 rounded-lg bg-gray-50">
+                <Switch checked={postal} onChange={val => setPostal(val)} />
+                <div>
+                  <h4 className="font-medium text-gray-800">Postal Dispatch</h4>
+                  <p className="text-sm text-gray-500">
+                    Allow degrees to be sent via courier/post.
+                  </p>
+                </div>
+              </div>
+            </FormGrid>
+            {postal && (
+              <div className="flex flex-col gap-2 max-w-sm">
+                <DropDownList
+                  label="Courier / Speed Post Service"
+                  data={[
+                    { label: 'India Post - Speed Post', value: 'speed_post' },
+                    { label: 'BlueDart Courier', value: 'bluedart' },
+                  ]}
+                  value="speed_post"
+                  onChange={() => {}}
+                />
+              </div>
+            )}
+          </div>
+        </FormCard>
+      ),
+    },
+    {
+      title: 'Form Fields Config',
+      content: (
+        <FormCard
+          title="Auto-Fetch & Extra Fields"
+          subtitle="Configure how student data is populated and add custom form fields."
+        >
+          <div className="flex flex-col gap-6 mt-4">
+            <div className="flex items-center gap-4 border-b pb-6">
+              <Switch checked={autoFetch} onChange={val => setAutoFetch(val)} />
+              <div>
+                <h4 className="font-medium text-gray-800">
+                  Auto-Fetch Student Details
+                </h4>
+                <p className="text-sm text-gray-500">
+                  Automatically pull details from SIS when the student enters
+                  their roll number.
+                </p>
+              </div>
+            </div>
+
+            {autoFetch && (
+              <div className="flex flex-col gap-2 max-w-md">
+                <MultiSelectList
+                  label="Auto-Fetch Fields"
+                  data={[
+                    'Name',
+                    'Programme',
+                    'Department',
+                    'CGPA',
+                    'Year of Passing',
+                  ]}
+                  value={fetchFields}
+                  onChange={val => setFetchFields(val)}
+                />
+              </div>
+            )}
+
+            <div className="mt-4 pt-4 border-t border-dashed">
+              <h4 className="font-medium text-gray-800 mb-2">
+                Extra Fields (Custom Form Questions)
+              </h4>
+              <p className="text-sm text-gray-500 mb-4">
+                Add custom fields for students to fill out during registration.
+              </p>
+              <div className="p-4 border rounded-lg bg-gray-50 flex justify-between items-center">
+                <div>
+                  <h4 className="font-semibold text-gray-800">
+                    T-Shirt Size for Convocation Gown
+                  </h4>
+                  <p className="text-sm text-gray-500">
+                    Type: Dropdown | Required: Yes
+                  </p>
+                </div>
+                <Button label="Edit" outlined />
+              </div>
+              <div className="mt-4">
+                <Button
+                  label="Add Custom Field"
+                  icon="pi pi-plus"
+                  outlined
+                  severity="info"
+                />
+              </div>
             </div>
           </div>
         </FormCard>

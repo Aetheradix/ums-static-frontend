@@ -1,7 +1,13 @@
 import { Button } from 'primereact/button';
 import { useState } from 'react';
 import { ToastService } from 'services';
-import { DatePicker, TextArea, TextBox } from 'shared/components/forms';
+import {
+  DatePicker,
+  DropDownList,
+  MultiSelectList,
+  TextArea,
+  TextBox,
+} from 'shared/components/forms';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
 import { CONVOCATION_URLS } from '../../../urls';
 
@@ -9,8 +15,16 @@ export default function EventSetupPage() {
   const [formData, setFormData] = useState({
     eventName: '2024 Annual Convocation',
     formPrefix: 'CONV2024',
+    academicYear: '2024-25',
+    degreeYears: ['2023', '2024'],
+    programmes: ['B.Tech CSE', 'MBA'],
+    venue: 'Main Auditorium',
+    chiefGuest: '',
     openDate: new Date(),
     closeDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+    feeDeadline: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+    uploadDeadline: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+    passDate: new Date(new Date().setMonth(new Date().getMonth() + 1, 15)),
     eventDate: new Date(new Date().setMonth(new Date().getMonth() + 2)),
     portalContent:
       '<h3>Welcome to the Convocation Portal</h3><p>Please review the eligibility criteria before applying.</p>',
@@ -66,6 +80,51 @@ export default function EventSetupPage() {
                 subLabel="Applications will be numbered like CONV2024-0001"
               />
             </div>
+            <div className="flex flex-col gap-2">
+              <DropDownList
+                label="Academic Year"
+                required
+                data={[
+                  { label: '2023-24', value: '2023-24' },
+                  { label: '2024-25', value: '2024-25' },
+                ]}
+                value={formData.academicYear}
+                onChange={val => handleChange('academicYear', val)}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <MultiSelectList
+                label="Degree Year(s) Covered"
+                required
+                data={['2022', '2023', '2024']}
+                value={formData.degreeYears}
+                onChange={val => handleChange('degreeYears', val)}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <MultiSelectList
+                label="Programme(s) Included"
+                required
+                data={['B.Tech CSE', 'MBA', 'M.Tech']}
+                value={formData.programmes}
+                onChange={val => handleChange('programmes', val)}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <TextBox
+                label="Venue"
+                required
+                value={formData.venue}
+                onChange={val => handleChange('venue', val)}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <TextBox
+                label="Chief Guest"
+                value={formData.chiefGuest}
+                onChange={val => handleChange('chiefGuest', val)}
+              />
+            </div>
           </FormGrid>
         </FormCard>
 
@@ -89,6 +148,33 @@ export default function EventSetupPage() {
                 required
                 value={formData.closeDate}
                 onChange={val => handleChange('closeDate', val)}
+                placeholder="Select Date"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <DatePicker
+                label="Fee Payment Deadline"
+                required
+                value={formData.feeDeadline}
+                onChange={val => handleChange('feeDeadline', val)}
+                placeholder="Select Date"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <DatePicker
+                label="Document Upload Deadline"
+                required
+                value={formData.uploadDeadline}
+                onChange={val => handleChange('uploadDeadline', val)}
+                placeholder="Select Date"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <DatePicker
+                label="Pass Availability Date"
+                required
+                value={formData.passDate}
+                onChange={val => handleChange('passDate', val)}
                 placeholder="Select Date"
               />
             </div>

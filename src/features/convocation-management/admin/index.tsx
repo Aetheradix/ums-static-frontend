@@ -1,10 +1,11 @@
-import { Route, Routes, Navigate } from 'react-router-dom';
-import ConvocationAdminDashboard from './pages/dashboard/ConvocationAdminDashboard';
-import EventSetupPage from './pages/setup/EventSetupPage';
-import AdvancedConfigPage from './pages/configuration/AdvancedConfigPage';
-import StudentEligibilityPage from './pages/eligibility/StudentEligibilityPage';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import ApplicationReviewPage from './pages/applications/ApplicationReviewPage';
+import AdvancedConfigPage from './pages/configuration/AdvancedConfigPage';
+import ConvocationAdminDashboard from './pages/dashboard/ConvocationAdminDashboard';
 import DegreeDispatchPage from './pages/dispatch/DegreeDispatchPage';
+import StudentEligibilityPage from './pages/eligibility/StudentEligibilityPage';
+import ReportsPage from './pages/reports/ReportsPage';
+import EventSetupPage from './pages/setup/EventSetupPage';
 
 export default function AdminRoutes() {
   return (
@@ -16,6 +17,7 @@ export default function AdminRoutes() {
       <Route path="eligibility" element={<StudentEligibilityPage />} />
       <Route path="applications" element={<ApplicationReviewPage />} />
       <Route path="dispatch" element={<DegreeDispatchPage />} />
+      <Route path="reports" element={<ReportsPage />} />
     </Routes>
   );
 }

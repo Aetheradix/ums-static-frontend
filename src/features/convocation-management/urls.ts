@@ -8,6 +8,7 @@ export const CONVOCATION_URLS = {
     ELIGIBILITY: '/convocation-management/admin/eligibility',
     APPLICATIONS: '/convocation-management/admin/applications',
     DISPATCH: '/convocation-management/admin/dispatch',
+    REPORTS: '/convocation-management/admin/reports',
   },
   STUDENT: {
     ROOT: '/convocation-management/student',
