@@ -5,7 +5,6 @@ import {
   FormGrid,
   FormActions,
 } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
 import Grid from 'shared/components/grid/Grid';
 import { TextBox, DropDownList, TimePicker } from 'shared/components/forms';
 
@@ -117,12 +116,7 @@ export default function RouteBusStopMapping() {
         { label: 'Route to Bus Stop Mapping' },
       ]}
     >
-      <FormCard
-        title="Route To Bus Stop Mapping"
-        headerAction={
-          <Button label="Back to List" variant="primary" icon="undo" />
-        }
-      >
+      <FormCard title="Route To Bus Stop Mapping">
         <FormGrid columns={4}>
           <DropDownList
             label="Shift"

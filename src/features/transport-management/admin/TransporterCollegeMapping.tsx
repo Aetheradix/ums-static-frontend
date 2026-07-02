@@ -5,7 +5,6 @@ import {
   FormGrid,
   FormActions,
 } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
 import {
   TextBox,
   DropDownList,
@@ -50,9 +49,6 @@ export default function TransporterCollegeMapping() {
         },
         { label: 'Transporter to College Mapping' },
       ]}
-      headerAction={
-        <Button label="Back to List" variant="primary" icon="undo" />
-      }
     >
       <FormCard title="Mapping Details">
         <FormGrid columns={4}>

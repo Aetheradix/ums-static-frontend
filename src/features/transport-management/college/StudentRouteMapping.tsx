@@ -185,6 +185,14 @@ export default function StudentRouteMapping() {
             required
           />
         </FormGrid>
+
+        <div className="mt-6 border-t border-gray-100 dark:border-slate-800 pt-6">
+          <FormActions
+            align="left"
+            onSave={handleSave}
+            onReset={() => window.location.reload()}
+          />
+        </div>
       </FormCard>
 
       <FormCard title="Student Mapping Details (Dummy Data)" className="mt-4">
@@ -200,14 +208,6 @@ export default function StudentRouteMapping() {
           onEdit={() => {}}
           onRemove={() => {}}
         />
-
-        <div className="mt-4 border-t border-gray-200 pt-4">
-          <FormActions
-            align="left"
-            onSave={handleSave}
-            onReset={() => window.location.reload()}
-          />
-        </div>
       </FormCard>
     </FormPage>
   );
