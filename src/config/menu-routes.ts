@@ -7119,6 +7119,158 @@ export const menuConfig: Menu.MenuItem[] = [
       },
     ],
   },
+  {
+    label: 'Endowment Management',
+    slug: 'endowment-management',
+    category: 'Administrative',
+    icon: 'volunteer_activism',
+    colorScheme: 'green',
+    description: 'Manage endowment funds, donors, schemes, and disbursements.',
+    navigationStyle: 'sidebar',
+    path: '/endowment-management',
+    children: [
+      {
+        label: 'Admin Portal',
+        slug: 'endowment-admin',
+        description: 'Manage funds, donors, schemes, and disbursements.',
+        icon: 'admin_panel_settings',
+        colorScheme: 'green',
+        path: '/endowment-management/admin',
+        children: [
+          {
+            label: 'Dashboard',
+            description: 'View endowment statistics and overall fund health.',
+            icon: 'dashboard',
+            colorScheme: 'purple',
+            path: '/endowment-management/admin/dashboard',
+          },
+          {
+            label: 'Donors',
+            description: 'Manage individual and institutional donors.',
+            icon: 'people',
+            colorScheme: 'purple',
+            path: '/endowment-management/admin/donors',
+          },
+          {
+            label: 'Donations',
+            description:
+              'Record contributions and auto-generate 80G certificates.',
+            icon: 'payments',
+            colorScheme: 'purple',
+            path: '/endowment-management/admin/donations',
+          },
+          {
+            label: 'Endowment Funds',
+            description: 'Create and track funds, corpus, and accruals.',
+            icon: 'account_balance',
+            colorScheme: 'purple',
+            path: '/endowment-management/admin/funds',
+          },
+          {
+            label: 'Schemes',
+            description:
+              'Set up schemes (scholarships/prizes) linked to funds.',
+            icon: 'emoji_events',
+            colorScheme: 'purple',
+            path: '/endowment-management/admin/schemes',
+          },
+          {
+            label: 'Beneficiary Selection',
+            description:
+              'Shortlist applicants and process committee approvals.',
+            icon: 'how_to_reg',
+            colorScheme: 'purple',
+            path: '/endowment-management/admin/selection',
+          },
+          {
+            label: 'Disbursement',
+            description: 'Record payouts to selected beneficiaries.',
+            icon: 'currency_rupee',
+            colorScheme: 'purple',
+            path: '/endowment-management/admin/disbursement',
+          },
+          {
+            label: 'Fund Utilization',
+            description: 'Track opening corpus, yields, and balances.',
+            icon: 'account_balance_wallet',
+            colorScheme: 'purple',
+            path: '/endowment-management/admin/reports/fund-utilization',
+          },
+          {
+            label: 'Donor Acknowledgement',
+            description: 'Track donor contributions and 80G status.',
+            icon: 'receipt_long',
+            colorScheme: 'purple',
+            path: '/endowment-management/admin/reports/donor-acknowledgement',
+          },
+          {
+            label: 'Scheme Performance',
+            description: 'Monitor disbursements and schemes performance.',
+            icon: 'trending_up',
+            colorScheme: 'purple',
+            path: '/endowment-management/admin/reports/scheme-performance',
+          },
+        ],
+      },
+      {
+        label: 'Student Portal',
+        slug: 'endowment-student',
+        description: 'Browse eligible schemes and apply for awards.',
+        icon: 'school',
+        colorScheme: 'green',
+        path: '/endowment-management/student',
+        children: [
+          {
+            label: 'Dashboard',
+            description:
+              'Overview of your applications and awarded scholarships.',
+            icon: 'dashboard',
+            colorScheme: 'teal',
+            path: '/endowment-management/student/dashboard',
+          },
+          {
+            label: 'Browse Schemes',
+            description: 'View open schemes and check your eligibility.',
+            icon: 'search',
+            colorScheme: 'teal',
+            path: '/endowment-management/student/schemes',
+          },
+          {
+            label: 'My Applications',
+            description: 'Track the status of your scheme applications.',
+            icon: 'folder_open',
+            colorScheme: 'teal',
+            path: '/endowment-management/student/applications',
+          },
+          {
+            label: 'My Awards',
+            description: 'View selected awards and download certificates.',
+            icon: 'workspace_premium',
+            colorScheme: 'teal',
+            path: '/endowment-management/student/awards',
+          },
+        ],
+      },
+      {
+        label: 'Master Configuration',
+        slug: 'endowment-master',
+        description: 'Configure Endowment Types, Award Types, and Eligibility.',
+        icon: 'settings',
+        colorScheme: 'purple',
+        path: '/endowment-management/master',
+        children: [
+          {
+            label: 'Endowment Types',
+            description:
+              'Manage types of endowments (e.g. Chair, Scholarship).',
+            path: '/endowment-management/master/types',
+            icon: 'category',
+            colorScheme: 'purple',
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export function useMenu() {
