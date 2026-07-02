@@ -32,6 +32,7 @@ const PORTAL_PATHS: string[] = [
   '/endowment-management',
   '/endowment-management/admin',
   '/endowment-management/student',
+  '/convocation-management',
   '/sports-management/admin',
   '/sports-management/master',
   '/essential-services',
