@@ -37,11 +37,8 @@ export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {
   const mappedName = ICON_MAPPING[cleanName] || cleanName;
 
   return (
-    <span
-      className={`material-symbols-outlined ${className}`}
-      style={{ fontSize: 'inherit' }}
-    >
+    <i className={`material-symbols-outlined ${className}`}>
       {mappedName.replace(/-/g, '_')}
-    </span>
+    </i>
   );
 };
