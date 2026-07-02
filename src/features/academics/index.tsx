@@ -11,6 +11,9 @@ import FacultyPortalPage from './faculty/FacultyPortalPage';
 import MarkEntry from './faculty/pages/MarkEntry';
 import FacultyMyCourses from './faculty/pages/MyCourses';
 import AcademicsPortalPage from './portal/AcademicsPortalPage';
+import StudentAttendance from './student/pages/Attendance';
+import StudentTimetable from './student/pages/Timetable';
+import FacultyAttendance from './faculty/pages/Attendance';
 
 export default function Academics() {
   return (
@@ -28,6 +31,10 @@ export default function Academics() {
       <Route path="faculty" element={<FacultyPortalPage />} />
       <Route path="faculty/my-courses" element={<FacultyMyCourses />} />
       <Route path="faculty/mark-entry" element={<MarkEntry />} />
+      <Route path="faculty/attendance" element={<FacultyAttendance />} />
+
+      <Route path="student/attendance" element={<StudentAttendance />} />
+      <Route path="student/timetable" element={<StudentTimetable />} />
     </Routes>
   );
 }
