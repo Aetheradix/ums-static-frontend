@@ -1,0 +1,51 @@
+@reference "tailwindcss";
+
+/* Stat-card grid — 1 / 2 / 4 columns responsive */
+.lcm-stats-grid {
+  @apply grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4;
+  margin-bottom: 1.5rem;
+}
+
+/* Two-up chart row */
+.lcm-charts-row {
+  @apply grid grid-cols-1 gap-4 lg:grid-cols-2;
+  margin-bottom: 1.5rem;
+}
+
+/* Fixed-height wrapper for chart canvases (avoids inline height styles) */
+.lcm-chart-box {
+  position: relative;
+  height: 240px;
+}
+
+.lcm-chart-box-sm {
+  position: relative;
+  height: 200px;
+}
+
+/* Reports filter row */
+.lcm-filter-row {
+  @apply grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4;
+  margin-bottom: 1rem;
+}
+
+/* Simple two-column detail definition list */
+.lcm-detail-grid {
+  @apply grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2;
+}
+
+.lcm-detail-item {
+  @apply flex flex-col gap-1;
+}
+
+.lcm-detail-label {
+  @apply text-xs font-medium uppercase tracking-wide text-gray-400;
+}
+
+.lcm-detail-value {
+  @apply text-sm font-medium text-gray-700;
+}
+
+.dark .lcm-detail-value {
+  @apply text-gray-200;
+}

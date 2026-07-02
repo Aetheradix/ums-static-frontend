@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { Loader } from 'shared/components/progress';
 
 const EarningAndDeduction = React.lazy(
@@ -21,6 +21,10 @@ const Bonus = React.lazy(() => import('./pages/Bonus'));
 const PayrollDashboard = React.lazy(() => import('./pages/PayrollDashboard'));
 
 const ArrearProcess = React.lazy(() => import('./pages/ArrearProcess'));
+const SalaryIncrement = React.lazy(() => import('./pages/SalaryIncrement'));
+const IncomeTaxDeclaration = React.lazy(
+  () => import('./pages/IncomeTaxDeclaration')
+);
 
 // Simple placeholder page for routes that don't have designs yet
 function StubPage({ title }: { title: string }) {
@@ -99,6 +103,11 @@ export default function PayrollRoutes() {
         <Route path="leave-encashment" element={<LeaveEncashment />} />
         <Route path="bonus" element={<Bonus />} />
         <Route path="arrear-process" element={<ArrearProcess />} />
+        <Route path="salary-increment" element={<SalaryIncrement />} />
+        <Route
+          path="income-tax-declaration"
+          element={<IncomeTaxDeclaration />}
+        />
       </Routes>
     </Suspense>
   );

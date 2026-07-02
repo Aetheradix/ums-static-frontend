@@ -52,6 +52,8 @@ export default function StudentEnrollment() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Learning Management System', to: learningUrls.portal },
+        { label: 'Admin Portal', to: learningUrls.admin.portal },
+        { label: 'Configuration', to: learningUrls.admin.configuration },
         { label: 'Student Enrollment' },
       ]}
     >

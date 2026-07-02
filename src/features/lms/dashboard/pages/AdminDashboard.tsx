@@ -1,8 +1,8 @@
-import { FormPage, FormCard } from 'shared/new-components';
-import { Icon } from 'shared/components/Icon/Icon';
 import { Chart } from 'primereact/chart';
-import { learningUrls } from '../../urls';
+import { Icon } from 'shared/components/Icon/Icon';
+import { FormCard, FormPage } from 'shared/new-components';
 import { recentActivities } from '../../mocks';
+import { learningUrls } from '../../urls';
 
 export default function AdminDashboard() {
   const progressData = {
@@ -48,18 +48,54 @@ export default function AdminDashboard() {
   };
 
   const kpis = [
-    { label: 'Total Courses', value: '24', icon: 'menu_book', bg: 'bg-blue-50 text-blue-600' },
-    { label: 'Total Modules', value: '56', icon: 'view_module', bg: 'bg-indigo-50 text-indigo-600' },
-    { label: 'Total Topics', value: '145', icon: 'tag', bg: 'bg-orange-50 text-orange-600' },
-    { label: 'Total Faculty', value: '18', icon: 'school', bg: 'bg-teal-50 text-teal-600' },
-    { label: 'Total Students', value: '1,250', icon: 'people', bg: 'bg-purple-50 text-purple-600' },
-    { label: 'Total Enrollments', value: '5,230', icon: 'assignment_turned_in', bg: 'bg-blue-50 text-blue-600' },
-    { label: 'Total Learning Contents', value: '842', icon: 'cloud_upload', bg: 'bg-green-50 text-green-600' },
-    { label: 'Total Quizzes', value: '60', icon: 'quiz', bg: 'bg-yellow-50 text-yellow-600' },
-    { label: 'Total Assignments', value: '120', icon: 'assignment', bg: 'bg-red-50 text-red-600' },
-    { label: 'Total Certificates Generated', value: '450', icon: 'workspace_premium', bg: 'bg-purple-50 text-purple-600' },
-    { label: 'Active Courses', value: '18', icon: 'play_circle', bg: 'bg-green-50 text-green-600' },
-    { label: 'Completed Courses', value: '6', icon: 'check_circle', bg: 'bg-gray-50 text-gray-600' },
+    {
+      label: 'Total Courses',
+      value: '24',
+      icon: 'menu_book',
+      bg: 'bg-blue-50 text-blue-600',
+    },
+    {
+      label: 'Total Topics',
+      value: '145',
+      icon: 'tag',
+      bg: 'bg-orange-50 text-orange-600',
+    },
+    {
+      label: 'Total Learning Contents',
+      value: '842',
+      icon: 'cloud_upload',
+      bg: 'bg-green-50 text-green-600',
+    },
+    {
+      label: 'Total Quizzes',
+      value: '60',
+      icon: 'quiz',
+      bg: 'bg-yellow-50 text-yellow-600',
+    },
+    {
+      label: 'Total Assignments',
+      value: '120',
+      icon: 'assignment',
+      bg: 'bg-red-50 text-red-600',
+    },
+    {
+      label: 'Total Certificates Generated',
+      value: '450',
+      icon: 'workspace_premium',
+      bg: 'bg-purple-50 text-purple-600',
+    },
+    {
+      label: 'Active Courses',
+      value: '18',
+      icon: 'play_circle',
+      bg: 'bg-green-50 text-green-600',
+    },
+    {
+      label: 'Completed Courses',
+      value: '6',
+      icon: 'check_circle',
+      bg: 'bg-gray-50 text-gray-600',
+    },
   ];
 
   return (
@@ -77,12 +113,18 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-6">
         {kpis.map((kpi, idx) => (
           <FormCard key={idx} className="flex items-center gap-4 p-4">
-            <div className={`${kpi.bg} p-3 rounded-lg flex items-center justify-center`}>
+            <div
+              className={`${kpi.bg} p-3 rounded-lg flex items-center justify-center`}
+            >
               <Icon name={kpi.icon} />
             </div>
             <div>
-              <div className="text-gray-500 text-xs font-medium">{kpi.label}</div>
-              <div className="text-xl font-bold text-gray-800 mt-0.5">{kpi.value}</div>
+              <div className="text-gray-500 text-xs font-medium">
+                {kpi.label}
+              </div>
+              <div className="text-xl font-bold text-gray-800 mt-0.5">
+                {kpi.value}
+              </div>
             </div>
           </FormCard>
         ))}
@@ -129,7 +171,7 @@ export default function AdminDashboard() {
         {/* Recent Activities */}
         <FormCard title="Recent Activities" className="lg:col-span-2">
           <div className="space-y-4">
-            {recentActivities.map((act) => (
+            {recentActivities.map(act => (
               <div
                 key={act.id}
                 className="flex justify-between items-center pb-3 border-b border-gray-100 last:border-0 last:pb-0"
@@ -141,17 +183,21 @@ export default function AdminDashboard() {
                         act.role === 'Faculty'
                           ? 'school'
                           : act.role === 'Admin'
-                          ? 'admin_panel_settings'
-                          : 'person'
+                            ? 'admin_panel_settings'
+                            : 'person'
                       }
                     />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-gray-800">{act.user}</p>
+                    <p className="text-sm font-semibold text-gray-800">
+                      {act.user}
+                    </p>
                     <p className="text-xs text-gray-500 mt-0.5">{act.action}</p>
                   </div>
                 </div>
-                <span className="text-xs text-gray-400 font-medium">{act.time}</span>
+                <span className="text-xs text-gray-400 font-medium">
+                  {act.time}
+                </span>
               </div>
             ))}
           </div>

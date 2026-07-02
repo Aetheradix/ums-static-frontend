@@ -105,11 +105,35 @@ export default function StudentReports() {
           <div>
             <ExportBar label="My Learning Report" />
             <Table
-              headers={['Course Name', 'Curriculum Progress', 'Modules Finished', 'Total Duration', 'Status']}
+              headers={[
+                'Course Name',
+                'Curriculum Progress',
+                'Modules Finished',
+                'Total Duration',
+                'Status',
+              ]}
               rows={[
-                ['B.Tech Computer Science', '78%', '4 / 6', '45 Hours', 'Active'],
-                ['Bachelor of Computer Applications', '100%', '6 / 6', '36 Hours', 'Completed'],
-                ['Master of Business Administration', '15%', '1 / 8', '40 Hours', 'Active'],
+                [
+                  'B.Tech Computer Science',
+                  '78%',
+                  '4 / 6',
+                  '45 Hours',
+                  'Active',
+                ],
+                [
+                  'Bachelor of Computer Applications',
+                  '100%',
+                  '6 / 6',
+                  '36 Hours',
+                  'Completed',
+                ],
+                [
+                  'Master of Business Administration',
+                  '15%',
+                  '1 / 8',
+                  '40 Hours',
+                  'Active',
+                ],
               ]}
             />
           </div>
@@ -119,11 +143,35 @@ export default function StudentReports() {
           <div>
             <ExportBar label="My Assessment Report" />
             <Table
-              headers={['Assessment Title', 'Assessment Type', 'Score / Grade', 'Submitted Date', 'Status']}
+              headers={[
+                'Assessment Title',
+                'Assessment Type',
+                'Score / Grade',
+                'Submitted Date',
+                'Status',
+              ]}
               rows={[
-                ['Quiz 1: C++ Syntax & Basics', 'Quiz', '9/10', '2026-06-25', 'Graded'],
-                ['Assignment 1: Logic Building', 'Assignment', '92/100', '2026-06-28', 'Graded'],
-                ['Assignment 2: Pointer Arithmetic', 'Assignment', 'Pending Evaluation', '2026-07-01', 'Submitted'],
+                [
+                  'Quiz 1: C++ Syntax & Basics',
+                  'Quiz',
+                  '9/10',
+                  '2026-06-25',
+                  'Graded',
+                ],
+                [
+                  'Assignment 1: Logic Building',
+                  'Assignment',
+                  '92/100',
+                  '2026-06-28',
+                  'Graded',
+                ],
+                [
+                  'Assignment 2: Pointer Arithmetic',
+                  'Assignment',
+                  'Pending Evaluation',
+                  '2026-07-01',
+                  'Submitted',
+                ],
               ]}
             />
           </div>
@@ -133,10 +181,20 @@ export default function StudentReports() {
           <div>
             <ExportBar label="My Learning Activity Report" />
             <Table
-              headers={['Activity Metric', 'Time Expended', 'Percentage Contribution', 'Last Updated']}
+              headers={[
+                'Activity Metric',
+                'Time Expended',
+                'Percentage Contribution',
+                'Last Updated',
+              ]}
               rows={[
                 ['Video Lectures Consumed', '22.0 Hours', '52%', '10 mins ago'],
-                ['Attempting Quizzes & Exams', '12.0 Hours', '28%', '1 hour ago'],
+                [
+                  'Attempting Quizzes & Exams',
+                  '12.0 Hours',
+                  '28%',
+                  '1 hour ago',
+                ],
                 ['Reading Slides & PDF notes', '8.5 Hours', '20%', 'Yesterday'],
               ]}
             />

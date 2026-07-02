@@ -61,21 +61,36 @@ export default function Lms() {
       <Route path="teacher/content/modules/*" element={<ModuleManagement />} />
       <Route path="teacher/content/upload/*" element={<ContentUpload />} />
       <Route path="teacher/content/materials/*" element={<ManageMaterials />} />
-      
+
       <Route path="teacher/assessment" element={<AssessmentPortal />} />
-      <Route path="teacher/assessment/question-bank/*" element={<QuestionBank />} />
+      <Route
+        path="teacher/assessment/question-bank/*"
+        element={<QuestionBank />}
+      />
       <Route path="teacher/assessment/quizzes/*" element={<QuizManagement />} />
-      <Route path="teacher/assessment/assignments/*" element={<AssignmentSubmissions />} />
+      <Route
+        path="teacher/assessment/assignments/*"
+        element={<AssignmentSubmissions />}
+      />
       <Route path="teacher/assessment/publish/*" element={<PublishResults />} />
 
       <Route path="teacher/progress" element={<ProgressPortal />} />
-      <Route path="teacher/progress/students/*" element={<StudentProgressList />} />
+      <Route
+        path="teacher/progress/students/*"
+        element={<StudentProgressList />}
+      />
       <Route path="teacher/progress/courses/*" element={<CourseProgress />} />
       <Route path="teacher/progress/modules/*" element={<ModuleCompletion />} />
 
       <Route path="teacher/certificate" element={<CertificatePortal />} />
-      <Route path="teacher/certificate/recommend/*" element={<GenerateCertificate />} />
-      <Route path="teacher/certificate/status/*" element={<ViewCertificate />} />
+      <Route
+        path="teacher/certificate/recommend/*"
+        element={<GenerateCertificate />}
+      />
+      <Route
+        path="teacher/certificate/status/*"
+        element={<ViewCertificate />}
+      />
       <Route path="teacher/reports/*" element={<TeacherReports />} />
 
       {/* Student Portal */}

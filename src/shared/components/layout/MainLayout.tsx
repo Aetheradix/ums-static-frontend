@@ -48,6 +48,29 @@ const PORTAL_PATHS: string[] = [
   '/affiliation-management-system/public',
   '/affiliation-management-system/college-login',
   '/affiliation-management-system/admin-login',
+  '/policy-compliance-management',
+
+  '/legal-case-management',
+  '/legal-case-management/admin',
+  '/legal-case-management/data-entry',
+  '/legal-case-management/viewer',
+
+  '/communication-management',
+  '/communication-management/admin',
+  '/communication-management/viewer',
+
+  '/event-ticketing-management',
+  '/event-ticketing-management/admin',
+  '/event-ticketing-management/organizer',
+  '/event-ticketing-management/volunteer',
+  '/event-ticketing-management/attendee',
+
+  '/timetable-management',
+  '/timetable-management/admin',
+  '/timetable-management/scheduler',
+  '/timetable-management/faculty',
+  '/timetable-management/student',
+  '/evaluation-grading',
 ];
 
 function isPortalPath(pathname: string): boolean {

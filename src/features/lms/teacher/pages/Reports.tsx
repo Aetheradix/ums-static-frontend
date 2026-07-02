@@ -106,11 +106,29 @@ export default function TeacherReports() {
           <div>
             <ExportBar label="My Course Report" />
             <Table
-              headers={['Course Name', 'Semester', 'Enrolled Students', 'Average Progress', 'Passing Rate']}
+              headers={[
+                'Course Name',
+                'Semester',
+                'Enrolled Students',
+                'Average Progress',
+                'Passing Rate',
+              ]}
               rows={[
                 ['B.Tech Computer Science', '5th Sem', '240', '78%', '92%'],
-                ['Bachelor of Computer Applications', '3rd Sem', '120', '100%', '98%'],
-                ['Master of Business Administration', '1st Sem', '85', '15%', 'N/A'],
+                [
+                  'Bachelor of Computer Applications',
+                  '3rd Sem',
+                  '120',
+                  '100%',
+                  '98%',
+                ],
+                [
+                  'Master of Business Administration',
+                  '1st Sem',
+                  '85',
+                  '15%',
+                  'N/A',
+                ],
               ]}
             />
           </div>
@@ -120,7 +138,13 @@ export default function TeacherReports() {
           <div>
             <ExportBar label="Student Performance Report" />
             <Table
-              headers={['Student Name', 'Average Grade', 'Quizzes Completed', 'Assignments Graded', 'Status']}
+              headers={[
+                'Student Name',
+                'Average Grade',
+                'Quizzes Completed',
+                'Assignments Graded',
+                'Status',
+              ]}
               rows={[
                 ['Arjun Sharma', 'A+ (94%)', '2 / 3', '2 / 2', 'Exemplary'],
                 ['Neha Gupta', 'B (76%)', '2 / 3', '1 / 2', 'On Track'],
@@ -134,10 +158,28 @@ export default function TeacherReports() {
           <div>
             <ExportBar label="Quiz Performance Report" />
             <Table
-              headers={['Quiz Name', 'Course Name', 'Attempts', 'Class Average', 'Highest Score']}
+              headers={[
+                'Quiz Name',
+                'Course Name',
+                'Attempts',
+                'Class Average',
+                'Highest Score',
+              ]}
               rows={[
-                ['Quiz 1: C++ Syntax & Basics', 'B.Tech Computer Science', '238', '8.2/10', '10/10'],
-                ['Quiz 2: DBMS Joins & Subqueries', 'B.Tech Computer Science', '230', '11.5/15', '15/15'],
+                [
+                  'Quiz 1: C++ Syntax & Basics',
+                  'B.Tech Computer Science',
+                  '238',
+                  '8.2/10',
+                  '10/10',
+                ],
+                [
+                  'Quiz 2: DBMS Joins & Subqueries',
+                  'B.Tech Computer Science',
+                  '230',
+                  '11.5/15',
+                  '15/15',
+                ],
               ]}
             />
           </div>
@@ -147,10 +189,28 @@ export default function TeacherReports() {
           <div>
             <ExportBar label="Assignment Grading Report" />
             <Table
-              headers={['Assignment Title', 'Due Date', 'Submitted Ratio', 'Grading Pending', 'Average Score']}
+              headers={[
+                'Assignment Title',
+                'Due Date',
+                'Submitted Ratio',
+                'Grading Pending',
+                'Average Score',
+              ]}
               rows={[
-                ['Assignment 1: Logic Building & Flowcharts', '2026-07-10', '236 / 240', '0', '88.5 / 100'],
-                ['Assignment 2: Pointer Arithmetic & Functions', '2026-07-20', '180 / 240', '32', 'N/A'],
+                [
+                  'Assignment 1: Logic Building & Flowcharts',
+                  '2026-07-10',
+                  '236 / 240',
+                  '0',
+                  '88.5 / 100',
+                ],
+                [
+                  'Assignment 2: Pointer Arithmetic & Functions',
+                  '2026-07-20',
+                  '180 / 240',
+                  '32',
+                  'N/A',
+                ],
               ]}
             />
           </div>

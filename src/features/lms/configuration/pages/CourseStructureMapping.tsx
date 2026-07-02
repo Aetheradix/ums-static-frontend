@@ -172,7 +172,9 @@ export default function CourseStructureMapping() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Learning Management System', to: learningUrls.portal },
-        { label: 'Edit Node' },
+        { label: 'Admin Portal', to: learningUrls.admin.portal },
+        { label: 'Configuration', to: learningUrls.admin.configuration },
+        { label: 'Course Structure Mapping' },
       ]}
     >
       <div className="flex flex-col gap-4">

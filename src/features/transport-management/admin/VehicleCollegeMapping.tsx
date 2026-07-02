@@ -5,7 +5,6 @@ import {
   FormGrid,
   FormActions,
 } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
 import { DropDownList, DatePicker, Checkbox } from 'shared/components/forms';
 
 const colleges = [
@@ -44,9 +43,6 @@ export default function VehicleCollegeMapping() {
         },
         { label: 'Vehicle to College Mapping' },
       ]}
-      headerAction={
-        <Button label="Back to List" variant="primary" icon="undo" />
-      }
     >
       <FormCard title="Mapping Details">
         <FormGrid columns={4}>

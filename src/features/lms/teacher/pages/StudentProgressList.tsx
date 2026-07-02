@@ -1,15 +1,35 @@
 import { useState } from 'react';
-import {
-  FormPage,
-  FormCard,
-  GridPanel,
-} from 'shared/new-components';
+import { FormPage, FormCard, GridPanel } from 'shared/new-components';
 import { learningUrls } from '../../urls';
 
 const MOCK_STUDENTS = [
-  { id: 1, name: 'Arjun Sharma', enrollment: 'CS2021001', course: 'B.Tech Computer Science', progress: '78%', completedModules: '4/6', lastActive: '10 mins ago' },
-  { id: 2, name: 'Neha Gupta', enrollment: 'CS2021002', course: 'B.Tech Computer Science', progress: '45%', completedModules: '2/6', lastActive: '1 day ago' },
-  { id: 3, name: 'Rohan Shah', enrollment: 'CS2021003', course: 'B.Tech Computer Science', progress: '92%', completedModules: '5/6', lastActive: '2 hours ago' },
+  {
+    id: 1,
+    name: 'Arjun Sharma',
+    enrollment: 'CS2021001',
+    course: 'B.Tech Computer Science',
+    progress: '78%',
+    completedModules: '4/6',
+    lastActive: '10 mins ago',
+  },
+  {
+    id: 2,
+    name: 'Neha Gupta',
+    enrollment: 'CS2021002',
+    course: 'B.Tech Computer Science',
+    progress: '45%',
+    completedModules: '2/6',
+    lastActive: '1 day ago',
+  },
+  {
+    id: 3,
+    name: 'Rohan Shah',
+    enrollment: 'CS2021003',
+    course: 'B.Tech Computer Science',
+    progress: '92%',
+    completedModules: '5/6',
+    lastActive: '2 hours ago',
+  },
 ];
 
 export default function StudentProgressList() {

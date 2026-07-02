@@ -11,17 +11,40 @@ import { ToastService } from 'services';
 import { learningUrls } from '../../urls';
 
 const MOCK_ASSIGNMENTS = [
-  { id: 1, course: 'B.Tech Computer Science', faculty: 'Dr. Amit Kumar', semester: '5th Sem', status: 'Active' },
-  { id: 2, course: 'Bachelor of Computer Applications', faculty: 'Prof. Priya Rawat', semester: '3rd Sem', status: 'Active' },
-  { id: 3, course: 'Master of Business Administration', faculty: 'Ravi Verma', semester: '1st Sem', status: 'Active' },
+  {
+    id: 1,
+    course: 'B.Tech Computer Science',
+    faculty: 'Dr. Amit Kumar',
+    semester: '5th Sem',
+    status: 'Active',
+  },
+  {
+    id: 2,
+    course: 'Bachelor of Computer Applications',
+    faculty: 'Prof. Priya Rawat',
+    semester: '3rd Sem',
+    status: 'Active',
+  },
+  {
+    id: 3,
+    course: 'Master of Business Administration',
+    faculty: 'Ravi Verma',
+    semester: '1st Sem',
+    status: 'Active',
+  },
 ];
 
 export default function CourseAssignment() {
   const [data] = useState(MOCK_ASSIGNMENTS);
-  const [popup, setPopup] = useState<{ mode: 'closed' | 'create' | 'edit'; item?: any }>({ mode: 'closed' });
+  const [popup, setPopup] = useState<{
+    mode: 'closed' | 'create' | 'edit';
+    item?: any;
+  }>({ mode: 'closed' });
 
   const handleSave = () => {
-    ToastService.success(`Course assignment ${popup.mode === 'create' ? 'created' : 'updated'} successfully!`);
+    ToastService.success(
+      `Course assignment ${popup.mode === 'create' ? 'created' : 'updated'} successfully!`
+    );
     setPopup({ mode: 'closed' });
   };
 
@@ -63,7 +86,11 @@ export default function CourseAssignment() {
       <FormPopup
         visible={popup.mode !== 'closed'}
         onHide={() => setPopup({ mode: 'closed' })}
-        title={popup.mode === 'create' ? 'New Course Assignment' : 'Edit Course Assignment'}
+        title={
+          popup.mode === 'create'
+            ? 'New Course Assignment'
+            : 'Edit Course Assignment'
+        }
       >
         <div className="grid grid-cols-1 gap-4">
           <DropDownList

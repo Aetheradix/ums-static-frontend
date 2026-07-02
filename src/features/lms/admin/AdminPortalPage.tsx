@@ -7,7 +7,7 @@ export default function AdminPortalPage() {
       moduleTitle="Admin Portal — Learning Management"
       moduleDescription="Configure courses, map faculty and students, manage masters and view reports."
       backPath={learningUrls.portal}
-      backLabel="LMS Role Selection"
+      backLabel="Learning Management System"
       portals={[
         {
           title: 'Dashboard',
@@ -18,21 +18,24 @@ export default function AdminPortalPage() {
         },
         {
           title: 'Masters',
-          description: 'Manage course, category, content type, assessment type, and certificates.',
+          description:
+            'Manage course, category, content type, assessment type, and certificates.',
           icon: 'category',
           colorScheme: 'purple',
           path: learningUrls.admin.masters,
         },
         {
           title: 'Configuration',
-          description: 'Course mapping, student enrollments, faculty mapping, and assignments.',
+          description:
+            'Course mapping, student enrollments, faculty mapping, and assignments.',
           icon: 'settings',
           colorScheme: 'gray',
           path: learningUrls.admin.configuration,
         },
         {
           title: 'Reports',
-          description: 'View course completion, learning progress, student, and faculty reports.',
+          description:
+            'View course completion, learning progress, student, and faculty reports.',
           icon: 'bar_chart',
           colorScheme: 'indigo',
           path: learningUrls.admin.reports,

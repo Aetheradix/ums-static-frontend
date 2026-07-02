@@ -28,6 +28,7 @@ interface PortalSelectorProps {
   portals: PortalOption[];
   backPath?: string;
   backLabel?: string;
+  coverImage?: string;
 }
 
 export default function PortalSelector({
@@ -36,11 +37,21 @@ export default function PortalSelector({
   portals,
   backPath,
   backLabel = 'Home',
+  coverImage,
 }: PortalSelectorProps) {
   const navigate = useNavigate();
 
   return (
     <div className="portal-selector-wrapper">
+      {coverImage && (
+        <div className="mb-8 rounded-2xl overflow-hidden shadow-md border border-slate-200">
+          <img
+            src={coverImage}
+            alt={moduleTitle}
+            className="w-full h-48 md:h-64 object-cover"
+          />
+        </div>
+      )}
       <div className="portal-selector-header">
         {backPath && (
           <div className="portal-selector-back">

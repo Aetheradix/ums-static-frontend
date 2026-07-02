@@ -11,14 +11,35 @@ import { ToastService } from 'services';
 import { learningUrls } from '../../urls';
 
 const INITIAL_QUESTIONS = [
-  { id: 1, course: 'B.Tech Computer Science', type: 'Multiple Choice', difficulty: 'Easy', question: 'Which keyword is used to allocate memory dynamically in C++?' },
-  { id: 2, course: 'B.Tech Computer Science', type: 'Multiple Choice', difficulty: 'Medium', question: 'What is the size of double data type in C++?' },
-  { id: 3, course: 'B.Tech Computer Science', type: 'Descriptive', difficulty: 'Hard', question: 'Explain the diamond problem in C++ and how virtualization solves it.' },
+  {
+    id: 1,
+    course: 'B.Tech Computer Science',
+    type: 'Multiple Choice',
+    difficulty: 'Easy',
+    question: 'Which keyword is used to allocate memory dynamically in C++?',
+  },
+  {
+    id: 2,
+    course: 'B.Tech Computer Science',
+    type: 'Multiple Choice',
+    difficulty: 'Medium',
+    question: 'What is the size of double data type in C++?',
+  },
+  {
+    id: 3,
+    course: 'B.Tech Computer Science',
+    type: 'Descriptive',
+    difficulty: 'Hard',
+    question:
+      'Explain the diamond problem in C++ and how virtualization solves it.',
+  },
 ];
 
 export default function QuestionBank() {
   const [data] = useState(INITIAL_QUESTIONS);
-  const [popup, setPopup] = useState<{ mode: 'closed' | 'create' }>({ mode: 'closed' });
+  const [popup, setPopup] = useState<{ mode: 'closed' | 'create' }>({
+    mode: 'closed',
+  });
 
   const handleSave = () => {
     ToastService.success('Question added to Bank.');
