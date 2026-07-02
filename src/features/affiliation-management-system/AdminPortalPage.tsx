@@ -35,6 +35,13 @@ export default function AdminPortalPage() {
           colorScheme: 'red',
           path: '/home/sub-menu/affiliation-settings',
         },
+        {
+          title: 'Manage Renewals',
+          description: 'Track and approve college renewals.',
+          icon: 'event_repeat',
+          colorScheme: 'purple',
+          path: '/affiliation-management-system/college-renewal-admin/upcoming',
+        },
       ]}
     />
   );
