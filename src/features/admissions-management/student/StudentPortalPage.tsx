@@ -4,8 +4,8 @@ import { admissionsUrls } from '../urls';
 export default function StudentPortalPage() {
   return (
     <PortalSelector
-      moduleTitle="Student Portal — Admissions"
-      moduleDescription="Apply for admission, track your application, pay fees, and select subjects."
+      moduleTitle="Applicant Portal — Admissions"
+      moduleDescription="Apply for admission, track your application, pay fees, and view merit list."
       backPath={admissionsUrls.root}
       backLabel="Admissions Management"
       portals={[
@@ -18,25 +18,52 @@ export default function StudentPortalPage() {
         },
         {
           title: 'Apply Now',
-          description: 'Fill and submit your admission application form.',
+          description: 'Fill and submit application',
           icon: 'assignment',
-          colorScheme: 'indigo',
+          colorScheme: 'purple',
           path: admissionsUrls.student.apply,
         },
         {
-          title: 'Application Status',
-          description:
-            'Track the current status of your admission application.',
-          icon: 'track_changes',
-          colorScheme: 'blue',
-          path: admissionsUrls.student.status,
+          title: 'Course Preference',
+          description: 'Select course priorities',
+          icon: 'list_alt',
+          colorScheme: 'green',
+          path: admissionsUrls.student.coursePreference,
         },
         {
-          title: 'Fee Payment',
-          description: 'Pay your admission registration fee online.',
-          icon: 'payments',
-          colorScheme: 'green',
-          path: admissionsUrls.student.feePayment,
+          title: 'Document Upload',
+          description: 'Upload required docs',
+          icon: 'upload_file',
+          colorScheme: 'orange',
+          path: admissionsUrls.student.documents,
+        },
+        {
+          title: 'Application Tracking',
+          description: 'Track status timeline',
+          icon: 'track_changes',
+          colorScheme: 'teal',
+          path: admissionsUrls.student.tracking,
+        },
+        {
+          title: 'Merit List',
+          description: 'View merit position',
+          icon: 'format_list_numbered',
+          colorScheme: 'blue',
+          path: admissionsUrls.student.meritList,
+        },
+        {
+          title: 'Admission Offer',
+          description: 'Accept/Reject offer',
+          icon: 'mail',
+          colorScheme: 'indigo',
+          path: admissionsUrls.student.offer,
+        },
+        {
+          title: 'Admission Letter',
+          description: 'Download admission letter',
+          icon: 'download',
+          colorScheme: 'purple',
+          path: admissionsUrls.student.admissionLetter,
         },
       ]}
     />

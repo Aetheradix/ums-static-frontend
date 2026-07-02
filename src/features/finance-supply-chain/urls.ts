@@ -177,6 +177,32 @@ export const financialReportsUrls = {
   budgetReports: { root: `${reports}/budget-reports` },
 };
 
+// ─── Student Fees & Admissions ───────────────────────────────────────────────
+const studentFees = `${BASE}/student-fees`;
+
+export const studentFeesUrls = {
+  feeDetails: { root: `${studentFees}/fee-details` },
+  feePayment: { root: `${studentFees}/fee-payment` },
+  studentFeeLedger: { root: `${studentFees}/student-fee-ledger` },
+  feeCollection: { root: `${studentFees}/fee-collection` },
+  refunds: { root: `${studentFees}/refunds` },
+  onlinePayments: { root: `${studentFees}/online-payments` },
+  reports: { root: `${studentFees}/reports` },
+  scholarshipAdjustment: { root: `${studentFees}/scholarship-adjustment` },
+};
+
+// ─── Admissions Finance ─────────────────────────────────────────────────────────
+const admissionsFinance = `${BASE}/admissions-finance`;
+
+export const admissionsFinanceUrls = {
+  paymentVerification: { root: `${admissionsFinance}/payment-verification` },
+  feeStructure: { root: `${admissionsFinance}/fee-structure` },
+  reconciliation: { root: `${admissionsFinance}/reconciliation` },
+  refunds: { root: `${admissionsFinance}/refunds` },
+  receipts: { root: `${admissionsFinance}/receipts` },
+  reports: { root: `${admissionsFinance}/reports` },
+};
+
 // ─── Root ─────────────────────────────────────────────────────────────────────
 export const financeSupplyChainUrls = {
   root: BASE,
@@ -189,4 +215,6 @@ export const financeSupplyChainUrls = {
   assetManagement: assetManagementUrls,
   gstCompliance: gstComplianceUrls,
   financialReports: financialReportsUrls,
+  studentFees: studentFeesUrls,
+  admissionsFinance: admissionsFinanceUrls,
 };

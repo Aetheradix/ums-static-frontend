@@ -1,3 +1,4 @@
+import { FormProvider } from 'react-hook-form';
 import { ToastService } from 'services';
 import { FormWizard } from 'shared/components/forms';
 import type { WizardStep } from 'shared/components/forms/FormWizard';
@@ -5,7 +6,6 @@ import { FormPage } from 'shared/new-components';
 import AcademicInfoStep from '../components/AcademicInfoStep';
 import AddressInfoStep from '../components/AddressInfoStep';
 import BasicInfoStep from '../components/BasicInfoStep';
-import ChoiceFillingStep from '../components/ChoiceFillingStep';
 import FatherInfoStep from '../components/FatherInfoStep';
 import { useApplicationForm } from '../components/form.hook';
 import MotherInfoStep from '../components/MotherInfoStep';
@@ -81,11 +81,7 @@ export default function ApplicationForm() {
         />
       ),
     },
-    {
-      label: 'Choice Filling',
-      icon: 'list',
-      content: <ChoiceFillingStep control={control} setValue={setValue} />,
-    },
+
     {
       label: 'Address Info',
       icon: 'map-marker',
@@ -112,16 +108,20 @@ export default function ApplicationForm() {
           </span>
         </div>
       ) : (
-        <FormWizard
-          steps={wizardSteps}
-          onComplete={async () => {
-            await saveDraft();
-            await onFormSubmit();
-          }}
-          isSaving={isSubmitting}
-          triggerValidation={trigger as (fields: string[]) => Promise<boolean>}
-          onReset={reset}
-        />
+        <FormProvider {...methods}>
+          <FormWizard
+            steps={wizardSteps}
+            onComplete={async () => {
+              await saveDraft();
+              await onFormSubmit();
+            }}
+            isSaving={isSubmitting}
+            triggerValidation={
+              trigger as (fields: string[]) => Promise<boolean>
+            }
+            onReset={reset}
+          />
+        </FormProvider>
       )}
     </FormPage>
   );

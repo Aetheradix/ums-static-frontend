@@ -1,5 +1,15 @@
 export const learningUrls = {
   portal: '/lms',
+  dashboard: '/lms/dashboard',
+  masters: '/lms/masters',
+  configuration: '/lms/configuration',
+  contentManagement: '/lms/content-management',
+  assessment: '/lms/assessment',
+  progressTracking: '/lms/progress-tracking',
+  certification: '/lms/certification',
+  faculty: {
+    assignments: '/lms/faculty/assignments',
+  },
   admin: {
     portal: '/lms/admin',
     dashboard: '/lms/admin/dashboard',
@@ -21,6 +31,7 @@ export const learningUrls = {
     dashboard: '/lms/student/dashboard',
     myLearning: '/lms/student/my-learning',
     assessments: '/lms/student/assessments',
+    assignments: '/lms/student/assignments',
     progress: '/lms/student/progress',
     certificates: '/lms/student/certificates',
     reports: '/lms/student/reports',

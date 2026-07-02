@@ -3,7 +3,7 @@ import ImportStudents from './admin/pages/ImportStudents';
 import StudentList from './admin/pages/StudentList';
 import LinkAbcAccount from './student/pages/LinkAbcAccount';
 import StudentProfile from './student/profile/pages/StudentProfile';
-import SubjectSelection from 'features/admission-portal/pages/SubjectSelection';
+import SubjectSelection from './student/pages/SubjectSelection';
 import StudentPortalPage from './student/StudentPortalPage';
 import StudentManagementPortalPage from './StudentManagementPortalPage';
 import StudentDashboard from './student/pages/Dashboard';
@@ -12,14 +12,36 @@ import MyCourses from './student/pages/MyCourses';
 import MyGrades from './student/pages/MyGrades';
 import TermReport from './student/pages/TermReport';
 
+// New Student imports
+import SemesterRegistration from './student/pages/SemesterRegistration';
+import AcademicHistory from './student/pages/AcademicHistory';
+import Grievance from './student/pages/Grievance';
+
+// Faculty imports
+import FacultyPortalPage from './faculty/FacultyPortalPage';
+import FacultyDashboard from './faculty/pages/Dashboard';
+import InternalAssessment from './faculty/pages/InternalAssessment';
+import StudentProgress from './faculty/pages/StudentProgress';
+
+// Department imports
+import DepartmentPortalPage from './department/DepartmentPortalPage';
+import DepartmentDashboard from './department/pages/Dashboard';
+import BatchAllocation from './department/pages/BatchAllocation';
+import SectionAllocation from './department/pages/SectionAllocation';
+import SubjectMapping from './department/pages/SubjectMapping';
+import SemesterPromotion from './department/pages/SemesterPromotion';
+
+import AdminPortalPage from './admin/AdminPortalPage';
+
 export default function StudentManagement() {
   return (
     <Routes>
       <Route path="" element={<StudentManagementPortalPage />} />
-      <Route path="admin" element={<AdminDashboard />} />
-      <Route path="admin/directory" element={<StudentList />} />
+      <Route path="admin" element={<AdminPortalPage />} />
       <Route path="admin/dashboard" element={<AdminDashboard />} />
+      <Route path="admin/directory" element={<StudentList />} />
       <Route path="admin/import" element={<ImportStudents />} />
+
       <Route path="student" element={<StudentPortalPage />} />
       <Route path="student/dashboard" element={<StudentDashboard />} />
       <Route path="student/link-abc" element={<LinkAbcAccount />} />
@@ -27,10 +49,34 @@ export default function StudentManagement() {
       <Route path="student/my-courses" element={<MyCourses />} />
       <Route path="student/my-grades" element={<MyGrades />} />
       <Route path="student/term-report" element={<TermReport />} />
+      <Route path="student/subject-selection" element={<SubjectSelection />} />
+
       <Route
-        path="student/subject-selection"
-        element={<SubjectSelection token="mock-token" />}
+        path="student/semester-registration"
+        element={<SemesterRegistration />}
       />
+      <Route path="student/academic-history" element={<AcademicHistory />} />
+      <Route path="student/grievance" element={<Grievance />} />
+
+      {/* Faculty routes */}
+      <Route path="faculty" element={<FacultyPortalPage />} />
+      <Route path="faculty/dashboard" element={<FacultyDashboard />} />
+      <Route
+        path="faculty/internal-assessment"
+        element={<InternalAssessment />}
+      />
+      <Route path="faculty/progress" element={<StudentProgress />} />
+
+      {/* Department routes */}
+      <Route path="department" element={<DepartmentPortalPage />} />
+      <Route path="department/dashboard" element={<DepartmentDashboard />} />
+      <Route path="department/batch-allocation" element={<BatchAllocation />} />
+      <Route
+        path="department/section-allocation"
+        element={<SectionAllocation />}
+      />
+      <Route path="department/subject-mapping" element={<SubjectMapping />} />
+      <Route path="department/promotion" element={<SemesterPromotion />} />
     </Routes>
   );
 }

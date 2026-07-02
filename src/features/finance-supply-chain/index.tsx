@@ -60,6 +60,24 @@ import IncomeExpenditure from './financial-reports/income-expenditure';
 import CashFlow from './financial-reports/cash-flow';
 import BudgetReports from './financial-reports/budget-reports';
 
+// Student Fees & Admissions
+import FeeDetails from './student-fees/pages/FeeDetails';
+import FeePayment from './student-fees/pages/FeePayment';
+import StudentFeeLedger from './student-fees/pages/StudentFeeLedger';
+import FeeCollection from './student-fees/pages/FeeCollection';
+import Refunds from './student-fees/pages/Refunds';
+import OnlinePayments from './student-fees/pages/OnlinePayments';
+import StudentFeeReports from './student-fees/pages/Reports';
+import ScholarshipAdjustment from './student-fees/pages/ScholarshipAdjustment';
+
+// Admissions Finance
+import PaymentVerification from './admissions-finance/pages/PaymentVerification';
+import FeeStructure from './admissions-finance/pages/FeeStructure';
+import PaymentReconciliation from './admissions-finance/pages/PaymentReconciliation';
+import RefundManagement from './admissions-finance/pages/RefundManagement';
+import Receipts from './admissions-finance/pages/Receipts';
+import AdmissionsFinanceReports from './admissions-finance/pages/Reports';
+
 export default function FinanceSupplyChain() {
   return (
     <Routes>
@@ -181,6 +199,48 @@ export default function FinanceSupplyChain() {
       <Route
         path="financial-reports/budget-reports/*"
         element={<BudgetReports />}
+      />
+
+      {/* Student Fees */}
+      <Route path="student-fees/fee-details/*" element={<FeeDetails />} />
+      <Route path="student-fees/fee-payment/*" element={<FeePayment />} />
+      <Route
+        path="student-fees/student-fee-ledger/*"
+        element={<StudentFeeLedger />}
+      />
+      <Route path="student-fees/fee-collection/*" element={<FeeCollection />} />
+      <Route path="student-fees/refunds/*" element={<Refunds />} />
+      <Route
+        path="student-fees/online-payments/*"
+        element={<OnlinePayments />}
+      />
+      <Route path="student-fees/reports/*" element={<StudentFeeReports />} />
+      <Route
+        path="student-fees/scholarship-adjustment/*"
+        element={<ScholarshipAdjustment />}
+      />
+
+      {/* Admissions Finance */}
+      <Route
+        path="admissions-finance/payment-verification/*"
+        element={<PaymentVerification />}
+      />
+      <Route
+        path="admissions-finance/fee-structure/*"
+        element={<FeeStructure />}
+      />
+      <Route
+        path="admissions-finance/reconciliation/*"
+        element={<PaymentReconciliation />}
+      />
+      <Route
+        path="admissions-finance/refunds/*"
+        element={<RefundManagement />}
+      />
+      <Route path="admissions-finance/receipts/*" element={<Receipts />} />
+      <Route
+        path="admissions-finance/reports/*"
+        element={<AdmissionsFinanceReports />}
       />
     </Routes>
   );

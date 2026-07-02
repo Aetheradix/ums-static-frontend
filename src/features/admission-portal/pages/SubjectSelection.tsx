@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Button } from 'primereact/button';
-import { Toast } from 'primereact/toast';
 import { Checkbox } from 'primereact/checkbox';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Badge } from 'primereact/badge';
-import { FormPage } from 'shared/new-components';
+import { FormPage, FormCard } from 'shared/new-components';
+import { ToastService } from 'services';
 import type { SubjectSelectionInfo, SubjectDto } from '../types';
 import SelectSemester from 'features/components/SelectSemester';
 import {
@@ -20,8 +20,6 @@ const SEMESTER_OPTIONS = Array.from({ length: 10 }, (_, i) => ({
 }));
 
 export default function SubjectSelection({ token }: { token: string }) {
-  const toast = useRef<Toast>(null);
-
   const [info, setInfo] = useState<SubjectSelectionInfo | null>(null);
   const [selectedSemester, setSelectedSemester] = useState<string | null>(null);
   const [subjects, setSubjects] = useState<SubjectDto[]>([]);
@@ -43,12 +41,9 @@ export default function SubjectSelection({ token }: { token: string }) {
         setInfo(infoData);
       } catch {
         if (cancelled) return;
-        toast.current?.show({
-          severity: 'error',
-          summary: 'Load Error',
-          detail: 'Failed to load programme information. Please refresh.',
-          life: 6000,
-        });
+        ToastService.error(
+          'Failed to load programme information. Please refresh.'
+        );
       } finally {
         if (!cancelled) setLoadingInfo(false);
       }
@@ -70,12 +65,9 @@ export default function SubjectSelection({ token }: { token: string }) {
         setSubjects(arr);
         setSelectedPssIds(arr.filter(s => s.isSelected).map(s => s.pssId));
       } catch {
-        toast.current?.show({
-          severity: 'error',
-          summary: 'Load Error',
-          detail: 'Failed to load subjects for the selected semester.',
-          life: 5000,
-        });
+        ToastService.error(
+          'Failed to load subjects for the selected semester.'
+        );
       } finally {
         setLoadingSubjects(false);
       }
@@ -99,12 +91,7 @@ export default function SubjectSelection({ token }: { token: string }) {
   // ── Submit selection ────────────────────────────────────────────────────
   const handleSubmit = async () => {
     if (!selectedSemester) {
-      toast.current?.show({
-        severity: 'warn',
-        summary: 'No Semester',
-        detail: 'Please select a semester first.',
-        life: 4000,
-      });
+      ToastService.error('Please select a semester first.');
       return;
     }
 
@@ -115,24 +102,17 @@ export default function SubjectSelection({ token }: { token: string }) {
         semesterName: selectedSemester,
         selectedPssIds,
       });
-      toast.current?.show({
-        severity: 'success',
-        summary: 'Saved',
-        detail: 'Your subject selection has been saved successfully.',
-        life: 4000,
-      });
+      ToastService.success(
+        'Your subject selection has been saved successfully.'
+      );
       // Refresh to sync isSelected flags from DB
       await loadSubjects(selectedSemester);
     } catch (e) {
-      toast.current?.show({
-        severity: 'error',
-        summary: 'Save Failed',
-        detail:
-          e instanceof Error
-            ? e.message
-            : 'Could not save selection. Please try again.',
-        life: 6000,
-      });
+      ToastService.error(
+        e instanceof Error
+          ? e.message
+          : 'Could not save selection. Please try again.'
+      );
     } finally {
       setSubmitting(false);
     }
@@ -159,12 +139,14 @@ export default function SubjectSelection({ token }: { token: string }) {
         title="Subject Selection"
         description="Loading your programme details…"
       >
-        <div className="ss-spinner-wrap">
+        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-xl shadow-sm border border-gray-100">
           <ProgressSpinner
             style={{ width: '48px', height: '48px' }}
             strokeWidth="4"
           />
-          <p className="ss-spinner-label">Fetching programme information…</p>
+          <p className="mt-4 text-gray-500 font-medium">
+            Fetching programme information…
+          </p>
         </div>
       </FormPage>
     );
@@ -179,127 +161,174 @@ export default function SubjectSelection({ token }: { token: string }) {
           : 'Select your subjects for each semester'
       }
     >
-      <Toast ref={toast} position="top-right" />
+      <div className="max-w-6xl mx-auto flex flex-col gap-6">
+        <FormCard>
+          {/* ── Semester selector bar ─────────────────────────── */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-gray-200">
+            <div className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto">
+              <label className="font-bold text-gray-700 whitespace-nowrap">
+                Select Semester:
+              </label>
+              <SelectSemester
+                id="semester-dropdown"
+                name="semester"
+                data={SEMESTER_OPTIONS}
+                loading={loadingSubjects}
+                value={selectedSemester}
+                onChange={(val: string | number | null) =>
+                  setSelectedSemester(val as string)
+                }
+                disabled={loadingSubjects || submitting}
+                defaultOptionText="Choose a semester"
+                required={true}
+              />
+            </div>
 
-      {/* ── Semester selector bar ─────────────────────────── */}
-      <div className="ss-top-bar">
-        <div className="ss-semester-select">
-          <SelectSemester
-            id="semester-dropdown"
-            name="semester"
-            data={SEMESTER_OPTIONS}
-            loading={loadingSubjects}
-            value={selectedSemester}
-            onChange={(val: string | number | null) =>
-              setSelectedSemester(val as string)
-            }
-            disabled={loadingSubjects || submitting}
-            defaultOptionText="Select a semester"
-            required={true}
-          />
-        </div>
-
-        {selectedSemester && (
-          <div className="ss-credit-summary">
-            <span className="ss-credit-count">{totalSelectedCredits}</span>
-            <span className="ss-credit-label">Credits Selected</span>
+            {selectedSemester && (
+              <div className="flex items-center gap-4 p-3 bg-blue-50 border border-blue-100 rounded-lg shadow-sm">
+                <div className="w-12 h-12 bg-blue-600 text-white rounded flex items-center justify-center font-bold text-2xl shadow-sm">
+                  {totalSelectedCredits}
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-blue-900 font-bold uppercase tracking-wider text-xs">
+                    Total Selected
+                  </span>
+                  <span className="text-blue-700 font-medium text-sm">
+                    Credits
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
-        )}
-      </div>
 
-      {/* ── Subject list ──────────────────────────────────── */}
-      {selectedSemester && (
-        <div className="ss-subjects-panel">
-          {/* Panel header */}
-          <div className="ss-panel-header">
-            <div className="ss-panel-title">
-              <i className="pi pi-book" />
-              <span>{selectedSemester}</span>
-              {!loadingSubjects && (
-                <Badge
-                  value={`${subjects.length} subjects`}
-                  severity="secondary"
+          {/* ── Subject list ──────────────────────────────────── */}
+          {selectedSemester && (
+            <div className="mt-6">
+              {/* Panel header */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+                <div className="flex items-center gap-3">
+                  <i className="pi pi-book text-2xl text-blue-600" />
+                  <span className="text-2xl font-bold text-gray-800 tracking-tight">
+                    {selectedSemester}
+                  </span>
+                  {!loadingSubjects && (
+                    <Badge
+                      value={`${subjects.length} subjects`}
+                      severity="info"
+                      className="ml-2 font-medium"
+                    />
+                  )}
+                </div>
+                <Button
+                  label="Save Selection"
+                  icon="pi pi-check"
+                  loading={submitting}
+                  disabled={submitting || loadingSubjects}
+                  onClick={handleSubmit}
+                  size="large"
+                  severity="success"
+                  className="shadow-md font-bold px-6"
                 />
+              </div>
+
+              {/* Content */}
+              {loadingSubjects ? (
+                <div className="flex flex-col items-center justify-center py-16 bg-gray-50 rounded-xl border border-gray-100">
+                  <ProgressSpinner
+                    style={{ width: '36px', height: '36px' }}
+                    strokeWidth="4"
+                  />
+                  <p className="mt-4 text-gray-500 font-medium">
+                    Loading subjects for {selectedSemester}…
+                  </p>
+                </div>
+              ) : Object.keys(categoryGroups).length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-16 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+                  <i className="pi pi-inbox text-5xl text-gray-300 mb-4" />
+                  <p className="text-gray-500 font-medium text-lg">
+                    No subjects found for this semester.
+                  </p>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-8">
+                  {Object.entries(categoryGroups).map(
+                    ([category, catSubjects]) => (
+                      <div key={category} className="bg-white">
+                        <div className="flex items-center gap-3 mb-4 border-b border-gray-100 pb-2">
+                          <h4 className="text-lg font-bold text-gray-800 m-0 uppercase tracking-wide">
+                            {category}
+                          </h4>
+                          <Badge
+                            value={catSubjects.length.toString()}
+                            severity="secondary"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                          {catSubjects.map(subj => {
+                            const isChecked = selectedPssIds.includes(
+                              subj.pssId
+                            );
+                            return (
+                              <div
+                                key={subj.pssId}
+                                className={`flex items-center p-4 border rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
+                                  isChecked
+                                    ? 'border-blue-500 bg-blue-50 shadow-sm'
+                                    : 'border-gray-200 bg-white hover:border-blue-300'
+                                }`}
+                                onClick={() => toggleSubject(subj.pssId)}
+                                role="checkbox"
+                                aria-checked={isChecked}
+                                tabIndex={0}
+                                onKeyDown={e =>
+                                  e.key === ' ' && toggleSubject(subj.pssId)
+                                }
+                              >
+                                <div className="mr-4 mt-0.5">
+                                  <Checkbox
+                                    checked={isChecked}
+                                    onChange={() => toggleSubject(subj.pssId)}
+                                    inputId={`subject-${subj.pssId}`}
+                                    onClick={e => e.stopPropagation()}
+                                  />
+                                </div>
+                                <div className="flex flex-col flex-grow min-w-0">
+                                  <label
+                                    htmlFor={`subject-${subj.pssId}`}
+                                    className={`font-semibold truncate cursor-pointer ${isChecked ? 'text-blue-900' : 'text-gray-800'}`}
+                                    onClick={e => e.stopPropagation()}
+                                    title={subj.subjectName}
+                                  >
+                                    {subj.subjectName}
+                                  </label>
+                                  <span className="text-xs text-gray-500 font-mono mt-1">
+                                    {subj.subjectCode}
+                                  </span>
+                                </div>
+                                <div className="ml-3 flex flex-col items-center justify-center shrink-0 w-12 h-12 bg-white rounded-lg border border-gray-100 shadow-sm">
+                                  <span
+                                    className={`font-bold text-lg leading-none ${isChecked ? 'text-blue-600' : 'text-gray-700'}`}
+                                  >
+                                    {subj.totalCredits}
+                                  </span>
+                                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-1">
+                                    cr
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
               )}
             </div>
-            <Button
-              label="Save Selection"
-              icon="pi pi-check"
-              loading={submitting}
-              disabled={submitting || loadingSubjects}
-              onClick={handleSubmit}
-              className="p-button-sm"
-            />
-          </div>
-
-          {/* Content */}
-          {loadingSubjects ? (
-            <div className="ss-spinner-wrap">
-              <ProgressSpinner
-                style={{ width: '36px', height: '36px' }}
-                strokeWidth="4"
-              />
-              <p className="ss-spinner-label">Loading subjects…</p>
-            </div>
-          ) : Object.keys(categoryGroups).length === 0 ? (
-            <div className="ss-empty">
-              <i className="pi pi-inbox" />
-              <p>No subjects found for this semester.</p>
-            </div>
-          ) : (
-            <div className="ss-categories">
-              {Object.entries(categoryGroups).map(([category, catSubjects]) => (
-                <div key={category} className="ss-category">
-                  <h4 className="ss-category-title">{category}</h4>
-                  <div className="ss-subject-grid">
-                    {catSubjects.map(subj => {
-                      const isChecked = selectedPssIds.includes(subj.pssId);
-                      return (
-                        <div
-                          key={subj.pssId}
-                          className={`ss-subject-card${isChecked ? ' ss-subject-card--selected' : ''}`}
-                          onClick={() => toggleSubject(subj.pssId)}
-                          role="checkbox"
-                          aria-checked={isChecked}
-                          tabIndex={0}
-                          onKeyDown={e =>
-                            e.key === ' ' && toggleSubject(subj.pssId)
-                          }
-                        >
-                          <Checkbox
-                            checked={isChecked}
-                            onChange={() => toggleSubject(subj.pssId)}
-                            inputId={`subject-${subj.pssId}`}
-                            onClick={e => e.stopPropagation()}
-                          />
-                          <div className="ss-subject-info">
-                            <label
-                              htmlFor={`subject-${subj.pssId}`}
-                              className="ss-subject-name"
-                              onClick={e => e.stopPropagation()}
-                            >
-                              {subj.subjectName}
-                            </label>
-                            <span className="ss-subject-code">
-                              {subj.subjectCode}
-                            </span>
-                          </div>
-                          <div className="ss-subject-credits">
-                            <span className="ss-credits-value">
-                              {subj.totalCredits}
-                            </span>
-                            <span className="ss-credits-unit">cr</span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
           )}
-        </div>
-      )}
+        </FormCard>
+      </div>
     </FormPage>
   );
 }

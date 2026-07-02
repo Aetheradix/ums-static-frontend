@@ -75,6 +75,32 @@ export default function BasicInfoStep({ register }: BasicInfoStepProps) {
         />
         <SelectNationality {...register('nationality')} required />
       </FormGrid>
+
+      <div className="mt-6 border-t border-gray-100 pt-6">
+        <h4 className="text-gray-800 font-bold mb-4 flex items-center gap-2">
+          <i className="pi pi-lock text-indigo-500"></i> Account Creation
+        </h4>
+        <p className="text-sm text-gray-500 mb-4">
+          Set a password to create your student portal account. You will use
+          your email and this password to track your application.
+        </p>
+        <FormGrid columns={2}>
+          <TextBox
+            label="Password"
+            placeholder="Create a password"
+            type="password"
+            {...register('password')}
+            required
+          />
+          <TextBox
+            label="Confirm Password"
+            placeholder="Confirm your password"
+            type="password"
+            {...register('confirmPassword')}
+            required
+          />
+        </FormGrid>
+      </div>
     </FormCard>
   );
 }

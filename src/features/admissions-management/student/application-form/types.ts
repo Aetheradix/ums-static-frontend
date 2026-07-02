@@ -5,7 +5,6 @@ export interface CreateApplicationCommand {
   academic: AcademicDto;
   basicInfo: BasicInfoDto;
   address: AddressDto;
-  choices?: ChoiceFillingItemDto[];
 }
 
 export interface PriorEducationEntry {
@@ -20,16 +19,6 @@ export interface PriorEducationEntry {
   documentType: string;
   documentFile: File | null;
   documentId: string | null;
-}
-export interface ChoiceFillingItemDto {
-  districtId: number;
-  districtName: string;
-  collegeTypeId: number;
-  collegeTypeName: string;
-  collegeCategoryId: number;
-  collegeCategoryName: string;
-  collegeRegistrationId: number;
-  collegeName: string;
 }
 
 export interface AcademicDto {
@@ -275,6 +264,17 @@ export interface CollegeRegistrationItem {
   isActive: boolean;
 }
 
+export interface ChoiceFillingItemDto {
+  districtId: number;
+  districtName: string;
+  collegeTypeId: number;
+  collegeTypeName: string;
+  collegeCategoryId: number;
+  collegeCategoryName: string;
+  collegeRegistrationId: number;
+  collegeName: string;
+}
+
 export interface ApplicationFormData {
   academicSession: string;
   programme: string;
@@ -307,6 +307,7 @@ export interface ApplicationFormData {
   specialisation: string;
 
   priorEducations: PriorEducationEntry[];
+  choiceFilling: ChoiceFillingItemDto[];
 
   addressType: string;
   country: string;
@@ -319,6 +320,6 @@ export interface ApplicationFormData {
   addressLine2: string;
   landmark: string;
   zipcode: number | null;
-
-  choiceFilling: ChoiceFillingItemDto[];
+  password?: string;
+  confirmPassword?: string;
 }

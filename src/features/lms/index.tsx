@@ -47,6 +47,7 @@ export default function Lms() {
       <Route index element={<LearningPortalPage />} />
 
       {/* Admin Portal */}
+
       <Route path="admin" element={<AdminPortalPage />} />
       <Route path="admin/dashboard/*" element={<AdminDashboard />} />
       <Route path="admin/masters/*" element={<Masters />} />

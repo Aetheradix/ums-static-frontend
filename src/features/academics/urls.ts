@@ -17,10 +17,13 @@ export const academicsUrls = {
     myCourses: '/academics/student/my-courses',
     myGrades: '/academics/student/my-grades',
     termReport: '/academics/student/term-report',
+    attendance: '/academics/student/attendance',
+    timetable: '/academics/student/timetable',
   },
   faculty: {
     portal: '/academics/faculty',
     myCourses: '/academics/faculty/my-courses',
     markEntry: '/academics/faculty/mark-entry',
+    attendance: '/academics/faculty/attendance',
   },
 };

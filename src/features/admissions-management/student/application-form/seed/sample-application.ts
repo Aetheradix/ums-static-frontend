@@ -59,6 +59,7 @@ export const sampleApplication: ApplicationFormData = {
       documentId: 'doc-seed-12th',
     },
   ],
+  choiceFilling: [],
 
   addressType: '1',
   country: 'India',
@@ -71,27 +72,4 @@ export const sampleApplication: ApplicationFormData = {
   addressLine2: 'Near Bhopal Talkies',
   landmark: 'Rose Garden',
   zipcode: 462002,
-
-  choiceFilling: [
-    {
-      districtId: 1,
-      districtName: 'Bhopal',
-      collegeTypeId: 1,
-      collegeTypeName: 'Government',
-      collegeCategoryId: 1,
-      collegeCategoryName: 'Co-Education',
-      collegeRegistrationId: 1,
-      collegeName: 'Government College of Engineering, Bhopal',
-    },
-    {
-      districtId: 4,
-      districtName: 'Indore',
-      collegeTypeId: 3,
-      collegeTypeName: 'Autonomous',
-      collegeCategoryId: 1,
-      collegeCategoryName: 'Co-Education',
-      collegeRegistrationId: 4,
-      collegeName: 'Indian Institute of Technology, Indore',
-    },
-  ],
 };

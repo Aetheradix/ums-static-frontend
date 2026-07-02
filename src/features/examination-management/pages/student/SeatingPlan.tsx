@@ -1,4 +1,4 @@
-import { FormPage, FormCard } from 'shared/new-components';
+import { FormCard, FormPage } from 'shared/new-components';
 import { useStudentSeatingPlanQuery } from '../../queries';
 
 export default function StudentSeatingPlan() {
@@ -59,30 +59,15 @@ export default function StudentSeatingPlan() {
                   <div
                     key={i}
                     className={`h-7 rounded text-[10px] flex items-center justify-center font-medium border ${
-                      s.status === 'allocated'
-                        ? 'bg-blue-100 text-blue-700 border-blue-200'
-                        : s.status === 'reserved'
-                          ? 'bg-yellow-100 text-yellow-700 border-yellow-200'
-                          : 'bg-gray-50 text-gray-400 border-gray-200'
-                    } ${s.seat === seat.split(' - Seat ')[1] && hall.name === assignedHall ? 'ring-2 ring-blue-500 font-bold' : ''}`}
+                      s.seat === seat.split(' - Seat ')[1] &&
+                      hall.name === assignedHall
+                        ? 'bg-blue-500 text-white border-blue-600 ring-2 ring-blue-500 ring-offset-1 font-bold shadow-sm'
+                        : 'bg-gray-50 text-gray-400 border-gray-200'
+                    }`}
                   >
                     {s.seat}
                   </div>
                 ))}
-              </div>
-              <div className="flex gap-4 mt-3 text-xs text-gray-500">
-                <span className="flex items-center gap-1">
-                  <span className="w-3 h-3 rounded bg-blue-100 inline-block border border-blue-200" />{' '}
-                  Allocated
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-3 h-3 rounded bg-yellow-100 inline-block border border-yellow-200" />{' '}
-                  Reserved
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-3 h-3 rounded bg-gray-50 inline-block border border-gray-200" />{' '}
-                  Available
-                </span>
               </div>
             </div>
           ))}
