@@ -19,7 +19,13 @@ const SubMenuGrid: React.FC<SubMenuGridProps> = ({ items }) => {
           icon={item.icon}
           colorScheme={item.colorScheme}
           description={item.description}
-          onClick={item.path ? () => navigate(item.path!) : undefined}
+          onClick={() => {
+            if (item.path) {
+              navigate(item.path);
+            } else if (item.slug) {
+              navigate(`/home/sub-menu/${item.slug}`);
+            }
+          }}
         />
       ))}
     </div>

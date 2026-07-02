@@ -24,7 +24,7 @@ const WelcomeBanner: React.FC = () => (
     <div className="welcome-content">
       <div>
         <h1 className="welcome-heading">
-          Welcome, <span className="welcome-name">Alex Lin</span>
+          Welcome, <span className="welcome-name">Aryan Patel</span>
         </h1>
         <p className="welcome-subtext">
           Your unified workspace. Every service, every record — one tile away.

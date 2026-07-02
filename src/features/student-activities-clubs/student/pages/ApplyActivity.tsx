@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 export default function ApplyActivity() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    studentName: 'Alex Lin',
+    studentName: 'Aryan Patel',
     enrollmentNo: 'EN2024005',
     course: 'B.Tech CSE',
     activity: '',

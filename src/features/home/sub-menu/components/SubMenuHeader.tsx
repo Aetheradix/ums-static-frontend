@@ -66,7 +66,7 @@ const SubMenuHeader: React.FC<SubMenuHeaderProps> = ({
 
       <div className="submenu-welcome">
         <h1>
-          Welcome, <span className="submenu-name">Alex Lin</span>
+          Welcome, <span className="submenu-name">Aryan Patel</span>
         </h1>
         <p>Select a submodule to manage your workspace.</p>
       </div>
