@@ -2895,6 +2895,22 @@ export const menuConfig: Menu.MenuItem[] = [
             icon: 'assignment_turned_in',
             colorScheme: 'blue',
           },
+          {
+            label: 'Department Registration',
+            slug: 'department-registration',
+            description: 'Register departments',
+            path: '/affiliation-management-system/department-registration/list',
+            icon: 'account_tree',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Apply for Renewal',
+            slug: 'apply-renewal',
+            description: 'Apply for college renewal',
+            path: '/affiliation-management-system/college-renewal/application',
+            icon: 'sync',
+            colorScheme: 'orange',
+          },
         ],
       },
       {
@@ -2905,6 +2921,14 @@ export const menuConfig: Menu.MenuItem[] = [
         icon: 'admin_panel_settings',
         colorScheme: 'red',
         children: [
+          {
+            label: 'Manage Renewals',
+            slug: 'manage-renewals',
+            description: 'Track and approve renewals',
+            path: '/affiliation-management-system/college-renewal-admin/upcoming',
+            icon: 'replay',
+            colorScheme: 'red',
+          },
           {
             label: 'College Registration Approvals',
             slug: 'registration-approval',
