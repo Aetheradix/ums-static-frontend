@@ -1,8 +1,8 @@
-import { FormPage, FormCard } from 'shared/new-components';
-import { Icon } from 'shared/components/Icon/Icon';
 import { Chart } from 'primereact/chart';
-import { learningUrls } from '../../urls';
+import { Icon } from 'shared/components/Icon/Icon';
+import { FormCard, FormPage } from 'shared/new-components';
 import { recentActivities } from '../../mocks';
+import { learningUrls } from '../../urls';
 
 export default function TeacherDashboard() {
   const studentPerformanceData = {
@@ -43,12 +43,6 @@ export default function TeacherDashboard() {
       bg: 'bg-blue-50 text-blue-600',
     },
     {
-      label: 'Total Students',
-      value: '150',
-      icon: 'people',
-      bg: 'bg-purple-50 text-purple-600',
-    },
-    {
       label: 'Pending Assessments',
       value: '15',
       icon: 'pending_actions',
@@ -79,7 +73,7 @@ export default function TeacherDashboard() {
         { label: 'Dashboard' },
       ]}
     >
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 pb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 pb-6">
         {kpis.map((kpi, idx) => (
           <FormCard key={idx} className="flex items-center gap-4 p-4">
             <div
@@ -100,7 +94,7 @@ export default function TeacherDashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-6">
-        <FormCard title="Class Average Progress Trend">
+        <FormCard title="Class Average Progress Trend — Web Development (CS-301)">
           <div className="card flex justify-center">
             <Chart
               type="line"
@@ -111,7 +105,7 @@ export default function TeacherDashboard() {
           </div>
         </FormCard>
 
-        <FormCard title="Assignment Submission Status">
+        <FormCard title="Assignment Submission Status — CSS Grid & Flex (Module 2)">
           <div className="card flex justify-center">
             <Chart
               type="pie"

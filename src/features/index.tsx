@@ -44,6 +44,7 @@ import SportsManagement from './sports-management';
 import StudentFeedbackManagement from './student-feedback-management';
 import StudentManagement from './student-management';
 import TrainingPlacement from './training-placement';
+import EndowmentManagementRoutes from './endowment-management';
 
 import BillTracking from './bill-tracking';
 import CommunicationManagementRoutes from './communication-management';
@@ -226,6 +227,10 @@ export default function Features() {
                       <Route
                         path="sports-management/*"
                         element={<SportsManagement />}
+                      />
+                      <Route
+                        path="endowment-management/*"
+                        element={<EndowmentManagementRoutes />}
                       />
                       <Route
                         path="rti-management/*"

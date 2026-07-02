@@ -21,35 +21,40 @@ export default function Masters() {
             portals={[
               {
                 title: 'Create Course',
-                description: 'Define course titles, codes, descriptions and syllabus frameworks.',
+                description:
+                  'Define course titles, codes, descriptions and syllabus frameworks.',
                 icon: 'school',
                 colorScheme: 'blue',
                 path: learningUrls.admin.masters + '/course',
               },
               {
                 title: 'Create Course Categories',
-                description: 'Classify courses into departmental or domain tags.',
+                description:
+                  'Classify courses into departmental or domain tags.',
                 icon: 'category',
                 colorScheme: 'purple',
                 path: learningUrls.admin.masters + '/course-category',
               },
               {
                 title: 'Configure Content Types',
-                description: 'Setup types of educational resources (e.g. video, PDF, notes).',
+                description:
+                  'Setup types of educational resources (e.g. video, PDF, notes).',
                 icon: 'description',
                 colorScheme: 'teal',
                 path: learningUrls.admin.masters + '/content-type',
               },
               {
                 title: 'Configure Assessment Types',
-                description: 'Manage formats of evaluation like quiz, presentation, assignment.',
+                description:
+                  'Manage formats of evaluation like quiz, presentation, assignment.',
                 icon: 'assignment',
                 colorScheme: 'orange',
                 path: learningUrls.admin.masters + '/assessment-type',
               },
               {
                 title: 'Assign Faculty',
-                description: 'Assign teaching faculty to specific courses and sessions.',
+                description:
+                  'Assign teaching faculty to specific courses and sessions.',
                 icon: 'person_add',
                 colorScheme: 'green',
                 path: learningUrls.admin.configuration + '/faculty-mapping',

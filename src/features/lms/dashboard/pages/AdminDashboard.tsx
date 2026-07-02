@@ -1,8 +1,8 @@
-import { FormPage, FormCard } from 'shared/new-components';
-import { Icon } from 'shared/components/Icon/Icon';
 import { Chart } from 'primereact/chart';
-import { learningUrls } from '../../urls';
+import { Icon } from 'shared/components/Icon/Icon';
+import { FormCard, FormPage } from 'shared/new-components';
 import { recentActivities } from '../../mocks';
+import { learningUrls } from '../../urls';
 
 export default function AdminDashboard() {
   const progressData = {
@@ -55,34 +55,10 @@ export default function AdminDashboard() {
       bg: 'bg-blue-50 text-blue-600',
     },
     {
-      label: 'Total Modules',
-      value: '56',
-      icon: 'view_module',
-      bg: 'bg-indigo-50 text-indigo-600',
-    },
-    {
       label: 'Total Topics',
       value: '145',
       icon: 'tag',
       bg: 'bg-orange-50 text-orange-600',
-    },
-    {
-      label: 'Total Faculty',
-      value: '18',
-      icon: 'school',
-      bg: 'bg-teal-50 text-teal-600',
-    },
-    {
-      label: 'Total Students',
-      value: '1,250',
-      icon: 'people',
-      bg: 'bg-purple-50 text-purple-600',
-    },
-    {
-      label: 'Total Enrollments',
-      value: '5,230',
-      icon: 'assignment_turned_in',
-      bg: 'bg-blue-50 text-blue-600',
     },
     {
       label: 'Total Learning Contents',

@@ -21,35 +21,40 @@ export default function Configuration() {
             portals={[
               {
                 title: 'Course Structure Mapping',
-                description: 'Structure courses with respective modules, lessons and topics.',
+                description:
+                  'Structure courses with respective modules, lessons and topics.',
                 icon: 'account_tree',
                 colorScheme: 'blue',
                 path: learningUrls.admin.configuration + '/course-structure',
               },
               {
                 title: 'Faculty Mapping',
-                description: 'Map department faculty members to direct training courses.',
+                description:
+                  'Map department faculty members to direct training courses.',
                 icon: 'people',
                 colorScheme: 'green',
                 path: learningUrls.admin.configuration + '/faculty-mapping',
               },
               {
                 title: 'Student Enrollment',
-                description: 'Enroll active student cohorts and groups into learning modules.',
+                description:
+                  'Enroll active student cohorts and groups into learning modules.',
                 icon: 'group_add',
                 colorScheme: 'orange',
                 path: learningUrls.admin.configuration + '/student-enrollment',
               },
               {
                 title: 'Course Assignment',
-                description: 'Manage course coordinator assignments and ownership roles.',
+                description:
+                  'Manage course coordinator assignments and ownership roles.',
                 icon: 'assignment_ind',
                 colorScheme: 'purple',
                 path: learningUrls.admin.configuration + '/course-assignment',
               },
               {
                 title: 'Batch Mapping',
-                description: 'Map batch cohorts to academic sections and semesters.',
+                description:
+                  'Map batch cohorts to academic sections and semesters.',
                 icon: 'grid_on',
                 colorScheme: 'indigo',
                 path: learningUrls.admin.configuration + '/batch-mapping',

@@ -51,7 +51,10 @@ export default function GenerateCertificate() {
         { label: 'Home', to: '/home' },
         { label: 'Learning Management System', to: learningUrls.portal },
         { label: 'Teacher Portal', to: learningUrls.teacher.portal },
-        { label: 'Certificate Management', to: learningUrls.teacher.certificate },
+        {
+          label: 'Certificate Management',
+          to: learningUrls.teacher.certificate,
+        },
         { label: 'Certificate Generation' },
       ]}
     >

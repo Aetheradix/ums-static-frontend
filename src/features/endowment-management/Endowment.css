@@ -1,0 +1,6 @@
+@reference "tailwindcss";
+
+.enm-chart-box {
+  position: relative;
+  height: 240px;
+}
