@@ -48,7 +48,7 @@ export default function MainHeader() {
             className="main-header-user-avatar"
           />
 
-          <span className="main-header-user-name">Alex Lin</span>
+          <span className="main-header-user-name">Aryan Patel</span>
 
           <i className="pi pi-chevron-down main-header-user-arrow" />
         </div>
