@@ -2,6 +2,7 @@ import Features from 'features';
 import { Toast } from 'primereact/toast';
 import { useEffect, useRef } from 'react';
 import { PubSubService, ToastService } from 'services';
+import { LanguageProvider } from 'shared/context/LanguageProvider';
 
 export default function App() {
   const toast = useRef<Toast>(null);
@@ -42,9 +43,9 @@ export default function App() {
   }, []);
 
   return (
-    <>
+    <LanguageProvider>
       <Toast ref={toast} className="white-toast" />
       <Features />
-    </>
+    </LanguageProvider>
   );
 }

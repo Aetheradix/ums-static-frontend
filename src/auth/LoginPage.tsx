@@ -19,11 +19,13 @@ import {
 } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useLanguage } from 'shared/context/useLanguage';
 import './LoginPage.css';
 import { useAuth } from './useAuth';
 
 export const LoginPage: React.FC = () => {
   const { login } = useAuth();
+  const { language, toggleLanguage } = useLanguage();
   const navigate = useNavigate();
   const [username, setUsername] = useState('admin');
   const [password, setPassword] = useState('admin');
@@ -418,9 +420,15 @@ export const LoginPage: React.FC = () => {
         {/* RIGHT PANEL */}
         <div className="login-right">
           <div className="right-header">
-            <div className="language-dropdown">
+            <div
+              className="language-dropdown"
+              onClick={toggleLanguage}
+              style={{ cursor: 'pointer' }}
+            >
               <Globe size={14} />
-              <span>English (US)</span>
+              <span>
+                {language === 'en' ? 'English (US)' : 'हिन्दी (Hindi)'}
+              </span>
             </div>
           </div>
 
