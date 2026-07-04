@@ -42,42 +42,57 @@
   position: relative;
   flex: 1.25;
   background: radial-gradient(
-    circle at 20% 20%,
-    var(--brand-navy-light) 0%,
-    var(--brand-navy) 100%
+    circle at 10% 20%,
+    #ffe9ff 0%,
+    #f3f5fc 30%,
+    #e6f0ff 60%,
+    #fdf4eb 100%
   );
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 48px;
   overflow: hidden;
-  color: var(--white);
+  color: #0c183a;
+}
+
+.login-left-waves {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .home-icon-btn {
   position: absolute;
   top: 48px;
   right: 48px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 50%;
   width: 44px;
   height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--white);
+  color: #0c183a;
   cursor: pointer;
   transition: var(--transition);
   z-index: 100;
   text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .home-icon-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: #f8fafc;
+  border-color: rgba(0, 0, 0, 0.1);
   transform: scale(1.05);
-  color: var(--white);
+  color: #1e5cff;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
 /* Center Orb Design */
@@ -93,140 +108,78 @@
 
 .orbit-container {
   position: relative;
-  width: 540px;
-  height: 540px;
+  width: 600px;
+  height: 600px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  transform-origin: center center;
+  transition: transform 0.3s ease;
 }
 
-/* Glow effects behind logo */
-.orbit-glow {
-  position: absolute;
-  width: 180px;
-  height: 180px;
-  background: radial-gradient(
-    circle,
-    rgba(30, 92, 255, 0.45) 0%,
-    rgba(30, 92, 255, 0) 70%
-  );
-  border-radius: 50%;
-  filter: blur(20px);
-  z-index: 1;
-  animation: pulse-glow 4s ease-in-out infinite alternate;
-}
-
-@keyframes pulse-glow {
-  0% {
-    transform: scale(0.9);
-    opacity: 0.6;
-  }
-  100% {
+/* Responsive scaling for different screen sizes and 100% full-screen mode */
+@media (min-width: 1600px) {
+  .orbit-container {
     transform: scale(1.15);
-    opacity: 0.9;
   }
 }
 
-.orbit-ring {
+@media (min-width: 1401px) and (max-width: 1599px) {
+  .orbit-container {
+    transform: scale(1.05);
+  }
+}
+
+@media (max-width: 1400px) {
+  .orbit-container {
+    transform: scale(0.85);
+  }
+}
+
+@media (max-width: 1200px) {
+  .orbit-container {
+    transform: scale(0.72);
+  }
+}
+
+@media (max-width: 1024px) {
+  .orbit-container {
+    transform: scale(0.62);
+  }
+}
+
+.orbit-lines-svg {
   position: absolute;
-  width: 350px;
-  height: 350px;
-  border: 1px dashed rgba(255, 255, 255, 0.12);
-  border-radius: 50%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 1;
-  animation: rotate-orbit 120s linear infinite;
-}
-
-.orbit-ring-inner {
-  position: absolute;
-  width: 220px;
-  height: 220px;
-  border: 1.5px dotted rgba(255, 255, 255, 0.15);
-  border-radius: 50%;
-  z-index: 1;
-  animation: rotate-inverse 100s linear infinite;
-}
-
-/* Glowing dots along the orbit rings */
-.orbit-ring-dot {
-  position: absolute;
-  border-radius: 50%;
-  opacity: 0.45;
-}
-
-/* Outer ring dots */
-.orbit-ring .orbit-ring-dot {
-  width: 6px;
-  height: 6px;
-  background: var(--brand-blue);
-  box-shadow: 0 0 5px var(--brand-blue);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  top: -3px;
-  left: calc(50% - 3px);
-  transform-origin: 50% 178px;
-}
-
-/* Inner ring dots */
-.orbit-ring-inner .orbit-ring-dot {
-  width: 5px;
-  height: 5px;
-  background: #ffffff;
-  box-shadow: 0 0 4px #ffffff;
-  border: 1px solid rgba(30, 92, 255, 0.5);
-  top: -2.5px;
-  left: calc(50% - 2.5px);
-  transform-origin: 50% 112.5px;
-}
-
-/* Dot rotations for equal spacing (60 deg) */
-.dot-1 {
-  transform: rotate(0deg);
-}
-.dot-2 {
-  transform: rotate(60deg);
-}
-.dot-3 {
-  transform: rotate(120deg);
-}
-.dot-4 {
-  transform: rotate(180deg);
-}
-.dot-5 {
-  transform: rotate(240deg);
-}
-.dot-6 {
-  transform: rotate(300deg);
-}
-
-@keyframes rotate-orbit {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  pointer-events: none;
 }
 
 .orbit-center {
   position: relative;
-  z-index: 2;
-  width: 150px;
-  background: rgba(30, 92, 255, 0.1);
-  border: 2px solid rgba(30, 92, 255, 0.4);
-  box-shadow: 0 0 30px var(--brand-blue-glow);
+  z-index: 5;
+  width: 140px;
+  height: 140px;
+  background: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 10px 30px rgba(99, 102, 241, 0.12),
+    inset 0 2px 4px rgba(255, 255, 255, 0.9);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 15px;
-  backdrop-filter: blur(12px);
+  padding: 24px;
 }
 
 .orbit-center img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 0 8px rgba(30, 92, 255, 0.6));
 }
 
 /* Orbit Rotator Wrapper */
@@ -236,22 +189,15 @@
   height: 100%;
   top: 0;
   left: 0;
+  transform: rotate(var(--rotation-angle, 0deg));
+  transform-origin: center center;
   z-index: 2;
-  animation: rotate-orbit 85s linear infinite;
 }
 
-.orbit-rotator:hover,
-.orbit-rotator:hover .orbit-card {
-  animation-play-state: paused;
-}
-
-@keyframes rotate-inverse {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(-360deg);
-  }
+/* SVG Rotating Elements Group */
+.orbit-rotating-group {
+  transform: rotate(calc(-1 * var(--rotation-angle, 0deg)));
+  transform-origin: 300px 300px;
 }
 
 /* Orbit Card Styling */
@@ -262,54 +208,51 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 22px 14px 10px 14px;
-  width: 180px;
-  backdrop-filter: blur(16px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  transition: var(--transition);
-  animation: rotate-inverse 85s linear infinite;
-}
-
-.orbit-card:hover {
-  background: rgba(30, 92, 255, 0.15);
-  border-color: rgba(30, 92, 255, 0.4);
-  box-shadow: 0 8px 24px rgba(30, 92, 255, 0.25);
+  gap: 4px;
+  border-radius: 16px;
+  padding: 24px 12px 12px 12px;
+  width: 160px;
+  height: 100px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: box-shadow 0.2s ease;
+  box-sizing: border-box;
 }
 
 .orbit-card-icon {
   position: absolute;
-  top: -15px;
-  left: calc(50% - 15px);
+  top: -16px;
+  left: calc(50% - 16px);
   flex-shrink: 0;
-  width: 30px;
-  height: 30px;
-  background: #002587;
+  width: 32px;
+  height: 32px;
+  background: #ffffff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--white);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 0 10px rgba(30, 92, 255, 0.2);
-  transition: var(--transition);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
   z-index: 4;
 }
 
 .orbit-card:hover .orbit-card-icon {
-  transform: scale(1.1);
-  box-shadow: 0 0 14px rgba(30, 92, 255, 0.7);
+  transform: scale(1.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
 }
 
 .orbit-card-icon svg {
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
   fill: none;
   stroke: currentColor;
-  stroke-width: 2;
+  stroke-width: 2.2;
+}
+
+.finance-rupee-icon span {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ff5219;
 }
 
 .orbit-card-info {
@@ -317,7 +260,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
   width: 100%;
 }
@@ -325,8 +268,8 @@
 .orbit-card-title {
   font-size: 13.5px;
   font-weight: 700;
-  letter-spacing: 0.3px;
-  color: var(--white);
+  letter-spacing: 0.2px;
+  color: #ffffff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -335,14 +278,9 @@
 }
 
 .orbit-card-desc {
-  font-size: 10px;
-  color: var(--text-light);
+  font-size: 9.5px;
+  color: rgba(255, 255, 255, 0.88);
   line-height: 1.3;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
   text-align: center;
   width: 100%;
 }
@@ -354,94 +292,32 @@
 }
 
 .left-content-title {
-  font-size: 32px;
+  font-size: 38px;
   font-weight: 800;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.8px;
   line-height: 1.2;
   margin-bottom: 12px;
+  color: #0c183a;
 }
 
 .left-content-title span {
-  color: var(--brand-blue);
+  color: #1e5cff;
+  display: block;
+  margin-top: 4px;
 }
 
 .left-content-desc {
-  font-size: 14px;
-  color: var(--text-light);
+  font-size: 15px;
+  color: #475569;
   max-width: 440px;
   line-height: 1.5;
+  font-weight: 500;
 }
 
 /* Testimonial & Stats Section */
 .left-footer {
-  margin-top: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  z-index: 2;
+  display: none;
 }
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 14px;
-  border-radius: var(--radius-md);
-  backdrop-filter: blur(8px);
-}
-
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.stat-icon-wrapper {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  background: rgba(30, 92, 255, 0.1);
-  border: 1px solid rgba(30, 92, 255, 0.15);
-  border-radius: 50%;
-}
-
-.stat-icon-wrapper svg {
-  width: 18px;
-  height: 18px;
-  fill: none;
-  stroke: var(--brand-blue);
-  stroke-width: 2.5;
-}
-
-.stat-info-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  min-width: 0;
-}
-
-.stat-value {
-  font-size: 15px;
-  font-weight: 800;
-  color: var(--white);
-  line-height: 1.1;
-}
-
-.stat-label {
-  font-size: 9px;
-  color: var(--text-light);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 600;
-  line-height: 1.1;
-}
-
-/* ── RIGHT PANEL (SIGN IN FORM) ── */
 .login-right {
   flex: 1;
   background: url('/images/Login_Form_BG.jpg') no-repeat center center
@@ -707,39 +583,132 @@
   stroke-width: 2;
 }
 
-/* ── Orbital Cards Coordinate Positions ── */
-.card-admissions {
-  top: 19px;
-  left: 180px;
+/* ── Orbital Cards Coordinate Positions & Gradients ── */
+.orbit-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: center center;
 }
-.card-examinations {
-  top: 85px;
-  left: 339px;
-}
-.card-finance {
-  top: 244px;
-  left: 405px;
-}
-.card-analytics {
-  top: 403px;
-  left: 339px;
-}
-.card-hr {
-  top: 469px;
-  left: 180px;
-}
-.card-attendance {
-  top: 403px;
-  left: 21px;
-}
+
 .card-academics {
-  top: 244px;
-  left: -45px;
+  background: linear-gradient(135deg, #b066fe 0%, #8c3df5 100%);
+  transform: translate(-50%, -50%) rotate(0deg) translate(0, -225px)
+    rotate(calc(-1 * var(--rotation-angle, 0deg)));
 }
+.card-academics .orbit-card-icon {
+  color: #8c3df5;
+  border: 1.5px solid #b066fe;
+}
+.card-academics:hover {
+  transform: translate(-50%, -50%) rotate(0deg) translate(0, -225px)
+    rotate(calc(-1 * var(--rotation-angle, 0deg))) translateY(-4px) scale(1.02);
+}
+
 .card-student {
-  top: 85px;
-  left: 21px;
+  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+  transform: translate(-50%, -50%) rotate(45deg) translate(0, -225px)
+    rotate(calc(-1 * (45deg + var(--rotation-angle, 0deg))));
 }
+.card-student .orbit-card-icon {
+  color: #0891b2;
+  border: 1.5px solid #06b6d4;
+}
+.card-student:hover {
+  transform: translate(-50%, -50%) rotate(45deg) translate(0, -225px)
+    rotate(calc(-1 * (45deg + var(--rotation-angle, 0deg)))) translateY(-4px)
+    scale(1.02);
+}
+
+.card-admissions {
+  background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+  transform: translate(-50%, -50%) rotate(90deg) translate(0, -225px)
+    rotate(calc(-1 * (90deg + var(--rotation-angle, 0deg))));
+}
+.card-admissions .orbit-card-icon {
+  color: #65a30d;
+  border: 1.5px solid #84cc16;
+}
+.card-admissions:hover {
+  transform: translate(-50%, -50%) rotate(90deg) translate(0, -225px)
+    rotate(calc(-1 * (90deg + var(--rotation-angle, 0deg)))) translateY(-4px)
+    scale(1.02);
+}
+
+.card-examinations {
+  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+  transform: translate(-50%, -50%) rotate(135deg) translate(0, -225px)
+    rotate(calc(-1 * (135deg + var(--rotation-angle, 0deg))));
+}
+.card-examinations .orbit-card-icon {
+  color: #ea580c;
+  border: 1.5px solid #f59e0b;
+}
+.card-examinations:hover {
+  transform: translate(-50%, -50%) rotate(135deg) translate(0, -225px)
+    rotate(calc(-1 * (135deg + var(--rotation-angle, 0deg)))) translateY(-4px)
+    scale(1.02);
+}
+
+.card-finance {
+  background: linear-gradient(135deg, #ff7e40 0%, #ff5219 100%);
+  transform: translate(-50%, -50%) rotate(180deg) translate(0, -225px)
+    rotate(calc(-1 * (180deg + var(--rotation-angle, 0deg))));
+}
+.card-finance .orbit-card-icon {
+  border: 1.5px solid #ff7e40;
+}
+.card-finance:hover {
+  transform: translate(-50%, -50%) rotate(180deg) translate(0, -225px)
+    rotate(calc(-1 * (180deg + var(--rotation-angle, 0deg)))) translateY(-4px)
+    scale(1.02);
+}
+
+.card-analytics {
+  background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+  transform: translate(-50%, -50%) rotate(225deg) translate(0, -225px)
+    rotate(calc(-1 * (225deg + var(--rotation-angle, 0deg))));
+}
+.card-analytics .orbit-card-icon {
+  color: #be185d;
+  border: 1.5px solid #ec4899;
+}
+.card-analytics:hover {
+  transform: translate(-50%, -50%) rotate(225deg) translate(0, -225px)
+    rotate(calc(-1 * (225deg + var(--rotation-angle, 0deg)))) translateY(-4px)
+    scale(1.02);
+}
+
+.card-hr {
+  background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+  transform: translate(-50%, -50%) rotate(270deg) translate(0, -225px)
+    rotate(calc(-1 * (270deg + var(--rotation-angle, 0deg))));
+}
+.card-hr .orbit-card-icon {
+  color: #e11d48;
+  border: 1.5px solid #f43f5e;
+}
+.card-hr:hover {
+  transform: translate(-50%, -50%) rotate(270deg) translate(0, -225px)
+    rotate(calc(-1 * (270deg + var(--rotation-angle, 0deg)))) translateY(-4px)
+    scale(1.02);
+}
+
+.card-attendance {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  transform: translate(-50%, -50%) rotate(315deg) translate(0, -225px)
+    rotate(calc(-1 * (315deg + var(--rotation-angle, 0deg))));
+}
+.card-attendance .orbit-card-icon {
+  color: #1d4ed8;
+  border: 1.5px solid #3b82f6;
+}
+.card-attendance:hover {
+  transform: translate(-50%, -50%) rotate(315deg) translate(0, -225px)
+    rotate(calc(-1 * (315deg + var(--rotation-angle, 0deg)))) translateY(-4px)
+    scale(1.02);
+}
+
 .custom-input:focus {
   border-color: var(--brand-blue);
   box-shadow: 0 0 0 4px var(--brand-blue-glow);
@@ -1095,9 +1064,6 @@
     font-size: 24px;
     margin-bottom: 6px;
   }
-  .left-content-desc {
-    font-size: 12px;
-  }
   .orbit-section {
     min-height: 430px;
   }
@@ -1233,40 +1199,6 @@
   100% {
     transform: rotate(360deg);
   }
-}
-
-/* â”€â”€ Orbital Cards Coordinate Positions â”€â”€ */
-.card-admissions {
-  top: 19px;
-  left: 180px;
-}
-.card-examinations {
-  top: 85px;
-  left: 339px;
-}
-.card-finance {
-  top: 244px;
-  left: 405px;
-}
-.card-analytics {
-  top: 403px;
-  left: 339px;
-}
-.card-hr {
-  top: 469px;
-  left: 180px;
-}
-.card-attendance {
-  top: 403px;
-  left: 21px;
-}
-.card-academics {
-  top: 244px;
-  left: -45px;
-}
-.card-student {
-  top: 85px;
-  left: 21px;
 }
 
 /* â”€â”€ Common Button & Helper Overrides â”€â”€ */
