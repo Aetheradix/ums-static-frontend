@@ -633,7 +633,7 @@ export default function EverythingConnected() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
           {/* Left Column: Headline and description */}
           <div className="lg:col-span-4 text-left">
-            <h2 className="font-display text-xl sm:text-3xl font-black text-navy leading-[1.25] mb-3">
+            <h2 className="font-display text-xl sm:text-3xl font-black text-navy leading-tight mb-3">
               <span className="block whitespace-nowrap">
                 Everything <span className="text-[#1D4ED8]">Connected.</span>
               </span>

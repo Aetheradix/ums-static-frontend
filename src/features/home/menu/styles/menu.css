@@ -94,7 +94,7 @@
 }
 
 .service-filter-tab.active {
-  @apply bg-black text-white;
+  @apply bg-(--primary-color) text-white;
 }
 
 /* ServicesGrid */

@@ -6490,7 +6490,7 @@ export const translations: Record<string, Record<string, string>> = {
     'Sports Management': 'खेल प्रबंधन',
     'Alumni Management': 'पूर्व छात्र प्रबंधन',
     'Scholarship & DBT': 'छात्रवृत्ति और डीबीटी',
-    'Thesis Management': 'शोध प्रबंध प्रबंधन',
+    'Thesis Management': 'थीसिस प्रबंधन',
     'Academic Sessions': 'शैक्षणिक सत्र',
     'Course Management': 'पाठ्यक्रम प्रबंधन',
     'Active Programmes': 'सक्रिय कार्यक्रम',
@@ -10570,7 +10570,7 @@ export const translations: Record<string, Record<string, string>> = {
     Appearance: 'दिखावट (Appearance)',
     'Light Mode': 'लाइट मोड',
     'Top Navbar': 'शीर्ष नेविगेशन बार',
-    Programmes: "PROGRAM'S",
+    Programmes: 'कार्यक्रमों',
     'Start Date': 'आरंभ करने की तिथि',
     'e.g. CS101': 'जैसे ',
     Algorithms: 'एल्गोरिदम',
@@ -10840,7 +10840,7 @@ export const translations: Record<string, Record<string, string>> = {
     'Your notes': 'आपके नोट्स',
     Ineligible: 'अनुचित',
     'Flagged By': 'द्वारा ध्वजांकित किया गया',
-    Management: 'प्रबंध',
+    Management: 'प्रबंधन',
     Controller: 'नियंत्रक',
     'Open Book:': 'खुली किताब:',
     'Start Exam': 'परीक्षा प्रारंभ करें',
@@ -10968,7 +10968,8 @@ export const translations: Record<string, Record<string, string>> = {
     Collapsed: 'संक्षिप्त',
     Dashboard: 'डैशबोर्ड',
     'Is Active': 'सक्रिय है',
-    Programme: "program'",
+    Programme: 'कार्यक्रम',
+    'Programme\nManagement': 'कार्यक्रम प्रबंधन',
     Evaluator: 'मूल्यांकनकर्ता',
     Excellent: 'उत्कृष्ट',
     'Very Good': 'बहुत अच्छा',
@@ -11578,7 +11579,8 @@ export const translations: Record<string, Record<string, string>> = {
     'Student:': 'विद्यार्थी:',
     'Amit Sir': 'अमित सर',
     Validity: 'वैधता',
-    Academic: 'अकादमिक',
+    Academic: 'शैक्षणिक',
+    Centre: 'केंद्र',
     Previous: 'पहले का',
     '42.5 hrs': '42.5 घंटे',
     Doctoral: 'डॉक्टरेट',
@@ -12480,5 +12482,101 @@ export const translations: Record<string, Record<string, string>> = {
     AL: 'एएल',
     'Welcome,': 'स्वागत है',
     Welcome: 'स्वागत है',
+    'Academic\nExaminations': 'शैक्षणिक परीक्षा',
+    'Academic Examinations': 'शैक्षणिक परीक्षा',
+    'Manage exams, grading, evaluations, and certifications':
+      'परीक्षा, ग्रेडिंग, मूल्यांकन और प्रमाणपत्रों का प्रबंधन करें',
+    'Research\nManagement': 'अनुसंधान प्रबंधन',
+    Research: 'अनुसंधान',
+    'End-to-end research grant lifecycle — proposal submission, compliance review, ethics gating and milestone disbursement.':
+      'प्रस्ताव प्रस्तुत करने, अनुपालन समीक्षा, नैतिकता जांच और मील का पत्थर संवितरण सहित शुरू से अंत तक अनुसंधान अनुदान जीवनचक्र।',
+    'Courses • Enrollment • Sessions • Evaluation • Grading':
+      'पाठ्यक्रम • नामांकन • सत्र • मूल्यांकन • ग्रेडिंग',
+    'Manage courses, modules, assessments, and student progress.':
+      'पाठ्यक्रम, मॉड्यूल, मूल्यांकन और छात्र प्रगति का प्रबंधन करें।',
+    'Manage student admissions, applications, fees, and portal configuration.':
+      'छात्र प्रवेश, आवेदन, शुल्क और पोर्टल कॉन्फ़िगरेशन का प्रबंधन करें।',
+    'Thesis\nManagement': 'थीसिस प्रबंधन',
+    Thesis: 'थीसिस',
+    Plagiarism: 'साहित्यिक चोरी',
+    'Registration • Proposal • Plagiarism • Evaluation • Repository':
+      'पंजीकरण • प्रस्ताव • साहित्यिक चोरी • मूल्यांकन • भंडार',
+    'Sessions • Time-slots • Assignments • Clashes • Timetables • Reports':
+      'सत्र • समय-अंतराल • कार्य • संघर्ष • समय सारिणी • रिपोर्ट',
+    'Recruitment\nManagement': 'भर्ती प्रबंधन',
+    Recruitment: 'भर्ती',
+    'Trainer\nDevelopment': 'प्रशिक्षक विकास',
+    Development: 'विकास',
+    'Trainings • Competencies • Feedback • Certifications':
+      'प्रशिक्षण • दक्षताओं • फीडबैक • प्रमाण पत्र',
+    'Earnings • Deductions • Salary processing • Reports':
+      'कमाई • कटौती • वेतन प्रसंस्करण • रिपोर्ट',
+    'EMS • ESS • Reports • Career Advancement':
+      'ईएमएस • ईएसएस • रिपोर्ट • करियर प्रगति',
+    'Manage and Apply for Certificates.':
+      'प्रमाणपत्रों का प्रबंधन और आवेदन करें।',
+    'Open book exam setup, question bank, evaluation, and results.':
+      'ओपन बुक परीक्षा सेटअप, प्रश्न बैंक, मूल्यांकन और परिणाम।',
+    'Masters • Configuration • Examination • Evaluation • Result Processing • Reports':
+      'मास्टर्स • कॉन्फ़िगरेशन • परीक्षा • मूल्यांकन • परिणाम प्रसंस्करण • रिपोर्ट',
+    'Scholarships • Direct Benefit Transfer (DBT) • Portals':
+      'छात्रवृत्ति • प्रत्यक्ष लाभ हस्तांतरण (DBT) • पोर्टल',
+    'End-to-end hostel intake, room allotment, ledger invoicing and student check-in.':
+      'प्रवेश से लेकर कमरा आवंटन, बहीखाता चालान और छात्र चेक-इन तक संपूर्ण छात्रावास प्रबंधन।',
+    'Health\nManagement': 'स्वास्थ्य प्रबंधन',
+    'Health Management': 'स्वास्थ्य प्रबंधन',
+    Health: 'स्वास्थ्य',
+    'Manage health records, memberships, prescriptions, and dispensary operations.':
+      'स्वास्थ्य रिकॉर्ड, सदस्यता, नुस्खे और औषधालय संचालन का प्रबंधन करें।',
+    'Manage alumni records, communications, and events.':
+      'पूर्व छात्रों के रिकॉर्ड, संचार और कार्यक्रमों का प्रबंधन करें।',
+    'Manage campus recruitment drives, company partnerships, and student placements.':
+      'कैंपस भर्ती अभियान, कंपनी साझेदारी और छात्र प्लेसमेंट का प्रबंधन करें।',
+    'Manage all student lifecycle activities from admission to graduation.':
+      'प्रवेश से लेकर स्नातक होने तक छात्र जीवनचक्र की सभी गतिविधियों का प्रबंधन करें।',
+    'Student Activity\nand Club Management': 'छात्र गतिविधि और क्लब प्रबंधन',
+    'Student Activity and Club Management': 'छात्र गतिविधि और क्लब प्रबंधन',
+    Activity: 'गतिविधि',
+    'Manage clubs, events, and memberships for student activities.':
+      'छात्र गतिविधियों के लिए क्लब, कार्यक्रमों और सदस्यता का प्रबंधन करें।',
+    'Manage sports, teams, events, facility bookings, and student achievements.':
+      'खेल, टीमों, कार्यक्रमों, सुविधा बुकिंग और छात्र उपलब्धियों का प्रबंधन करें।',
+    'Events • Ticketing • Registration • QR Check-in • Attendance • Reports':
+      'कार्यक्रम • टिकट • पंजीकरण • क्यूआर चेक-इन • उपस्थिति • रिपोर्ट',
+    'Financial Supply Chain': 'वित्तीय आपूर्ति श्रृंखला',
+    'Financial Supply Chain\nManagement': 'वित्तीय आपूर्ति श्रृंखला प्रबंधन',
+    'Manage budgets, accounts, procurement, inventory, assets, and financial reports.':
+      'बजट, खातों, खरीद, सूची, संपत्ति और वित्तीय रिपोर्ट का प्रबंधन करें।',
+    'Track bills, invoices, claims and payments from receipt to disbursement.':
+      'प्राप्ति से लेकर संवितरण तक बिलों, चालान, दावों और भुगतानों को ट्रैक करें।',
+    'Manage endowment funds, donors, schemes, and disbursements.':
+      'बंदोबस्ती निधि, दाताओं, योजनाओं और संवितरण का प्रबंधन करें।',
+    'Security\nManagement': 'सुरक्षा प्रबंधन',
+    Security: 'सुरक्षा',
+    'Enterprise service management: raise tickets, track resolution, manage SLAs, and access the knowledge base.':
+      'उद्यम सेवा प्रबंधन: टिकट उठाएं, समाधान ट्रैक करें, एसएलए प्रबंधित करें, और ज्ञानकोश तक पहुंचें।',
+    'Lodging stays • Seminar halls • Parking spaces • Fleet transport':
+      'आवास प्रवास • सेमिनार हॉल • पार्किंग स्थल • बेड़ा परिवहन',
+    'Manage properties • Buildings & blocks • Open areas • Roads • Maintenance':
+      'संपत्तियों • भवनों और ब्लॉकों • खुले क्षेत्रों • सड़कों • रखरखाव का प्रबंधन करें',
+    'Manage school transport, routes, and vehicles.':
+      'स्कूल परिवहन, मार्गों और वाहनों का प्रबंधन करें।',
+    'Projects • Budget • Tenders • Contractors • Progress • Finance':
+      'परियोजनाएं • बजट • निविदाएं • ठेकेदार • प्रगति • वित्त',
+    'Track student competencies and skill development':
+      'छात्र की क्षमताओं और कौशल विकास को ट्रैक करें',
+    'Manage college registration, approvals, and inspections.':
+      'कॉलेज पंजीकरण, अनुमोदन और निरीक्षण का प्रबंधन करें।',
+    'RTI Application Processing and Tracking':
+      'आरटीआई आवेदन प्रसंस्करण और ट्रैकिंग',
+    'Comprehensive eFile management with DAK, workflows, approvals, and tracking.':
+      'डाक, वर्कफ़्लो, अनुमोदन और ट्रैकिंग के साथ व्यापक ई-फ़ाइल प्रबंधन।',
+    'Core Administrative Services': 'मुख्य प्रशासनिक सेवाएं',
+    'Configuration • Structure • Demand • Payments • Auditing':
+      'कॉन्फ़िगरेशन • संरचना • मांग • भुगतान • ऑडिटिंग',
+    'Student and Employee Feedback Systems':
+      'छात्र और कर्मचारी प्रतिक्रिया प्रणाली',
+    'Manage convocation events, registrations, passes, and degree dispatch.':
+      'दीक्षांत समारोह कार्यक्रमों, पंजीकरण, पास और डिग्री वितरण का प्रबंधन करें।',
   },
 };
