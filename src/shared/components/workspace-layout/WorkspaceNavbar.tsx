@@ -45,12 +45,47 @@ export const WorkspaceNavbar: React.FC = () => {
     }
   };
 
+  const hasMatchingPath = (item: any, currentPath: string): boolean => {
+    if (item.path === '/home/menu') {
+      return (
+        currentPath === '/home/menu' ||
+        currentPath === '/home' ||
+        currentPath === '/home/'
+      );
+    }
+    if (
+      item.slug &&
+      (currentPath === `/home/sub-menu/${item.slug}` ||
+        currentPath.startsWith(`/home/sub-menu/${item.slug}/`))
+    ) {
+      return true;
+    }
+    if (item.path && item.path !== '/' && item.path !== '/home/menu') {
+      if (item.path.startsWith('/home/sub-menu/')) {
+        if (
+          currentPath === item.path ||
+          currentPath.startsWith(item.path + '/')
+        ) {
+          return true;
+        }
+      } else {
+        const itemPrefix = item.path.split('/').slice(0, 3).join('/');
+        const currentPrefix = currentPath.split('/').slice(0, 3).join('/');
+        if (itemPrefix && currentPrefix === itemPrefix) {
+          return true;
+        }
+      }
+    }
+    if (item.children && item.children.length > 0) {
+      return item.children.some((child: any) =>
+        hasMatchingPath(child, currentPath)
+      );
+    }
+    return false;
+  };
+
   const isActive = (item: any) => {
-    const targetPath = getFirstAvailablePath(item);
-    if (!targetPath) return false;
-    return location.pathname.startsWith(
-      targetPath.split('/').slice(0, 3).join('/')
-    );
+    return hasMatchingPath(item, location.pathname);
   };
 
   useEffect(() => {

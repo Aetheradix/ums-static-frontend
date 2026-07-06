@@ -1,5 +1,5 @@
 import Settings from 'features/master/employee/settings';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import BulkImport from './bulk-import';
 import CareerEventTracking from './career-event-tracking/pages/CareerEventTracking';
 import EMSDashboard from './dashboard/pages/EMSDashboard';
@@ -12,7 +12,6 @@ import ResearchManagement from './employee-self-service/research/pages/ResearchM
 import TravelManagement from './employee-self-service/travel/pages/TravelManagement';
 import FullOnboarding from './full-onboarding';
 import ManageEmployees from './manage-employees';
-import EmployeePortalPage from './portal/EmployeePortalPage';
 import AdminPortalPage from './portal/AdminPortalPage';
 import EMSPortalPage from './portal/EMSPortalPage';
 import QuickOnboarding from './quick-onboarding';
@@ -20,7 +19,10 @@ import QuickOnboarding from './quick-onboarding';
 export default function EmployeeManagement() {
   return (
     <Routes>
-      <Route index element={<EmployeePortalPage />} />
+      <Route
+        index
+        element={<Navigate to="/home/sub-menu/employee-services" replace />}
+      />
       <Route path="admin-portal" element={<AdminPortalPage />} />
       <Route path="dashboard" element={<EMSPortalPage />} />
       <Route path="dashboard/analytics" element={<EMSDashboard />} />
@@ -37,7 +39,10 @@ export default function EmployeeManagement() {
       <Route path="travel" element={<TravelManagement />} />
       <Route path="career-event-tracking" element={<CareerEventTracking />} />
       <Route path="ess-dashboard" element={<ESSDashboard />} />
-      <Route path="*" element={<EmployeePortalPage />} />
+      <Route
+        path="*"
+        element={<Navigate to="/home/sub-menu/employee-services" replace />}
+      />
     </Routes>
   );
 }

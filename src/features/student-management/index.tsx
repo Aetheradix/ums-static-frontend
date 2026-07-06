@@ -1,11 +1,10 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import ImportStudents from './admin/pages/ImportStudents';
 import StudentList from './admin/pages/StudentList';
 import LinkAbcAccount from './student/pages/LinkAbcAccount';
 import StudentProfile from './student/profile/pages/StudentProfile';
 import SubjectSelection from './student/pages/SubjectSelection';
-import StudentPortalPage from './student/StudentPortalPage';
-import StudentManagementPortalPage from './StudentManagementPortalPage';
+
 import StudentDashboard from './student/pages/Dashboard';
 import AdminDashboard from './admin/pages/Dashboard';
 import MyCourses from './student/pages/MyCourses';
@@ -18,31 +17,38 @@ import AcademicHistory from './student/pages/AcademicHistory';
 import Grievance from './student/pages/Grievance';
 
 // Faculty imports
-import FacultyPortalPage from './faculty/FacultyPortalPage';
+
 import FacultyDashboard from './faculty/pages/Dashboard';
 import InternalAssessment from './faculty/pages/InternalAssessment';
 import StudentProgress from './faculty/pages/StudentProgress';
 
 // Department imports
-import DepartmentPortalPage from './department/DepartmentPortalPage';
+
 import DepartmentDashboard from './department/pages/Dashboard';
 import BatchAllocation from './department/pages/BatchAllocation';
 import SectionAllocation from './department/pages/SectionAllocation';
 import SubjectMapping from './department/pages/SubjectMapping';
 import SemesterPromotion from './department/pages/SemesterPromotion';
 
-import AdminPortalPage from './admin/AdminPortalPage';
-
 export default function StudentManagement() {
   return (
     <Routes>
-      <Route path="" element={<StudentManagementPortalPage />} />
-      <Route path="admin" element={<AdminPortalPage />} />
+      <Route
+        path=""
+        element={<Navigate to="/home/sub-menu/student-management" replace />}
+      />
+      <Route
+        path="admin"
+        element={<Navigate to="/home/sub-menu/student-admin" replace />}
+      />
       <Route path="admin/dashboard" element={<AdminDashboard />} />
       <Route path="admin/directory" element={<StudentList />} />
       <Route path="admin/import" element={<ImportStudents />} />
 
-      <Route path="student" element={<StudentPortalPage />} />
+      <Route
+        path="student"
+        element={<Navigate to="/home/sub-menu/student-student" replace />}
+      />
       <Route path="student/dashboard" element={<StudentDashboard />} />
       <Route path="student/link-abc" element={<LinkAbcAccount />} />
       <Route path="student/profile/*" element={<StudentProfile />} />
@@ -59,7 +65,10 @@ export default function StudentManagement() {
       <Route path="student/grievance" element={<Grievance />} />
 
       {/* Faculty routes */}
-      <Route path="faculty" element={<FacultyPortalPage />} />
+      <Route
+        path="faculty"
+        element={<Navigate to="/home/sub-menu/student-faculty" replace />}
+      />
       <Route path="faculty/dashboard" element={<FacultyDashboard />} />
       <Route
         path="faculty/internal-assessment"
@@ -68,7 +77,10 @@ export default function StudentManagement() {
       <Route path="faculty/progress" element={<StudentProgress />} />
 
       {/* Department routes */}
-      <Route path="department" element={<DepartmentPortalPage />} />
+      <Route
+        path="department"
+        element={<Navigate to="/home/sub-menu/student-department" replace />}
+      />
       <Route path="department/dashboard" element={<DepartmentDashboard />} />
       <Route path="department/batch-allocation" element={<BatchAllocation />} />
       <Route

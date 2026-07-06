@@ -1,11 +1,9 @@
-import { Route, Routes } from 'react-router-dom';
-import RecruitmentPortalPage from './portal/RecruitmentPortalPage';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 // Candidate
 import CandidateChoiceFillingPage from './candidate/pages/ChoiceFilling/CandidateChoiceFillingPage';
 import DocumentUploadPage from './candidate/pages/DocumentUpload/DocumentUploadPage';
 import CandidateJoiningRequestPage from './candidate/pages/JoiningRequest/CandidateJoiningRequestPage';
-import CandidatePortalPage from './candidate/portal/CandidatePortalPage';
 
 // Verification Center
 import CandidateQueuePage from './verification-center/pages/CandidateQueue/CandidateQueuePage';
@@ -22,16 +20,23 @@ import MeritListUploadPage from './admin/pages/MeritListUpload/MeritListUploadPa
 import AdminReportsPage from './admin/pages/Reports/AdminReportsPage';
 import VacancyUploadPage from './admin/pages/VacancyUpload/VacancyUploadPage';
 import VerificationCenterUploadPage from './admin/pages/VerificationCenterUpload/VerificationCenterUploadPage';
-import HRAdminPortalPage from './admin/portal/HRAdminPortalPage';
 
 export default function RecruitmentManagement() {
   return (
     <Routes>
-      {/* Main login portal — no sidebar */}
-      <Route index element={<RecruitmentPortalPage />} />
+      {/* Main login portal — redirects to standard grid sub-menu */}
+      <Route
+        index
+        element={
+          <Navigate to="/home/sub-menu/recruitment-management" replace />
+        }
+      />
 
       {/* Candidate routes — sidebar active */}
-      <Route path="candidate" element={<CandidatePortalPage />} />
+      <Route
+        path="candidate"
+        element={<Navigate to="/home/sub-menu/recruitment-candidate" replace />}
+      />
       <Route path="candidate/documents" element={<DocumentUploadPage />} />
       <Route
         path="candidate/choice-filling"
@@ -61,7 +66,10 @@ export default function RecruitmentManagement() {
       />
 
       {/* HR/Admin routes — sidebar active */}
-      <Route path="admin" element={<HRAdminPortalPage />} />
+      <Route
+        path="admin"
+        element={<Navigate to="/home/sub-menu/recruitment-admin" replace />}
+      />
       <Route path="admin/dashboard" element={<HRAdminDashboard />} />
       <Route path="admin/merit-list" element={<MeritListUploadPage />} />
       <Route path="admin/vacancies" element={<VacancyUploadPage />} />
@@ -74,7 +82,12 @@ export default function RecruitmentManagement() {
       <Route path="admin/joining-order" element={<JoiningOrderPage />} />
       <Route path="admin/reports" element={<AdminReportsPage />} />
 
-      <Route path="*" element={<RecruitmentPortalPage />} />
+      <Route
+        path="*"
+        element={
+          <Navigate to="/home/sub-menu/recruitment-management" replace />
+        }
+      />
     </Routes>
   );
 }

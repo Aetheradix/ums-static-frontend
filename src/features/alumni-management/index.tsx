@@ -41,7 +41,10 @@ export default function AlumniManagement() {
 
       {/* Admin portal selector */}
       <Route path="admin" element={<AdminPortalPage />} />
-      <Route path="portal-admin" element={<Navigate to="../admin" replace />} />
+      <Route
+        path="portal-admin"
+        element={<Navigate to="/home/sub-menu/alumni-admin-portal" replace />}
+      />
 
       {/* Admin — Dashboard */}
       <Route path="admin/dashboard" element={<AdminDashboard />} />
@@ -104,7 +107,10 @@ export default function AlumniManagement() {
 
       {/* User portal selector */}
       <Route path="user" element={<UserPortalPage />} />
-      <Route path="portal-user" element={<Navigate to="../user" replace />} />
+      <Route
+        path="portal-user"
+        element={<Navigate to="/home/sub-menu/alumni-user-portal" replace />}
+      />
 
       {/* User Pages */}
       <Route path="user/dashboard" element={<UserDashboard />} />

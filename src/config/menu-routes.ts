@@ -14,11 +14,11 @@ export const menuConfig: Menu.MenuItem[] = [
       {
         label: 'Employee\nServices',
         slug: 'employee-services',
-        category: 'Employee',
+        category: 'HRMS',
         icon: 'groups',
         colorScheme: 'blue',
         description: 'EMS • ESS • Reports • Career Advancement',
-        path: '/employee-management',
+        path: '/home/sub-menu/employee-services',
         children: [
           {
             label: 'Employee Management',
@@ -760,18 +760,18 @@ export const menuConfig: Menu.MenuItem[] = [
       {
         label: 'Recruitment\nManagement',
         slug: 'recruitment-management',
-        category: 'Employee',
+        category: 'HRMS',
         icon: 'person_add',
         colorScheme: 'purple',
         description: 'Candidate Portal • Verification • HR/Admin',
-        path: '/recruitment-management',
+        path: '/home/sub-menu/recruitment-management',
         children: [
           {
             label: 'Candidate Portal',
             slug: 'recruitment-candidate',
             description:
               'Document upload, profile lock, and application status.',
-            path: '/recruitment-management/candidate',
+            path: '/home/sub-menu/recruitment-candidate',
             icon: 'person',
             colorScheme: 'blue',
             navigationStyle: 'sidebar',
@@ -807,7 +807,7 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Verification Center',
             slug: 'recruitment-verification-center',
             description: 'Review and verify candidate documents.',
-            path: '/recruitment-management/verification-center',
+            path: '/home/sub-menu/recruitment-verification-center',
             icon: 'fact_check',
             colorScheme: 'purple',
             navigationStyle: 'sidebar',
@@ -842,7 +842,7 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'HR / Admin',
             slug: 'recruitment-admin',
             description: 'Manage drives, timelines, vacancies, and approvals.',
-            path: '/recruitment-management/admin',
+            path: '/home/sub-menu/recruitment-admin',
             icon: 'admin_panel_settings',
             colorScheme: 'green',
             navigationStyle: 'sidebar',
@@ -1704,16 +1704,137 @@ export const menuConfig: Menu.MenuItem[] = [
         icon: 'school',
         colorScheme: 'green',
         description: 'Courses • Enrollment • Sessions • Evaluation • Grading',
-        path: '/academics',
+        path: '/home/sub-menu/academics',
         children: [
           {
             label: 'Academic Management',
             slug: 'academic-management',
             description:
               'Manage courses, student enrollment, academic sessions, evaluation components, and grading scales.',
-            path: '/academics',
+            path: '/home/sub-menu/academic-management',
             icon: 'school',
             colorScheme: 'blue',
+            children: [
+              {
+                label: 'Admin Portal',
+                slug: 'academics-admin',
+                description:
+                  'Manage programmes, courses, enrollment, and academic settings.',
+                path: '/home/sub-menu/academics-admin',
+                icon: 'admin_panel_settings',
+                colorScheme: 'blue',
+                children: [
+                  {
+                    label: 'Dashboard',
+                    description:
+                      'Overview of academic performance and metrics.',
+                    path: '/academics/admin/dashboard',
+                    icon: 'dashboard',
+                    colorScheme: 'blue',
+                  },
+                  {
+                    label: 'Programmes',
+                    description:
+                      'Configure and manage degrees and course structures.',
+                    path: '/academics/admin/programmes',
+                    icon: 'menu_book',
+                    colorScheme: 'purple',
+                  },
+                  {
+                    label: 'Courses',
+                    description: 'Manage active academic course catalogs.',
+                    path: '/academics/admin/courses',
+                    icon: 'library_books',
+                    colorScheme: 'green',
+                  },
+                  {
+                    label: 'Student Enrollment',
+                    description:
+                      'Enroll and assign students to sections and courses.',
+                    path: '/academics/admin/enrollment',
+                    icon: 'person_add',
+                    colorScheme: 'orange',
+                  },
+                  {
+                    label: 'Academic Sessions',
+                    description:
+                      'Setup semesters, terms, and academic year logs.',
+                    path: '/academics/admin/academic-sessions',
+                    icon: 'date_range',
+                    colorScheme: 'teal',
+                  },
+                  {
+                    label: 'Evaluation Components',
+                    description: 'Define syllabus weighting and assignments.',
+                    path: '/academics/admin/evaluation',
+                    icon: 'assignment',
+                    colorScheme: 'red',
+                  },
+                  {
+                    label: 'Grading Scales',
+                    description: 'Setup GPA metrics and final grade mappings.',
+                    path: '/academics/admin/grading',
+                    icon: 'percent',
+                    colorScheme: 'amber',
+                  },
+                ],
+              },
+              {
+                label: 'Student Portal',
+                slug: 'academics-student',
+                description: 'View enrolled courses, grades, and term reports.',
+                path: '/home/sub-menu/academics-student',
+                icon: 'school',
+                colorScheme: 'green',
+                children: [
+                  {
+                    label: 'Attendance',
+                    description: 'Track course attendance details.',
+                    path: '/academics/student/attendance',
+                    icon: 'calendar_today',
+                    colorScheme: 'green',
+                  },
+                  {
+                    label: 'Timetable',
+                    description: 'View class schedule and exam calendar.',
+                    path: '/academics/student/timetable',
+                    icon: 'schedule',
+                    colorScheme: 'blue',
+                  },
+                ],
+              },
+              {
+                label: 'Faculty Portal',
+                slug: 'academics-faculty',
+                description: 'Manage courses, enter marks and evaluation data.',
+                path: '/home/sub-menu/academics-faculty',
+                icon: 'groups',
+                colorScheme: 'purple',
+                children: [
+                  {
+                    label: 'My Courses',
+                    description: 'View assigned classes and materials.',
+                    path: '/academics/faculty/my-courses',
+                    icon: 'class',
+                    colorScheme: 'purple',
+                  },
+                  {
+                    label: 'Mark Entry',
+                    description: 'Record test grades and academic points.',
+                    path: '/academics/faculty/mark-entry',
+                    icon: 'edit',
+                    colorScheme: 'teal',
+                  },
+                  {
+                    label: 'Attendance Entry',
+                    description: 'Log and submit class attendance records.',
+                    path: '/academics/faculty/attendance',
+                    icon: 'how_to_reg',
+                    colorScheme: 'green',
+                  },
+                ],
+              },
+            ],
           },
         ],
       },
@@ -1788,7 +1909,7 @@ export const menuConfig: Menu.MenuItem[] = [
         category: 'Admission',
         icon: 'how_to_reg',
         colorScheme: 'pink',
-        path: '/admissions-management',
+        path: '/home/sub-menu/admissions-management',
         description:
           'Manage student admissions, applications, fees, and portal configuration.',
         navigationStyle: 'sidebar',
@@ -1800,7 +1921,7 @@ export const menuConfig: Menu.MenuItem[] = [
               'Configure programmes, review applications, and manage the portal.',
             icon: 'admin_panel_settings',
             colorScheme: 'blue',
-            path: '/admissions-management/admin',
+            path: '/home/sub-menu/admissions-admin',
             children: [
               {
                 label: 'Dashboard',
@@ -1902,7 +2023,7 @@ export const menuConfig: Menu.MenuItem[] = [
             description: 'Self-service for applications, fees, and tracking.',
             icon: 'school',
             colorScheme: 'purple',
-            path: '/admissions-management/student',
+            path: '/home/sub-menu/admissions-student',
             children: [
               {
                 label: 'Dashboard',
@@ -1984,7 +2105,7 @@ export const menuConfig: Menu.MenuItem[] = [
             description: 'Manage seat allocation and merit lists.',
             icon: 'admin_panel_settings',
             colorScheme: 'green',
-            path: '/admissions-management/cell',
+            path: '/home/sub-menu/admissions-cell',
             children: [
               {
                 label: 'Dashboard',
@@ -2033,7 +2154,7 @@ export const menuConfig: Menu.MenuItem[] = [
             slug: 'thesis-management-system',
             description:
               'Manage thesis registrations, guide allocations, plagiarism verification, defense scheduling, and repositories.',
-            path: '/thesis-management',
+            path: '/home/sub-menu/thesis-management-system',
             icon: 'menu_book',
             colorScheme: 'blue',
             children: [
@@ -2096,7 +2217,7 @@ export const menuConfig: Menu.MenuItem[] = [
             slug: 'timetable-management-system',
             description:
               'Academic scheduling — configure sessions and time-slots, assign courses to faculty and rooms, detect clashes, publish and view timetables.',
-            path: '/timetable-management',
+            path: '/home/sub-menu/timetable-management-system',
             icon: 'calendar_month',
             colorScheme: 'blue',
             children: [
@@ -3226,7 +3347,7 @@ export const menuConfig: Menu.MenuItem[] = [
             slug: 'scholarship-dbt-system',
             description:
               'Manage applications, verifications, eligibility and portal syncing.',
-            path: '/scholarship-dbt',
+            path: '/home/sub-menu/scholarship-dbt-system',
             icon: 'workspace_premium',
             colorScheme: 'blue',
             children: [
@@ -3354,7 +3475,7 @@ export const menuConfig: Menu.MenuItem[] = [
             slug: 'hms-admin-portal',
             description:
               'Complete module control: manage memberships, records, stock, settings.',
-            path: '/health-management/admin',
+            path: '/home/sub-menu/hms-admin-portal',
             icon: 'admin_panel_settings',
             colorScheme: 'blue',
             children: [
@@ -3420,7 +3541,7 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Doctor Portal',
             slug: 'hms-doctor-portal',
             description: 'Manage appointments, records, and prescriptions.',
-            path: '/health-management/doctor',
+            path: '/home/sub-menu/hms-doctor-portal',
             icon: 'stethoscope',
             colorScheme: 'purple',
             children: [
@@ -3451,7 +3572,7 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Pharmacist Portal',
             slug: 'hms-pharmacist-portal',
             description: 'Dispense medicines and manage stock.',
-            path: '/health-management/pharmacist',
+            path: '/home/sub-menu/hms-pharmacist-portal',
             icon: 'medication',
             colorScheme: 'green',
             children: [
@@ -3475,7 +3596,7 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Employee Portal',
             slug: 'hms-employee-portal',
             description: 'View records, memberships, and book appointments.',
-            path: '/health-management/employee',
+            path: '/home/sub-menu/hms-employee-portal',
             icon: 'personal_injury',
             colorScheme: 'orange',
             children: [
@@ -3516,7 +3637,7 @@ export const menuConfig: Menu.MenuItem[] = [
           {
             label: 'Admin Portal',
             slug: 'alumni-admin-portal',
-            path: '/alumni-management/portal-admin',
+            path: '/home/sub-menu/alumni-admin-portal',
             icon: 'admin_panel_settings',
             colorScheme: 'blue',
             children: [
@@ -3709,7 +3830,7 @@ export const menuConfig: Menu.MenuItem[] = [
           {
             label: 'User Portal',
             slug: 'alumni-user-portal',
-            path: '/alumni-management/portal-user',
+            path: '/home/sub-menu/alumni-user-portal',
             icon: 'school',
             colorScheme: 'purple',
             children: [
@@ -3777,7 +3898,7 @@ export const menuConfig: Menu.MenuItem[] = [
         slug: 'training-placement',
         description:
           'Manage campus recruitment drives, company partnerships, and student placements.',
-        path: '/training-placement',
+        path: '/home/sub-menu/training-placement',
         icon: 'work',
         colorScheme: 'red',
         navigationStyle: 'sidebar',
@@ -3785,7 +3906,7 @@ export const menuConfig: Menu.MenuItem[] = [
           {
             label: 'Admin Portal',
             slug: 'tp-admin-portal',
-            path: '/training-placement/admin',
+            path: '/home/sub-menu/tp-admin-portal',
             icon: 'admin_panel_settings',
             colorScheme: 'blue',
             children: [
@@ -3877,7 +3998,7 @@ export const menuConfig: Menu.MenuItem[] = [
           {
             label: 'Department Portal',
             slug: 'tp-dept-portal',
-            path: '/training-placement/dept',
+            path: '/home/sub-menu/tp-dept-portal',
             icon: 'account_tree',
             colorScheme: 'purple',
             children: [
@@ -3910,7 +4031,7 @@ export const menuConfig: Menu.MenuItem[] = [
           {
             label: 'Company Portal',
             slug: 'tp-company-portal',
-            path: '/training-placement/company',
+            path: '/home/sub-menu/tp-company-portal',
             icon: 'business_center',
             colorScheme: 'green',
             children: [
@@ -3951,7 +4072,7 @@ export const menuConfig: Menu.MenuItem[] = [
           {
             label: 'Student Portal',
             slug: 'tp-student-portal',
-            path: '/training-placement/student',
+            path: '/home/sub-menu/tp-student-portal',
             icon: 'school',
             colorScheme: 'orange',
             children: [
@@ -4000,7 +4121,7 @@ export const menuConfig: Menu.MenuItem[] = [
         description:
           'Manage all student lifecycle activities from admission to graduation.',
         navigationStyle: 'sidebar',
-        path: '/student-management',
+        path: '/home/sub-menu/student-management',
         children: [
           {
             label: 'Admin Portal',
@@ -4009,7 +4130,7 @@ export const menuConfig: Menu.MenuItem[] = [
               'Manage programs, semesters, subjects, and perform administrative actions.',
             icon: 'admin_panel_settings',
             colorScheme: 'blue',
-            path: '/student-management/admin',
+            path: '/home/sub-menu/student-admin',
             children: [
               {
                 label: 'Dashboard',
@@ -4041,7 +4162,7 @@ export const menuConfig: Menu.MenuItem[] = [
               'Self-service for academics, fees, exams, and attendance.',
             icon: 'school',
             colorScheme: 'purple',
-            path: '/student-management/student',
+            path: '/home/sub-menu/student-student',
             children: [
               {
                 label: 'Dashboard',
@@ -4122,7 +4243,7 @@ export const menuConfig: Menu.MenuItem[] = [
               'Manage attendance, internal marks, and student progress.',
             icon: 'person',
             colorScheme: 'green',
-            path: '/student-management/faculty',
+            path: '/home/sub-menu/student-faculty',
             children: [
               {
                 label: 'Dashboard',
@@ -4154,7 +4275,7 @@ export const menuConfig: Menu.MenuItem[] = [
               'Manage department students, batches, sections, and promotions.',
             icon: 'domain',
             colorScheme: 'orange',
-            path: '/student-management/department',
+            path: '/home/sub-menu/student-department',
             children: [
               {
                 label: 'Dashboard',
@@ -4204,7 +4325,7 @@ export const menuConfig: Menu.MenuItem[] = [
         description:
           'Manage clubs, events, and memberships for student activities.',
         navigationStyle: 'sidebar',
-        path: '/student-activities-clubs',
+        path: '/home/sub-menu/student-activities-clubs',
         children: [
           {
             label: 'Admin Portal',
@@ -4300,7 +4421,7 @@ export const menuConfig: Menu.MenuItem[] = [
         description:
           'Manage sports, teams, events, facility bookings, and student achievements.',
         navigationStyle: 'sidebar',
-        path: '/sports-management',
+        path: '/home/sub-menu/sports-management',
         children: [
           {
             label: 'Student Portal',
@@ -4308,7 +4429,7 @@ export const menuConfig: Menu.MenuItem[] = [
             description: 'Student sports registration and activities.',
             icon: 'person',
             colorScheme: 'blue',
-            path: '/sports-management/student',
+            path: '/home/sub-menu/sports-student',
             children: [
               {
                 label: 'Dashboard',
@@ -4360,7 +4481,7 @@ export const menuConfig: Menu.MenuItem[] = [
             description: 'Manage sports, teams, and facilities.',
             icon: 'admin_panel_settings',
             colorScheme: 'purple',
-            path: '/sports-management/admin',
+            path: '/home/sub-menu/sports-admin',
             children: [
               {
                 label: 'Dashboard',
@@ -4434,7 +4555,7 @@ export const menuConfig: Menu.MenuItem[] = [
               'Configure sports, facilities, equipment, and achievements.',
             icon: 'settings',
             colorScheme: 'green',
-            path: '/sports-management/master',
+            path: '/home/sub-menu/sports-master',
             children: [
               {
                 label: 'Sports Master',
@@ -4483,7 +4604,7 @@ export const menuConfig: Menu.MenuItem[] = [
             slug: 'event-ticketing-management-system',
             description:
               'Plan university events end-to-end — ticketing, registrations, QR check-in and attendance analytics.',
-            path: '/event-ticketing-management',
+            path: '/home/sub-menu/event-ticketing-management-system',
             icon: 'confirmation_number',
             colorScheme: 'blue',
             children: [
@@ -5187,13 +5308,13 @@ export const menuConfig: Menu.MenuItem[] = [
       {
         label: 'Endowment Management',
         slug: 'endowment-management',
-        category: 'Administrative',
+        category: 'Finance',
         icon: 'volunteer_activism',
         colorScheme: 'green',
         description:
           'Manage endowment funds, donors, schemes, and disbursements.',
         navigationStyle: 'sidebar',
-        path: '/endowment-management',
+        path: '/home/sub-menu/endowment-management',
         children: [
           {
             label: 'Admin Portal',
@@ -5201,7 +5322,7 @@ export const menuConfig: Menu.MenuItem[] = [
             description: 'Manage funds, donors, schemes, and disbursements.',
             icon: 'admin_panel_settings',
             colorScheme: 'blue',
-            path: '/endowment-management/admin',
+            path: '/home/sub-menu/endowment-admin',
             children: [
               {
                 label: 'Dashboard',
@@ -5285,7 +5406,7 @@ export const menuConfig: Menu.MenuItem[] = [
             description: 'Browse eligible schemes and apply for awards.',
             icon: 'school',
             colorScheme: 'purple',
-            path: '/endowment-management/student',
+            path: '/home/sub-menu/endowment-student',
             children: [
               {
                 label: 'Dashboard',
@@ -5325,7 +5446,7 @@ export const menuConfig: Menu.MenuItem[] = [
               'Configure Endowment Types, Award Types, and Eligibility.',
             icon: 'settings',
             colorScheme: 'green',
-            path: '/endowment-management/master',
+            path: '/home/sub-menu/endowment-master',
             children: [
               {
                 label: 'Endowment Types',
@@ -5362,7 +5483,7 @@ export const menuConfig: Menu.MenuItem[] = [
             slug: 'security-management-system',
             description:
               'Report incidents, manage safety guidelines, emergency helplines, and security officer assignments.',
-            path: '/security-management',
+            path: '/home/sub-menu/security-management-system',
             icon: 'shield',
             colorScheme: 'blue',
             children: [
@@ -5415,7 +5536,7 @@ export const menuConfig: Menu.MenuItem[] = [
         slug: 'it-service-desk',
         description:
           'Enterprise service management: raise tickets, track resolution, manage SLAs, and access the knowledge base.',
-        path: '/it-service-desk',
+        path: '/home/sub-menu/it-service-desk',
         icon: 'support',
         colorScheme: 'purple',
         navigationStyle: 'sidebar',
@@ -5425,7 +5546,7 @@ export const menuConfig: Menu.MenuItem[] = [
             slug: 'itsm-admin-portal',
             description:
               'Complete module control: manage tickets, agents, SLA, and settings.',
-            path: '/it-service-desk/admin/dashboard',
+            path: '/home/sub-menu/itsm-admin-portal',
             icon: 'admin_panel_settings',
             colorScheme: 'blue',
             children: [
@@ -5505,7 +5626,7 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Module Admin',
             slug: 'itsm-module-admin',
             description: 'Manage tickets for assigned ERP modules.',
-            path: '/it-service-desk/module-admin/dashboard',
+            path: '/home/sub-menu/itsm-module-admin',
             icon: 'module',
             colorScheme: 'purple',
             children: [
@@ -5558,7 +5679,7 @@ export const menuConfig: Menu.MenuItem[] = [
             slug: 'itsm-agent-portal',
             description:
               'Handle assigned tickets and communicate with requesters.',
-            path: '/it-service-desk/agent/dashboard',
+            path: '/home/sub-menu/itsm-agent-portal',
             icon: 'support_agent',
             colorScheme: 'green',
             children: [
@@ -5603,7 +5724,7 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Employee Portal',
             slug: 'itsm-employee-portal',
             description: 'Raise and track your own support tickets.',
-            path: '/it-service-desk/employee/dashboard',
+            path: '/home/sub-menu/itsm-employee-portal',
             icon: 'person',
             colorScheme: 'orange',
             children: [
@@ -5649,7 +5770,7 @@ export const menuConfig: Menu.MenuItem[] = [
         colorScheme: 'green',
         description:
           'Lodging stays • Seminar halls • Parking spaces • Fleet transport',
-        path: '/essential-services',
+        path: '/home/sub-menu/essential-services',
         children: [
           {
             label: 'Admin Portal',
@@ -5658,7 +5779,7 @@ export const menuConfig: Menu.MenuItem[] = [
               'Manage allocations, modify selections, define hierarchies and view stay details.',
             icon: 'admin_panel_settings',
             colorScheme: 'blue',
-            path: '/essential-services/admin',
+            path: '/home/sub-menu/essential-services-admin',
             children: [
               {
                 label: 'Dashboard',
@@ -5733,7 +5854,7 @@ export const menuConfig: Menu.MenuItem[] = [
               'Submit lodging/transport booking requests and track hierarchy.',
             icon: 'badge',
             colorScheme: 'purple',
-            path: '/essential-services/employee',
+            path: '/home/sub-menu/essential-services-employee',
             children: [
               {
                 label: 'My Bookings',
@@ -5754,7 +5875,7 @@ export const menuConfig: Menu.MenuItem[] = [
         colorScheme: 'orange',
         description:
           'Manage properties • Buildings & blocks • Open areas • Roads • Maintenance',
-        path: '/estate-management',
+        path: '/home/sub-menu/estate-management',
         children: [
           {
             label: 'Admin Portal',
@@ -5763,7 +5884,7 @@ export const menuConfig: Menu.MenuItem[] = [
               'Estate administration — manage buildings, floors, rooms, roads, and maintenance requests.',
             icon: 'admin_panel_settings',
             colorScheme: 'blue',
-            path: '/estate-management/admin',
+            path: '/home/sub-menu/estate-management-admin',
             children: [
               {
                 label: 'Dashboard',
@@ -5849,7 +5970,7 @@ export const menuConfig: Menu.MenuItem[] = [
         colorScheme: 'red',
         description: 'Manage school transport, routes, and vehicles.',
         navigationStyle: 'sidebar',
-        path: '/transport-management',
+        path: '/home/sub-menu/transport-management',
         children: [
           {
             label: 'College Login',
@@ -5857,7 +5978,7 @@ export const menuConfig: Menu.MenuItem[] = [
             description: 'College transport configuration and setup.',
             icon: 'domain',
             colorScheme: 'blue',
-            path: '/transport-management/college-login',
+            path: '/home/sub-menu/transport-college-login',
             children: [
               {
                 label: 'Dashboard',
@@ -5974,7 +6095,7 @@ export const menuConfig: Menu.MenuItem[] = [
               'Track bus, apply for transport leave, and view pickup details.',
             icon: 'person',
             colorScheme: 'purple',
-            path: '/transport-management/student-login',
+            path: '/home/sub-menu/student-transport',
             children: [
               {
                 label: 'Dashboard',
@@ -6033,7 +6154,7 @@ export const menuConfig: Menu.MenuItem[] = [
               'Manage transporters, vehicles, and global transport settings.',
             icon: 'admin_panel_settings',
             colorScheme: 'green',
-            path: '/transport-management/admin-login',
+            path: '/home/sub-menu/transport-admin-login',
             children: [
               {
                 label: 'Dashboard',
@@ -6122,7 +6243,7 @@ export const menuConfig: Menu.MenuItem[] = [
             description: 'Transport reports and system info.',
             icon: 'bar_chart',
             colorScheme: 'orange',
-            path: '/transport-management/reports',
+            path: '/home/sub-menu/transport-reports',
             children: [
               {
                 label: 'Vehicle Maintenance Report',
@@ -6164,7 +6285,7 @@ export const menuConfig: Menu.MenuItem[] = [
         colorScheme: 'pink',
         description:
           'Projects • Budget • Tenders • Contractors • Progress • Finance',
-        path: '/infrastructure-project-management',
+        path: '/home/sub-menu/infrastructure-project-management',
         children: [
           {
             label: 'Dashboard',
@@ -6332,7 +6453,7 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Reports',
             slug: 'infra-reports',
             description: 'Generate project and financial reports.',
-            path: '/infrastructure-project-management/reports',
+            path: '/home/sub-menu/infra-reports',
             icon: 'bar_chart',
             colorScheme: 'teal',
             children: [
@@ -6579,14 +6700,14 @@ export const menuConfig: Menu.MenuItem[] = [
         icon: 'groups',
         colorScheme: 'purple',
         description: 'Manage college registration, approvals, and inspections.',
-        path: '/affiliation-management-system',
+        path: '/home/sub-menu/affiliation-management-system',
         navigationStyle: 'sidebar',
         children: [
           {
             label: 'Public',
             slug: 'public',
             description: 'Public forms for college registration.',
-            path: '/affiliation-management-system/public',
+            path: '/home/sub-menu/public',
             icon: 'public',
             colorScheme: 'blue',
             children: [
@@ -6612,7 +6733,7 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'College Login',
             slug: 'college-login',
             description: 'Manage college profile and inspections.',
-            path: '/affiliation-management-system/college-login',
+            path: '/home/sub-menu/college-login',
             icon: 'domain',
             colorScheme: 'purple',
             children: [
@@ -6654,7 +6775,7 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Admin Login',
             slug: 'admin-login',
             description: 'Manage approvals, settings, and reports.',
-            path: '/affiliation-management-system/admin-login',
+            path: '/home/sub-menu/admin-login',
             icon: 'admin_panel_settings',
             colorScheme: 'green',
             children: [
@@ -6747,14 +6868,14 @@ export const menuConfig: Menu.MenuItem[] = [
             description: 'Portal selector (role selection)',
             icon: 'assignment',
             colorScheme: 'blue',
-            path: '/rti-management',
+            path: '/home/sub-menu/rti-management',
             children: [
               {
                 label: 'Admin Portal',
-                slug: 'admin',
+                slug: 'rti-admin',
                 description:
                   'Manage RTI applications, forwarding, appeals, and reports.',
-                path: '/rti-management/admin/dashboard',
+                path: '/home/sub-menu/rti-admin',
                 icon: 'admin_panel_settings',
                 colorScheme: 'blue',
                 navigationStyle: 'sidebar',
@@ -6826,7 +6947,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 slug: 'department-portal',
                 description:
                   'View assigned RTIs and submit departmental responses.',
-                path: '/rti-management/department/inbox',
+                path: '/home/sub-menu/department-portal',
                 icon: 'assignment_ind',
                 colorScheme: 'purple',
                 navigationStyle: 'sidebar',
@@ -7214,7 +7335,7 @@ export const menuConfig: Menu.MenuItem[] = [
         icon: 'gavel',
         colorScheme: 'red',
         description: 'Policies • Acknowledgements • Compliance • Audits • CAPA',
-        path: '/policy-compliance-management',
+        path: '/home/sub-menu/policy-compliance-management',
         children: [
           {
             label: 'Admin Portal',
@@ -7370,7 +7491,7 @@ export const menuConfig: Menu.MenuItem[] = [
             slug: 'legal-case-management-system',
             description:
               'Track university legal cases from registration through disposal — hearings, judgments and advocate payments.',
-            path: '/legal-case-management',
+            path: '/home/sub-menu/legal-case-management-system',
             icon: 'gavel',
             colorScheme: 'blue',
             children: [
@@ -7421,14 +7542,14 @@ export const menuConfig: Menu.MenuItem[] = [
         description:
           'Categories • Workflow Config • Content Management • Tracking',
         navigationStyle: 'sidebar',
-        path: '/content-federation',
+        path: '/home/sub-menu/content-federation',
         children: [
           {
             label: 'Admin Portal',
             slug: 'cfs-admin',
             description:
               'Global content tracking, review overrides, and settings',
-            path: '/content-federation/admin',
+            path: '/home/sub-menu/cfs-admin',
             icon: 'admin_panel_settings',
             colorScheme: 'blue',
             children: [
@@ -7480,7 +7601,7 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'OU Admin Portal',
             slug: 'cfs-ou-admin',
             description: 'Create, manage, and submit content for your unit',
-            path: '/content-federation/ou-admin',
+            path: '/home/sub-menu/cfs-ou-admin',
             icon: 'manage_accounts',
             colorScheme: 'purple',
             children: [
@@ -7518,7 +7639,7 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Reviewer Portal',
             slug: 'cfs-reviewer',
             description: 'Evaluate content and provide recommendations',
-            path: '/content-federation/reviewer',
+            path: '/home/sub-menu/cfs-reviewer',
             icon: 'rate_review',
             colorScheme: 'green',
             children: [
@@ -7562,7 +7683,7 @@ export const menuConfig: Menu.MenuItem[] = [
             slug: 'communication-management-system',
             description:
               'Send bulk email and SMS to employees and students, manage groups and mailing lists, and review the full communication log.',
-            path: '/communication-management',
+            path: '/home/sub-menu/communication-management-system',
             icon: 'campaign',
             colorScheme: 'blue',
             children: [
@@ -8278,14 +8399,14 @@ export const menuConfig: Menu.MenuItem[] = [
             description: 'Portal selector (role selection)',
             icon: 'feedback',
             colorScheme: 'blue',
-            path: '/student-feedback-management',
+            path: '/home/sub-menu/student-feedback-management',
             children: [
               {
                 label: 'Admin Portal',
-                slug: 'admin',
+                slug: 'feedback-admin',
                 description:
                   'Manage feedback sessions, templates, questions, assignments, and view analytics.',
-                path: '/student-feedback-management/admin/dashboard',
+                path: '/home/sub-menu/feedback-admin',
                 icon: 'admin_panel_settings',
                 colorScheme: 'blue',
                 navigationStyle: 'sidebar',
@@ -8385,7 +8506,7 @@ export const menuConfig: Menu.MenuItem[] = [
         colorScheme: 'orange',
         description:
           'Manage convocation events, registrations, passes, and degree dispatch.',
-        path: '/convocation-management',
+        path: '/home/sub-menu/convocation-management',
         children: [
           {
             label: 'Admin Portal',
@@ -8393,7 +8514,7 @@ export const menuConfig: Menu.MenuItem[] = [
             description: 'University admin portal for setup and verification',
             icon: 'admin_panel_settings',
             colorScheme: 'blue',
-            path: '/convocation-management/admin',
+            path: '/home/sub-menu/convocation-admin',
             children: [
               {
                 label: 'Dashboard',
@@ -8447,7 +8568,7 @@ export const menuConfig: Menu.MenuItem[] = [
             description: 'Student portal for registration and pass download',
             icon: 'person',
             colorScheme: 'purple',
-            path: '/convocation-management/student',
+            path: '/home/sub-menu/convocation-student',
             children: [
               {
                 label: 'Dashboard',

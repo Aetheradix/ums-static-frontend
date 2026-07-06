@@ -1,26 +1,22 @@
-import { Routes, Route } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import HealthPortalPage from './pages/HealthPortalPage';
-import AdminPortalPage from './pages/AdminPortalPage';
-import DoctorPortalPage from './pages/DoctorPortalPage';
-import PharmacistPortalPage from './pages/PharmacistPortalPage';
-import EmployeePortalPage from './pages/EmployeePortalPage';
-import AdminDashboard from './pages/dashboard/AdminDashboard';
-import AdminSettings from './pages/settings/AdminSettings';
-import EmployeeDashboard from './pages/dashboard/EmployeeDashboard';
-import MembershipsPage from './pages/memberships/MembershipsPage';
-import AddMembershipPage from './pages/memberships/AddMembershipPage';
-import HealthRecordsPage from './pages/records/HealthRecordsPage';
-import AddHealthRecordPage from './pages/records/AddHealthRecordPage';
-import DoctorsPage from './pages/doctors/DoctorsPage';
-import MedicalStockPage from './pages/stock/MedicalStockPage';
-import AddStockPage from './pages/stock/AddStockPage';
-import PrescriptionsPage from './pages/prescriptions/PrescriptionsPage';
-import AddPrescriptionPage from './pages/prescriptions/AddPrescriptionPage';
-import DispensaryPage from './pages/dispensary/DispensaryPage';
 import AppointmentsPage from './pages/appointments/AppointmentsPage';
-import GuestUsersPage from './pages/guest-users/GuestUsersPage';
+import AdminDashboard from './pages/dashboard/AdminDashboard';
+import EmployeeDashboard from './pages/dashboard/EmployeeDashboard';
+import DispensaryPage from './pages/dispensary/DispensaryPage';
+import DoctorsPage from './pages/doctors/DoctorsPage';
 import AddGuestUserPage from './pages/guest-users/AddGuestUserPage';
+import GuestUsersPage from './pages/guest-users/GuestUsersPage';
+import AddMembershipPage from './pages/memberships/AddMembershipPage';
+import MembershipsPage from './pages/memberships/MembershipsPage';
+import AddPrescriptionPage from './pages/prescriptions/AddPrescriptionPage';
+import PrescriptionsPage from './pages/prescriptions/PrescriptionsPage';
+import AddHealthRecordPage from './pages/records/AddHealthRecordPage';
+import HealthRecordsPage from './pages/records/HealthRecordsPage';
 import ReportsPage from './pages/reports/ReportsPage';
+import AdminSettings from './pages/settings/AdminSettings';
+import AddStockPage from './pages/stock/AddStockPage';
+import MedicalStockPage from './pages/stock/MedicalStockPage';
 
 const Placeholder = ({ title }: { title: string }) => (
   <div className="flex items-center justify-center h-64 text-gray-400 text-lg">
@@ -32,18 +28,30 @@ export default function HealthManagement() {
   return (
     <Routes>
       <Route index element={<HealthPortalPage />} />
-      <Route path="admin" element={<AdminPortalPage />} />
+      <Route
+        path="admin"
+        element={<Navigate to="/home/sub-menu/hms-admin-portal" replace />}
+      />
       <Route path="admin/dashboard" element={<AdminDashboard />} />
       <Route path="admin/settings" element={<AdminSettings />} />
-      <Route path="doctor" element={<DoctorPortalPage />} />
+      <Route
+        path="doctor"
+        element={<Navigate to="/home/sub-menu/hms-doctor-portal" replace />}
+      />
       <Route
         path="doctor/dashboard"
         element={<Placeholder title="Doctor Dashboard" />}
       />
-      <Route path="pharmacist" element={<PharmacistPortalPage />} />
+      <Route
+        path="pharmacist"
+        element={<Navigate to="/home/sub-menu/hms-pharmacist-portal" replace />}
+      />
       <Route path="pharmacist/dispensary" element={<DispensaryPage />} />
       <Route path="pharmacist/stock" element={<MedicalStockPage />} />
-      <Route path="employee" element={<EmployeePortalPage />} />
+      <Route
+        path="employee"
+        element={<Navigate to="/home/sub-menu/hms-employee-portal" replace />}
+      />
       <Route path="employee/dashboard" element={<EmployeeDashboard />} />
       <Route path="memberships" element={<MembershipsPage />} />
       <Route path="memberships/add" element={<AddMembershipPage />} />

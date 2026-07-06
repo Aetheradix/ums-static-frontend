@@ -1,56 +1,62 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import TransportThemeWrapper from './TransportThemeWrapper';
 import AdminDashboard from './admin/Dashboard';
-import AdminMenuPage from './admin/AdminMenuPage';
-import TransporterRegistration from './admin/TransporterRegistration';
-import VehicleRegistration from './admin/VehicleRegistration';
 import DriverAttenderRegistration from './admin/DriverAttenderRegistration';
-import TransporterCollegeMapping from './admin/TransporterCollegeMapping';
-import VehicleCollegeMapping from './admin/VehicleCollegeMapping';
 import TransporterBillUpload from './admin/TransporterBillUpload';
-import VehicleInsurance from './admin/operations/VehicleInsurance';
+import TransporterCollegeMapping from './admin/TransporterCollegeMapping';
+import TransporterRegistration from './admin/TransporterRegistration';
+import VehicleCollegeMapping from './admin/VehicleCollegeMapping';
+import VehicleRegistration from './admin/VehicleRegistration';
+import VehicleMaintenanceApproval from './admin/maintenance/VehicleMaintenanceApproval';
 import VehicleAllotment from './admin/operations/VehicleAllotment';
 import VehicleDeAllocationTransfer from './admin/operations/VehicleDeAllocationTransfer';
-import VehicleMaintenanceApproval from './admin/maintenance/VehicleMaintenanceApproval';
+import VehicleInsurance from './admin/operations/VehicleInsurance';
 
-import StudentDashboard from './student/Dashboard';
-import StudentMenuPage from './student/StudentMenuPage';
 import StudentBusLiveTracking from './student/BusLiveTracking';
-import StudentLeaveEntryStudent from './student/StudentLeaveEntry';
 import StudentBusStopEnrollment from './student/BusStopEnrollment';
-import StudentPickupDropRoute from './student/StudentPickupDrop';
+import StudentDashboard from './student/Dashboard';
 import StudentPickupCancellation from './student/PickupCancellationDetails';
+import StudentLeaveEntryStudent from './student/StudentLeaveEntry';
+import StudentPickupDropRoute from './student/StudentPickupDrop';
 
-import CollegeDashboard from './college/Dashboard';
-import CollegeMenuPage from './college/CollegeMenuPage';
-import InchargeRegistration from './college/InchargeRegistration';
-import RouteBusStopMapping from './college/RouteBusStopMapping';
-import BusGatePass from './college/BusGatePass';
 import AddBusGatePass from './college/AddBusGatePass';
+import BusGatePass from './college/BusGatePass';
+import BusLiveTracking from './college/BusLiveTracking';
+import BusStopEnrollment from './college/BusStopEnrollment';
+import CollegeDashboard from './college/Dashboard';
+import DriverAttenderLeaveEntry from './college/DriverAttenderLeaveEntry';
 import DriverVehicleMapping from './college/DriverVehicleMapping';
+import InchargeRegistration from './college/InchargeRegistration';
+import PickupCancellationDetails from './college/PickupCancellationDetails';
 import RouteBusMapping from './college/RouteBusMapping';
-import StudentRouteMapping from './college/StudentRouteMapping';
+import RouteBusStopMapping from './college/RouteBusStopMapping';
 import StudentLeaveEntry from './college/StudentLeaveEntry';
 import StudentPickupDrop from './college/StudentPickupDrop';
-import BusLiveTracking from './college/BusLiveTracking';
-import VehicleMaintenanceRequest from './college/maintenance/VehicleMaintenanceRequest';
+import StudentRouteMapping from './college/StudentRouteMapping';
 import VehicleMaintenance from './college/maintenance/VehicleMaintenance';
-import DriverAttenderLeaveEntry from './college/DriverAttenderLeaveEntry';
-import PickupCancellationDetails from './college/PickupCancellationDetails';
-import BusStopEnrollment from './college/BusStopEnrollment';
+import VehicleMaintenanceRequest from './college/maintenance/VehicleMaintenanceRequest';
 
-import GatePassReport from './reports/GatePassReport';
 import AboutTransportManagement from './AboutTransportManagement';
-import TransportManagementPortalPage from './TransportManagementPortalPage';
+import GatePassReport from './reports/GatePassReport';
 
 export default function TransportManagement() {
   return (
     <TransportThemeWrapper>
       <Routes>
-        <Route path="" element={<TransportManagementPortalPage />} />
+        <Route
+          path=""
+          element={
+            <Navigate to="/home/sub-menu/transport-management" replace />
+          }
+        />
 
         {/* Admin */}
-        <Route path="admin-login" element={<AdminMenuPage />} />
+        <Route
+          path="admin-login"
+          element={
+            <Navigate to="/home/sub-menu/transport-admin-login" replace />
+          }
+        />
         <Route path="admin-login/dashboard" element={<AdminDashboard />} />
         <Route
           path="admin-login/transporter-registration"
@@ -94,7 +100,10 @@ export default function TransportManagement() {
         />
 
         {/* Student */}
-        <Route path="student-login" element={<StudentMenuPage />} />
+        <Route
+          path="student-login"
+          element={<Navigate to="/home/sub-menu/student-transport" replace />}
+        />
         <Route path="student-login/dashboard" element={<StudentDashboard />} />
         <Route
           path="student-login/live-tracking"
@@ -118,7 +127,12 @@ export default function TransportManagement() {
         />
 
         {/* College */}
-        <Route path="college-login" element={<CollegeMenuPage />} />
+        <Route
+          path="college-login"
+          element={
+            <Navigate to="/home/sub-menu/transport-college-login" replace />
+          }
+        />
         <Route path="college-login/dashboard" element={<CollegeDashboard />} />
         <Route
           path="college-login/incharge-registration"

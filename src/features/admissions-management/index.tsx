@@ -1,6 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
-import AdmissionsPortalPage from './AdmissionsPortalPage';
-import AdminPortalPage from './admin/AdminPortalPage';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import ApplicationList from './admin/pages/ApplicationList';
 import Dashboard from './admin/pages/Dashboard';
 import FeeApproval from './admin/pages/FeeApproval';
@@ -8,7 +6,6 @@ import FeeConfig from './admin/pages/FeeConfig';
 import NotificationList from './admin/pages/NotificationList';
 import PortalSettings from './admin/pages/PortalSettings';
 import ProgrammeConfig from './admin/pages/ProgrammeConfig';
-import StudentPortalPage from './student/StudentPortalPage';
 import ApplicationForm from './student/application-form/pages/ApplicationForm';
 import ApplicationStatus from './student/pages/ApplicationStatus';
 import AdmissionsStudentDashboard from './student/pages/Dashboard';
@@ -17,24 +14,23 @@ import SubjectSelection from './student/pages/SubjectSelection';
 
 // New Admin imports
 import AdmissionCycleMaster from './admin/pages/AdmissionCycleMaster';
+import DocumentMaster from './admin/pages/DocumentMaster';
 import EligibilityRuleEngine from './admin/pages/EligibilityRuleEngine';
+import MeritRuleConfig from './admin/pages/MeritRuleConfig';
 import ReservationMaster from './admin/pages/ReservationMaster';
 import SeatMatrixConfig from './admin/pages/SeatMatrixConfig';
-import MeritRuleConfig from './admin/pages/MeritRuleConfig';
-import DocumentMaster from './admin/pages/DocumentMaster';
 
 // New Student imports
 import AdmissionEnquiry from './student/pages/AdmissionEnquiry';
-import CoursePreference from './student/pages/CoursePreference';
-import DocumentUpload from './student/pages/DocumentUpload';
+import AdmissionLetter from './student/pages/AdmissionLetter';
+import AdmissionOffer from './student/pages/AdmissionOffer';
 import ApplicationPreview from './student/pages/ApplicationPreview';
 import ApplicationTracking from './student/pages/ApplicationTracking';
+import CoursePreference from './student/pages/CoursePreference';
+import DocumentUpload from './student/pages/DocumentUpload';
 import MeritList from './student/pages/MeritList';
-import AdmissionOffer from './student/pages/AdmissionOffer';
-import AdmissionLetter from './student/pages/AdmissionLetter';
 
 // New Cell imports
-import CellPortalPage from './cell/CellPortalPage';
 import CellDashboard from './cell/pages/Dashboard';
 import CellDocumentVerification from './cell/pages/DocumentVerification';
 import MeritListGeneration from './cell/pages/MeritListGeneration';
@@ -46,10 +42,16 @@ import StudentConversion from './cell/pages/StudentConversion';
 export default function AdmissionsManagement() {
   return (
     <Routes>
-      <Route path="" element={<AdmissionsPortalPage />} />
+      <Route
+        path=""
+        element={<Navigate to="/home/sub-menu/admissions-management" replace />}
+      />
 
       {/* Admin routes */}
-      <Route path="admin" element={<AdminPortalPage />} />
+      <Route
+        path="admin"
+        element={<Navigate to="/home/sub-menu/admissions-admin" replace />}
+      />
       <Route path="admin/dashboard" element={<Dashboard />} />
       <Route path="admin/applications" element={<ApplicationList />} />
       <Route path="admin/fee-approval" element={<FeeApproval />} />
@@ -68,7 +70,10 @@ export default function AdmissionsManagement() {
       <Route path="admin/document-master" element={<DocumentMaster />} />
 
       {/* Student routes */}
-      <Route path="student" element={<StudentPortalPage />} />
+      <Route
+        path="student"
+        element={<Navigate to="/home/sub-menu/admissions-student" replace />}
+      />
       <Route
         path="student/dashboard"
         element={<AdmissionsStudentDashboard />}
@@ -93,7 +98,10 @@ export default function AdmissionsManagement() {
       <Route path="student/admission-letter" element={<AdmissionLetter />} />
 
       {/* Cell routes */}
-      <Route path="cell" element={<CellPortalPage />} />
+      <Route
+        path="cell"
+        element={<Navigate to="/home/sub-menu/admissions-cell" replace />}
+      />
       <Route path="cell/dashboard" element={<CellDashboard />} />
       <Route path="cell/documents" element={<CellDocumentVerification />} />
       <Route path="cell/merit-list" element={<MeritListGeneration />} />

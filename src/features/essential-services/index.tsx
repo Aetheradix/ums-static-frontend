@@ -1,25 +1,31 @@
 import { Route, Routes } from 'react-router';
-import EssentialServicesPortalPage from './portal/EssentialServicesPortalPage';
-import AdminPortalPage from './admin/AdminPortalPage';
-import Dashboard from './admin/pages/Dashboard';
+import { Navigate } from 'react-router-dom';
 import ApprovalHierarchy from './admin/pages/ApprovalHierarchy';
-import EmailTemplates from './admin/pages/EmailTemplates';
-import ParkingManagement from './admin/pages/ParkingManagement';
 import ConferenceManagement from './admin/pages/ConferenceManagement';
+import Dashboard from './admin/pages/Dashboard';
+import EmailTemplates from './admin/pages/EmailTemplates';
 import GuestHouseManagement from './admin/pages/GuestHouseManagement';
-import TransportManagement from './admin/pages/TransportManagement';
-import SystemLogs from './admin/pages/SystemLogs';
+import ParkingManagement from './admin/pages/ParkingManagement';
 import Reports from './admin/pages/Reports';
-import EmployeePortalPage from './employee/EmployeePortalPage';
+import SystemLogs from './admin/pages/SystemLogs';
+import TransportManagement from './admin/pages/TransportManagement';
 import EmployeeBookings from './employee/pages/EmployeeBookings';
 
 export default function EssentialServices() {
   return (
     <Routes>
-      <Route index element={<EssentialServicesPortalPage />} />
+      <Route
+        index
+        element={<Navigate to="/home/sub-menu/essential-services" replace />}
+      />
 
       {/* Admin Routes */}
-      <Route path="admin" element={<AdminPortalPage />} />
+      <Route
+        path="admin"
+        element={
+          <Navigate to="/home/sub-menu/essential-services-admin" replace />
+        }
+      />
       <Route path="admin/dashboard" element={<Dashboard />} />
       <Route path="admin/hierarchy" element={<ApprovalHierarchy />} />
       <Route path="admin/templates" element={<EmailTemplates />} />
@@ -31,7 +37,12 @@ export default function EssentialServices() {
       <Route path="admin/reports" element={<Reports />} />
 
       {/* Employee Routes */}
-      <Route path="employee" element={<EmployeePortalPage />} />
+      <Route
+        path="employee"
+        element={
+          <Navigate to="/home/sub-menu/essential-services-employee" replace />
+        }
+      />
       <Route path="employee/bookings" element={<EmployeeBookings />} />
     </Routes>
   );

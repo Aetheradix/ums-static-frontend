@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import EventTicketingPortalPage from './portal/EventTicketingPortalPage';
 import AdminPortalLayout from './admin';
 import OrganizerPortalLayout from './organizer';
@@ -8,7 +8,15 @@ import AttendeePortalLayout from './attendee';
 export default function EventTicketingRoutes() {
   return (
     <Routes>
-      <Route index element={<EventTicketingPortalPage />} />
+      <Route
+        index
+        element={
+          <Navigate
+            to="/home/sub-menu/event-ticketing-management-system"
+            replace
+          />
+        }
+      />
       <Route path="admin/*" element={<AdminPortalLayout />} />
       <Route path="organizer/*" element={<OrganizerPortalLayout />} />
       <Route path="volunteer/*" element={<VolunteerPortalLayout />} />

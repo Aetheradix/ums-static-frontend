@@ -1,31 +1,41 @@
 import AvailableFacility from 'features/master/college/college-facility';
 import EstablishmentYear from 'features/master/other/establishment-year';
 import { Route, Routes } from 'react-router';
+import { Navigate } from 'react-router-dom';
 import CollegeRegistration from './college-registration';
 import CollegeRegistrationApproval from './college-registration-approval';
-import DepartmentRegistration from './department-registration';
 import CollegeRenewal from './college-renewal';
 import CollegeRenewalAdmin from './college-renewal-admin';
+import DepartmentRegistration from './department-registration';
 import ProgrammeFee from './settings/programme-fee';
 
+import ApprovalStatusReport from './approval-status-report';
 import DraftRegistrationRequest from './draft-registration-request';
 import InspectionReport from './inspection-report';
-import ProfileDetails from './Profile-details';
-import ApprovalStatusReport from './approval-status-report';
 import InspectionStatusReport from './inspection-status-report';
-
-import PublicPortalPage from './PublicPortalPage';
-import CollegePortalPage from './CollegePortalPage';
-import AdminPortalPage from './AdminPortalPage';
-import AffiliationPortalPage from './AffiliationPortalPage';
+import ProfileDetails from './Profile-details';
 
 export default function AffiliationManagementSystem() {
   return (
     <Routes>
-      <Route path="" element={<AffiliationPortalPage />} />
-      <Route path="public" element={<PublicPortalPage />} />
-      <Route path="college-login" element={<CollegePortalPage />} />
-      <Route path="admin-login" element={<AdminPortalPage />} />
+      <Route
+        path=""
+        element={
+          <Navigate to="/home/sub-menu/affiliation-management-system" replace />
+        }
+      />
+      <Route
+        path="public"
+        element={<Navigate to="/home/sub-menu/public" replace />}
+      />
+      <Route
+        path="college-login"
+        element={<Navigate to="/home/sub-menu/college-login" replace />}
+      />
+      <Route
+        path="admin-login"
+        element={<Navigate to="/home/sub-menu/admin-login" replace />}
+      />
 
       <Route
         path="registration-approval/*"
