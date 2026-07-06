@@ -48,7 +48,7 @@ const Tile: React.FC<TileProps> = ({
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
     >
-      <div className="db-service-card">
+      <div className={`db-service-card card-theme-${colorScheme}`}>
         {/* Top corner action container */}
         <div className="db-card-corner-action">
           <div className="db-card-arrow">

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { LanguageContext } from './LanguageContext';
-import type { Language } from './LanguageContext';
+import React, { useEffect, useRef, useState } from 'react';
 import { translations } from '../constants/translations';
+import type { Language } from './LanguageContext';
+import { LanguageContext } from './LanguageContext';
 
 interface LanguageProviderProps {
   children: React.ReactNode;
@@ -12,8 +12,8 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
 }) => {
   const [language, setLanguageState] = useState<Language>(() => {
     const stored = sessionStorage.getItem('app_language');
-    // Default to Hindi ('hi')
-    return (stored as Language) || 'hi';
+    // Default to English ('en')
+    return (stored as Language) || 'en';
   });
 
   const observerRef = useRef<MutationObserver | null>(null);

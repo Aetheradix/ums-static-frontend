@@ -1,9 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import AdminPortalPage from './admin/AdminPortalPage';
-import CompanyPortalPage from './company/CompanyPortalPage';
-import DeptPortalPage from './dept/DeptPortalPage';
-import StudentPortalPage from './student/StudentPortalPage';
-import TrainingPlacementPortalPage from './TrainingPlacementPortalPage';
+
 import { tpUrls } from './urls';
 
 import ApplicationView from './pages/admin/applications/ApplicationView';
@@ -41,10 +37,16 @@ import StudentSeasons from './pages/student/StudentSeasons';
 export default function TrainingPlacement() {
   return (
     <Routes>
-      <Route index element={<TrainingPlacementPortalPage />} />
+      <Route
+        index
+        element={<Navigate to="/home/sub-menu/training-placement" replace />}
+      />
 
       {/* Admin */}
-      <Route path="admin" element={<AdminPortalPage />} />
+      <Route
+        path="admin"
+        element={<Navigate to="/home/sub-menu/tp-admin-portal" replace />}
+      />
       <Route path="admin/dashboard" element={<AdminDashboard />} />
 
       {/* Settings Routes */}
@@ -108,7 +110,10 @@ export default function TrainingPlacement() {
       <Route path="admin/reports" element={<ReportsHub />} />
 
       {/* Department */}
-      <Route path="dept" element={<DeptPortalPage />} />
+      <Route
+        path="dept"
+        element={<Navigate to="/home/sub-menu/tp-dept-portal" replace />}
+      />
       <Route path="dept/dashboard" element={<DeptDashboard />} />
       <Route path="dept/opportunities" element={<OpportunitiesMonitor />} />
       <Route
@@ -117,7 +122,10 @@ export default function TrainingPlacement() {
       />
 
       {/* Company */}
-      <Route path="company" element={<CompanyPortalPage />} />
+      <Route
+        path="company"
+        element={<Navigate to="/home/sub-menu/tp-company-portal" replace />}
+      />
       <Route path="company/dashboard" element={<CompanyDashboard />} />
       <Route path="company/profile" element={<CompanyView />} />
       <Route path="company/profile/edit" element={<CompanyForm />} />
@@ -138,7 +146,10 @@ export default function TrainingPlacement() {
       />
 
       {/* Student */}
-      <Route path="student" element={<StudentPortalPage />} />
+      <Route
+        path="student"
+        element={<Navigate to="/home/sub-menu/tp-student-portal" replace />}
+      />
       <Route path="student/dashboard" element={<StudentDashboard />} />
       <Route path="student/registration" element={<StudentRegistration />} />
       <Route path="student/seasons/available" element={<StudentSeasons />} />

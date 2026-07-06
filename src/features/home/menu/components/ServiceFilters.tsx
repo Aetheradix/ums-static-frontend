@@ -1,16 +1,24 @@
 import React from 'react';
 import '../styles/menu.css';
 
+interface ServiceFiltersProps {
+  activeFilter: string;
+  onChangeFilter: (filter: string) => void;
+}
+
 const filters = [
-  { label: 'Favourite', active: true, icon: true },
-  { label: 'All', active: false },
-  { label: 'Academics', active: false },
-  { label: 'HR', active: false },
-  { label: 'Finance', active: false },
-  { label: 'Operation', active: false },
+  { label: 'Core', icon: 'pi-bolt' },
+  { label: 'All' },
+  { label: 'Academics' },
+  { label: 'HR' },
+  { label: 'Finance' },
+  { label: 'Operation' },
 ];
 
-const ServiceFilters: React.FC = () => (
+const ServiceFilters: React.FC<ServiceFiltersProps> = ({
+  activeFilter,
+  onChangeFilter,
+}) => (
   <div>
     <div className="service-filters-header">
       <h2 className="service-filters-title">All Services</h2>
@@ -24,9 +32,11 @@ const ServiceFilters: React.FC = () => (
       {filters.map(filter => (
         <button
           key={filter.label}
-          className={`service-filter-tab${filter.active ? ' active' : ''}`}
+          type="button"
+          className={`service-filter-tab${activeFilter === filter.label ? ' active' : ''}`}
+          onClick={() => onChangeFilter(filter.label)}
         >
-          {filter.icon && <i className="pi pi-star-fill"></i>}
+          {filter.icon && <i className={`pi ${filter.icon}`}></i>}
           {filter.label}
         </button>
       ))}

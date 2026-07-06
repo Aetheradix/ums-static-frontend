@@ -1,19 +1,23 @@
-import { Route, Routes } from 'react-router-dom';
-import Dashboard from './admin/pages/Dashboard';
-import RegisterRTI from './admin/pages/RegisterRTI';
-import RTIInbox from './admin/pages/RTIInbox';
-import PendingActions from './admin/pages/PendingActions';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import Appeals from './admin/pages/Appeals';
+import Dashboard from './admin/pages/Dashboard';
+import PendingActions from './admin/pages/PendingActions';
+import RegisterRTI from './admin/pages/RegisterRTI';
 import ReportsAnalytics from './admin/pages/ReportsAnalytics';
+import RTIInbox from './admin/pages/RTIInbox';
 import Settings from './admin/pages/Settings';
-import RTIAdminPortalPage from './admin/RTIAdminPortalPage';
-import RTIPortalPage from './portal/RTIPortalPage';
 
 export default function RTIManagement() {
   return (
     <Routes>
-      <Route index element={<RTIPortalPage />} />
-      <Route path="admin" element={<RTIAdminPortalPage />} />
+      <Route
+        index
+        element={<Navigate to="/home/sub-menu/rti-management" replace />}
+      />
+      <Route
+        path="admin"
+        element={<Navigate to="/home/sub-menu/rti-admin" replace />}
+      />
       <Route path="admin/dashboard" element={<Dashboard />} />
       <Route path="admin/register" element={<RegisterRTI />} />
       <Route path="admin/inbox" element={<RTIInbox />} />

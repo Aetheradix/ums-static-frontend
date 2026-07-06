@@ -1,25 +1,31 @@
-import { Route, Routes } from 'react-router-dom';
-import EstatePortalPage from './portal/EstatePortalPage';
-import AdminPortalPage from './admin/AdminPortalPage';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import AssignedRequests from './admin/pages/AssignedRequests';
 import Dashboard from './admin/pages/Dashboard';
+import MaintenanceRequests from './admin/pages/MaintenanceRequests';
 import ManageBuildings from './admin/pages/ManageBuildings';
 import OpenAreas from './admin/pages/OpenAreas';
+import Reports from './admin/pages/Reports';
 import RoadsFootpaths from './admin/pages/RoadsFootpaths';
 import Settings from './admin/pages/Settings';
-import MaintenanceRequests from './admin/pages/MaintenanceRequests';
-import AssignedRequests from './admin/pages/AssignedRequests';
 import WorkOrders from './admin/pages/WorkOrders';
 import WorkOrderTasks from './admin/pages/WorkOrderTasks';
-import Reports from './admin/pages/Reports';
 
 export default function EstateManagement() {
   return (
     <Routes>
       {/* Top-Level Portal landing */}
-      <Route index element={<EstatePortalPage />} />
+      <Route
+        index
+        element={<Navigate to="/home/sub-menu/estate-management" replace />}
+      />
 
       {/* Admin Portal selector */}
-      <Route path="admin" element={<AdminPortalPage />} />
+      <Route
+        path="admin"
+        element={
+          <Navigate to="/home/sub-menu/estate-management-admin" replace />
+        }
+      />
 
       {/* Sub-features under admin */}
       <Route path="admin/dashboard" element={<Dashboard />} />

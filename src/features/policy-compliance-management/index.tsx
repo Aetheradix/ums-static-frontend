@@ -1,27 +1,31 @@
-import { Route, Routes } from 'react-router-dom';
-import Dashboard from './pages/Dashboard';
-import PolicyMaster from './pages/PolicyMaster';
-import PolicyReview from './pages/PolicyReview';
-import PolicyApproval from './pages/PolicyApproval';
-import PublishedPolicies from './pages/PublishedPolicies';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import Acknowledgements from './pages/Acknowledgements';
-import ComplianceRequirements from './pages/ComplianceRequirements';
+import AuditManagement from './pages/AuditManagement';
 import ComplianceAssignments from './pages/ComplianceAssignments';
+import ComplianceRequirements from './pages/ComplianceRequirements';
 import ComplianceSubmissions from './pages/ComplianceSubmissions';
 import ComplianceVerification from './pages/ComplianceVerification';
-import AuditManagement from './pages/AuditManagement';
-import NonComplianceManagement from './pages/NonComplianceManagement';
 import CorrectiveActions from './pages/CorrectiveActions';
+import Dashboard from './pages/Dashboard';
+import NonComplianceManagement from './pages/NonComplianceManagement';
+import PolicyApproval from './pages/PolicyApproval';
+import PolicyMaster from './pages/PolicyMaster';
+import PolicyReview from './pages/PolicyReview';
+import PublishedPolicies from './pages/PublishedPolicies';
 import Reports from './pages/Reports';
-import PortalLanding from './pages/PortalLanding';
+import StudentComplianceHistory from './pages/StudentComplianceHistory';
 import StudentMyPolicies from './pages/StudentMyPolicies';
 import StudentMyTasks from './pages/StudentMyTasks';
-import StudentComplianceHistory from './pages/StudentComplianceHistory';
 
 export default function PolicyComplianceManagement() {
   return (
     <Routes>
-      <Route index element={<PortalLanding />} />
+      <Route
+        index
+        element={
+          <Navigate to="/home/sub-menu/policy-compliance-management" replace />
+        }
+      />
       <Route path="dashboard" element={<Dashboard />} />
       <Route path="policies" element={<PolicyMaster />} />
       <Route path="policy-review" element={<PolicyReview />} />

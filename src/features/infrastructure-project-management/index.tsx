@@ -1,26 +1,24 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
-import InfraPortalPage from './portal/InfraPortalPage';
-import InfraDashboard from './pages/Dashboard';
-import ProjectMaster from './pages/ProjectMaster';
-import ProjectProposal from './pages/ProjectProposal';
-import BudgetAllocation from './pages/BudgetAllocation';
-import TenderManagement from './pages/TenderManagement';
-import ContractorManagement from './pages/ContractorManagement';
-import WorkOrders from './pages/WorkOrders';
-import ProjectMilestones from './pages/ProjectMilestones';
-import ProgressMonitoring from './pages/ProgressMonitoring';
-import MaterialManagement from './pages/MaterialManagement';
 import BillManagement from './pages/BillManagement';
-import PaymentTracking from './pages/PaymentTracking';
-import Inspections from './pages/Inspections';
+import BudgetAllocation from './pages/BudgetAllocation';
 import CompletionHandover from './pages/CompletionHandover';
+import ContractorManagement from './pages/ContractorManagement';
+import InfraDashboard from './pages/Dashboard';
 import Documents from './pages/Documents';
-import ReportsPortalPage from './portal/ReportsPortalPage';
-import ProjectProgressReport from './pages/reports/ProjectProgressReport';
+import Inspections from './pages/Inspections';
+import MaterialManagement from './pages/MaterialManagement';
+import PaymentTracking from './pages/PaymentTracking';
+import ProgressMonitoring from './pages/ProgressMonitoring';
+import ProjectMaster from './pages/ProjectMaster';
+import ProjectMilestones from './pages/ProjectMilestones';
+import ProjectProposal from './pages/ProjectProposal';
 import BudgetUtilizationReport from './pages/reports/BudgetUtilizationReport';
 import ContractorPerformanceReport from './pages/reports/ContractorPerformanceReport';
 import ProjectCompletionReport from './pages/reports/ProjectCompletionReport';
+import ProjectProgressReport from './pages/reports/ProjectProgressReport';
+import TenderManagement from './pages/TenderManagement';
+import WorkOrders from './pages/WorkOrders';
 
 /**
  * Infrastructure Project Management Routes
@@ -32,7 +30,15 @@ export default function InfrastructureProjectManagement() {
   return (
     <Routes>
       {/* Portal landing */}
-      <Route index element={<InfraPortalPage />} />
+      <Route
+        index
+        element={
+          <Navigate
+            to="/home/sub-menu/infrastructure-project-management"
+            replace
+          />
+        }
+      />
 
       {/* Dashboard */}
       <Route path="dashboard" element={<InfraDashboard />} />
@@ -60,7 +66,10 @@ export default function InfrastructureProjectManagement() {
       <Route path="inspections" element={<Inspections />} />
       <Route path="completion-handover" element={<CompletionHandover />} />
       <Route path="documents" element={<Documents />} />
-      <Route path="reports" element={<ReportsPortalPage />} />
+      <Route
+        path="reports"
+        element={<Navigate to="/home/sub-menu/infra-reports" replace />}
+      />
       <Route
         path="reports/project-progress"
         element={<ProjectProgressReport />}

@@ -1,38 +1,46 @@
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 // Portal imports
-import ContentFederationPortalPage from './ContentFederationPortalPage';
-import AdminPortalPage from './admin/AdminPortalPage';
-import OuAdminPortalPage from './ou-admin/OuAdminPortalPage';
-import ReviewerPortalPage from './reviewer/ReviewerPortalPage';
 
 // Page imports
-import AdminDashboard from './pages/Dashboard';
-import SettingsHub from './pages/settings/SettingsHub';
-import PublishingCategoriesList from './pages/settings/PublishingCategoriesList';
-import SubPublishingCategoriesList from './pages/settings/SubPublishingCategoriesList';
-import WorkflowConfiguration from './pages/settings/WorkflowConfiguration';
+import AllContentList from './pages/content/AllContentList';
 import ContentForm from './pages/content/ContentForm';
 import MyContentList from './pages/content/MyContentList';
-import ContentLifecycle from './pages/tracking/ContentLifecycle';
-import ActivityLogsList from './pages/settings/ActivityLogsList';
-import PendingReviewQueue from './pages/review/PendingReviewQueue';
-import ViewContent from './pages/content/ViewContent';
-import AllContentList from './pages/content/AllContentList';
-import ReviewDetail from './pages/review/ReviewDetail';
-import TrackingList from './pages/tracking/TrackingList';
-import ReviewHistory from './pages/review/ReviewHistory';
 import VersionHistory from './pages/content/VersionHistory';
+import ViewContent from './pages/content/ViewContent';
+import AdminDashboard from './pages/Dashboard';
 import ReportsPage from './pages/reports/ReportsPage';
+import PendingReviewQueue from './pages/review/PendingReviewQueue';
+import ReviewDetail from './pages/review/ReviewDetail';
+import ReviewHistory from './pages/review/ReviewHistory';
+import ActivityLogsList from './pages/settings/ActivityLogsList';
+import PublishingCategoriesList from './pages/settings/PublishingCategoriesList';
+import SettingsHub from './pages/settings/SettingsHub';
+import SubPublishingCategoriesList from './pages/settings/SubPublishingCategoriesList';
+import WorkflowConfiguration from './pages/settings/WorkflowConfiguration';
+import ContentLifecycle from './pages/tracking/ContentLifecycle';
+import TrackingList from './pages/tracking/TrackingList';
 import Unauthorized from './pages/Unauthorized';
 
 export default function ContentFederationSystem() {
   return (
     <Routes>
-      <Route index element={<ContentFederationPortalPage />} />
-      <Route path="admin" element={<AdminPortalPage />} />
-      <Route path="ou-admin" element={<OuAdminPortalPage />} />
-      <Route path="reviewer" element={<ReviewerPortalPage />} />
+      <Route
+        index
+        element={<Navigate to="/home/sub-menu/content-federation" replace />}
+      />
+      <Route
+        path="admin"
+        element={<Navigate to="/home/sub-menu/cfs-admin" replace />}
+      />
+      <Route
+        path="ou-admin"
+        element={<Navigate to="/home/sub-menu/cfs-ou-admin" replace />}
+      />
+      <Route
+        path="reviewer"
+        element={<Navigate to="/home/sub-menu/cfs-reviewer" replace />}
+      />
 
       <Route path="admin/dashboard" element={<AdminDashboard />} />
       <Route path="ou-admin/dashboard" element={<AdminDashboard />} />
@@ -75,7 +83,10 @@ export default function ContentFederationSystem() {
       <Route path="unauthorized" element={<Unauthorized />} />
 
       {/* Fallback */}
-      <Route path="*" element={<Navigate to="/content-federation" replace />} />
+      <Route
+        path="*"
+        element={<Navigate to="/home/sub-menu/content-federation" replace />}
+      />
     </Routes>
   );
 }

@@ -1,18 +1,26 @@
-import { Route, Routes } from 'react-router-dom';
-import EndowmentPortalPage from './portal/EndowmentPortalPage';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 // We will import admin/student routes later as we build them.
-import AdminRoutes from './admin';
-import StudentRoutes from './student';
-import MasterRoutes from './master';
 
 export default function EndowmentManagementRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<EndowmentPortalPage />} />
-      <Route path="master/*" element={<MasterRoutes />} />
-      <Route path="admin/*" element={<AdminRoutes />} />
-      <Route path="student/*" element={<StudentRoutes />} />
+      <Route
+        path="/"
+        element={<Navigate to="/home/sub-menu/endowment-management" replace />}
+      />
+      <Route
+        path="master/*"
+        element={<Navigate to="/home/sub-menu/endowment-master" replace />}
+      />
+      <Route
+        path="admin/*"
+        element={<Navigate to="/home/sub-menu/endowment-admin" replace />}
+      />
+      <Route
+        path="student/*"
+        element={<Navigate to="/home/sub-menu/endowment-student" replace />}
+      />
     </Routes>
   );
 }

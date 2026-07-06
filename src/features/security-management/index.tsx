@@ -1,60 +1,59 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 // Main Portal
-import SecurityPortalPage from './portal/SecurityPortalPage';
 
 // Super Admin
-import SuperAdminPortalPage from './super-admin/SuperAdminPortalPage';
 import SuperAdminMastersPortalPage from './super-admin/SuperAdminMastersPortalPage';
+import SuperAdminPortalPage from './super-admin/SuperAdminPortalPage';
 import SuperAdminDashboard from './super-admin/pages/Dashboard';
+import SuperAdminReports from './super-admin/pages/Reports';
+import SuperAdminSettings from './super-admin/pages/Settings';
+import AwarenessProgramManagement from './super-admin/pages/awareness/AwarenessProgramManagement';
+import GuidelinesManagement from './super-admin/pages/guidelines/GuidelinesManagement';
+import HelplineManagement from './super-admin/pages/helpline/HelplineManagement';
+import SuperAdminIncidentManagement from './super-admin/pages/incidents/IncidentManagement';
+import BuildingMaster from './super-admin/pages/masters/BuildingMaster';
+import DepartmentMapping from './super-admin/pages/masters/DepartmentMapping';
+import EmergencyContactType from './super-admin/pages/masters/EmergencyContactType';
 import IncidentCategoryMaster from './super-admin/pages/masters/IncidentCategoryMaster';
 import IncidentTypeMaster from './super-admin/pages/masters/IncidentTypeMaster';
+import LocationMaster from './super-admin/pages/masters/LocationMaster';
 import PriorityMaster from './super-admin/pages/masters/PriorityMaster';
 import SeverityMaster from './super-admin/pages/masters/SeverityMaster';
 import StatusMaster from './super-admin/pages/masters/StatusMaster';
-import BuildingMaster from './super-admin/pages/masters/BuildingMaster';
-import LocationMaster from './super-admin/pages/masters/LocationMaster';
-import DepartmentMapping from './super-admin/pages/masters/DepartmentMapping';
-import EmergencyContactType from './super-admin/pages/masters/EmergencyContactType';
-import HelplineManagement from './super-admin/pages/helpline/HelplineManagement';
-import GuidelinesManagement from './super-admin/pages/guidelines/GuidelinesManagement';
-import AwarenessProgramManagement from './super-admin/pages/awareness/AwarenessProgramManagement';
-import SuperAdminIncidentManagement from './super-admin/pages/incidents/IncidentManagement';
-import SuperAdminReports from './super-admin/pages/Reports';
-import SuperAdminSettings from './super-admin/pages/Settings';
 
 // Security Admin
 import SecurityAdminPortalPage from './security-admin/SecurityAdminPortalPage';
-import SecurityAdminDashboard from './security-admin/pages/Dashboard';
-import SecurityAdminIncidentManagement from './security-admin/pages/IncidentManagement';
-import SecurityAdminHelpline from './security-admin/pages/Helpline';
-import SecurityAdminGuidelines from './security-admin/pages/Guidelines';
 import SecurityAdminAwarenessPrograms from './security-admin/pages/AwarenessPrograms';
+import SecurityAdminDashboard from './security-admin/pages/Dashboard';
+import SecurityAdminGuidelines from './security-admin/pages/Guidelines';
+import SecurityAdminHelpline from './security-admin/pages/Helpline';
+import SecurityAdminIncidentManagement from './security-admin/pages/IncidentManagement';
 import SecurityAdminReports from './security-admin/pages/Reports';
 
 // Security Officer
 import SecurityOfficerPortalPage from './security-officer/SecurityOfficerPortalPage';
-import SecurityOfficerDashboard from './security-officer/pages/Dashboard';
 import AssignedIncidents from './security-officer/pages/AssignedIncidents';
+import SecurityOfficerDashboard from './security-officer/pages/Dashboard';
 
 // Employee Portal
 import EmployeePortalPage from './employee/EmployeePortalPage';
-import EmployeeDashboard from './employee/pages/Dashboard';
-import EmployeeReportIncident from './employee/pages/ReportIncident';
-import EmployeeMyIncidents from './employee/pages/MyIncidents';
-import EmployeeHelplines from './employee/pages/Helplines';
-import EmployeeGuidelines from './employee/pages/Guidelines';
 import EmployeeAwarenessPrograms from './employee/pages/AwarenessPrograms';
+import EmployeeDashboard from './employee/pages/Dashboard';
+import EmployeeGuidelines from './employee/pages/Guidelines';
+import EmployeeHelplines from './employee/pages/Helplines';
+import EmployeeMyIncidents from './employee/pages/MyIncidents';
+import EmployeeReportIncident from './employee/pages/ReportIncident';
 
 // Student Portal
 import StudentSecurityPortalPage from './student/StudentPortalPage';
 import StudentDashboard from './student/pages/Dashboard';
 // Student reuses Employee pages with student-specific breadcrumbs via the student portal
-import StudentReportIncident from './student/pages/ReportIncident';
-import StudentMyIncidents from './student/pages/MyIncidents';
-import StudentHelplines from './student/pages/Helplines';
-import StudentGuidelines from './student/pages/Guidelines';
 import StudentAwarenessPrograms from './student/pages/AwarenessPrograms';
+import StudentGuidelines from './student/pages/Guidelines';
+import StudentHelplines from './student/pages/Helplines';
+import StudentMyIncidents from './student/pages/MyIncidents';
+import StudentReportIncident from './student/pages/ReportIncident';
 
 /**
  * Security Management System Routes
@@ -66,7 +65,12 @@ export default function SecurityManagementRoutes() {
   return (
     <Routes>
       {/* Main Portal Selector */}
-      <Route index element={<SecurityPortalPage />} />
+      <Route
+        index
+        element={
+          <Navigate to="/home/sub-menu/security-management-system" replace />
+        }
+      />
 
       {/* ── Super Admin ── */}
       <Route path="super-admin" element={<SuperAdminPortalPage />} />

@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import TimetablePortalPage from './portal/TimetablePortalPage';
 import AdminPortalLayout from './admin';
 import SchedulerPortalLayout from './scheduler';
@@ -8,7 +8,12 @@ import StudentPortalLayout from './student';
 export default function TimetableManagementRoutes() {
   return (
     <Routes>
-      <Route index element={<TimetablePortalPage />} />
+      <Route
+        index
+        element={
+          <Navigate to="/home/sub-menu/timetable-management-system" replace />
+        }
+      />
       <Route path="admin/*" element={<AdminPortalLayout />} />
       <Route path="scheduler/*" element={<SchedulerPortalLayout />} />
       <Route path="faculty/*" element={<FacultyPortalLayout />} />

@@ -1,7 +1,6 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 
 // Portal Pages
-import ScholarshipPortalPage from './portal/ScholarshipPortalPage';
 
 // Student Portal
 import StudentPortalPage from './student/StudentPortalPage';
@@ -72,7 +71,12 @@ export default function ScholarshipDbtRoutes() {
   return (
     <Routes>
       {/* Main Selector */}
-      <Route index element={<ScholarshipPortalPage />} />
+      <Route
+        index
+        element={
+          <Navigate to="/home/sub-menu/scholarship-dbt-system" replace />
+        }
+      />
 
       {/* ── Student ── */}
       <Route path="student" element={<StudentPortalPage />} />

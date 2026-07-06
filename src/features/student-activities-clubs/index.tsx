@@ -1,5 +1,5 @@
-import { Route, Routes } from 'react-router-dom';
-import ActivitiesPortalPage from './portal/ActivitiesPortalPage';
+import { Route, Routes, Navigate } from 'react-router-dom';
+
 import Dashboard from './admin/pages/Dashboard';
 import ClubManagement from './admin/pages/ClubManagement';
 import EventManagement from './admin/pages/EventManagement';
@@ -14,7 +14,12 @@ import ApplyActivity from './student/pages/ApplyActivity';
 export default function StudentActivitiesClubs() {
   return (
     <Routes>
-      <Route index element={<ActivitiesPortalPage />} />
+      <Route
+        index
+        element={
+          <Navigate to="/home/sub-menu/student-activities-clubs" replace />
+        }
+      />
       <Route path="admin" element={<ActivitiesAdminPortalPage />} />
       <Route path="admin/dashboard" element={<Dashboard />} />
       <Route path="admin/clubs" element={<ClubManagement />} />

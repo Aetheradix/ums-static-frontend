@@ -1,16 +1,24 @@
-import { Route, Routes } from 'react-router-dom';
-import ConvocationPortalPage from './portal/ConvocationPortalPage';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 // We will import admin/student routes later as we build them.
-import AdminRoutes from './admin';
-import StudentRoutes from './student';
 
 export default function ConvocationManagementRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<ConvocationPortalPage />} />
-      <Route path="admin/*" element={<AdminRoutes />} />
-      <Route path="student/*" element={<StudentRoutes />} />
+      <Route
+        path="/"
+        element={
+          <Navigate to="/home/sub-menu/convocation-management" replace />
+        }
+      />
+      <Route
+        path="admin/*"
+        element={<Navigate to="/home/sub-menu/convocation-admin" replace />}
+      />
+      <Route
+        path="student/*"
+        element={<Navigate to="/home/sub-menu/convocation-student" replace />}
+      />
     </Routes>
   );
 }

@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import Dashboard from './admin/pages/Dashboard';
 import FeedbackSessions from './admin/pages/FeedbackSessions';
 import QuestionBank from './admin/pages/QuestionBank';
@@ -8,16 +8,23 @@ import StudentResponses from './admin/pages/StudentResponses';
 import ReportsAnalytics from './admin/pages/ReportsAnalytics';
 import Notifications from './admin/pages/Notifications';
 import Settings from './admin/pages/Settings';
-import FeedbackAdminPortalPage from './admin/FeedbackAdminPortalPage';
-import FeedbackPortalPage from './portal/FeedbackPortalPage';
+
 import StudentPages from './student/pages';
 
 export default function StudentFeedbackManagement() {
   return (
     <Routes>
-      <Route index element={<FeedbackPortalPage />} />
+      <Route
+        index
+        element={
+          <Navigate to="/home/sub-menu/student-feedback-management" replace />
+        }
+      />
       <Route path="student/*" element={<StudentPages />} />
-      <Route path="admin" element={<FeedbackAdminPortalPage />} />
+      <Route
+        path="admin"
+        element={<Navigate to="/home/sub-menu/feedback-admin" replace />}
+      />
       <Route path="admin/dashboard" element={<Dashboard />} />
       <Route path="admin/sessions" element={<FeedbackSessions />} />
       <Route path="admin/question-bank" element={<QuestionBank />} />
