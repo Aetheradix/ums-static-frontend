@@ -34,7 +34,7 @@
   right: 0;
   width: 68px;
   height: 68px;
-  background-color: #f5f7ff;
+  background-color: #ffffff !important;
   border-bottom-left-radius: 24px;
   z-index: 5;
 }
@@ -48,7 +48,7 @@
   height: 20px;
   background-color: transparent;
   border-top-right-radius: 20px;
-  box-shadow: 10px -10px 0 10px #f5f7ff;
+  box-shadow: 10px -10px 0 10px #ffffff !important;
 }
 
 .db-card-corner-action::after {
@@ -60,7 +60,7 @@
   height: 20px;
   background-color: transparent;
   border-top-right-radius: 20px;
-  box-shadow: 10px -10px 0 10px #f5f7ff;
+  box-shadow: 10px -10px 0 10px #ffffff !important;
 }
 
 /* ─────────────────────────────
@@ -70,6 +70,8 @@
   position: absolute;
   top: 14px;
   right: 14px;
+  background-color: #ffffff;
+  z-index: 10 !important;
 
   @apply w-10 h-10 rounded-full flex items-center justify-center text-slate-900 transition-all duration-200;
 
@@ -96,8 +98,12 @@
    Icon Box
 ───────────────────────────── */
 .db-card-icon-box {
-  @apply w-15 h-15 rounded-2xl flex items-center justify-center;
+  @apply w-12 h-12 rounded-2xl flex items-center justify-center transition-transform duration-300;
   border: none;
+}
+
+.db-service-card:hover .db-card-icon-box {
+  transform: scale(1.08);
 }
 
 .db-card-icon-box .icon-base {
@@ -343,4 +349,371 @@
   .db-card-description {
     @apply text-[11px] mt-1.5;
   }
+}
+
+/* ─────────────────────────────
+   Themed Service Cards (Light Mode)
+───────────────────────────── */
+
+/* Blue */
+.db-service-card.card-theme-blue {
+  background: linear-gradient(45deg, #eff6ff 0%, #bfdbfe 100%) !important;
+  border: 1px solid rgba(191, 219, 254, 0.7) !important;
+}
+.db-service-card.card-theme-blue .db-card-icon-box {
+  background-color: #ffffff !important;
+  color: #2563eb !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08) !important;
+}
+.db-service-card.card-theme-blue .db-card-arrow {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.db-service-card.card-theme-blue:hover {
+  border-color: rgba(147, 197, 253, 0.9) !important;
+  box-shadow: 0 12px 30px rgba(59, 130, 246, 0.15) !important;
+}
+.db-service-card.card-theme-blue:hover .db-card-arrow {
+  background-color: #1d4ed8 !important;
+  transform: scale(1.08);
+}
+
+/* Purple */
+.db-service-card.card-theme-purple {
+  background: linear-gradient(45deg, #f5f3ff 0%, #ddd6fe 100%) !important;
+  border: 1px solid rgba(233, 213, 255, 0.7) !important;
+}
+.db-service-card.card-theme-purple .db-card-icon-box {
+  background-color: #ffffff !important;
+  color: #7c3aed !important;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.08) !important;
+}
+.db-service-card.card-theme-purple .db-card-arrow {
+  background-color: #7c3aed !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.db-service-card.card-theme-purple:hover {
+  border-color: rgba(196, 181, 253, 0.9) !important;
+  box-shadow: 0 12px 30px rgba(13, 148, 136, 0.15) !important;
+}
+.db-service-card.card-theme-purple:hover .db-card-arrow {
+  background-color: #6d28d9 !important;
+  transform: scale(1.08);
+}
+
+/* Gray */
+.db-service-card.card-theme-gray {
+  background: linear-gradient(45deg, #f1f5f9 0%, #cbd5e1 100%) !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+}
+.db-service-card.card-theme-gray .db-card-icon-box {
+  background-color: #ffffff !important;
+  color: #64748b !important;
+  box-shadow: 0 4px 12px rgba(100, 116, 139, 0.06) !important;
+}
+.db-service-card.card-theme-gray .db-card-arrow {
+  background-color: #64748b !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.db-service-card.card-theme-gray:hover {
+  border-color: rgba(203, 213, 225, 0.9) !important;
+  box-shadow: 0 12px 30px rgba(100, 116, 139, 0.1) !important;
+}
+.db-service-card.card-theme-gray:hover .db-card-arrow {
+  background-color: #475569 !important;
+  transform: scale(1.08);
+}
+
+/* Green */
+.db-service-card.card-theme-green {
+  background: linear-gradient(45deg, #f0fdf4 0%, #bbf7d0 100%) !important;
+  border: 1px solid rgba(187, 247, 208, 0.7) !important;
+}
+.db-service-card.card-theme-green .db-card-icon-box {
+  background-color: #ffffff !important;
+  color: #16a34a !important;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.08) !important;
+}
+.db-service-card.card-theme-green .db-card-arrow {
+  background-color: #16a34a !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.db-service-card.card-theme-green:hover {
+  border-color: rgba(134, 239, 172, 0.9) !important;
+  box-shadow: 0 12px 30px rgba(22, 163, 74, 0.15) !important;
+}
+.db-service-card.card-theme-green:hover .db-card-arrow {
+  background-color: #15803d !important;
+  transform: scale(1.08);
+}
+
+/* Orange */
+.db-service-card.card-theme-orange {
+  background: linear-gradient(45deg, #fff7ed 0%, #fed7aa 100%) !important;
+  border: 1px solid rgba(254, 215, 170, 0.7) !important;
+}
+.db-service-card.card-theme-orange .db-card-icon-box {
+  background-color: #ffffff !important;
+  color: #ea580c !important;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.08) !important;
+}
+.db-service-card.card-theme-orange .db-card-arrow {
+  background-color: #ea580c !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.db-service-card.card-theme-orange:hover {
+  border-color: rgba(253, 186, 116, 0.9) !important;
+  box-shadow: 0 12px 30px rgba(234, 88, 12, 0.15) !important;
+}
+.db-service-card.card-theme-orange:hover .db-card-arrow {
+  background-color: #c2410c !important;
+  transform: scale(1.08);
+}
+
+/* Red */
+.db-service-card.card-theme-red {
+  background: linear-gradient(45deg, #fef2f2 0%, #fecaca 100%) !important;
+  border: 1px solid rgba(254, 226, 226, 0.7) !important;
+}
+.db-service-card.card-theme-red .db-card-icon-box {
+  background-color: #ffffff !important;
+  color: #dc2626 !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.08) !important;
+}
+.db-service-card.card-theme-red .db-card-arrow {
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.db-service-card.card-theme-red:hover {
+  border-color: rgba(252, 165, 165, 0.9) !important;
+  box-shadow: 0 12px 30px rgba(220, 38, 38, 0.15) !important;
+}
+.db-service-card.card-theme-red:hover .db-card-arrow {
+  background-color: #b91c1c !important;
+  transform: scale(1.08);
+}
+
+/* Pink */
+.db-service-card.card-theme-pink {
+  background: linear-gradient(45deg, #fdf2f8 0%, #fbcfe8 100%) !important;
+  border: 1px solid rgba(251, 207, 232, 0.7) !important;
+}
+.db-service-card.card-theme-pink .db-card-icon-box {
+  background-color: #ffffff !important;
+  color: #db2777 !important;
+  box-shadow: 0 4px 12px rgba(219, 39, 119, 0.08) !important;
+}
+.db-service-card.card-theme-pink .db-card-arrow {
+  background-color: #db2777 !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.db-service-card.card-theme-pink:hover {
+  border-color: rgba(244, 114, 182, 0.9) !important;
+  box-shadow: 0 12px 30px rgba(219, 39, 119, 0.15) !important;
+}
+.db-service-card.card-theme-pink:hover .db-card-arrow {
+  background-color: #be185d !important;
+  transform: scale(1.08);
+}
+
+/* Teal */
+.db-service-card.card-theme-teal {
+  background: linear-gradient(45deg, #f0fdfa 0%, #99f6e4 100%) !important;
+  border: 1px solid rgba(153, 246, 228, 0.7) !important;
+}
+.db-service-card.card-theme-teal .db-card-icon-box {
+  background-color: #ffffff !important;
+  color: #0d9488 !important;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.08) !important;
+}
+.db-service-card.card-theme-teal .db-card-arrow {
+  background-color: #0d9488 !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.db-service-card.card-theme-teal:hover {
+  border-color: rgba(45, 212, 191, 0.8) !important;
+  box-shadow: 0 12px 30px rgba(13, 148, 136, 0.15) !important;
+}
+.db-service-card.card-theme-teal:hover .db-card-arrow {
+  background-color: #0f766e !important;
+  transform: scale(1.08);
+}
+
+/* Indigo */
+.db-service-card.card-theme-indigo {
+  background: linear-gradient(45deg, #eef2ff 0%, #c7d2fe 100%) !important;
+  border: 1px solid rgba(199, 210, 254, 0.7) !important;
+}
+.db-service-card.card-theme-indigo .db-card-icon-box {
+  background-color: #ffffff !important;
+  color: #4f46e5 !important;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.08) !important;
+}
+.db-service-card.card-theme-indigo .db-card-arrow {
+  background-color: #4f46e5 !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.db-service-card.card-theme-indigo:hover {
+  border-color: rgba(129, 140, 248, 0.9) !important;
+  box-shadow: 0 12px 30px rgba(79, 70, 229, 0.15) !important;
+}
+.db-service-card.card-theme-indigo:hover .db-card-arrow {
+  background-color: #4338ca !important;
+  transform: scale(1.08);
+}
+
+/* Amber */
+.db-service-card.card-theme-amber {
+  background: linear-gradient(45deg, #fffbeb 0%, #fcd34d 100%) !important;
+  border: 1px solid rgba(253, 230, 138, 0.7) !important;
+}
+.db-service-card.card-theme-amber .db-card-icon-box {
+  background-color: #ffffff !important;
+  color: #d97706 !important;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.08) !important;
+}
+.db-service-card.card-theme-amber .db-card-arrow {
+  background-color: #d97706 !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.db-service-card.card-theme-amber:hover {
+  border-color: rgba(252, 211, 152, 0.9) !important;
+  box-shadow: 0 12px 30px rgba(217, 119, 6, 0.15) !important;
+}
+.db-service-card.card-theme-amber:hover .db-card-arrow {
+  background-color: #b45309 !important;
+  transform: scale(1.08);
+}
+
+/* ─────────────────────────────
+   Dark Theme Neon Borders
+───────────────────────────── */
+.dark .db-service-card.card-theme-blue {
+  border: 1px solid rgba(59, 130, 246, 0.25) !important;
+}
+.dark .db-service-card.card-theme-blue:hover {
+  border-color: rgba(59, 130, 246, 0.6) !important;
+  box-shadow: 0 12px 30px rgba(59, 130, 246, 0.2) !important;
+}
+.dark .db-service-card.card-theme-blue:hover .db-card-arrow {
+  background-color: #3b82f6 !important;
+  color: white !important;
+}
+
+.dark .db-service-card.card-theme-purple {
+  border: 1px solid rgba(139, 92, 246, 0.25) !important;
+}
+.dark .db-service-card.card-theme-purple:hover {
+  border-color: rgba(139, 92, 246, 0.6) !important;
+  box-shadow: 0 12px 30px rgba(139, 92, 246, 0.2) !important;
+}
+.dark .db-service-card.card-theme-purple:hover .db-card-arrow {
+  background-color: #8b5cf6 !important;
+  color: white !important;
+}
+
+.dark .db-service-card.card-theme-gray {
+  border: 1px solid rgba(156, 163, 175, 0.2) !important;
+}
+.dark .db-service-card.card-theme-gray:hover {
+  border-color: rgba(156, 163, 175, 0.5) !important;
+  box-shadow: 0 12px 30px rgba(156, 163, 175, 0.15) !important;
+}
+.dark .db-service-card.card-theme-gray:hover .db-card-arrow {
+  background-color: #9ca3af !important;
+  color: white !important;
+}
+
+.dark .db-service-card.card-theme-green {
+  border: 1px solid rgba(16, 185, 129, 0.25) !important;
+}
+.dark .db-service-card.card-theme-green:hover {
+  border-color: rgba(16, 185, 129, 0.6) !important;
+  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.2) !important;
+}
+.dark .db-service-card.card-theme-green:hover .db-card-arrow {
+  background-color: #10b981 !important;
+  color: white !important;
+}
+
+.dark .db-service-card.card-theme-orange {
+  border: 1px solid rgba(249, 115, 22, 0.25) !important;
+}
+.dark .db-service-card.card-theme-orange:hover {
+  border-color: rgba(249, 115, 22, 0.6) !important;
+  box-shadow: 0 12px 30px rgba(249, 115, 22, 0.2) !important;
+}
+.dark .db-service-card.card-theme-orange:hover .db-card-arrow {
+  background-color: #f97316 !important;
+  color: white !important;
+}
+
+.dark .db-service-card.card-theme-red {
+  border: 1px solid rgba(239, 68, 68, 0.25) !important;
+}
+.dark .db-service-card.card-theme-red:hover {
+  border-color: rgba(239, 68, 68, 0.6) !important;
+  box-shadow: 0 12px 30px rgba(239, 68, 68, 0.2) !important;
+}
+.dark .db-service-card.card-theme-red:hover .db-card-arrow {
+  background-color: #ef4444 !important;
+  color: white !important;
+}
+
+.dark .db-service-card.card-theme-pink {
+  border: 1px solid rgba(236, 72, 153, 0.25) !important;
+}
+.dark .db-service-card.card-theme-pink:hover {
+  border-color: rgba(236, 72, 153, 0.6) !important;
+  box-shadow: 0 12px 30px rgba(236, 72, 153, 0.2) !important;
+}
+.dark .db-service-card.card-theme-pink:hover .db-card-arrow {
+  background-color: #ec4899 !important;
+  color: white !important;
+}
+
+.dark .db-service-card.card-theme-teal {
+  border: 1px solid rgba(20, 184, 166, 0.25) !important;
+}
+.dark .db-service-card.card-theme-teal:hover {
+  border-color: rgba(20, 184, 166, 0.6) !important;
+  box-shadow: 0 12px 30px rgba(20, 184, 166, 0.2) !important;
+}
+.dark .db-service-card.card-theme-teal:hover .db-card-arrow {
+  background-color: #10b981 !important;
+  color: white !important;
+}
+
+.dark .db-service-card.card-theme-indigo {
+  border: 1px solid rgba(99, 102, 241, 0.25) !important;
+}
+.dark .db-service-card.card-theme-indigo:hover {
+  border-color: rgba(99, 102, 241, 0.6) !important;
+  box-shadow: 0 12px 30px rgba(99, 102, 241, 0.2) !important;
+}
+.dark .db-service-card.card-theme-indigo:hover .db-card-arrow {
+  background-color: #6366f1 !important;
+  color: white !important;
+}
+
+.dark .db-service-card.card-theme-amber {
+  border: 1px solid rgba(245, 158, 11, 0.25) !important;
+}
+.dark .db-service-card.card-theme-amber:hover {
+  border-color: rgba(245, 158, 11, 0.6) !important;
+  box-shadow: 0 12px 30px rgba(245, 158, 11, 0.2) !important;
+}
+.dark .db-service-card.card-theme-amber:hover .db-card-arrow {
+  background-color: #f59e0b !important;
+  color: white !important;
 }

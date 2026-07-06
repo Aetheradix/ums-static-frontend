@@ -12,8 +12,8 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
 }) => {
   const [language, setLanguageState] = useState<Language>(() => {
     const stored = sessionStorage.getItem('app_language');
-    // Default to Hindi ('hi')
-    return (stored as Language) || 'hi';
+    // Default to English ('en')
+    return (stored as Language) || 'en';
   });
 
   const observerRef = useRef<MutationObserver | null>(null);
