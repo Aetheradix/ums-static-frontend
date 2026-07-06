@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { LanguageContext } from './LanguageContext';
-import type { Language } from './LanguageContext';
+import React, { useEffect, useRef, useState } from 'react';
 import { translations } from '../constants/translations';
+import type { Language } from './LanguageContext';
+import { LanguageContext } from './LanguageContext';
 
 interface LanguageProviderProps {
   children: React.ReactNode;

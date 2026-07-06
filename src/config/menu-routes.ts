@@ -5627,7 +5627,7 @@ export const menuConfig: Menu.MenuItem[] = [
             slug: 'itsm-module-admin',
             description: 'Manage tickets for assigned ERP modules.',
             path: '/home/sub-menu/itsm-module-admin',
-            icon: 'module',
+            icon: 'view_module',
             colorScheme: 'purple',
             children: [
               {
