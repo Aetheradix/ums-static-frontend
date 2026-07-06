@@ -12478,5 +12478,7 @@ export const translations: Record<string, Record<string, string>> = {
     P4: 'पी4',
     OR: 'या',
     AL: 'एएल',
+    'Welcome,': 'स्वागत है',
+    Welcome: 'स्वागत है',
   },
 };
