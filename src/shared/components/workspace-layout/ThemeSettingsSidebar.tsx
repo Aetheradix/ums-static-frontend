@@ -1,5 +1,6 @@
 import { Sidebar } from 'primereact/sidebar';
 import React, { useEffect, useState } from 'react';
+import { useLanguage } from 'shared/context/useLanguage';
 
 interface ThemeSettingsSidebarProps {
   visible: boolean;
@@ -26,6 +27,7 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
   isDarkMode,
   toggleDarkMode,
 }) => {
+  const { language, toggleLanguage } = useLanguage();
   const [activeColor, setActiveColor] = useState('#002069');
   const [showTopNavbar, setShowTopNavbar] = useState(false);
   const [layoutWidth, setLayoutWidth] = useState('fluid');
@@ -130,6 +132,42 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
             <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">
               Appearance
             </h3>
+
+            {/* Language Switch Toggle */}
+            <div className="flex items-center justify-between p-3 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800/50 mb-3">
+              <div className="flex items-center gap-3">
+                <i
+                  className="pi pi-language text-xl"
+                  style={{ color: 'var(--color-primary)' }}
+                />
+                <div>
+                  <p className="font-medium text-slate-800 dark:text-zinc-200">
+                    {language === 'hi' ? 'हिन्दी (Hindi)' : 'English (US)'}
+                  </p>
+                  <p className="text-xs text-slate-500 dark:text-zinc-400">
+                    Switch application language
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={toggleLanguage}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900 ${
+                  language === 'hi' ? 'bg-primary' : 'bg-slate-300'
+                }`}
+                style={
+                  language === 'hi'
+                    ? { backgroundColor: 'var(--color-primary)' }
+                    : {}
+                }
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    language === 'hi' ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+
             <div className="flex items-center justify-between p-3 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800/50 mb-3">
               <div className="flex items-center gap-3">
                 <i

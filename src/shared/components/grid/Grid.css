@@ -162,17 +162,17 @@
 }
 
 .grid-action-icon-btn {
-  @apply !inline-flex !h-8 !w-8 !min-w-8 !cursor-pointer;
-  @apply !items-center !justify-center !gap-0;
-  @apply !border !border-slate-200 !bg-white !p-0 !text-slate-500;
-  @apply !shadow-sm !transition-all !duration-200 !ease-in-out;
+  @apply inline-flex! h-8! w-8! min-w-8! cursor-pointer!;
+  @apply items-center! justify-center! gap-0!;
+  @apply border! border-slate-200! bg-white! p-0! text-slate-500!;
+  @apply shadow-sm! transition-all! duration-200! ease-in-out!;
   border-radius: var(--radius-sm) !important;
   position: relative;
 }
 
 .grid-action-icon-btn i,
 .grid-action-icon-btn .p-button-icon {
-  @apply !m-0 !text-sm !leading-none;
+  @apply m-0! text-sm! leading-none!;
 }
 
 .grid-action-icon-btn .p-button-label {
@@ -180,20 +180,20 @@
 }
 
 .grid-action-icon-btn:hover {
-  @apply !-translate-y-px !border-slate-300 !bg-slate-50 !text-slate-900 !shadow-md;
+  @apply -translate-y-px! border-slate-300! bg-slate-50! text-slate-900! shadow-md!;
 }
 
 .grid-action-edit-btn:hover {
-  @apply !border-indigo-200 !bg-indigo-50 !text-[#3e4095];
+  @apply border-indigo-200! bg-indigo-50! text-[#3e4095]!;
 }
 
 .grid-action-delete-btn:hover {
-  @apply !border-red-200 !bg-red-50 !text-red-600;
+  @apply border-red-200! bg-red-50! text-red-600!;
 }
 
 .grid-action-icon-btn:focus,
 .grid-action-icon-btn:focus-visible {
-  @apply !outline-none !ring-2 !ring-slate-200 !ring-offset-1;
+  @apply outline-none! ring-2! ring-slate-200! ring-offset-1!;
 }
 
 /* =========================
@@ -282,19 +282,19 @@
 
 /* Grid Row Actions Dark Theme */
 .dark .grid-action-icon-btn {
-  @apply !border-zinc-700 !bg-zinc-900 !text-zinc-400 !shadow-none;
+  @apply border-zinc-700! bg-zinc-900! text-zinc-400! shadow-none!;
 }
 
 .dark .grid-action-icon-btn:hover {
-  @apply !border-zinc-600 !bg-zinc-800 !text-white;
+  @apply border-zinc-600! bg-zinc-800! text-white!;
 }
 
 .dark .grid-action-edit-btn:hover {
-  @apply !border-indigo-800 !bg-[#3e4095]/20 !text-indigo-200;
+  @apply border-indigo-800! bg-[#3e4095]/20! text-indigo-200!;
 }
 
 .dark .grid-action-delete-btn:hover {
-  @apply !border-red-900 !bg-red-950/40 !text-red-400;
+  @apply border-red-900! bg-red-950/40! text-red-400!;
 }
 
 .dark .grid-action-icon-btn:focus,

@@ -3,12 +3,14 @@ import { useMenu } from 'config/menu-routes';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from 'shared/components/Icon/Icon';
+import { useLanguage } from 'shared/context/useLanguage';
 import { WaffleMenu } from 'shared/new-components';
 import { ThemeSettingsSidebar } from './ThemeSettingsSidebar';
 import './WorkspaceHeader.css';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
+  const { language, toggleLanguage } = useLanguage();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { user, logout } = useAuth();
@@ -316,6 +318,28 @@ const Header: React.FC = () => {
         {/* Actions */}
         <div className="ws-header-actions">
           <div className="ws-action-icons">
+            {/* Language Switcher Toggle */}
+            <div
+              className="ws-icon-btn cursor-pointer font-bold transition-colors duration-200 hover:text-(--primary-color)"
+              onClick={toggleLanguage}
+              title={
+                language === 'en' ? 'हिन्दी में बदलें' : 'Switch to English'
+              }
+              style={{
+                cursor: 'pointer',
+                userSelect: 'none',
+                width: '24px',
+                height: '24px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '13px',
+                lineHeight: '1',
+              }}
+            >
+              {language === 'en' ? 'EN' : 'हिं'}
+            </div>
+
             {/* Settings Toggle */}
             <div
               className="ws-icon-btn"
