@@ -206,3 +206,267 @@
 .ws-root.layout-boxed .ws-main {
   @apply max-w-[1440px] mx-auto w-full;
 }
+
+/* Page container wrapper */
+.ws-page-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100vh;
+  min-width: 0;
+}
+
+/* Desktop layout when sidebar is enabled */
+@media (min-width: 1024px) {
+  .ws-root.has-desktop-sidebar {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .desktop-sidebar {
+    position: sticky;
+    z-index: 40;
+    flex-shrink: 0;
+    width: auto !important; /* Allow the wrapper to shrink when sidebar is collapsed */
+  }
+
+  /* Hide the manual sidebar toggle button inside the global desktop sidebar */
+  .desktop-sidebar .app-sidebar-toggle-btn {
+    display: none !important;
+  }
+
+  .desktop-sidebar .app-sidebar-container {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .ws-root.has-desktop-sidebar .ws-page-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* ========================================================
+     DETACHED LAYOUT STYLE (DEFAULT)
+     ======================================================== */
+  .ws-root.has-desktop-sidebar.layout-detached {
+    background-color: #f4f6f9;
+  }
+
+  .dark .ws-root.has-desktop-sidebar.layout-detached {
+    background-color: var(--color-black, #0a0a0a);
+  }
+
+  .ws-root.has-desktop-sidebar.layout-detached .desktop-sidebar {
+    top: 1.5rem;
+    height: calc(100vh - 3rem);
+    margin: 1.5rem;
+  }
+
+  .ws-root.has-desktop-sidebar.layout-detached
+    .desktop-sidebar
+    .app-sidebar-container {
+    @apply rounded-2xl border border-black/6 shadow-[0_4px_20px_rgba(0,0,0,0.02)];
+  }
+
+  .dark
+    .ws-root.has-desktop-sidebar.layout-detached
+    .desktop-sidebar
+    .app-sidebar-container {
+    background-color: var(--dark-card-bg);
+    border-color: var(--dark-border);
+  }
+
+  .ws-root.has-desktop-sidebar.layout-detached .ws-page-container {
+    margin: 1.5rem 1.5rem 1.5rem 0;
+    gap: 1.5rem;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    min-height: calc(100vh - 3rem) !important;
+  }
+
+  /* Make header a detached rounded card */
+  .ws-root.has-desktop-sidebar.layout-detached .ws-header {
+    border-radius: 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  }
+
+  .dark .ws-root.has-desktop-sidebar.layout-detached .ws-header {
+    background-color: var(--dark-card-bg);
+    border-color: var(--dark-border);
+  }
+
+  /* Make footer a detached rounded card */
+  .ws-root.has-desktop-sidebar.layout-detached .ws-footer-bar {
+    background-color: #ffffff !important;
+    color: #475569 !important;
+    border-radius: 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  }
+
+  .dark .ws-root.has-desktop-sidebar.layout-detached .ws-footer-bar {
+    background-color: var(--dark-card-bg) !important;
+    color: var(--dark-text) !important;
+    border-color: var(--dark-border) !important;
+  }
+
+  /* Adjust sticky top position to align with detached container margins */
+  .ws-root.has-desktop-sidebar.layout-detached .sticky {
+    top: 1.5rem;
+  }
+
+  /* Remove parent header wrapper's flat shadow so it doesn't leak out of the rounded header card */
+  .ws-root.has-desktop-sidebar.layout-detached .ws-page-container > div.sticky,
+  .ws-root.has-desktop-sidebar.layout-detached
+    .ws-page-container
+    > div.relative {
+    box-shadow: none !important;
+  }
+
+  /* Make main layout content transparent to float on body background */
+  .ws-root.has-desktop-sidebar.layout-detached .main-layout-content {
+    background-color: transparent !important;
+    min-height: auto !important;
+  }
+
+  /* ========================================================
+     FLAT LAYOUT STYLE
+     ======================================================== */
+  .ws-root.has-desktop-sidebar.layout-flat {
+    background-color: #ffffff;
+  }
+
+  .dark .ws-root.has-desktop-sidebar.layout-flat {
+    background-color: var(--color-black, #0f172a);
+  }
+
+  .ws-root.has-desktop-sidebar.layout-flat .desktop-sidebar {
+    top: 0;
+    height: 100vh;
+    margin: 0;
+  }
+
+  .ws-root.has-desktop-sidebar.layout-flat
+    .desktop-sidebar
+    .app-sidebar-container {
+    border-radius: 0;
+    border-top: none;
+    border-bottom: none;
+    border-left: none;
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: none;
+  }
+
+  .dark
+    .ws-root.has-desktop-sidebar.layout-flat
+    .desktop-sidebar
+    .app-sidebar-container {
+    background-color: var(--dark-card-bg);
+    border-color: var(--dark-border);
+  }
+
+  .ws-root.has-desktop-sidebar.layout-flat .ws-page-container {
+    margin: 0;
+    gap: 0;
+    min-height: 100vh !important;
+  }
+
+  .ws-root.has-desktop-sidebar.layout-flat .ws-header {
+    border-radius: 0;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: none;
+  }
+
+  .dark .ws-root.has-desktop-sidebar.layout-flat .ws-header {
+    background-color: var(--dark-card-bg);
+    border-color: var(--dark-border);
+  }
+
+  .ws-root.has-desktop-sidebar.layout-flat .ws-footer-bar {
+    background-color: #ffffff !important;
+    color: #475569 !important;
+    border-radius: 0;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: none;
+  }
+
+  .dark .ws-root.has-desktop-sidebar.layout-flat .ws-footer-bar {
+    background-color: var(--dark-card-bg) !important;
+    color: var(--dark-text) !important;
+    border-color: var(--dark-border) !important;
+  }
+
+  .ws-root.has-desktop-sidebar.layout-flat .sticky {
+    top: 0;
+  }
+
+  /* Make main layout content fill out the flat container */
+  .ws-root.has-desktop-sidebar.layout-flat .main-layout-content {
+    background-color: #ffffff !important;
+    min-height: auto !important;
+  }
+
+  .dark .ws-root.has-desktop-sidebar.layout-flat .main-layout-content {
+    background-color: var(--color-black, #0a0a0a) !important;
+  }
+
+  /* Remove left/right padding so cards align perfectly with header and footer edges in detached layout */
+  .ws-root.has-desktop-sidebar.layout-detached .main-layout-content > div {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* Ensure no padding on ws-main itself in detached layout */
+  .ws-root.has-desktop-sidebar.layout-detached .ws-main {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* Remove inline padding of menu and submenu containers in detached layout */
+  .ws-root.has-desktop-sidebar.layout-detached .menu-page-container,
+  .ws-root.has-desktop-sidebar.layout-detached .submenu-page-container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* Remove block padding on menu and sub-menu pages in detached layout */
+  .ws-root.has-desktop-sidebar.layout-detached .menu-page,
+  .ws-root.has-desktop-sidebar.layout-detached .submenu-page {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* Show hamburger button on desktop when sidebar is enabled */
+  .ws-root.has-desktop-sidebar .ws-hamburger-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Hide the logo in header on desktop when sidebar is enabled */
+  .ws-root.has-desktop-sidebar .ws-header-logo {
+    display: none !important;
+  }
+
+  /* Set logo section width to auto when logo is hidden */
+  .ws-root.has-desktop-sidebar .ws-logo-section {
+    min-width: 0 !important;
+  }
+}
+
+/* Hide desktop sidebar on mobile/tablet screens */
+@media (max-width: 1023px) {
+  .desktop-sidebar {
+    display: none !important;
+  }
+}

@@ -1,5 +1,5 @@
 import { useMenu } from 'config/menu-routes';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from 'shared/components/Icon/Icon';
 import './Sidebar.css';
@@ -46,6 +46,11 @@ const Sidebar: React.FC<SidebarProps> = ({
     document.body.classList.contains('dark')
   );
 
+  const isCollapsedRef = useRef(isCollapsed);
+  useEffect(() => {
+    isCollapsedRef.current = isCollapsed;
+  }, [isCollapsed]);
+
   // Accordion states
   const [openModuleSlug, setOpenModuleSlug] = useState<string | null>(null);
   const [openSubMenuSlug, setOpenSubMenuSlug] = useState<string | null>(null);
@@ -71,6 +76,18 @@ const Sidebar: React.FC<SidebarProps> = ({
         setIsHidden(false);
       }
     };
+    const handleToggleCollapse = () => {
+      const nextState = !isCollapsedRef.current;
+      setIsCollapsed(nextState);
+      localStorage.setItem('sidebarMode', nextState ? 'collapsed' : 'expanded');
+      window.dispatchEvent(
+        new CustomEvent('global-sidebar-mode-changed', {
+          detail: nextState ? 'collapsed' : 'expanded',
+        })
+      );
+    };
+
+    window.addEventListener('toggle-sidebar-collapse', handleToggleCollapse);
     window.addEventListener(
       'global-sidebar-mode-changed',
       handleGlobalSidebarMode
@@ -78,6 +95,10 @@ const Sidebar: React.FC<SidebarProps> = ({
 
     return () => {
       observer.disconnect();
+      window.removeEventListener(
+        'toggle-sidebar-collapse',
+        handleToggleCollapse
+      );
       window.removeEventListener(
         'global-sidebar-mode-changed',
         handleGlobalSidebarMode
@@ -153,195 +174,216 @@ const Sidebar: React.FC<SidebarProps> = ({
         <i className={`pi pi-chevron-${isCollapsed ? 'right' : 'left'}`} />
       </button>
 
-      <div className="app-sidebar-header">
-        <span className="app-sidebar-header-icon hidden lg:flex">
-          <Icon name={(headerIcon as string) || 'user'} />
-        </span>
-
-        <div className="app-sidebar-header-text hidden lg:block">
-          <h3>{headerTitle}</h3>
-          {headerSubtitle && <p>{headerSubtitle}</p>}
+      <div className="app-sidebar-header flex items-center gap-3">
+        <div className="app-sidebar-logo-container flex items-center justify-center shrink-0">
+          {items.length === 0 ? (
+            <img
+              src={isCollapsed ? '/images/Octagon.png' : '/Octagon_Logo.png'}
+              alt="Logo"
+              className="max-h-[32px] w-auto object-contain ws-logo-image"
+            />
+          ) : (
+            <span className="app-sidebar-header-icon">
+              <Icon name={headerIcon || 'grid_view'} />
+            </span>
+          )}
         </div>
 
-        {/* Mobile Logo */}
-        <div className="app-sidebar-mobile-logo flex lg:hidden items-center justify-center w-full py-1">
-          <img
-            src="/Octagon_Logo.png"
-            alt="Logo"
-            className="max-h-[45px] w-auto object-contain"
-          />
-        </div>
+        {!isCollapsed && items.length > 0 && (
+          <div className="app-sidebar-header-text hidden lg:block">
+            <h3>{headerTitle}</h3>
+            {headerSubtitle && <p>{headerSubtitle}</p>}
+          </div>
+        )}
       </div>
 
-      {items.length > 0 && (
-        <nav className="app-sidebar-menu" aria-label={headerTitle}>
-          {items.map((item, idx) => {
-            const isRouteActive =
-              (item.path && matchPath(location.pathname, item.path)) ||
-              (item.slug && location.pathname.includes(`/${item.slug}`));
-            const isActive = isRouteActive || idx === activeIndex;
+      <div className="app-sidebar-scrollable-content flex flex-col gap-6 flex-1 overflow-y-auto min-h-0 pr-1">
+        {items.length > 0 && (
+          <nav className="app-sidebar-menu" aria-label={headerTitle}>
+            {items.map((item, idx) => {
+              const isRouteActive =
+                (item.path && matchPath(location.pathname, item.path)) ||
+                (item.slug && location.pathname.includes(`/${item.slug}`));
+              const isActive = isRouteActive || idx === activeIndex;
 
-            return (
-              <button
-                key={item.slug || item.path || item.label || idx}
-                type="button"
-                className={`app-sidebar-item ${isActive ? 'active' : ''}`}
-                onClick={() => onItemClick(idx)}
-                aria-current={isActive ? 'page' : undefined}
-              >
-                <Icon
-                  name={(item.icon as string) || 'circle'}
-                  className="app-sidebar-icon"
-                />
-
-                <span className="app-sidebar-label">{item.label}</span>
-
-                {isActive && (
-                  <i className="pi pi-chevron-right app-sidebar-arrow" />
-                )}
-              </button>
-            );
-          })}
-        </nav>
-      )}
-
-      {/* Mobile-only Main Modules (Tile Menu) Section with Collapsible Hierarchy */}
-      <div className="app-sidebar-mobile-modules">
-        <div className="app-sidebar-section-title">
-          {items.length > 0 ? 'Switch Module' : 'All Modules'}
-        </div>
-        <div className="app-sidebar-modules-list">
-          {menuConfig.map((module, i) => {
-            const moduleSlug = module.slug || `mod-${i}`;
-            const isModuleOpen = openModuleSlug === moduleSlug;
-            const isModuleActive =
-              module.slug && window.location.pathname.includes(module.slug);
-            const mode = isDark ? 'dark' : 'light';
-            const iconColorClass = `waffle-icon-${module.colorScheme || 'gray'}-${mode}`;
-
-            return (
-              <div key={moduleSlug} className="app-sidebar-accordion-group">
-                {/* Level 0 Item */}
+              return (
                 <button
+                  key={item.slug || item.path || item.label || idx}
                   type="button"
-                  className={`app-sidebar-module-item ${isModuleActive ? 'active' : ''} ${isModuleOpen ? 'expanded' : ''}`}
-                  onClick={() => {
-                    if (module.children && module.children.length > 0) {
-                      setOpenModuleSlug(isModuleOpen ? null : moduleSlug);
-                      setOpenSubMenuSlug(null); // Close sub-level accordion when changing top-level
-                    } else if (module.path) {
-                      navigate(module.path);
-                    } else if (module.slug) {
-                      navigate(`/home/sub-menu/${module.slug}`);
-                    }
-                  }}
+                  className={`app-sidebar-item ${isActive ? 'active' : ''}`}
+                  onClick={() => onItemClick(idx)}
+                  aria-current={isActive ? 'page' : undefined}
                 >
-                  <span className={`app-sidebar-module-icon ${iconColorClass}`}>
-                    <Icon name={(module.icon as string) || 'grid_view'} />
-                  </span>
-                  <span className="app-sidebar-module-label">
-                    {module.label}
-                  </span>
-                  {module.children && module.children.length > 0 ? (
-                    <i
-                      className={`pi pi-chevron-${isModuleOpen ? 'down' : 'right'} app-sidebar-module-arrow`}
-                    />
-                  ) : (
-                    <i className="pi pi-chevron-right app-sidebar-module-arrow" />
+                  <Icon
+                    name={(item.icon as string) || 'circle'}
+                    className="app-sidebar-icon"
+                  />
+
+                  <span className="app-sidebar-label">{item.label}</span>
+
+                  {isActive && (
+                    <i className="pi pi-chevron-right app-sidebar-arrow" />
                   )}
                 </button>
+              );
+            })}
+          </nav>
+        )}
 
-                {/* Level 1 Sub-menus */}
-                {isModuleOpen &&
-                  module.children &&
-                  module.children.length > 0 && (
-                    <div className="app-sidebar-level1-container">
-                      {module.children.map((subMenu, j) => {
-                        const subMenuSlug = subMenu.slug || `sub-${i}-${j}`;
-                        const isSubMenuOpen = openSubMenuSlug === subMenuSlug;
-                        const isSubMenuActive =
-                          subMenu.path &&
-                          window.location.pathname.startsWith(subMenu.path);
+        {/* Mobile-only Main Modules (Tile Menu) Section with Collapsible Hierarchy */}
+        <div className="app-sidebar-mobile-modules">
+          <div className="app-sidebar-section-title">
+            {items.length > 0 ? 'Switch Module' : 'All Modules'}
+          </div>
+          <div className="app-sidebar-modules-list">
+            {/* Home Navigation button at the top of All Modules list */}
+            <button
+              type="button"
+              className={`app-sidebar-module-item ${window.location.pathname === '/home' ? 'active' : ''}`}
+              onClick={() => navigate('/home')}
+            >
+              <span
+                className={`app-sidebar-module-icon waffle-icon-gray-${isDark ? 'dark' : 'light'}`}
+              >
+                <Icon name="home" />
+              </span>
+              <span className="app-sidebar-module-label">Home</span>
+            </button>
 
-                        return (
-                          <div
-                            key={subMenuSlug}
-                            className="app-sidebar-accordion-subgroup"
-                          >
-                            {/* Level 1 Item */}
-                            <button
-                              type="button"
-                              className={`app-sidebar-submenu-item ${isSubMenuActive ? 'active' : ''} ${isSubMenuOpen ? 'expanded' : ''}`}
-                              onClick={() => {
-                                if (
-                                  subMenu.children &&
-                                  subMenu.children.length > 0
-                                ) {
-                                  setOpenSubMenuSlug(
-                                    isSubMenuOpen ? null : subMenuSlug
-                                  );
-                                } else if (subMenu.path) {
-                                  navigate(subMenu.path);
-                                }
-                              }}
+            {menuConfig.map((module, i) => {
+              const moduleSlug = module.slug || `mod-${i}`;
+              const isModuleOpen = openModuleSlug === moduleSlug;
+              const isModuleActive =
+                module.slug && window.location.pathname.includes(module.slug);
+              const mode = isDark ? 'dark' : 'light';
+              const iconColorClass = `waffle-icon-${module.colorScheme || 'gray'}-${mode}`;
+
+              return (
+                <div key={moduleSlug} className="app-sidebar-accordion-group">
+                  {/* Level 0 Item */}
+                  <button
+                    type="button"
+                    className={`app-sidebar-module-item ${isModuleActive ? 'active' : ''} ${isModuleOpen ? 'expanded' : ''}`}
+                    onClick={() => {
+                      if (module.children && module.children.length > 0) {
+                        setOpenModuleSlug(isModuleOpen ? null : moduleSlug);
+                        setOpenSubMenuSlug(null); // Close sub-level accordion when changing top-level
+                      } else if (module.path) {
+                        navigate(module.path);
+                      } else if (module.slug) {
+                        navigate(`/home/sub-menu/${module.slug}`);
+                      }
+                    }}
+                  >
+                    <span
+                      className={`app-sidebar-module-icon ${iconColorClass}`}
+                    >
+                      <Icon name={(module.icon as string) || 'grid_view'} />
+                    </span>
+                    <span className="app-sidebar-module-label">
+                      {module.label}
+                    </span>
+                    {module.children && module.children.length > 0 ? (
+                      <i
+                        className={`pi pi-chevron-${isModuleOpen ? 'down' : 'right'} app-sidebar-module-arrow`}
+                      />
+                    ) : (
+                      <i className="pi pi-chevron-right app-sidebar-module-arrow" />
+                    )}
+                  </button>
+
+                  {/* Level 1 Sub-menus */}
+                  {isModuleOpen &&
+                    module.children &&
+                    module.children.length > 0 && (
+                      <div className="app-sidebar-level1-container">
+                        {module.children.map((subMenu, j) => {
+                          const subMenuSlug = subMenu.slug || `sub-${i}-${j}`;
+                          const isSubMenuOpen = openSubMenuSlug === subMenuSlug;
+                          const isSubMenuActive =
+                            subMenu.path &&
+                            window.location.pathname.startsWith(subMenu.path);
+
+                          return (
+                            <div
+                              key={subMenuSlug}
+                              className="app-sidebar-accordion-subgroup"
                             >
-                              <Icon
-                                name={(subMenu.icon as string) || 'circle'}
-                                className="app-sidebar-submenu-icon"
-                              />
-                              <span className="app-sidebar-submenu-label">
-                                {subMenu.label}
-                              </span>
-                              {subMenu.children &&
-                              subMenu.children.length > 0 ? (
-                                <i
-                                  className={`pi pi-chevron-${isSubMenuOpen ? 'down' : 'right'} app-sidebar-submenu-arrow`}
-                                />
-                              ) : (
-                                subMenu.path && (
-                                  <i className="pi pi-link app-sidebar-submenu-link-icon" />
-                                )
-                              )}
-                            </button>
-
-                            {/* Level 2 Leaf links */}
-                            {isSubMenuOpen &&
-                              subMenu.children &&
-                              subMenu.children.length > 0 && (
-                                <div className="app-sidebar-level2-container">
-                                  {subMenu.children.map((leaf, k) => {
-                                    const isLeafActive =
-                                      leaf.path &&
-                                      window.location.pathname === leaf.path;
-
-                                    return (
-                                      <button
-                                        key={leaf.path || k}
-                                        type="button"
-                                        className={`app-sidebar-leaf-item ${isLeafActive ? 'active' : ''}`}
-                                        onClick={() => {
-                                          if (leaf.path) {
-                                            navigate(leaf.path);
-                                          }
-                                        }}
-                                      >
-                                        <i className="pi pi-circle-fill app-sidebar-leaf-bullet" />
-                                        <span className="app-sidebar-leaf-label">
-                                          {leaf.label}
-                                        </span>
-                                      </button>
+                              {/* Level 1 Item */}
+                              <button
+                                type="button"
+                                className={`app-sidebar-submenu-item ${isSubMenuActive ? 'active' : ''} ${isSubMenuOpen ? 'expanded' : ''}`}
+                                onClick={() => {
+                                  if (
+                                    subMenu.children &&
+                                    subMenu.children.length > 0
+                                  ) {
+                                    setOpenSubMenuSlug(
+                                      isSubMenuOpen ? null : subMenuSlug
                                     );
-                                  })}
-                                </div>
-                              )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-              </div>
-            );
-          })}
+                                  } else if (subMenu.path) {
+                                    navigate(subMenu.path);
+                                  }
+                                }}
+                              >
+                                <Icon
+                                  name={(subMenu.icon as string) || 'circle'}
+                                  className="app-sidebar-submenu-icon"
+                                />
+                                <span className="app-sidebar-submenu-label">
+                                  {subMenu.label}
+                                </span>
+                                {subMenu.children &&
+                                subMenu.children.length > 0 ? (
+                                  <i
+                                    className={`pi pi-chevron-${isSubMenuOpen ? 'down' : 'right'} app-sidebar-submenu-arrow`}
+                                  />
+                                ) : (
+                                  subMenu.path && (
+                                    <i className="pi pi-link app-sidebar-submenu-link-icon" />
+                                  )
+                                )}
+                              </button>
+
+                              {/* Level 2 Leaf links */}
+                              {isSubMenuOpen &&
+                                subMenu.children &&
+                                subMenu.children.length > 0 && (
+                                  <div className="app-sidebar-level2-container">
+                                    {subMenu.children.map((leaf, k) => {
+                                      const isLeafActive =
+                                        leaf.path &&
+                                        window.location.pathname === leaf.path;
+
+                                      return (
+                                        <button
+                                          key={leaf.path || k}
+                                          type="button"
+                                          className={`app-sidebar-leaf-item ${isLeafActive ? 'active' : ''}`}
+                                          onClick={() => {
+                                            if (leaf.path) {
+                                              navigate(leaf.path);
+                                            }
+                                          }}
+                                        >
+                                          <i className="pi pi-circle-fill app-sidebar-leaf-bullet" />
+                                          <span className="app-sidebar-leaf-label">
+                                            {leaf.label}
+                                          </span>
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
+                                )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 

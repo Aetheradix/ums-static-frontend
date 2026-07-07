@@ -132,11 +132,7 @@ const Header: React.FC = () => {
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
 
-    const prefersDark = window.matchMedia(
-      '(prefers-color-scheme: dark)'
-    ).matches;
-
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+    if (savedTheme === 'dark') {
       setIsDarkMode(true);
       document.body.classList.add('dark');
     }
@@ -189,14 +185,6 @@ const Header: React.FC = () => {
   const username = user?.profile?.name || user?.profile?.sub || 'User';
   const email = user?.profile?.email || 'No email provided';
 
-  const initials =
-    username
-      .split(' ')
-      .map((n: string) => n[0])
-      .join('')
-      .substring(0, 2)
-      .toUpperCase() || 'U';
-
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -230,9 +218,15 @@ const Header: React.FC = () => {
           <button
             type="button"
             className="ws-hamburger-btn"
-            onClick={() =>
-              window.dispatchEvent(new CustomEvent('toggle-mobile-sidebar'))
-            }
+            onClick={() => {
+              if (window.innerWidth >= 1024) {
+                window.dispatchEvent(
+                  new CustomEvent('toggle-sidebar-collapse')
+                );
+              } else {
+                window.dispatchEvent(new CustomEvent('toggle-mobile-sidebar'));
+              }
+            }}
             title="Toggle Navigation"
           >
             <i className="pi pi-bars" />
@@ -240,7 +234,7 @@ const Header: React.FC = () => {
           <img
             src="/Octagon_Logo.png"
             alt="Octagon Logo"
-            className="w-40 max-md:w-32 p-1 object-contain rounded-lg ws-logo-image cursor-pointer"
+            className="w-40 max-md:w-32 p-1 object-contain rounded-lg ws-logo-image cursor-pointer ws-header-logo"
             onClick={() => navigate('/home')}
           />
         </div>
@@ -365,7 +359,9 @@ const Header: React.FC = () => {
               <span className="ws-badge">1</span>
             </div>
 
-            <WaffleMenu isDarkMode={isDarkMode} />
+            <div className="mobile-hidden">
+              <WaffleMenu isDarkMode={isDarkMode} />
+            </div>
           </div>
 
           {/* User Profile */}
@@ -374,12 +370,14 @@ const Header: React.FC = () => {
               className="ws-user-profile"
               onClick={() => setDropdownOpen(!dropdownOpen)}
             >
-              <div className="ws-avatar">{initials}</div>
+              <div className="ws-avatar">
+                <Icon name="person" className="text-[18px]" />
+              </div>
 
               <span className="ws-username">{username}</span>
 
               <i
-                className={`pi pi-chevron-${dropdownOpen ? 'up' : 'down'} text-[10px] text-slate-500`}
+                className={`pi pi-chevron-${dropdownOpen ? 'up' : 'down'} text-[10px] text-slate-500 mobile-hidden`}
               />
             </div>
 

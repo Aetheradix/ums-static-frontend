@@ -49,7 +49,7 @@
 .welcome-btn-outline {
   @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold border
          border-slate-200 text-slate-700
-         bg-[var(--bg-white)]
+         bg-(--bg-white)
          hover:bg-slate-50
          transition-all duration-200
          max-md:flex-1 max-md:justify-center cursor-pointer;
@@ -90,7 +90,7 @@
 }
 
 .service-filter-tab {
-  @apply px-[18px] py-2 rounded-full border-none text-sm font-semibold flex items-center gap-1.5 transition-all duration-200 cursor-pointer shrink-0 bg-slate-100 text-slate-700;
+  @apply px-[18px] py-2 rounded-full border-none text-sm font-semibold flex items-center gap-1.5 transition-all duration-200 cursor-pointer shrink-0 shadow-xs bg-white text-slate-700;
 }
 
 .service-filter-tab.active {

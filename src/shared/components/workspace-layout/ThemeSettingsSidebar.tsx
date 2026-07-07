@@ -30,6 +30,9 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
   const { language, toggleLanguage } = useLanguage();
   const [activeColor, setActiveColor] = useState('#002069');
   const [showTopNavbar, setShowTopNavbar] = useState(false);
+  const [showDesktopSidebar, setShowDesktopSidebar] = useState(false);
+  const [sidebarLayoutType, setSidebarLayoutType] = useState('detached');
+  const [sidebarBgType, setSidebarBgType] = useState('default');
   const [layoutWidth, setLayoutWidth] = useState('fluid');
   const [headerBehavior, setHeaderBehavior] = useState('sticky');
   const [sidebarMode, setSidebarMode] = useState('expanded');
@@ -40,6 +43,18 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
 
     const savedNavbarSetting = localStorage.getItem('showTopNavbar');
     if (savedNavbarSetting === 'true') setShowTopNavbar(true);
+
+    const savedDesktopSidebarSetting =
+      localStorage.getItem('showDesktopSidebar');
+    if (savedDesktopSidebarSetting === 'true') setShowDesktopSidebar(true);
+
+    const savedSidebarLayoutType =
+      localStorage.getItem('sidebarLayoutType') || 'detached';
+    setSidebarLayoutType(savedSidebarLayoutType);
+
+    const savedSidebarBgType =
+      localStorage.getItem('sidebarBgType') || 'default';
+    setSidebarBgType(savedSidebarBgType);
 
     const savedLayoutWidth = localStorage.getItem('layoutWidth');
     if (savedLayoutWidth) setLayoutWidth(savedLayoutWidth);
@@ -64,8 +79,53 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
       window.dispatchEvent(
         new CustomEvent('toggle-top-navbar', { detail: newState })
       );
+
+      if (newState) {
+        setShowDesktopSidebar(false);
+        localStorage.setItem('showDesktopSidebar', 'false');
+        window.dispatchEvent(
+          new CustomEvent('toggle-desktop-sidebar', { detail: false })
+        );
+      }
+
       return newState;
     });
+  };
+
+  const toggleDesktopSidebar = () => {
+    setShowDesktopSidebar(prev => {
+      const newState = !prev;
+      localStorage.setItem('showDesktopSidebar', String(newState));
+      window.dispatchEvent(
+        new CustomEvent('toggle-desktop-sidebar', { detail: newState })
+      );
+
+      if (newState) {
+        setShowTopNavbar(false);
+        localStorage.setItem('showTopNavbar', 'false');
+        window.dispatchEvent(
+          new CustomEvent('toggle-top-navbar', { detail: false })
+        );
+      }
+
+      return newState;
+    });
+  };
+
+  const changeSidebarLayoutType = (val: string) => {
+    setSidebarLayoutType(val);
+    localStorage.setItem('sidebarLayoutType', val);
+    window.dispatchEvent(
+      new CustomEvent('change-sidebar-layout-type', { detail: val })
+    );
+  };
+
+  const changeSidebarBgType = (val: string) => {
+    setSidebarBgType(val);
+    localStorage.setItem('sidebarBgType', val);
+    window.dispatchEvent(
+      new CustomEvent('change-sidebar-bg-type', { detail: val })
+    );
   };
 
   const changeLayoutWidth = (val: string) => {
@@ -100,6 +160,9 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
     changeThemeColor('#002069');
 
     if (showTopNavbar) toggleTopNavbar();
+    if (showDesktopSidebar) toggleDesktopSidebar();
+    changeSidebarLayoutType('detached');
+    changeSidebarBgType('default');
 
     changeLayoutWidth('fluid');
     changeHeaderBehavior('sticky');
@@ -136,10 +199,7 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
             {/* Language Switch Toggle */}
             <div className="flex items-center justify-between p-3 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800/50 mb-3">
               <div className="flex items-center gap-3">
-                <i
-                  className="pi pi-language text-xl"
-                  style={{ color: 'var(--color-primary)' }}
-                />
+                <i className="pi pi-language text-xl text-slate-500 dark:text-zinc-400" />
                 <div>
                   <p className="font-medium text-slate-800 dark:text-zinc-200">
                     {language === 'hi' ? 'हिन्दी (Hindi)' : 'English (US)'}
@@ -151,7 +211,7 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
               </div>
               <button
                 onClick={toggleLanguage}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900 ${
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900 p-0 shrink-0 ${
                   language === 'hi' ? 'bg-primary' : 'bg-slate-300'
                 }`}
                 style={
@@ -162,7 +222,7 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    language === 'hi' ? 'translate-x-6' : 'translate-x-1'
+                    language === 'hi' ? 'translate-x-5' : 'translate-x-1'
                   }`}
                 />
               </button>
@@ -171,8 +231,7 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
             <div className="flex items-center justify-between p-3 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800/50 mb-3">
               <div className="flex items-center gap-3">
                 <i
-                  className={`pi ${isDarkMode ? 'pi-moon' : 'pi-sun'} text-xl`}
-                  style={{ color: 'var(--color-primary)' }}
+                  className={`pi ${isDarkMode ? 'pi-moon' : 'pi-sun'} text-xl text-slate-500 dark:text-zinc-400`}
                 />
                 <div>
                   <p className="font-medium text-slate-800 dark:text-zinc-200">
@@ -185,7 +244,7 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
               </div>
               <button
                 onClick={toggleDarkMode}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900 ${
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900 p-0 shrink-0 ${
                   isDarkMode ? 'bg-primary' : 'bg-slate-300'
                 }`}
                 style={
@@ -194,18 +253,15 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    isDarkMode ? 'translate-x-6' : 'translate-x-1'
+                    isDarkMode ? 'translate-x-5' : 'translate-x-1'
                   }`}
                 />
               </button>
             </div>
 
-            <div className="flex items-center justify-between p-3 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+            <div className="flex items-center justify-between p-3 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800/50 mb-3">
               <div className="flex items-center gap-3">
-                <i
-                  className="pi pi-bars text-xl"
-                  style={{ color: 'var(--color-primary)' }}
-                />
+                <i className="pi pi-bars text-xl text-slate-500 dark:text-zinc-400" />
                 <div>
                   <p className="font-medium text-slate-800 dark:text-zinc-200">
                     Top Navbar
@@ -217,7 +273,7 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
               </div>
               <button
                 onClick={toggleTopNavbar}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900 ${
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900 p-0 shrink-0 ${
                   showTopNavbar ? 'bg-primary' : 'bg-slate-300'
                 }`}
                 style={
@@ -228,10 +284,107 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    showTopNavbar ? 'translate-x-6' : 'translate-x-1'
+                    showTopNavbar ? 'translate-x-5' : 'translate-x-1'
                   }`}
                 />
               </button>
+            </div>
+
+            <div className="flex flex-col gap-2 p-3 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <i className="pi pi-objects-column text-xl text-slate-500 dark:text-zinc-400" />
+                  <div>
+                    <p className="font-medium text-slate-800 dark:text-zinc-200">
+                      Desktop Sidebar
+                    </p>
+                    <p className="text-xs text-slate-500 dark:text-zinc-400">
+                      Show navigation sidebar on desktop
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={toggleDesktopSidebar}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900 p-0 shrink-0 ${
+                    showDesktopSidebar ? 'bg-primary' : 'bg-slate-300'
+                  }`}
+                  style={
+                    showDesktopSidebar
+                      ? { backgroundColor: 'var(--color-primary)' }
+                      : {}
+                  }
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      showDesktopSidebar ? 'translate-x-5' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {showDesktopSidebar && (
+                <div className="flex flex-col gap-3 pt-3 border-t border-slate-200 dark:border-slate-700/50 mt-1">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="block text-xs font-semibold text-slate-600 dark:text-zinc-400">
+                      Sidebar Style
+                    </label>
+                    <div className="flex bg-slate-200/60 dark:bg-slate-900 p-1 rounded-lg">
+                      <button
+                        type="button"
+                        className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                          sidebarLayoutType === 'detached'
+                            ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white'
+                            : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'
+                        }`}
+                        onClick={() => changeSidebarLayoutType('detached')}
+                      >
+                        Detached
+                      </button>
+                      <button
+                        type="button"
+                        className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                          sidebarLayoutType === 'flat'
+                            ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white'
+                            : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'
+                        }`}
+                        onClick={() => changeSidebarLayoutType('flat')}
+                      >
+                        Flat
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-1.5 pt-2 border-t border-slate-200/60 dark:border-slate-800">
+                    <label className="block text-xs font-semibold text-slate-600 dark:text-zinc-400">
+                      Sidebar Fill Theme
+                    </label>
+                    <div className="flex bg-slate-200/60 dark:bg-slate-900 p-1 rounded-lg">
+                      <button
+                        type="button"
+                        className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                          sidebarBgType === 'default'
+                            ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white'
+                            : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'
+                        }`}
+                        onClick={() => changeSidebarBgType('default')}
+                      >
+                        Default
+                      </button>
+                      <button
+                        type="button"
+                        className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                          sidebarBgType === 'primary'
+                            ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white'
+                            : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'
+                        }`}
+                        onClick={() => changeSidebarBgType('primary')}
+                      >
+                        Primary Color
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
