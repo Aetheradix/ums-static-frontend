@@ -8058,14 +8058,15 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'User Management',
             slug: 'user-management',
             description:
-              'Manage users, roles, role permissions, and user assignments.',
+              'Manage users, roles, role assignments, and access control.',
             path: '/home/sub-menu/user-management',
             icon: 'manage_accounts',
             colorScheme: 'blue',
             children: [
               {
-                label: 'User',
-                description: 'Manage users',
+                label: 'User Registration',
+                description:
+                  'Create and manage system user accounts, including credentials and profile information.',
                 path: '/master/user-management/users',
                 icon: 'person',
                 colorScheme: 'blue',
@@ -8073,8 +8074,9 @@ export const menuConfig: Menu.MenuItem[] = [
                 action: 'read',
               },
               {
-                label: 'Role',
-                description: 'Manage roles',
+                label: 'Role Masters',
+                description:
+                  'Define and manage roles that group users with similar responsibilities and access levels.',
                 path: '/master/user-management/roles',
                 icon: 'badge',
                 colorScheme: 'purple',
@@ -8082,21 +8084,23 @@ export const menuConfig: Menu.MenuItem[] = [
                 action: 'read',
               },
               {
-                label: 'Role Permissions',
-                description: 'Manage role permissions mapping',
-                path: '/master/user-management/role-permissions',
-                icon: 'vpn_key',
-                colorScheme: 'green',
-                feature: '@user-management/role-permissions',
+                label: 'User Role Assignment',
+                description:
+                  'Assign roles to users within specific domains to control their access across the system.',
+                path: '/master/user-management/user-assignments',
+                icon: 'assignment_ind',
+                colorScheme: 'blue',
+                feature: '@user-management/user-assignment',
                 action: 'read',
               },
               {
-                label: 'User Assignment',
-                description: 'Manage user role assignments',
-                path: '/master/user-management/user-assignments',
-                icon: 'assignment_ind',
-                colorScheme: 'orange',
-                feature: '@user-management/user-assignment',
+                label: 'Access Control',
+                description:
+                  'Configure which features and actions each role is permitted to perform across the application.',
+                path: '/master/user-management/role-permissions',
+                icon: 'vpn_key',
+                colorScheme: 'blue',
+                feature: '@user-management/role-permissions',
                 action: 'read',
               },
             ],

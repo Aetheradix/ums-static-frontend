@@ -146,15 +146,15 @@
 ========================= */
 
 .grid-action-col {
-  @apply w-24 min-w-24 text-right;
+  @apply w-24 min-w-24 text-center;
 }
 
 .grid-action-col .p-column-header-content {
-  @apply justify-end;
+  @apply justify-center;
 }
 
 .grid-row-actions {
-  @apply flex items-center justify-end gap-1.5;
+  @apply flex items-center justify-center gap-1.5;
 }
 
 .grid-row-actions-center {

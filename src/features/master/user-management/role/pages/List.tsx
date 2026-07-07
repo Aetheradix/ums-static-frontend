@@ -1,40 +1,40 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
+import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import { Loader } from 'shared/components/progress';
 import {
+  ConfirmDialog,
   FormCard,
   FormPage,
   FormPopup,
   GridPanel,
 } from 'shared/new-components';
-import { ToastService } from 'services';
 import RoleForm from '../components/RoleForm';
-import {
-  useCreateUserRoleMutation,
-  useUserRoleQuery,
-  useUserRolesQuery,
-  useUpdateUserRoleMutation,
-} from '../queries';
-
-type PopupState =
-  | { mode: 'closed' }
-  | { mode: 'create' }
-  | { mode: 'edit'; id: string };
+import { ROLES } from '../../static-data';
 
 export default function List() {
-  const { data, isLoading } = useUserRolesQuery();
-  const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
+  const [showCreate, setShowCreate] = useState(false);
+  const [confirmTarget, setConfirmTarget] =
+    useState<UserManagement.UserRoleList | null>(null);
 
-  const closePopup = useCallback(() => setPopup({ mode: 'closed' }), []);
+  const handleRemoveClick = (role: UserManagement.UserRoleList) => {
+    setConfirmTarget(role);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!confirmTarget) return;
+    ToastService.success('Role deleted successfully.');
+    setConfirmTarget(null);
+  };
 
   return (
-    <FormPage title="User Roles" description="Manage user roles in the system.">
+    <FormPage
+      title="Role Masters"
+      description="Define the roles available in the system. Roles group users with similar responsibilities and are the foundation for assigning access and permissions."
+    >
       <FormCard>
-        {isLoading ? <Loader /> : undefined}
-
         <GridPanel
-          data={data ?? []}
-          onEdit={role => setPopup({ mode: 'edit', id: role.id })}
+          data={ROLES}
+          onRemove={handleRemoveClick}
           columns={[
             {
               cell: (_, option) => <span>{option.rowIndex + 1}</span>,
@@ -42,29 +42,13 @@ export default function List() {
             },
             { field: 'name', header: 'Role Name' },
             { field: 'description', header: 'Description' },
-            {
-              field: 'isActive',
-              header: 'Status',
-              sortable: false,
-              cell: (item: UserManagement.UserRoleList) => (
-                <span
-                  className={
-                    item.isActive
-                      ? 'text-green-600 font-medium'
-                      : 'text-red-600 font-medium'
-                  }
-                >
-                  {item.isActive ? 'Active' : 'Inactive'}
-                </span>
-              ),
-            },
           ]}
           toolbar={
             <Button
               label="Create"
               icon="plus"
               variant="primary"
-              onClick={() => setPopup({ mode: 'create' })}
+              onClick={() => setShowCreate(true)}
             />
           }
           searchBox
@@ -73,79 +57,34 @@ export default function List() {
 
       {/* Create Popup */}
       <FormPopup
-        visible={popup.mode === 'create'}
-        onHide={closePopup}
-        title="Create Role"
-        subtitle="Fill in the details to add a new role."
+        visible={showCreate}
+        onHide={() => setShowCreate(false)}
+        title="Create New Role"
+        subtitle="Define a role name and description. Once created, this role can be assigned to users and granted feature-level access."
       >
-        <CreateRoleContent onClose={closePopup} />
+        <CreateRoleContent onClose={() => setShowCreate(false)} />
       </FormPopup>
 
-      {/* Edit Popup */}
-      <FormPopup
-        visible={popup.mode === 'edit'}
-        onHide={closePopup}
-        title="Edit Role"
-        subtitle="Update the details of the role."
-      >
-        {popup.mode === 'edit' && (
-          <EditRoleContent id={popup.id} onClose={closePopup} />
-        )}
-      </FormPopup>
+      {/* Delete Confirm Dialog */}
+      <ConfirmDialog
+        visible={!!confirmTarget}
+        onHide={() => setConfirmTarget(null)}
+        onConfirm={handleConfirmDelete}
+        variant="danger"
+        title="Delete Role"
+        message={`Are you sure you want to delete the role "${confirmTarget?.name}"? All users assigned to this role and all access permissions configured for it will also be removed.`}
+        confirmLabel="Delete"
+      />
     </FormPage>
   );
 }
 
-/* ── Inline Create Content ── */
+/* ── Create Content ── */
 function CreateRoleContent({ onClose }: { onClose: () => void }) {
-  const { mutateAsync, isPending } = useCreateUserRoleMutation();
-
-  async function handleSubmit(data: UserManagement.UserRoleForm) {
-    try {
-      const result = await mutateAsync(data);
-      if (result) {
-        ToastService.success('Role created successfully.');
-        onClose();
-      }
-    } catch {
-      ToastService.error('Failed to create role');
-    }
+  async function handleSubmit(_data: UserManagement.UserRoleForm) {
+    ToastService.success('Role created successfully.');
+    onClose();
   }
 
-  return <RoleForm onSubmit={handleSubmit} isSaving={isPending} />;
-}
-
-/* ── Inline Edit Content ── */
-function EditRoleContent({ id, onClose }: { id: string; onClose: () => void }) {
-  const { mutateAsync, isPending } = useUpdateUserRoleMutation(id);
-  const { data, isLoading } = useUserRoleQuery(id);
-
-  const DEFAULT: UserManagement.UserRoleForm = {
-    name: '',
-    description: '',
-    isActive: true,
-  };
-
-  async function handleSubmit(formData: UserManagement.UserRoleForm) {
-    try {
-      const result = await mutateAsync(formData);
-      if (result) {
-        ToastService.success('Role updated successfully.');
-        onClose();
-      }
-    } catch {
-      ToastService.error('Failed to update role');
-    }
-  }
-
-  if (isLoading) return <Loader />;
-
-  return (
-    <RoleForm
-      fetchData={data ?? DEFAULT}
-      isSaving={isPending}
-      isEditMode
-      onSubmit={handleSubmit}
-    />
-  );
+  return <RoleForm onSubmit={handleSubmit} />;
 }

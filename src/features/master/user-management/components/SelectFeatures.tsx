@@ -1,6 +1,6 @@
 import type { FieldValues } from 'react-hook-form';
 import { DropDownList } from 'shared/components/forms';
-import { useFeaturesQuery } from '../role-permissions/queries';
+import { FEATURES } from '../static-data';
 
 export default function SelectFeatures<T extends FieldValues>({
   label = 'Feature',
@@ -11,12 +11,9 @@ export default function SelectFeatures<T extends FieldValues>({
   required?: boolean;
   disabled?: boolean;
 }) {
-  const { data, isLoading } = useFeaturesQuery();
-
   return (
     <DropDownList
-      data={data}
-      loading={isLoading}
+      data={FEATURES}
       textField={'name'}
       optionValue={'value'}
       label={label}

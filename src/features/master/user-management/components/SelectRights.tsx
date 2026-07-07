@@ -1,6 +1,6 @@
 import type { FieldValues } from 'react-hook-form';
 import { DropDownList } from 'shared/components/forms';
-import { useRightsQuery } from '../role-permissions/queries';
+import { RIGHTS } from '../static-data';
 
 export default function SelectRights<T extends FieldValues>({
   label = 'Access Right',
@@ -11,12 +11,9 @@ export default function SelectRights<T extends FieldValues>({
   required?: boolean;
   disabled?: boolean;
 }) {
-  const { data, isLoading } = useRightsQuery();
-
   return (
     <DropDownList
-      data={data}
-      loading={isLoading}
+      data={RIGHTS}
       textField={'name'}
       optionValue={'value'}
       label={label}
