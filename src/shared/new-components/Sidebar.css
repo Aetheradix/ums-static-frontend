@@ -6,8 +6,50 @@
   transition:
     width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  @apply w-[310px] flex-shrink-0 bg-white rounded-2xl px-4 py-6 min-h-[calc(100vh-120px)] flex flex-col gap-6;
-  @apply border border-black/[0.06] shadow-[0_4px_20px_rgba(0,0,0,0.02)];
+  @apply w-[310px] shrink-0 bg-white rounded-2xl px-4 py-6 min-h-[calc(100vh-120px)] flex flex-col gap-6;
+  @apply border border-black/6 shadow-[0_4px_20px_rgba(0,0,0,0.02)];
+}
+
+/* Scrollable Sidebar Content and Scrollbar Stylings */
+.app-sidebar-scrollable-content {
+  /* Modern standards-compliant scrollbar styling (Chrome 121+, Firefox, Edge, Safari) */
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent; /* Invisible by default */
+  transition: scrollbar-color 0.2s ease-in-out;
+}
+
+.app-sidebar-container:hover .app-sidebar-scrollable-content {
+  scrollbar-color: #e2e8f0 transparent; /* Very soft light grey thumb on hover, transparent track */
+}
+
+.dark .app-sidebar-container:hover .app-sidebar-scrollable-content {
+  scrollbar-color: #52525b transparent; /* Softer grey thumb in dark mode */
+}
+
+/* Webkit fallback (for older browsers that do not support scrollbar-color) */
+.app-sidebar-scrollable-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.app-sidebar-scrollable-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app-sidebar-scrollable-content::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 4px;
+  transition: background 0.2s ease-in-out;
+}
+
+.app-sidebar-container:hover
+  .app-sidebar-scrollable-content::-webkit-scrollbar-thumb {
+  background: #e2e8f0; /* Very soft light grey thumb */
+}
+
+.dark
+  .app-sidebar-container:hover
+  .app-sidebar-scrollable-content::-webkit-scrollbar-thumb {
+  background: #52525b; /* Softer grey thumb in dark mode */
 }
 
 /* Toggle Button */
@@ -18,7 +60,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  @apply bg-white border border-black/[0.08] flex items-center justify-center cursor-pointer z-10 text-slate-700;
+  @apply bg-white border border-black/8 flex items-center justify-center cursor-pointer z-10 text-slate-700;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   transition: all 0.2s ease-in-out;
 }
@@ -34,7 +76,7 @@
 }
 
 .dark .app-sidebar-toggle-btn {
-  @apply bg-[#18181b] border-white/[0.08] text-white;
+  @apply bg-[#18181b] border-white/8 text-white;
 }
 
 .dark .app-sidebar-toggle-btn:hover {
@@ -43,11 +85,11 @@
 
 /* Sidebar Header */
 .app-sidebar-header {
-  @apply flex items-center gap-4 pb-2 border-b border-black/[0.05];
+  @apply flex items-center gap-4 pb-2 border-b border-black/8;
 }
 
 .app-sidebar-header-icon {
-  @apply text-[1.3rem] text-black bg-black/[0.04] p-2 rounded-lg flex items-center justify-center;
+  @apply text-[1.3rem] text-black bg-black/4 p-2 rounded-lg flex items-center justify-center;
 }
 
 .app-sidebar-header-text h3 {
@@ -70,12 +112,12 @@
 }
 
 .app-sidebar-item:hover {
-  @apply bg-black/[0.03] text-black translate-x-1;
+  @apply bg-black/3 text-black translate-x-1;
 }
 
 /* Active State */
 .app-sidebar-item.active {
-  @apply bg-[var(--primary-color)] text-white shadow-[0_4px_12px_rgba(0,0,0,0.15)];
+  @apply bg-(--primary-color) text-white shadow-[0_4px_12px_rgba(0,0,0,0.15)];
 }
 
 .app-sidebar-item.active .app-sidebar-icon {
@@ -91,16 +133,16 @@
 }
 
 .app-sidebar-help-box {
-  @apply mt-auto flex items-center gap-3 rounded-xl border border-black/[0.08] bg-white px-3 py-3 cursor-pointer;
+  @apply mt-auto flex items-center gap-3 rounded-xl border border-black/8 bg-white px-3 py-3 cursor-pointer;
   @apply shadow-[0_4px_16px_rgba(0,0,0,0.03)] transition-all duration-300 ease-out;
 }
 
 .app-sidebar-help-box:hover {
-  @apply border-black/[0.14] bg-black/[0.02] translate-y-[-1px];
+  @apply border-black/[0.14] bg-black/2 -translate-y-px;
 }
 
 .app-sidebar-help-icon {
-  @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-black/[0.04] text-black;
+  @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-black/4 text-black;
 }
 
 .app-sidebar-help-icon .pi {
@@ -128,15 +170,15 @@
    ========================================== */
 
 .dark .app-sidebar-container {
-  @apply bg-[#0d0d0f] border-white/[0.06] shadow-[0_4px_30px_rgba(0,0,0,0.3)];
+  @apply bg-[#0d0d0f] border-white/6 shadow-[0_4px_30px_rgba(0,0,0,0.3)];
 }
 
 .dark .app-sidebar-header {
-  @apply border-white/[0.06];
+  @apply border-white/10;
 }
 
 .dark .app-sidebar-header-icon {
-  @apply text-white bg-white/[0.04];
+  @apply text-white bg-white/4;
 }
 
 .dark .app-sidebar-header-text h3 {
@@ -152,7 +194,7 @@
 }
 
 .dark .app-sidebar-item:hover {
-  @apply bg-white/[0.03] text-white;
+  @apply bg-white/3 text-white;
 }
 
 .dark .app-sidebar-item:hover .app-sidebar-icon {
@@ -177,15 +219,15 @@
 }
 
 .dark .app-sidebar-help-box {
-  @apply border-white/[0.08] bg-[#0d0d0f] shadow-[0_4px_20px_rgba(0,0,0,0.28)];
+  @apply border-white/8 bg-[#0d0d0f] shadow-[0_4px_20px_rgba(0,0,0,0.28)];
 }
 
 .dark .app-sidebar-help-box:hover {
-  @apply border-white/[0.14] bg-white/[0.03];
+  @apply border-white/[0.14] bg-white/3;
 }
 
 .dark .app-sidebar-help-icon {
-  @apply bg-white/[0.06] text-white;
+  @apply bg-white/6 text-white;
 }
 
 .dark .app-sidebar-help-text strong {
@@ -203,6 +245,22 @@
 /* Collapsed State Styles */
 .app-sidebar-container.collapsed {
   @apply w-[80px] px-2;
+}
+
+/* Collapsed state for module list */
+.app-sidebar-container.collapsed .app-sidebar-section-title,
+.app-sidebar-container.collapsed .app-sidebar-module-label,
+.app-sidebar-container.collapsed .app-sidebar-module-arrow,
+.app-sidebar-container.collapsed .app-sidebar-level1-container,
+.app-sidebar-container.collapsed .app-sidebar-level2-container {
+  display: none !important;
+}
+
+.app-sidebar-container.collapsed .app-sidebar-module-item {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+  gap: 0;
 }
 
 .app-sidebar-container.collapsed .app-sidebar-header {
@@ -305,173 +363,175 @@
     flex-direction: column;
     gap: 0.75rem;
   }
+}
 
-  .app-sidebar-section-title {
-    @apply text-[11px] font-extrabold tracking-wider uppercase text-zinc-500 mb-1 px-2;
-  }
+.app-sidebar-section-title {
+  @apply text-[11px] font-extrabold tracking-wider uppercase text-zinc-500 mb-1 px-2;
+}
 
-  .dark .app-sidebar-section-title {
-    @apply text-zinc-400;
-  }
+.dark .app-sidebar-section-title {
+  @apply text-zinc-400;
+}
 
-  .app-sidebar-modules-list {
-    @apply flex flex-col gap-1.5;
-  }
+.app-sidebar-modules-list {
+  @apply flex flex-col gap-1.5;
+}
 
-  .app-sidebar-module-item {
-    @apply w-full flex items-center gap-3 px-3 py-2 rounded-xl bg-transparent border-0 text-left cursor-pointer;
-    @apply transition-all duration-200 ease-out text-gray-600 font-semibold text-[0.82rem] relative;
-  }
+.app-sidebar-module-item {
+  @apply w-full flex items-center gap-3 px-3 py-2 rounded-xl bg-transparent border-0 text-left cursor-pointer;
+  @apply transition-all duration-200 ease-out text-gray-600 font-semibold text-[0.82rem] relative;
+}
 
-  .app-sidebar-module-item:hover {
-    @apply bg-black/[0.02] text-black translate-x-1;
-  }
+.app-sidebar-module-item:hover {
+  @apply bg-black/2 text-black translate-x-1;
+}
 
-  .dark .app-sidebar-module-item {
-    @apply text-gray-400;
-  }
+.dark .app-sidebar-module-item {
+  @apply text-gray-400;
+}
 
-  .dark .app-sidebar-module-item:hover {
-    @apply bg-white/[0.02] text-white;
-  }
+.dark .app-sidebar-module-item:hover {
+  @apply bg-white/2 text-white;
+}
 
-  .app-sidebar-module-item.active {
-    @apply bg-slate-50 text-slate-900 border border-slate-200/60;
-  }
+.app-sidebar-module-item.active {
+  @apply bg-slate-50 text-slate-900 border border-slate-200/60;
+}
 
-  .dark .app-sidebar-module-item.active {
-    @apply bg-zinc-900/60 text-white border-zinc-800/60;
-  }
+.dark .app-sidebar-module-item.active {
+  @apply bg-zinc-900/60 text-white border-zinc-800/60;
+}
 
-  .app-sidebar-module-icon {
-    @apply w-8 h-8 rounded-lg flex items-center justify-center border shadow-sm flex-shrink-0;
-    transition: all 0.2s ease;
-  }
+.app-sidebar-module-icon {
+  @apply w-8 h-8 rounded-lg flex items-center justify-center border shadow-sm shrink-0;
+  transition: all 0.2s ease;
+}
 
-  .app-sidebar-module-icon i {
-    @apply text-sm;
-  }
+.app-sidebar-module-icon i {
+  @apply text-sm;
+}
 
-  .app-sidebar-module-label {
-    @apply truncate flex-1;
-  }
+.app-sidebar-module-label {
+  @apply whitespace-normal wrap-break-word flex-1;
+}
 
-  .app-sidebar-module-arrow {
-    @apply ml-auto text-[10px] opacity-40;
-    transition: transform 0.2s ease;
-  }
+.app-sidebar-module-arrow {
+  @apply ml-auto text-[10px] opacity-40;
+  transition: transform 0.2s ease;
+}
 
-  .app-sidebar-module-item:hover .app-sidebar-module-arrow {
-    @apply opacity-80 translate-x-0.5;
-  }
+.app-sidebar-module-item:hover .app-sidebar-module-arrow {
+  @apply opacity-80 translate-x-0.5;
+}
 
-  /* Level 1 Container (Sub-menu Container) */
-  .app-sidebar-level1-container {
-    @apply flex flex-col gap-1 pl-4 ml-6 border-l border-dashed border-black/[0.08] mt-1 mb-2;
-  }
+/* Level 1 Container (Sub-menu Container) */
+.app-sidebar-level1-container {
+  @apply flex flex-col gap-1 pl-4 ml-6 border-l border-dashed border-black/8 mt-1 mb-2;
+}
 
-  .dark .app-sidebar-level1-container {
-    @apply border-white/[0.08];
-  }
+.dark .app-sidebar-level1-container {
+  @apply border-white/8;
+}
 
-  /* Level 1 Item */
-  .app-sidebar-submenu-item {
-    @apply w-full flex items-center gap-2.5 px-3 py-2 rounded-lg bg-transparent border-0 text-left cursor-pointer;
-    @apply transition-all duration-200 ease-out text-gray-500 font-semibold text-[0.78rem] relative;
-  }
+/* Level 1 Item */
+.app-sidebar-submenu-item {
+  @apply w-full flex items-center gap-2.5 px-3 py-2 rounded-lg bg-transparent border-0 text-left cursor-pointer;
+  @apply transition-all duration-200 ease-out text-gray-500 font-semibold text-[0.78rem] relative;
+}
 
-  .app-sidebar-submenu-item:hover {
-    @apply bg-black/[0.02] text-black translate-x-0.5;
-  }
+.app-sidebar-submenu-item:hover {
+  @apply bg-black/2 text-black translate-x-0.5;
+}
 
-  .dark .app-sidebar-submenu-item {
-    @apply text-gray-400;
-  }
+.dark .app-sidebar-submenu-item {
+  @apply text-gray-400;
+}
 
-  .dark .app-sidebar-submenu-item:hover {
-    @apply bg-white/[0.02] text-white;
-  }
+.dark .app-sidebar-submenu-item:hover {
+  @apply bg-white/2 text-white;
+}
 
-  .app-sidebar-submenu-item.active {
-    @apply text-black font-bold;
-  }
+.app-sidebar-submenu-item.active {
+  @apply text-black font-bold;
+}
 
-  .dark .app-sidebar-submenu-item.active {
-    @apply text-white font-bold;
-  }
+.dark .app-sidebar-submenu-item.active {
+  @apply text-white font-bold;
+}
 
-  .app-sidebar-submenu-icon {
-    @apply text-xs text-gray-400 w-4 text-center;
-  }
+.app-sidebar-submenu-icon {
+  @apply text-xs text-gray-400 w-4 text-center;
+}
 
-  .app-sidebar-submenu-label {
-    @apply truncate flex-1;
-  }
+.app-sidebar-submenu-label {
+  @apply whitespace-normal wrap-break-word flex-1;
+}
 
-  .app-sidebar-submenu-arrow {
-    @apply ml-auto text-[9px] opacity-40;
-  }
+.app-sidebar-submenu-arrow {
+  @apply ml-auto text-[9px] opacity-40;
+}
 
-  .app-sidebar-submenu-link-icon {
-    @apply ml-auto text-[9px] opacity-30;
-  }
+.app-sidebar-submenu-link-icon {
+  @apply ml-auto text-[9px] opacity-30;
+}
 
-  /* Level 2 Container (Leaf Item Container) */
-  .app-sidebar-level2-container {
-    @apply flex flex-col gap-0.5 pl-3 ml-4 border-l border-dotted border-black/[0.06] mt-0.5 mb-1.5;
-  }
+/* Level 2 Container (Leaf Item Container) */
+.app-sidebar-level2-container {
+  @apply flex flex-col gap-0.5 pl-3 ml-4 border-l border-dotted border-black/6 mt-0.5 mb-1.5;
+}
 
-  .dark .app-sidebar-level2-container {
-    @apply border-white/[0.06];
-  }
+.dark .app-sidebar-level2-container {
+  @apply border-white/6;
+}
 
-  /* Level 2 Leaf Item */
-  .app-sidebar-leaf-item {
-    @apply w-full flex items-center gap-2 px-3 py-1.5 rounded-md bg-transparent border-0 text-left cursor-pointer;
-    @apply transition-all duration-200 ease-out text-gray-400 font-semibold text-[0.74rem] relative;
-  }
+/* Level 2 Leaf Item */
+.app-sidebar-leaf-item {
+  @apply w-full flex items-center gap-2 px-3 py-1.5 rounded-md bg-transparent border-0 text-left cursor-pointer;
+  @apply transition-all duration-200 ease-out text-gray-400 font-semibold text-[0.74rem] relative;
+}
 
-  .app-sidebar-leaf-item:hover {
-    @apply bg-black/[0.01] text-black translate-x-0.5;
-  }
+.app-sidebar-leaf-item:hover {
+  @apply bg-black/1 text-black translate-x-0.5;
+}
 
-  .dark .app-sidebar-leaf-item {
-    @apply text-gray-500;
-  }
+.dark .app-sidebar-leaf-item {
+  @apply text-gray-500;
+}
 
-  .dark .app-sidebar-leaf-item:hover {
-    @apply bg-white/[0.01] text-white;
-  }
+.dark .app-sidebar-leaf-item:hover {
+  @apply bg-white/1 text-white;
+}
 
-  .app-sidebar-leaf-item.active {
-    @apply text-black font-bold;
-  }
+.app-sidebar-leaf-item.active {
+  @apply text-black font-bold;
+}
 
-  .dark .app-sidebar-leaf-item.active {
-    @apply text-white font-bold;
-  }
+.dark .app-sidebar-leaf-item.active {
+  @apply text-white font-bold;
+}
 
-  .app-sidebar-leaf-bullet {
-    font-size: 5px !important;
-    @apply text-gray-300;
-  }
+.app-sidebar-leaf-bullet {
+  font-size: 5px !important;
+  @apply text-gray-300;
+}
 
-  .dark .app-sidebar-leaf-bullet {
-    @apply text-zinc-700;
-  }
+.dark .app-sidebar-leaf-bullet {
+  @apply text-zinc-700;
+}
 
-  .app-sidebar-leaf-item.active .app-sidebar-leaf-bullet {
-    @apply text-slate-800;
-  }
+.app-sidebar-leaf-item.active .app-sidebar-leaf-bullet {
+  @apply text-slate-800;
+}
 
-  .dark .app-sidebar-leaf-item.active .app-sidebar-leaf-bullet {
-    @apply text-zinc-300;
-  }
+.dark .app-sidebar-leaf-item.active .app-sidebar-leaf-bullet {
+  @apply text-zinc-300;
+}
 
-  .app-sidebar-leaf-label {
-    @apply truncate;
-  }
+.app-sidebar-leaf-label {
+  @apply whitespace-normal wrap-break-word;
+}
 
+@media (max-width: 1023px) {
   /* Hide desktop header icon and text on mobile */
   .app-sidebar-header-icon,
   .app-sidebar-header-text {
@@ -519,4 +579,196 @@
   .app-sidebar-mobile-close-btn {
     display: none !important;
   }
+}
+
+/* Override modules listing to show inside the global desktop sidebar */
+.desktop-sidebar .app-sidebar-mobile-modules {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* ========================================================
+   PRIMARY COLOR BG FILL SIDEBAR CUSTOMIZATION
+   ======================================================== */
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-container {
+  background-color: var(--color-primary) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Adjust colors of title blocks and section markers */
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-section-title {
+  color: rgba(255, 255, 255, 0.6) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Sidebar header text colors */
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-header-text h3 {
+  color: #ffffff !important;
+}
+
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-header-text p {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Navigation items default text and icon states */
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-label,
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-module-label,
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-submenu-label,
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-leaf-label {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-icon,
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-submenu-icon,
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-submenu-link-icon,
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-arrow,
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-module-arrow,
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-submenu-arrow {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Module icons containers: translucent white bg on primary color fill */
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-module-icon {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  box-shadow: none !important;
+}
+
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-module-icon * {
+  color: #ffffff !important;
+}
+
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-level1-container,
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-level2-container {
+  border-left-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-leaf-bullet {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Hover backdrop overlay */
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-item:hover,
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-module-item:hover,
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-submenu-item:hover,
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-leaf-item:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+/* Active navigation states (invert color to stand out on solid primary color) */
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-item.active,
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-module-item.active,
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-submenu-item.active,
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-leaf-item.active {
+  background-color: #ffffff !important;
+}
+
+.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-item.active
+  .app-sidebar-label,
+.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  .app-sidebar-module-label,
+.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  .app-sidebar-submenu-label,
+.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-leaf-item.active
+  .app-sidebar-leaf-label {
+  color: var(--color-primary) !important;
+  font-weight: 700 !important;
+}
+
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-item.active i,
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-module-item.active i,
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-submenu-item.active i,
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-item.active .app-sidebar-icon,
+.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  .app-sidebar-submenu-icon,
+.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  .app-sidebar-submenu-link-icon,
+.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-item.active
+  .app-sidebar-arrow,
+.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  .app-sidebar-module-arrow,
+.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  .app-sidebar-submenu-arrow {
+  color: var(--color-primary) !important;
+}
+
+/* Active state for module icon wrapper and inner icon characters */
+.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  .app-sidebar-module-icon {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  .app-sidebar-module-icon
+  * {
+  color: var(--color-primary) !important;
+}
+
+.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-leaf-item.active
+  .app-sidebar-leaf-bullet {
+  color: var(--color-primary) !important;
+}
+
+/* Translucent Help box */
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-help-box {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-help-box strong,
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-help-box span,
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-help-box i {
+  color: #ffffff !important;
+}
+
+/* Scrollbar adjustment to translucent white thumb */
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-scrollable-content {
+  scrollbar-color: transparent transparent;
+}
+
+.sidebar-bg-primary .desktop-sidebar:hover .app-sidebar-scrollable-content {
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent !important;
+}
+
+.sidebar-bg-primary
+  .desktop-sidebar:hover
+  .app-sidebar-scrollable-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Invert Logo text elements to white */
+.sidebar-bg-primary .desktop-sidebar .ws-logo-image {
+  filter: brightness(0) invert(1) !important;
+}
+
+/* Make logo header section bottom divider visible in primary-bg mode */
+.sidebar-bg-primary .desktop-sidebar .app-sidebar-header {
+  border-bottom-color: rgba(255, 255, 255, 0.15) !important;
 }

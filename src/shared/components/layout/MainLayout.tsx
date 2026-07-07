@@ -82,9 +82,35 @@ function isPortalPath(pathname: string): boolean {
 
 export default function MainLayout({ children }: React.PropsWithChildren) {
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+  const [showDesktopSidebar, setShowDesktopSidebar] = useState(
+    () => localStorage.getItem('showDesktopSidebar') === 'true'
+  );
+  const [isDesktop, setIsDesktop] = useState(() => window.innerWidth >= 1024);
   const menuConfig = useMenu();
   const location = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+    const handleToggleDesktopSidebar = (e: Event) => {
+      setShowDesktopSidebar((e as CustomEvent).detail);
+    };
+    window.addEventListener('resize', handleResize);
+    window.addEventListener(
+      'toggle-desktop-sidebar',
+      handleToggleDesktopSidebar
+    );
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener(
+        'toggle-desktop-sidebar',
+        handleToggleDesktopSidebar
+      );
+    };
+  }, []);
 
   // True when this route is a portal selector — no sidebar needed
   const hidesSidebar = isPortalPath(location.pathname);
@@ -129,7 +155,11 @@ export default function MainLayout({ children }: React.PropsWithChildren) {
   }, [activeModuleInfo, hidesSidebar]);
 
   // Sidebar is visible only when we have tabs AND we're not on a portal page
-  const isSidebarMode = !hidesSidebar && masterTabs.length > 0;
+  // AND we are NOT in desktop mode with global desktop sidebar active (as the global sidebar already shows these menus)
+  const isSidebarMode =
+    !hidesSidebar &&
+    masterTabs.length > 0 &&
+    !(showDesktopSidebar && isDesktop);
 
   // Sync active index based on current path
   const activeIndex = useMemo(() => {

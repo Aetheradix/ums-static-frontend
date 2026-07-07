@@ -165,7 +165,18 @@
 }
 
 .ws-hamburger-btn {
-  display: none; /* hidden on desktop */
+  @apply flex items-center justify-center w-9 h-9 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 cursor-pointer transition-all duration-200 shrink-0;
+  display: none; /* hidden on desktop by default */
+}
+.dark .ws-hamburger-btn {
+  @apply bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white;
+}
+.ws-hamburger-btn:hover {
+  @apply bg-slate-100 text-slate-900;
+}
+.ws-hamburger-btn i {
+  font-size: 14px;
+  font-weight: 700;
 }
 
 /* ----------------------------------
@@ -223,17 +234,7 @@
 
 @media (max-width: 1023px) {
   .ws-hamburger-btn {
-    @apply flex items-center justify-center w-9 h-9 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 cursor-pointer transition-all duration-200 shrink-0;
-  }
-  .dark .ws-hamburger-btn {
-    @apply bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white;
-  }
-  .ws-hamburger-btn:hover {
-    @apply bg-slate-100 text-slate-900;
-  }
-  .ws-hamburger-btn i {
-    font-size: 14px;
-    font-weight: 700;
+    display: flex;
   }
 }
 
