@@ -145,7 +145,7 @@ export const LoginPage: React.FC = () => {
                   cx="300"
                   cy="300"
                   r="110"
-                  stroke="rgba(99, 102, 241, 0.2)"
+                  stroke="rgba(99, 102, 241, 0.08)"
                   strokeWidth="1.5"
                   strokeDasharray="3 3"
                 />
@@ -153,7 +153,7 @@ export const LoginPage: React.FC = () => {
                   cx="300"
                   cy="300"
                   r="135"
-                  stroke="rgba(99, 102, 241, 0.16)"
+                  stroke="rgba(99, 102, 241, 0.06)"
                   strokeWidth="1"
                 />
 
@@ -162,7 +162,7 @@ export const LoginPage: React.FC = () => {
                   cx="300"
                   cy="300"
                   r="225"
-                  stroke="rgba(99, 102, 241, 0.45)"
+                  stroke="rgba(99, 102, 241, 0.15)"
                   strokeWidth="2"
                   strokeDasharray="6 6"
                 />
@@ -173,7 +173,7 @@ export const LoginPage: React.FC = () => {
                   y1="300"
                   x2="300"
                   y2="90"
-                  stroke="rgba(99, 102, 241, 0.25)"
+                  stroke="rgba(99, 102, 241, 0.1)"
                   strokeWidth="1.5"
                   strokeDasharray="4 4"
                 />
@@ -182,7 +182,7 @@ export const LoginPage: React.FC = () => {
                   y1="300"
                   x2="448"
                   y2="152"
-                  stroke="rgba(99, 102, 241, 0.25)"
+                  stroke="rgba(99, 102, 241, 0.1)"
                   strokeWidth="1.5"
                   strokeDasharray="4 4"
                 />
@@ -191,7 +191,7 @@ export const LoginPage: React.FC = () => {
                   y1="300"
                   x2="510"
                   y2="300"
-                  stroke="rgba(99, 102, 241, 0.25)"
+                  stroke="rgba(99, 102, 241, 0.1)"
                   strokeWidth="1.5"
                   strokeDasharray="4 4"
                 />
@@ -200,7 +200,7 @@ export const LoginPage: React.FC = () => {
                   y1="300"
                   x2="448"
                   y2="448"
-                  stroke="rgba(99, 102, 241, 0.25)"
+                  stroke="rgba(99, 102, 241, 0.1)"
                   strokeWidth="1.5"
                   strokeDasharray="4 4"
                 />
@@ -209,7 +209,7 @@ export const LoginPage: React.FC = () => {
                   y1="300"
                   x2="300"
                   y2="510"
-                  stroke="rgba(99, 102, 241, 0.25)"
+                  stroke="rgba(99, 102, 241, 0.1)"
                   strokeWidth="1.5"
                   strokeDasharray="4 4"
                 />
@@ -218,7 +218,7 @@ export const LoginPage: React.FC = () => {
                   y1="300"
                   x2="152"
                   y2="448"
-                  stroke="rgba(99, 102, 241, 0.25)"
+                  stroke="rgba(99, 102, 241, 0.1)"
                   strokeWidth="1.5"
                   strokeDasharray="4 4"
                 />
@@ -227,7 +227,7 @@ export const LoginPage: React.FC = () => {
                   y1="300"
                   x2="90"
                   y2="300"
-                  stroke="rgba(99, 102, 241, 0.25)"
+                  stroke="rgba(99, 102, 241, 0.1)"
                   strokeWidth="1.5"
                   strokeDasharray="4 4"
                 />
@@ -236,7 +236,7 @@ export const LoginPage: React.FC = () => {
                   y1="300"
                   x2="152"
                   y2="152"
-                  stroke="rgba(99, 102, 241, 0.25)"
+                  stroke="rgba(99, 102, 241, 0.1)"
                   strokeWidth="1.5"
                   strokeDasharray="4 4"
                 />

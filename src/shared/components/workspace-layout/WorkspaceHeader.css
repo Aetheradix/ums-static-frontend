@@ -243,3 +243,105 @@
     display: none !important;
   }
 }
+
+/* ── Notification Dropdown ── */
+.ws-notif-dropdown {
+  @apply absolute right-0 mt-3 w-80 bg-white border border-slate-200 rounded-xl shadow-lg z-50 overflow-hidden flex flex-col;
+}
+
+.ws-notif-dropdown.dark {
+  @apply bg-zinc-950 border-zinc-800 shadow-zinc-950/50;
+}
+
+/* Header */
+.ws-notif-header {
+  @apply flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-slate-50/50;
+}
+
+.ws-notif-dropdown.dark .ws-notif-header {
+  @apply border-zinc-800/80 bg-zinc-900/30;
+}
+
+.ws-notif-title {
+  @apply text-sm font-bold text-slate-800;
+}
+
+.ws-notif-dropdown.dark .ws-notif-title {
+  @apply text-zinc-100;
+}
+
+.ws-notif-mark-read {
+  @apply text-[11px] font-bold text-(--primary-color) hover:underline bg-transparent border-none cursor-pointer p-0;
+}
+
+/* List & Items */
+.ws-notif-list {
+  @apply max-h-72 overflow-y-auto divide-y divide-slate-100;
+}
+
+.ws-notif-dropdown.dark .ws-notif-list {
+  @apply divide-zinc-900;
+}
+
+.ws-notif-item {
+  @apply flex gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50/80 transition-colors duration-150 relative;
+}
+
+.ws-notif-dropdown.dark .ws-notif-item {
+  @apply hover:bg-zinc-900/40;
+}
+
+.ws-notif-item.unread {
+  @apply bg-blue-50/20 hover:bg-blue-50/40;
+}
+
+.ws-notif-dropdown.dark .ws-notif-item.unread {
+  @apply bg-blue-900/5 hover:bg-blue-900/10;
+}
+
+.ws-notif-unread-dot {
+  @apply w-1.5 h-1.5 bg-blue-500 rounded-full absolute right-4 top-1/2 -translate-y-1/2;
+}
+
+.ws-notif-icon {
+  @apply w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0;
+}
+
+.ws-notif-content {
+  @apply flex flex-col min-w-0 flex-1 pr-3;
+}
+
+.ws-notif-text {
+  @apply text-xs text-slate-700 leading-normal font-medium;
+}
+
+.ws-notif-dropdown.dark .ws-notif-text {
+  @apply text-zinc-300;
+}
+
+.ws-notif-time {
+  @apply text-[10px] text-slate-400 mt-1 font-medium;
+}
+
+/* Empty State */
+.ws-notif-empty {
+  @apply flex flex-col items-center justify-center py-10 text-slate-400 text-xs;
+}
+
+/* Footer */
+.ws-notif-footer {
+  @apply border-t border-slate-100 p-2 text-center bg-slate-50/30;
+}
+
+.ws-notif-dropdown.dark .ws-notif-footer {
+  @apply border-zinc-800 bg-zinc-900/10;
+}
+
+.ws-notif-view-all {
+  @apply w-full py-1.5 text-xs font-bold text-slate-500 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors bg-transparent border-none cursor-pointer;
+}
+
+/* Active notification button state */
+.ws-notif-btn.ws-active {
+  @apply text-(--primary-color);
+}

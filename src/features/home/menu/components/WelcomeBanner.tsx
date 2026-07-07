@@ -3,6 +3,12 @@ import '../styles/menu.css';
 
 const WelcomeBanner: React.FC = () => (
   <section className="welcome-banner">
+    <img
+      src="/UniversitySection.png"
+      className="welcome-banner-img"
+      alt="University Graphic"
+    />
+
     <div className="welcome-sso-badge">
       <span className="welcome-sso-icon">
         <svg

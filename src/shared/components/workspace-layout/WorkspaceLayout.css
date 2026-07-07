@@ -289,13 +289,14 @@
 
   /* Make header a detached rounded card */
   .ws-root.has-desktop-sidebar.layout-detached .ws-header {
+    background-color: #ffffff !important;
     border-radius: 1rem;
     border: 1px solid rgba(0, 0, 0, 0.06);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
   }
 
   .dark .ws-root.has-desktop-sidebar.layout-detached .ws-header {
-    background-color: var(--dark-card-bg);
+    background-color: var(--dark-card-bg) !important;
     border-color: var(--dark-border);
   }
 
@@ -319,12 +320,35 @@
     top: 1.5rem;
   }
 
-  /* Remove parent header wrapper's flat shadow so it doesn't leak out of the rounded header card */
+  /* Remove parent header wrapper's flat shadow and raise z-index in detached layout */
   .ws-root.has-desktop-sidebar.layout-detached .ws-page-container > div.sticky,
   .ws-root.has-desktop-sidebar.layout-detached
     .ws-page-container
     > div.relative {
     box-shadow: none !important;
+    z-index: 100;
+  }
+
+  /* Add an opaque mask above the sticky header to hide content scrolling into the top margin and corners */
+  .ws-root.has-desktop-sidebar.layout-detached
+    .ws-page-container
+    > div.sticky::before {
+    content: '';
+    position: absolute;
+    top: -1.5rem;
+    left: 0;
+    right: 0;
+    height: 2.5rem; /* 1.5rem top margin + 1rem to cover header rounded corners */
+    background-color: #f4f6f9;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .dark
+    .ws-root.has-desktop-sidebar.layout-detached
+    .ws-page-container
+    > div.sticky::before {
+    background-color: var(--color-black, #0a0a0a);
   }
 
   /* Make main layout content transparent to float on body background */
@@ -422,8 +446,7 @@
 
   /* Remove left/right padding so cards align perfectly with header and footer edges in detached layout */
   .ws-root.has-desktop-sidebar.layout-detached .main-layout-content > div {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    padding: 0 !important;
   }
 
   /* Ensure no padding on ws-main itself in detached layout */
@@ -469,4 +492,132 @@
   .desktop-sidebar {
     display: none !important;
   }
+}
+
+/* Customization Sidebar Dark Mode Support */
+.dark .theme-settings-sidebar.p-sidebar {
+  background-color: var(--dark-card-bg) !important;
+  color: var(--dark-text, #f1f5f9) !important;
+  border-left: 1px solid var(--dark-border, rgba(255, 255, 255, 0.12)) !important;
+}
+
+.dark .theme-settings-sidebar .p-sidebar-header {
+  background-color: var(--dark-card-bg) !important;
+  border-bottom: 1px solid var(--dark-border, rgba(255, 255, 255, 0.12)) !important;
+}
+
+.dark .theme-settings-sidebar .p-sidebar-content {
+  background-color: var(--dark-card-bg) !important;
+}
+
+.dark .theme-settings-sidebar .p-sidebar-close {
+  color: var(--dark-text-muted, #94a3b8) !important;
+  background-color: transparent !important;
+  border-radius: 50%;
+  border: none;
+}
+
+.dark .theme-settings-sidebar .p-sidebar-close:hover {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.dark .theme-settings-sidebar .p-sidebar-header h2 {
+  color: #ffffff !important;
+}
+
+/* ========================================================
+   STATIC BOTTOM WAVE BACKGROUND DESIGN
+   ======================================================== */
+.ws-root {
+  position: relative;
+  background-color: #fbfbfd;
+}
+
+.dark .ws-root {
+  background-color: var(--dark-bg);
+}
+
+.ws-bottom-waves {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; /* Cover full viewport to allow outlines to sweep to top-right */
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ws-bottom-waves svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Dynamically styled using the active primary theme color */
+.ws-bottom-wave-1 {
+  fill: var(--primary-color);
+  opacity: 0.02;
+  transition:
+    fill 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.ws-bottom-wave-2 {
+  fill: var(--primary-color);
+  opacity: 0.01;
+  transition:
+    fill 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.ws-bottom-wave-outline-1 {
+  stroke: var(--primary-color);
+  opacity: 0.04;
+  transition:
+    stroke 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.ws-bottom-wave-outline-2 {
+  stroke: var(--primary-color);
+  opacity: 0.02;
+  transition:
+    stroke 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.ws-bottom-wave-outline-3 {
+  stroke: var(--primary-color);
+  opacity: 0.01;
+  transition:
+    stroke 0.3s ease,
+    opacity 0.3s ease;
+}
+
+/* Opacity fine-tuning for Dark Mode */
+.dark .ws-bottom-wave-1 {
+  opacity: 0.015;
+}
+
+.dark .ws-bottom-wave-2 {
+  opacity: 0.008;
+}
+
+.dark .ws-bottom-wave-outline-1 {
+  opacity: 0.06;
+}
+
+.dark .ws-bottom-wave-outline-2 {
+  opacity: 0.03;
+}
+
+.dark .ws-bottom-wave-outline-3 {
+  opacity: 0.015;
+}
+
+.ws-root .ws-page-container {
+  position: relative;
+  z-index: 1; /* Content floats cleanly above the fixed bottom waves */
 }

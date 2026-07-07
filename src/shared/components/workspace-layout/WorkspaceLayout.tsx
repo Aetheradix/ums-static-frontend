@@ -8,6 +8,45 @@ import WorkspaceTopBar from './WorkspaceTopBar';
 import WorkspaceNavbar from './WorkspaceNavbar';
 import { Sidebar } from 'shared/new-components';
 
+const BottomWaves: React.FC = () => (
+  <div className="ws-bottom-waves" aria-hidden="true">
+    <svg
+      viewBox="0 0 1440 900"
+      preserveAspectRatio="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* Solid Waves (Anchored at the bottom) */}
+      <path
+        d="M0,750 C288,820 576,680 864,780 C1152,880 1344,750 1440,720 L1440,900 L0,900 Z"
+        className="ws-bottom-wave-1"
+      />
+      <path
+        d="M0,780 C384,880 672,720 960,820 C1248,920 1392,780 1440,750 L1440,900 L0,900 Z"
+        className="ws-bottom-wave-2"
+      />
+      {/* Outline Waves (Same wave pattern, kept close to the bottom solid waves) */}
+      <path
+        d="M0,720 C288,770 576,600 864,680 C1152,760 1344,620 1440,590"
+        fill="none"
+        className="ws-bottom-wave-outline-1"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M0,670 C288,720 576,550 864,630 C1152,710 1344,570 1440,540"
+        fill="none"
+        className="ws-bottom-wave-outline-2"
+        strokeWidth="1.2"
+      />
+      <path
+        d="M0,620 C288,670 576,500 864,580 C1152,660 1344,520 1440,490"
+        fill="none"
+        className="ws-bottom-wave-outline-3"
+        strokeWidth="0.8"
+      />
+    </svg>
+  </div>
+);
+
 export const WorkspaceLayout: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -137,6 +176,7 @@ export const WorkspaceLayout: React.FC<{ children: React.ReactNode }> = ({
         showDesktopSidebar ? `sidebar-bg-${sidebarBgType}` : ''
       }`}
     >
+      <BottomWaves />
       {showDesktopSidebar && (
         <div className="app-sidebar-wrapper desktop-sidebar">
           <Sidebar
