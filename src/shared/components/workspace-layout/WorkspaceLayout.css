@@ -525,3 +525,99 @@
 .dark .theme-settings-sidebar .p-sidebar-header h2 {
   color: #ffffff !important;
 }
+
+/* ========================================================
+   STATIC BOTTOM WAVE BACKGROUND DESIGN
+   ======================================================== */
+.ws-root {
+  position: relative;
+  background-color: #fbfbfd;
+}
+
+.dark .ws-root {
+  background-color: var(--dark-bg);
+}
+
+.ws-bottom-waves {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; /* Cover full viewport to allow outlines to sweep to top-right */
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ws-bottom-waves svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Dynamically styled using the active primary theme color */
+.ws-bottom-wave-1 {
+  fill: var(--primary-color);
+  opacity: 0.02;
+  transition:
+    fill 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.ws-bottom-wave-2 {
+  fill: var(--primary-color);
+  opacity: 0.01;
+  transition:
+    fill 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.ws-bottom-wave-outline-1 {
+  stroke: var(--primary-color);
+  opacity: 0.04;
+  transition:
+    stroke 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.ws-bottom-wave-outline-2 {
+  stroke: var(--primary-color);
+  opacity: 0.02;
+  transition:
+    stroke 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.ws-bottom-wave-outline-3 {
+  stroke: var(--primary-color);
+  opacity: 0.01;
+  transition:
+    stroke 0.3s ease,
+    opacity 0.3s ease;
+}
+
+/* Opacity fine-tuning for Dark Mode */
+.dark .ws-bottom-wave-1 {
+  opacity: 0.015;
+}
+
+.dark .ws-bottom-wave-2 {
+  opacity: 0.008;
+}
+
+.dark .ws-bottom-wave-outline-1 {
+  opacity: 0.06;
+}
+
+.dark .ws-bottom-wave-outline-2 {
+  opacity: 0.03;
+}
+
+.dark .ws-bottom-wave-outline-3 {
+  opacity: 0.015;
+}
+
+.ws-root .ws-page-container {
+  position: relative;
+  z-index: 1; /* Content floats cleanly above the fixed bottom waves */
+}
