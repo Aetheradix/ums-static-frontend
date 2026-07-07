@@ -17,6 +17,39 @@ const Header: React.FC = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      text: 'Your leave application for 12th July has been approved.',
+      time: '2 mins ago',
+      unread: true,
+      icon: 'pi-info-circle',
+      color: 'bg-blue-50 text-blue-500 dark:bg-blue-900/30 dark:text-blue-300',
+    },
+    {
+      id: 2,
+      text: 'Affiliation renewal requests for 5 colleges are pending your verification.',
+      time: '1 hour ago',
+      unread: true,
+      icon: 'pi-exclamation-triangle',
+      color:
+        'bg-amber-50 text-amber-500 dark:bg-amber-900/30 dark:text-amber-300',
+    },
+    {
+      id: 3,
+      text: 'Academic registry sync has completed successfully.',
+      time: 'Yesterday',
+      unread: false,
+      icon: 'pi-check-circle',
+      color:
+        'bg-emerald-50 text-emerald-500 dark:bg-emerald-900/30 dark:text-emerald-300',
+    },
+  ]);
+
+  const unreadCount = notifications.filter(n => n.unread).length;
+
   const menuConfig = useMenu();
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -97,6 +130,12 @@ const Header: React.FC = () => {
         !searchContainerRef.current.contains(event.target as Node)
       ) {
         setIsSearchOpen(false);
+      }
+      if (
+        notifRef.current &&
+        !notifRef.current.contains(event.target as Node)
+      ) {
+        setIsNotifOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -353,10 +392,76 @@ const Header: React.FC = () => {
             </div>
 
             {/* Notification */}
-            <div className="ws-notif-btn mobile-hidden">
-              <i className="pi pi-bell" />
+            <div className="relative ws-notif-wrapper" ref={notifRef}>
+              <div
+                className={`ws-notif-btn mobile-hidden ${isNotifOpen ? 'ws-active' : ''}`}
+                onClick={() => setIsNotifOpen(!isNotifOpen)}
+                title="Notifications"
+              >
+                <i className="pi pi-bell" />
+                {unreadCount > 0 && (
+                  <span className="ws-badge">{unreadCount}</span>
+                )}
+              </div>
 
-              <span className="ws-badge">1</span>
+              {isNotifOpen && (
+                <div
+                  className={`ws-notif-dropdown ${isDarkMode ? 'dark' : 'light'}`}
+                >
+                  <div className="ws-notif-header">
+                    <span className="ws-notif-title">Notifications</span>
+                    {unreadCount > 0 && (
+                      <button
+                        className="ws-notif-mark-read"
+                        onClick={() =>
+                          setNotifications(prev =>
+                            prev.map(n => ({ ...n, unread: false }))
+                          )
+                        }
+                      >
+                        Mark all as read
+                      </button>
+                    )}
+                  </div>
+                  <div className="ws-notif-list">
+                    {notifications.map(notif => (
+                      <div
+                        key={notif.id}
+                        className={`ws-notif-item ${notif.unread ? 'unread' : ''}`}
+                        onClick={() => {
+                          setNotifications(prev =>
+                            prev.map(n =>
+                              n.id === notif.id ? { ...n, unread: false } : n
+                            )
+                          );
+                        }}
+                      >
+                        <div className={`ws-notif-icon ${notif.color}`}>
+                          <i className={`pi ${notif.icon}`} />
+                        </div>
+                        <div className="ws-notif-content">
+                          <p className="ws-notif-text">{notif.text}</p>
+                          <span className="ws-notif-time">{notif.time}</span>
+                        </div>
+                        {notif.unread && (
+                          <span className="ws-notif-unread-dot" />
+                        )}
+                      </div>
+                    ))}
+                    {notifications.length === 0 && (
+                      <div className="ws-notif-empty">
+                        <i className="pi pi-bell-slash text-2xl text-slate-300 dark:text-zinc-600 mb-2" />
+                        <p>No notifications yet</p>
+                      </div>
+                    )}
+                  </div>
+                  <div className="ws-notif-footer">
+                    <button className="ws-notif-view-all">
+                      View All Notifications
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="mobile-hidden">

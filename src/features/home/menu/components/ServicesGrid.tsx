@@ -3,18 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { useMenu } from '../../../../config/menu-routes';
 import Tile from '../../../../shared/components/Tiles/Tile';
 import { homeUrls } from '../../urls';
+import AllPagesGrid from './AllPagesGrid';
 import '../styles/menu.css';
 
 interface ServicesGridProps {
   activeFilter: string;
 }
-
-const categoryMapping: Record<string, string[]> = {
-  Academics: ['Academic Centre', 'Examination Hub', 'Student Services'],
-  HR: ['HRMS'],
-  Finance: ['Finance'],
-  Operation: ['Campus Facilities', 'Governance', 'Auxiliary Services', 'Other'],
-};
 
 const ServicesGrid: React.FC<ServicesGridProps> = ({ activeFilter }) => {
   const menuConfig = useMenu();
@@ -36,10 +30,26 @@ const ServicesGrid: React.FC<ServicesGridProps> = ({ activeFilter }) => {
     return service.description;
   };
 
+  // 'All' tab — show deep leaf pages
+  if (activeFilter === 'All') {
+    return <AllPagesGrid />;
+  }
+
   const filteredServices = menuConfig.filter(service => {
-    if (activeFilter === 'Core' || activeFilter === 'All') {
+    if (activeFilter === 'Core') {
       return true;
     }
+    const categoryMapping: Record<string, string[]> = {
+      Academics: ['Academic Centre', 'Examination Hub', 'Student Services'],
+      HR: ['HRMS'],
+      Finance: ['Finance'],
+      Operation: [
+        'Campus Facilities',
+        'Governance',
+        'Auxiliary Services',
+        'Other',
+      ],
+    };
     const categories = categoryMapping[activeFilter];
     if (categories && service.category) {
       return categories.includes(service.category);

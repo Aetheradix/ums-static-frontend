@@ -174,7 +174,7 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
       visible={visible}
       position="right"
       onHide={onHide}
-      className="w-full md:w-80"
+      className="w-full md:w-80 theme-settings-sidebar"
       header={
         <h2 className="text-xl font-bold text-slate-800 dark:text-white m-0">
           Customization
@@ -212,7 +212,9 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
               <button
                 onClick={toggleLanguage}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900 p-0 shrink-0 ${
-                  language === 'hi' ? 'bg-primary' : 'bg-slate-300'
+                  language === 'hi'
+                    ? 'bg-primary'
+                    : 'bg-slate-300 dark:bg-zinc-700'
                 }`}
                 style={
                   language === 'hi'
@@ -245,7 +247,7 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
               <button
                 onClick={toggleDarkMode}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900 p-0 shrink-0 ${
-                  isDarkMode ? 'bg-primary' : 'bg-slate-300'
+                  isDarkMode ? 'bg-primary' : 'bg-slate-300 dark:bg-zinc-700'
                 }`}
                 style={
                   isDarkMode ? { backgroundColor: 'var(--color-primary)' } : {}
@@ -274,7 +276,7 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
               <button
                 onClick={toggleTopNavbar}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900 p-0 shrink-0 ${
-                  showTopNavbar ? 'bg-primary' : 'bg-slate-300'
+                  showTopNavbar ? 'bg-primary' : 'bg-slate-300 dark:bg-zinc-700'
                 }`}
                 style={
                   showTopNavbar
@@ -306,7 +308,9 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
                 <button
                   onClick={toggleDesktopSidebar}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900 p-0 shrink-0 ${
-                    showDesktopSidebar ? 'bg-primary' : 'bg-slate-300'
+                    showDesktopSidebar
+                      ? 'bg-primary'
+                      : 'bg-slate-300 dark:bg-zinc-700'
                   }`}
                   style={
                     showDesktopSidebar
