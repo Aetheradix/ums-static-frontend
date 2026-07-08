@@ -8,11 +8,46 @@ export default function AdminPortalPage() {
       backPath="/home/sub-menu/affiliation-management-system"
       portals={[
         {
+          title: 'Affiliation Settings',
+          description: 'Manage affiliation settings',
+          icon: 'settings',
+          colorScheme: 'red',
+          path: '/home/sub-menu/affiliation-settings',
+        },
+        {
           title: 'College Registration Approvals',
           description: 'Manage college registration Approvals.',
           icon: 'edit_location',
           colorScheme: 'green',
           path: '/affiliation-management-system/registration-approval',
+        },
+        {
+          title: 'Inspection Assignment',
+          description: 'Assign inspection teams to colleges.',
+          icon: 'assignment_ind',
+          colorScheme: 'orange',
+          path: '/affiliation-management-system/inspection-assignment',
+        },
+        {
+          title: 'Inspection Details',
+          description: 'Fill the detailed inspection report.',
+          icon: 'assignment_turned_in',
+          colorScheme: 'blue',
+          path: '/affiliation-management-system/inspection-report',
+        },
+        {
+          title: 'Final Registration Approval',
+          description: 'Review inspection reports and grant final affiliation.',
+          icon: 'verified',
+          colorScheme: 'purple',
+          path: '/affiliation-management-system/final-registration-approval',
+        },
+        {
+          title: 'Manage Renewals',
+          description: 'Track and approve college renewals.',
+          icon: 'event_repeat',
+          colorScheme: 'purple',
+          path: '/affiliation-management-system/college-renewal-admin/upcoming',
         },
         {
           title: 'Approval Status Report',
@@ -27,20 +62,6 @@ export default function AdminPortalPage() {
           icon: 'policy',
           colorScheme: 'blue',
           path: '/affiliation-management-system/inspection-status-report',
-        },
-        {
-          title: 'Affiliation Settings',
-          description: 'Manage affiliation settings',
-          icon: 'settings',
-          colorScheme: 'red',
-          path: '/home/sub-menu/affiliation-settings',
-        },
-        {
-          title: 'Manage Renewals',
-          description: 'Track and approve college renewals.',
-          icon: 'event_repeat',
-          colorScheme: 'purple',
-          path: '/affiliation-management-system/college-renewal-admin/upcoming',
         },
       ]}
     />

@@ -14,6 +14,10 @@ import DraftRegistrationRequest from './draft-registration-request';
 import InspectionReport from './inspection-report';
 import InspectionStatusReport from './inspection-status-report';
 import ProfileDetails from './Profile-details';
+import InspectionAssignment from './inspection-assignment';
+import FinalRegistrationApproval from './final-registration-approval';
+import BasicRegistrationDetails from './basic-registration-details';
+import ProfileScrutiny from './profile-scrutiny';
 
 export default function AffiliationManagementSystem() {
   return (
@@ -54,6 +58,19 @@ export default function AffiliationManagementSystem() {
       />
       <Route path="inspection-report/*" element={<InspectionReport />} />
       <Route path="profile-details/*" element={<ProfileDetails />} />
+      <Route path="profile-scrutiny/*" element={<ProfileScrutiny />} />
+      <Route
+        path="basic-registration-details/*"
+        element={<BasicRegistrationDetails />}
+      />
+      <Route
+        path="inspection-assignment/*"
+        element={<InspectionAssignment />}
+      />
+      <Route
+        path="final-registration-approval/*"
+        element={<FinalRegistrationApproval />}
+      />
       <Route
         path="approval-status-report/*"
         element={<ApprovalStatusReport />}
