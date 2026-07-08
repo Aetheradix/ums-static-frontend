@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Checkbox, DropDownList, TextBox } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
@@ -6,6 +6,7 @@ import FormWizard, {
   type WizardStep,
 } from 'shared/components/forms/FormWizard';
 import { useHostel } from '../context';
+import '../hostel.css';
 import { BLOOD_GROUPS, COLLEGE_OPTIONS, SEMESTERS } from '../data';
 
 type App = HostelManagement.Application;
@@ -310,7 +311,7 @@ export default function StudentApply() {
             data={hostelDD}
             textField="text"
             valueField="id"
-            defaultOptionText="— Select —"
+            defaultOptionText="â€” Select â€”"
             value={form.hostelPreference}
             onChange={v => set('hostelPreference', v as string)}
           />
@@ -483,21 +484,21 @@ export default function StudentApply() {
           <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm space-y-1">
             <p>
               <span className="font-bold text-slate-600">Name:</span>{' '}
-              {form.name || '—'}
+              {form.name || 'â€”'}
             </p>
             <p>
               <span className="font-bold text-slate-600">Enrollment:</span>{' '}
-              {form.enrollmentNo || '—'}
+              {form.enrollmentNo || 'â€”'}
             </p>
             <p>
               <span className="font-bold text-slate-600">College:</span>{' '}
-              {form.college || '—'}
+              {form.college || 'â€”'}
             </p>
             <p>
               <span className="font-bold text-slate-600">
                 Preferred Hostel:
               </span>{' '}
-              {form.hostelPreference || '—'}
+              {form.hostelPreference || 'â€”'}
             </p>
           </div>
         </div>
@@ -510,6 +511,7 @@ export default function StudentApply() {
       title="Student Hostel Application"
       description="Submit a new hostel intake application or make corrections to a sent-back form"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Hostel Management',
           to: '/hostel-management/hostel-registry',
@@ -517,7 +519,7 @@ export default function StudentApply() {
         { label: 'Student Apply' },
       ]}
     >
-      {/* ── Correction retrieval ── */}
+      {/* â”€â”€ Correction retrieval â”€â”€ */}
       <FormCard
         title="Retrieve Flagged Application for Correction"
         icon="search"
@@ -540,13 +542,13 @@ export default function StudentApply() {
         </FormGrid>
         {form.id && (
           <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800 font-semibold">
-            ✏️ Editing correction for Application ID: <strong>{form.id}</strong>{' '}
-            — {form.name}
+            âœï¸ Editing correction for Application ID:{' '}
+            <strong>{form.id}</strong> â€” {form.name}
           </div>
         )}
       </FormCard>
 
-      {/* ── Multi-step wizard ── */}
+      {/* â”€â”€ Multi-step wizard â”€â”€ */}
       <FormCard title="Application Form" icon="file">
         <FormWizard
           steps={steps}

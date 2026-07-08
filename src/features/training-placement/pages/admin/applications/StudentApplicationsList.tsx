@@ -8,8 +8,8 @@ import {
 } from 'shared/new-components';
 import { tpUrls } from '../../../urls';
 import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
-import { Dropdown } from 'primereact/dropdown';
+import { Modal } from 'shared/components/popups';
+import { DropDownList } from 'shared/components/forms';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Column } from 'primereact/column';
 import { useLocalStorage } from 'shared/hooks/useLocalStorage';
@@ -206,13 +206,39 @@ export default function StudentApplicationsList() {
         </div>
       </FormCard>
 
-      <Dialog
+      <Modal
         header="Bulk Update Hiring Status"
         visible={showBulkDialog}
-        className="w-[30vw]"
+        size="medium"
         onHide={() => setShowBulkDialog(false)}
-        footer={
-          <div>
+      >
+        <div className="flex flex-col gap-4 p-4">
+          <p className="text-gray-600">
+            You are updating the status for{' '}
+            <strong>{selectedApps.length}</strong> selected applications.
+          </p>
+          <DropDownList
+            label="New Status"
+            value={bulkStatus || ''}
+            data={statusOptions}
+            textField="label"
+            valueField="value"
+            onChange={v => setBulkStatus(v as string)}
+            defaultOptionText="Select a Status"
+          />
+          <div className="flex flex-col gap-2">
+            <label className="font-medium text-gray-700">
+              Remarks (Optional)
+            </label>
+            <InputTextarea
+              value={bulkRemarks}
+              onChange={e => setBulkRemarks(e.target.value)}
+              rows={3}
+              placeholder="Add any internal remarks..."
+              className="w-full"
+            />
+          </div>
+          <div className="flex justify-end gap-3 mt-4 border-t border-gray-100 pt-4">
             <Button
               label="Cancel"
               icon="pi pi-times"
@@ -227,37 +253,8 @@ export default function StudentApplicationsList() {
               disabled={!bulkStatus}
             />
           </div>
-        }
-      >
-        <div className="flex flex-col gap-4 mt-2">
-          <p className="text-gray-600">
-            You are updating the status for{' '}
-            <strong>{selectedApps.length}</strong> selected applications.
-          </p>
-          <div className="flex flex-col gap-2">
-            <label className="font-medium text-gray-700">New Status</label>
-            <Dropdown
-              value={bulkStatus}
-              options={statusOptions}
-              onChange={e => setBulkStatus(e.value)}
-              placeholder="Select a Status"
-              className="w-full"
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <label className="font-medium text-gray-700">
-              Remarks (Optional)
-            </label>
-            <InputTextarea
-              value={bulkRemarks}
-              onChange={e => setBulkRemarks(e.target.value)}
-              rows={3}
-              placeholder="Add any internal remarks..."
-              className="w-full"
-            />
-          </div>
         </div>
-      </Dialog>
+      </Modal>
     </FormPage>
   );
 }

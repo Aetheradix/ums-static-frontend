@@ -24,7 +24,7 @@ export default function FormStepperActions({
   const isLastStep = activeStep === totalSteps - 1;
 
   return (
-    <div className="affiliation-form-actions">
+    <div className="affiliation-form-actions mt-6 flex items-center justify-end gap-3">
       {activeStep > 0 && (
         <Button
           key="back-button"

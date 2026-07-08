@@ -11,6 +11,7 @@ interface MultiSelectProps<TData, TForm extends FieldValues>
   data?: TData[];
   value?: TData[];
   textField?: keyof TData;
+  valueField?: keyof TData;
   onChange?: (obj: TData[]) => void;
   required?: boolean;
   appendTo?: 'self' | HTMLElement | (() => HTMLElement) | undefined | null;
@@ -23,6 +24,7 @@ function InnerMultiSelectList<TData = Data.DataItem<number>>({
   label,
   data,
   textField = 'text' as keyof TData,
+  valueField,
   onChange,
   required,
   appendTo = 'self',
@@ -40,6 +42,7 @@ function InnerMultiSelectList<TData = Data.DataItem<number>>({
         inputId={id ?? name}
         options={data}
         optionLabel={textField as string}
+        optionValue={valueField as string}
         onChange={e => onChange?.(e.value)}
         invalid={!!errorMessage}
         filter={true}

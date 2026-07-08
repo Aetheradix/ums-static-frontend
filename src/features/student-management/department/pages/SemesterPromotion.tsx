@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Dropdown } from 'primereact/dropdown';
+import { DropDownList } from 'shared/components/forms';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
@@ -116,15 +116,17 @@ export default function SemesterPromotion() {
                 Select Batch & Current Semester{' '}
                 <span className="text-red-500">*</span>
               </label>
-              <Dropdown
-                value={selectedBatch}
-                options={batches}
-                onChange={e => {
-                  setSelectedBatch(e.value);
+              <DropDownList
+                label=""
+                value={selectedBatch || ''}
+                data={batches}
+                textField="label"
+                valueField="value"
+                onChange={v => {
+                  setSelectedBatch(v as string);
                   setSelectedStudents(null);
                 }}
-                placeholder="Select a Batch"
-                className="w-full shadow-sm"
+                defaultOptionText="Select a Batch"
               />
             </div>
             <div className="w-full md:w-auto mt-2 md:mt-0">

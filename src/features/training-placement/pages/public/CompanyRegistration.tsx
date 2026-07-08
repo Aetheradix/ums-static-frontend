@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { FormPage, FormCard } from 'shared/new-components';
 import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
+import { TextBox } from 'shared/components/forms';
 import { Toast } from 'primereact/toast';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,8 +19,7 @@ export default function CompanyRegistration() {
     hrPhone: '',
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleChange = (name: string, value: string) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
@@ -60,44 +59,26 @@ export default function CompanyRegistration() {
         <FormCard title="Company Information">
           <form onSubmit={handleSubmit} className="p-4 flex flex-col gap-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Company Name *
-                </label>
-                <InputText
-                  name="companyName"
-                  value={formData.companyName}
-                  onChange={handleChange}
-                  required
-                  placeholder="Enter company name"
-                  className="w-full"
-                />
-              </div>
+              <TextBox
+                label="Company Name *"
+                value={formData.companyName}
+                onChange={v => handleChange('companyName', v as string)}
+                placeholder="Enter company name"
+              />
 
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Industry / Sector *
-                </label>
-                <InputText
-                  name="industry"
-                  value={formData.industry}
-                  onChange={handleChange}
-                  required
-                  placeholder="e.g. IT Services, Manufacturing"
-                  className="w-full"
-                />
-              </div>
+              <TextBox
+                label="Industry / Sector *"
+                value={formData.industry}
+                onChange={v => handleChange('industry', v as string)}
+                placeholder="e.g. IT Services, Manufacturing"
+              />
 
-              <div className="flex flex-col gap-2 md:col-span-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Website URL
-                </label>
-                <InputText
-                  name="website"
+              <div className="md:col-span-2">
+                <TextBox
+                  label="Website URL"
                   value={formData.website}
-                  onChange={handleChange}
+                  onChange={v => handleChange('website', v as string)}
                   placeholder="https://www.example.com"
-                  className="w-full"
                 />
               </div>
             </div>
@@ -107,48 +88,26 @@ export default function CompanyRegistration() {
                 HR Contact Details
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    Contact Person Name *
-                  </label>
-                  <InputText
-                    name="hrName"
-                    value={formData.hrName}
-                    onChange={handleChange}
-                    required
-                    placeholder="Enter full name"
-                    className="w-full"
-                  />
-                </div>
+                <TextBox
+                  label="Contact Person Name *"
+                  value={formData.hrName}
+                  onChange={v => handleChange('hrName', v as string)}
+                  placeholder="Enter full name"
+                />
 
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    Official Email ID *
-                  </label>
-                  <InputText
-                    name="hrEmail"
-                    type="email"
-                    value={formData.hrEmail}
-                    onChange={handleChange}
-                    required
-                    placeholder="name@company.com"
-                    className="w-full"
-                  />
-                </div>
+                <TextBox
+                  label="Official Email ID *"
+                  value={formData.hrEmail}
+                  onChange={v => handleChange('hrEmail', v as string)}
+                  placeholder="name@company.com"
+                />
 
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    Phone Number *
-                  </label>
-                  <InputText
-                    name="hrPhone"
-                    value={formData.hrPhone}
-                    onChange={handleChange}
-                    required
-                    placeholder="Enter phone number"
-                    className="w-full"
-                  />
-                </div>
+                <TextBox
+                  label="Phone Number *"
+                  value={formData.hrPhone}
+                  onChange={v => handleChange('hrPhone', v as string)}
+                  placeholder="Enter phone number"
+                />
               </div>
             </div>
 

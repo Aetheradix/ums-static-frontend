@@ -1,6 +1,7 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { FormCard, FormPage, GridPanel } from 'shared/new-components';
+import '../residential.css';
 import { useResidentialAllocation } from '../context';
 import { RESIDENTIAL_ALLOCATION_URLS } from '../urls';
 
@@ -40,11 +41,19 @@ export default function AdminReview() {
     setAdminRemarks('');
   };
 
+  const getStatusClass = (status: string) => {
+    if (status === 'Approved') return 'ram-badge--approved';
+    if (status === 'Pending') return 'ram-badge--pending';
+    if (status === 'Sent Back') return 'ram-badge--sent-back';
+    return 'ram-badge--rejected';
+  };
+
   return (
     <FormPage
       title="Seniority Screener & Admin Desk"
       description="Evaluate faculty housing applications based on date of joining, basic pay, and grade matrix rules"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Residential Allocation',
           to: RESIDENTIAL_ALLOCATION_URLS.dashboard,
@@ -56,25 +65,18 @@ export default function AdminReview() {
         {/* Applications List */}
         <div className="lg:col-span-2">
           <FormCard title="Faculty Applications Queue" icon="list">
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-xs font-bold text-slate-500 uppercase">
-                Filter Status:
-              </span>
-              <div className="flex gap-2">
-                {['All', 'Pending', 'Approved', 'Sent Back'].map(st => (
-                  <button
-                    key={st}
-                    onClick={() => setReviewFilter(st)}
-                    className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
-                      reviewFilter === st
-                        ? 'bg-amber-500 text-slate-950'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                    }`}
-                  >
-                    {st}
-                  </button>
-                ))}
-              </div>
+            {/* Filter Bar */}
+            <div className="ram-filter-bar">
+              <span className="ram-filter-label">Filter:</span>
+              {['All', 'Pending', 'Approved', 'Sent Back'].map(st => (
+                <button
+                  key={st}
+                  onClick={() => setReviewFilter(st)}
+                  className={`ram-filter-pill ${reviewFilter === st ? 'ram-filter-pill--active' : 'ram-filter-pill--inactive'}`}
+                >
+                  {st}
+                </button>
+              ))}
             </div>
 
             <GridPanel
@@ -102,15 +104,7 @@ export default function AdminReview() {
                     item: ResidentialAllocationManagement.StaffApplication
                   ) => (
                     <span
-                      className={`px-2.5 py-1 text-xs font-bold rounded-full ${
-                        item.status === 'Approved'
-                          ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                          : item.status === 'Pending'
-                            ? 'bg-amber-50 text-amber-800 border border-amber-200'
-                            : item.status === 'Sent Back'
-                              ? 'bg-rose-50 text-rose-800 border border-rose-200'
-                              : 'bg-slate-100 text-slate-800'
-                      }`}
+                      className={`ram-badge ${getStatusClass(item.status)}`}
                     >
                       {item.status}
                     </span>
@@ -126,9 +120,13 @@ export default function AdminReview() {
                         setSelectedApp(item);
                         setAdminRemarks(item.adminRemarks || '');
                       }}
-                      className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold px-3 py-1.5 rounded-lg transition"
+                      className="ram-btn-inspect"
                     >
-                      Inspect Profile
+                      <i
+                        className="pi pi-search"
+                        style={{ marginRight: '0.3rem', fontSize: '0.65rem' }}
+                      />
+                      Inspect
                     </button>
                   ),
                 },
@@ -141,57 +139,50 @@ export default function AdminReview() {
         <div className="lg:col-span-1">
           <FormCard title="Evaluation Inspector" icon="search">
             {selectedApp ? (
-              <div className="space-y-4 text-xs">
-                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="font-mono font-bold text-amber-700">
+              <div className="space-y-4">
+                {/* Profile Card */}
+                <div className="ram-inspector-card">
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="ram-inspector-id-badge">
                       {selectedApp.id}
                     </span>
-                    <span className="font-bold text-slate-800">
+                    <span className="text-xs font-bold text-slate-500 font-mono">
                       {selectedApp.enrollmentNo}
                     </span>
                   </div>
-                  <h4 className="text-sm font-black text-slate-900">
-                    {selectedApp.name}
-                  </h4>
-                  <p className="text-slate-500">
-                    {selectedApp.designation} • {selectedApp.department}
+                  <p className="ram-inspector-name">{selectedApp.name}</p>
+                  <p className="ram-inspector-meta">
+                    {selectedApp.designation} &bull; {selectedApp.department}
                   </p>
                 </div>
 
-                <div className="space-y-2 bg-indigo-50/50 p-3 rounded-xl border border-indigo-100">
-                  <p className="font-bold text-indigo-900 uppercase text-[10px] tracking-wider">
-                    Seniority Metrics
-                  </p>
-                  <p className="text-slate-700">
-                    STU Joining Date:{' '}
-                    <strong className="text-indigo-700">
-                      {selectedApp.dateOfJoining}
-                    </strong>
-                  </p>
-                  <p className="text-slate-700">
-                    Eligible Pay Band:{' '}
-                    <strong className="text-indigo-700">
-                      {selectedApp.payLevel}
-                    </strong>
-                  </p>
-                  <p className="text-slate-700">
-                    Requested Pref:{' '}
-                    <strong className="text-indigo-700">
-                      {selectedApp.quarterPreference}
-                    </strong>
-                  </p>
+                {/* Seniority Metrics */}
+                <div className="ram-metrics-panel">
+                  <p className="ram-metrics-title">Seniority Metrics</p>
+                  <div className="ram-metrics-row">
+                    <span>STU Joining Date</span>
+                    <strong>{selectedApp.dateOfJoining}</strong>
+                  </div>
+                  <div className="ram-metrics-row">
+                    <span>Eligible Pay Band</span>
+                    <strong>{selectedApp.payLevel}</strong>
+                  </div>
+                  <div className="ram-metrics-row">
+                    <span>Requested Preference</span>
+                    <strong>{selectedApp.quarterPreference}</strong>
+                  </div>
                 </div>
 
                 {selectedApp.specialRequirement && (
-                  <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-amber-900">
+                  <div className="ram-special-req">
                     <strong>Special Priority Note:</strong>{' '}
                     {selectedApp.specialRequirement}
                   </div>
                 )}
 
-                <div className="space-y-2 pt-2">
-                  <label className="block font-bold text-slate-700">
+                {/* Remarks */}
+                <div>
+                  <label className="ram-remarks-label">
                     Admin Screener Remarks *
                   </label>
                   <textarea
@@ -199,11 +190,12 @@ export default function AdminReview() {
                     placeholder="Provide evaluation notes..."
                     value={adminRemarks}
                     onChange={e => setAdminRemarks(e.target.value)}
-                    className="w-full border border-slate-200 rounded-xl p-3 outline-none focus:border-amber-500"
+                    className="ram-remarks-textarea"
                   />
                 </div>
 
-                <div className="flex flex-col gap-2 pt-2">
+                {/* Actions */}
+                <div className="flex flex-col gap-2">
                   <Button
                     label="Approve Seniority Intake ✓"
                     variant="primary"
@@ -224,9 +216,12 @@ export default function AdminReview() {
                 </div>
               </div>
             ) : (
-              <div className="text-center py-12 text-slate-400 text-sm">
-                Select an application from the queue to inspect details and
-                execute review actions.
+              <div className="ram-empty-state">
+                <i className="pi pi-search" />
+                <p>
+                  Select an application from the queue to inspect details and
+                  execute review actions.
+                </p>
               </div>
             )}
           </FormCard>

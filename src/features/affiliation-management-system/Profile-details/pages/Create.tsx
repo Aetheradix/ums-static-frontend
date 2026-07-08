@@ -276,7 +276,7 @@ export default function Create() {
         </div>
       </FormCard>
 
-      <FormActions align="right" saveLabel="Next" onSave={onFormSubmit} />
+      <FormActions align="right" saveLabel="Submit" onSave={onFormSubmit} />
     </FormPage>
   );
 }

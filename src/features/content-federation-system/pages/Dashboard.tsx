@@ -7,6 +7,7 @@ import { cfsUrls } from '../urls';
 import { mockContent, mockActivityLogs } from '../mockdata';
 import type { ContentItem } from '../types';
 import Chart from 'chart.js/auto';
+import './Dashboard.css';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -161,10 +162,7 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
         <div className="lg:col-span-2">
           <FormCard title="Submission Status Breakdown">
-            <div
-              className="p-4 flex items-center justify-center"
-              style={{ height: '240px' }}
-            >
+            <div className="chart-container">
               <canvas ref={doughnutRef} className="h-full w-full" />
             </div>
           </FormCard>
@@ -183,42 +181,42 @@ export default function AdminDashboard() {
                 onClick={() => {}}
               />
             </div>
-            <div className="p-4 flex flex-col gap-3">
+            <div className="flex flex-col gap-3">
               {(role === 'admin' || role === 'ouAdmin') && (
-                <button
-                  type="button"
+                <Button
+                  label="Add Content"
+                  icon="pi pi-plus"
+                  variant="primary"
+                  className="w-full justify-center"
                   onClick={() => navigate(cfsUrls.ouAdmin.addContent)}
-                  className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium flex items-center justify-center gap-2 transition"
-                >
-                  <i className="pi pi-plus" /> Add Content
-                </button>
+                />
               )}
               {role === 'admin' && (
                 <>
-                  <button
-                    type="button"
+                  <Button
+                    label="Module Settings"
+                    icon="pi pi-cog"
+                    variant="outlined"
+                    className="w-full justify-center"
                     onClick={() => navigate(cfsUrls.admin.settings.hub)}
-                    className="w-full py-2.5 px-4 border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg font-medium flex items-center justify-center gap-2 transition"
-                  >
-                    <i className="pi pi-cog" /> Module Settings
-                  </button>
-                  <button
-                    type="button"
+                  />
+                  <Button
+                    label="View All OU Content"
+                    icon="pi pi-list"
+                    variant="outlined"
+                    className="w-full justify-center"
                     onClick={() => navigate(cfsUrls.admin.allContent)}
-                    className="w-full py-2.5 px-4 border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg font-medium flex items-center justify-center gap-2 transition"
-                  >
-                    <i className="pi pi-list" /> View All OU Content
-                  </button>
+                  />
                 </>
               )}
               {role === 'reviewer' && (
-                <button
-                  type="button"
+                <Button
+                  label="Pending Reviews"
+                  icon="pi pi-inbox"
+                  variant="primary"
+                  className="w-full justify-center"
                   onClick={() => navigate(cfsUrls.reviewer.pending)}
-                  className="w-full py-2.5 px-4 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-medium flex items-center justify-center gap-2 transition"
-                >
-                  <i className="pi pi-inbox" /> Pending Reviews
-                </button>
+                />
               )}
             </div>
           </FormCard>
@@ -227,7 +225,7 @@ export default function AdminDashboard() {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 mb-6">
         <FormCard title="Content distribution by Category">
-          <div className="p-4" style={{ height: '260px' }}>
+          <div className="chart-container">
             <canvas ref={barRef} className="h-full w-full" />
           </div>
         </FormCard>
@@ -346,12 +344,13 @@ export default function AdminDashboard() {
                       {log.action.toLowerCase()}
                     </span>
                   </div>
-                  <span
-                    className="text-sm font-medium text-blue-600 cursor-pointer hover:underline"
+                  <button
+                    type="button"
+                    className="text-sm font-medium text-blue-600 cursor-pointer hover:underline bg-transparent border-none p-0"
                     onClick={() => navigate(cfsUrls.admin.activityLogs)}
                   >
                     "{log.affectedItem}"
-                  </span>
+                  </button>
                   <span className="text-xs text-gray-500 mt-1">
                     {log.timestamp}
                   </span>

@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
+﻿import { useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useCareerAdvancement } from '../context';
+import '../career.css';
 import { FormCard, FormPage } from 'shared/new-components';
 import { Button } from 'shared/components/buttons';
 
@@ -70,6 +71,7 @@ export default function AparTrack() {
       title="APAR Application Tracking"
       description="Track the status and stages of your Annual Performance Appraisal Report application"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Career Advancement', to: '/career-advancement/dashboard' },
         { label: 'Track Application' },
       ]}
@@ -136,7 +138,7 @@ export default function AparTrack() {
                       : 'bg-white border-slate-200 text-slate-300'
                   }`}
                 >
-                  {s.done ? '✓' : i + 1}
+                  {s.done ? 'âœ“' : i + 1}
                 </div>
                 {/* Content */}
                 <div>

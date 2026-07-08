@@ -1,0 +1,1023 @@
+/* ═══════════════════════════════════════════════════════════════
+   hostel.css  —  Hostel Management Premium UI Styles
+   Scoped under .hm-* prefix to avoid collisions
+   ═══════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+/* ── Keyframes ─────────────────────────────────────────────────── */
+@keyframes hm-shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+@keyframes hm-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes hm-pulse-ring {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(99, 102, 241, 0);
+  }
+}
+
+/* ── Hero Banner ───────────────────────────────────────────────── */
+.hm-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 2rem 2.25rem;
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 45%, #0f172a 100%);
+  border-radius: 1.5rem;
+  overflow: hidden;
+  box-shadow: 0 20px 60px -12px rgba(99, 102, 241, 0.45);
+  animation: hm-fade-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@media (min-width: 768px) {
+  .hm-hero {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+.hm-hero::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(99, 102, 241, 0.25) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+.hm-hero::after {
+  content: 'HST';
+  position: absolute;
+  bottom: -10px;
+  right: 20px;
+  font-size: 7rem;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.04);
+  letter-spacing: -0.05em;
+  pointer-events: none;
+  user-select: none;
+}
+.hm-hero-content {
+  position: relative;
+  z-index: 1;
+}
+.hm-hero-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  background: linear-gradient(135deg, #fff 30%, #a5b4fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hm-hero-desc {
+  color: #94a3b8;
+  font-size: 0.8rem;
+  max-width: 480px;
+  margin-top: 0.5rem;
+  line-height: 1.6;
+}
+.hm-hero-action {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+/* ── Stat Cards ────────────────────────────────────────────────── */
+.hm-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+@media (min-width: 768px) {
+  .hm-stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.hm-stat-card {
+  position: relative;
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1.25rem 1.25rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition:
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.25s ease;
+  animation: hm-fade-up 0.4s ease both;
+}
+.hm-stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+}
+.hm-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 1rem 1rem 0 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.hm-stat-card:hover::before {
+  transform: scaleX(1);
+}
+
+.hm-stat-card--amber::before {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+.hm-stat-card--indigo::before {
+  background: linear-gradient(90deg, #6366f1, #818cf8);
+}
+.hm-stat-card--rose::before {
+  background: linear-gradient(90deg, #f43f5e, #fb7185);
+}
+.hm-stat-card--emerald::before {
+  background: linear-gradient(90deg, #10b981, #34d399);
+}
+
+.hm-stat-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  margin-bottom: 0.25rem;
+}
+.hm-stat-value {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1;
+}
+.hm-stat-sub {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: #94a3b8;
+}
+.hm-stat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.hm-stat-card:hover .hm-stat-icon {
+  transform: scale(1.15) rotate(-5deg);
+}
+.hm-stat-icon--amber {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #92400e;
+}
+.hm-stat-icon--indigo {
+  background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+  color: #3730a3;
+}
+.hm-stat-icon--rose {
+  background: linear-gradient(135deg, #ffe4e6, #fecdd3);
+  color: #9f1239;
+}
+.hm-stat-icon--emerald {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: #065f46;
+}
+
+/* ── Badges ────────────────────────────────────────────────────── */
+.hm-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.7rem;
+  border-radius: 9999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.hm-badge--approved {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
+.hm-badge--pending {
+  background: linear-gradient(135deg, #fef9c3, #fde68a);
+  color: #78350f;
+  border: 1px solid #fcd34d;
+}
+.hm-badge--sent-back {
+  background: linear-gradient(135deg, #ffedd5, #fed7aa);
+  color: #9a3412;
+  border: 1px solid #fdba74;
+}
+.hm-badge--rejected {
+  background: linear-gradient(135deg, #ffe4e6, #fecdd3);
+  color: #9f1239;
+  border: 1px solid #fda4af;
+}
+.hm-badge--paid {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
+.hm-badge--unpaid {
+  background: linear-gradient(135deg, #ffe4e6, #fecdd3);
+  color: #9f1239;
+  border: 1px solid #fda4af;
+}
+.hm-badge--boys {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  color: #1e3a8a;
+  border: 1px solid #93c5fd;
+}
+.hm-badge--girls {
+  background: linear-gradient(135deg, #fce7f3, #fbcfe8);
+  color: #831843;
+  border: 1px solid #f9a8d4;
+}
+.hm-badge--coed {
+  background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+  color: #4c1d95;
+  border: 1px solid #c4b5fd;
+}
+.hm-badge--available {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
+.hm-badge--full {
+  background: linear-gradient(135deg, #ffe4e6, #fecdd3);
+  color: #9f1239;
+  border: 1px solid #fda4af;
+}
+.hm-badge--maint {
+  background: linear-gradient(135deg, #fef9c3, #fde68a);
+  color: #78350f;
+  border: 1px solid #fcd34d;
+}
+.hm-badge--issued {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
+
+/* ── Filter Bar ────────────────────────────────────────────────── */
+.hm-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.hm-filter-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  margin-right: 0.25rem;
+}
+.hm-filter-pill {
+  padding: 0.3rem 0.875rem;
+  border-radius: 9999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.hm-filter-pill--active {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+  transform: scale(1.05);
+}
+.hm-filter-pill--inactive {
+  background: #f1f5f9;
+  color: #64748b;
+}
+.hm-filter-pill--inactive:hover {
+  background: #e2e8f0;
+  transform: scale(1.03);
+}
+
+/* ── Toolbar (Search + Select row) ─────────────────────────────── */
+.hm-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.hm-search-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.625rem;
+  padding: 0 0.75rem;
+  flex: 1;
+  min-width: 180px;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+.hm-search-wrapper:focus-within {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+.hm-search-wrapper i {
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+.hm-search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.8rem;
+  color: #0f172a;
+  padding: 0.55rem 0.25rem;
+  width: 100%;
+}
+.hm-select-filter {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.625rem;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.75rem;
+  color: #374151;
+  outline: none;
+  cursor: pointer;
+}
+
+/* ── Alert Panels ──────────────────────────────────────────────── */
+.hm-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  padding: 0.875rem 1rem;
+  border-radius: 0.875rem;
+  font-size: 0.72rem;
+  line-height: 1.6;
+  animation: hm-fade-up 0.35s ease both;
+}
+.hm-alert i {
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+.hm-alert--danger {
+  background: linear-gradient(135deg, #fff1f2, #ffe4e6);
+  border: 1px solid #fecdd3;
+  color: #9f1239;
+}
+.hm-alert--danger i {
+  color: #f43f5e;
+}
+.hm-alert--warning {
+  background: linear-gradient(135deg, #fffbeb, #fef9c3);
+  border: 1px solid #fde68a;
+  color: #78350f;
+}
+.hm-alert--warning i {
+  color: #f59e0b;
+}
+.hm-alert--info {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border: 1px solid #bfdbfe;
+  color: #1e3a8a;
+}
+.hm-alert--info i {
+  color: #3b82f6;
+}
+.hm-alert--guard {
+  background: linear-gradient(135deg, #ede9fe, #f5f3ff);
+  border: 1px solid #c4b5fd;
+  color: #4c1d95;
+  font-weight: 600;
+}
+.hm-alert--guard i {
+  color: #7c3aed;
+}
+
+/* ── Section Headings ──────────────────────────────────────────── */
+.hm-section-heading {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #4f46e5;
+  padding-left: 0.75rem;
+  margin-bottom: 0.875rem;
+  margin-top: 0.25rem;
+  position: relative;
+}
+.hm-section-heading::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 9999px;
+  background: linear-gradient(180deg, #6366f1, #a5b4fc);
+}
+
+/* ── Inspector / Review Panel ──────────────────────────────────── */
+.hm-inspector-card {
+  background: linear-gradient(135deg, #f8faff, #eef2ff);
+  border: 1px solid #c7d2fe;
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+}
+.hm-inspector-id {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: #fff;
+  border-radius: 0.375rem;
+  font-size: 0.62rem;
+  font-weight: 800;
+  font-family: monospace;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
+}
+.hm-inspector-name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
+}
+.hm-inspector-meta {
+  font-size: 0.72rem;
+  color: #64748b;
+  margin-top: 0.2rem;
+}
+.hm-metrics-panel {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 0.875rem 1rem;
+  space-y: 0.5rem;
+}
+.hm-metrics-title {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  margin-bottom: 0.625rem;
+}
+.hm-metrics-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+.hm-metrics-row:last-child {
+  border-bottom: none;
+}
+.hm-metrics-row span {
+  color: #64748b;
+}
+.hm-metrics-row strong {
+  color: #1e293b;
+  font-weight: 700;
+}
+
+/* ── Detail Field Grid ─────────────────────────────────────────── */
+.hm-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+@media (min-width: 768px) {
+  .hm-detail-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.hm-detail-field {
+  padding: 0.5rem 0.75rem;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+}
+.hm-detail-label {
+  font-size: 0.65rem;
+  color: #94a3b8;
+  font-weight: 600;
+  margin-bottom: 0.15rem;
+}
+.hm-detail-value {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* ── Remarks Panel ─────────────────────────────────────────────── */
+.hm-remarks-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.hm-remarks-textarea {
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.625rem;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.8rem;
+  color: #1e293b;
+  resize: vertical;
+  outline: none;
+  font-family: inherit;
+  min-height: 70px;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+.hm-remarks-textarea:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+/* ── Preview Cards (student, room) ─────────────────────────────── */
+.hm-preview-card--student {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1px solid #bbf7d0;
+  border-radius: 0.875rem;
+  padding: 1rem;
+}
+.hm-preview-card--room {
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  border: 1px solid #c7d2fe;
+  border-radius: 0.875rem;
+  padding: 1rem;
+}
+.hm-preview-label {
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.625rem;
+}
+.hm-preview-label--student {
+  color: #15803d;
+}
+.hm-preview-label--room {
+  color: #4338ca;
+}
+.hm-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem 1rem;
+  font-size: 0.73rem;
+}
+@media (min-width: 768px) {
+  .hm-preview-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.hm-preview-item span {
+  color: #64748b;
+}
+.hm-preview-item strong {
+  color: #0f172a;
+}
+
+/* ── Invoice / Ledger Table ────────────────────────────────────── */
+.hm-invoice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, #0f172a, #1e1b4b);
+  border-radius: 0.875rem 0.875rem 0 0;
+  margin: -0.25rem -0.25rem 0;
+}
+.hm-invoice-name {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+}
+.hm-invoice-enroll {
+  display: inline-block;
+  margin-top: 0.25rem;
+  font-size: 0.65rem;
+  font-family: monospace;
+  font-weight: 700;
+  color: #a5b4fc;
+  letter-spacing: 0.06em;
+}
+.hm-invoice-status-paid {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: #065f46;
+  border-radius: 9999px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  border: 1px solid #6ee7b7;
+}
+.hm-invoice-status-unpaid {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: linear-gradient(135deg, #ffe4e6, #fecdd3);
+  color: #9f1239;
+  border-radius: 9999px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  border: 1px solid #fda4af;
+  animation: hm-pulse-ring 2s ease infinite;
+}
+.hm-invoice-table {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.875rem;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+.hm-invoice-table-header {
+  background: linear-gradient(90deg, #0f172a, #1e1b4b);
+  color: #fff;
+  padding: 0.625rem 1rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.hm-invoice-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  font-size: 0.78rem;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.15s;
+}
+.hm-invoice-row:hover {
+  background: #f8fafc;
+}
+.hm-invoice-row-label {
+  color: #64748b;
+}
+.hm-invoice-row-value {
+  font-weight: 600;
+  color: #1e293b;
+}
+.hm-invoice-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.875rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #f0f4ff, #e0e7ff);
+  border-top: 2px solid #c7d2fe;
+}
+.hm-invoice-total-amount {
+  font-size: 1.1rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Fee Status Overview Table ─────────────────────────────────── */
+.hm-fee-table {
+  width: 100%;
+  font-size: 0.75rem;
+}
+.hm-fee-table thead tr {
+  background: linear-gradient(90deg, #f1f5f9, #e8edf5);
+  color: #475569;
+}
+.hm-fee-table th {
+  padding: 0.625rem 0.875rem;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.hm-fee-table td {
+  padding: 0.625rem 0.875rem;
+}
+.hm-fee-table tbody tr {
+  border-top: 1px solid #f1f5f9;
+  transition: background 0.15s;
+}
+.hm-fee-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+/* ── Allotment Summary Table ───────────────────────────────────── */
+.hm-allot-table {
+  width: 100%;
+  font-size: 0.75rem;
+}
+.hm-allot-table thead tr {
+  background: linear-gradient(90deg, #f1f5f9, #e8edf5);
+}
+.hm-allot-table th {
+  padding: 0.625rem 0.875rem;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #475569;
+}
+.hm-allot-table td {
+  padding: 0.625rem 0.875rem;
+}
+.hm-allot-table tbody tr {
+  border-top: 1px solid #f1f5f9;
+  transition: background 0.15s;
+}
+.hm-allot-table tbody tr:hover {
+  background: #f8fafc;
+}
+.hm-room-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+  color: #3730a3;
+  border-radius: 0.375rem;
+  font-family: monospace;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+/* ── Empty State ───────────────────────────────────────────────── */
+.hm-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: #94a3b8;
+}
+.hm-empty-state i {
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hm-empty-state p {
+  font-size: 0.78rem;
+  max-width: 260px;
+  line-height: 1.6;
+}
+
+/* ── Inspect Action Button ─────────────────────────────────────── */
+.hm-btn-inspect {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.75rem;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+  color: #3730a3;
+  border-radius: 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.hm-btn-inspect:hover {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+/* ── Guard Alert Pill Banners (RoomAllotment) ──────────────────── */
+.hm-guard-bar {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.25rem;
+}
+.hm-guard-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.875rem;
+  border-radius: 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.hm-guard-pill--blue {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border: 1px solid #93c5fd;
+  color: #1e3a8a;
+}
+.hm-guard-pill--purple {
+  background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+  border: 1px solid #c4b5fd;
+  color: #4c1d95;
+}
+
+/* ── Stepper (StudentApply) ────────────────────────────────────── */
+.hm-stepper-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+  margin-bottom: 0.25rem;
+  scrollbar-width: none;
+}
+.hm-stepper-wrapper::-webkit-scrollbar {
+  display: none;
+}
+.hm-step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-width: 60px;
+  position: relative;
+}
+.hm-step-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  right: -50%;
+  height: 2px;
+  background: linear-gradient(90deg, #c7d2fe, #e2e8f0);
+  z-index: 0;
+}
+.hm-step-item.completed:not(:last-child)::after {
+  background: linear-gradient(90deg, #6366f1, #818cf8);
+}
+.hm-step-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 800;
+  z-index: 1;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.hm-step-dot--active {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25);
+  transform: scale(1.15);
+}
+.hm-step-dot--done {
+  background: linear-gradient(135deg, #10b981, #34d399);
+  color: #fff;
+}
+.hm-step-dot--pending {
+  background: #f1f5f9;
+  color: #94a3b8;
+  border: 2px solid #e2e8f0;
+}
+.hm-step-label {
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-top: 0.375rem;
+  text-align: center;
+  line-height: 1.3;
+  max-width: 60px;
+}
+
+/* ── Declaration Box ───────────────────────────────────────────── */
+.hm-declaration-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, #fffbeb, #fef9c3);
+  border: 1px solid #fde68a;
+  border-radius: 0.875rem;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+}
+.hm-declaration-text {
+  font-size: 0.75rem;
+  color: #78350f;
+  line-height: 1.7;
+}
+
+/* ── Doc Upload Zone ───────────────────────────────────────────── */
+.hm-doc-drop-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 2rem;
+  border: 2px dashed #c7d2fe;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #f8faff, #eef2ff);
+  text-align: center;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+.hm-doc-drop-zone:hover {
+  border-color: #6366f1;
+  background: #eef2ff;
+}
+.hm-upload-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, #fffbeb, #fef9c3);
+  border: 1px solid #fde68a;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  color: #78350f;
+}
+.hm-upload-alert i {
+  color: #f59e0b;
+  font-size: 1rem;
+}
+
+/* ── Dark mode overrides ───────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  .hm-stat-card {
+    background: #1e293b;
+    border-color: #334155;
+  }
+  .hm-stat-value {
+    color: #f1f5f9;
+  }
+  .hm-stat-label {
+    color: #64748b;
+  }
+  .hm-inspector-card {
+    background: #1e293b;
+    border-color: #334155;
+  }
+  .hm-preview-card--student {
+    background: linear-gradient(135deg, #052e16, #065f46);
+    border-color: #047857;
+  }
+  .hm-preview-card--room {
+    background: linear-gradient(135deg, #1e1b4b, #312e81);
+    border-color: #4338ca;
+  }
+  .hm-invoice-row:hover {
+    background: #1e293b;
+  }
+  .hm-fee-table tbody tr:hover {
+    background: #1e293b;
+  }
+}

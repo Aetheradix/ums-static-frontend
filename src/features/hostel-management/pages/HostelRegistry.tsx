@@ -1,8 +1,9 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { Checkbox, DropDownList, TextBox } from 'shared/components/forms';
 import { FormCard, FormGrid, FormPage, GridPanel } from 'shared/new-components';
 import { useHostel } from '../context';
+import '../hostel.css';
 import { COLLEGE_OPTIONS, FACILITY_OPTIONS } from '../data';
 
 type HostelForm = {
@@ -137,6 +138,7 @@ export default function HostelRegistry() {
       title="Hostel Registry"
       description="Register and manage hostel buildings for the university campus"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Hostel Management',
           to: '/hostel-management/hostel-registry',
@@ -144,7 +146,7 @@ export default function HostelRegistry() {
         { label: 'Hostel Registry' },
       ]}
     >
-      {/* ── Registration Form ── */}
+      {/* â”€â”€ Registration Form â”€â”€ */}
       <FormCard title="Register New Hostel" icon="building">
         <form onSubmit={handleSubmit}>
           <FormGrid columns={3}>
@@ -208,7 +210,7 @@ export default function HostelRegistry() {
           </FormGrid>
 
           <div className="mt-4">
-            <p className="form-sub-section-label">Capacity Details</p>
+            <p className="hm-section-heading">Capacity Details</p>
             <FormGrid columns={3}>
               <TextBox
                 label="No. of Floors"
@@ -232,7 +234,7 @@ export default function HostelRegistry() {
           </div>
 
           <div className="mt-4">
-            <p className="form-sub-section-label">Warden Details</p>
+            <p className="hm-section-heading">Warden Details</p>
             <FormGrid columns={3}>
               <TextBox
                 label="Warden Name"
@@ -263,7 +265,7 @@ export default function HostelRegistry() {
           </div>
 
           <div className="mt-4">
-            <p className="form-sub-section-label">Facilities Available</p>
+            <p className="hm-section-heading">Facilities Available</p>
             <FormGrid columns={4}>
               {FACILITY_OPTIONS.map(f => (
                 <Checkbox
@@ -286,8 +288,8 @@ export default function HostelRegistry() {
           </div>
 
           <div className="mt-4">
-            <p className="form-sub-section-label">
-              Fee Structure (₹ per semester)
+            <p className="hm-section-heading">
+              Fee Structure (â‚¹ per semester)
             </p>
             <FormGrid columns={4}>
               <TextBox
@@ -333,7 +335,7 @@ export default function HostelRegistry() {
         </form>
       </FormCard>
 
-      {/* ── Hostel List ── */}
+      {/* â”€â”€ Hostel List â”€â”€ */}
       <FormCard title="Registered Hostels" icon="list">
         <div className="flex gap-3 mb-4 flex-wrap">
           <TextBox

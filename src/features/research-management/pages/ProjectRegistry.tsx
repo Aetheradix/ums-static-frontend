@@ -1,8 +1,9 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextBox } from 'shared/components/forms';
 import { FormCard, FormGrid, FormPage, GridPanel } from 'shared/new-components';
 import { useResearch } from '../context';
+import '../research.css';
 import { AGENCY_OPTIONS, BLANK_PROJECT_FORM, CATEGORY_OPTIONS } from '../data';
 
 const CATEGORY_DROPDOWN: Data.DataItem<string>[] = CATEGORY_OPTIONS.map(c => ({
@@ -91,11 +92,12 @@ export default function ProjectRegistry() {
       title="Grants Ledger & Projects Registry"
       description="Register and manage sponsored research projects, institutional overhead settings, and PI profiles"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Research Management', to: '/research-management/dashboard' },
         { label: 'Project Registry' },
       ]}
     >
-      {/* ── Registration Form ── */}
+      {/* â”€â”€ Registration Form â”€â”€ */}
       <FormCard title="Register New Baseline Project" icon="book">
         <form onSubmit={handleSubmit}>
           <div className="mb-2">
@@ -189,7 +191,7 @@ export default function ProjectRegistry() {
         </form>
       </FormCard>
 
-      {/* ── Projects Table ── */}
+      {/* â”€â”€ Projects Table â”€â”€ */}
       <FormCard title="Active Projects Database" icon="list">
         <div className="flex gap-3 mb-4 flex-wrap">
           <TextBox
@@ -236,7 +238,7 @@ export default function ProjectRegistry() {
               header: 'Budget (INR)',
               cell: (item: ResearchManagement.Project) => (
                 <span className="font-mono text-xs">
-                  ₹{item.approvedBudget.toLocaleString()}
+                  â‚¹{item.approvedBudget.toLocaleString()}
                 </span>
               ),
             },
@@ -245,7 +247,7 @@ export default function ProjectRegistry() {
               header: 'Disbursed (INR)',
               cell: (item: ResearchManagement.Project) => (
                 <span className="font-mono text-xs text-indigo-700 font-bold">
-                  ₹{item.disbursedFunds.toLocaleString()}
+                  â‚¹{item.disbursedFunds.toLocaleString()}
                 </span>
               ),
             },

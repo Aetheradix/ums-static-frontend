@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { Button } from 'primereact/button';
-import { Dropdown } from 'primereact/dropdown';
-import { InputText } from 'primereact/inputtext';
-import { Tag } from 'primereact/tag';
-import { FormPage, FormCard } from 'shared/new-components';
+import { Button } from 'shared/components/buttons';
+import { DropDownList, TextBox } from 'shared/components/forms';
+import { FormPage, FormCard, StatusBadge } from 'shared/new-components';
 import { admissionsUrls } from '../../urls';
 import { ToastService } from 'services';
 
@@ -90,18 +88,18 @@ export default function SeatMatrixConfig() {
 
   const finalSeatsEditor = (options: any) => {
     return (
-      <InputText
-        type="number"
-        value={
-          options.rowData.manualOverrideSeats === null
-            ? ''
-            : options.rowData.manualOverrideSeats
-        }
-        onChange={e => handleManualOverride(options.rowIndex, e.target.value)}
-        placeholder={options.rowData.calculatedSeats.toString()}
-        className="w-full max-w-[100px] border-blue-500 focus:ring-2 focus:ring-blue-500"
-        autoFocus
-      />
+      <div className="w-full max-w-[150px]">
+        <TextBox
+          type="number"
+          value={
+            options.rowData.manualOverrideSeats === null
+              ? ''
+              : options.rowData.manualOverrideSeats.toString()
+          }
+          onChange={v => handleManualOverride(options.rowIndex, v as string)}
+          placeholder={options.rowData.calculatedSeats.toString()}
+        />
+      </div>
     );
   };
 
@@ -145,22 +143,27 @@ export default function SeatMatrixConfig() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="col-span-1 flex flex-col gap-2">
-              <label className="font-bold text-gray-700">Academic Year</label>
-              <Dropdown
+              <DropDownList
+                label="Academic Year"
                 value={selectedAcademicYear}
-                options={['2023-2024', '2024-2025', '2025-2026']}
-                onChange={e => setSelectedAcademicYear(e.value)}
-                className="w-full"
+                data={['2023-2024', '2024-2025', '2025-2026'].map(y => ({
+                  label: y,
+                  value: y,
+                }))}
+                textField="label"
+                valueField="value"
+                onChange={v => setSelectedAcademicYear(v as string)}
               />
             </div>
             <div className="col-span-1 flex flex-col gap-2">
-              <label className="font-bold text-gray-700">Program</label>
-              <Dropdown
-                value={selectedProgram}
-                options={mockPrograms}
-                onChange={e => setSelectedProgram(e.value)}
-                placeholder="Select a Program"
-                className="w-full"
+              <DropDownList
+                label="Program"
+                value={selectedProgram || ''}
+                data={mockPrograms}
+                textField="label"
+                valueField="value"
+                onChange={v => setSelectedProgram(v as string)}
+                defaultOptionText="Select a Program"
               />
             </div>
             <div className="col-span-1 flex flex-col gap-2">
@@ -216,7 +219,10 @@ export default function SeatMatrixConfig() {
                 field="quotaPercentage"
                 header="Quota (%)"
                 body={row => (
-                  <Tag value={`${row.quotaPercentage}%`} severity="info" />
+                  <StatusBadge
+                    label={`${row.quotaPercentage}%`}
+                    variant="info"
+                  />
                 )}
               ></Column>
               <Column
@@ -232,9 +238,9 @@ export default function SeatMatrixConfig() {
                   >
                     {row.finalSeats}
                     {row.manualOverrideSeats !== null && (
-                      <Tag
-                        value="Override"
-                        severity="warning"
+                      <StatusBadge
+                        label="Override"
+                        variant="warning"
                         className="text-xs"
                       />
                     )}
@@ -249,13 +255,13 @@ export default function SeatMatrixConfig() {
               <Button
                 label="Reset to Calculated"
                 icon="pi pi-refresh"
-                text
-                severity="secondary"
+                variant="outlined"
                 onClick={handleReset}
               />
               <Button
                 label="Publish Matrix"
                 icon="pi pi-check"
+                variant="primary"
                 onClick={handlePublish}
                 disabled={!isValidMatrix}
               />

@@ -1,15 +1,15 @@
-import { useMemo } from 'react';
+﻿import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCareerAdvancement } from '../context';
 import { FormCard, FormPage, GridPanel } from 'shared/new-components';
 import { Button } from 'shared/components/buttons';
+import '../career.css';
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const { aparApplications, pbasApplications, triggerNotification } =
     useCareerAdvancement();
 
-  // Calculations for Admin Dashboard
   const stats = useMemo(() => {
     const total = aparApplications.length + pbasApplications.length;
     const aparCount = aparApplications.length;
@@ -33,7 +33,6 @@ export default function Dashboard() {
       pbasApplications.filter(
         (p: CareerAdvancement.CASPBASApplication) => p.status === 'Approved'
       ).length;
-
     return {
       total,
       aparCount,
@@ -44,7 +43,6 @@ export default function Dashboard() {
     };
   }, [aparApplications, pbasApplications]);
 
-  // Combined applications list for Admin Dashboard
   const recentApplications = useMemo(() => {
     const list: any[] = [];
     aparApplications.forEach((a: CareerAdvancement.CASAPARApplication) => {
@@ -55,7 +53,6 @@ export default function Dashboard() {
         scheme: 'APAR',
         session: a.session,
         status: a.status,
-        raw: a,
       });
     });
     pbasApplications.forEach((p: CareerAdvancement.CASPBASApplication) => {
@@ -66,163 +63,178 @@ export default function Dashboard() {
         scheme: p.type,
         session: p.session,
         status: p.status,
-        raw: p,
       });
     });
     return list;
   }, [aparApplications, pbasApplications]);
 
-  const getStatusBadgeClass = (status: string) => {
+  const getStatusClass = (status: string) => {
     const s = status.toLowerCase();
-    if (s.includes('complete') || s.includes('approved')) {
-      return 'bg-emerald-100 text-emerald-700';
-    }
-    if (
-      s.includes('pending') ||
-      s.includes('draft') ||
-      s.includes('forwarded')
-    ) {
-      return 'bg-amber-100 text-amber-700';
-    }
+    if (s.includes('complete') || s.includes('approved'))
+      return 'ca-badge--complete';
+    if (s.includes('pending') || s.includes('draft') || s.includes('forwarded'))
+      return 'ca-badge--pending';
     if (
       s.includes('reject') ||
       s.includes('resubmit') ||
       s.includes('withdraw')
-    ) {
-      return 'bg-rose-100 text-rose-700';
-    }
-    return 'bg-cyan-100 text-cyan-700';
+    )
+      return 'ca-badge--rejected';
+    return 'ca-badge--draft';
   };
 
-  // Render Admin/Other Staff View
-  const renderAdminDashboard = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-        {[
-          {
-            label: 'Total Apps',
-            val: stats.total,
-            color: 'border-indigo-500 bg-indigo-50 text-indigo-700',
-            icon: 'pi-file',
-          },
-          {
-            label: 'APAR Apps',
-            val: stats.aparCount,
-            color: 'border-purple-500 bg-purple-50 text-purple-700',
-            icon: 'pi-file-o',
-          },
-          {
-            label: 'PBAS Apps',
-            val: stats.pbasCount,
-            color: 'border-emerald-500 bg-emerald-50 text-emerald-700',
-            icon: 'pi-chart-bar',
-          },
-          {
-            label: 'CAS Apps',
-            val: stats.casCount,
-            color: 'border-amber-500 bg-amber-50 text-amber-700',
-            icon: 'pi-bookmark',
-          },
-          {
-            label: 'Pending Screening',
-            val: stats.pendingScreening,
-            color: 'border-rose-500 bg-rose-50 text-rose-700',
-            icon: 'pi-clock',
-          },
-          {
-            label: 'Completed',
-            val: stats.completed,
-            color: 'border-teal-500 bg-teal-50 text-teal-700',
-            icon: 'pi-check',
-          },
-        ].map(s => (
-          <div
-            key={s.label}
-            className={`rounded-xl border-l-4 p-4 shadow-sm ${s.color} flex flex-col justify-between`}
-          >
-            <div>
-              <p className="text-2xl font-black">{s.val}</p>
-              <p className="text-xs font-bold text-slate-500 mt-1">{s.label}</p>
-            </div>
-            <div className="text-right mt-2">
-              <i className={`pi ${s.icon} opacity-40 text-lg`} />
-            </div>
-          </div>
-        ))}
-      </div>
+  const getSchemeClass = (scheme: string) => {
+    if (scheme === 'APAR') return 'ca-badge--apar';
+    if (scheme === 'PBAS') return 'ca-badge--pbas';
+    return 'ca-badge--cas';
+  };
 
-      <FormCard title="Recent Applications" icon="list">
-        <GridPanel
-          data={recentApplications}
-          columns={[
-            {
-              cell: (_, o) => <span>{(o.rowIndex ?? 0) + 1}</span>,
-              width: '40px',
-            },
-            { field: 'name', header: 'Employee Name' },
-            { field: 'designation', header: 'Designation' },
-            {
-              field: 'scheme',
-              header: 'Scheme',
-              cell: (item: any) => (
-                <span className="px-2 py-0.5 rounded text-xs font-bold bg-indigo-50 text-indigo-700">
-                  {item.scheme}
-                </span>
-              ),
-            },
-            { field: 'session', header: 'Session' },
-            {
-              field: 'status',
-              header: 'Status',
-              cell: (item: any) => (
-                <span
-                  className={`px-2 py-0.5 rounded text-xs font-bold ${getStatusBadgeClass(item.status)}`}
-                >
-                  {item.status}
-                </span>
-              ),
-            },
-            {
-              header: 'Action',
-              sortable: false,
-              cell: (item: any) => (
-                <div className="flex items-center gap-2">
-                  <Button
-                    label="View"
-                    icon="eye"
-                    variant="outlined"
-                    onClick={() =>
-                      triggerNotification(
-                        `Opening detailed view for ${item.name}`,
-                        'info'
-                      )
-                    }
-                  />
-                  <Button
-                    label="Track"
-                    icon="map-marker"
-                    variant="primary"
-                    onClick={() => navigate(`/career-advancement/apar-track`)}
-                  />
-                </div>
-              ),
-            },
-          ]}
-        />
-      </FormCard>
-    </div>
-  );
+  const statCards = [
+    { label: 'Total Apps', val: stats.total, color: 'indigo', icon: 'pi-file' },
+    {
+      label: 'APAR Apps',
+      val: stats.aparCount,
+      color: 'purple',
+      icon: 'pi-file-o',
+    },
+    {
+      label: 'PBAS Apps',
+      val: stats.pbasCount,
+      color: 'emerald',
+      icon: 'pi-chart-bar',
+    },
+    {
+      label: 'CAS Apps',
+      val: stats.casCount,
+      color: 'amber',
+      icon: 'pi-bookmark',
+    },
+    {
+      label: 'Pending Screening',
+      val: stats.pendingScreening,
+      color: 'rose',
+      icon: 'pi-clock',
+    },
+    {
+      label: 'Completed',
+      val: stats.completed,
+      color: 'teal',
+      icon: 'pi-check',
+    },
+  ];
 
   return (
     <FormPage
-      title="Admin Dashboard"
-      description="Overview of Career Advancement Scheme applications across the university"
+      title="Career Advancement Dashboard"
+      description="Overview of APAR, PBAS, and CAS scheme applications across the university"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Career Advancement', to: '/career-advancement/dashboard' },
         { label: 'Dashboard' },
       ]}
     >
-      {renderAdminDashboard()}
+      <div className="space-y-6">
+        {/* Hero */}
+        <div className="ca-hero">
+          <div className="ca-hero-content">
+            <h2 className="ca-hero-title">Career Advancement Scheme Centre</h2>
+            <p className="ca-hero-desc">
+              Track APAR annual performance reports, PBAS self-appraisals, and
+              CAS promotion applications across all departments.
+            </p>
+          </div>
+          <div className="ca-hero-action">
+            <Button
+              label="New APAR Application +"
+              variant="primary"
+              onClick={() => navigate('/career-advancement/apar-employee')}
+            />
+          </div>
+        </div>
+
+        {/* Stat Cards */}
+        <div className="ca-stats-grid">
+          {statCards.map(s => (
+            <div
+              key={s.label}
+              className={`ca-stat-card ca-stat-card--${s.color}`}
+            >
+              <div className="ca-stat-label">{s.label}</div>
+              <div className="ca-stat-value">{s.val}</div>
+              <div className={`ca-stat-icon`}>
+                <i className={`pi ${s.icon}`} />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Recent Applications */}
+        <FormCard title="Recent Applications" icon="list">
+          <GridPanel
+            data={recentApplications}
+            columns={[
+              {
+                cell: (_, o) => <span>{(o.rowIndex ?? 0) + 1}</span>,
+                width: '40px',
+              },
+              { field: 'name', header: 'Employee Name' },
+              { field: 'designation', header: 'Designation' },
+              {
+                field: 'scheme',
+                header: 'Scheme',
+                cell: (item: any) => (
+                  <span className={`ca-badge ${getSchemeClass(item.scheme)}`}>
+                    {item.scheme}
+                  </span>
+                ),
+              },
+              { field: 'session', header: 'Session' },
+              {
+                field: 'status',
+                header: 'Status',
+                cell: (item: any) => (
+                  <span className={`ca-badge ${getStatusClass(item.status)}`}>
+                    {item.status}
+                  </span>
+                ),
+              },
+              {
+                header: 'Action',
+                sortable: false,
+                cell: (item: any) => (
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button
+                      className="ca-btn-view"
+                      onClick={() =>
+                        triggerNotification(
+                          `Opening detailed view for ${item.name}`,
+                          'info'
+                        )
+                      }
+                    >
+                      <i
+                        className="pi pi-eye"
+                        style={{ fontSize: '0.65rem' }}
+                      />{' '}
+                      View
+                    </button>
+                    <button
+                      className="ca-btn-track"
+                      onClick={() => navigate('/career-advancement/apar-track')}
+                    >
+                      <i
+                        className="pi pi-map-marker"
+                        style={{ fontSize: '0.65rem' }}
+                      />{' '}
+                      Track
+                    </button>
+                  </div>
+                ),
+              },
+            ]}
+          />
+        </FormCard>
+      </div>
     </FormPage>
   );
 }

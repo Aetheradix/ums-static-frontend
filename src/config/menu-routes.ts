@@ -6496,6 +6496,290 @@ export const menuConfig: Menu.MenuItem[] = [
           },
         ],
       },
+      {
+        label: 'Civil Infrastructure',
+        slug: 'civil-infrastructure',
+        category: 'Governance',
+        icon: 'construction',
+        colorScheme: 'blue',
+        description:
+          '24-Stage Civil Works & Infrastructure Lifecycle Management.',
+        path: '/home/sub-menu/civil-infrastructure',
+        children: [
+          {
+            label: 'Admin Portal',
+            slug: 'civil-admin',
+            description:
+              'Administrative approvals, Technical Sanction, tender awards, and completion certificates.',
+            icon: 'admin_panel_settings',
+            colorScheme: 'red',
+            path: '/home/sub-menu/civil-admin',
+            children: [
+              {
+                label: 'Dashboard',
+                description:
+                  'Overview of works, AA/TS actions, budgets, and contractor logs.',
+                path: '/civil-infrastructure/admin/dashboard',
+                icon: 'dashboard',
+                colorScheme: 'blue',
+              },
+              {
+                label: 'Masters & Registries',
+                description:
+                  'Manage SOR items, Third-Party Inspection (TPI) agencies, and Quality Lab registries.',
+                path: '/civil-infrastructure/admin/sor-master',
+                icon: 'list_alt',
+                colorScheme: 'teal',
+              },
+              {
+                label: 'Work Registration',
+                description:
+                  'Log and register new civil works with a unique Work ID.',
+                path: '/civil-infrastructure/admin/work-registration',
+                icon: 'add_circle',
+                colorScheme: 'purple',
+              },
+              {
+                label: 'BOQ Completion',
+                description:
+                  'Aggregate SOR items into Bill of Quantities (BOQ) baseline.',
+                path: '/civil-infrastructure/admin/boq-compilation',
+                icon: 'edit_note',
+                colorScheme: 'indigo',
+              },
+              {
+                label: 'Administrative Approval',
+                description:
+                  'VC / competent authority reviews justification and grants AA.',
+                path: '/civil-infrastructure/admin/admin-approval',
+                icon: 'check_circle',
+                colorScheme: 'orange',
+              },
+              {
+                label: 'Technical Sanction',
+                description:
+                  'Engineering wing structural soundness TS approval.',
+                path: '/civil-infrastructure/admin/technical-sanction',
+                icon: 'verified',
+                colorScheme: 'red',
+              },
+              {
+                label: 'Budget Lock',
+                description:
+                  'Lock accounting budget before tender publication.',
+                path: '/civil-infrastructure/admin/budget-lock',
+                icon: 'lock',
+                colorScheme: 'pink',
+              },
+              {
+                label: 'Agency Compliance / Registration',
+                description:
+                  'Onboard contractor into vendor master and verify compliance.',
+                path: '/civil-infrastructure/admin/agency-verification',
+                icon: 'verified_user',
+                colorScheme: 'blue',
+              },
+              {
+                label: 'Tender Oversight',
+                description:
+                  'Publish BOQ to portal, review bids, select L1 bidder.',
+                path: '/civil-infrastructure/admin/tender-oversight',
+                icon: 'gavel',
+                colorScheme: 'teal',
+              },
+              {
+                label: 'Milestone Definition',
+                description:
+                  'Set project execution milestones and link payments to completion.',
+                path: '/civil-infrastructure/admin/milestones',
+                icon: 'flag',
+                colorScheme: 'blue',
+              },
+              {
+                label: 'Work Order Sign',
+                description:
+                  'Issue formal Notice to Proceed and record start timestamp.',
+                path: '/civil-infrastructure/admin/work-order-sign',
+                icon: 'history_edu',
+                colorScheme: 'purple',
+              },
+              {
+                label: 'EOT requests for Extension of Time / Cost',
+                description:
+                  'Review and approve contractor timeline extensions and revised estimates.',
+                path: '/civil-infrastructure/admin/eot-requests',
+                icon: 'update',
+                colorScheme: 'amber',
+              },
+              {
+                label: 'Completion Certificate',
+                description:
+                  'Issue completion certificates and trigger DLP monitoring.',
+                path: '/civil-infrastructure/admin/completion-certificate',
+                icon: 'emoji_events',
+                colorScheme: 'green',
+              },
+              {
+                label: 'Reports & Register',
+                description: 'Summary charts and work/contractor registries.',
+                path: '/civil-infrastructure/admin/reports',
+                icon: 'bar_chart',
+                colorScheme: 'orange',
+              },
+            ],
+          },
+          {
+            label: 'Site Engineer Portal',
+            slug: 'civil-engineer',
+            description:
+              'Technical planning, SOR, BOQ compilation, E-MB entries, and quality testing.',
+            icon: 'engineering',
+            colorScheme: 'purple',
+            path: '/home/sub-menu/civil-engineer',
+            children: [
+              {
+                label: 'Dashboard',
+                description:
+                  'JE/site engineer task lists, active works and logs.',
+                path: '/civil-infrastructure/engineer/dashboard',
+                icon: 'dashboard',
+                colorScheme: 'blue',
+              },
+              {
+                label: 'Planning Workbench',
+                description:
+                  'Input site dimensions, soil data, and resource projections.',
+                path: '/civil-infrastructure/engineer/technical-planning',
+                icon: 'architecture',
+                colorScheme: 'purple',
+              },
+              {
+                label: 'SOR Rate Master',
+                description:
+                  'View government-notified Schedule of Rates (SOR).',
+                path: '/civil-infrastructure/engineer/sor-master',
+                icon: 'list_alt',
+                colorScheme: 'green',
+              },
+              {
+                label: 'BOQ Compilation',
+                description: 'Aggregate SOR items into Bill of Quantities.',
+                path: '/civil-infrastructure/engineer/boq-compilation',
+                icon: 'edit_note',
+                colorScheme: 'orange',
+              },
+              {
+                label: 'Execution Router',
+                description: 'Route project execution paths.',
+                path: '/civil-infrastructure/engineer/execution-router',
+                icon: 'route',
+                colorScheme: 'red',
+              },
+              {
+                label: 'Quality Framework',
+                description:
+                  'Testing standard rules and Third Party Inspection (TPI).',
+                path: '/civil-infrastructure/engineer/quality-framework',
+                icon: 'assignment_turned_in',
+                colorScheme: 'pink',
+              },
+              {
+                label: 'Quality Lab Uploads',
+                description: 'Record test results and upload lab certificates.',
+                path: '/civil-infrastructure/engineer/quality-testing',
+                icon: 'upload_file',
+                colorScheme: 'blue',
+              },
+              {
+                label: 'Progress Monitoring',
+                description:
+                  'Field logs with mandatory geo-tagged/timestamped photos.',
+                path: '/civil-infrastructure/engineer/progress-monitoring',
+                icon: 'share_location',
+                colorScheme: 'teal',
+              },
+              {
+                label: 'E-Measurement Book',
+                description:
+                  'Real-time quantity measurement book entry. 4 rules enforced.',
+                path: '/civil-infrastructure/engineer/e-measurement-book',
+                icon: 'menu_book',
+                colorScheme: 'purple',
+              },
+              {
+                label: 'EOT & Revised Estimate',
+                description:
+                  'Extension of time applications and revised estimates.',
+                path: '/civil-infrastructure/engineer/eot-request',
+                icon: 'more_time',
+                colorScheme: 'green',
+              },
+              {
+                label: 'Milestone Sign-off',
+                description: 'EE milestone checklist validation.',
+                path: '/civil-infrastructure/engineer/milestone-signoff',
+                icon: 'verified',
+                colorScheme: 'orange',
+              },
+            ],
+          },
+          {
+            label: 'Finance Portal',
+            slug: 'civil-finance',
+            description:
+              'Financial ledger, budget tracking, RA bill clearing, and DLP release.',
+            icon: 'account_balance_wallet',
+            colorScheme: 'teal',
+            path: '/home/sub-menu/civil-finance',
+            children: [
+              {
+                label: 'Dashboard',
+                description: 'Payments summary and utilization charts.',
+                path: '/civil-infrastructure/finance/dashboard',
+                icon: 'dashboard',
+                colorScheme: 'blue',
+              },
+              {
+                label: 'Budget Allocation',
+                description: 'Track allocations, utilization and balance.',
+                path: '/civil-infrastructure/finance/budget-allocation',
+                icon: 'account_balance',
+                colorScheme: 'purple',
+              },
+              {
+                label: 'RA Bill Processing',
+                description:
+                  'Deductions, recoveries and independent MB linkage checks.',
+                path: '/civil-infrastructure/finance/ra-bill-processing',
+                icon: 'receipt_long',
+                colorScheme: 'green',
+              },
+              {
+                label: 'Final Bill Settlement',
+                description: 'Reconcile project balance and close project.',
+                path: '/civil-infrastructure/finance/final-bill-settlement',
+                icon: 'price_check',
+                colorScheme: 'orange',
+              },
+              {
+                label: 'Payment Release',
+                description: 'EFT payment with mandatory UTR reference log.',
+                path: '/civil-infrastructure/finance/payment-release',
+                icon: 'payments',
+                colorScheme: 'red',
+              },
+              {
+                label: 'DLP Retention',
+                description:
+                  'Monitor DLP timer and defects, release retention.',
+                path: '/civil-infrastructure/finance/dlp-monitoring',
+                icon: 'lock_open',
+                colorScheme: 'pink',
+              },
+            ],
+          },
+        ],
+      },
     ],
   },
   {
@@ -6738,20 +7022,20 @@ export const menuConfig: Menu.MenuItem[] = [
             colorScheme: 'purple',
             children: [
               {
+                label: 'Basic Registration Details',
+                slug: 'basic-registration-details',
+                description: 'View basic registration info.',
+                path: '/affiliation-management-system/basic-registration-details/view',
+                icon: 'article',
+                colorScheme: 'blue',
+              },
+              {
                 label: 'College Profile Details',
                 slug: 'profile-details',
                 description: 'Manage college profile details.',
                 path: '/affiliation-management-system/profile-details',
                 icon: 'corporate_fare',
                 colorScheme: 'blue',
-              },
-              {
-                label: 'Inspection Details',
-                slug: 'inspection-report',
-                description: 'Fill the detailed inspection report.',
-                path: '/affiliation-management-system/inspection-report',
-                icon: 'assignment_turned_in',
-                colorScheme: 'purple',
               },
               {
                 label: 'Department Registration',
@@ -6779,38 +7063,6 @@ export const menuConfig: Menu.MenuItem[] = [
             icon: 'admin_panel_settings',
             colorScheme: 'green',
             children: [
-              {
-                label: 'Manage Renewals',
-                slug: 'manage-renewals',
-                description: 'Track and approve renewals',
-                path: '/affiliation-management-system/college-renewal-admin/upcoming',
-                icon: 'replay',
-                colorScheme: 'blue',
-              },
-              {
-                label: 'College Registration Approvals',
-                slug: 'registration-approval',
-                description: 'Manage college registration Approvals.',
-                path: '/affiliation-management-system/registration-approval',
-                icon: 'edit_location',
-                colorScheme: 'purple',
-              },
-              {
-                label: 'Approval Status Report',
-                slug: 'approval-status-report',
-                description: 'View approval status of affiliations.',
-                path: '/affiliation-management-system/approval-status-report',
-                icon: 'check_circle',
-                colorScheme: 'green',
-              },
-              {
-                label: 'Inspection Status Report',
-                slug: 'inspection-status-report',
-                description: 'View the history of inspections.',
-                path: '/affiliation-management-system/inspection-status-report',
-                icon: 'policy',
-                colorScheme: 'orange',
-              },
               {
                 label: 'Affiliation Settings',
                 slug: 'affiliation-settings',
@@ -6849,6 +7101,82 @@ export const menuConfig: Menu.MenuItem[] = [
                     action: 'read',
                   },
                 ],
+              },
+              {
+                label: 'College Registration Approvals',
+                slug: 'registration-approval',
+                description: 'Manage college registration Approvals.',
+                path: '/affiliation-management-system/registration-approval',
+                icon: 'edit_location',
+                colorScheme: 'purple',
+              },
+              {
+                label: 'Profile Scrutiny & Verification',
+                slug: 'profile-scrutiny',
+                description:
+                  'Verify detailed college profiles before assignment.',
+                path: '/affiliation-management-system/profile-scrutiny',
+                icon: 'fact_check',
+                colorScheme: 'blue',
+              },
+              {
+                label: 'Inspection Assignment',
+                slug: 'inspection-assignment',
+                description: 'Assign inspection teams to colleges.',
+                path: '/affiliation-management-system/inspection-assignment',
+                icon: 'assignment_ind',
+                colorScheme: 'orange',
+              },
+              {
+                label: 'Final Registration Approval',
+                slug: 'final-registration-approval',
+                description:
+                  'Review inspection reports and grant final affiliation.',
+                path: '/affiliation-management-system/final-registration-approval',
+                icon: 'verified',
+                colorScheme: 'purple',
+              },
+              {
+                label: 'Manage Renewals',
+                slug: 'manage-renewals',
+                description: 'Track and approve renewals',
+                path: '/affiliation-management-system/college-renewal-admin/upcoming',
+                icon: 'replay',
+                colorScheme: 'blue',
+              },
+              {
+                label: 'Approval Status Report',
+                slug: 'approval-status-report',
+                description: 'View approval status of affiliations.',
+                path: '/affiliation-management-system/approval-status-report',
+                icon: 'check_circle',
+                colorScheme: 'green',
+              },
+              {
+                label: 'Inspection Status Report',
+                slug: 'inspection-status-report',
+                description: 'View the history of inspections.',
+                path: '/affiliation-management-system/inspection-status-report',
+                icon: 'policy',
+                colorScheme: 'orange',
+              },
+            ],
+          },
+          {
+            label: 'Inspection Team',
+            slug: 'inspection-team-login',
+            description: 'Manage physical inspection reports.',
+            path: '/home/sub-menu/inspection-team-login',
+            icon: 'groups',
+            colorScheme: 'purple',
+            children: [
+              {
+                label: 'Inspection Details',
+                slug: 'inspection-report',
+                description: 'Fill the detailed inspection report.',
+                path: '/affiliation-management-system/inspection-report',
+                icon: 'assignment_turned_in',
+                colorScheme: 'purple',
               },
             ],
           },

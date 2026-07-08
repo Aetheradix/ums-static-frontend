@@ -22,6 +22,7 @@ import PolicyComplianceManagement from './policy-compliance-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
 import InfrastructureProjectManagement from './infrastructure-project-management';
+import CivilInfrastructure from './civil-infrastructure';
 import ItServiceDesk from './it-service-desk';
 import LeaveManagement from './leave-management';
 import Lms from './lms';
@@ -316,6 +317,10 @@ export default function Features() {
                       <Route
                         path="bill-tracking/*"
                         element={<BillTracking />}
+                      />
+                      <Route
+                        path="civil-infrastructure/*"
+                        element={<CivilInfrastructure />}
                       />
                       <Route
                         path="evaluation-grading/*"

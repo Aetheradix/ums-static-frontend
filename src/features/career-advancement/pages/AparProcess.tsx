@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useCareerAdvancement } from '../context';
+import '../career.css';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
 import { TextBox, DropDownList } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
@@ -96,9 +97,10 @@ export default function AparProcess() {
 
   return (
     <FormPage
-      title="APAR — Initiate Process Application"
+      title="APAR â€” Initiate Process Application"
       description="Initialize the appraisal report configuration, timelines and dates for the employee"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Career Advancement', to: '/career-advancement/dashboard' },
         {
           label: 'APAR Applications',
