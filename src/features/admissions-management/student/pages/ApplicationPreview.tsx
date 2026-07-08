@@ -1,6 +1,5 @@
-import { FormPage, FormCard } from 'shared/new-components';
+import { FormPage, FormCard, StatusBadge } from 'shared/new-components';
 import { Button } from 'primereact/button';
-import { Tag } from 'primereact/tag';
 import { admissionsUrls } from '../../urls';
 
 export default function ApplicationPreview() {
@@ -39,9 +38,9 @@ export default function ApplicationPreview() {
                 </span>
               </p>
             </div>
-            <Tag
-              value={dummyApplicant.status}
-              severity="success"
+            <StatusBadge
+              label={dummyApplicant.status}
+              variant="success"
               className="px-3 py-1"
             />
           </div>

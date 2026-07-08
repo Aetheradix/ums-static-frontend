@@ -1,8 +1,10 @@
-import { Tag } from 'primereact/tag';
-import { Button } from 'primereact/button';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { FormPage, FormCard } from 'shared/new-components';
+import { Button } from 'shared/components/buttons';
+import {
+  FormPage,
+  FormCard,
+  StatusBadge,
+  GridPanel,
+} from 'shared/new-components';
 import { admissionsUrls } from '../../urls';
 
 export default function MeritList() {
@@ -39,9 +41,9 @@ export default function MeritList() {
     if (rowData.status === 'Waitlisted') severity = 'warning';
 
     return (
-      <Tag
-        value={rowData.status}
-        severity={severity as any}
+      <StatusBadge
+        label={rowData.status}
+        variant={severity as any}
         className="uppercase text-xs tracking-wider px-2 py-1 shadow-sm"
       />
     );
@@ -102,46 +104,41 @@ export default function MeritList() {
             </h2>
           </div>
 
-          <DataTable
-            value={meritData}
-            responsiveLayout="scroll"
-            className="p-datatable-sm shadow-sm border border-gray-200 rounded-lg overflow-hidden"
-            showGridlines={false}
-            stripedRows
-            rowHover
-          >
-            <Column
-              field="program"
-              header="Program Name"
-              className="font-semibold text-gray-800"
-            />
-            <Column
-              field="score"
-              header="Merit Score"
-              className="font-medium"
-            />
-            <Column field="rank" header="Overall Rank" />
-            <Column field="categoryRank" header="Category Rank" />
-            <Column header="Selection Status" body={statusTemplate} />
-            <Column
-              header="Action"
-              body={rowData =>
-                rowData.status === 'Shortlisted' ? (
-                  <Button
-                    label="View Offer"
-                    size="small"
-                    severity="success"
-                    outlined
-                    className="font-bold shadow-sm"
-                  />
-                ) : (
-                  <span className="text-gray-400 text-sm italic">
-                    Not Available
-                  </span>
-                )
-              }
-            />
-          </DataTable>
+          <GridPanel
+            data={meritData}
+            pagination={false}
+            columns={[
+              { field: 'program', header: 'Program Name', sortable: true },
+              { field: 'score', header: 'Merit Score', sortable: true },
+              { field: 'rank', header: 'Overall Rank', sortable: true },
+              {
+                field: 'categoryRank',
+                header: 'Category Rank',
+                sortable: true,
+              },
+              {
+                field: 'status',
+                header: 'Selection Status',
+                cell: statusTemplate,
+                sortable: true,
+              },
+              {
+                header: 'Action',
+                cell: (rowData: any) =>
+                  rowData.status === 'Shortlisted' ? (
+                    <Button
+                      label="View Offer"
+                      size="small"
+                      variant="outlined"
+                    />
+                  ) : (
+                    <span className="text-gray-400 text-sm italic">
+                      Not Available
+                    </span>
+                  ),
+              },
+            ]}
+          />
         </FormCard>
       </div>
     </FormPage>

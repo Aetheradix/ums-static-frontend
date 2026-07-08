@@ -2,8 +2,7 @@ import { Timeline } from 'primereact/timeline';
 import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
 import { admissionsUrls } from '../../urls';
-import { Tag } from 'primereact/tag';
-import { FormPage, FormCard } from 'shared/new-components';
+import { FormPage, FormCard, StatusBadge } from 'shared/new-components';
 
 export default function ApplicationTracking() {
   const navigate = useNavigate();
@@ -90,9 +89,9 @@ export default function ApplicationTracking() {
                   <i className="pi pi-clock mr-1 text-xs"></i> {item.date}
                 </p>
               </div>
-              <Tag
-                value={item.completed ? 'Completed' : 'Pending'}
-                severity={item.completed ? 'success' : 'warning'}
+              <StatusBadge
+                label={item.completed ? 'Completed' : 'Pending'}
+                variant={item.completed ? 'success' : 'warning'}
                 className="self-start md:self-auto"
               />
             </div>

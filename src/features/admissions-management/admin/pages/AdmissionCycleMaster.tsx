@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Button } from 'primereact/button';
-import { Tag } from 'primereact/tag';
-import { FormPage, FormCard } from 'shared/new-components';
+import {
+  FormPage,
+  FormCard,
+  StatusBadge,
+  GridPanel,
+} from 'shared/new-components';
+import { Button } from 'shared/components/buttons';
 import { ToastService } from 'services';
 import { Modal } from 'shared/components/popups';
 import { TextBox, DropDownList, DatePicker } from 'shared/components/forms';
@@ -50,7 +52,6 @@ export default function AdmissionCycleMaster() {
   const [selectedCycle, setSelectedCycle] = useState<Partial<AdmissionCycle>>(
     {}
   );
-  const [globalFilter, setGlobalFilter] = useState('');
 
   const statusTemplate = (rowData: AdmissionCycle) => {
     let severity = 'info';
@@ -58,37 +59,8 @@ export default function AdmissionCycleMaster() {
     if (rowData.status === 'Closed') severity = 'danger';
     if (rowData.status === 'Upcoming') severity = 'warning';
 
-    return <Tag value={rowData.status} severity={severity as any} />;
+    return <StatusBadge label={rowData.status} variant={severity as any} />;
   };
-
-  const actionTemplate = (rowData: AdmissionCycle) => (
-    <div className="flex gap-2">
-      <Button
-        icon="pi pi-pencil"
-        rounded
-        text
-        severity="info"
-        aria-label="Edit"
-        tooltip="Edit Cycle"
-        onClick={() => {
-          setSelectedCycle({ ...rowData });
-          setShowDialog(true);
-        }}
-      />
-      <Button
-        icon="pi pi-trash"
-        rounded
-        text
-        severity="danger"
-        aria-label="Delete"
-        tooltip="Delete Cycle"
-        onClick={() => {
-          setCycles(cycles.filter(c => c.id !== rowData.id));
-          ToastService.success('Cycle deleted successfully.');
-        }}
-      />
-    </div>
-  );
 
   const handleSave = () => {
     if (selectedCycle.id) {
@@ -113,25 +85,15 @@ export default function AdmissionCycleMaster() {
     setSelectedCycle({});
   };
 
-  const header = (
-    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-      <span className="p-input-icon-left w-full md:w-auto">
-        <i className="pi pi-search" />
-        <TextBox
-          placeholder="Search cycles..."
-          className="w-full md:w-80"
-          onChange={v => setGlobalFilter(v as string)}
-        />
-      </span>
-      <Button
-        label="New Cycle"
-        icon="pi pi-plus"
-        onClick={() => {
-          setSelectedCycle({});
-          setShowDialog(true);
-        }}
-      />
-    </div>
+  const toolbar = (
+    <Button
+      label="New Cycle"
+      icon="pi pi-plus"
+      onClick={() => {
+        setSelectedCycle({});
+        setShowDialog(true);
+      }}
+    />
   );
 
   return (
@@ -140,40 +102,33 @@ export default function AdmissionCycleMaster() {
       description="Manage academic admission cycles and timelines"
     >
       <FormCard>
-        <DataTable
-          value={cycles}
-          paginator
-          rows={10}
-          header={header}
-          globalFilter={globalFilter}
-          emptyMessage="No admission cycles found."
-          stripedRows
-          rowHover
-          className="p-datatable-sm"
-        >
-          <Column
-            field="id"
-            header="Cycle ID"
-            sortable
-            className="font-semibold text-gray-700"
-          ></Column>
-          <Column field="name" header="Cycle Name" sortable></Column>
-          <Column field="academicYear" header="Academic Year" sortable></Column>
-          <Column field="startDate" header="Start Date" sortable></Column>
-          <Column field="endDate" header="End Date" sortable></Column>
-          <Column
-            field="status"
-            header="Status"
-            body={statusTemplate}
-            sortable
-          ></Column>
-          <Column
-            body={actionTemplate}
-            header="Actions"
-            exportable={false}
-            style={{ minWidth: '8rem' }}
-          ></Column>
-        </DataTable>
+        <GridPanel
+          data={cycles}
+          searchBox={true}
+          searchFields={['id', 'name', 'academicYear', 'status']}
+          toolbar={toolbar}
+          onEdit={(rowData: AdmissionCycle) => {
+            setSelectedCycle({ ...rowData });
+            setShowDialog(true);
+          }}
+          onRemove={(rowData: AdmissionCycle) => {
+            setCycles(cycles.filter(c => c.id !== rowData.id));
+            ToastService.success('Cycle deleted successfully.');
+          }}
+          columns={[
+            { field: 'id', header: 'Cycle ID', sortable: true },
+            { field: 'name', header: 'Cycle Name', sortable: true },
+            { field: 'academicYear', header: 'Academic Year', sortable: true },
+            { field: 'startDate', header: 'Start Date', sortable: true },
+            { field: 'endDate', header: 'End Date', sortable: true },
+            {
+              field: 'status',
+              header: 'Status',
+              cell: statusTemplate,
+              sortable: true,
+            },
+          ]}
+        />
       </FormCard>
 
       <Modal
@@ -268,15 +223,14 @@ export default function AdmissionCycleMaster() {
             <Button
               label="Cancel"
               icon="pi pi-times"
-              text
-              severity="secondary"
+              variant="outlined"
               onClick={() => setShowDialog(false)}
             />
             <Button
               label="Save Details"
               icon="pi pi-check"
+              variant="primary"
               onClick={handleSave}
-              autoFocus
             />
           </div>
         </div>

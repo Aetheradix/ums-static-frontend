@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { Button } from 'primereact/button';
-import { Column } from 'primereact/column';
-import { DataTable } from 'primereact/datatable';
-import { Tag } from 'primereact/tag';
-import { FormCard, FormPage } from 'shared/new-components';
+import {
+  FormCard,
+  FormPage,
+  StatusBadge,
+  GridPanel,
+} from 'shared/new-components';
+import { Button } from 'shared/components/buttons';
 import { Modal } from 'shared/components/popups';
 import { TextBox, DropDownList, NumberBox } from 'shared/components/forms';
 import { admissionsUrls } from '../../urls';
@@ -97,53 +99,17 @@ export default function ReservationMaster() {
     }
   };
 
-  const actionTemplate = (rowData: ReservationCategory) => {
-    return (
-      <div className="flex gap-2">
-        <Button
-          icon="pi pi-pencil"
-          rounded
-          text
-          severity="info"
-          aria-label="Edit"
-          tooltip="Edit Category"
-          onClick={() => {
-            setEditingCategory({ ...rowData });
-            setShowDialog(true);
-          }}
-        />
-        <Button
-          icon="pi pi-trash"
-          rounded
-          text
-          severity="danger"
-          aria-label="Delete"
-          tooltip="Delete Category"
-          onClick={() => {
-            setCategories(categories.filter(c => c.id !== rowData.id));
-            ToastService.success('Category removed successfully.');
-          }}
-        />
-      </div>
-    );
-  };
-
   const statusTemplate = (rowData: ReservationCategory) => {
     return (
-      <Tag
-        value={rowData.status}
-        severity={rowData.status === 'Active' ? 'success' : 'danger'}
+      <StatusBadge
+        label={rowData.status}
+        variant={rowData.status === 'Active' ? 'success' : 'danger'}
       />
     );
   };
 
-  const header = (
-    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-      <h2 className="text-lg font-semibold text-gray-800 m-0">
-        Reservation Categories Configuration
-      </h2>
-      <Button label="New Category" icon="pi pi-plus" onClick={openNew} />
-    </div>
+  const toolbar = (
+    <Button label="New Category" icon="pi pi-plus" onClick={openNew} />
   );
 
   // Footer is now inline in Modal
@@ -159,60 +125,42 @@ export default function ReservationMaster() {
       ]}
     >
       <FormCard>
-        <DataTable
-          value={categories}
-          paginator
-          rows={10}
-          dataKey="id"
-          header={header}
-          emptyMessage="No categories found."
-          className="p-datatable-sm"
-          stripedRows
-          rowHover
-        >
-          <Column
-            field="code"
-            header="Code"
-            sortable
-            style={{ minWidth: '100px' }}
-            className="font-semibold text-gray-700"
-          ></Column>
-          <Column
-            field="name"
-            header="Category Name"
-            sortable
-            style={{ minWidth: '200px' }}
-          ></Column>
-          <Column
-            field="quotaPercentage"
-            header="Quota (%)"
-            body={row => `${row.quotaPercentage}%`}
-            sortable
-          ></Column>
-          <Column
-            field="description"
-            header="Description"
-            sortable
-            style={{ minWidth: '250px' }}
-          ></Column>
-          <Column
-            field="status"
-            header="Status"
-            body={statusTemplate}
-            sortable
-          ></Column>
-          <Column
-            body={actionTemplate}
-            header="Actions"
-            exportable={false}
-            style={{ minWidth: '100px' }}
-          ></Column>
-        </DataTable>
+        <GridPanel
+          data={categories}
+          searchBox={true}
+          searchFields={['code', 'name', 'status']}
+          toolbar={toolbar}
+          onEdit={(rowData: ReservationCategory) => {
+            setEditingCategory({ ...rowData });
+            setShowDialog(true);
+          }}
+          onRemove={(rowData: ReservationCategory) => {
+            setCategories(categories.filter(c => c.id !== rowData.id));
+            ToastService.success('Category removed successfully.');
+          }}
+          columns={[
+            { field: 'code', header: 'Code', sortable: true },
+            { field: 'name', header: 'Category Name', sortable: true },
+            {
+              field: 'quotaPercentage',
+              header: 'Quota (%)',
+              cell: row => <span>{row.quotaPercentage}%</span>,
+              sortable: true,
+            },
+            { field: 'description', header: 'Description', sortable: true },
+            {
+              field: 'status',
+              header: 'Status',
+              cell: statusTemplate,
+              sortable: true,
+            },
+          ]}
+        />
       </FormCard>
 
       <Modal
         visible={showDialog}
-        size="small"
+        size="medium"
         header={
           editingCategory?.id
             ? 'Edit Reservation Category'
@@ -286,16 +234,15 @@ export default function ReservationMaster() {
             <Button
               label="Cancel"
               icon="pi pi-times"
-              text
-              severity="secondary"
+              variant="outlined"
               onClick={hideDialog}
             />
             <Button
               label="Save Category"
               icon="pi pi-check"
+              variant="primary"
               onClick={saveCategory}
               disabled={!editingCategory?.code || !editingCategory?.name}
-              autoFocus
             />
           </div>
         </div>

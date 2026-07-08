@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Button } from 'primereact/button';
-import { Tag } from 'primereact/tag';
-import { FormPage, FormCard } from 'shared/new-components';
+import {
+  FormPage,
+  FormCard,
+  StatusBadge,
+  GridPanel,
+} from 'shared/new-components';
+import { Button } from 'shared/components/buttons';
 import { Modal } from 'shared/components/popups';
 import { TextBox, DropDownList, NumberBox } from 'shared/components/forms';
 import { ToastService } from 'services';
@@ -43,45 +45,15 @@ export default function MeritRuleConfig() {
   const [rules, setRules] = useState<MeritRule[]>(mockRules);
   const [showDialog, setShowDialog] = useState(false);
   const [selectedRule, setSelectedRule] = useState<Partial<MeritRule>>({});
-  const [globalFilter, setGlobalFilter] = useState('');
 
   const statusTemplate = (rowData: MeritRule) => {
     return (
-      <Tag
-        value={rowData.status}
-        severity={rowData.status === 'Active' ? 'success' : 'danger'}
+      <StatusBadge
+        label={rowData.status}
+        variant={rowData.status === 'Active' ? 'success' : 'danger'}
       />
     );
   };
-
-  const actionTemplate = (rowData: MeritRule) => (
-    <div className="flex gap-2">
-      <Button
-        icon="pi pi-pencil"
-        rounded
-        text
-        severity="info"
-        aria-label="Edit"
-        tooltip="Edit Rule"
-        onClick={() => {
-          setSelectedRule({ ...rowData });
-          setShowDialog(true);
-        }}
-      />
-      <Button
-        icon="pi pi-trash"
-        rounded
-        text
-        severity="danger"
-        aria-label="Delete"
-        tooltip="Delete Rule"
-        onClick={() => {
-          setRules(rules.filter(r => r.id !== rowData.id));
-          ToastService.success('Rule removed successfully.');
-        }}
-      />
-    </div>
-  );
 
   const handleSave = () => {
     if (selectedRule.id) {
@@ -106,29 +78,19 @@ export default function MeritRuleConfig() {
     setSelectedRule({});
   };
 
-  const header = (
-    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-      <span className="p-input-icon-left w-full md:w-auto">
-        <i className="pi pi-search" />
-        <TextBox
-          placeholder="Search merit rules..."
-          className="w-full md:w-80"
-          onChange={v => setGlobalFilter(v as string)}
-        />
-      </span>
-      <Button
-        label="New Rule"
-        icon="pi pi-plus"
-        onClick={() => {
-          setSelectedRule({
-            academicWeightage: 50,
-            entranceWeightage: 50,
-            interviewWeightage: 0,
-          });
-          setShowDialog(true);
-        }}
-      />
-    </div>
+  const toolbar = (
+    <Button
+      label="New Rule"
+      icon="pi pi-plus"
+      onClick={() => {
+        setSelectedRule({
+          academicWeightage: 50,
+          entranceWeightage: 50,
+          interviewWeightage: 0,
+        });
+        setShowDialog(true);
+      }}
+    />
   );
 
   const totalWeightage =
@@ -144,52 +106,45 @@ export default function MeritRuleConfig() {
       description="Define weightage rules for generating program-wise admission merit lists"
     >
       <FormCard>
-        <DataTable
-          value={rules}
-          paginator
-          rows={10}
-          header={header}
-          globalFilter={globalFilter}
-          emptyMessage="No merit rules found."
-          stripedRows
-          rowHover
-          className="p-datatable-sm"
-        >
-          <Column
-            field="name"
-            header="Rule Name"
-            sortable
-            className="font-semibold text-gray-800"
-          ></Column>
-          <Column field="programCode" header="Program" sortable></Column>
-          <Column
-            field="academicWeightage"
-            header="Academic %"
-            sortable
-          ></Column>
-          <Column
-            field="entranceWeightage"
-            header="Entrance %"
-            sortable
-          ></Column>
-          <Column
-            field="interviewWeightage"
-            header="Interview %"
-            sortable
-          ></Column>
-          <Column
-            field="status"
-            header="Status"
-            body={statusTemplate}
-            sortable
-          ></Column>
-          <Column
-            body={actionTemplate}
-            header="Actions"
-            exportable={false}
-            style={{ minWidth: '8rem' }}
-          ></Column>
-        </DataTable>
+        <GridPanel
+          data={rules}
+          searchBox={true}
+          searchFields={['name', 'programCode', 'status']}
+          toolbar={toolbar}
+          onEdit={(rowData: MeritRule) => {
+            setSelectedRule({ ...rowData });
+            setShowDialog(true);
+          }}
+          onRemove={(rowData: MeritRule) => {
+            setRules(rules.filter(r => r.id !== rowData.id));
+            ToastService.success('Rule removed successfully.');
+          }}
+          columns={[
+            { field: 'name', header: 'Rule Name', sortable: true },
+            { field: 'programCode', header: 'Program', sortable: true },
+            {
+              field: 'academicWeightage',
+              header: 'Academic %',
+              sortable: true,
+            },
+            {
+              field: 'entranceWeightage',
+              header: 'Entrance %',
+              sortable: true,
+            },
+            {
+              field: 'interviewWeightage',
+              header: 'Interview %',
+              sortable: true,
+            },
+            {
+              field: 'status',
+              header: 'Status',
+              cell: statusTemplate,
+              sortable: true,
+            },
+          ]}
+        />
       </FormCard>
 
       <Modal
@@ -301,16 +256,15 @@ export default function MeritRuleConfig() {
             <Button
               label="Cancel"
               icon="pi pi-times"
-              text
-              severity="secondary"
+              variant="outlined"
               onClick={() => setShowDialog(false)}
             />
             <Button
               label="Save Rule"
               icon="pi pi-check"
+              variant="primary"
               onClick={handleSave}
               disabled={totalWeightage !== 100}
-              autoFocus
             />
           </div>
         </div>

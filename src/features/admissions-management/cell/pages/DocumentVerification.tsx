@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Button } from 'primereact/button';
+import {
+  FormPage,
+  FormCard,
+  StatusBadge,
+  GridPanel,
+} from 'shared/new-components';
+import { Button } from 'shared/components/buttons';
 import { Modal } from 'shared/components/popups';
 import { TextArea } from 'shared/components/forms';
-import { Tag } from 'primereact/tag';
-import { FormPage, FormCard } from 'shared/new-components';
-import { admissionsUrls } from '../../urls';
+
 import { ToastService } from 'services';
 
 interface ApplicantDocument {
@@ -108,8 +110,7 @@ export default function DocumentVerification() {
         label="Review"
         icon="pi pi-check-square"
         size="small"
-        text
-        severity="info"
+        variant="outlined"
         onClick={() => setSelectedApplicant({ ...rowData })}
       />
     );
@@ -117,7 +118,10 @@ export default function DocumentVerification() {
 
   const statusTemplate = (rowData: ApplicantData) => {
     return (
-      <Tag value={rowData.status} severity={getSeverity(rowData.status)} />
+      <StatusBadge
+        label={rowData.status}
+        variant={getSeverity(rowData.status)}
+      />
     );
   };
 
@@ -127,8 +131,8 @@ export default function DocumentVerification() {
       description="Review and verify applicant documents before merit list generation."
       breadcrumbs={[
         { label: 'Home', to: '/home' },
-        { label: 'Admissions', to: admissionsUrls.root },
-        { label: 'Admission Cell', to: admissionsUrls.cell.dashboard },
+        { label: 'Admissions', to: '/admissions' },
+        { label: 'Admission Cell', to: '/admissions/cell' },
         { label: 'Document Verification' },
       ]}
     >
@@ -139,42 +143,24 @@ export default function DocumentVerification() {
           </h2>
         </div>
 
-        <DataTable
-          value={applicants}
-          paginator
-          rows={10}
-          dataKey="id"
-          className="p-datatable-sm"
+        <GridPanel
+          data={applicants}
+          searchBox={true}
+          searchFields={['applicationNo', 'name', 'program', 'status']}
           emptyMessage="No pending verifications."
-          stripedRows
-          rowHover
-        >
-          <Column
-            field="applicationNo"
-            header="App No."
-            sortable
-            style={{ minWidth: '120px' }}
-            className="font-semibold text-gray-700"
-          ></Column>
-          <Column
-            field="name"
-            header="Applicant Name"
-            sortable
-            style={{ minWidth: '200px' }}
-          ></Column>
-          <Column field="program" header="Applied Program" sortable></Column>
-          <Column
-            field="status"
-            header="Overall Status"
-            body={statusTemplate}
-            sortable
-          ></Column>
-          <Column
-            body={actionBodyTemplate}
-            header="Action"
-            style={{ minWidth: '100px' }}
-          ></Column>
-        </DataTable>
+          columns={[
+            { field: 'applicationNo', header: 'App No.', sortable: true },
+            { field: 'name', header: 'Applicant Name', sortable: true },
+            { field: 'program', header: 'Applied Program', sortable: true },
+            {
+              field: 'status',
+              header: 'Overall Status',
+              cell: statusTemplate,
+              sortable: true,
+            },
+            { header: 'Action', cell: actionBodyTemplate },
+          ]}
+        />
       </FormCard>
 
       <Modal
@@ -201,9 +187,9 @@ export default function DocumentVerification() {
                 <p className="text-sm text-blue-600 font-semibold mb-1 uppercase tracking-wider">
                   Status
                 </p>
-                <Tag
-                  value={selectedApplicant.status}
-                  severity={getSeverity(selectedApplicant.status)}
+                <StatusBadge
+                  label={selectedApplicant.status}
+                  variant={getSeverity(selectedApplicant.status)}
                   className="text-sm"
                 />
               </div>
@@ -227,9 +213,9 @@ export default function DocumentVerification() {
                         <p className="font-semibold text-gray-800">
                           {doc.name}
                         </p>
-                        <Tag
-                          value={doc.status}
-                          severity={getSeverity(doc.status)}
+                        <StatusBadge
+                          label={doc.status}
+                          variant={getSeverity(doc.status)}
                           className="mt-1"
                         />
                       </div>
@@ -237,28 +223,19 @@ export default function DocumentVerification() {
                     <div className="flex gap-2 self-end md:self-auto">
                       <Button
                         icon="pi pi-eye"
-                        rounded
-                        text
-                        severity="info"
-                        aria-label="View"
+                        variant="outlined"
                         tooltip="View Document"
                       />
                       <Button
                         icon="pi pi-check"
-                        rounded
-                        text
-                        severity="success"
-                        aria-label="Accept"
+                        variant="outlined"
                         tooltip="Accept Document"
                         onClick={() => handleDocAction(doc.docId, 'Verified')}
                         disabled={doc.status === 'Verified'}
                       />
                       <Button
                         icon="pi pi-times"
-                        rounded
-                        text
-                        severity="danger"
-                        aria-label="Reject"
+                        variant="outlined"
                         tooltip="Reject Document"
                         onClick={() => handleDocAction(doc.docId, 'Rejected')}
                         disabled={doc.status === 'Rejected'}
@@ -281,19 +258,17 @@ export default function DocumentVerification() {
               <Button
                 label="Reject Application"
                 icon="pi pi-times"
-                severity="danger"
-                text
+                variant="outlined"
                 onClick={() => handleFinalSubmit('Rejected')}
               />
               <Button
                 label="Approve Application"
                 icon="pi pi-check"
-                severity="success"
+                variant="primary"
                 onClick={() => handleFinalSubmit('Verified')}
                 disabled={selectedApplicant?.documents.some(
                   d => d.status !== 'Verified'
                 )}
-                autoFocus
               />
             </div>
           </div>
