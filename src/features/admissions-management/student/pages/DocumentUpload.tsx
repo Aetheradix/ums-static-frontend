@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { FileUpload } from 'primereact/fileupload';
-import { Tag } from 'primereact/tag';
 import { Button } from 'primereact/button';
 import { ToastService } from 'services';
-import { FormPage, FormCard } from 'shared/new-components';
+import { FormPage, FormCard, StatusBadge } from 'shared/new-components';
 import { admissionsUrls } from '../../urls';
 
 export default function DocumentUpload() {
@@ -126,9 +125,9 @@ export default function DocumentUpload() {
                     )}
                   </div>
                   <div className="flex items-center">
-                    <Tag
-                      value={doc.status}
-                      severity={getStatusSeverity(doc.status)}
+                    <StatusBadge
+                      label={doc.status}
+                      variant={getStatusSeverity(doc.status)}
                       className="uppercase text-xs tracking-wider px-2 py-1 shadow-sm"
                     />
                   </div>
