@@ -2,11 +2,10 @@ import { useState } from 'react';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
-import { Dialog } from 'primereact/dialog';
-import { Dropdown } from 'primereact/dropdown';
-import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { FormCard, FormPage } from 'shared/new-components';
+import { Modal } from 'shared/components/popups';
+import { TextBox, DropDownList, NumberBox } from 'shared/components/forms';
 import { admissionsUrls } from '../../urls';
 import { ToastService } from 'services';
 
@@ -147,25 +146,7 @@ export default function ReservationMaster() {
     </div>
   );
 
-  const dialogFooter = (
-    <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 mt-4">
-      <Button
-        label="Cancel"
-        icon="pi pi-times"
-        text
-        severity="secondary"
-        onClick={hideDialog}
-      />
-      <Button
-        label="Save Category"
-        icon="pi pi-check"
-        onClick={saveCategory}
-        disabled={!editingCategory?.code || !editingCategory?.name}
-        autoFocus
-      />
-    </div>
-  );
-
+  // Footer is now inline in Modal
   return (
     <FormPage
       title="Reservation Master"
@@ -229,110 +210,96 @@ export default function ReservationMaster() {
         </DataTable>
       </FormCard>
 
-      <Dialog
+      <Modal
         visible={showDialog}
-        style={{ width: '90vw', maxWidth: '500px' }}
+        size="small"
         header={
           editingCategory?.id
             ? 'Edit Reservation Category'
             : 'New Reservation Category'
         }
-        modal
-        className="p-fluid"
         onHide={hideDialog}
-        footer={dialogFooter}
       >
-        <div className="flex flex-col gap-5 mt-4">
-          <div className="flex flex-col gap-2">
-            <label htmlFor="code" className="font-bold text-gray-700">
-              Category Code <span className="text-red-500">*</span>
-            </label>
-            <InputText
-              id="code"
-              value={editingCategory?.code || ''}
-              onChange={e =>
-                setEditingCategory({ ...editingCategory, code: e.target.value })
-              }
-              required
+        <div className="p-4 flex flex-col gap-4">
+          <TextBox
+            label="Category Code *"
+            value={editingCategory?.code || ''}
+            onChange={v =>
+              setEditingCategory({ ...editingCategory, code: v as string })
+            }
+            placeholder="e.g. OBC"
+            autoFocus
+          />
+
+          <TextBox
+            label="Category Name *"
+            value={editingCategory?.name || ''}
+            onChange={v =>
+              setEditingCategory({ ...editingCategory, name: v as string })
+            }
+            placeholder="e.g. Other Backward Classes"
+          />
+
+          <NumberBox
+            label="Quota Percentage (%) *"
+            value={editingCategory?.quotaPercentage}
+            onChange={v =>
+              setEditingCategory({
+                ...editingCategory,
+                quotaPercentage: Number(v),
+              })
+            }
+            placeholder="e.g. 27.5"
+          />
+
+          <TextBox
+            label="Description"
+            value={editingCategory?.description || ''}
+            onChange={v =>
+              setEditingCategory({
+                ...editingCategory,
+                description: v as string,
+              })
+            }
+            placeholder="Optional description..."
+          />
+
+          <DropDownList
+            label="Status"
+            value={editingCategory?.status || 'Active'}
+            data={[
+              { label: 'Active', value: 'Active' },
+              { label: 'Inactive', value: 'Inactive' },
+            ]}
+            textField="label"
+            valueField="value"
+            onChange={(v: any) =>
+              setEditingCategory({
+                ...editingCategory,
+                status: v as 'Active' | 'Inactive',
+              })
+            }
+            defaultOptionText="Select Status"
+          />
+
+          <div className="flex justify-end gap-2 mt-2">
+            <Button
+              label="Cancel"
+              icon="pi pi-times"
+              text
+              severity="secondary"
+              onClick={hideDialog}
+            />
+            <Button
+              label="Save Category"
+              icon="pi pi-check"
+              onClick={saveCategory}
+              disabled={!editingCategory?.code || !editingCategory?.name}
               autoFocus
-              placeholder="e.g. OBC"
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label htmlFor="name" className="font-bold text-gray-700">
-              Category Name <span className="text-red-500">*</span>
-            </label>
-            <InputText
-              id="name"
-              value={editingCategory?.name || ''}
-              onChange={e =>
-                setEditingCategory({ ...editingCategory, name: e.target.value })
-              }
-              required
-              placeholder="e.g. Other Backward Classes"
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor="quotaPercentage"
-              className="font-bold text-gray-700"
-            >
-              Quota Percentage (%) <span className="text-red-500">*</span>
-            </label>
-            <InputText
-              id="quotaPercentage"
-              type="number"
-              step="0.1"
-              value={editingCategory?.quotaPercentage?.toString() || ''}
-              onChange={e =>
-                setEditingCategory({
-                  ...editingCategory,
-                  quotaPercentage: parseFloat(e.target.value),
-                })
-              }
-              required
-              placeholder="e.g. 27.5"
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label htmlFor="description" className="font-bold text-gray-700">
-              Description
-            </label>
-            <InputText
-              id="description"
-              value={editingCategory?.description || ''}
-              onChange={e =>
-                setEditingCategory({
-                  ...editingCategory,
-                  description: e.target.value,
-                })
-              }
-              placeholder="Optional description..."
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label htmlFor="status" className="font-bold text-gray-700">
-              Status
-            </label>
-            <Dropdown
-              id="status"
-              value={editingCategory?.status || 'Active'}
-              options={['Active', 'Inactive']}
-              onChange={e =>
-                setEditingCategory({
-                  ...editingCategory,
-                  status: e.value as 'Active' | 'Inactive',
-                })
-              }
-              placeholder="Select Status"
             />
           </div>
         </div>
-      </Dialog>
+      </Modal>
     </FormPage>
   );
 }

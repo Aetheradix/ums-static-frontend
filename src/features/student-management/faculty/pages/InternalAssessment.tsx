@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-import { Dropdown } from 'primereact/dropdown';
-import { InputNumber } from 'primereact/inputnumber';
+import { DropDownList, NumberBox } from 'shared/components/forms';
 import { ToastService } from 'services';
 import { FormPage, FormCard, StatusBadge } from 'shared/new-components';
 import { studentManagementUrls } from '../../urls';
@@ -82,7 +81,7 @@ export default function InternalAssessment() {
     ToastService.success('Internal marks submitted to Exam Cell successfully');
   };
 
-  const markEditorTemplate = (field: keyof StudentMark, maxMarks: number) => {
+  const markEditorTemplate = (field: keyof StudentMark) => {
     return (rowData: StudentMark) => {
       if (rowData.status === 'Submitted') {
         return (
@@ -92,15 +91,12 @@ export default function InternalAssessment() {
         );
       }
       return (
-        <InputNumber
+        <NumberBox
           value={rowData[field] as number}
-          onValueChange={e =>
-            handleMarkChange(rowData.id, field, e.value ?? null)
+          onChange={v =>
+            handleMarkChange(rowData.id, field, (v as number) ?? null)
           }
-          min={0}
-          max={maxMarks}
-          className="w-24 border-gray-300 rounded shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500 transition-shadow"
-          inputClassName="w-full text-center font-semibold"
+          className="w-24"
         />
       );
     };
@@ -121,9 +117,9 @@ export default function InternalAssessment() {
         <label className="font-bold text-gray-700 whitespace-nowrap">
           Select Subject:
         </label>
-        <Dropdown
+        <DropDownList
           value={selectedSubject}
-          options={[
+          data={[
             {
               label: 'CS-301: Advanced Algorithms (BTECH-CSE-SEM3-A)',
               value: 'CS-301',
@@ -133,8 +129,10 @@ export default function InternalAssessment() {
               value: 'CS-302',
             },
           ]}
-          onChange={e => setSelectedSubject(e.value)}
-          placeholder="Select Subject"
+          textField="label"
+          valueField="value"
+          onChange={v => setSelectedSubject(v as string)}
+          defaultOptionText="Select Subject"
           className="w-full md:w-[28rem] shadow-sm border-gray-300"
         />
       </div>
@@ -187,19 +185,19 @@ export default function InternalAssessment() {
             ></Column>
             <Column
               header="Assign. 1 (20)"
-              body={markEditorTemplate('assignment1', 20)}
+              body={markEditorTemplate('assignment1')}
               style={{ width: '15%', textAlign: 'center' }}
               headerClassName="text-center"
             ></Column>
             <Column
               header="Assign. 2 (20)"
-              body={markEditorTemplate('assignment2', 20)}
+              body={markEditorTemplate('assignment2')}
               style={{ width: '15%', textAlign: 'center' }}
               headerClassName="text-center"
             ></Column>
             <Column
               header="Mid Term (30)"
-              body={markEditorTemplate('midTerm', 30)}
+              body={markEditorTemplate('midTerm')}
               style={{ width: '15%', textAlign: 'center' }}
               headerClassName="text-center"
             ></Column>

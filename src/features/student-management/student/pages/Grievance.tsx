@@ -2,12 +2,11 @@ import { useState } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
-import { Dropdown } from 'primereact/dropdown';
-import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { ToastService } from 'services';
 import { FormPage, FormCard, StatusBadge } from 'shared/new-components';
+import { Modal } from 'shared/components/popups';
+import { TextBox, DropDownList } from 'shared/components/forms';
 import { studentManagementUrls } from '../../urls';
 
 interface Ticket {
@@ -106,10 +105,9 @@ export default function Grievance() {
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 py-2">
       <div className="p-input-icon-left w-full md:w-auto">
         <i className="pi pi-search" />
-        <InputText
-          type="search"
+        <TextBox
           placeholder="Search tickets..."
-          onChange={e => setGlobalFilter(e.target.value)}
+          onChange={v => setGlobalFilter(v as string)}
           className="w-full md:w-64"
         />
       </div>
@@ -239,15 +237,13 @@ export default function Grievance() {
         </DataTable>
       </FormCard>
 
-      <Dialog
+      <Modal
         visible={showDialog}
-        style={{ width: '600px' }}
+        size="medium"
         header="Raise New Grievance"
-        modal
         onHide={() => setShowDialog(false)}
-        className="p-fluid"
       >
-        <div className="flex flex-col gap-4 mt-2">
+        <div className="flex flex-col gap-4 p-4">
           <div className="bg-blue-50 border border-blue-200 p-4 text-sm text-blue-800 rounded-lg flex items-start gap-3 shadow-sm">
             <i className="pi pi-info-circle text-blue-500 text-xl mt-0.5"></i>
             <p>
@@ -256,38 +252,30 @@ export default function Grievance() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-2 mt-2">
-            <label className="font-bold text-gray-700">
-              Category <span className="text-red-500">*</span>
-            </label>
-            <Dropdown
-              value={category}
-              options={[
-                'Academics',
-                'Examination',
-                'Finance / Fees',
-                'Hostel',
-                'Transport',
-                'IT Support',
-                'Other',
-              ]}
-              onChange={e => setCategory(e.value)}
-              placeholder="Select Category"
-              className="border-gray-300"
-            />
-          </div>
+          <DropDownList
+            label="Category *"
+            value={category}
+            data={[
+              { label: 'Academics', value: 'Academics' },
+              { label: 'Examination', value: 'Examination' },
+              { label: 'Finance / Fees', value: 'Finance / Fees' },
+              { label: 'Hostel', value: 'Hostel' },
+              { label: 'Transport', value: 'Transport' },
+              { label: 'IT Support', value: 'IT Support' },
+              { label: 'Other', value: 'Other' },
+            ]}
+            textField="label"
+            valueField="value"
+            onChange={v => setCategory(v as string)}
+            defaultOptionText="Select Category"
+          />
 
-          <div className="flex flex-col gap-2">
-            <label className="font-bold text-gray-700">
-              Subject <span className="text-red-500">*</span>
-            </label>
-            <InputText
-              value={subject}
-              onChange={e => setSubject(e.target.value)}
-              placeholder="Brief summary of your issue"
-              className="border-gray-300"
-            />
-          </div>
+          <TextBox
+            label="Subject *"
+            value={subject}
+            onChange={v => setSubject(v as string)}
+            placeholder="Brief summary of your issue"
+          />
 
           <div className="flex flex-col gap-2">
             <label className="font-bold text-gray-700">
@@ -335,7 +323,7 @@ export default function Grievance() {
             />
           </div>
         </div>
-      </Dialog>
+      </Modal>
     </FormPage>
   );
 }

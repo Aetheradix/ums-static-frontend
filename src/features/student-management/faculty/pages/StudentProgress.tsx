@@ -3,8 +3,8 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Chart } from 'primereact/chart';
 import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
 import { FormPage, FormCard, StatusBadge } from 'shared/new-components';
+import { TextBox } from 'shared/components/forms';
 import { studentManagementUrls } from '../../urls';
 
 interface StudentProgress {
@@ -120,10 +120,9 @@ export default function StudentProgress() {
       </h3>
       <span className="p-input-icon-left w-full md:w-auto">
         <i className="pi pi-search" />
-        <InputText
-          type="search"
+        <TextBox
           placeholder="Search students..."
-          onChange={e => setGlobalFilter(e.target.value)}
+          onChange={v => setGlobalFilter(v as string)}
           className="w-full md:w-64"
         />
       </span>

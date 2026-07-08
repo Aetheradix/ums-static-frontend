@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Dropdown } from 'primereact/dropdown';
+import { DropDownList } from 'shared/components/forms';
 import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -118,20 +118,18 @@ export default function MeritListGeneration() {
         <FormCard>
           <div className="flex flex-col md:flex-row items-start md:items-end gap-4">
             <div className="flex flex-col gap-2 flex-1 w-full">
-              <label htmlFor="program" className="font-bold text-gray-700">
-                Select Program <span className="text-red-500">*</span>
-              </label>
-              <Dropdown
-                id="program"
-                value={selectedProgram}
-                options={mockPrograms}
-                onChange={e => {
-                  setSelectedProgram(e.value);
+              <DropDownList
+                label="Select Program *"
+                value={selectedProgram || ''}
+                data={mockPrograms}
+                textField="label"
+                valueField="value"
+                onChange={v => {
+                  setSelectedProgram(v as string);
                   setMeritList([]);
                   setPublished(false);
                 }}
-                placeholder="Select a Program"
-                className="w-full"
+                defaultOptionText="Select a Program"
               />
             </div>
             <Button

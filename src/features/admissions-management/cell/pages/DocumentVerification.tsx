@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
-import { InputTextarea } from 'primereact/inputtextarea';
+import { Modal } from 'shared/components/popups';
+import { TextArea } from 'shared/components/forms';
 import { Tag } from 'primereact/tag';
 import { FormPage, FormCard } from 'shared/new-components';
 import { admissionsUrls } from '../../urls';
@@ -121,28 +121,6 @@ export default function DocumentVerification() {
     );
   };
 
-  const dialogFooter = (
-    <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 mt-4">
-      <Button
-        label="Reject Application"
-        icon="pi pi-times"
-        severity="danger"
-        text
-        onClick={() => handleFinalSubmit('Rejected')}
-      />
-      <Button
-        label="Approve Application"
-        icon="pi pi-check"
-        severity="success"
-        onClick={() => handleFinalSubmit('Verified')}
-        disabled={selectedApplicant?.documents.some(
-          d => d.status !== 'Verified'
-        )}
-        autoFocus
-      />
-    </div>
-  );
-
   return (
     <FormPage
       title="Document Verification Dashboard"
@@ -199,20 +177,17 @@ export default function DocumentVerification() {
         </DataTable>
       </FormCard>
 
-      <Dialog
+      <Modal
         visible={!!selectedApplicant}
-        style={{ width: '90vw', maxWidth: '800px' }}
+        size="large"
         header={`Verify Documents: ${selectedApplicant?.name} (${selectedApplicant?.applicationNo})`}
-        modal
-        className="p-fluid"
         onHide={() => {
           setSelectedApplicant(null);
           setRemarks('');
         }}
-        footer={dialogFooter}
       >
         {selectedApplicant && (
-          <div className="flex flex-col gap-6 mt-4">
+          <div className="flex flex-col gap-6 p-4">
             <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 flex flex-col md:flex-row justify-between items-start md:items-center shadow-sm">
               <div className="mb-2 md:mb-0">
                 <p className="text-sm text-blue-600 font-semibold mb-1 uppercase tracking-wider">
@@ -294,22 +269,36 @@ export default function DocumentVerification() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-2 border-t border-gray-200 pt-4">
-              <label htmlFor="remarks" className="font-bold text-gray-700">
-                Verification Remarks (Optional)
-              </label>
-              <InputTextarea
-                id="remarks"
-                value={remarks}
-                onChange={e => setRemarks(e.target.value)}
-                rows={3}
-                className="w-full"
-                placeholder="Enter remarks if rejecting..."
+            <TextArea
+              label="Verification Remarks (Optional)"
+              value={remarks}
+              onChange={v => setRemarks(v as string)}
+              rows={3}
+              placeholder="Enter remarks if rejecting..."
+            />
+
+            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 mt-4">
+              <Button
+                label="Reject Application"
+                icon="pi pi-times"
+                severity="danger"
+                text
+                onClick={() => handleFinalSubmit('Rejected')}
+              />
+              <Button
+                label="Approve Application"
+                icon="pi pi-check"
+                severity="success"
+                onClick={() => handleFinalSubmit('Verified')}
+                disabled={selectedApplicant?.documents.some(
+                  d => d.status !== 'Verified'
+                )}
+                autoFocus
               />
             </div>
           </div>
         )}
-      </Dialog>
+      </Modal>
     </FormPage>
   );
 }

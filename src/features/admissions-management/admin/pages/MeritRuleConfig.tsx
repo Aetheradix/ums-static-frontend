@@ -2,12 +2,10 @@ import { useState } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { InputNumber } from 'primereact/inputnumber';
 import { Tag } from 'primereact/tag';
 import { FormPage, FormCard } from 'shared/new-components';
+import { Modal } from 'shared/components/popups';
+import { TextBox, DropDownList, NumberBox } from 'shared/components/forms';
 import { ToastService } from 'services';
 
 interface MeritRule {
@@ -112,11 +110,10 @@ export default function MeritRuleConfig() {
     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
       <span className="p-input-icon-left w-full md:w-auto">
         <i className="pi pi-search" />
-        <InputText
-          type="search"
+        <TextBox
           placeholder="Search merit rules..."
           className="w-full md:w-80"
-          onChange={e => setGlobalFilter(e.target.value)}
+          onChange={v => setGlobalFilter(v as string)}
         />
       </span>
       <Button
@@ -139,24 +136,7 @@ export default function MeritRuleConfig() {
     (selectedRule.entranceWeightage || 0) +
     (selectedRule.interviewWeightage || 0);
 
-  const dialogFooter = (
-    <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 mt-4">
-      <Button
-        label="Cancel"
-        icon="pi pi-times"
-        text
-        severity="secondary"
-        onClick={() => setShowDialog(false)}
-      />
-      <Button
-        label="Save Rule"
-        icon="pi pi-check"
-        onClick={handleSave}
-        disabled={totalWeightage !== 100}
-        autoFocus
-      />
-    </div>
-  );
+  // Footer is inline
 
   return (
     <FormPage
@@ -212,118 +192,77 @@ export default function MeritRuleConfig() {
         </DataTable>
       </FormCard>
 
-      <Dialog
+      <Modal
         visible={showDialog}
-        style={{ width: '90vw', maxWidth: '600px' }}
+        size="medium"
         header={selectedRule.id ? 'Edit Merit Rule' : 'New Merit Rule'}
-        modal
-        className="p-fluid"
         onHide={() => setShowDialog(false)}
-        footer={dialogFooter}
       >
-        <div className="grid grid-cols-1 gap-6 mt-4">
-          <div className="flex flex-col gap-2">
-            <label htmlFor="name" className="font-bold text-gray-700">
-              Rule Name <span className="text-red-500">*</span>
-            </label>
-            <InputText
-              id="name"
-              value={selectedRule.name || ''}
-              onChange={e =>
-                setSelectedRule({ ...selectedRule, name: e.target.value })
-              }
-              placeholder="e.g. B.Tech Standard Admission"
-            />
-          </div>
+        <div className="p-4 flex flex-col gap-4">
+          <TextBox
+            label="Rule Name *"
+            value={selectedRule.name || ''}
+            onChange={v =>
+              setSelectedRule({ ...selectedRule, name: v as string })
+            }
+            placeholder="e.g. B.Tech Standard Admission"
+          />
 
-          <div className="flex flex-col gap-2">
-            <label htmlFor="programCode" className="font-bold text-gray-700">
-              Applies To Program <span className="text-red-500">*</span>
-            </label>
-            <Dropdown
-              id="programCode"
-              value={selectedRule.programCode}
-              options={[
-                { label: 'BTECH-CSE', value: 'BTECH-CSE' },
-                { label: 'MBA-FIN', value: 'MBA-FIN' },
-                { label: 'PHD-PHY', value: 'PHD-PHY' },
-              ]}
-              onChange={e =>
-                setSelectedRule({ ...selectedRule, programCode: e.value })
-              }
-              placeholder="Select Program"
-            />
-          </div>
+          <DropDownList
+            label="Applies To Program *"
+            value={selectedRule.programCode}
+            data={[
+              { label: 'BTECH-CSE', value: 'BTECH-CSE' },
+              { label: 'MBA-FIN', value: 'MBA-FIN' },
+              { label: 'PHD-PHY', value: 'PHD-PHY' },
+            ]}
+            textField="label"
+            valueField="value"
+            onChange={(v: any) =>
+              setSelectedRule({ ...selectedRule, programCode: v })
+            }
+            defaultOptionText="Select Program"
+          />
 
           <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
             <h4 className="font-semibold text-gray-700 mb-3 border-b pb-2">
               Weightage Distribution (Must equal 100%)
             </h4>
             <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex flex-col gap-2 flex-1">
-                <label
-                  htmlFor="academic"
-                  className="text-sm font-bold text-gray-600"
-                >
-                  Past Academics
-                </label>
-                <InputNumber
-                  id="academic"
-                  value={selectedRule.academicWeightage || 0}
-                  onValueChange={e =>
+              <div className="flex-1">
+                <NumberBox
+                  label="Past Academics (%)"
+                  value={selectedRule.academicWeightage}
+                  onChange={v =>
                     setSelectedRule({
                       ...selectedRule,
-                      academicWeightage: e.value as number,
+                      academicWeightage: Number(v),
                     })
                   }
-                  min={0}
-                  max={100}
-                  suffix=" %"
-                  className="w-full"
                 />
               </div>
-              <div className="flex flex-col gap-2 flex-1">
-                <label
-                  htmlFor="entrance"
-                  className="text-sm font-bold text-gray-600"
-                >
-                  Entrance Test
-                </label>
-                <InputNumber
-                  id="entrance"
-                  value={selectedRule.entranceWeightage || 0}
-                  onValueChange={e =>
+              <div className="flex-1">
+                <NumberBox
+                  label="Entrance Test (%)"
+                  value={selectedRule.entranceWeightage}
+                  onChange={v =>
                     setSelectedRule({
                       ...selectedRule,
-                      entranceWeightage: e.value as number,
+                      entranceWeightage: Number(v),
                     })
                   }
-                  min={0}
-                  max={100}
-                  suffix=" %"
-                  className="w-full"
                 />
               </div>
-              <div className="flex flex-col gap-2 flex-1">
-                <label
-                  htmlFor="interview"
-                  className="text-sm font-bold text-gray-600"
-                >
-                  Interview
-                </label>
-                <InputNumber
-                  id="interview"
-                  value={selectedRule.interviewWeightage || 0}
-                  onValueChange={e =>
+              <div className="flex-1">
+                <NumberBox
+                  label="Interview (%)"
+                  value={selectedRule.interviewWeightage}
+                  onChange={v =>
                     setSelectedRule({
                       ...selectedRule,
-                      interviewWeightage: e.value as number,
+                      interviewWeightage: Number(v),
                     })
                   }
-                  min={0}
-                  max={100}
-                  suffix=" %"
-                  className="w-full"
                 />
               </div>
             </div>
@@ -340,25 +279,42 @@ export default function MeritRuleConfig() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label htmlFor="status" className="font-bold text-gray-700">
-              Status
-            </label>
-            <Dropdown
-              id="status"
-              value={selectedRule.status}
-              options={[
-                { label: 'Active', value: 'Active' },
-                { label: 'Inactive', value: 'Inactive' },
-              ]}
-              onChange={e =>
-                setSelectedRule({ ...selectedRule, status: e.value })
-              }
-              placeholder="Select Current Status"
+          <DropDownList
+            label="Status"
+            value={selectedRule.status || 'Active'}
+            data={[
+              { label: 'Active', value: 'Active' },
+              { label: 'Inactive', value: 'Inactive' },
+            ]}
+            textField="label"
+            valueField="value"
+            onChange={(v: any) =>
+              setSelectedRule({
+                ...selectedRule,
+                status: v as 'Active' | 'Inactive',
+              })
+            }
+            defaultOptionText="Select Status"
+          />
+
+          <div className="flex justify-end gap-2 mt-2">
+            <Button
+              label="Cancel"
+              icon="pi pi-times"
+              text
+              severity="secondary"
+              onClick={() => setShowDialog(false)}
+            />
+            <Button
+              label="Save Rule"
+              icon="pi pi-check"
+              onClick={handleSave}
+              disabled={totalWeightage !== 100}
+              autoFocus
             />
           </div>
         </div>
-      </Dialog>
+      </Modal>
     </FormPage>
   );
 }

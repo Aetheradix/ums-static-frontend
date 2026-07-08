@@ -136,7 +136,7 @@ export default function ContentForm() {
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         {/* Section 1: Classification */}
         <FormCard title="1. Classification & Basic Details">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col gap-2 md:col-span-2">
               <label className="text-sm font-semibold text-gray-700">
                 Title *
@@ -346,7 +346,7 @@ export default function ContentForm() {
 
         {/* Section 2: Editor */}
         <FormCard title="2. Content Editor">
-          <div className="p-4 flex flex-col gap-2">
+          <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700">
               Description (Rich Text Supported) *
             </label>
@@ -420,7 +420,7 @@ export default function ContentForm() {
 
         {/* Section 3: Date Configuration */}
         <FormCard title="3. Date Configuration">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="flex flex-col gap-2">
               <label className="text-sm font-semibold text-gray-700">
                 Effective Date
@@ -482,7 +482,7 @@ export default function ContentForm() {
 
         {/* Section 4: Attachments */}
         <FormCard title="4. Attachments">
-          <div className="p-4 flex flex-col gap-4">
+          <div className="flex flex-col gap-4">
             <div
               className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:bg-gray-50 transition cursor-pointer"
               onClick={() => fileInputRef.current?.click()}
@@ -541,7 +541,7 @@ export default function ContentForm() {
 
         {/* Section 5: Additional Configuration */}
         <FormCard title="5. Additional Configuration">
-          <div className="p-4">
+          <div>
             <label className="text-sm font-semibold text-gray-700">
               Remarks (Internal Notes for Reviewers)
             </label>

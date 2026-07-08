@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { MultiSelect } from 'primereact/multiselect';
 import { Tag } from 'primereact/tag';
 import { FormPage, FormCard } from 'shared/new-components';
+import { Modal } from 'shared/components/popups';
+import {
+  DropDownList,
+  MultiSelectList,
+  NumberBox,
+} from 'shared/components/forms';
 import { admissionsUrls } from '../../urls';
 import { ToastService } from 'services';
 
@@ -156,25 +158,7 @@ export default function EligibilityRuleEngine() {
     );
   };
 
-  const dialogFooter = (
-    <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 mt-4">
-      <Button
-        label="Cancel"
-        icon="pi pi-times"
-        text
-        severity="secondary"
-        onClick={hideDialog}
-      />
-      <Button
-        label="Save Rule"
-        icon="pi pi-check"
-        onClick={saveRule}
-        disabled={!editingRule?.program || !editingRule?.minPercentage}
-        autoFocus
-      />
-    </div>
-  );
-
+  // Footer is now inline in Modal
   const header = (
     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
       <h2 className="text-lg font-semibold text-gray-800 m-0">
@@ -241,105 +225,104 @@ export default function EligibilityRuleEngine() {
         </DataTable>
       </FormCard>
 
-      <Dialog
+      <Modal
         visible={showDialog}
-        style={{ width: '90vw', maxWidth: '600px' }}
+        size="medium"
         header={editingRule?.id ? 'Edit Eligibility Rule' : 'Create New Rule'}
-        modal
-        className="p-fluid"
         onHide={hideDialog}
-        footer={dialogFooter}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-          <div className="col-span-1 md:col-span-2 flex flex-col gap-2">
-            <label htmlFor="program" className="font-bold text-gray-700">
-              Program <span className="text-red-500">*</span>
-            </label>
-            <Dropdown
-              id="program"
-              value={editingRule?.program || null}
-              options={mockPrograms}
-              onChange={e =>
-                setEditingRule({ ...editingRule, program: e.value })
-              }
-              placeholder="Select Program"
-            />
+        <div className="p-4 flex flex-col gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="col-span-1 md:col-span-2">
+              <DropDownList
+                label="Program *"
+                value={editingRule?.program || null}
+                data={mockPrograms}
+                textField="label"
+                valueField="value"
+                onChange={(v: any) =>
+                  setEditingRule({ ...editingRule, program: v })
+                }
+                defaultOptionText="Select Program"
+              />
+            </div>
+
+            <div className="col-span-1 md:col-span-2">
+              <NumberBox
+                label="Minimum Qualifying Percentage (%) *"
+                value={editingRule?.minPercentage}
+                onChange={v =>
+                  setEditingRule({ ...editingRule, minPercentage: Number(v) })
+                }
+                placeholder="e.g. 60"
+              />
+            </div>
+
+            <div className="col-span-1 md:col-span-2">
+              <MultiSelectList
+                label="Compulsory Subjects in 10+2 / UG"
+                value={editingRule?.requiredSubjects as any}
+                data={mockSubjects as any}
+                textField="label"
+                onChange={(v: any) => {
+                  setEditingRule({ ...editingRule, requiredSubjects: v });
+                }}
+              />
+            </div>
+
+            <div className="col-span-1">
+              <DropDownList
+                label="Entrance Exam Required"
+                value={editingRule?.entranceExam || null}
+                data={mockExams}
+                textField="label"
+                valueField="value"
+                onChange={(v: any) =>
+                  setEditingRule({ ...editingRule, entranceExam: v })
+                }
+                defaultOptionText="Select Exam"
+              />
+            </div>
+
+            <div className="col-span-1">
+              <DropDownList
+                label="Status"
+                value={editingRule?.status || 'Active'}
+                data={[
+                  { label: 'Active', value: 'Active' },
+                  { label: 'Inactive', value: 'Inactive' },
+                ]}
+                textField="label"
+                valueField="value"
+                onChange={(v: any) =>
+                  setEditingRule({
+                    ...editingRule,
+                    status: v as 'Active' | 'Inactive',
+                  })
+                }
+                defaultOptionText="Select Status"
+              />
+            </div>
           </div>
 
-          <div className="col-span-1 md:col-span-2 flex flex-col gap-2">
-            <label htmlFor="minPercentage" className="font-bold text-gray-700">
-              Minimum Qualifying Percentage (%){' '}
-              <span className="text-red-500">*</span>
-            </label>
-            <InputText
-              id="minPercentage"
-              type="number"
-              step="1"
-              value={editingRule?.minPercentage?.toString() || ''}
-              onChange={e =>
-                setEditingRule({
-                  ...editingRule,
-                  minPercentage: parseFloat(e.target.value),
-                })
-              }
-              required
-              placeholder="e.g. 60"
+          <div className="flex justify-end gap-2 mt-2">
+            <Button
+              label="Cancel"
+              icon="pi pi-times"
+              text
+              severity="secondary"
+              onClick={hideDialog}
             />
-          </div>
-
-          <div className="col-span-1 md:col-span-2 flex flex-col gap-2">
-            <label
-              htmlFor="requiredSubjects"
-              className="font-bold text-gray-700"
-            >
-              Compulsory Subjects in 10+2 / UG
-            </label>
-            <MultiSelect
-              id="requiredSubjects"
-              value={editingRule?.requiredSubjects || []}
-              options={mockSubjects}
-              onChange={e =>
-                setEditingRule({ ...editingRule, requiredSubjects: e.value })
-              }
-              placeholder="Select Subjects"
-              display="chip"
-            />
-          </div>
-
-          <div className="col-span-1 flex flex-col gap-2">
-            <label htmlFor="entranceExam" className="font-bold text-gray-700">
-              Entrance Exam Required
-            </label>
-            <Dropdown
-              id="entranceExam"
-              value={editingRule?.entranceExam || null}
-              options={mockExams}
-              onChange={e =>
-                setEditingRule({ ...editingRule, entranceExam: e.value })
-              }
-              placeholder="Select Exam"
-            />
-          </div>
-
-          <div className="col-span-1 flex flex-col gap-2">
-            <label htmlFor="status" className="font-bold text-gray-700">
-              Status
-            </label>
-            <Dropdown
-              id="status"
-              value={editingRule?.status || 'Active'}
-              options={['Active', 'Inactive']}
-              onChange={e =>
-                setEditingRule({
-                  ...editingRule,
-                  status: e.value as 'Active' | 'Inactive',
-                })
-              }
-              placeholder="Select Status"
+            <Button
+              label="Save Rule"
+              icon="pi pi-check"
+              onClick={saveRule}
+              disabled={!editingRule?.program || !editingRule?.minPercentage}
+              autoFocus
             />
           </div>
         </div>
-      </Dialog>
+      </Modal>
     </FormPage>
   );
 }

@@ -69,6 +69,7 @@
 .enrollment-progress-fill {
   height: 100%;
   background-color: #10b981;
+  border-radius: 9999px;
   transition: width 0.5s ease-out;
 }
 

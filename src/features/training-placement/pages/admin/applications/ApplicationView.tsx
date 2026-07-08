@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormCard, FormPage, StatusBadge } from 'shared/new-components';
 import { tpUrls } from '../../../urls';
-import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
+import { Modal } from 'shared/components/popups';
+import { DropDownList, TextBox, TextArea } from 'shared/components/forms';
 import { useLocalStorage } from 'shared/hooks/useLocalStorage';
 
 export default function ApplicationView() {
@@ -254,13 +255,46 @@ export default function ApplicationView() {
       </div>
 
       {/* Update Hiring Status Modal */}
-      <Dialog
+      <Modal
         header="Update Hiring Status"
         visible={showStatusModal}
-        className="w-[450px] max-w-full"
+        size="medium"
         onHide={() => setShowStatusModal(false)}
-        footer={
-          <div className="flex gap-2 justify-end">
+      >
+        <div className="flex flex-col gap-4 p-4">
+          <DropDownList
+            label="Hiring Status"
+            value={currentStatus}
+            data={[
+              'Applied',
+              'Shortlisted',
+              'Written Test Scheduled',
+              'GD Scheduled',
+              'Interview Scheduled',
+              'Selected',
+              'Rejected',
+              'On Hold',
+              'Withdrawn',
+            ]}
+            onChange={v => setCurrentStatus(v as string)}
+          />
+
+          <TextBox
+            label="Current Round / Process"
+            value={currentRound}
+            onChange={v => setCurrentRound(v as string)}
+            placeholder="e.g. Aptitude Test, Tech Round 1"
+          />
+
+          <TextArea
+            label="Remarks"
+            value={remarks}
+            onChange={v => setRemarks(v as string)}
+            placeholder="Remarks for this decision..."
+            rows={3}
+          />
+
+          <div className="flex gap-2 justify-end mt-4 border-t border-gray-100 pt-4">
             <Button
               label="Cancel"
               severity="secondary"
@@ -269,59 +303,8 @@ export default function ApplicationView() {
             />
             <Button label="Save Changes" onClick={handleUpdateStatus} />
           </div>
-        }
-      >
-        <div className="flex flex-col gap-4 mt-2">
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Hiring Status
-            </label>
-            <select
-              value={currentStatus}
-              onChange={e => setCurrentStatus(e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-            >
-              <option value="Applied">Applied</option>
-              <option value="Shortlisted">Shortlisted</option>
-              <option value="Written Test Scheduled">
-                Written Test Scheduled
-              </option>
-              <option value="GD Scheduled">GD Scheduled</option>
-              <option value="Interview Scheduled">Interview Scheduled</option>
-              <option value="Selected">Selected</option>
-              <option value="Rejected">Rejected</option>
-              <option value="On Hold">On Hold</option>
-              <option value="Withdrawn">Withdrawn</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Current Round / Process
-            </label>
-            <input
-              type="text"
-              value={currentRound}
-              onChange={e => setCurrentRound(e.target.value)}
-              placeholder="e.g. Aptitude Test, Tech Round 1"
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Remarks
-            </label>
-            <textarea
-              value={remarks}
-              onChange={e => setRemarks(e.target.value)}
-              placeholder="Remarks for this decision..."
-              rows={3}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-            />
-          </div>
         </div>
-      </Dialog>
+      </Modal>
     </FormPage>
   );
 }

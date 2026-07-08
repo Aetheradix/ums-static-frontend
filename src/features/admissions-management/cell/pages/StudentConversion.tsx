@@ -3,7 +3,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Tag } from 'primereact/tag';
-import { Dropdown } from 'primereact/dropdown';
+import { DropDownList } from 'shared/components/forms';
 import { FormPage, FormCard } from 'shared/new-components';
 import { admissionsUrls } from '../../urls';
 import { ToastService } from 'services';
@@ -142,17 +142,19 @@ export default function StudentConversion() {
             >
               Filter by Program:
             </label>
-            <Dropdown
-              id="program"
-              value={selectedProgram}
-              options={mockPrograms}
-              onChange={e => {
-                setSelectedProgram(e.value);
-                setSelectedRecords([]);
-              }}
-              placeholder="Select a Program"
-              className="w-full md:w-64"
-            />
+            <div className="w-full md:w-64">
+              <DropDownList
+                value={selectedProgram || ''}
+                data={mockPrograms}
+                textField="label"
+                valueField="value"
+                onChange={v => {
+                  setSelectedProgram(v as string);
+                  setSelectedRecords([]);
+                }}
+                defaultOptionText="Select a Program"
+              />
+            </div>
           </div>
 
           <Button
