@@ -26,7 +26,7 @@ export type ExecutionRoute = 'Internal' | 'External Agency';
 
 export interface CivilWork {
   id: string;
-  workId: string;                // e.g. CW-2025-001
+  workId: string; // e.g. CW-2025-001
   name: string;
   category: WorkCategory;
   department: string;
@@ -34,8 +34,8 @@ export interface CivilWork {
   location: string;
   executionRoute: ExecutionRoute;
   estimatedCost: number;
-  aaAmount: number;             // Administrative Approval Amount
-  tsAmount: number;             // Technical Sanction Amount
+  aaAmount: number; // Administrative Approval Amount
+  tsAmount: number; // Technical Sanction Amount
   contractAmount: number;
   fundingSource: string;
   startDate: string;
@@ -44,9 +44,9 @@ export interface CivilWork {
   siteEngineer: string;
   status: WorkStatus;
   priority: 'High' | 'Medium' | 'Low';
-  physicalProgress: number;     // 0–100
-  financialProgress: number;    // 0–100
-  externalAgency?: string;      // for Deposit Work
+  physicalProgress: number; // 0–100
+  financialProgress: number; // 0–100
+  externalAgency?: string; // for Deposit Work
   workBasis?: 'SOR Based' | 'BOQ Based';
   constructionAgreementDoc?: string;
   scopeOfWorkDoc?: string;
@@ -248,33 +248,153 @@ export interface SORItem {
   code: string;
   description: string;
   unit: string;
-  govtRate: number;            // ₹ per unit
+  govtRate: number; // ₹ per unit
   category: string;
   year: string;
 }
 
 export const sorItems: SORItem[] = [
-  { id: '1',  code: 'SOR-CC-001', description: 'RCC M20 Concrete (Including formwork)',             unit: 'Cum',  govtRate: 7600,   category: 'Concrete Works',  year: '2025-26' },
-  { id: '2',  code: 'SOR-CC-002', description: 'RCC M25 Concrete (Including formwork)',             unit: 'Cum',  govtRate: 8400,   category: 'Concrete Works',  year: '2025-26' },
-  { id: '3',  code: 'SOR-CC-003', description: 'PCC M10 Plain Cement Concrete',                    unit: 'Cum',  govtRate: 5200,   category: 'Concrete Works',  year: '2025-26' },
-  { id: '4',  code: 'SOR-ST-001', description: 'HYSD Steel Reinforcement Fe415',                   unit: 'Kg',   govtRate: 68,     category: 'Steel Works',     year: '2025-26' },
-  { id: '5',  code: 'SOR-ST-002', description: 'MS Structural Steel (Sections)',                   unit: 'Kg',   govtRate: 72,     category: 'Steel Works',     year: '2025-26' },
-  { id: '6',  code: 'SOR-EX-001', description: 'Earth Excavation in Ordinary Soil',                unit: 'Cum',  govtRate: 350,    category: 'Earthwork',       year: '2025-26' },
-  { id: '7',  code: 'SOR-EX-002', description: 'Earth Filling & Compaction',                       unit: 'Cum',  govtRate: 280,    category: 'Earthwork',       year: '2025-26' },
-  { id: '8',  code: 'SOR-MN-001', description: 'Brick Masonry 1:6 CM (Conventional)',              unit: 'Cum',  govtRate: 6200,   category: 'Masonry',         year: '2025-26' },
-  { id: '9',  code: 'SOR-MN-002', description: 'Hollow Block Masonry (200mm)',                     unit: 'Sqm',  govtRate: 890,    category: 'Masonry',         year: '2025-26' },
-  { id: '10', code: 'SOR-PL-001', description: 'Cement Plaster 12mm 1:4 (Internal)',               unit: 'Sqm',  govtRate: 185,    category: 'Plastering',      year: '2025-26' },
-  { id: '11', code: 'SOR-PL-002', description: 'Cement Plaster 20mm 1:4 (External)',               unit: 'Sqm',  govtRate: 220,    category: 'Plastering',      year: '2025-26' },
-  { id: '12', code: 'SOR-FL-001', description: 'Vitrified Floor Tiles 600x600mm (AAA Grade)',      unit: 'Sqm',  govtRate: 950,    category: 'Flooring',        year: '2025-26' },
-  { id: '13', code: 'SOR-FL-002', description: 'Kota Stone Flooring (Polished)',                   unit: 'Sqm',  govtRate: 680,    category: 'Flooring',        year: '2025-26' },
-  { id: '14', code: 'SOR-PT-001', description: 'Acrylic Distemper (2 coats) on Plastered Surface', unit: 'Sqm',  govtRate: 95,     category: 'Painting',        year: '2025-26' },
-  { id: '15', code: 'SOR-PT-002', description: 'Exterior Emulsion Paint (Weather Coat, 2 coats)', unit: 'Sqm',  govtRate: 145,    category: 'Painting',        year: '2025-26' },
+  {
+    id: '1',
+    code: 'SOR-CC-001',
+    description: 'RCC M20 Concrete (Including formwork)',
+    unit: 'Cum',
+    govtRate: 7600,
+    category: 'Concrete Works',
+    year: '2025-26',
+  },
+  {
+    id: '2',
+    code: 'SOR-CC-002',
+    description: 'RCC M25 Concrete (Including formwork)',
+    unit: 'Cum',
+    govtRate: 8400,
+    category: 'Concrete Works',
+    year: '2025-26',
+  },
+  {
+    id: '3',
+    code: 'SOR-CC-003',
+    description: 'PCC M10 Plain Cement Concrete',
+    unit: 'Cum',
+    govtRate: 5200,
+    category: 'Concrete Works',
+    year: '2025-26',
+  },
+  {
+    id: '4',
+    code: 'SOR-ST-001',
+    description: 'HYSD Steel Reinforcement Fe415',
+    unit: 'Kg',
+    govtRate: 68,
+    category: 'Steel Works',
+    year: '2025-26',
+  },
+  {
+    id: '5',
+    code: 'SOR-ST-002',
+    description: 'MS Structural Steel (Sections)',
+    unit: 'Kg',
+    govtRate: 72,
+    category: 'Steel Works',
+    year: '2025-26',
+  },
+  {
+    id: '6',
+    code: 'SOR-EX-001',
+    description: 'Earth Excavation in Ordinary Soil',
+    unit: 'Cum',
+    govtRate: 350,
+    category: 'Earthwork',
+    year: '2025-26',
+  },
+  {
+    id: '7',
+    code: 'SOR-EX-002',
+    description: 'Earth Filling & Compaction',
+    unit: 'Cum',
+    govtRate: 280,
+    category: 'Earthwork',
+    year: '2025-26',
+  },
+  {
+    id: '8',
+    code: 'SOR-MN-001',
+    description: 'Brick Masonry 1:6 CM (Conventional)',
+    unit: 'Cum',
+    govtRate: 6200,
+    category: 'Masonry',
+    year: '2025-26',
+  },
+  {
+    id: '9',
+    code: 'SOR-MN-002',
+    description: 'Hollow Block Masonry (200mm)',
+    unit: 'Sqm',
+    govtRate: 890,
+    category: 'Masonry',
+    year: '2025-26',
+  },
+  {
+    id: '10',
+    code: 'SOR-PL-001',
+    description: 'Cement Plaster 12mm 1:4 (Internal)',
+    unit: 'Sqm',
+    govtRate: 185,
+    category: 'Plastering',
+    year: '2025-26',
+  },
+  {
+    id: '11',
+    code: 'SOR-PL-002',
+    description: 'Cement Plaster 20mm 1:4 (External)',
+    unit: 'Sqm',
+    govtRate: 220,
+    category: 'Plastering',
+    year: '2025-26',
+  },
+  {
+    id: '12',
+    code: 'SOR-FL-001',
+    description: 'Vitrified Floor Tiles 600x600mm (AAA Grade)',
+    unit: 'Sqm',
+    govtRate: 950,
+    category: 'Flooring',
+    year: '2025-26',
+  },
+  {
+    id: '13',
+    code: 'SOR-FL-002',
+    description: 'Kota Stone Flooring (Polished)',
+    unit: 'Sqm',
+    govtRate: 680,
+    category: 'Flooring',
+    year: '2025-26',
+  },
+  {
+    id: '14',
+    code: 'SOR-PT-001',
+    description: 'Acrylic Distemper (2 coats) on Plastered Surface',
+    unit: 'Sqm',
+    govtRate: 95,
+    category: 'Painting',
+    year: '2025-26',
+  },
+  {
+    id: '15',
+    code: 'SOR-PT-002',
+    description: 'Exterior Emulsion Paint (Weather Coat, 2 coats)',
+    unit: 'Sqm',
+    govtRate: 145,
+    category: 'Painting',
+    year: '2025-26',
+  },
 ];
 
 // ─── BOQ Items (Bill of Quantities) ──────────────────────────────────────────
 export interface BOQItem {
   id: string;
-  boqId: string;              // parent BOQ reference
+  boqId: string; // parent BOQ reference
   workId: string;
   sorItemId: string;
   sorCode: string;
@@ -282,33 +402,170 @@ export interface BOQItem {
   unit: string;
   govtRate: number;
   approvedQty: number;
-  amount: number;             // govtRate × approvedQty
+  amount: number; // govtRate × approvedQty
   isLocked: boolean;
 }
 
 export const boqItems: BOQItem[] = [
   // CW-2025-001 (Academic Block)
-  { id: 'b1',  boqId: 'BOQ-001', workId: '1', sorItemId: '6', sorCode: 'SOR-EX-001', description: 'Earth Excavation in Ordinary Soil',                unit: 'Cum',  govtRate: 350,  approvedQty: 850,   amount: 297500,    isLocked: true },
-  { id: 'b2',  boqId: 'BOQ-001', workId: '1', sorItemId: '3', sorCode: 'SOR-CC-003', description: 'PCC M10 Plain Cement Concrete',                    unit: 'Cum',  govtRate: 5200, approvedQty: 120,   amount: 624000,    isLocked: true },
-  { id: 'b3',  boqId: 'BOQ-001', workId: '1', sorItemId: '1', sorCode: 'SOR-CC-001', description: 'RCC M20 Concrete (Including formwork)',             unit: 'Cum',  govtRate: 7600, approvedQty: 900,   amount: 6840000,   isLocked: true },
-  { id: 'b4',  boqId: 'BOQ-001', workId: '1', sorItemId: '4', sorCode: 'SOR-ST-001', description: 'HYSD Steel Reinforcement Fe415',                   unit: 'Kg',   govtRate: 68,   approvedQty: 95000, amount: 6460000,   isLocked: true },
-  { id: 'b5',  boqId: 'BOQ-001', workId: '1', sorItemId: '8', sorCode: 'SOR-MN-001', description: 'Brick Masonry 1:6 CM',                             unit: 'Cum',  govtRate: 6200, approvedQty: 480,   amount: 2976000,   isLocked: true },
-  { id: 'b6',  boqId: 'BOQ-001', workId: '1', sorItemId: '10',sorCode: 'SOR-PL-001', description: 'Cement Plaster 12mm (Internal)',                   unit: 'Sqm',  govtRate: 185,  approvedQty: 8500,  amount: 1572500,   isLocked: true },
-  { id: 'b7',  boqId: 'BOQ-001', workId: '1', sorItemId: '12',sorCode: 'SOR-FL-001', description: 'Vitrified Floor Tiles 600x600mm',                  unit: 'Sqm',  govtRate: 950,  approvedQty: 3200,  amount: 3040000,   isLocked: true },
-  { id: 'b8',  boqId: 'BOQ-001', workId: '1', sorItemId: '14',sorCode: 'SOR-PT-001', description: 'Acrylic Distemper (2 coats)',                      unit: 'Sqm',  govtRate: 95,   approvedQty: 9000,  amount: 855000,    isLocked: true },
+  {
+    id: 'b1',
+    boqId: 'BOQ-001',
+    workId: '1',
+    sorItemId: '6',
+    sorCode: 'SOR-EX-001',
+    description: 'Earth Excavation in Ordinary Soil',
+    unit: 'Cum',
+    govtRate: 350,
+    approvedQty: 850,
+    amount: 297500,
+    isLocked: true,
+  },
+  {
+    id: 'b2',
+    boqId: 'BOQ-001',
+    workId: '1',
+    sorItemId: '3',
+    sorCode: 'SOR-CC-003',
+    description: 'PCC M10 Plain Cement Concrete',
+    unit: 'Cum',
+    govtRate: 5200,
+    approvedQty: 120,
+    amount: 624000,
+    isLocked: true,
+  },
+  {
+    id: 'b3',
+    boqId: 'BOQ-001',
+    workId: '1',
+    sorItemId: '1',
+    sorCode: 'SOR-CC-001',
+    description: 'RCC M20 Concrete (Including formwork)',
+    unit: 'Cum',
+    govtRate: 7600,
+    approvedQty: 900,
+    amount: 6840000,
+    isLocked: true,
+  },
+  {
+    id: 'b4',
+    boqId: 'BOQ-001',
+    workId: '1',
+    sorItemId: '4',
+    sorCode: 'SOR-ST-001',
+    description: 'HYSD Steel Reinforcement Fe415',
+    unit: 'Kg',
+    govtRate: 68,
+    approvedQty: 95000,
+    amount: 6460000,
+    isLocked: true,
+  },
+  {
+    id: 'b5',
+    boqId: 'BOQ-001',
+    workId: '1',
+    sorItemId: '8',
+    sorCode: 'SOR-MN-001',
+    description: 'Brick Masonry 1:6 CM',
+    unit: 'Cum',
+    govtRate: 6200,
+    approvedQty: 480,
+    amount: 2976000,
+    isLocked: true,
+  },
+  {
+    id: 'b6',
+    boqId: 'BOQ-001',
+    workId: '1',
+    sorItemId: '10',
+    sorCode: 'SOR-PL-001',
+    description: 'Cement Plaster 12mm (Internal)',
+    unit: 'Sqm',
+    govtRate: 185,
+    approvedQty: 8500,
+    amount: 1572500,
+    isLocked: true,
+  },
+  {
+    id: 'b7',
+    boqId: 'BOQ-001',
+    workId: '1',
+    sorItemId: '12',
+    sorCode: 'SOR-FL-001',
+    description: 'Vitrified Floor Tiles 600x600mm',
+    unit: 'Sqm',
+    govtRate: 950,
+    approvedQty: 3200,
+    amount: 3040000,
+    isLocked: true,
+  },
+  {
+    id: 'b8',
+    boqId: 'BOQ-001',
+    workId: '1',
+    sorItemId: '14',
+    sorCode: 'SOR-PT-001',
+    description: 'Acrylic Distemper (2 coats)',
+    unit: 'Sqm',
+    govtRate: 95,
+    approvedQty: 9000,
+    amount: 855000,
+    isLocked: true,
+  },
 
   // CW-2025-003 (Road Resurfacing)
-  { id: 'b9',  boqId: 'BOQ-003', workId: '3', sorItemId: '6', sorCode: 'SOR-EX-001', description: 'Earth Excavation in Ordinary Soil',                unit: 'Cum',  govtRate: 350,  approvedQty: 400,   amount: 140000,    isLocked: true },
-  { id: 'b10', boqId: 'BOQ-003', workId: '3', sorItemId: '7', sorCode: 'SOR-EX-002', description: 'Earth Filling & Compaction',                       unit: 'Cum',  govtRate: 280,  approvedQty: 350,   amount: 98000,     isLocked: true },
-  { id: 'b11', boqId: 'BOQ-003', workId: '3', sorItemId: '3', sorCode: 'SOR-CC-003', description: 'PCC M10 Plain Cement Concrete',                    unit: 'Cum',  govtRate: 5200, approvedQty: 180,   amount: 936000,    isLocked: true },
+  {
+    id: 'b9',
+    boqId: 'BOQ-003',
+    workId: '3',
+    sorItemId: '6',
+    sorCode: 'SOR-EX-001',
+    description: 'Earth Excavation in Ordinary Soil',
+    unit: 'Cum',
+    govtRate: 350,
+    approvedQty: 400,
+    amount: 140000,
+    isLocked: true,
+  },
+  {
+    id: 'b10',
+    boqId: 'BOQ-003',
+    workId: '3',
+    sorItemId: '7',
+    sorCode: 'SOR-EX-002',
+    description: 'Earth Filling & Compaction',
+    unit: 'Cum',
+    govtRate: 280,
+    approvedQty: 350,
+    amount: 98000,
+    isLocked: true,
+  },
+  {
+    id: 'b11',
+    boqId: 'BOQ-003',
+    workId: '3',
+    sorItemId: '3',
+    sorCode: 'SOR-CC-003',
+    description: 'PCC M10 Plain Cement Concrete',
+    unit: 'Cum',
+    govtRate: 5200,
+    approvedQty: 180,
+    amount: 936000,
+    isLocked: true,
+  },
 ];
 
 // ─── E-Measurement Book ───────────────────────────────────────────────────────
-export type MBStatus = 'Draft' | 'Submitted' | 'Verified by AE' | 'Approved by EE' | 'Rejected';
+export type MBStatus =
+  | 'Draft'
+  | 'Submitted'
+  | 'Verified by AE'
+  | 'Approved by EE'
+  | 'Rejected';
 
 export interface MBEntry {
   id: string;
-  mbNo: string;               // e.g. MB-2025-001
+  mbNo: string; // e.g. MB-2025-001
   workId: string;
   workName: string;
   boqItemId: string;
@@ -316,13 +573,13 @@ export interface MBEntry {
   description: string;
   unit: string;
   govtRate: number;
-  boqQty: number;             // locked BOQ quantity
-  prevBilledQty: number;      // sum of all previous MBs for this item
-  executedQty: number;        // THIS entry's measured quantity
-  cumulativeQty: number;      // prevBilledQty + executedQty
-  balanceQty: number;         // boqQty - cumulativeQty
-  billAmount: number;         // executedQty × govtRate
-  billNo?: string;            // linked RA Bill
+  boqQty: number; // locked BOQ quantity
+  prevBilledQty: number; // sum of all previous MBs for this item
+  executedQty: number; // THIS entry's measured quantity
+  cumulativeQty: number; // prevBilledQty + executedQty
+  balanceQty: number; // boqQty - cumulativeQty
+  billAmount: number; // executedQty × govtRate
+  billNo?: string; // linked RA Bill
   raNo?: string;
   geoLatitude: string;
   geoLongitude: string;
@@ -456,7 +713,14 @@ export const mbEntries: MBEntry[] = [
 ];
 
 // ─── Running Account Bills ─────────────────────────────────────────────────────
-export type RABillStatus = 'Submitted' | 'MB Verified' | 'AE Checked' | 'EE Approved' | 'Finance Cleared' | 'Paid' | 'Rejected';
+export type RABillStatus =
+  | 'Submitted'
+  | 'MB Verified'
+  | 'AE Checked'
+  | 'EE Approved'
+  | 'Finance Cleared'
+  | 'Paid'
+  | 'Rejected';
 
 export interface RABill {
   id: string;
@@ -474,7 +738,7 @@ export interface RABill {
   netPayable: number;
   cumulativePaid: number;
   status: RABillStatus;
-  linkedMBs: string[];         // MB IDs
+  linkedMBs: string[]; // MB IDs
   paymentDate?: string;
   paymentRef?: string;
   remarks?: string;
@@ -545,14 +809,18 @@ export const raBills: RABill[] = [
 ];
 
 // ─── Contractors (Agency Master) ──────────────────────────────────────────────
-export type ContractorStatus = 'Active' | 'Blacklisted' | 'Suspended' | 'Pending Verification';
+export type ContractorStatus =
+  | 'Active'
+  | 'Blacklisted'
+  | 'Suspended'
+  | 'Pending Verification';
 
 export interface Contractor {
   id: string;
-  regNo: string;              // registration no in vendor master
+  regNo: string; // registration no in vendor master
   companyName: string;
   proprietorName: string;
-  grade: string;             // Class A / B / C
+  grade: string; // Class A / B / C
   registeredWithPWD: boolean;
   gstNo: string;
   panNo: string;
@@ -566,7 +834,7 @@ export interface Contractor {
   performanceBond: number;
   status: ContractorStatus;
   completedWorks: number;
-  totalWorksDone: number;     // ₹
+  totalWorksDone: number; // ₹
 }
 
 export const contractors: Contractor[] = [
@@ -636,7 +904,14 @@ export const contractors: Contractor[] = [
 ];
 
 // ─── Tenders ──────────────────────────────────────────────────────────────────
-export type TenderStatus = 'Draft' | 'Published' | 'Bids Received' | 'Under Evaluation' | 'L1 Identified' | 'Awarded' | 'Cancelled';
+export type TenderStatus =
+  | 'Draft'
+  | 'Published'
+  | 'Bids Received'
+  | 'Under Evaluation'
+  | 'L1 Identified'
+  | 'Awarded'
+  | 'Cancelled';
 
 export interface CivilTender {
   id: string;
@@ -644,16 +919,16 @@ export interface CivilTender {
   workId: string;
   workName: string;
   tenderType: 'Open (e-Procurement)' | 'Limited' | 'Single Source';
-  nit: string;                // Notice Inviting Tender number
+  nit: string; // Notice Inviting Tender number
   publishDate: string;
   closingDate: string;
   preBidDate: string;
-  emdAmount: number;          // Earnest Money Deposit
+  emdAmount: number; // Earnest Money Deposit
   estimatedValue: number;
   l1ContractorId?: string;
   l1ContractorName?: string;
   l1BidAmount?: number;
-  l1Percentage?: number;      // above/below estimated %
+  l1Percentage?: number; // above/below estimated %
   totalBidsReceived?: number;
   eligibilityCriteria: string;
   status: TenderStatus;
@@ -677,7 +952,8 @@ export const tenders: CivilTender[] = [
     l1BidAmount: 25850000,
     l1Percentage: -1.34,
     totalBidsReceived: 6,
-    eligibilityCriteria: 'Class A PWD contractors; Min 3 similar works > ₹1 Cr; Avg Turnover > ₹5 Cr (3 yrs)',
+    eligibilityCriteria:
+      'Class A PWD contractors; Min 3 similar works > ₹1 Cr; Avg Turnover > ₹5 Cr (3 yrs)',
     status: 'Awarded',
   },
   {
@@ -697,7 +973,8 @@ export const tenders: CivilTender[] = [
     l1BidAmount: 17200000,
     l1Percentage: -1.15,
     totalBidsReceived: 4,
-    eligibilityCriteria: 'Class A/B PWD contractors; Min 2 hostel construction works > ₹50L',
+    eligibilityCriteria:
+      'Class A/B PWD contractors; Min 2 hostel construction works > ₹50L',
     status: 'Awarded',
   },
   {
@@ -715,7 +992,7 @@ export const tenders: CivilTender[] = [
     l1ContractorId: 'CON-003',
     l1ContractorName: 'Madhav Infratech',
     l1BidAmount: 1895000,
-    l1Percentage: -1.30,
+    l1Percentage: -1.3,
     totalBidsReceived: 3,
     eligibilityCriteria: 'Class B and above; Min 1 boundary wall work > ₹10L',
     status: 'Awarded',
@@ -723,7 +1000,12 @@ export const tenders: CivilTender[] = [
 ];
 
 // ─── Milestones ───────────────────────────────────────────────────────────────
-export type MilestoneStatus = 'Pending' | 'In Progress' | 'Completed' | 'Delayed' | 'Quality Fail';
+export type MilestoneStatus =
+  | 'Pending'
+  | 'In Progress'
+  | 'Completed'
+  | 'Delayed'
+  | 'Quality Fail';
 
 export interface Milestone {
   id: string;
@@ -736,23 +1018,140 @@ export interface Milestone {
   plannedEndDate: string;
   actualStartDate?: string;
   actualEndDate?: string;
-  weightage: number;           // % of total project
+  weightage: number; // % of total project
   status: MilestoneStatus;
   qualityTestRequired: boolean;
   qualityTestStatus?: 'Pending' | 'Pass' | 'Fail';
 }
 
 export const milestones: Milestone[] = [
-  { id: 'm1', workId: '1', workName: 'New Academic Block – Science Wing', sequenceNo: 1, milestoneName: 'Excavation & Foundation',   description: 'Complete excavation, PCC & RCC footings',    plannedStartDate: '2024-11-01', plannedEndDate: '2025-01-31', actualStartDate: '2024-11-05', actualEndDate: '2025-02-10', weightage: 10, status: 'Completed', qualityTestRequired: true, qualityTestStatus: 'Pass' },
-  { id: 'm2', workId: '1', workName: 'New Academic Block – Science Wing', sequenceNo: 2, milestoneName: 'Plinth & Ground Floor Slab', description: 'Plinth beam, ground floor column & slab',     plannedStartDate: '2025-02-01', plannedEndDate: '2025-04-30', actualStartDate: '2025-02-15',               weightage: 15, status: 'In Progress', qualityTestRequired: true, qualityTestStatus: 'Pending' },
-  { id: 'm3', workId: '1', workName: 'New Academic Block – Science Wing', sequenceNo: 3, milestoneName: '1st Floor Structure',         description: '1st floor columns, beams & slab casting',   plannedStartDate: '2025-05-01', plannedEndDate: '2025-07-31', weightage: 15, status: 'Pending', qualityTestRequired: true },
-  { id: 'm4', workId: '1', workName: 'New Academic Block – Science Wing', sequenceNo: 4, milestoneName: '2nd Floor Structure',         description: '2nd floor structure completion',              plannedStartDate: '2025-08-01', plannedEndDate: '2025-10-31', weightage: 15, status: 'Pending', qualityTestRequired: true },
-  { id: 'm5', workId: '1', workName: 'New Academic Block – Science Wing', sequenceNo: 5, milestoneName: 'Masonry & Roofing',           description: 'Brick masonry, roof slab, waterproofing',    plannedStartDate: '2025-11-01', plannedEndDate: '2026-01-31', weightage: 15, status: 'Pending', qualityTestRequired: false },
-  { id: 'm6', workId: '1', workName: 'New Academic Block – Science Wing', sequenceNo: 6, milestoneName: 'Finishing & MEP',             description: 'Plaster, tiles, painting, electrical & plumbing', plannedStartDate: '2026-02-01', plannedEndDate: '2026-04-30', weightage: 30, status: 'Pending', qualityTestRequired: false },
+  {
+    id: 'm1',
+    workId: '1',
+    workName: 'New Academic Block – Science Wing',
+    sequenceNo: 1,
+    milestoneName: 'Excavation & Foundation',
+    description: 'Complete excavation, PCC & RCC footings',
+    plannedStartDate: '2024-11-01',
+    plannedEndDate: '2025-01-31',
+    actualStartDate: '2024-11-05',
+    actualEndDate: '2025-02-10',
+    weightage: 10,
+    status: 'Completed',
+    qualityTestRequired: true,
+    qualityTestStatus: 'Pass',
+  },
+  {
+    id: 'm2',
+    workId: '1',
+    workName: 'New Academic Block – Science Wing',
+    sequenceNo: 2,
+    milestoneName: 'Plinth & Ground Floor Slab',
+    description: 'Plinth beam, ground floor column & slab',
+    plannedStartDate: '2025-02-01',
+    plannedEndDate: '2025-04-30',
+    actualStartDate: '2025-02-15',
+    weightage: 15,
+    status: 'In Progress',
+    qualityTestRequired: true,
+    qualityTestStatus: 'Pending',
+  },
+  {
+    id: 'm3',
+    workId: '1',
+    workName: 'New Academic Block – Science Wing',
+    sequenceNo: 3,
+    milestoneName: '1st Floor Structure',
+    description: '1st floor columns, beams & slab casting',
+    plannedStartDate: '2025-05-01',
+    plannedEndDate: '2025-07-31',
+    weightage: 15,
+    status: 'Pending',
+    qualityTestRequired: true,
+  },
+  {
+    id: 'm4',
+    workId: '1',
+    workName: 'New Academic Block – Science Wing',
+    sequenceNo: 4,
+    milestoneName: '2nd Floor Structure',
+    description: '2nd floor structure completion',
+    plannedStartDate: '2025-08-01',
+    plannedEndDate: '2025-10-31',
+    weightage: 15,
+    status: 'Pending',
+    qualityTestRequired: true,
+  },
+  {
+    id: 'm5',
+    workId: '1',
+    workName: 'New Academic Block – Science Wing',
+    sequenceNo: 5,
+    milestoneName: 'Masonry & Roofing',
+    description: 'Brick masonry, roof slab, waterproofing',
+    plannedStartDate: '2025-11-01',
+    plannedEndDate: '2026-01-31',
+    weightage: 15,
+    status: 'Pending',
+    qualityTestRequired: false,
+  },
+  {
+    id: 'm6',
+    workId: '1',
+    workName: 'New Academic Block – Science Wing',
+    sequenceNo: 6,
+    milestoneName: 'Finishing & MEP',
+    description: 'Plaster, tiles, painting, electrical & plumbing',
+    plannedStartDate: '2026-02-01',
+    plannedEndDate: '2026-04-30',
+    weightage: 30,
+    status: 'Pending',
+    qualityTestRequired: false,
+  },
 
-  { id: 'm7', workId: '3', workName: 'Internal Campus Road Resurfacing', sequenceNo: 1, milestoneName: 'Old Surface Removal',         description: 'Breaking and removing existing road surface', plannedStartDate: '2025-03-01', plannedEndDate: '2025-04-15', actualStartDate: '2025-03-05', actualEndDate: '2025-04-18', weightage: 20, status: 'Completed', qualityTestRequired: false },
-  { id: 'm8', workId: '3', workName: 'Internal Campus Road Resurfacing', sequenceNo: 2, milestoneName: 'Sub-base & Base Course',      description: 'Laying sub-base granular material & WMM',     plannedStartDate: '2025-04-16', plannedEndDate: '2025-06-30', actualStartDate: '2025-04-20',               weightage: 35, status: 'In Progress', qualityTestRequired: true, qualityTestStatus: 'Pending' },
-  { id: 'm9', workId: '3', workName: 'Internal Campus Road Resurfacing', sequenceNo: 3, milestoneName: 'Bituminous Top Course',       description: 'Laying BM and SDBC courses + shoulders',      plannedStartDate: '2025-07-01', plannedEndDate: '2025-09-30', weightage: 45, status: 'Pending', qualityTestRequired: true },
+  {
+    id: 'm7',
+    workId: '3',
+    workName: 'Internal Campus Road Resurfacing',
+    sequenceNo: 1,
+    milestoneName: 'Old Surface Removal',
+    description: 'Breaking and removing existing road surface',
+    plannedStartDate: '2025-03-01',
+    plannedEndDate: '2025-04-15',
+    actualStartDate: '2025-03-05',
+    actualEndDate: '2025-04-18',
+    weightage: 20,
+    status: 'Completed',
+    qualityTestRequired: false,
+  },
+  {
+    id: 'm8',
+    workId: '3',
+    workName: 'Internal Campus Road Resurfacing',
+    sequenceNo: 2,
+    milestoneName: 'Sub-base & Base Course',
+    description: 'Laying sub-base granular material & WMM',
+    plannedStartDate: '2025-04-16',
+    plannedEndDate: '2025-06-30',
+    actualStartDate: '2025-04-20',
+    weightage: 35,
+    status: 'In Progress',
+    qualityTestRequired: true,
+    qualityTestStatus: 'Pending',
+  },
+  {
+    id: 'm9',
+    workId: '3',
+    workName: 'Internal Campus Road Resurfacing',
+    sequenceNo: 3,
+    milestoneName: 'Bituminous Top Course',
+    description: 'Laying BM and SDBC courses + shoulders',
+    plannedStartDate: '2025-07-01',
+    plannedEndDate: '2025-09-30',
+    weightage: 45,
+    status: 'Pending',
+    qualityTestRequired: true,
+  },
 ];
 
 // ─── Quality Tests ─────────────────────────────────────────────────────────────
@@ -764,7 +1163,7 @@ export interface QualityTest {
   workName: string;
   milestoneId: string;
   testName: string;
-  testType: string;           // Cube, Tensile, Core, etc.
+  testType: string; // Cube, Tensile, Core, etc.
   materialTested: string;
   labName: string;
   testDate?: string;
@@ -778,10 +1177,72 @@ export interface QualityTest {
 }
 
 export const qualityTests: QualityTest[] = [
-  { id: 'qt1', workId: '1', workName: 'New Academic Block – Science Wing', milestoneId: 'm1', testName: 'Compressive Strength of Concrete', testType: 'Cube Test (IS 456)', materialTested: 'RCC M20 Concrete', labName: 'IIT Bhopal Civil Lab', testDate: '2025-01-20', sampleQty: 6, requiredValue: '≥ 20 N/mm² at 28 days', observedValue: '22.4 N/mm²', result: 'Pass', certNo: 'IIT/BPL/CC/2025/0142', tpiEngineer: 'Er. S.K. Jain (TPI)', remarks: 'All 6 cubes passed' },
-  { id: 'qt2', workId: '1', workName: 'New Academic Block – Science Wing', milestoneId: 'm1', testName: 'Tensile Strength of Steel',        testType: 'UTM Test (IS 1786)', materialTested: 'Fe415 HYSD Bars 16mm', labName: 'MANIT Testing Lab', testDate: '2024-12-15', sampleQty: 3, requiredValue: 'UTS ≥ 485 N/mm²', observedValue: '512 N/mm²', result: 'Pass', certNo: 'MANIT/TL/ST/2024/0891', tpiEngineer: 'Er. S.K. Jain (TPI)', remarks: 'Steel from approved vendor' },
-  { id: 'qt3', workId: '1', workName: 'New Academic Block – Science Wing', milestoneId: 'm2', testName: 'Compressive Strength of Concrete', testType: 'Cube Test (IS 456)', materialTested: 'RCC M20 Concrete – 1F Columns', labName: 'IIT Bhopal Civil Lab', sampleQty: 6, requiredValue: '≥ 20 N/mm² at 28 days', result: 'Pending', tpiEngineer: 'Er. S.K. Jain (TPI)', remarks: 'Samples collected – awaiting 28-day result' },
-  { id: 'qt4', workId: '3', workName: 'Internal Campus Road Resurfacing',  milestoneId: 'm8', testName: 'Compaction Test – Sub Base', testType: 'Proctor Density Test', materialTested: 'Granular Sub Base Material', labName: 'MPRRDA Lab, Bhopal', sampleQty: 3, requiredValue: '≥ 97% MDD', result: 'Pending', tpiEngineer: 'Er. P. Sharma (TPI)', remarks: 'Scheduled for next week' },
+  {
+    id: 'qt1',
+    workId: '1',
+    workName: 'New Academic Block – Science Wing',
+    milestoneId: 'm1',
+    testName: 'Compressive Strength of Concrete',
+    testType: 'Cube Test (IS 456)',
+    materialTested: 'RCC M20 Concrete',
+    labName: 'IIT Bhopal Civil Lab',
+    testDate: '2025-01-20',
+    sampleQty: 6,
+    requiredValue: '≥ 20 N/mm² at 28 days',
+    observedValue: '22.4 N/mm²',
+    result: 'Pass',
+    certNo: 'IIT/BPL/CC/2025/0142',
+    tpiEngineer: 'Er. S.K. Jain (TPI)',
+    remarks: 'All 6 cubes passed',
+  },
+  {
+    id: 'qt2',
+    workId: '1',
+    workName: 'New Academic Block – Science Wing',
+    milestoneId: 'm1',
+    testName: 'Tensile Strength of Steel',
+    testType: 'UTM Test (IS 1786)',
+    materialTested: 'Fe415 HYSD Bars 16mm',
+    labName: 'MANIT Testing Lab',
+    testDate: '2024-12-15',
+    sampleQty: 3,
+    requiredValue: 'UTS ≥ 485 N/mm²',
+    observedValue: '512 N/mm²',
+    result: 'Pass',
+    certNo: 'MANIT/TL/ST/2024/0891',
+    tpiEngineer: 'Er. S.K. Jain (TPI)',
+    remarks: 'Steel from approved vendor',
+  },
+  {
+    id: 'qt3',
+    workId: '1',
+    workName: 'New Academic Block – Science Wing',
+    milestoneId: 'm2',
+    testName: 'Compressive Strength of Concrete',
+    testType: 'Cube Test (IS 456)',
+    materialTested: 'RCC M20 Concrete – 1F Columns',
+    labName: 'IIT Bhopal Civil Lab',
+    sampleQty: 6,
+    requiredValue: '≥ 20 N/mm² at 28 days',
+    result: 'Pending',
+    tpiEngineer: 'Er. S.K. Jain (TPI)',
+    remarks: 'Samples collected – awaiting 28-day result',
+  },
+  {
+    id: 'qt4',
+    workId: '3',
+    workName: 'Internal Campus Road Resurfacing',
+    milestoneId: 'm8',
+    testName: 'Compaction Test – Sub Base',
+    testType: 'Proctor Density Test',
+    materialTested: 'Granular Sub Base Material',
+    labName: 'MPRRDA Lab, Bhopal',
+    sampleQty: 3,
+    requiredValue: '≥ 97% MDD',
+    result: 'Pending',
+    tpiEngineer: 'Er. P. Sharma (TPI)',
+    remarks: 'Scheduled for next week',
+  },
 ];
 
 // ─── EOT Requests (Extension of Time) ────────────────────────────────────────
@@ -821,10 +1282,12 @@ export const eotRequests: EOTRequest[] = [
     proposedEndDate: '2026-07-31',
     daysRequested: 92,
     reason: 'Monsoon season delay + Supply chain disruption',
-    justification: 'Heavy rainfall from July–September 2025 caused 45 working days loss. Steel supply delay due to market shortage caused additional 47 days loss. Site records and rainfall data attached.',
+    justification:
+      'Heavy rainfall from July–September 2025 caused 45 working days loss. Steel supply delay due to market shortage caused additional 47 days loss. Site records and rainfall data attached.',
     status: 'Approved',
     approvedDays: 90,
-    reviewRemarks: 'EOT approved for 90 days after review of site records. Revised completion date: 29 July 2026.',
+    reviewRemarks:
+      'EOT approved for 90 days after review of site records. Revised completion date: 29 July 2026.',
   },
   {
     id: '2',
@@ -837,7 +1300,8 @@ export const eotRequests: EOTRequest[] = [
     originalEndDate: '2025-09-30',
     additionalBudget: 280000,
     reason: 'SOR rate revision + Scope increase',
-    justification: 'State Govt revised SOR rates upward by 8% effective April 2025. Additionally, 400m extra stretch identified as requiring resurfacing. Revised estimate submitted for approval.',
+    justification:
+      'State Govt revised SOR rates upward by 8% effective April 2025. Additionally, 400m extra stretch identified as requiring resurfacing. Revised estimate submitted for approval.',
     status: 'Under Review',
   },
 ];
@@ -849,13 +1313,17 @@ export interface DLPRecord {
   workName: string;
   completionDate: string;
   dlpStartDate: string;
-  dlpEndDate: string;          // typically 12 months
+  dlpEndDate: string; // typically 12 months
   retentionAmount: number;
   retentionReleased: boolean;
   retentionReleaseDate?: string;
   defectsReported: number;
   defectsRectified: number;
-  status: 'Active' | 'Defects Reported' | 'Rectification In Progress' | 'Closed';
+  status:
+    | 'Active'
+    | 'Defects Reported'
+    | 'Rectification In Progress'
+    | 'Closed';
   remarks?: string;
 }
 
@@ -872,7 +1340,8 @@ export const dlpRecords: DLPRecord[] = [
     defectsReported: 3,
     defectsRectified: 2,
     status: 'Defects Reported',
-    remarks: 'Minor seepage reported in terrace. Contractor notified on 2026-02-10.',
+    remarks:
+      'Minor seepage reported in terrace. Contractor notified on 2026-02-10.',
   },
   {
     id: '2',
@@ -906,10 +1375,59 @@ export interface ProgressLog {
 }
 
 export const progressLogs: ProgressLog[] = [
-  { id: '1', workId: '1', logDate: '2025-07-01', engineerName: 'Er. Rajesh Verma',  physicalProgress: 42, description: 'Plinth beam reinforcement work ongoing. Concrete casting planned for 3rd July.', geoLatitude: '23.1815', geoLongitude: '77.4200', photoCount: 8, weatherCondition: 'Partly Cloudy' },
-  { id: '2', workId: '1', logDate: '2025-06-25', engineerName: 'Er. Rajesh Verma',  physicalProgress: 40, description: 'Foundation concrete M20 completed for Grid A. Steel for plinth beam delivered.', geoLatitude: '23.1815', geoLongitude: '77.4200', photoCount: 6, weatherCondition: 'Clear', issues: 'Delay in steel delivery from supplier – 2 days' },
-  { id: '3', workId: '3', logDate: '2025-07-01', engineerName: 'Er. Kavitha Menon', physicalProgress: 68, description: 'WMM layer compaction in progress. DLC complete for stretch 1.2km–1.8km.', geoLatitude: '23.1800', geoLongitude: '77.4180', photoCount: 5, weatherCondition: 'Overcast' },
-  { id: '4', workId: '6', logDate: '2025-07-01', engineerName: 'Er. Priya Joshi',   physicalProgress: 78, description: 'Brick masonry for boundary wall complete. Plastering in progress – 380m done.', geoLatitude: '23.1750', geoLongitude: '77.4250', photoCount: 4, weatherCondition: 'Clear' },
+  {
+    id: '1',
+    workId: '1',
+    logDate: '2025-07-01',
+    engineerName: 'Er. Rajesh Verma',
+    physicalProgress: 42,
+    description:
+      'Plinth beam reinforcement work ongoing. Concrete casting planned for 3rd July.',
+    geoLatitude: '23.1815',
+    geoLongitude: '77.4200',
+    photoCount: 8,
+    weatherCondition: 'Partly Cloudy',
+  },
+  {
+    id: '2',
+    workId: '1',
+    logDate: '2025-06-25',
+    engineerName: 'Er. Rajesh Verma',
+    physicalProgress: 40,
+    description:
+      'Foundation concrete M20 completed for Grid A. Steel for plinth beam delivered.',
+    geoLatitude: '23.1815',
+    geoLongitude: '77.4200',
+    photoCount: 6,
+    weatherCondition: 'Clear',
+    issues: 'Delay in steel delivery from supplier – 2 days',
+  },
+  {
+    id: '3',
+    workId: '3',
+    logDate: '2025-07-01',
+    engineerName: 'Er. Kavitha Menon',
+    physicalProgress: 68,
+    description:
+      'WMM layer compaction in progress. DLC complete for stretch 1.2km–1.8km.',
+    geoLatitude: '23.1800',
+    geoLongitude: '77.4180',
+    photoCount: 5,
+    weatherCondition: 'Overcast',
+  },
+  {
+    id: '4',
+    workId: '6',
+    logDate: '2025-07-01',
+    engineerName: 'Er. Priya Joshi',
+    physicalProgress: 78,
+    description:
+      'Brick masonry for boundary wall complete. Plastering in progress – 380m done.',
+    geoLatitude: '23.1750',
+    geoLongitude: '77.4250',
+    photoCount: 4,
+    weatherCondition: 'Clear',
+  },
 ];
 
 // ─── Work Orders ──────────────────────────────────────────────────────────────
@@ -925,8 +1443,8 @@ export interface WorkOrder {
   completionDate: string;
   contractAmount: number;
   advancePaid: number;
-  advanceRecoveryRate: number;  // % per RA Bill
-  sdPercentage: number;         // Security Deposit %
+  advanceRecoveryRate: number; // % per RA Bill
+  sdPercentage: number; // Security Deposit %
   sdAmount: number;
   status: 'Issued' | 'Work Started' | 'Suspended' | 'Completed' | 'Terminated';
   signedByContractor: boolean;
@@ -1017,14 +1535,70 @@ export interface LabAgency {
 }
 
 export const initialTPIAgencies: TPIAgency[] = [
-  { id: 'TPI-01', name: 'RITES Limited', contactPerson: 'Shri A.K. Sharma', email: 'sharma.ak@rites.com', mobile: '9425012345', licenseNo: 'TPI-REG-2021-098', address: 'Bhopal Office, MP Nagar', status: 'Active' },
-  { id: 'TPI-02', name: 'SGS India Pvt Ltd', contactPerson: 'Mr. Vivek Patel', email: 'vivek.patel@sgs.com', mobile: '9893098765', licenseNo: 'TPI-REG-2022-142', address: 'Indore Regional Hub', status: 'Active' },
-  { id: 'TPI-03', name: 'WAPCOS Limited', contactPerson: 'Dr. Sanjay Gupta', email: 'bhopal@wapcos.co.in', mobile: '9111822334', licenseNo: 'TPI-REG-2023-311', address: 'Arera Hills, Bhopal', status: 'Active' }
+  {
+    id: 'TPI-01',
+    name: 'RITES Limited',
+    contactPerson: 'Shri A.K. Sharma',
+    email: 'sharma.ak@rites.com',
+    mobile: '9425012345',
+    licenseNo: 'TPI-REG-2021-098',
+    address: 'Bhopal Office, MP Nagar',
+    status: 'Active',
+  },
+  {
+    id: 'TPI-02',
+    name: 'SGS India Pvt Ltd',
+    contactPerson: 'Mr. Vivek Patel',
+    email: 'vivek.patel@sgs.com',
+    mobile: '9893098765',
+    licenseNo: 'TPI-REG-2022-142',
+    address: 'Indore Regional Hub',
+    status: 'Active',
+  },
+  {
+    id: 'TPI-03',
+    name: 'WAPCOS Limited',
+    contactPerson: 'Dr. Sanjay Gupta',
+    email: 'bhopal@wapcos.co.in',
+    mobile: '9111822334',
+    licenseNo: 'TPI-REG-2023-311',
+    address: 'Arera Hills, Bhopal',
+    status: 'Active',
+  },
 ];
 
 export const initialLabAgencies: LabAgency[] = [
-  { id: 'LAB-01', name: 'IIT Bhopal Civil Testing Lab', contactPerson: 'Dr. R.C. Mishra', email: 'civil.testing@iitb.ac.in', mobile: '7552908871', nablAccreditation: 'NABL-TC-8891', scopeOfTesting: 'Concrete, Steel, Aggregates, Cement', address: 'IIT Campus, Bhopal', status: 'Active' },
-  { id: 'LAB-02', name: 'MANIT Material Testing Lab', contactPerson: 'Prof. Sandeep Verma', email: 'verma.sandeep@manit.ac.in', mobile: '7552670231', nablAccreditation: 'NABL-TC-4521', scopeOfTesting: 'Concrete, Bitumen, Soils, Steel', address: 'MANIT Campus, Link Road 3', status: 'Active' },
-  { id: 'LAB-03', name: 'MP PWD Central Laboratory', contactPerson: 'Er. Rajesh K. Soni', email: 'pwd.centrallab@mp.gov.in', mobile: '9407055443', nablAccreditation: 'NABL-TC-1209', scopeOfTesting: 'Brickwork, Concrete, Soils, Bitumen', address: 'PWD Yard, Jahangirabad', status: 'Active' }
+  {
+    id: 'LAB-01',
+    name: 'IIT Bhopal Civil Testing Lab',
+    contactPerson: 'Dr. R.C. Mishra',
+    email: 'civil.testing@iitb.ac.in',
+    mobile: '7552908871',
+    nablAccreditation: 'NABL-TC-8891',
+    scopeOfTesting: 'Concrete, Steel, Aggregates, Cement',
+    address: 'IIT Campus, Bhopal',
+    status: 'Active',
+  },
+  {
+    id: 'LAB-02',
+    name: 'MANIT Material Testing Lab',
+    contactPerson: 'Prof. Sandeep Verma',
+    email: 'verma.sandeep@manit.ac.in',
+    mobile: '7552670231',
+    nablAccreditation: 'NABL-TC-4521',
+    scopeOfTesting: 'Concrete, Bitumen, Soils, Steel',
+    address: 'MANIT Campus, Link Road 3',
+    status: 'Active',
+  },
+  {
+    id: 'LAB-03',
+    name: 'MP PWD Central Laboratory',
+    contactPerson: 'Er. Rajesh K. Soni',
+    email: 'pwd.centrallab@mp.gov.in',
+    mobile: '9407055443',
+    nablAccreditation: 'NABL-TC-1209',
+    scopeOfTesting: 'Brickwork, Concrete, Soils, Bitumen',
+    address: 'PWD Yard, Jahangirabad',
+    status: 'Active',
+  },
 ];
-

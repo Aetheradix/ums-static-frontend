@@ -1,8 +1,20 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+} from 'recharts';
 import { FormCard, FormPage, StatCard } from 'shared/new-components';
-import { civilWorks as initialWorks, raBills as initialBills, dlpRecords as initialDlp } from '../../mocks';
+import {
+  civilWorks as initialWorks,
+  raBills as initialBills,
+  dlpRecords as initialDlp,
+} from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
@@ -24,25 +36,59 @@ export default function FinanceDashboard() {
     return saved ? JSON.parse(saved) : initialDlp;
   });
 
-  const totalAllocated  = works.reduce((s: number, w: any) => s + (w.tsAmount || 0), 0);
-  const totalUtilized   = bills.filter((b: any) => b.status === 'Paid').reduce((s: number, b: any) => s + b.netPayable, 0);
-  const pendingBills    = bills.filter((b: any) => b.status !== 'Paid' && b.status !== 'Rejected');
-  const pendingValue    = pendingBills.reduce((s: number, b: any) => s + b.netPayable, 0);
-  const dlpActive       = dlp.filter((d: any) => d.status === 'Active' || d.status === 'Defects Reported');
-  const dlpRetention    = dlp.reduce((s: number, d: any) => s + d.retentionAmount, 0);
+  const totalAllocated = works.reduce(
+    (s: number, w: any) => s + (w.tsAmount || 0),
+    0
+  );
+  const totalUtilized = bills
+    .filter((b: any) => b.status === 'Paid')
+    .reduce((s: number, b: any) => s + b.netPayable, 0);
+  const pendingBills = bills.filter(
+    (b: any) => b.status !== 'Paid' && b.status !== 'Rejected'
+  );
+  const pendingValue = pendingBills.reduce(
+    (s: number, b: any) => s + b.netPayable,
+    0
+  );
+  const dlpActive = dlp.filter(
+    (d: any) => d.status === 'Active' || d.status === 'Defects Reported'
+  );
+  const dlpRetention = dlp.reduce(
+    (s: number, d: any) => s + d.retentionAmount,
+    0
+  );
 
   const PAYMENT_FLOW = works.slice(0, 5).map((w: any) => ({
     work: w.workId,
     Budget: (w.tsAmount || 0) / 100000,
-    Paid: bills.filter((b: any) => b.workId === w.id && b.status === 'Paid').reduce((s: number, b: any) => s + b.netPayable, 0) / 100000,
+    Paid:
+      bills
+        .filter((b: any) => b.workId === w.id && b.status === 'Paid')
+        .reduce((s: number, b: any) => s + b.netPayable, 0) / 100000,
   }));
 
   const QUICK_ACTIONS = [
-    { label: 'Budget Allocation',    icon: 'wallet',     path: civilUrls.budgetAllocation },
-    { label: 'Process RA Bills',     icon: 'receipt',    path: civilUrls.raBillProcessing },
-    { label: 'Final Bill Settlement', icon: 'check-circle', path: civilUrls.finalBillSettlement },
-    { label: 'Release Payments',     icon: 'money-bill', path: civilUrls.paymentRelease },
-    { label: 'DLP Monitoring',       icon: 'shield',     path: civilUrls.dlpMonitoring },
+    {
+      label: 'Budget Allocation',
+      icon: 'wallet',
+      path: civilUrls.budgetAllocation,
+    },
+    {
+      label: 'Process RA Bills',
+      icon: 'receipt',
+      path: civilUrls.raBillProcessing,
+    },
+    {
+      label: 'Final Bill Settlement',
+      icon: 'check-circle',
+      path: civilUrls.finalBillSettlement,
+    },
+    {
+      label: 'Release Payments',
+      icon: 'money-bill',
+      path: civilUrls.paymentRelease,
+    },
+    { label: 'DLP Monitoring', icon: 'shield', path: civilUrls.dlpMonitoring },
   ];
 
   return (
@@ -63,13 +109,43 @@ export default function FinanceDashboard() {
         </div>
         <div className="civil-action-grid">
           {[
-            { label: 'RA Bills to Process', value: pendingBills.length,                                        icon: 'receipt',  cls: 'red',    path: civilUrls.raBillProcessing },
-            { label: 'Pending Value (₹)',   value: `₹${(pendingValue / 100000).toFixed(1)}L`,                  icon: 'wallet',   cls: 'amber',  path: civilUrls.raBillProcessing },
-            { label: 'DLP Active',          value: dlpActive.length,                                           icon: 'shield',   cls: 'purple', path: civilUrls.dlpMonitoring },
-            { label: 'Retention Held (₹)',  value: `₹${(dlpRetention / 100000).toFixed(2)}L`,                 icon: 'lock',     cls: 'blue',   path: civilUrls.dlpMonitoring },
+            {
+              label: 'RA Bills to Process',
+              value: pendingBills.length,
+              icon: 'receipt',
+              cls: 'red',
+              path: civilUrls.raBillProcessing,
+            },
+            {
+              label: 'Pending Value (₹)',
+              value: `₹${(pendingValue / 100000).toFixed(1)}L`,
+              icon: 'wallet',
+              cls: 'amber',
+              path: civilUrls.raBillProcessing,
+            },
+            {
+              label: 'DLP Active',
+              value: dlpActive.length,
+              icon: 'shield',
+              cls: 'purple',
+              path: civilUrls.dlpMonitoring,
+            },
+            {
+              label: 'Retention Held (₹)',
+              value: `₹${(dlpRetention / 100000).toFixed(2)}L`,
+              icon: 'lock',
+              cls: 'blue',
+              path: civilUrls.dlpMonitoring,
+            },
           ].map(a => (
-            <div key={a.label} className="civil-action-card" onClick={() => navigate(a.path)}>
-              <div className={`civil-action-icon ${a.cls}`}><i className={`pi pi-${a.icon}`} /></div>
+            <div
+              key={a.label}
+              className="civil-action-card"
+              onClick={() => navigate(a.path)}
+            >
+              <div className={`civil-action-icon ${a.cls}`}>
+                <i className={`pi pi-${a.icon}`} />
+              </div>
               <div>
                 <div className="civil-action-value">{a.value}</div>
                 <div className="civil-action-label">{a.label}</div>
@@ -81,34 +157,91 @@ export default function FinanceDashboard() {
 
       {/* KPI Stats */}
       <div className="civil-stats-grid">
-        <StatCard title="Total Allocated Budget" value={`₹${(totalAllocated / 10000000).toFixed(2)} Cr`} icon="account_balance" colorScheme="blue" subtitle="TS-approved funds" />
-        <StatCard title="Total Payments Released" value={`₹${(totalUtilized / 100000).toFixed(1)}L`} icon="payments" colorScheme="green" />
-        <StatCard title="Budget Utilization" value={`${totalAllocated > 0 ? ((totalUtilized / totalAllocated) * 100).toFixed(1) : 0}%`} icon="pie_chart" colorScheme="teal" />
-        <StatCard title="DLP Retention Held" value={`₹${(dlpRetention / 100000).toFixed(2)}L`} icon="lock" colorScheme="purple" subtitle="Pending release" />
+        <StatCard
+          title="Total Allocated Budget"
+          value={`₹${(totalAllocated / 10000000).toFixed(2)} Cr`}
+          icon="account_balance"
+          colorScheme="blue"
+          subtitle="TS-approved funds"
+        />
+        <StatCard
+          title="Total Payments Released"
+          value={`₹${(totalUtilized / 100000).toFixed(1)}L`}
+          icon="payments"
+          colorScheme="green"
+        />
+        <StatCard
+          title="Budget Utilization"
+          value={`${totalAllocated > 0 ? ((totalUtilized / totalAllocated) * 100).toFixed(1) : 0}%`}
+          icon="pie_chart"
+          colorScheme="teal"
+        />
+        <StatCard
+          title="DLP Retention Held"
+          value={`₹${(dlpRetention / 100000).toFixed(2)}L`}
+          icon="lock"
+          colorScheme="purple"
+          subtitle="Pending release"
+        />
       </div>
 
       {/* Chart + Quick Actions */}
       <div className="civil-charts-row">
-        <FormCard title="Budget vs. Paid per Work" subtitle="TS Budget (₹L) vs. RA Bills paid (₹L)">
+        <FormCard
+          title="Budget vs. Paid per Work"
+          subtitle="TS Budget (₹L) vs. RA Bills paid (₹L)"
+        >
           <div style={{ height: 280, width: '100%', marginTop: '1rem' }}>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={PAYMENT_FLOW} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                <XAxis dataKey="work" stroke="#9ca3af" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
-                <YAxis stroke="#9ca3af" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} unit="L" />
-                <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }} />
+              <BarChart
+                data={PAYMENT_FLOW}
+                margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
+              >
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  vertical={false}
+                  stroke="#f3f4f6"
+                />
+                <XAxis
+                  dataKey="work"
+                  stroke="#9ca3af"
+                  tick={{ fontSize: 11 }}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  stroke="#9ca3af"
+                  tick={{ fontSize: 11 }}
+                  tickLine={false}
+                  axisLine={false}
+                  unit="L"
+                />
+                <Tooltip
+                  contentStyle={{
+                    borderRadius: '8px',
+                    border: 'none',
+                    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
+                  }}
+                />
                 <Bar dataKey="Budget" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Paid"   fill="#22c55e" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Paid" fill="#22c55e" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </FormCard>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div
+          style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
+        >
           <FormCard title="Quick Actions">
             <div className="civil-quick-actions">
               {QUICK_ACTIONS.map(a => (
-                <button key={a.label} type="button" className="civil-quick-btn" onClick={() => navigate(a.path)}>
+                <button
+                  key={a.label}
+                  type="button"
+                  className="civil-quick-btn"
+                  onClick={() => navigate(a.path)}
+                >
                   <i className={`pi pi-${a.icon}`} />
                   {a.label}
                 </button>
@@ -135,22 +268,67 @@ export default function FinanceDashboard() {
           </thead>
           <tbody>
             {pendingBills.map((b: any) => {
-              const wk = works.find((w: any) => w.name === b.workName || w.id === b.workId || w.workId === b.workId);
+              const wk = works.find(
+                (w: any) =>
+                  w.name === b.workName ||
+                  w.id === b.workId ||
+                  w.workId === b.workId
+              );
               return (
                 <tr key={b.id}>
-                  <td><span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: '0.75rem' }}>{b.billNo}</span></td>
+                  <td>
+                    <span
+                      style={{
+                        fontFamily: 'monospace',
+                        fontWeight: 700,
+                        fontSize: '0.75rem',
+                      }}
+                    >
+                      {b.billNo}
+                    </span>
+                  </td>
                   <td style={{ fontSize: '0.8125rem' }}>{b.workName}</td>
-                  <td><span style={{ fontSize: '0.75rem' }}>{wk?.category ?? '—'}</span></td>
-                  <td><span style={{ fontSize: '0.75rem' }}>{wk?.department ?? '—'}</span></td>
-                  <td><span className={`civil-pill ${wk?.workBasis === 'BOQ Based' ? 'purple' : 'blue'}`} style={{ fontSize: '0.65rem' }}>{wk?.workBasis ?? 'SOR Based'}</span></td>
+                  <td>
+                    <span style={{ fontSize: '0.75rem' }}>
+                      {wk?.category ?? '—'}
+                    </span>
+                  </td>
+                  <td>
+                    <span style={{ fontSize: '0.75rem' }}>
+                      {wk?.department ?? '—'}
+                    </span>
+                  </td>
+                  <td>
+                    <span
+                      className={`civil-pill ${wk?.workBasis === 'BOQ Based' ? 'purple' : 'blue'}`}
+                      style={{ fontSize: '0.65rem' }}
+                    >
+                      {wk?.workBasis ?? 'SOR Based'}
+                    </span>
+                  </td>
                   <td style={{ fontSize: '0.8125rem' }}>{b.contractorName}</td>
-                  <td style={{ fontWeight: 700 }}>₹{(b.netPayable / 100000).toFixed(2)}L</td>
-                  <td><span className="civil-pill amber">{b.status}</span></td>
+                  <td style={{ fontWeight: 700 }}>
+                    ₹{(b.netPayable / 100000).toFixed(2)}L
+                  </td>
+                  <td>
+                    <span className="civil-pill amber">{b.status}</span>
+                  </td>
                 </tr>
               );
             })}
             {pendingBills.length === 0 && (
-              <tr><td colSpan={8} style={{ textAlign: 'center', color: '#9ca3af', padding: '2rem' }}>All bills processed ✓</td></tr>
+              <tr>
+                <td
+                  colSpan={8}
+                  style={{
+                    textAlign: 'center',
+                    color: '#9ca3af',
+                    padding: '2rem',
+                  }}
+                >
+                  All bills processed ✓
+                </td>
+              </tr>
             )}
           </tbody>
         </table>

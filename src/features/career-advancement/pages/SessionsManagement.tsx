@@ -268,5 +268,3 @@ export default function SessionsManagement() {
     </FormPage>
   );
 }
-
-

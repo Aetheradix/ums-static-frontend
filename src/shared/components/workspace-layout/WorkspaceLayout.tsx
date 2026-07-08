@@ -177,6 +177,9 @@ export const WorkspaceLayout: React.FC<{ children: React.ReactNode }> = ({
       }`}
     >
       <BottomWaves />
+      <div className="ws-bg-watermark-cap" aria-hidden="true">
+        <i className="material-symbols-outlined">school</i>
+      </div>
       {showDesktopSidebar && (
         <div className="app-sidebar-wrapper desktop-sidebar">
           <Sidebar

@@ -141,7 +141,7 @@
 
 /* WorkspaceLayout */
 .ws-root {
-  @apply font-sans bg-[#fbfbfd] min-h-screen text-slate-900 flex flex-col;
+  @apply font-sans bg-[#f8faff] min-h-screen text-slate-900 flex flex-col;
 }
 
 .ws-main {
@@ -531,7 +531,7 @@
    ======================================================== */
 .ws-root {
   position: relative;
-  background-color: #fbfbfd;
+  background-color: #f8faff;
 }
 
 .dark .ws-root {
@@ -620,4 +620,28 @@
 .ws-root .ws-page-container {
   position: relative;
   z-index: 1; /* Content floats cleanly above the fixed bottom waves */
+}
+
+/* Decorative background watermark (Education Cap) */
+.ws-bg-watermark-cap {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.035; /* Very subtle light color watermark */
+  color: var(--primary-color);
+  transition:
+    color 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.ws-bg-watermark-cap i {
+  font-size: 160px; /* Reduced size */
+  display: block;
+}
+
+/* Slightly lower opacity for dark mode to maintain soft background contrast */
+.dark .ws-bg-watermark-cap {
+  opacity: 0.025;
 }
