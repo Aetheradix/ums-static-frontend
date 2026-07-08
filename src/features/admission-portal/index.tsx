@@ -22,7 +22,7 @@ export default function AdmissionPortal() {
   );
 
   return (
-    <div className="font-sans bg-[#fbfbfd] min-h-screen text-slate-900 flex flex-col">
+    <div className="font-sans bg-[#f8faff] min-h-screen text-slate-900 flex flex-col">
       <WorkspaceTopBar />
       {content}
       <WorkspaceFooterBar />

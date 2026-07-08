@@ -126,6 +126,12 @@ body.dark .ws-navbar-dropdown .p-submenu-list {
   border-color: rgba(255, 255, 255, 0.1);
 }
 
+.ws-navbar-dropdown .p-menuitem-content,
+.ws-navbar-dropdown .p-menuitem-link {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
 .ws-navbar-dropdown .p-menuitem-link {
   padding: 0.75rem 1.25rem;
   display: flex;
@@ -139,20 +145,35 @@ body.dark .ws-navbar-dropdown .p-submenu-list {
   cursor: pointer;
 }
 
+.ws-navbar-dropdown .p-menuitem-text {
+  color: inherit !important;
+}
+
+body.dark .ws-navbar-dropdown .p-menuitem-content,
 body.dark .ws-navbar-dropdown .p-menuitem-link {
-  color: #cbd5e1;
+  color: #cfd3d8;
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+.ws-navbar-dropdown .p-menuitem:hover > .p-menuitem-content {
+  background-color: #f1f5f9 !important;
+  background: #f1f5f9 !important;
 }
 
 .ws-navbar-dropdown .p-menuitem-link:hover,
-.ws-navbar-dropdown .p-menuitem.p-menuitem-active > .p-menuitem-link {
-  background-color: #f1f5f9;
-  color: #0f172a;
+.ws-navbar-dropdown .p-menuitem:hover > .p-menuitem-link {
+  color: #0f172a !important;
+}
+
+body.dark .ws-navbar-dropdown .p-menuitem:hover > .p-menuitem-content {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
 }
 
 body.dark .ws-navbar-dropdown .p-menuitem-link:hover,
-body.dark .ws-navbar-dropdown .p-menuitem.p-menuitem-active > .p-menuitem-link {
-  background-color: rgba(255, 255, 255, 0.05);
-  color: #f8fafc;
+body.dark .ws-navbar-dropdown .p-menuitem:hover > .p-menuitem-link {
+  color: #f8fafc !important;
 }
 
 .ws-navbar-dropdown .p-menuitem-icon {
@@ -165,20 +186,17 @@ body.dark .ws-navbar-dropdown .p-menuitem-icon {
 }
 
 .ws-navbar-dropdown .p-menuitem-link:hover .p-menuitem-icon,
-.ws-navbar-dropdown
-  .p-menuitem.p-menuitem-active
-  > .p-menuitem-link
-  .p-menuitem-icon {
-  color: #0f172a;
+.ws-navbar-dropdown .p-menuitem:hover > .p-menuitem-link .p-menuitem-icon {
+  color: #0f172a !important;
 }
 
 body.dark .ws-navbar-dropdown .p-menuitem-link:hover .p-menuitem-icon,
 body.dark
   .ws-navbar-dropdown
-  .p-menuitem.p-menuitem-active
+  .p-menuitem:hover
   > .p-menuitem-link
   .p-menuitem-icon {
-  color: #f8fafc;
+  color: #f8fafc !important;
 }
 
 .ws-navbar-dropdown .p-submenu-icon {
@@ -187,6 +205,51 @@ body.dark
   color: inherit;
   opacity: 0.7;
 }
+/* Accessibility Focus State - Reset to transparent until hovered (Light Mode) */
+.p-tieredmenu-overlay .p-menuitem-link:focus,
+.p-tieredmenu-overlay .p-menuitem-link:focus-visible,
+.p-submenu-list .p-menuitem.p-focus,
+.p-submenu-list .p-menuitem.p-focus > .p-menuitem-link,
+.p-submenu-list .p-menuitem-link.p-focus,
+.p-submenu-list .p-menuitem-link.p-highlight,
+.p-submenu-list .p-menuitem-link:focus,
+.p-submenu-list .p-menuitem-link:focus-visible,
+.p-tieredmenu .p-menuitem.p-focus,
+.p-tieredmenu .p-menuitem.p-focus > .p-menuitem-link,
+.p-tieredmenu .p-menuitem-link.p-focus,
+.p-tieredmenu .p-menuitem-link.p-highlight,
+.p-tieredmenu .p-menuitem-link:focus,
+.p-tieredmenu .p-menuitem-link:focus-visible,
+.p-tieredmenu-overlay .p-menuitem.p-focus,
+.p-tieredmenu-overlay .p-menuitem.p-focus > .p-menuitem-link,
+.p-tieredmenu-overlay .p-menuitem-link.p-focus,
+.p-tieredmenu-overlay .p-menuitem-link.p-highlight,
+.p-tieredmenu-overlay .p-menuitem-link:focus,
+.p-tieredmenu-overlay .p-menuitem-link:focus-visible {
+  background-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.p-focus > .p-menuitem-link,
+.p-menuitem-link:focus,
+.p-menuitem-link:focus-visible,
+.p-menuitem-link:active {
+  background-color: transparent !important;
+  background: transparent !important;
+  color: #334155 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.p-focus > .p-menuitem-link *,
+.p-menuitem-link:focus *,
+.p-menuitem-link:focus-visible *,
+.p-menuitem-link:active * {
+  color: inherit !important;
+}
+
+/* Accessibility Focus State - Reset to transparent until hovered (Dark Mode Overrides) */
 body.dark .p-tieredmenu-overlay .p-menuitem-link:focus,
 body.dark .p-tieredmenu-overlay .p-menuitem-link:focus-visible,
 body.dark .p-submenu-list .p-menuitem.p-focus,
@@ -218,9 +281,9 @@ body.dark .p-submenu-list .p-menuitem-link:focus-visible,
   box-shadow: none !important;
 }
 
-/* Accessibility Focus State - Reset to transparent until hovered */
 body.dark .p-focus > .p-menuitem-link,
 body.dark .p-menuitem-link:focus,
+body.dark .p-focus > .p-menuitem-link *,
 body.dark .p-menuitem-link:focus-visible,
 body.dark .p-menuitem-link:active,
 .dark .p-focus > .p-menuitem-link,

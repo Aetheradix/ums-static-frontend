@@ -1,13 +1,13 @@
 @reference "tailwindcss";
 
 .main-layout-nav {
-  @apply w-full border-b border-slate-200 bg-[var(--bg-white)];
+  @apply w-full border-b border-slate-200 bg-(--bg-white);
 }
 
 .main-layout-content {
   @apply flex-1 min-h-[calc(100vh-140px)];
 
-  background-color: #f8faff;
+  background-color: transparent;
 }
 
 /* ── Dark Theme Overrides ── */
@@ -17,7 +17,7 @@
 }
 
 .dark .main-layout-content {
-  background-color: var(--color-black);
+  background-color: transparent;
 }
 
 /* Main Content Area */
@@ -40,7 +40,7 @@
   }
 
   .dark .mobile-sidebar-toggle-trigger {
-    @apply bg-[#18181b] border-white/[0.08] text-white hover:bg-[#27272a];
+    @apply bg-[#18181b] border-white/8 text-white hover:bg-[#27272a];
   }
 
   .mobile-sidebar-toggle-trigger i {

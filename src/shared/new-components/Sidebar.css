@@ -772,3 +772,315 @@
 .sidebar-bg-primary .desktop-sidebar .app-sidebar-header {
   border-bottom-color: rgba(255, 255, 255, 0.15) !important;
 }
+
+/* ========================================================
+   DARK MODE OPTIMIZATION FOR PRIMARY COLOR BG FILL
+   ======================================================== */
+.dark.sidebar-bg-primary .desktop-sidebar .app-sidebar-container,
+.dark .sidebar-bg-primary .desktop-sidebar .app-sidebar-container,
+body.dark.sidebar-bg-primary .desktop-sidebar .app-sidebar-container,
+body.dark .sidebar-bg-primary .desktop-sidebar .app-sidebar-container {
+  background-color: color-mix(
+    in srgb,
+    var(--color-primary) 7%,
+    #0d0d0f
+  ) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.dark.sidebar-bg-primary .desktop-sidebar .app-sidebar-item.active,
+.dark.sidebar-bg-primary .desktop-sidebar .app-sidebar-module-item.active,
+.dark.sidebar-bg-primary .desktop-sidebar .app-sidebar-submenu-item.active,
+.dark.sidebar-bg-primary .desktop-sidebar .app-sidebar-leaf-item.active,
+.dark .sidebar-bg-primary .desktop-sidebar .app-sidebar-item.active,
+.dark .sidebar-bg-primary .desktop-sidebar .app-sidebar-module-item.active,
+.dark .sidebar-bg-primary .desktop-sidebar .app-sidebar-submenu-item.active,
+.dark .sidebar-bg-primary .desktop-sidebar .app-sidebar-leaf-item.active,
+body.dark.sidebar-bg-primary .desktop-sidebar .app-sidebar-item.active,
+body.dark.sidebar-bg-primary .desktop-sidebar .app-sidebar-module-item.active,
+body.dark.sidebar-bg-primary .desktop-sidebar .app-sidebar-submenu-item.active,
+body.dark.sidebar-bg-primary .desktop-sidebar .app-sidebar-leaf-item.active,
+body.dark .sidebar-bg-primary .desktop-sidebar .app-sidebar-item.active,
+body.dark .sidebar-bg-primary .desktop-sidebar .app-sidebar-module-item.active,
+body.dark .sidebar-bg-primary .desktop-sidebar .app-sidebar-submenu-item.active,
+body.dark .sidebar-bg-primary .desktop-sidebar .app-sidebar-leaf-item.active {
+  background-color: var(--color-primary) !important;
+  color: #ffffff !important;
+}
+
+.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-item.active
+  .app-sidebar-label,
+.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  .app-sidebar-module-label,
+.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  .app-sidebar-submenu-label,
+.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-leaf-item.active
+  .app-sidebar-leaf-label,
+.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-item.active
+  .app-sidebar-label,
+.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  .app-sidebar-module-label,
+.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  .app-sidebar-submenu-label,
+.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-leaf-item.active
+  .app-sidebar-leaf-label,
+body.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-item.active
+  .app-sidebar-label,
+body.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  .app-sidebar-module-label,
+body.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  .app-sidebar-submenu-label,
+body.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-leaf-item.active
+  .app-sidebar-leaf-label,
+body.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-item.active
+  .app-sidebar-label,
+body.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  .app-sidebar-module-label,
+body.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  .app-sidebar-submenu-label,
+body.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-leaf-item.active
+  .app-sidebar-leaf-label {
+  color: #ffffff !important;
+}
+
+.dark.sidebar-bg-primary .desktop-sidebar .app-sidebar-item.active i,
+.dark.sidebar-bg-primary .desktop-sidebar .app-sidebar-module-item.active i,
+.dark.sidebar-bg-primary .desktop-sidebar .app-sidebar-submenu-item.active i,
+.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-item.active
+  .app-sidebar-icon,
+.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  .app-sidebar-submenu-icon,
+.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  .app-sidebar-submenu-link-icon,
+.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-item.active
+  .app-sidebar-arrow,
+.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  .app-sidebar-module-arrow,
+.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  .app-sidebar-submenu-arrow,
+.dark .sidebar-bg-primary .desktop-sidebar .app-sidebar-item.active i,
+.dark .sidebar-bg-primary .desktop-sidebar .app-sidebar-module-item.active i,
+.dark .sidebar-bg-primary .desktop-sidebar .app-sidebar-submenu-item.active i,
+.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-item.active
+  .app-sidebar-icon,
+.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  .app-sidebar-submenu-icon,
+.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  .app-sidebar-submenu-link-icon,
+.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-item.active
+  .app-sidebar-arrow,
+.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  .app-sidebar-module-arrow,
+.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  .app-sidebar-submenu-arrow,
+body.dark.sidebar-bg-primary .desktop-sidebar .app-sidebar-item.active i,
+body.dark.sidebar-bg-primary .desktop-sidebar .app-sidebar-module-item.active i,
+body.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  i,
+body.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-item.active
+  .app-sidebar-icon,
+body.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  .app-sidebar-submenu-icon,
+body.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  .app-sidebar-submenu-link-icon,
+body.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-item.active
+  .app-sidebar-arrow,
+body.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  .app-sidebar-module-arrow,
+body.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  .app-sidebar-submenu-arrow,
+body.dark .sidebar-bg-primary .desktop-sidebar .app-sidebar-item.active i,
+body.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  i,
+body.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  i,
+body.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-item.active
+  .app-sidebar-icon,
+body.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  .app-sidebar-submenu-icon,
+body.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  .app-sidebar-submenu-link-icon,
+body.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-item.active
+  .app-sidebar-arrow,
+body.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  .app-sidebar-module-arrow,
+body.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-submenu-item.active
+  .app-sidebar-submenu-arrow {
+  color: #ffffff !important;
+}
+
+.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  .app-sidebar-module-icon,
+.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  .app-sidebar-module-icon,
+body.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  .app-sidebar-module-icon,
+body.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  .app-sidebar-module-icon {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  .app-sidebar-module-icon
+  *,
+.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  .app-sidebar-module-icon
+  *,
+body.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  .app-sidebar-module-icon
+  *,
+body.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-module-item.active
+  .app-sidebar-module-icon
+  * {
+  color: #ffffff !important;
+}
+
+.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-leaf-item.active
+  .app-sidebar-leaf-bullet,
+.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-leaf-item.active
+  .app-sidebar-leaf-bullet,
+body.dark.sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-leaf-item.active
+  .app-sidebar-leaf-bullet,
+body.dark
+  .sidebar-bg-primary
+  .desktop-sidebar
+  .app-sidebar-leaf-item.active
+  .app-sidebar-leaf-bullet {
+  color: #ffffff !important;
+}
