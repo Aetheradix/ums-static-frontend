@@ -1,4 +1,4 @@
-﻿import { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
 import { FormCard, FormGrid, FormPage, GridPanel } from 'shared/new-components';
@@ -240,7 +240,7 @@ export default function CheckIn() {
               {
                 field: 'roomNo',
                 header: 'Room',
-                cell: (item: HostelManagement.CheckedInRecord) => (
+                cell: (item: HostelManagement.CheckInRecord) => (
                   <span className="hm-room-badge">
                     {item.roomNo}/{item.bedNo}
                   </span>
