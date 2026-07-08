@@ -101,6 +101,7 @@ export default function DeanAcademics() {
       title="Dean Academics â€” Screening & Review"
       description="Final screening stage: assign scores, verify IQAC, finish review, and generate print layout"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Career Advancement', to: '/career-advancement/dashboard' },
         { label: 'Dean Academics Review' },
       ]}
@@ -306,3 +307,5 @@ export default function DeanAcademics() {
     </FormPage>
   );
 }
+
+

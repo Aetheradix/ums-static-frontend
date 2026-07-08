@@ -171,6 +171,7 @@ export default function RoomAllotment() {
       title="Room Allotment Controller"
       description="Map approved students to specific beds — gender and capacity guards are enforced automatically"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Hostel Management',
           to: '/hostel-management/hostel-registry',
@@ -396,3 +397,5 @@ export default function RoomAllotment() {
     </FormPage>
   );
 }
+
+

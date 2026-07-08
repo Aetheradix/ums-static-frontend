@@ -87,6 +87,7 @@ export default function CheckIn() {
       title="Joining / Check-In"
       description="Physical key handoff and boarding registration — requires confirmed fee clearance"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Hostel Management',
           to: '/hostel-management/hostel-registry',
@@ -261,3 +262,5 @@ export default function CheckIn() {
     </FormPage>
   );
 }
+
+

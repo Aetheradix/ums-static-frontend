@@ -70,6 +70,7 @@ export default function CheckIn() {
       title="Quarter Joining & Key Release"
       description="Register physical staff onboarding, luggage inspection, and quarter key handoffs"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Residential Allocation',
           to: RESIDENTIAL_ALLOCATION_URLS.dashboard,
@@ -166,3 +167,5 @@ export default function CheckIn() {
     </FormPage>
   );
 }
+
+

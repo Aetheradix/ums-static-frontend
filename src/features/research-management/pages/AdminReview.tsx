@@ -92,6 +92,7 @@ export default function AdminReview() {
       title="Compliance Screening & Ethics Review Desk"
       description="Examine plagiarism overlap factors, confirm ethical clearance codes, and release baseline proposal decisions"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Research Management', to: '/research-management/dashboard' },
         { label: 'Admin Review' },
       ]}
@@ -350,3 +351,5 @@ export default function AdminReview() {
     </FormPage>
   );
 }
+
+

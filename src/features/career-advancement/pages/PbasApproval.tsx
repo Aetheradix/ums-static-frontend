@@ -134,6 +134,7 @@ export default function PbasApproval() {
       title={stageInfo.title}
       description="Review and process forwarded PBAS/CAS promotion applications"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Career Advancement', to: '/career-advancement/dashboard' },
         { label: 'PBAS Approval Desk' },
       ]}
@@ -277,3 +278,5 @@ export default function PbasApproval() {
     </FormPage>
   );
 }
+
+

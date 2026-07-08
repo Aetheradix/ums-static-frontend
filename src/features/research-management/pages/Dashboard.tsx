@@ -50,6 +50,7 @@ export default function Dashboard() {
       title="Research & Grants Dashboard"
       description="Integrated overview of active projects, proposals queue, and disbursement status"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Research Management', to: '/research-management/dashboard' },
         { label: 'Dashboard' },
       ]}
@@ -266,3 +267,5 @@ export default function Dashboard() {
     </FormPage>
   );
 }
+
+

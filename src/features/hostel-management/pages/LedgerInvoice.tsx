@@ -90,6 +90,7 @@ export default function LedgerInvoice() {
       title="Ledger Invoice"
       description="Generate semester fee statements and confirm payment clearance before student boarding"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Hostel Management',
           to: '/hostel-management/hostel-registry',
@@ -258,3 +259,5 @@ export default function LedgerInvoice() {
     </FormPage>
   );
 }
+
+

@@ -28,6 +28,7 @@ export default function Dashboard() {
       title="Quarter Allocations Command Centre"
       description="Real-time dashboard of campus accommodation units, staff pay grade clearances, applications, and check-in key registries"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Residential Allocation',
           to: RESIDENTIAL_ALLOCATION_URLS.dashboard,
@@ -191,3 +192,5 @@ export default function Dashboard() {
     </FormPage>
   );
 }
+
+

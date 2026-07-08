@@ -128,6 +128,7 @@ export default function Dashboard() {
       title="Career Advancement Dashboard"
       description="Overview of APAR, PBAS, and CAS scheme applications across the university"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Career Advancement', to: '/career-advancement/dashboard' },
         { label: 'Dashboard' },
       ]}
@@ -237,3 +238,5 @@ export default function Dashboard() {
     </FormPage>
   );
 }
+
+

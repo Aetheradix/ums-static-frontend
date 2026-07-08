@@ -97,6 +97,7 @@ export default function EstateRegistry() {
       title="Campus Housing & Block Registry"
       description="Configure new enclaves, pay level metrics, HRA deduction tiers, and warden supervision details"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Residential Allocation',
           to: RESIDENTIAL_ALLOCATION_URLS.dashboard,
@@ -292,3 +293,5 @@ export default function EstateRegistry() {
     </FormPage>
   );
 }
+
+

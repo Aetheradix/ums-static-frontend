@@ -511,6 +511,7 @@ export default function StudentApply() {
       title="Student Hostel Application"
       description="Submit a new hostel intake application or make corrections to a sent-back form"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Hostel Management',
           to: '/hostel-management/hostel-registry',
@@ -558,3 +559,5 @@ export default function StudentApply() {
     </FormPage>
   );
 }
+
+

@@ -92,6 +92,7 @@ export default function ProjectRegistry() {
       title="Grants Ledger & Projects Registry"
       description="Register and manage sponsored research projects, institutional overhead settings, and PI profiles"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Research Management', to: '/research-management/dashboard' },
         { label: 'Project Registry' },
       ]}
@@ -293,3 +294,5 @@ export default function ProjectRegistry() {
 
 // Suppress unused import warning
 void AGENCY_OPTIONS;
+
+

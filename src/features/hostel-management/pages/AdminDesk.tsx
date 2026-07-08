@@ -74,6 +74,7 @@ export default function AdminDesk() {
       title="Admin Desk — Application Review"
       description="Verify student intake profiles and approve, reject or send back for correction"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Hostel Management',
           to: '/hostel-management/hostel-registry',
@@ -271,3 +272,5 @@ export default function AdminDesk() {
     </FormPage>
   );
 }
+
+

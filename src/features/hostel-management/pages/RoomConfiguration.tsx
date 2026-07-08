@@ -168,6 +168,7 @@ export default function RoomConfiguration() {
       title="Room Configuration"
       description="Define wings, floors, and bed counts for each registered hostel"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Hostel Management',
           to: '/hostel-management/hostel-registry',
@@ -353,3 +354,5 @@ export default function RoomConfiguration() {
     </FormPage>
   );
 }
+
+

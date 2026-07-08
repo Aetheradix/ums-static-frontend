@@ -81,6 +81,7 @@ export default function LedgerInvoice() {
       title="HRA Deduction & Utility Ledger"
       description="Calculate monthly housing payroll deductions, security deposits, and maintenance invoices"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Residential Allocation',
           to: RESIDENTIAL_ALLOCATION_URLS.dashboard,
@@ -207,3 +208,5 @@ export default function LedgerInvoice() {
     </FormPage>
   );
 }
+
+

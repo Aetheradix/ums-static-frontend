@@ -100,6 +100,7 @@ export default function AparProcess() {
       title="APAR â€” Initiate Process Application"
       description="Initialize the appraisal report configuration, timelines and dates for the employee"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Career Advancement', to: '/career-advancement/dashboard' },
         {
           label: 'APAR Applications',
@@ -209,3 +210,5 @@ export default function AparProcess() {
     </FormPage>
   );
 }
+
+

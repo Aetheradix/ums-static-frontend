@@ -212,6 +212,7 @@ export default function StaffApply() {
       title="Faculty Quarter Allocation Portal"
       description="Apply for university residential quarters or retrieve profiles flagged back by the housing committee"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Residential Allocation',
           to: RESIDENTIAL_ALLOCATION_URLS.dashboard,
@@ -616,3 +617,5 @@ export default function StaffApply() {
     </FormPage>
   );
 }
+
+

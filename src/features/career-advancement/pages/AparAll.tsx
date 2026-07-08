@@ -92,6 +92,7 @@ export default function AparAll() {
       title="APAR â€” All Applications"
       description="Initiate, process, and track APAR reviews for all employees"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Career Advancement', to: '/career-advancement/dashboard' },
         { label: 'APAR Applications' },
       ]}
@@ -199,3 +200,5 @@ export default function AparAll() {
     </FormPage>
   );
 }
+
+

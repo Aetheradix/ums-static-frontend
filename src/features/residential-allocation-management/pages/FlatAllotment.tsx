@@ -124,6 +124,7 @@ export default function FlatAllotment() {
       title="Flat Allotment Desk"
       description="Assign physical quarter units to approved faculty applicants while enforcing grade pay matrix constraints"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Residential Allocation',
           to: RESIDENTIAL_ALLOCATION_URLS.dashboard,
@@ -235,3 +236,5 @@ export default function FlatAllotment() {
     </FormPage>
   );
 }
+
+

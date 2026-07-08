@@ -138,6 +138,7 @@ export default function HostelRegistry() {
       title="Hostel Registry"
       description="Register and manage hostel buildings for the university campus"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Hostel Management',
           to: '/hostel-management/hostel-registry',
@@ -411,3 +412,5 @@ export default function HostelRegistry() {
     </FormPage>
   );
 }
+
+

@@ -53,6 +53,7 @@ export default function AdminReview() {
       title="Seniority Screener & Admin Desk"
       description="Evaluate faculty housing applications based on date of joining, basic pay, and grade matrix rules"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Residential Allocation',
           to: RESIDENTIAL_ALLOCATION_URLS.dashboard,
@@ -229,3 +230,5 @@ export default function AdminReview() {
     </FormPage>
   );
 }
+
+

@@ -118,6 +118,7 @@ export default function AparEmployee() {
       title="APAR Self-Assessment Form"
       description="Fill in your self-appraisal details for the current academic session"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Career Advancement', to: '/career-advancement/dashboard' },
         { label: 'Self Assessment' },
       ]}
@@ -237,3 +238,5 @@ export default function AparEmployee() {
     </FormPage>
   );
 }
+
+

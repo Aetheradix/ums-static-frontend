@@ -71,6 +71,7 @@ export default function AparTrack() {
       title="APAR Application Tracking"
       description="Track the status and stages of your Annual Performance Appraisal Report application"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Career Advancement', to: '/career-advancement/dashboard' },
         { label: 'Track Application' },
       ]}
@@ -180,3 +181,5 @@ export default function AparTrack() {
     </FormPage>
   );
 }
+
+

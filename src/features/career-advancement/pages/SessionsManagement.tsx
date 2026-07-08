@@ -87,6 +87,7 @@ export default function SessionsManagement() {
       title="Sessions Management"
       description="Configure sessions for APAR / PBAS / CAS applications"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Career Advancement', to: '/career-advancement/dashboard' },
         { label: 'Sessions Configuration' },
       ]}
@@ -267,3 +268,5 @@ export default function SessionsManagement() {
     </FormPage>
   );
 }
+
+

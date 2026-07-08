@@ -83,6 +83,7 @@ export default function AparReviewing() {
       title="APAR â€” Reviewing Officer Appraisal"
       description="Perform final review and registration of the employee's APAR application"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Career Advancement', to: '/career-advancement/dashboard' },
         { label: 'Reviewing Appraisal' },
       ]}
@@ -225,3 +226,5 @@ export default function AparReviewing() {
     </FormPage>
   );
 }
+
+

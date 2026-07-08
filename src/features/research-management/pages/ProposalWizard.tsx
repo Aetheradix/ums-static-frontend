@@ -196,6 +196,7 @@ export default function ProposalWizard() {
       title="STU Grant Proposal Submission Desk"
       description="Submit a baseline research proposal or pull revision dockets returned by the Compliance Evaluation Board"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Research Management', to: '/research-management/dashboard' },
         { label: 'Proposal Wizard' },
       ]}
@@ -533,3 +534,5 @@ export default function ProposalWizard() {
     </FormPage>
   );
 }
+
+

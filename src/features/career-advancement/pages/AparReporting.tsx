@@ -70,6 +70,7 @@ export default function AparReporting() {
       title="APAR â€” Reporting Officer Appraisal"
       description="Review employee self-assessment and register your reporting appraisal scores"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Career Advancement', to: '/career-advancement/dashboard' },
         { label: 'Reporting Appraisal' },
       ]}
@@ -173,3 +174,5 @@ export default function AparReporting() {
     </FormPage>
   );
 }
+
+
