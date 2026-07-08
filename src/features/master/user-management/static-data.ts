@@ -245,6 +245,65 @@ export const DOMAINS: { name: string; value: string }[] = [
   { name: 'GLOBAL', value: 'GLOBAL' },
 ];
 
+/* ── Institutions (domain tree) ──
+ * One University root; UTD, Constituent and Affiliated colleges are its
+ * children (siblings of each other). A role is scoped to one of these.
+ * The university's reach flows DOWN: full into UTD / Constituent, but only
+ * the exam / degree / affiliation / curriculum features cross into an
+ * Affiliated college (see AFFILIATED_REACH_FEATURES). */
+export const INSTITUTIONS: UserManagement.Domain[] = [
+  { id: 'univ', name: 'State University', type: 'University', parentId: null },
+  {
+    id: 'utd-cs',
+    name: 'UTD — School of Computer Science',
+    type: 'UTD',
+    parentId: 'univ',
+  },
+  {
+    id: 'utd-ims',
+    name: 'UTD — Institute of Management Studies',
+    type: 'UTD',
+    parentId: 'univ',
+  },
+  {
+    id: 'con-gcc',
+    name: 'Government Constituent College',
+    type: 'Constituent',
+    parentId: 'univ',
+  },
+  {
+    id: 'aff-abc',
+    name: 'ABC College of Arts & Science',
+    type: 'Affiliated',
+    parentId: 'univ',
+  },
+  {
+    id: 'aff-def',
+    name: 'DEF Institute of Technology',
+    type: 'Affiliated',
+    parentId: 'univ',
+  },
+];
+
+/* ── Reach rule ──
+ * When a University-level role is scoped to an AFFILIATED college, only these
+ * features cross the boundary — exams, student records, degrees, affiliation
+ * and curriculum compliance. Everything else (admissions ops, HR, finance,
+ * system admin, general masters) stays with the college and is NOT grantable.
+ * UTD and Constituent colleges have no such restriction (full reach). */
+export const AFFILIATED_REACH_FEATURES: string[] = [
+  // Affiliation — the university governs the college's affiliation
+  'Affiliation.CollegeRegistration',
+  'Affiliation.CollegeRegistrationApproval',
+  'Affiliation.ProgrammeFee',
+  // Curriculum compliance — university sets syllabus & calendar the college follows
+  'Master.Programme',
+  'Master.AcademicYear',
+  // Exams, results & student records — the core reason affiliation exists
+  'SIS.StudentApplicationForm',
+  'SIS.StudentAdditionalInformation',
+];
+
 /* ── Features (Access Control targets) ──
  * Feature identifiers follow the `Module.FeatureName` convention (PascalCase).
  * This identifier is what the Access Control grid displays, so name === value. */
