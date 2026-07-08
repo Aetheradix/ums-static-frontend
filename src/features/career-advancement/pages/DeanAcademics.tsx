@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react';
+﻿import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCareerAdvancement } from '../context';
+import '../career.css';
 import { FormCard, FormGrid, FormPage, GridPanel } from 'shared/new-components';
 import { TextBox, TextArea } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
@@ -97,9 +98,10 @@ export default function DeanAcademics() {
 
   return (
     <FormPage
-      title="Dean Academics — Screening & Review"
+      title="Dean Academics â€” Screening & Review"
       description="Final screening stage: assign scores, verify IQAC, finish review, and generate print layout"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Career Advancement', to: '/career-advancement/dashboard' },
         { label: 'Dean Academics Review' },
       ]}
@@ -158,7 +160,7 @@ export default function DeanAcademics() {
 
         {app && (
           <FormCard
-            title={`Screening Committee Form — ${app.employeeName}`}
+            title={`Screening Committee Form â€” ${app.employeeName}`}
             icon="cog"
           >
             <div className="overflow-x-auto mb-6">
@@ -233,7 +235,7 @@ export default function DeanAcademics() {
                     <td className="p-3 text-slate-500">190</td>
                     <td className="p-3 text-cyan-600">177</td>
                     <td className="p-3 text-indigo-600 text-base font-black">
-                      {totalFinalScore || '—'}
+                      {totalFinalScore || 'â€”'}
                     </td>
                   </tr>
                 </tbody>
@@ -305,3 +307,5 @@ export default function DeanAcademics() {
     </FormPage>
   );
 }
+
+

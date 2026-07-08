@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextBox } from 'shared/components/forms';
 import { FormCard, FormGrid, FormPage, GridPanel } from 'shared/new-components';
+import '../residential.css';
 import { useResidentialAllocation } from '../context';
 import { RESIDENTIAL_ALLOCATION_URLS } from '../urls';
 
@@ -123,6 +124,7 @@ export default function FlatAllotment() {
       title="Flat Allotment Desk"
       description="Assign physical quarter units to approved faculty applicants while enforcing grade pay matrix constraints"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Residential Allocation',
           to: RESIDENTIAL_ALLOCATION_URLS.dashboard,
@@ -134,15 +136,23 @@ export default function FlatAllotment() {
         {/* Allocation Slip */}
         <FormCard title="Faculty Flat Allotment Slip" icon="user-check">
           <form onSubmit={handleAllotmentSubmit} className="space-y-5">
-            <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 text-indigo-900 text-xs flex items-start gap-2 leading-relaxed">
-              <i className="pi pi-shield text-indigo-600 text-base shrink-0 mt-0.5" />
+            <div className="ram-grade-alert">
+              <i className="pi pi-shield" />
               <div>
-                <p className="font-extrabold uppercase">
+                <p
+                  style={{
+                    fontWeight: 800,
+                    textTransform: 'uppercase',
+                    fontSize: '0.7rem',
+                    letterSpacing: '0.06em',
+                    margin: '0 0 0.25rem',
+                  }}
+                >
                   Grade Eligibility Checkpoint:
                 </p>
-                <p>
-                  Type-V Bungalows are strictly locked to Pay Band Level-14 &
-                  Level-15 officers (Deans / Professors).
+                <p style={{ margin: 0 }}>
+                  Type-V Bungalows are strictly locked to Pay Band Level-14
+                  &amp; Level-15 officers (Deans / Professors).
                 </p>
               </div>
             </div>
@@ -203,9 +213,7 @@ export default function FlatAllotment() {
                 cell: (
                   item: ResidentialAllocationManagement.StaffApplication
                 ) => (
-                  <span className="font-mono text-xs font-bold text-amber-700">
-                    {item.allottedFlat}
-                  </span>
+                  <span className="ram-flat-badge">{item.allottedFlat}</span>
                 ),
               },
               {
@@ -215,11 +223,7 @@ export default function FlatAllotment() {
                   item: ResidentialAllocationManagement.StaffApplication
                 ) => (
                   <span
-                    className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                      item.feeStatus === 'Paid'
-                        ? 'bg-emerald-100 text-emerald-800'
-                        : 'bg-rose-100 text-rose-800'
-                    }`}
+                    className={`ram-badge ${item.feeStatus === 'Paid' ? 'ram-badge--paid' : 'ram-badge--unpaid'}`}
                   >
                     {item.feeStatus}
                   </span>
@@ -232,3 +236,5 @@ export default function FlatAllotment() {
     </FormPage>
   );
 }
+
+

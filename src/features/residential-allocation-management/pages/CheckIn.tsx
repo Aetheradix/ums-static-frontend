@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextBox } from 'shared/components/forms';
 import { FormCard, FormGrid, FormPage, GridPanel } from 'shared/new-components';
+import '../residential.css';
 import { useResidentialAllocation } from '../context';
 import { RESIDENTIAL_ALLOCATION_URLS } from '../urls';
 
@@ -69,6 +70,7 @@ export default function CheckIn() {
       title="Quarter Joining & Key Release"
       description="Register physical staff onboarding, luggage inspection, and quarter key handoffs"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Residential Allocation',
           to: RESIDENTIAL_ALLOCATION_URLS.dashboard,
@@ -80,11 +82,21 @@ export default function CheckIn() {
         {/* Check-in Slip */}
         <FormCard title="Quarter Key Handoff Slip" icon="key">
           <form onSubmit={handleCheckInSubmit} className="space-y-5">
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-amber-900 text-xs flex items-start gap-2 leading-relaxed">
-              <i className="pi pi-key text-amber-600 text-base shrink-0 mt-0.5" />
+            <div className="ram-key-alert">
+              <i className="pi pi-key" />
               <div>
-                <p className="font-extrabold uppercase">Key Handover Guard:</p>
-                <p>
+                <p
+                  style={{
+                    fontWeight: 800,
+                    textTransform: 'uppercase',
+                    fontSize: '0.7rem',
+                    letterSpacing: '0.06em',
+                    margin: '0 0 0.25rem',
+                  }}
+                >
+                  Key Handover Guard:
+                </p>
+                <p style={{ margin: 0 }}>
                   Physical keys are released only when the security clearance
                   deposit and HRA deduction ledger status is marked{' '}
                   <strong>'Paid'</strong>.
@@ -139,7 +151,13 @@ export default function CheckIn() {
             data={checkedInList}
             columns={[
               { field: 'staffName', header: 'Staff Name' },
-              { field: 'flatNo', header: 'Quarter Unit' },
+              {
+                field: 'flatNo',
+                header: 'Quarter Unit',
+                cell: (
+                  item: ResidentialAllocationManagement.CheckedInRecord
+                ) => <span className="ram-flat-badge">{item.flatNo}</span>,
+              },
               { field: 'checkInDate', header: 'Joining Date' },
               { field: 'remarks', header: 'Handover Notes' },
             ]}
@@ -149,3 +167,5 @@ export default function CheckIn() {
     </FormPage>
   );
 }
+
+

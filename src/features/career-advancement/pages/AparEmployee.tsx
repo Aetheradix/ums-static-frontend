@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCareerAdvancement } from '../context';
+import '../career.css';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
 import { TextBox, TextArea } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
@@ -117,6 +118,7 @@ export default function AparEmployee() {
       title="APAR Self-Assessment Form"
       description="Fill in your self-appraisal details for the current academic session"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Career Advancement', to: '/career-advancement/dashboard' },
         { label: 'Self Assessment' },
       ]}
@@ -236,3 +238,5 @@ export default function AparEmployee() {
     </FormPage>
   );
 }
+
+

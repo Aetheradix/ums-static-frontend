@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { Dropdown } from 'primereact/dropdown';
-import { Button } from 'primereact/button';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
+import { DropDownList } from 'shared/components/forms';
+import { Button } from 'shared/components/buttons';
 import { ProgressBar } from 'primereact/progressbar';
-import { Tag } from 'primereact/tag';
-import { FormPage, FormCard } from 'shared/new-components';
+import {
+  FormPage,
+  FormCard,
+  StatusBadge,
+  GridPanel,
+} from 'shared/new-components';
 import { admissionsUrls } from '../../urls';
 import { ToastService } from 'services';
 
@@ -100,7 +102,7 @@ export default function MeritListGeneration() {
         : rowData.status === 'Waitlisted'
           ? 'warning'
           : 'danger';
-    return <Tag value={rowData.status} severity={severity} />;
+    return <StatusBadge label={rowData.status} variant={severity} />;
   };
 
   return (
@@ -118,20 +120,18 @@ export default function MeritListGeneration() {
         <FormCard>
           <div className="flex flex-col md:flex-row items-start md:items-end gap-4">
             <div className="flex flex-col gap-2 flex-1 w-full">
-              <label htmlFor="program" className="font-bold text-gray-700">
-                Select Program <span className="text-red-500">*</span>
-              </label>
-              <Dropdown
-                id="program"
-                value={selectedProgram}
-                options={mockPrograms}
-                onChange={e => {
-                  setSelectedProgram(e.value);
+              <DropDownList
+                label="Select Program *"
+                value={selectedProgram || ''}
+                data={mockPrograms}
+                textField="label"
+                valueField="value"
+                onChange={v => {
+                  setSelectedProgram(v as string);
                   setMeritList([]);
                   setPublished(false);
                 }}
-                placeholder="Select a Program"
-                className="w-full"
+                defaultOptionText="Select a Program"
               />
             </div>
             <Button
@@ -170,60 +170,46 @@ export default function MeritListGeneration() {
               </div>
               <div>
                 {published ? (
-                  <Tag
-                    value="Published Live"
-                    severity="success"
-                    icon="pi pi-check"
+                  <StatusBadge
+                    label="Published Live"
+                    variant="success"
                     className="px-3 py-2 text-sm shadow-sm"
                   />
                 ) : (
                   <Button
                     label="Publish Merit List"
                     icon="pi pi-globe"
-                    severity="success"
+                    variant="primary"
                     onClick={handlePublish}
                   />
                 )}
               </div>
             </div>
 
-            <DataTable
-              value={meritList}
-              stripedRows
-              rowHover
-              responsiveLayout="scroll"
-              className="p-datatable-sm"
-            >
-              <Column
-                field="rank"
-                header="Rank"
-                sortable
-                style={{ width: '80px' }}
-                className="font-bold text-gray-700"
-              ></Column>
-              <Column
-                field="applicationNo"
-                header="App No."
-                style={{ width: '150px' }}
-              ></Column>
-              <Column field="name" header="Candidate Name"></Column>
-              <Column
-                field="category"
-                header="Category"
-                body={row => <Tag value={row.category} severity="info" />}
-              ></Column>
-              <Column
-                field="score"
-                header="Score (%)"
-                sortable
-                className="font-semibold"
-              ></Column>
-              <Column
-                field="status"
-                header="Allocation Status"
-                body={statusTemplate}
-              ></Column>
-            </DataTable>
+            <GridPanel
+              data={meritList}
+              pagination={false}
+              columns={[
+                { field: 'rank', header: 'Rank', sortable: true },
+                { field: 'applicationNo', header: 'App No.', sortable: true },
+                { field: 'name', header: 'Candidate Name', sortable: true },
+                {
+                  field: 'category',
+                  header: 'Category',
+                  cell: row => (
+                    <StatusBadge label={row.category} variant="info" />
+                  ),
+                  sortable: true,
+                },
+                { field: 'score', header: 'Score (%)', sortable: true },
+                {
+                  field: 'status',
+                  header: 'Allocation Status',
+                  cell: statusTemplate,
+                  sortable: true,
+                },
+              ]}
+            />
 
             {!published && (
               <div className="mt-4 p-4 bg-yellow-50 text-yellow-800 rounded-lg border border-yellow-200 text-sm flex items-start shadow-sm">

@@ -2,11 +2,9 @@ import { useState } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { InputNumber } from 'primereact/inputnumber';
 import { FormPage, FormCard, StatusBadge } from 'shared/new-components';
+import { Modal } from 'shared/components/popups';
+import { TextBox, DropDownList, NumberBox } from 'shared/components/forms';
 import { studentManagementUrls } from '../../urls';
 
 interface SectionAllocation {
@@ -139,10 +137,9 @@ export default function SectionAllocation() {
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div className="p-input-icon-left w-full md:w-auto">
         <i className="pi pi-search" />
-        <InputText
-          type="search"
+        <TextBox
           placeholder="Search sections..."
-          onChange={e => setGlobalFilter(e.target.value)}
+          onChange={v => setGlobalFilter(v as string)}
           className="w-full md:w-64"
         />
       </div>
@@ -223,117 +220,93 @@ export default function SectionAllocation() {
         </DataTable>
       </FormCard>
 
-      <Dialog
+      <Modal
         visible={showDialog}
-        style={{ width: '550px' }}
+        size="medium"
         header={
           selectedSection.id ? 'Edit Section Allocation' : 'Create New Section'
         }
-        modal
         onHide={() => setShowDialog(false)}
-        className="p-fluid"
       >
-        <div className="flex flex-col gap-4 mt-2">
+        <div className="flex flex-col gap-4 p-4">
           <div className="flex flex-col md:flex-row gap-4 bg-gray-50 p-4 rounded-lg border border-gray-100">
-            <div className="flex flex-col gap-2 flex-1">
-              <label htmlFor="programCode" className="font-bold text-gray-700">
-                Program <span className="text-red-500">*</span>
-              </label>
-              <Dropdown
-                id="programCode"
+            <div className="flex-1">
+              <DropDownList
+                label="Program *"
                 value={selectedSection.programCode}
-                options={[
+                data={[
                   { label: 'BTECH-CSE', value: 'BTECH-CSE' },
                   { label: 'MBA-FIN', value: 'MBA-FIN' },
                 ]}
-                onChange={e =>
+                textField="label"
+                valueField="value"
+                onChange={v =>
                   setSelectedSection({
                     ...selectedSection,
-                    programCode: e.value,
+                    programCode: v as string,
                   })
                 }
-                placeholder="Select Program"
+                defaultOptionText="Select Program"
               />
             </div>
-            <div className="flex flex-col gap-2 flex-1">
-              <label htmlFor="semesterCode" className="font-bold text-gray-700">
-                Semester <span className="text-red-500">*</span>
-              </label>
-              <Dropdown
-                id="semesterCode"
+            <div className="flex-1">
+              <DropDownList
+                label="Semester *"
                 value={selectedSection.semesterCode}
-                options={[
+                data={[
                   { label: 'Semester 1', value: 'SEM-1' },
                   { label: 'Semester 2', value: 'SEM-2' },
                   { label: 'Semester 3', value: 'SEM-3' },
                 ]}
-                onChange={e =>
+                textField="label"
+                valueField="value"
+                onChange={v =>
                   setSelectedSection({
                     ...selectedSection,
-                    semesterCode: e.value,
+                    semesterCode: v as string,
                   })
                 }
-                placeholder="Select Semester"
+                defaultOptionText="Select Semester"
               />
             </div>
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label htmlFor="sectionName" className="font-bold text-gray-700">
-              Section Name <span className="text-red-500">*</span>
-            </label>
-            <InputText
-              id="sectionName"
-              value={selectedSection.sectionName || ''}
-              onChange={e =>
-                setSelectedSection({
-                  ...selectedSection,
-                  sectionName: e.target.value,
-                })
-              }
-              placeholder="e.g. A, B, C1"
-            />
-          </div>
+          <TextBox
+            label="Section Name *"
+            value={selectedSection.sectionName || ''}
+            onChange={v =>
+              setSelectedSection({
+                ...selectedSection,
+                sectionName: v as string,
+              })
+            }
+            placeholder="e.g. A, B, C1"
+          />
 
-          <div className="flex flex-col md:flex-row gap-4 mt-2">
-            <div className="flex flex-col gap-2 flex-1">
-              <label htmlFor="maxCapacity" className="font-bold text-gray-700">
-                Max Capacity <span className="text-red-500">*</span>
-              </label>
-              <InputNumber
-                id="maxCapacity"
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <NumberBox
+                label="Max Capacity *"
                 value={selectedSection.maxCapacity || 0}
-                onValueChange={e =>
+                onChange={v =>
                   setSelectedSection({
                     ...selectedSection,
-                    maxCapacity: e.value as number,
+                    maxCapacity: Number(v),
                   })
                 }
-                min={1}
-                max={200}
-                className="w-full"
               />
             </div>
             <div className="flex flex-col gap-2 flex-1">
-              <label
-                htmlFor="assignedStudents"
-                className="font-bold text-gray-700"
-              >
-                Currently Assigned
-              </label>
-              <InputNumber
-                id="assignedStudents"
+              <NumberBox
+                label="Currently Assigned"
                 value={selectedSection.assignedStudents || 0}
-                onValueChange={e =>
+                onChange={v =>
                   setSelectedSection({
                     ...selectedSection,
-                    assignedStudents: e.value as number,
+                    assignedStudents: Number(v),
                   })
                 }
-                min={0}
-                max={selectedSection.maxCapacity || 200}
                 disabled={!selectedSection.id}
-                className="w-full"
               />
               {!selectedSection.id && (
                 <small className="text-gray-500 italic">
@@ -344,45 +317,44 @@ export default function SectionAllocation() {
           </div>
 
           <div className="flex flex-col gap-2 mt-2">
-            <label htmlFor="status" className="font-bold text-gray-700">
-              Status
-            </label>
-            <Dropdown
-              id="status"
+            <DropDownList
+              label="Status"
               value={selectedSection.status || 'Active'}
-              options={[
+              data={[
                 { label: 'Active', value: 'Active' },
                 { label: 'Full', value: 'Full' },
               ]}
-              onChange={e =>
-                setSelectedSection({ ...selectedSection, status: e.value })
+              textField="label"
+              valueField="value"
+              onChange={v =>
+                setSelectedSection({ ...selectedSection, status: v as any })
               }
-              placeholder="Select Status"
-              disabled
+              defaultOptionText="Select Status"
+            />
+          </div>
+
+          <div className="flex justify-end gap-3 mt-4 border-t border-gray-100 pt-4">
+            <Button
+              label="Cancel"
+              icon="pi pi-times"
+              outlined
+              onClick={() => setShowDialog(false)}
+            />
+            <Button
+              label="Save Section"
+              icon="pi pi-check"
+              onClick={handleSave}
+              disabled={
+                !selectedSection.programCode ||
+                !selectedSection.semesterCode ||
+                !selectedSection.sectionName ||
+                !selectedSection.maxCapacity
+              }
+              className="shadow-sm"
             />
           </div>
         </div>
-        <div className="flex justify-end gap-3 mt-8 border-t border-gray-100 pt-4">
-          <Button
-            label="Cancel"
-            icon="pi pi-times"
-            outlined
-            onClick={() => setShowDialog(false)}
-          />
-          <Button
-            label="Save Section"
-            icon="pi pi-check"
-            onClick={handleSave}
-            disabled={
-              !selectedSection.programCode ||
-              !selectedSection.semesterCode ||
-              !selectedSection.sectionName ||
-              !selectedSection.maxCapacity
-            }
-            className="shadow-sm"
-          />
-        </div>
-      </Dialog>
+      </Modal>
     </FormPage>
   );
 }

@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Button } from 'primereact/button';
-import { Tag } from 'primereact/tag';
-import { Dropdown } from 'primereact/dropdown';
-import { FormPage, FormCard } from 'shared/new-components';
-import { admissionsUrls } from '../../urls';
+import {
+  FormPage,
+  FormCard,
+  StatusBadge,
+  GridPanel,
+} from 'shared/new-components';
+import { Button } from 'shared/components/buttons';
+import { DropDownList } from 'shared/components/forms';
+
 import { ToastService } from 'services';
 
 interface AllocationRecord {
@@ -90,7 +92,7 @@ export default function SeatAllocation() {
       case 'Declined':
         return 'danger';
       default:
-        return 'secondary';
+        return 'neutral' as any;
     }
   };
 
@@ -122,8 +124,7 @@ export default function SeatAllocation() {
             label="Send Offer"
             icon="pi pi-send"
             size="small"
-            text
-            severity="info"
+            variant="outlined"
             onClick={() => handleSendOffer(rowData.id)}
           />
         )}
@@ -132,19 +133,12 @@ export default function SeatAllocation() {
             label="View Receipt"
             icon="pi pi-file-pdf"
             size="small"
-            text
-            severity="success"
+            variant="outlined"
           />
         )}
         {rowData.status !== 'Fee Paid' &&
           rowData.status !== 'Offer Pending' && (
-            <Button
-              icon="pi pi-ellipsis-v"
-              size="small"
-              rounded
-              text
-              aria-label="Options"
-            />
+            <Button icon="pi pi-ellipsis-v" size="small" variant="outlined" />
           )}
       </div>
     );
@@ -160,8 +154,8 @@ export default function SeatAllocation() {
       description="Manage seat allocations, send admission offers, and track acceptance status."
       breadcrumbs={[
         { label: 'Home', to: '/home' },
-        { label: 'Admissions', to: admissionsUrls.root },
-        { label: 'Admission Cell', to: admissionsUrls.cell.dashboard },
+        { label: 'Admissions', to: '/admissions' },
+        { label: 'Admission Cell', to: '/admissions/cell' },
         { label: 'Seat Allocation' },
       ]}
     >
@@ -174,14 +168,16 @@ export default function SeatAllocation() {
             >
               Filter by Program:
             </label>
-            <Dropdown
-              id="program"
-              value={selectedProgram}
-              options={mockPrograms}
-              onChange={e => setSelectedProgram(e.value)}
-              placeholder="Select a Program"
-              className="w-full md:w-64"
-            />
+            <div className="w-full md:w-64">
+              <DropDownList
+                value={selectedProgram || ''}
+                data={mockPrograms}
+                textField="label"
+                valueField="value"
+                onChange={v => setSelectedProgram(v as string)}
+                defaultOptionText="Select a Program"
+              />
+            </div>
           </div>
 
           <Button
@@ -193,7 +189,7 @@ export default function SeatAllocation() {
             icon={sendingAll ? 'pi pi-spin pi-spinner' : 'pi pi-envelope'}
             onClick={handleSendAllOffers}
             disabled={pendingOffersCount === 0 || sendingAll}
-            severity="help"
+            variant="primary"
           />
         </div>
 
@@ -232,48 +228,32 @@ export default function SeatAllocation() {
           </div>
         </div>
 
-        <DataTable
-          value={allocations}
-          paginator
-          rows={10}
-          dataKey="id"
-          className="p-datatable-sm"
+        <GridPanel
+          data={allocations}
+          searchBox={true}
+          searchFields={['applicationNo', 'name', 'category', 'status']}
           emptyMessage="No allocations found."
-          stripedRows
-          rowHover
-        >
-          <Column
-            field="rank"
-            header="Rank"
-            sortable
-            style={{ width: '80px' }}
-            className="font-bold text-gray-700"
-          ></Column>
-          <Column
-            field="applicationNo"
-            header="App No."
-            style={{ minWidth: '120px' }}
-          ></Column>
-          <Column field="name" header="Applicant Name" sortable></Column>
-          <Column
-            field="category"
-            header="Category"
-            body={r => <Tag value={r.category} severity="info" />}
-          ></Column>
-          <Column
-            field="status"
-            header="Status"
-            body={r => (
-              <Tag value={r.status} severity={getSeverity(r.status)} />
-            )}
-            sortable
-          ></Column>
-          <Column
-            body={actionBodyTemplate}
-            header="Action"
-            style={{ minWidth: '150px' }}
-          ></Column>
-        </DataTable>
+          columns={[
+            { field: 'rank', header: 'Rank', sortable: true },
+            { field: 'applicationNo', header: 'App No.', sortable: true },
+            { field: 'name', header: 'Applicant Name', sortable: true },
+            {
+              field: 'category',
+              header: 'Category',
+              cell: r => <StatusBadge label={r.category} variant="info" />,
+              sortable: true,
+            },
+            {
+              field: 'status',
+              header: 'Status',
+              cell: r => (
+                <StatusBadge label={r.status} variant={getSeverity(r.status)} />
+              ),
+              sortable: true,
+            },
+            { header: 'Action', cell: actionBodyTemplate },
+          ]}
+        />
       </FormCard>
     </FormPage>
   );

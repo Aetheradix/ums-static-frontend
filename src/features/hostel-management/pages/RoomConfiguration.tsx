@@ -1,8 +1,9 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Checkbox, DropDownList, TextBox } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
 import { FormCard, FormGrid, FormPage, GridPanel } from 'shared/new-components';
 import { useHostel } from '../context';
+import '../hostel.css';
 import { ROOM_FACILITY_OPTIONS } from '../data';
 
 type RoomForm = {
@@ -167,6 +168,7 @@ export default function RoomConfiguration() {
       title="Room Configuration"
       description="Define wings, floors, and bed counts for each registered hostel"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Hostel Management',
           to: '/hostel-management/hostel-registry',
@@ -174,7 +176,7 @@ export default function RoomConfiguration() {
         { label: 'Room Configuration' },
       ]}
     >
-      {/* ── Room Form ── */}
+      {/* â”€â”€ Room Form â”€â”€ */}
       <FormCard title="Configure New Room" icon="key">
         <form onSubmit={handleSubmit}>
           <FormGrid columns={3}>
@@ -185,7 +187,7 @@ export default function RoomConfiguration() {
               valueField="id"
               value={form.hostelCode}
               onChange={v => set('hostelCode', v as string)}
-              defaultOptionText="— Select Hostel —"
+              defaultOptionText="â€” Select Hostel â€”"
             />
             <TextBox
               label="Room Number *"
@@ -236,7 +238,7 @@ export default function RoomConfiguration() {
               onChange={v => set('category', v as string)}
             />
             <TextBox
-              label="Additional Charges (₹)"
+              label="Additional Charges (â‚¹)"
               placeholder="0"
               value={form.additionalCharges}
               onChange={v => set('additionalCharges', v)}
@@ -252,7 +254,7 @@ export default function RoomConfiguration() {
           </FormGrid>
 
           <div className="mt-4">
-            <p className="form-sub-section-label">Room Facilities</p>
+            <p className="hm-section-heading">Room Facilities</p>
             <FormGrid columns={4}>
               {ROOM_FACILITY_OPTIONS.map(f => (
                 <Checkbox
@@ -290,7 +292,7 @@ export default function RoomConfiguration() {
         </form>
       </FormCard>
 
-      {/* ── Room List ── */}
+      {/* â”€â”€ Room List â”€â”€ */}
       <FormCard title="Configured Rooms" icon="list">
         <div className="mb-4">
           <DropDownList
@@ -352,3 +354,5 @@ export default function RoomConfiguration() {
     </FormPage>
   );
 }
+
+

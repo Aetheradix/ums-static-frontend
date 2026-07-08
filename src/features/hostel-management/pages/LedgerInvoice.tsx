@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
 import { DropDownList } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
-import { FormCard, FormGrid, FormPage } from 'shared/new-components';
+import { FormCard, FormPage } from 'shared/new-components';
 import { useHostel } from '../context';
+import '../hostel.css';
 
 interface FeeReceipt {
   appId: string;
@@ -89,6 +90,7 @@ export default function LedgerInvoice() {
       title="Ledger Invoice"
       description="Generate semester fee statements and confirm payment clearance before student boarding"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Hostel Management',
           to: '/hostel-management/hostel-registry',
@@ -96,78 +98,114 @@ export default function LedgerInvoice() {
         { label: 'Ledger Invoice' },
       ]}
     >
-      <FormCard title="Generate Fee Statement" icon="credit-card">
-        <FormGrid columns={3}>
-          <DropDownList
-            label="Select Allotted Student"
-            data={appDD}
-            textField="text"
-            valueField="id"
-            defaultOptionText="— Select Student —"
-            value={selectedAppId}
-            onChange={v => {
-              setSelectedAppId(v as string);
-              setReceipt(null);
-            }}
-          />
-          <div className="flex items-end">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Generator */}
+        <FormCard title="Generate Fee Statement" icon="credit-card">
+          <div className="space-y-4">
+            <DropDownList
+              label="Select Allotted Student"
+              data={appDD}
+              textField="text"
+              valueField="id"
+              defaultOptionText="— Select Student —"
+              value={selectedAppId}
+              onChange={v => {
+                setSelectedAppId(v as string);
+                setReceipt(null);
+              }}
+            />
             <Button
               label="Generate Statement"
               icon="file"
               variant="primary"
               onClick={handleGenerate}
             />
+            {allottedApps.length === 0 && (
+              <p className="text-xs text-amber-600">
+                No allotted students. Complete room allotment first.
+              </p>
+            )}
           </div>
-        </FormGrid>
-        {allottedApps.length === 0 && (
-          <p className="text-xs text-amber-600 mt-2">
-            No allotted students. Complete room allotment first.
-          </p>
-        )}
-      </FormCard>
 
-      {/* ── Fee Receipt ── */}
-      {receipt && (
+          {/* Fee Status Overview */}
+          {allottedApps.length > 0 && (
+            <div className="mt-6">
+              <p className="hm-section-heading">Fee Status Overview</p>
+              <table className="hm-fee-table">
+                <thead>
+                  <tr>
+                    {[
+                      '#',
+                      'App ID',
+                      'Student',
+                      'Hostel',
+                      'Room',
+                      'Fee Status',
+                    ].map(h => (
+                      <th key={h}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {allottedApps.map((a, i) => (
+                    <tr key={a.id}>
+                      <td>{i + 1}</td>
+                      <td
+                        style={{ fontFamily: 'monospace', fontSize: '0.7rem' }}
+                      >
+                        {a.id}
+                      </td>
+                      <td style={{ fontWeight: 600 }}>{a.name}</td>
+                      <td>{a.allottedHostel}</td>
+                      <td>
+                        <span className="hm-room-badge">{a.allottedRoom}</span>
+                      </td>
+                      <td>
+                        <span
+                          className={`hm-badge ${a.feeStatus === 'Paid' ? 'hm-badge--paid' : 'hm-badge--unpaid'}`}
+                        >
+                          {a.feeStatus}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </FormCard>
+
+        {/* Receipt Panel */}
         <FormCard
-          title={`Fee Statement — ${receipt.appId}`}
-          icon="receipt"
-          headerAction={
-            receipt.paid ? (
-              <span className="px-3 py-1 text-xs font-bold bg-emerald-100 text-emerald-700 rounded-full border border-emerald-300">
-                ✓ PAID
-              </span>
-            ) : (
-              <span className="px-3 py-1 text-xs font-bold bg-red-100 text-red-700 rounded-full border border-red-300">
-                UNPAID
-              </span>
-            )
+          title={
+            receipt ? `Fee Statement — ${receipt.appId}` : 'Fee Invoice Slip'
           }
+          icon="receipt"
         >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-sm">
-            <div>
-              <p className="text-xs text-slate-400">Student Name</p>
-              <p className="font-bold">{receipt.studentName}</p>
-            </div>
-            <div>
-              <p className="text-xs text-slate-400">Enrollment No.</p>
-              <p className="font-bold">{receipt.enrollmentNo}</p>
-            </div>
-            <div>
-              <p className="text-xs text-slate-400">Hostel</p>
-              <p className="font-bold">{receipt.hostelName}</p>
-            </div>
-            <div>
-              <p className="text-xs text-slate-400">Room No.</p>
-              <p className="font-bold">{receipt.roomNo}</p>
-            </div>
-          </div>
+          {receipt ? (
+            <div className="space-y-4">
+              <div className="hm-invoice-header">
+                <div>
+                  <p className="hm-invoice-name">{receipt.studentName}</p>
+                  <span className="hm-invoice-enroll">
+                    {receipt.enrollmentNo}
+                  </span>
+                </div>
+                <span
+                  className={
+                    receipt.paid
+                      ? 'hm-invoice-status-paid'
+                      : 'hm-invoice-status-unpaid'
+                  }
+                >
+                  {receipt.paid ? '✓ PAID' : 'UNPAID'}
+                </span>
+              </div>
 
-          <div className="border border-slate-200 rounded-xl overflow-hidden mb-4">
-            <div className="bg-slate-800 text-white px-4 py-2.5 text-xs font-bold uppercase tracking-wider">
-              Fee Breakdown — Academic Session 2026-27
-            </div>
-            <table className="w-full text-sm">
-              <tbody>
+              <div className="hm-invoice-table">
+                <div className="hm-invoice-table-header">
+                  Fee Breakdown — Academic Session 2026-27
+                </div>
                 {[
                   ['Security Deposit', receipt.securityDeposit],
                   ['Hostel Fee (per semester)', receipt.hostelFee],
@@ -175,95 +213,51 @@ export default function LedgerInvoice() {
                   ['Electricity Charges', receipt.electricityCharges],
                   ['Additional Room Charges', receipt.additionalCharges],
                 ].map(([label, amount]) => (
-                  <tr key={String(label)} className="border-t border-slate-100">
-                    <td className="px-4 py-3 text-slate-600">{label}</td>
-                    <td className="px-4 py-3 text-right font-semibold">
+                  <div key={String(label)} className="hm-invoice-row">
+                    <span className="hm-invoice-row-label">{label}</span>
+                    <span className="hm-invoice-row-value">
                       ₹{Number(amount).toLocaleString('en-IN')}
-                    </td>
-                  </tr>
-                ))}
-                <tr className="border-t-2 border-slate-300 bg-slate-50">
-                  <td className="px-4 py-3 font-black text-slate-900">
-                    Total Amount Payable
-                  </td>
-                  <td className="px-4 py-3 text-right font-black text-indigo-700 text-base">
-                    ₹{receipt.total.toLocaleString('en-IN')}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div className="form-actions-row">
-            {!receipt.paid && (
-              <Button
-                label="Mark as Paid"
-                icon="check-circle"
-                variant="primary"
-                onClick={handleMarkPaid}
-              />
-            )}
-            <Button
-              label="Print Receipt"
-              icon="print"
-              variant="outlined"
-              onClick={() => window.print()}
-            />
-          </div>
-        </FormCard>
-      )}
-
-      {/* ── Fee status overview ── */}
-      <FormCard title="Fee Status Overview" icon="list">
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="bg-slate-100 text-slate-600 font-bold">
-                {[
-                  '#',
-                  'App ID',
-                  'Student Name',
-                  'Hostel',
-                  'Room',
-                  'Fee Status',
-                ].map(h => (
-                  <th key={h} className="px-3 py-2 text-left">
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {allottedApps.map((a, i) => (
-                <tr
-                  key={a.id}
-                  className="border-t border-slate-100 hover:bg-slate-50"
-                >
-                  <td className="px-3 py-2">{i + 1}</td>
-                  <td className="px-3 py-2 font-mono">{a.id}</td>
-                  <td className="px-3 py-2 font-semibold">{a.name}</td>
-                  <td className="px-3 py-2">{a.allottedHostel}</td>
-                  <td className="px-3 py-2">{a.allottedRoom}</td>
-                  <td className="px-3 py-2">
-                    <span
-                      className={`px-2 py-0.5 rounded font-bold ${a.feeStatus === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}
-                    >
-                      {a.feeStatus}
                     </span>
-                  </td>
-                </tr>
-              ))}
-              {allottedApps.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="text-center py-6 text-slate-400">
-                    No allotted students yet.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </FormCard>
+                  </div>
+                ))}
+                <div className="hm-invoice-total-row">
+                  <span>Total Amount Payable</span>
+                  <span className="hm-invoice-total-amount">
+                    ₹{receipt.total.toLocaleString('en-IN')}
+                  </span>
+                </div>
+              </div>
+
+              <div className="form-actions-row">
+                {!receipt.paid && (
+                  <Button
+                    label="Mark as Paid"
+                    icon="check-circle"
+                    variant="primary"
+                    onClick={handleMarkPaid}
+                  />
+                )}
+                <Button
+                  label="Print Receipt"
+                  icon="print"
+                  variant="outlined"
+                  onClick={() => window.print()}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="hm-empty-state">
+              <i className="pi pi-receipt" />
+              <p>
+                Select an allotted student and click Generate to compile the fee
+                statement.
+              </p>
+            </div>
+          )}
+        </FormCard>
+      </div>
     </FormPage>
   );
 }
+
+

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCareerAdvancement } from '../context';
+import '../career.css';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
 import { TextBox, TextArea, DropDownList } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
@@ -79,9 +80,10 @@ export default function AparReviewing() {
 
   return (
     <FormPage
-      title="APAR — Reviewing Officer Appraisal"
+      title="APAR â€” Reviewing Officer Appraisal"
       description="Perform final review and registration of the employee's APAR application"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Career Advancement', to: '/career-advancement/dashboard' },
         { label: 'Reviewing Appraisal' },
       ]}
@@ -103,10 +105,11 @@ export default function AparReviewing() {
               </p>
               <p>
                 <strong>Work description:</strong> "
-                {app?.workOutputDescription || '—'}"
+                {app?.workOutputDescription || 'â€”'}"
               </p>
               <p>
-                <strong>Claimed score:</strong> {app?.workOutputScore || '—'}/10
+                <strong>Claimed score:</strong> {app?.workOutputScore || 'â€”'}
+                /10
               </p>
             </div>
           </FormCard>
@@ -223,3 +226,5 @@ export default function AparReviewing() {
     </FormPage>
   );
 }
+
+

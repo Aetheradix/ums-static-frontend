@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { InputNumber } from 'primereact/inputnumber';
-import { MultiSelect } from 'primereact/multiselect';
 import { FormPage, FormCard, StatusBadge } from 'shared/new-components';
+import { Modal } from 'shared/components/popups';
+import {
+  TextBox,
+  DropDownList,
+  NumberBox,
+  MultiSelectList,
+} from 'shared/components/forms';
 import { studentManagementUrls } from '../../urls';
 
 interface BatchAllocation {
@@ -170,10 +172,9 @@ export default function BatchAllocation() {
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div className="p-input-icon-left w-full md:w-auto">
         <i className="pi pi-search" />
-        <InputText
-          type="search"
+        <TextBox
           placeholder="Search batches..."
-          onChange={e => setGlobalFilter(e.target.value)}
+          onChange={v => setGlobalFilter(v as string)}
           className="w-full md:w-64"
         />
       </div>
@@ -262,85 +263,74 @@ export default function BatchAllocation() {
         </DataTable>
       </FormCard>
 
-      <Dialog
+      <Modal
         visible={showDialog}
-        style={{ width: '550px' }}
+        size="medium"
         header={selectedBatch.id ? 'Edit Batch Allocation' : 'Create New Batch'}
-        modal
         onHide={() => setShowDialog(false)}
-        className="p-fluid"
       >
-        <div className="flex flex-col gap-4 mt-2">
+        <div className="flex flex-col gap-4 p-4">
           <div className="flex flex-col gap-2">
-            <label htmlFor="sectionCode" className="font-bold text-gray-700">
-              Parent Section <span className="text-red-500">*</span>
-            </label>
-            <Dropdown
-              id="sectionCode"
+            <DropDownList
+              label="Parent Section *"
               value={selectedBatch.sectionCode}
-              options={[
+              data={[
                 { label: 'BTECH-CSE-SEM1-A', value: 'BTECH-CSE-SEM1-A' },
                 { label: 'BTECH-CSE-SEM1-B', value: 'BTECH-CSE-SEM1-B' },
               ]}
-              onChange={e =>
-                setSelectedBatch({ ...selectedBatch, sectionCode: e.value })
+              textField="label"
+              valueField="value"
+              onChange={v =>
+                setSelectedBatch({ ...selectedBatch, sectionCode: v as string })
               }
-              placeholder="Select parent section"
-              className="w-full"
+              defaultOptionText="Select parent section"
             />
           </div>
 
           <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex flex-col gap-2 flex-1">
-              <label htmlFor="batchName" className="font-bold text-gray-700">
-                Batch Name <span className="text-red-500">*</span>
-              </label>
-              <InputText
-                id="batchName"
+            <div className="flex-1">
+              <TextBox
+                label="Batch Name *"
                 value={selectedBatch.batchName || ''}
-                onChange={e =>
+                onChange={v =>
                   setSelectedBatch({
                     ...selectedBatch,
-                    batchName: e.target.value,
+                    batchName: v as string,
                   })
                 }
                 placeholder="e.g. B1, G1, T1"
               />
             </div>
-            <div className="flex flex-col gap-2 flex-1">
-              <label htmlFor="batchType" className="font-bold text-gray-700">
-                Batch Type <span className="text-red-500">*</span>
-              </label>
-              <Dropdown
-                id="batchType"
+            <div className="flex-1">
+              <DropDownList
+                label="Batch Type *"
                 value={selectedBatch.batchType}
-                options={[
+                data={[
                   { label: 'Practical', value: 'Practical' },
                   { label: 'Tutorial', value: 'Tutorial' },
                   { label: 'Project', value: 'Project' },
                 ]}
-                onChange={e =>
-                  setSelectedBatch({ ...selectedBatch, batchType: e.value })
+                textField="label"
+                valueField="value"
+                onChange={v =>
+                  setSelectedBatch({ ...selectedBatch, batchType: v as any })
                 }
-                placeholder="Select batch type"
+                defaultOptionText="Select batch type"
               />
             </div>
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="mappedSubjects" className="font-bold text-gray-700">
-              Associated Subjects
-            </label>
-            <MultiSelect
-              id="mappedSubjects"
-              value={selectedBatch.mappedSubjects}
-              options={subjectOptions}
-              onChange={e =>
-                setSelectedBatch({ ...selectedBatch, mappedSubjects: e.value })
+            <MultiSelectList
+              label="Associated Subjects"
+              value={selectedBatch.mappedSubjects as any}
+              data={subjectOptions}
+              textField="label"
+              valueField="value"
+              onChange={(v: any) =>
+                setSelectedBatch({ ...selectedBatch, mappedSubjects: v })
               }
               placeholder="Select subjects mapped to this batch"
-              display="chip"
-              className="w-full"
             />
             <small className="text-gray-500">
               Only subjects matching the selected batch type will be available.
@@ -348,69 +338,55 @@ export default function BatchAllocation() {
           </div>
 
           <div className="flex flex-col md:flex-row gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200 mt-2">
-            <div className="flex flex-col gap-2 flex-1">
-              <label htmlFor="maxCapacity" className="font-bold text-gray-700">
-                Max Capacity <span className="text-red-500">*</span>
-              </label>
-              <InputNumber
-                id="maxCapacity"
+            <div className="flex-1">
+              <NumberBox
+                label="Max Capacity *"
                 value={selectedBatch.maxCapacity || 0}
-                onValueChange={e =>
+                onChange={v =>
                   setSelectedBatch({
                     ...selectedBatch,
-                    maxCapacity: e.value as number,
+                    maxCapacity: Number(v),
                   })
                 }
-                min={1}
-                max={100}
-                className="w-full"
               />
             </div>
-            <div className="flex flex-col gap-2 flex-1">
-              <label
-                htmlFor="assignedStudents"
-                className="font-bold text-gray-700"
-              >
-                Currently Assigned
-              </label>
-              <InputNumber
-                id="assignedStudents"
+            <div className="flex-1">
+              <NumberBox
+                label="Currently Assigned"
                 value={selectedBatch.assignedStudents || 0}
-                onValueChange={e =>
+                onChange={v =>
                   setSelectedBatch({
                     ...selectedBatch,
-                    assignedStudents: e.value as number,
+                    assignedStudents: Number(v),
                   })
                 }
-                min={0}
-                max={selectedBatch.maxCapacity || 100}
                 disabled={!selectedBatch.id}
-                className="w-full"
               />
             </div>
           </div>
+
+          <div className="flex justify-end gap-3 mt-4 border-t border-gray-100 pt-4">
+            <Button
+              label="Cancel"
+              icon="pi pi-times"
+              outlined
+              onClick={() => setShowDialog(false)}
+            />
+            <Button
+              label="Save Batch"
+              icon="pi pi-check"
+              onClick={handleSave}
+              disabled={
+                !selectedBatch.sectionCode ||
+                !selectedBatch.batchName ||
+                !selectedBatch.batchType ||
+                !selectedBatch.maxCapacity
+              }
+              className="shadow-sm"
+            />
+          </div>
         </div>
-        <div className="flex justify-end gap-3 mt-8 border-t border-gray-100 pt-4">
-          <Button
-            label="Cancel"
-            icon="pi pi-times"
-            outlined
-            onClick={() => setShowDialog(false)}
-          />
-          <Button
-            label="Save Batch"
-            icon="pi pi-check"
-            onClick={handleSave}
-            disabled={
-              !selectedBatch.sectionCode ||
-              !selectedBatch.batchName ||
-              !selectedBatch.batchType ||
-              !selectedBatch.maxCapacity
-            }
-            className="shadow-sm"
-          />
-        </div>
-      </Dialog>
+      </Modal>
     </FormPage>
   );
 }

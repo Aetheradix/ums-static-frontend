@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
+import { TextBox, DropDownList } from 'shared/components/forms';
 import { FormPage, FormCard } from 'shared/new-components';
 import { admissionsUrls } from '../../urls';
 import { useNavigate } from 'react-router-dom';
@@ -67,138 +66,83 @@ export default function AdmissionEnquiry() {
               className="flex flex-col gap-6 p-fluid"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor="firstName"
-                    className="font-bold text-gray-700"
-                  >
-                    First Name <span className="text-red-500">*</span>
-                  </label>
-                  <InputText
-                    id="firstName"
-                    value={formData.firstName}
-                    onChange={e =>
-                      setFormData({ ...formData, firstName: e.target.value })
-                    }
-                    required
-                    className="w-full"
-                    placeholder="John"
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="lastName" className="font-bold text-gray-700">
-                    Last Name <span className="text-red-500">*</span>
-                  </label>
-                  <InputText
-                    id="lastName"
-                    value={formData.lastName}
-                    onChange={e =>
-                      setFormData({ ...formData, lastName: e.target.value })
-                    }
-                    required
-                    className="w-full"
-                    placeholder="Doe"
-                  />
-                </div>
+                <TextBox
+                  label="First Name *"
+                  value={formData.firstName}
+                  onChange={v =>
+                    setFormData({ ...formData, firstName: v as string })
+                  }
+                  placeholder="John"
+                />
+                <TextBox
+                  label="Last Name *"
+                  value={formData.lastName}
+                  onChange={v =>
+                    setFormData({ ...formData, lastName: v as string })
+                  }
+                  placeholder="Doe"
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="email" className="font-bold text-gray-700">
-                    Email Address <span className="text-red-500">*</span>
-                  </label>
-                  <InputText
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={e =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    required
-                    className="w-full"
-                    placeholder="john.doe@example.com"
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="phone" className="font-bold text-gray-700">
-                    Mobile Number <span className="text-red-500">*</span>
-                  </label>
-                  <InputText
-                    id="phone"
-                    value={formData.phone}
-                    onChange={e =>
-                      setFormData({ ...formData, phone: e.target.value })
-                    }
-                    required
-                    className="w-full"
-                    placeholder="+1 234 567 8900"
-                  />
-                </div>
+                <TextBox
+                  label="Email Address *"
+                  value={formData.email}
+                  onChange={v =>
+                    setFormData({ ...formData, email: v as string })
+                  }
+                  placeholder="john.doe@example.com"
+                />
+                <TextBox
+                  label="Mobile Number *"
+                  value={formData.phone}
+                  onChange={v =>
+                    setFormData({ ...formData, phone: v as string })
+                  }
+                  placeholder="+1 234 567 8900"
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="program" className="font-bold text-gray-700">
-                    Interested Program <span className="text-red-500">*</span>
-                  </label>
-                  <Dropdown
-                    id="program"
-                    value={formData.program}
-                    options={mockPrograms}
-                    onChange={e =>
-                      setFormData({ ...formData, program: e.value })
-                    }
-                    required
-                    placeholder="Select a Program"
-                    className="w-full"
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="source" className="font-bold text-gray-700">
-                    How did you hear about us?
-                  </label>
-                  <Dropdown
-                    id="source"
-                    value={formData.source}
-                    options={mockSources}
-                    onChange={e =>
-                      setFormData({ ...formData, source: e.value })
-                    }
-                    placeholder="Select Source"
-                    className="w-full"
-                  />
-                </div>
+                <DropDownList
+                  label="Interested Program *"
+                  value={formData.program || ''}
+                  data={mockPrograms}
+                  textField="label"
+                  valueField="value"
+                  onChange={v =>
+                    setFormData({ ...formData, program: v as any })
+                  }
+                  defaultOptionText="Select a Program"
+                />
+                <DropDownList
+                  label="How did you hear about us?"
+                  value={formData.source || ''}
+                  data={mockSources}
+                  textField="label"
+                  valueField="value"
+                  onChange={v => setFormData({ ...formData, source: v as any })}
+                  defaultOptionText="Select Source"
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="state" className="font-bold text-gray-700">
-                    State / Province
-                  </label>
-                  <InputText
-                    id="state"
-                    value={formData.state}
-                    onChange={e =>
-                      setFormData({ ...formData, state: e.target.value })
-                    }
-                    className="w-full"
-                    placeholder="e.g. California"
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="city" className="font-bold text-gray-700">
-                    City
-                  </label>
-                  <InputText
-                    id="city"
-                    value={formData.city}
-                    onChange={e =>
-                      setFormData({ ...formData, city: e.target.value })
-                    }
-                    className="w-full"
-                    placeholder="e.g. San Francisco"
-                  />
-                </div>
+                <TextBox
+                  label="State / Province"
+                  value={formData.state}
+                  onChange={v =>
+                    setFormData({ ...formData, state: v as string })
+                  }
+                  placeholder="e.g. California"
+                />
+                <TextBox
+                  label="City"
+                  value={formData.city}
+                  onChange={v =>
+                    setFormData({ ...formData, city: v as string })
+                  }
+                  placeholder="e.g. San Francisco"
+                />
               </div>
 
               <div className="flex justify-end gap-3 mt-6 border-t border-gray-200 pt-6">

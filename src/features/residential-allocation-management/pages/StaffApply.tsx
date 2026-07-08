@@ -1,8 +1,9 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextBox } from 'shared/components/forms';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
+import '../residential.css';
 import { useResidentialAllocation } from '../context';
 import { RESIDENTIAL_ALLOCATION_URLS } from '../urls';
 
@@ -30,6 +31,18 @@ const BLOOD_GROUP_OPTIONS: Data.DataItem<string>[] = [
   { id: 'B+', text: 'B Positive (B+)' },
   { id: 'O+', text: 'O Positive (O+)' },
   { id: 'B-', text: 'B Negative (B-)' },
+];
+
+const STEP_LABELS = [
+  'Personal',
+  'Seniority',
+  'Address',
+  'Quarters',
+  'Dependents',
+  'Emergency',
+  'Medical',
+  'Documents',
+  'Declaration',
 ];
 
 export default function StaffApply() {
@@ -175,11 +188,31 @@ export default function StaffApply() {
     ...estates.map(h => ({ id: h.code, text: h.name })),
   ];
 
+  const stepTitle =
+    applyStep === 1
+      ? 'Staff Personal Profile'
+      : applyStep === 2
+        ? 'STU Academic Seniority Details'
+        : applyStep === 3
+          ? 'Permanent Residential Details'
+          : applyStep === 4
+            ? 'Quarter Configuration Preferences'
+            : applyStep === 5
+              ? 'Dependent Family Mapping'
+              : applyStep === 6
+                ? 'Emergency Alternate Contacts'
+                : applyStep === 7
+                  ? 'Medical Background Record'
+                  : applyStep === 8
+                    ? 'Salary Slip Dossier Upload'
+                    : 'Legal Declarations & Digital Execution';
+
   return (
     <FormPage
       title="Faculty Quarter Allocation Portal"
       description="Apply for university residential quarters or retrieve profiles flagged back by the housing committee"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         {
           label: 'Residential Allocation',
           to: RESIDENTIAL_ALLOCATION_URLS.dashboard,
@@ -189,25 +222,46 @@ export default function StaffApply() {
     >
       <div className="space-y-6">
         {/* Correction Lookup */}
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-4">
-          <div className="flex items-center gap-3">
-            <i className="pi pi-refresh text-amber-500 text-xl" />
+        <div className="ram-lookup-bar">
+          <div
+            style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}
+          >
+            <div className="ram-lookup-icon">
+              <i className="pi pi-refresh" />
+            </div>
             <div>
-              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+              <h4
+                style={{
+                  fontSize: '0.75rem',
+                  fontWeight: 800,
+                  color: '#1e293b',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                  margin: 0,
+                }}
+              >
                 Correction Profile Lookup
               </h4>
-              <p className="text-xs text-slate-500">
+              <p
+                style={{
+                  fontSize: '0.7rem',
+                  color: '#64748b',
+                  margin: '0.15rem 0 0',
+                }}
+              >
                 Retrieve applications sent back for document amendments
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div
+            style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}
+          >
             <input
               type="text"
               placeholder="e.g. STU-FAC-102"
               value={correctionLookupEnrollment}
               onChange={e => setCorrectionLookupEnrollment(e.target.value)}
-              className="text-xs border rounded-xl px-3 py-2 outline-none focus:border-amber-500 uppercase font-mono"
+              className="ram-lookup-input"
             />
             <Button
               label="Pull Profile"
@@ -218,53 +272,34 @@ export default function StaffApply() {
         </div>
 
         {/* Stepper Header */}
-        <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm flex justify-between items-center overflow-x-auto gap-4">
+        <div className="ram-stepper-wrapper">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(stepNum => (
             <div
               key={stepNum}
-              className="flex flex-col items-center min-w-[80px]"
+              className={`ram-step-item ${applyStep > stepNum ? 'completed' : ''}`}
             >
               <div
-                className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs transition-all ${
+                className={`ram-step-dot ${
                   applyStep === stepNum
-                    ? 'bg-amber-500 text-slate-950 ring-4 ring-amber-100 font-extrabold'
+                    ? 'ram-step-dot--active'
                     : applyStep > stepNum
-                      ? 'bg-slate-700 text-white'
-                      : 'bg-slate-100 text-slate-400 border'
+                      ? 'ram-step-dot--done'
+                      : 'ram-step-dot--pending'
                 }`}
               >
-                {stepNum}
+                {applyStep > stepNum ? (
+                  <i className="pi pi-check" style={{ fontSize: '0.65rem' }} />
+                ) : (
+                  stepNum
+                )}
               </div>
-              <span className="text-[10px] font-bold text-slate-500 mt-1.5 whitespace-nowrap">
-                Step {stepNum}
-              </span>
+              <span className="ram-step-label">{STEP_LABELS[stepNum - 1]}</span>
             </div>
           ))}
         </div>
 
         {/* Step Container FormCard */}
-        <FormCard
-          title={`Step ${applyStep} of 9: ${
-            applyStep === 1
-              ? 'Staff Personal Profile'
-              : applyStep === 2
-                ? 'STU Academic Seniority Details'
-                : applyStep === 3
-                  ? 'Permanent Residential Details'
-                  : applyStep === 4
-                    ? 'Quarter Configuration Preferences'
-                    : applyStep === 5
-                      ? 'Dependent Family Mapping'
-                      : applyStep === 6
-                        ? 'Emergency Alternate Contacts'
-                        : applyStep === 7
-                          ? 'Medical Background Record'
-                          : applyStep === 8
-                            ? 'Salary Slip Dossier Upload'
-                            : 'Legal Declarations & Digital Execution'
-          }`}
-          icon="file"
-        >
+        <FormCard title={`Step ${applyStep} of 9: ${stepTitle}`} icon="file">
           <div className="space-y-6">
             {applyStep === 1 && (
               <FormGrid columns={2}>
@@ -482,17 +517,42 @@ export default function StaffApply() {
 
             {applyStep === 8 && (
               <div className="space-y-4">
-                <div className="bg-amber-50 p-4 rounded-xl border border-amber-200 text-amber-800 text-xs">
-                  <strong>Secure Document Checkpoint:</strong> Salary pay slip
-                  and appointment letter verify your seniority rank.
+                <div className="ram-upload-alert">
+                  <i className="pi pi-shield" />
+                  <div>
+                    <strong>Secure Document Checkpoint:</strong> Salary pay slip
+                    and appointment letter verify your seniority rank.
+                  </div>
                 </div>
-                <div className="p-6 border-2 border-dashed border-slate-200 rounded-xl text-center bg-slate-50">
-                  <i className="pi pi-file-pdf text-3xl text-indigo-600 mb-2" />
-                  <p className="text-xs text-slate-600 font-bold">
+                <div className="ram-doc-drop-zone">
+                  <i
+                    className="pi pi-file-pdf"
+                    style={{ fontSize: '2.5rem', color: '#6366f1' }}
+                  />
+                  <p
+                    style={{
+                      fontSize: '0.8rem',
+                      fontWeight: 700,
+                      color: '#374151',
+                      margin: 0,
+                    }}
+                  >
                     salary_pay_slip_dossier.pdf
                   </p>
-                  <span className="inline-block mt-2 px-2.5 py-1 text-[10px] bg-emerald-100 text-emerald-800 rounded font-mono font-bold">
-                    Verified Document ✓
+                  <span
+                    style={{
+                      display: 'inline-block',
+                      padding: '0.25rem 0.75rem',
+                      background: 'linear-gradient(135deg, #d1fae5, #a7f3d0)',
+                      color: '#065f46',
+                      borderRadius: '9999px',
+                      fontSize: '0.7rem',
+                      fontWeight: 800,
+                      fontFamily: 'monospace',
+                      border: '1px solid #a7f3d0',
+                    }}
+                  >
+                    ✓ Verified Document
                   </span>
                 </div>
               </div>
@@ -500,7 +560,10 @@ export default function StaffApply() {
 
             {applyStep === 9 && (
               <div className="space-y-4">
-                <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <label
+                  className="ram-declaration-box"
+                  style={{ cursor: 'pointer' }}
+                >
                   <input
                     type="checkbox"
                     checked={applyForm.declaration}
@@ -510,14 +573,13 @@ export default function StaffApply() {
                         declaration: e.target.checked,
                       })
                     }
-                    className="mt-1 h-4 w-4 rounded text-amber-500 focus:ring-amber-400"
                   />
-                  <span className="text-xs text-slate-700 leading-relaxed">
+                  <span className="ram-declaration-text">
                     I hereby declare that all provided faculty credentials,
                     appointment dates, and salary band details are true to the
                     best of my knowledge under university bylaws.
                   </span>
-                </div>
+                </label>
                 <TextBox
                   label="Digital Signature *"
                   placeholder="Type Full Name"
@@ -555,3 +617,5 @@ export default function StaffApply() {
     </FormPage>
   );
 }
+
+

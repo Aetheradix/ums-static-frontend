@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useCareerAdvancement } from '../context';
+import '../career.css';
 import { FormCard, FormGrid, FormPage, GridPanel } from 'shared/new-components';
 import { TextBox, DropDownList } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
@@ -86,6 +87,7 @@ export default function SessionsManagement() {
       title="Sessions Management"
       description="Configure sessions for APAR / PBAS / CAS applications"
       breadcrumbs={[
+        { label: 'Home', to: '/home' },
         { label: 'Career Advancement', to: '/career-advancement/dashboard' },
         { label: 'Sessions Configuration' },
       ]}
@@ -266,3 +268,5 @@ export default function SessionsManagement() {
     </FormPage>
   );
 }
+
+
