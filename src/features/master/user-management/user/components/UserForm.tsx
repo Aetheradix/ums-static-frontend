@@ -59,26 +59,6 @@ export default function UserForm({
           required
         />
       </div>
-
-      <div className="user-form-status">
-        <label className="user-form-status-label">
-          Status <span className="text-red-500">*</span>
-        </label>
-
-        <label className="user-status-toggle">
-          <input
-            type="checkbox"
-            className="user-status-toggle-input"
-            {...register('isActive')}
-          />
-
-          <span className="user-status-toggle-track">
-            <span className="user-status-toggle-thumb" />
-          </span>
-
-          <span className="user-status-toggle-text">Active</span>
-        </label>
-      </div>
     </>
   );
 

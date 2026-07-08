@@ -33,24 +33,6 @@ export default function RoleForm(props: RoleFormProps) {
           {...register('description')}
           required
         />
-
-        <div className="role-status-field">
-          <label className="role-status-field-label">Status</label>
-
-          <label className="role-status-toggle">
-            <input
-              type="checkbox"
-              className="role-status-toggle-input"
-              {...register('isActive')}
-            />
-
-            <span className="role-status-toggle-track">
-              <span className="role-status-toggle-thumb" />
-            </span>
-
-            <span className="role-status-toggle-text">Active</span>
-          </label>
-        </div>
       </FormGrid>
 
       <FormActions

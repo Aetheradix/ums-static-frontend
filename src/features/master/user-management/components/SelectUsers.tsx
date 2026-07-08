@@ -1,6 +1,6 @@
 import type { FieldValues } from 'react-hook-form';
 import { DropDownList } from 'shared/components/forms';
-import { useUsersQuery } from '../user/queries';
+import { USERS } from '../static-data';
 
 export default function SelectUsers<T extends FieldValues>({
   label = 'User',
@@ -11,12 +11,9 @@ export default function SelectUsers<T extends FieldValues>({
   required?: boolean;
   disabled?: boolean;
 }) {
-  const { data, isLoading } = useUsersQuery();
-
   return (
     <DropDownList
-      data={data}
-      loading={isLoading}
+      data={USERS}
       textField={'userName'}
       optionValue={'id'}
       label={label}
