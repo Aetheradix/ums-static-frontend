@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useCareerAdvancement } from '../context';
+import '../career.css';
 import { FormCard, FormGrid, FormPage, GridPanel } from 'shared/new-components';
 import { TextBox, DropDownList } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';

@@ -1,13 +1,13 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
 import { FormCard, FormGrid, FormPage, GridPanel } from 'shared/new-components';
 import { useHostel } from '../context';
+import '../hostel.css';
 
 export default function CheckIn() {
   const { applications, checkedInList, setCheckedInList, triggerNotification } =
     useHostel();
-
   const [selectedAppId, setSelectedAppId] = useState<string | null>(null);
   const [checkInDate, setCheckInDate] = useState(
     new Date().toISOString().split('T')[0]
@@ -54,8 +54,6 @@ export default function CheckIn() {
     }
     const app = applications.find(a => a.id === selectedAppId);
     if (!app) return;
-
-    // Ledger lock guard
     if (app.feeStatus !== 'Paid') {
       triggerNotification(
         'Boarding Blocked: Student must clear outstanding fee balance first.',
@@ -63,7 +61,6 @@ export default function CheckIn() {
       );
       return;
     }
-
     setCheckedInList(prev => [
       ...prev,
       {
@@ -97,15 +94,15 @@ export default function CheckIn() {
         { label: 'Joining Check-In' },
       ]}
     >
-      {/* ── Ledger lock notice ── */}
+      {/* Boarding Lock Notice */}
       {blockedApps.length > 0 && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
-          <i className="pi pi-lock text-red-500 text-xl mt-0.5" />
+        <div className="hm-alert hm-alert--danger">
+          <i className="pi pi-lock" />
           <div>
-            <p className="text-sm font-bold text-red-700">
+            <p style={{ fontWeight: 800, margin: '0 0 0.25rem' }}>
               Boarding Locked for {blockedApps.length} Student(s)
             </p>
-            <p className="text-xs text-red-600 mt-1">
+            <p style={{ fontSize: '0.72rem', margin: 0 }}>
               Fee balance must be cleared before check-in:{' '}
               {blockedApps.map(a => a.name).join(', ')}.
             </p>
@@ -113,39 +110,58 @@ export default function CheckIn() {
         </div>
       )}
 
-      {/* ── Check-in form ── */}
-      <FormCard title="Student Check-In Form" icon="sign-in">
-        <form onSubmit={handleCheckIn}>
-          <FormGrid columns={2}>
-            <DropDownList
-              label="Select Fee-Cleared Student *"
-              data={appDD}
-              textField="text"
-              valueField="id"
-              defaultOptionText="— Select Student —"
-              value={selectedAppId}
-              onChange={v => setSelectedAppId(v as string)}
-            />
-            <TextBox
-              label="Check-In Date"
-              value={checkInDate}
-              onChange={v => setCheckInDate(v)}
-            />
-            <TextBox
-              label="Luggage Count"
-              placeholder="2"
-              value={luggage}
-              onChange={v => setLuggage(v)}
-            />
-          </FormGrid>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Check-in Form */}
+        <FormCard title="Student Check-In Form" icon="sign-in">
+          <form onSubmit={handleCheckIn} className="space-y-4">
+            <div className="hm-alert hm-alert--guard">
+              <i className="pi pi-key" />
+              <div>
+                <p
+                  style={{
+                    fontWeight: 800,
+                    fontSize: '0.7rem',
+                    margin: '0 0 0.15rem',
+                  }}
+                >
+                  Key Handover Guard:
+                </p>
+                <p style={{ margin: 0 }}>
+                  Keys are released only after fee status is{' '}
+                  <strong>'Paid'</strong> in the ledger.
+                </p>
+              </div>
+            </div>
 
-          {eligibleApps.length === 0 && (
-            <p className="text-xs text-amber-600 mt-2">
-              No eligible students. Ensure fee is paid and room is allotted.
-            </p>
-          )}
+            <FormGrid columns={2}>
+              <DropDownList
+                label="Select Fee-Cleared Student *"
+                data={appDD}
+                textField="text"
+                valueField="id"
+                defaultOptionText="— Select Student —"
+                value={selectedAppId}
+                onChange={v => setSelectedAppId(v as string)}
+              />
+              <TextBox
+                label="Check-In Date"
+                value={checkInDate}
+                onChange={v => setCheckInDate(v)}
+              />
+              <TextBox
+                label="Luggage Count"
+                placeholder="2"
+                value={luggage}
+                onChange={v => setLuggage(v)}
+              />
+            </FormGrid>
 
-          <div className="mt-4">
+            {eligibleApps.length === 0 && (
+              <p className="text-xs text-amber-600">
+                No eligible students. Ensure fee is paid and room is allotted.
+              </p>
+            )}
+
             <TextArea
               label="Remarks"
               placeholder="Key issued, verification notes, etc."
@@ -153,93 +169,95 @@ export default function CheckIn() {
               onChange={v => setRemarks(v)}
               rows={2}
             />
-          </div>
 
-          {/* Student preview */}
-          {selectedApp && (
-            <div className="mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
-              <p className="text-xs font-bold text-emerald-700 mb-2 uppercase tracking-wider">
-                Student Details
-              </p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
-                <div>
-                  <span className="text-slate-500">Name:</span>{' '}
-                  <strong>{selectedApp.name}</strong>
-                </div>
-                <div>
-                  <span className="text-slate-500">Enrollment:</span>{' '}
-                  <strong>{selectedApp.enrollmentNo}</strong>
-                </div>
-                <div>
-                  <span className="text-slate-500">Hostel:</span>{' '}
-                  <strong>{selectedApp.allottedHostel}</strong>
-                </div>
-                <div>
-                  <span className="text-slate-500">Room / Bed:</span>{' '}
-                  <strong>
-                    {selectedApp.allottedRoom} / {selectedApp.allottedBed}
-                  </strong>
-                </div>
-                <div>
-                  <span className="text-slate-500">Fee Status:</span>{' '}
-                  <strong className="text-emerald-700">
-                    {' '}
-                    {selectedApp.feeStatus}
-                  </strong>
+            {/* Student Preview */}
+            {selectedApp && (
+              <div className="hm-preview-card--student">
+                <p className="hm-preview-label hm-preview-label--student">
+                  Student Details
+                </p>
+                <div className="hm-preview-grid">
+                  <div className="hm-preview-item">
+                    <span>Name: </span>
+                    <strong>{selectedApp.name}</strong>
+                  </div>
+                  <div className="hm-preview-item">
+                    <span>Enrollment: </span>
+                    <strong>{selectedApp.enrollmentNo}</strong>
+                  </div>
+                  <div className="hm-preview-item">
+                    <span>Hostel: </span>
+                    <strong>{selectedApp.allottedHostel}</strong>
+                  </div>
+                  <div className="hm-preview-item">
+                    <span>Room/Bed: </span>
+                    <strong>
+                      {selectedApp.allottedRoom}/{selectedApp.allottedBed}
+                    </strong>
+                  </div>
+                  <div className="hm-preview-item">
+                    <span>Fee: </span>
+                    <strong style={{ color: '#15803d' }}>
+                      {selectedApp.feeStatus}
+                    </strong>
+                  </div>
                 </div>
               </div>
+            )}
+
+            <div className="form-actions-row mt-2">
+              <Button
+                label="Complete Check-In &amp; Issue Key"
+                icon="key"
+                variant="primary"
+                type="submit"
+              />
+              <Button
+                label="Reset"
+                variant="outlined"
+                onClick={() => {
+                  setSelectedAppId(null);
+                  setRemarks('');
+                }}
+              />
             </div>
-          )}
+          </form>
+        </FormCard>
 
-          <div className="form-actions-row mt-4">
-            <Button
-              label="Complete Check-In & Issue Key"
-              icon="key"
-              variant="primary"
-              type="submit"
-            />
-            <Button
-              label="Reset"
-              variant="outlined"
-              onClick={() => {
-                setSelectedAppId(null);
-                setRemarks('');
-              }}
-            />
-          </div>
-        </form>
-      </FormCard>
-
-      {/* ── Checked-in registry ── */}
-      <FormCard title="Check-In Registry" icon="list">
-        <GridPanel
-          data={checkedInList}
-          columns={[
-            {
-              cell: (_, o) => <span>{(o.rowIndex ?? 0) + 1}</span>,
-              width: '40px',
-            },
-            { field: 'appId', header: 'App ID' },
-            { field: 'studentName', header: 'Student Name' },
-            { field: 'enrollmentNo', header: 'Enrollment No.' },
-            { field: 'hostelCode', header: 'Hostel' },
-            { field: 'roomNo', header: 'Room' },
-            { field: 'bedNo', header: 'Bed' },
-            { field: 'checkInDate', header: 'Check-In Date' },
-            { field: 'luggage', header: 'Luggage' },
-            {
-              header: 'Key Status',
-              sortable: false,
-              cell: () => (
-                <span className="px-2 py-0.5 text-xs font-bold bg-emerald-100 text-emerald-700 rounded">
-                  Issued
-                </span>
-              ),
-            },
-          ]}
-          searchBox
-        />
-      </FormCard>
+        {/* Check-in Registry */}
+        <FormCard title="Check-In Registry" icon="list">
+          <GridPanel
+            data={checkedInList}
+            columns={[
+              {
+                cell: (_, o) => <span>{(o.rowIndex ?? 0) + 1}</span>,
+                width: '40px',
+              },
+              { field: 'appId', header: 'App ID' },
+              { field: 'studentName', header: 'Student Name' },
+              { field: 'hostelCode', header: 'Hostel' },
+              {
+                field: 'roomNo',
+                header: 'Room',
+                cell: (item: HostelManagement.CheckedInRecord) => (
+                  <span className="hm-room-badge">
+                    {item.roomNo}/{item.bedNo}
+                  </span>
+                ),
+              },
+              { field: 'checkInDate', header: 'Check-In Date' },
+              {
+                header: 'Key Status',
+                sortable: false,
+                cell: () => (
+                  <span className="hm-badge hm-badge--issued">Issued</span>
+                ),
+              },
+            ]}
+            searchBox
+          />
+        </FormCard>
+      </div>
     </FormPage>
   );
 }

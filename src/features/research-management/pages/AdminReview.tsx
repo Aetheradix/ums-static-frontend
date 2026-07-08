@@ -1,7 +1,8 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { FormCard, FormPage, GridPanel } from 'shared/new-components';
 import { useResearch } from '../context';
+import '../research.css';
 
 export default function AdminReview() {
   const {
@@ -65,7 +66,7 @@ export default function AdminReview() {
         `Proposal approved. Project ${projCode} established in registry.`
       );
     } else {
-      triggerNotification(`Proposal ${selectedProp.id} — Status: ${status}`);
+      triggerNotification(`Proposal ${selectedProp.id} â€” Status: ${status}`);
     }
 
     setSelectedProp(null);
@@ -154,7 +155,7 @@ export default function AdminReview() {
                   <div className="flex justify-between text-[10px] text-slate-400 mt-2">
                     <span>{prop.department.substring(11)}</span>
                     <span className="font-bold text-indigo-700">
-                      ₹
+                      â‚¹
                       {((prop.totalRequestedFunds as number) / 100000).toFixed(
                         1
                       )}
@@ -177,7 +178,7 @@ export default function AdminReview() {
           {selectedProp ? (
             <div className="space-y-4">
               <FormCard
-                title={`Screening: ${selectedProp.id} — ${selectedProp.piName}`}
+                title={`Screening: ${selectedProp.id} â€” ${selectedProp.piName}`}
                 icon="search"
               >
                 {/* Proposal coordinates */}
@@ -254,8 +255,8 @@ export default function AdminReview() {
                         }`}
                       >
                         {selectedProp.plagiarismScore > 15
-                          ? 'Flagged ⚠'
-                          : 'Safe ✓'}
+                          ? 'Flagged âš '
+                          : 'Safe âœ“'}
                       </span>
                     </div>
                     <div className="p-4 rounded-xl border flex items-center justify-between bg-slate-50">
@@ -314,17 +315,17 @@ export default function AdminReview() {
                   />
                   <div className="flex flex-wrap gap-2 justify-end">
                     <Button
-                      label="Authorize Project ✓"
+                      label="Authorize Project âœ“"
                       variant="primary"
                       onClick={() => handleReviewAction('Approved')}
                     />
                     <Button
-                      label="Flag for Revision 🔂"
+                      label="Flag for Revision ðŸ”‚"
                       variant="outlined"
                       onClick={() => handleReviewAction('Sent Back')}
                     />
                     <Button
-                      label="Reject ❌"
+                      label="Reject âŒ"
                       variant="danger"
                       onClick={() => handleReviewAction('Rejected')}
                     />
@@ -334,7 +335,7 @@ export default function AdminReview() {
             </div>
           ) : (
             <div className="bg-white rounded-2xl border border-slate-200 p-16 text-center">
-              <div className="text-6xl mb-4">⚖️</div>
+              <div className="text-6xl mb-4">âš–ï¸</div>
               <p className="font-black text-slate-700 text-lg">
                 Select a proposal from the queue
               </p>

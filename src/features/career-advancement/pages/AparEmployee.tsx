@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCareerAdvancement } from '../context';
+import '../career.css';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
 import { TextBox, TextArea } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';

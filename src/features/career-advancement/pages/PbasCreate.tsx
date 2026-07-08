@@ -1,6 +1,7 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCareerAdvancement } from '../context';
+import '../career.css';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
 import { TextBox, DropDownList, Checkbox } from 'shared/components/forms';
 import FormWizard, {
@@ -23,7 +24,7 @@ export default function PbasCreate() {
     dob: '1985-05-15',
     category: 'General',
     dateOfJoining: '2018-08-20',
-    stageApplyingFor: 'Stage 1 → Stage 2',
+    stageApplyingFor: 'Stage 1 â†’ Stage 2',
 
     highestQualification: 'Ph.D.',
     university: 'State Technological University',

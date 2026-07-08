@@ -1,7 +1,8 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { DropDownList } from 'shared/components/forms';
 import { FormCard, FormPage } from 'shared/new-components';
+import '../residential.css';
 import { useResidentialAllocation } from '../context';
 import { RESIDENTIAL_ALLOCATION_URLS } from '../urls';
 
@@ -70,7 +71,7 @@ export default function LedgerInvoice() {
       )
     );
     triggerNotification(
-      `Deduction authorization processed: ₹${generatedFeeReceipt.total} verified.`
+      `Deduction authorization processed: Rs.${generatedFeeReceipt.total} verified.`
     );
     setGeneratedFeeReceipt(prev => (prev ? { ...prev, paid: true } : null));
   };
@@ -111,67 +112,75 @@ export default function LedgerInvoice() {
         {/* Invoice Statement Slip */}
         <FormCard title="Residential Fee Invoice Slip" icon="file">
           {generatedFeeReceipt ? (
-            <div className="space-y-4 text-xs font-sans">
-              <div className="bg-slate-900 text-white p-4 rounded-xl flex justify-between items-center">
+            <div className="space-y-4">
+              {/* Header */}
+              <div className="ram-invoice-header">
                 <div>
-                  <h4 className="text-sm font-black">
+                  <p className="ram-invoice-staff-name">
                     {generatedFeeReceipt.staffName}
-                  </h4>
-                  <p className="text-slate-400 font-mono">
-                    {generatedFeeReceipt.enrollmentNo}
                   </p>
+                  <span className="ram-invoice-enroll">
+                    {generatedFeeReceipt.enrollmentNo}
+                  </span>
                 </div>
                 <span
-                  className={`px-3 py-1 rounded-full text-xs font-bold ${
+                  className={
                     generatedFeeReceipt.paid
-                      ? 'bg-emerald-500 text-white'
-                      : 'bg-rose-500 text-white animate-pulse'
-                  }`}
+                      ? 'ram-invoice-status-paid'
+                      : 'ram-invoice-status-unpaid'
+                  }
                 >
                   {generatedFeeReceipt.paid ? 'CLEARANCE PAID' : 'UNPAID DUES'}
                 </span>
               </div>
 
-              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-slate-600">
-                    Assigned Accommodation:
+              {/* Breakdown */}
+              <div className="ram-invoice-body">
+                <div className="ram-invoice-row">
+                  <span className="ram-invoice-row-label">
+                    Assigned Accommodation
                   </span>
-                  <strong className="text-slate-800">
+                  <strong className="ram-invoice-row-value">
                     {generatedFeeReceipt.estateName} (
                     {generatedFeeReceipt.flatNo})
                   </strong>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-600">
-                    Refundable Security Deposit:
+                <div className="ram-invoice-row">
+                  <span className="ram-invoice-row-label">
+                    Refundable Security Deposit
                   </span>
-                  <span className="font-mono">
-                    ₹{generatedFeeReceipt.securityDeposit.toLocaleString()}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-600">Monthly HRA Deduction:</span>
-                  <span className="font-mono">
-                    ₹{generatedFeeReceipt.hraDeduction.toLocaleString()}
+                  <span className="ram-invoice-row-value">
+                    Rs.{generatedFeeReceipt.securityDeposit.toLocaleString()}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-600">Maintenance Charges:</span>
-                  <span className="font-mono">
-                    ₹{generatedFeeReceipt.maintenanceFee.toLocaleString()}
+                <div className="ram-invoice-row">
+                  <span className="ram-invoice-row-label">
+                    Monthly HRA Deduction
+                  </span>
+                  <span className="ram-invoice-row-value">
+                    Rs.{generatedFeeReceipt.hraDeduction.toLocaleString()}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-600">Water Utility Charges:</span>
-                  <span className="font-mono">
-                    ₹{generatedFeeReceipt.waterCharges.toLocaleString()}
+                <div className="ram-invoice-row">
+                  <span className="ram-invoice-row-label">
+                    Maintenance Charges
+                  </span>
+                  <span className="ram-invoice-row-value">
+                    Rs.{generatedFeeReceipt.maintenanceFee.toLocaleString()}
                   </span>
                 </div>
-                <div className="pt-2 border-t border-slate-200 flex justify-between text-sm font-black text-indigo-900">
-                  <span>Total Payroll Authorization:</span>
-                  <span className="font-mono">
-                    ₹{generatedFeeReceipt.total.toLocaleString()}
+                <div className="ram-invoice-row">
+                  <span className="ram-invoice-row-label">
+                    Water Utility Charges
+                  </span>
+                  <span className="ram-invoice-row-value">
+                    Rs.{generatedFeeReceipt.waterCharges.toLocaleString()}
+                  </span>
+                </div>
+                <div className="ram-invoice-total-row">
+                  <span>Total Payroll Authorization</span>
+                  <span className="ram-invoice-total-amount">
+                    Rs.{generatedFeeReceipt.total.toLocaleString()}
                   </span>
                 </div>
               </div>
@@ -185,9 +194,12 @@ export default function LedgerInvoice() {
               )}
             </div>
           ) : (
-            <div className="text-center py-12 text-slate-400 text-sm">
-              Select an allotted staff member and click compile to generate the
-              deduction statement.
+            <div className="ram-empty-state">
+              <i className="pi pi-receipt" />
+              <p>
+                Select an allotted staff member and click compile to generate
+                the deduction statement.
+              </p>
             </div>
           )}
         </FormCard>

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextBox } from 'shared/components/forms';
 import { FormCard, FormGrid, FormPage, GridPanel } from 'shared/new-components';
+import '../residential.css';
 import { useResidentialAllocation } from '../context';
 import { RESIDENTIAL_ALLOCATION_URLS } from '../urls';
 
@@ -108,9 +109,7 @@ export default function EstateRegistry() {
         <FormCard title="New Estate Block Form" icon="building">
           <form onSubmit={handleEstateSubmit} className="space-y-6">
             <div>
-              <h4 className="text-xs font-extrabold text-amber-600 uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">
-                A. Block Specifications
-              </h4>
+              <p className="ram-section-heading">A. Block Specifications</p>
               <FormGrid columns={3}>
                 <TextBox
                   label="Estate Quarter Name *"
@@ -158,9 +157,9 @@ export default function EstateRegistry() {
             </div>
 
             <div>
-              <h4 className="text-xs font-extrabold text-amber-600 uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">
+              <p className="ram-section-heading">
                 B. Financial Ledger & HRA Configuration (INR)
-              </h4>
+              </p>
               <FormGrid columns={4}>
                 <TextBox
                   label="Refundable Security Deposit"
@@ -198,9 +197,9 @@ export default function EstateRegistry() {
             </div>
 
             <div>
-              <h4 className="text-xs font-extrabold text-amber-600 uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">
+              <p className="ram-section-heading">
                 C. Estate Administration Contact Details
-              </h4>
+              </p>
               <FormGrid columns={3}>
                 <TextBox
                   label="Estate Warden Name"
@@ -235,18 +234,21 @@ export default function EstateRegistry() {
 
         {/* Database List */}
         <FormCard title="Active Campus Estates Database" icon="table">
-          <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
-            <input
-              type="text"
-              placeholder="Search Estate Name..."
-              value={estateSearch}
-              onChange={e => setEstateSearch(e.target.value)}
-              className="border border-slate-200 rounded-xl px-4 py-2 text-xs w-64 outline-none focus:border-amber-500"
-            />
+          <div className="ram-toolbar">
+            <div className="ram-search-wrapper">
+              <i className="pi pi-search" />
+              <input
+                type="text"
+                placeholder="Search Estate Name..."
+                value={estateSearch}
+                onChange={e => setEstateSearch(e.target.value)}
+                className="ram-search-input"
+              />
+            </div>
             <select
               value={estateFilterType}
               onChange={e => setEstateFilterType(e.target.value)}
-              className="border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-amber-500"
+              className="ram-select-filter"
             >
               <option value="All">All Tiers</option>
               <option value="Type-V">Type-V Bungalow</option>
@@ -277,8 +279,8 @@ export default function EstateRegistry() {
                 field: 'hraDeduction',
                 header: 'HRA Deduction',
                 cell: (item: ResidentialAllocationManagement.Estate) => (
-                  <span className="font-mono text-xs font-bold text-indigo-700">
-                    ₹{item.hraDeduction.toLocaleString()} / mo
+                  <span className="ram-flat-badge">
+                    Rs.{item.hraDeduction.toLocaleString()} / mo
                   </span>
                 ),
               },

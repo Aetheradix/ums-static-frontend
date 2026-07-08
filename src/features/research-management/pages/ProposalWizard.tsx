@@ -1,8 +1,9 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextBox } from 'shared/components/forms';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
 import { useResearch } from '../context';
+import '../research.css';
 import { AGENCY_OPTIONS, BLANK_PROPOSAL, DEPARTMENT_OPTIONS } from '../data';
 
 const STEP_TITLES: Record<number, string> = {
@@ -443,7 +444,7 @@ export default function ProposalWizard() {
                 Ethics Board Clearance Dossier
               </p>
               <span className="text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                {proposalForm.ethicsDocs} — Verified ✓
+                {proposalForm.ethicsDocs} â€” Verified âœ“
               </span>
             </div>
             <div className="border-2 border-dashed border-slate-200 p-6 rounded-2xl bg-slate-50 flex flex-col items-center gap-2 text-center">
@@ -452,7 +453,7 @@ export default function ProposalWizard() {
                 Budget Justification Spreadsheet
               </p>
               <span className="text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                {proposalForm.budgetDocs} — Verified ✓
+                {proposalForm.budgetDocs} â€” Verified âœ“
               </span>
             </div>
           </div>
@@ -501,7 +502,7 @@ export default function ProposalWizard() {
         {/* Navigation */}
         <div className="flex justify-between gap-3 mt-6 pt-4 border-t border-slate-200">
           <Button
-            label="◀ Prev Stage"
+            label="â—€ Prev Stage"
             variant="outlined"
             onClick={() => setProposalStep(s => Math.max(1, s - 1))}
           />
@@ -515,13 +516,13 @@ export default function ProposalWizard() {
             />
             {proposalStep < 9 ? (
               <Button
-                label="Next Stage ▶"
+                label="Next Stage â–¶"
                 variant="primary"
                 onClick={() => setProposalStep(s => Math.min(9, s + 1))}
               />
             ) : (
               <Button
-                label="Submit Proposal ✓"
+                label="Submit Proposal âœ“"
                 variant="primary"
                 onClick={handleSubmit}
               />

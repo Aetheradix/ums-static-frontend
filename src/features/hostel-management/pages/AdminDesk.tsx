@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { DropDownList, TextArea } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
 import { FormCard, FormPage, GridPanel } from 'shared/new-components';
 import { useHostel } from '../context';
+import '../hostel.css';
 
 type Status = 'All' | HostelManagement.Application['status'];
 
@@ -13,13 +14,6 @@ const STATUS_TABS: Status[] = [
   'Rejected',
   'Sent Back',
 ];
-
-const STATUS_COLORS: Record<string, string> = {
-  Pending: 'bg-amber-100 text-amber-700',
-  Approved: 'bg-emerald-100 text-emerald-700',
-  Rejected: 'bg-red-100 text-red-700',
-  'Sent Back': 'bg-orange-100 text-orange-700',
-};
 
 export default function AdminDesk() {
   const { applications, setApplications, triggerNotification } = useHostel();
@@ -68,11 +62,12 @@ export default function AdminDesk() {
     setRemarks('');
   };
 
-  // Status filter dropdown data
-  const filterDD = STATUS_TABS.map(s => ({
-    id: s,
-    text: s,
-  })) as Data.DataItem<string>[];
+  const getStatusClass = (status: string) => {
+    if (status === 'Approved') return 'hm-badge--approved';
+    if (status === 'Pending') return 'hm-badge--pending';
+    if (status === 'Sent Back') return 'hm-badge--sent-back';
+    return 'hm-badge--rejected';
+  };
 
   return (
     <FormPage
@@ -86,54 +81,67 @@ export default function AdminDesk() {
         { label: 'Admin Desk' },
       ]}
     >
-      {/* ── Summary cards ── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[
-          {
-            label: 'Pending Review',
-            count: counts.pending,
-            color: 'border-amber-400 bg-amber-50',
-            text: 'text-amber-700',
-          },
-          {
-            label: 'Approved',
-            count: counts.approved,
-            color: 'border-emerald-400 bg-emerald-50',
-            text: 'text-emerald-700',
-          },
-          {
-            label: 'Rejected',
-            count: counts.rejected,
-            color: 'border-red-400 bg-red-50',
-            text: 'text-red-700',
-          },
-          {
-            label: 'Sent Back',
-            count: counts.sentBack,
-            color: 'border-orange-400 bg-orange-50',
-            text: 'text-orange-700',
-          },
-        ].map(c => (
-          <div key={c.label} className={`rounded-xl border-l-4 p-4 ${c.color}`}>
-            <p className={`text-2xl font-black ${c.text}`}>{c.count}</p>
-            <p className="text-xs text-slate-500 font-semibold mt-1">
-              {c.label}
-            </p>
+      {/* Summary Stat Cards */}
+      <div className="hm-stats-grid">
+        <div className="hm-stat-card hm-stat-card--amber">
+          <div>
+            <div className="hm-stat-label">Pending Review</div>
+            <div className="hm-stat-value" style={{ color: '#92400e' }}>
+              {counts.pending}
+            </div>
           </div>
-        ))}
+          <div className="hm-stat-icon hm-stat-icon--amber">
+            <i className="pi pi-clock" />
+          </div>
+        </div>
+        <div className="hm-stat-card hm-stat-card--emerald">
+          <div>
+            <div className="hm-stat-label">Approved</div>
+            <div className="hm-stat-value" style={{ color: '#065f46' }}>
+              {counts.approved}
+            </div>
+          </div>
+          <div className="hm-stat-icon hm-stat-icon--emerald">
+            <i className="pi pi-check-circle" />
+          </div>
+        </div>
+        <div className="hm-stat-card hm-stat-card--rose">
+          <div>
+            <div className="hm-stat-label">Rejected</div>
+            <div className="hm-stat-value" style={{ color: '#9f1239' }}>
+              {counts.rejected}
+            </div>
+          </div>
+          <div className="hm-stat-icon hm-stat-icon--rose">
+            <i className="pi pi-times-circle" />
+          </div>
+        </div>
+        <div className="hm-stat-card hm-stat-card--indigo">
+          <div>
+            <div className="hm-stat-label">Sent Back</div>
+            <div className="hm-stat-value" style={{ color: '#3730a3' }}>
+              {counts.sentBack}
+            </div>
+          </div>
+          <div className="hm-stat-icon hm-stat-icon--indigo">
+            <i className="pi pi-refresh" />
+          </div>
+        </div>
       </div>
 
-      {/* ── Application list ── */}
+      {/* Application List */}
       <FormCard title="Applications Queue" icon="list">
-        <div className="mb-4 w-48">
-          <DropDownList
-            label=""
-            data={filterDD}
-            textField="text"
-            valueField="id"
-            value={filter}
-            onChange={v => setFilter(v as Status)}
-          />
+        <div className="hm-filter-bar">
+          <span className="hm-filter-label">Filter:</span>
+          {STATUS_TABS.map(s => (
+            <button
+              key={s}
+              onClick={() => setFilter(s)}
+              className={`hm-filter-pill ${filter === s ? 'hm-filter-pill--active' : 'hm-filter-pill--inactive'}`}
+            >
+              {s}
+            </button>
+          ))}
         </div>
 
         <GridPanel
@@ -152,9 +160,7 @@ export default function AdminDesk() {
               header: 'Status',
               sortable: false,
               cell: (item: HostelManagement.Application) => (
-                <span
-                  className={`px-2 py-0.5 rounded text-xs font-bold ${STATUS_COLORS[item.status] ?? ''}`}
-                >
+                <span className={`hm-badge ${getStatusClass(item.status)}`}>
                   {item.status}
                 </span>
               ),
@@ -163,15 +169,16 @@ export default function AdminDesk() {
               header: 'Action',
               sortable: false,
               cell: (item: HostelManagement.Application) => (
-                <Button
-                  label="Review"
-                  icon="eye"
-                  variant="primary"
+                <button
+                  className="hm-btn-inspect"
                   onClick={() => {
                     setSelectedId(item.id);
                     setRemarks(item.adminRemarks);
                   }}
-                />
+                >
+                  <i className="pi pi-search" style={{ fontSize: '0.65rem' }} />{' '}
+                  Review
+                </button>
               ),
             },
           ]}
@@ -179,18 +186,24 @@ export default function AdminDesk() {
         />
       </FormCard>
 
-      {/* ── Review panel ── */}
+      {/* Review Panel */}
       {selected && (
         <FormCard
           title={`Review: ${selected.name} — ${selected.id}`}
           icon="check-square"
         >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-4">
+          <div className="hm-inspector-card mb-4">
+            <span className="hm-inspector-id">{selected.id}</span>
+            <p className="hm-inspector-name">{selected.name}</p>
+            <p className="hm-inspector-meta">
+              {selected.college} · {selected.course}
+            </p>
+          </div>
+
+          <div className="hm-detail-grid">
             {[
               ['Enrollment No.', selected.enrollmentNo],
               ['Gender', selected.gender],
-              ['College', selected.college],
-              ['Course', selected.course],
               ['Branch', selected.branch],
               ['Semester', selected.semester],
               ['Hostel Pref.', selected.hostelPreference],
@@ -200,21 +213,25 @@ export default function AdminDesk() {
               ['Blood Group', selected.bloodGroup],
               ['Medical', selected.medicalCondition],
             ].map(([label, val]) => (
-              <div key={label as string}>
-                <p className="text-xs text-slate-400 font-semibold">{label}</p>
-                <p className="font-semibold text-slate-800">{val || '—'}</p>
+              <div key={label as string} className="hm-detail-field">
+                <div className="hm-detail-label">{label}</div>
+                <div className="hm-detail-value">{val || '—'}</div>
               </div>
             ))}
           </div>
 
           {selected.adminRemarks && (
-            <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800 mb-4">
-              <strong>Previous Remarks:</strong> {selected.adminRemarks}
+            <div className="hm-alert hm-alert--warning mb-4">
+              <i className="pi pi-info-circle" />
+              <div>
+                <strong>Previous Remarks:</strong> {selected.adminRemarks}
+              </div>
             </div>
           )}
 
+          <label className="hm-remarks-label">Admin Remarks *</label>
           <TextArea
-            label="Admin Remarks *"
+            label=""
             placeholder="Write your evaluation remarks here..."
             value={remarks}
             onChange={v => setRemarks(v)}

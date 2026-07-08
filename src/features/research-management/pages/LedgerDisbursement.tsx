@@ -1,8 +1,9 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextBox } from 'shared/components/forms';
 import { FormCard, FormGrid, FormPage, GridPanel } from 'shared/new-components';
 import { useResearch } from '../context';
+import '../research.css';
 
 const MILESTONE_OPTIONS: Data.DataItem<string>[] = [
   { id: '', text: '-- Choose Milestone --' },
@@ -29,7 +30,7 @@ export default function LedgerDisbursement() {
     { id: '', text: '-- Choose Active Project --' },
     ...projects.map(p => ({
       id: p.code,
-      text: `${p.code} — ${p.piName} (Ethics: ${p.ethicsStatus})`,
+      text: `${p.code} â€” ${p.piName} (Ethics: ${p.ethicsStatus})`,
     })),
   ];
 
@@ -58,7 +59,7 @@ export default function LedgerDisbursement() {
     const amount = parseFloat(disbAmount);
     if (matched.disbursedFunds + amount > matched.approvedBudget) {
       triggerNotification(
-        `Allocation Out of Bounds! Requested ₹${amount.toLocaleString()} exceeds the remaining budget ceiling.`,
+        `Allocation Out of Bounds! Requested â‚¹${amount.toLocaleString()} exceeds the remaining budget ceiling.`,
         'error'
       );
       return;
@@ -165,7 +166,7 @@ export default function LedgerDisbursement() {
 
             <div className="flex justify-end">
               <Button
-                label="Authorize Tranche Disbursement ✓"
+                label="Authorize Tranche Disbursement âœ“"
                 variant="primary"
                 type="submit"
               />
@@ -184,14 +185,14 @@ export default function LedgerDisbursement() {
                 <div className="space-y-1">
                   <p className="font-bold text-slate-800">{log.piName}</p>
                   <p className="text-slate-500 font-mono">
-                    {log.agency} • Code: {log.code}
+                    {log.agency} â€¢ Code: {log.code}
                   </p>
                   <p className="text-slate-400">
                     Milestone #{log.milestone} Tranche Released | {log.date}
                   </p>
                 </div>
                 <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 font-black px-2.5 py-1.5 rounded-lg font-mono shrink-0">
-                  ₹{log.amount.toLocaleString()}
+                  â‚¹{log.amount.toLocaleString()}
                 </span>
               </div>
             ))}
@@ -224,7 +225,7 @@ export default function LedgerDisbursement() {
                   header: 'Budget',
                   cell: (item: ResearchManagement.Project) => (
                     <span className="font-mono text-xs">
-                      ₹{item.approvedBudget.toLocaleString()}
+                      â‚¹{item.approvedBudget.toLocaleString()}
                     </span>
                   ),
                 },
@@ -233,7 +234,7 @@ export default function LedgerDisbursement() {
                   header: 'Released',
                   cell: (item: ResearchManagement.Project) => (
                     <span className="font-mono text-xs text-indigo-700 font-bold">
-                      ₹{item.disbursedFunds.toLocaleString()}
+                      â‚¹{item.disbursedFunds.toLocaleString()}
                     </span>
                   ),
                 },
