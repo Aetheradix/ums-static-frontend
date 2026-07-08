@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from 'primereact/button';
-import { Dropdown } from 'primereact/dropdown';
+import { DropDownList } from 'shared/components/forms';
 import { ToastService } from 'services';
 import { FormPage, FormCard } from 'shared/new-components';
 import { admissionsUrls } from '../../urls';
@@ -86,13 +86,14 @@ export default function CoursePreference() {
           <FormCard title="Available Courses">
             <div className="flex flex-col gap-5 mt-2">
               <div className="flex flex-col gap-2">
-                <label className="font-bold text-gray-700">Select Course</label>
-                <Dropdown
-                  value={selectedCourse}
-                  options={availableCourses}
-                  onChange={e => setSelectedCourse(e.value)}
-                  placeholder="Choose a program..."
-                  className="w-full"
+                <DropDownList
+                  label="Select Course"
+                  value={selectedCourse || ''}
+                  data={availableCourses}
+                  textField="label"
+                  valueField="value"
+                  onChange={v => setSelectedCourse(v as string)}
+                  defaultOptionText="Choose a program..."
                 />
               </div>
               <Button

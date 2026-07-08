@@ -30,7 +30,7 @@ export default function WorkflowConfiguration() {
         { label: 'Workflow Configuration' },
       ]}
     >
-      <FormCard>
+      <FormCard title="Workflow Settings">
         <div className="p-6 flex flex-col gap-8">
           {/* Editorial Approval Chain */}
           <div>

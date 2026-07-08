@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
 import { FormPage, FormCard, StatusBadge } from 'shared/new-components';
+import { Modal } from 'shared/components/popups';
 import { studentManagementUrls } from '../../urls';
 
 interface RegistrationRequest {
@@ -147,15 +147,13 @@ export default function SemesterRegistration() {
         </div>
       </FormCard>
 
-      <Dialog
+      <Modal
         visible={showDialog}
-        style={{ width: '500px' }}
+        size="small"
         header="Apply for Semester Registration"
-        modal
         onHide={() => setShowDialog(false)}
-        className="p-fluid"
       >
-        <div className="flex flex-col gap-4 mt-2">
+        <div className="flex flex-col gap-4 p-4">
           <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
             <p className="text-gray-700 leading-relaxed text-sm">
               You are applying for registration into{' '}
@@ -178,26 +176,26 @@ export default function SemesterRegistration() {
               You will be notified once it is processed.
             </p>
           </div>
-        </div>
 
-        <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-gray-100">
-          <Button
-            label="Cancel"
-            icon="pi pi-times"
-            outlined
-            onClick={() => setShowDialog(false)}
-            disabled={isSubmitting}
-            className="text-gray-600 border-gray-300"
-          />
-          <Button
-            label={isSubmitting ? 'Submitting...' : 'Confirm & Apply'}
-            icon={isSubmitting ? 'pi pi-spin pi-spinner' : 'pi pi-check'}
-            onClick={handleApply}
-            disabled={isSubmitting}
-            className="shadow-sm font-bold bg-indigo-600 border-indigo-600 hover:bg-indigo-700 hover:border-indigo-700"
-          />
+          <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-gray-100">
+            <Button
+              label="Cancel"
+              icon="pi pi-times"
+              outlined
+              onClick={() => setShowDialog(false)}
+              disabled={isSubmitting}
+              className="text-gray-600 border-gray-300"
+            />
+            <Button
+              label={isSubmitting ? 'Submitting...' : 'Confirm & Apply'}
+              icon={isSubmitting ? 'pi pi-spin pi-spinner' : 'pi pi-check'}
+              onClick={handleApply}
+              disabled={isSubmitting}
+              className="shadow-sm font-bold bg-indigo-600 border-indigo-600 hover:bg-indigo-700 hover:border-indigo-700"
+            />
+          </div>
         </div>
-      </Dialog>
+      </Modal>
     </FormPage>
   );
 }

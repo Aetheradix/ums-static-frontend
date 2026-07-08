@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { MultiSelect } from 'primereact/multiselect';
 import { FormPage, FormCard, StatusBadge } from 'shared/new-components';
+import { Modal } from 'shared/components/popups';
+import {
+  TextBox,
+  DropDownList,
+  MultiSelectList,
+} from 'shared/components/forms';
 import { studentManagementUrls } from '../../urls';
 
 interface SubjectMapping {
@@ -110,10 +112,9 @@ export default function SubjectMapping() {
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div className="p-input-icon-left w-full md:w-auto">
         <i className="pi pi-search" />
-        <InputText
-          type="search"
+        <TextBox
           placeholder="Search mappings..."
-          onChange={e => setGlobalFilter(e.target.value)}
+          onChange={v => setGlobalFilter(v as string)}
           className="w-full md:w-64"
         />
       </div>
@@ -195,79 +196,71 @@ export default function SubjectMapping() {
         </DataTable>
       </FormCard>
 
-      <Dialog
+      <Modal
         visible={showDialog}
-        style={{ width: '550px' }}
+        size="medium"
         header={
           selectedMapping.id ? 'Edit Subject Mapping' : 'New Subject Mapping'
         }
-        modal
         onHide={() => setShowDialog(false)}
-        className="p-fluid"
       >
-        <div className="flex flex-col gap-4 mt-2">
+        <div className="flex flex-col gap-4 p-4">
           <div className="flex flex-col md:flex-row gap-4 bg-gray-50 p-4 rounded-lg border border-gray-100">
-            <div className="flex flex-col gap-2 flex-1">
-              <label htmlFor="programCode" className="font-bold text-gray-700">
-                Program <span className="text-red-500">*</span>
-              </label>
-              <Dropdown
-                id="programCode"
+            <div className="flex-1">
+              <DropDownList
+                label="Program *"
                 value={selectedMapping.programCode}
-                options={[
+                data={[
                   { label: 'BTECH-CSE', value: 'BTECH-CSE' },
                   { label: 'MBA-FIN', value: 'MBA-FIN' },
                 ]}
-                onChange={e =>
+                textField="label"
+                valueField="value"
+                onChange={v =>
                   setSelectedMapping({
                     ...selectedMapping,
-                    programCode: e.value,
+                    programCode: v as string,
                   })
                 }
-                placeholder="Select Program"
+                defaultOptionText="Select Program"
               />
             </div>
-            <div className="flex flex-col gap-2 flex-1">
-              <label htmlFor="semesterCode" className="font-bold text-gray-700">
-                Semester <span className="text-red-500">*</span>
-              </label>
-              <Dropdown
-                id="semesterCode"
+            <div className="flex-1">
+              <DropDownList
+                label="Semester *"
                 value={selectedMapping.semesterCode}
-                options={[
+                data={[
                   { label: 'Semester 1', value: 'SEM-1' },
                   { label: 'Semester 2', value: 'SEM-2' },
                   { label: 'Semester 3', value: 'SEM-3' },
                 ]}
-                onChange={e =>
+                textField="label"
+                valueField="value"
+                onChange={v =>
                   setSelectedMapping({
                     ...selectedMapping,
-                    semesterCode: e.value,
+                    semesterCode: v as string,
                   })
                 }
-                placeholder="Select Semester"
+                defaultOptionText="Select Semester"
               />
             </div>
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="subjects" className="font-bold text-gray-700">
-              Map Subjects <span className="text-red-500">*</span>
-            </label>
-            <MultiSelect
-              id="subjects"
-              value={selectedMapping.mappedSubjects}
-              options={subjectOptions}
-              onChange={e =>
+            <MultiSelectList
+              label="Map Subjects *"
+              value={selectedMapping.mappedSubjects as any}
+              data={subjectOptions}
+              textField="label"
+              valueField="value"
+              onChange={(v: any) =>
                 setSelectedMapping({
                   ...selectedMapping,
-                  mappedSubjects: e.value,
+                  mappedSubjects: v,
                 })
               }
               placeholder="Select Subjects"
-              display="chip"
-              filter
-              className="w-full"
             />
             <small className="text-gray-500 italic">
               Select all subjects applicable for this program semester.
@@ -275,20 +268,19 @@ export default function SubjectMapping() {
           </div>
 
           <div className="flex flex-col gap-2 mt-2">
-            <label htmlFor="status" className="font-bold text-gray-700">
-              Status
-            </label>
-            <Dropdown
-              id="status"
+            <DropDownList
+              label="Status"
               value={selectedMapping.status}
-              options={[
+              data={[
                 { label: 'Draft', value: 'Draft' },
                 { label: 'Finalized', value: 'Finalized' },
               ]}
-              onChange={e =>
-                setSelectedMapping({ ...selectedMapping, status: e.value })
+              textField="label"
+              valueField="value"
+              onChange={v =>
+                setSelectedMapping({ ...selectedMapping, status: v as any })
               }
-              placeholder="Select Status"
+              defaultOptionText="Select Status"
             />
             {selectedMapping.status === 'Finalized' && (
               <div className="mt-2 p-3 bg-orange-50 border border-orange-200 rounded-md flex gap-2 text-sm text-orange-800">
@@ -300,27 +292,28 @@ export default function SubjectMapping() {
               </div>
             )}
           </div>
+
+          <div className="flex justify-end gap-3 mt-4 border-t border-gray-100 pt-4">
+            <Button
+              label="Cancel"
+              icon="pi pi-times"
+              outlined
+              onClick={() => setShowDialog(false)}
+            />
+            <Button
+              label="Save Mapping"
+              icon="pi pi-check"
+              onClick={handleSave}
+              disabled={
+                !selectedMapping.programCode ||
+                !selectedMapping.semesterCode ||
+                !selectedMapping.mappedSubjects?.length
+              }
+              className="shadow-sm"
+            />
+          </div>
         </div>
-        <div className="flex justify-end gap-3 mt-8 border-t border-gray-100 pt-4">
-          <Button
-            label="Cancel"
-            icon="pi pi-times"
-            outlined
-            onClick={() => setShowDialog(false)}
-          />
-          <Button
-            label="Save Mapping"
-            icon="pi pi-check"
-            onClick={handleSave}
-            disabled={
-              !selectedMapping.programCode ||
-              !selectedMapping.semesterCode ||
-              !selectedMapping.mappedSubjects?.length
-            }
-            className="shadow-sm"
-          />
-        </div>
-      </Dialog>
+      </Modal>
     </FormPage>
   );
 }

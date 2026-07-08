@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { Checkbox } from 'primereact/checkbox';
 import { Tag } from 'primereact/tag';
 import { FormPage, FormCard } from 'shared/new-components';
+import { Modal } from 'shared/components/popups';
+import {
+  TextBox,
+  DropDownList,
+  Checkbox as SharedCheckbox,
+} from 'shared/components/forms';
 import { ToastService } from 'services';
 
 interface RequiredDocument {
@@ -134,11 +136,10 @@ export default function DocumentMaster() {
     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
       <span className="p-input-icon-left w-full md:w-auto">
         <i className="pi pi-search" />
-        <InputText
-          type="search"
+        <TextBox
           placeholder="Search documents..."
           className="w-full md:w-80"
-          onChange={e => setGlobalFilter(e.target.value)}
+          onChange={v => setGlobalFilter(v as string)}
         />
       </span>
       <Button
@@ -152,23 +153,7 @@ export default function DocumentMaster() {
     </div>
   );
 
-  const dialogFooter = (
-    <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 mt-4">
-      <Button
-        label="Cancel"
-        icon="pi pi-times"
-        text
-        severity="secondary"
-        onClick={() => setShowDialog(false)}
-      />
-      <Button
-        label="Save Document"
-        icon="pi pi-check"
-        onClick={handleSave}
-        autoFocus
-      />
-    </div>
-  );
+  // Footer is inline
 
   return (
     <FormPage
@@ -220,107 +205,110 @@ export default function DocumentMaster() {
         </DataTable>
       </FormCard>
 
-      <Dialog
+      <Modal
         visible={showDialog}
-        style={{ width: '90vw', maxWidth: '600px' }}
+        size="medium"
         header={selectedDoc.id ? 'Edit Document Config' : 'New Document Config'}
-        modal
-        className="p-fluid"
         onHide={() => setShowDialog(false)}
-        footer={dialogFooter}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-          <div className="col-span-1 md:col-span-2 flex flex-col gap-2">
-            <label htmlFor="name" className="font-bold text-gray-700">
-              Document Name <span className="text-red-500">*</span>
-            </label>
-            <InputText
-              id="name"
-              value={selectedDoc.name || ''}
-              onChange={e =>
-                setSelectedDoc({ ...selectedDoc, name: e.target.value })
-              }
-              placeholder="e.g. 10th Marksheet"
-            />
+        <div className="p-4 flex flex-col gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="col-span-1 md:col-span-2">
+              <TextBox
+                label="Document Name *"
+                value={selectedDoc.name || ''}
+                onChange={v =>
+                  setSelectedDoc({ ...selectedDoc, name: v as string })
+                }
+                placeholder="e.g. 10th Marksheet"
+              />
+            </div>
+
+            <div className="col-span-1">
+              <DropDownList
+                label="Allowed Format"
+                value={selectedDoc.documentType}
+                data={[
+                  { label: 'PDF', value: 'PDF' },
+                  { label: 'JPEG/PNG', value: 'JPEG/PNG' },
+                  { label: 'PDF/JPEG', value: 'PDF/JPEG' },
+                ]}
+                textField="label"
+                valueField="value"
+                onChange={(v: any) =>
+                  setSelectedDoc({ ...selectedDoc, documentType: v })
+                }
+                defaultOptionText="Select Format"
+              />
+            </div>
+
+            <div className="col-span-1">
+              <DropDownList
+                label="Max Size"
+                value={selectedDoc.maxSizeMB}
+                data={[
+                  { label: '1 MB', value: 1 },
+                  { label: '2 MB', value: 2 },
+                  { label: '5 MB', value: 5 },
+                  { label: '10 MB', value: 10 },
+                ]}
+                textField="label"
+                valueField="value"
+                onChange={(v: any) =>
+                  setSelectedDoc({ ...selectedDoc, maxSizeMB: v })
+                }
+                defaultOptionText="Select Size"
+              />
+            </div>
+
+            <div className="col-span-1 md:col-span-2 p-3 bg-gray-50 border border-gray-200 rounded-md">
+              <SharedCheckbox
+                label="This document is mandatory for admission"
+                checked={selectedDoc.isMandatory || false}
+                onChange={v =>
+                  setSelectedDoc({ ...selectedDoc, isMandatory: v })
+                }
+              />
+            </div>
+
+            <div className="col-span-1 md:col-span-2">
+              <DropDownList
+                label="Status"
+                value={selectedDoc.status || 'Active'}
+                data={[
+                  { label: 'Active', value: 'Active' },
+                  { label: 'Inactive', value: 'Inactive' },
+                ]}
+                textField="label"
+                valueField="value"
+                onChange={(v: any) =>
+                  setSelectedDoc({
+                    ...selectedDoc,
+                    status: v as 'Active' | 'Inactive',
+                  })
+                }
+                defaultOptionText="Select Status"
+              />
+            </div>
           </div>
 
-          <div className="col-span-1 flex flex-col gap-2">
-            <label htmlFor="documentType" className="font-bold text-gray-700">
-              Allowed Format
-            </label>
-            <Dropdown
-              id="documentType"
-              value={selectedDoc.documentType}
-              options={[
-                { label: 'PDF', value: 'PDF' },
-                { label: 'JPEG/PNG', value: 'JPEG/PNG' },
-                { label: 'PDF/JPEG', value: 'PDF/JPEG' },
-              ]}
-              onChange={e =>
-                setSelectedDoc({ ...selectedDoc, documentType: e.value })
-              }
-              placeholder="Select Format"
+          <div className="flex justify-end gap-2 mt-2">
+            <Button
+              label="Cancel"
+              icon="pi pi-times"
+              text
+              severity="secondary"
+              onClick={() => setShowDialog(false)}
             />
-          </div>
-
-          <div className="col-span-1 flex flex-col gap-2">
-            <label htmlFor="maxSize" className="font-bold text-gray-700">
-              Max Size
-            </label>
-            <Dropdown
-              id="maxSize"
-              value={selectedDoc.maxSizeMB}
-              options={[
-                { label: '1 MB', value: 1 },
-                { label: '2 MB', value: 2 },
-                { label: '5 MB', value: 5 },
-                { label: '10 MB', value: 10 },
-              ]}
-              onChange={e =>
-                setSelectedDoc({ ...selectedDoc, maxSizeMB: e.value })
-              }
-              placeholder="Select Size"
-            />
-          </div>
-
-          <div className="col-span-1 md:col-span-2 flex items-center gap-3 mt-2 p-3 bg-gray-50 border border-gray-200 rounded-md">
-            <Checkbox
-              inputId="mandatory"
-              checked={selectedDoc.isMandatory || false}
-              onChange={e =>
-                setSelectedDoc({
-                  ...selectedDoc,
-                  isMandatory: e.checked || false,
-                })
-              }
-            />
-            <label
-              htmlFor="mandatory"
-              className="font-bold text-gray-800 cursor-pointer"
-            >
-              This document is mandatory for admission
-            </label>
-          </div>
-
-          <div className="col-span-1 md:col-span-2 flex flex-col gap-2 mt-2">
-            <label htmlFor="status" className="font-bold text-gray-700">
-              Status
-            </label>
-            <Dropdown
-              id="status"
-              value={selectedDoc.status}
-              options={[
-                { label: 'Active', value: 'Active' },
-                { label: 'Inactive', value: 'Inactive' },
-              ]}
-              onChange={e =>
-                setSelectedDoc({ ...selectedDoc, status: e.value })
-              }
-              placeholder="Select Current Status"
+            <Button
+              label="Save Document"
+              icon="pi pi-check"
+              onClick={handleSave}
+              autoFocus
             />
           </div>
         </div>
-      </Dialog>
+      </Modal>
     </FormPage>
   );
 }

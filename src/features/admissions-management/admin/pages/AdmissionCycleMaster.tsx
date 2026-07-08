@@ -2,13 +2,11 @@ import { useState } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { Calendar } from 'primereact/calendar';
 import { Tag } from 'primereact/tag';
 import { FormPage, FormCard } from 'shared/new-components';
 import { ToastService } from 'services';
+import { Modal } from 'shared/components/popups';
+import { TextBox, DropDownList, DatePicker } from 'shared/components/forms';
 
 interface AdmissionCycle {
   id: string;
@@ -119,11 +117,10 @@ export default function AdmissionCycleMaster() {
     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
       <span className="p-input-icon-left w-full md:w-auto">
         <i className="pi pi-search" />
-        <InputText
-          type="search"
+        <TextBox
           placeholder="Search cycles..."
           className="w-full md:w-80"
-          onChange={e => setGlobalFilter(e.target.value)}
+          onChange={v => setGlobalFilter(v as string)}
         />
       </span>
       <Button
@@ -133,24 +130,6 @@ export default function AdmissionCycleMaster() {
           setSelectedCycle({});
           setShowDialog(true);
         }}
-      />
-    </div>
-  );
-
-  const dialogFooter = (
-    <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 mt-4">
-      <Button
-        label="Cancel"
-        icon="pi pi-times"
-        text
-        severity="secondary"
-        onClick={() => setShowDialog(false)}
-      />
-      <Button
-        label="Save Details"
-        icon="pi pi-check"
-        onClick={handleSave}
-        autoFocus
       />
     </div>
   );
@@ -197,111 +176,111 @@ export default function AdmissionCycleMaster() {
         </DataTable>
       </FormCard>
 
-      <Dialog
+      <Modal
         visible={showDialog}
-        style={{ width: '90vw', maxWidth: '600px' }}
+        size="medium"
         header={selectedCycle.id ? 'Edit Admission Cycle' : 'Create New Cycle'}
-        modal
-        className="p-fluid"
         onHide={() => setShowDialog(false)}
-        footer={dialogFooter}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-          <div className="col-span-1 md:col-span-2 flex flex-col gap-2">
-            <label htmlFor="name" className="font-bold text-gray-700">
-              Cycle Name <span className="text-red-500">*</span>
-            </label>
-            <InputText
-              id="name"
-              value={selectedCycle.name || ''}
-              onChange={e =>
-                setSelectedCycle({ ...selectedCycle, name: e.target.value })
-              }
-              placeholder="e.g. Fall 2026 Admissions"
-            />
+        <div className="p-4 flex flex-col gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="col-span-1 md:col-span-2">
+              <TextBox
+                label="Cycle Name *"
+                value={selectedCycle.name || ''}
+                onChange={v =>
+                  setSelectedCycle({ ...selectedCycle, name: v as string })
+                }
+                placeholder="e.g. Fall 2026 Admissions"
+              />
+            </div>
+
+            <div className="col-span-1 md:col-span-2">
+              <TextBox
+                label="Academic Year"
+                value={selectedCycle.academicYear || ''}
+                onChange={v =>
+                  setSelectedCycle({
+                    ...selectedCycle,
+                    academicYear: v as string,
+                  })
+                }
+                placeholder="e.g. 2026-2027"
+              />
+            </div>
+
+            <div className="col-span-1">
+              <DatePicker
+                label="Start Date"
+                value={
+                  selectedCycle.startDate
+                    ? new Date(selectedCycle.startDate)
+                    : undefined
+                }
+                onChange={v =>
+                  setSelectedCycle({
+                    ...selectedCycle,
+                    startDate: v?.toISOString().split('T')[0],
+                  })
+                }
+                placeholder="Select start date"
+              />
+            </div>
+
+            <div className="col-span-1">
+              <DatePicker
+                label="End Date"
+                value={
+                  selectedCycle.endDate
+                    ? new Date(selectedCycle.endDate)
+                    : undefined
+                }
+                onChange={v =>
+                  setSelectedCycle({
+                    ...selectedCycle,
+                    endDate: v?.toISOString().split('T')[0],
+                  })
+                }
+                placeholder="Select end date"
+              />
+            </div>
+
+            <div className="col-span-1 md:col-span-2">
+              <DropDownList
+                label="Status"
+                value={selectedCycle.status}
+                data={[
+                  { label: 'Active', value: 'Active' },
+                  { label: 'Upcoming', value: 'Upcoming' },
+                  { label: 'Closed', value: 'Closed' },
+                ]}
+                textField="label"
+                valueField="value"
+                onChange={(v: any) =>
+                  setSelectedCycle({ ...selectedCycle, status: v })
+                }
+                defaultOptionText="Select Current Status"
+              />
+            </div>
           </div>
 
-          <div className="col-span-1 md:col-span-2 flex flex-col gap-2">
-            <label htmlFor="academicYear" className="font-bold text-gray-700">
-              Academic Year
-            </label>
-            <InputText
-              id="academicYear"
-              value={selectedCycle.academicYear || ''}
-              onChange={e =>
-                setSelectedCycle({
-                  ...selectedCycle,
-                  academicYear: e.target.value,
-                })
-              }
-              placeholder="e.g. 2026-2027"
+          <div className="flex justify-end gap-2 mt-2">
+            <Button
+              label="Cancel"
+              icon="pi pi-times"
+              text
+              severity="secondary"
+              onClick={() => setShowDialog(false)}
             />
-          </div>
-
-          <div className="col-span-1 flex flex-col gap-2">
-            <label htmlFor="startDate" className="font-bold text-gray-700">
-              Start Date
-            </label>
-            <Calendar
-              id="startDate"
-              value={
-                selectedCycle.startDate
-                  ? new Date(selectedCycle.startDate)
-                  : null
-              }
-              onChange={e =>
-                setSelectedCycle({
-                  ...selectedCycle,
-                  startDate: e.value?.toISOString().split('T')[0],
-                })
-              }
-              dateFormat="yy-mm-dd"
-              placeholder="Select start date"
-              showIcon
-            />
-          </div>
-
-          <div className="col-span-1 flex flex-col gap-2">
-            <label htmlFor="endDate" className="font-bold text-gray-700">
-              End Date
-            </label>
-            <Calendar
-              id="endDate"
-              value={
-                selectedCycle.endDate ? new Date(selectedCycle.endDate) : null
-              }
-              onChange={e =>
-                setSelectedCycle({
-                  ...selectedCycle,
-                  endDate: e.value?.toISOString().split('T')[0],
-                })
-              }
-              dateFormat="yy-mm-dd"
-              placeholder="Select end date"
-              showIcon
-            />
-          </div>
-
-          <div className="col-span-1 md:col-span-2 flex flex-col gap-2">
-            <label htmlFor="status" className="font-bold text-gray-700">
-              Status
-            </label>
-            <Dropdown
-              id="status"
-              value={selectedCycle.status}
-              options={[
-                { label: 'Active', value: 'Active' },
-                { label: 'Upcoming', value: 'Upcoming' },
-                { label: 'Closed', value: 'Closed' },
-              ]}
-              onChange={e =>
-                setSelectedCycle({ ...selectedCycle, status: e.value })
-              }
-              placeholder="Select Current Status"
+            <Button
+              label="Save Details"
+              icon="pi pi-check"
+              onClick={handleSave}
+              autoFocus
             />
           </div>
         </div>
-      </Dialog>
+      </Modal>
     </FormPage>
   );
 }

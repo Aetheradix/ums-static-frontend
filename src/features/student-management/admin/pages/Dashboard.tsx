@@ -332,33 +332,33 @@ export default function AdminDashboard() {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <div className="student-admin-charts-grid">
         <FormCard title="Enrollment Trend (Past 5 Years)">
-          <div className="h-64 p-4">
+          <div className="chart-container">
             <EnrollmentTrendChart />
           </div>
         </FormCard>
 
         <FormCard title="Students Per Program">
-          <div className="h-64 p-4">
+          <div className="chart-container">
             <StudentsPerProgramChart />
           </div>
         </FormCard>
 
         <FormCard title="ABC ID Linking Status">
-          <div className="h-64 p-4">
+          <div className="chart-container">
             <AbcLinkingDoughnutChart />
           </div>
         </FormCard>
 
         <FormCard title="Gender Distribution">
-          <div className="h-64 p-4">
+          <div className="chart-container">
             <GenderDistributionPieChart />
           </div>
         </FormCard>
 
         <FormCard title="Category Distribution">
-          <div className="h-64 p-4">
+          <div className="chart-container">
             <CategoryDistributionDoughnutChart />
           </div>
         </FormCard>
@@ -370,7 +370,7 @@ export default function AdminDashboard() {
         </FormCard>
       </div>
 
-      <div className="student-admin-charts-grid mt-6">
+      <div className="student-admin-charts-grid">
         <FormCard title="Recent ABC Requests">
           <table className="abc-requests-table">
             <thead>
@@ -419,7 +419,16 @@ export default function AdminDashboard() {
         <FormCard title="System Alerts" icon="warning">
           <ul className="system-alerts-list">
             <li className="alert-item critical">
-              <i className="pi pi-ban text-red-500" />
+              <span
+                className="material-symbols-rounded"
+                style={{
+                  color: '#ef4444',
+                  fontSize: '1.25rem',
+                  marginTop: '0.125rem',
+                }}
+              >
+                block
+              </span>
               <div className="alert-details">
                 <strong>Attendance Shortage</strong>
                 <p>
@@ -429,7 +438,16 @@ export default function AdminDashboard() {
               </div>
             </li>
             <li className="alert-item warning">
-              <i className="pi pi-exclamation-triangle text-orange-500" />
+              <span
+                className="material-symbols-rounded"
+                style={{
+                  color: '#f59e0b',
+                  fontSize: '1.25rem',
+                  marginTop: '0.125rem',
+                }}
+              >
+                warning
+              </span>
               <div className="alert-details">
                 <strong>ABC Linking Pending</strong>
                 <p>320 linking requests require admin approval.</p>

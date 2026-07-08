@@ -10,8 +10,8 @@ import {
 import { tpUrls } from '../../urls';
 import { Button } from 'primereact/button';
 import type { TabViewTabChangeEvent } from 'primereact/tabview';
-import { Dialog } from 'primereact/dialog';
 import { useLocalStorage } from 'shared/hooks/useLocalStorage';
+import { Modal } from 'shared/components/popups';
 
 export default function StudentSeasons() {
   const navigate = useNavigate();
@@ -189,30 +189,13 @@ export default function StudentSeasons() {
         />
       </FormCard>
 
-      <Dialog
+      <Modal
         header="Simulate Application Fee Payment"
         visible={paymentDialogVisible}
-        style={{ width: '450px' }}
+        size="medium"
         onHide={() => setPaymentDialogVisible(false)}
-        footer={
-          <div>
-            <Button
-              label="Cancel"
-              icon="pi pi-times"
-              onClick={() => setPaymentDialogVisible(false)}
-              className="p-button-text"
-            />
-            <Button
-              label="Pay Now"
-              icon="pi pi-check"
-              onClick={simulatePayment}
-              autoFocus
-              loading={isProcessingPayment}
-            />
-          </div>
-        }
       >
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 p-4">
           <p>
             You are about to enroll in{' '}
             <strong>{selectedSeasonForPayment?.name}</strong>.
@@ -235,8 +218,23 @@ export default function StudentSeasons() {
             This is a mock payment gateway. Clicking "Pay Now" will simulate a
             successful transaction and complete your enrollment.
           </p>
+          <div className="flex justify-end gap-3 mt-4 border-t border-gray-100 pt-4">
+            <Button
+              label="Cancel"
+              icon="pi pi-times"
+              onClick={() => setPaymentDialogVisible(false)}
+              className="p-button-text"
+            />
+            <Button
+              label="Pay Now"
+              icon="pi pi-check"
+              onClick={simulatePayment}
+              autoFocus
+              loading={isProcessingPayment}
+            />
+          </div>
         </div>
-      </Dialog>
+      </Modal>
     </FormPage>
   );
 }

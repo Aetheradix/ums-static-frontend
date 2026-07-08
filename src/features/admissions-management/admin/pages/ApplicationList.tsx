@@ -1,9 +1,8 @@
-import React from 'react';
 import { StudentSeedService } from 'features/student-management/seed/students';
-import { Dialog } from 'primereact/dialog';
 import { useEffect, useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
+import { TextArea } from 'shared/components/forms';
 import { Modal } from 'shared/components/popups';
 import {
   FormCard,
@@ -275,12 +274,11 @@ export default function ApplicationList() {
         />
       </FormCard>
 
-      <Dialog
+      <Modal
         header={rejectApp ? `Reject — ${rejectApp.applicationNo}` : 'Reject'}
         visible={rejectModalVisible}
-        style={{ width: '32rem' }}
         onHide={() => setRejectModalVisible(false)}
-        modal
+        size="medium"
       >
         <div className="flex flex-col gap-3">
           {rejectApp && (
@@ -298,16 +296,11 @@ export default function ApplicationList() {
           )}
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">
-              Rejection reason
-            </label>
-            <textarea
+            <TextArea
+              label="Rejection reason"
               value={rejectReason}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                setRejectReason(e.target.value)
-              }
+              onChange={v => setRejectReason(v as string)}
               rows={4}
-              className="w-full border border-gray-200 rounded-lg p-3 outline-none focus:ring-2 focus:ring-indigo-100"
             />
           </div>
 
@@ -325,7 +318,7 @@ export default function ApplicationList() {
             />
           </div>
         </div>
-      </Dialog>
+      </Modal>
 
       {enrollConfirmApp && (
         <Modal

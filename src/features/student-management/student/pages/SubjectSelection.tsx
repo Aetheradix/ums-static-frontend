@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from 'primereact/button';
-import { MultiSelect } from 'primereact/multiselect';
 import { FormPage, FormCard, StatusBadge } from 'shared/new-components';
+import { MultiSelectList } from 'shared/components/forms';
 import { studentManagementUrls } from '../../urls';
 
 interface ElectiveGroup {
@@ -171,15 +171,14 @@ export default function SubjectSelection() {
                     <label className="block text-sm font-bold text-gray-700 mb-2">
                       Select Subjects
                     </label>
-                    <MultiSelect
-                      value={group.selectedSubjects}
-                      options={group.availableSubjects}
-                      onChange={e => handleSelectionChange(group.id, e.value)}
+                    <MultiSelectList
+                      label=""
+                      value={group.selectedSubjects as any}
+                      data={group.availableSubjects as any}
+                      textField="label"
+                      valueField="value"
+                      onChange={(v: any) => handleSelectionChange(group.id, v)}
                       placeholder="Click to select subjects"
-                      display="chip"
-                      className="w-full shadow-sm border-gray-300"
-                      maxSelectedLabels={group.maxSelection}
-                      panelClassName="shadow-lg rounded-lg border border-gray-100"
                     />
 
                     {group.selectedSubjects.length > group.maxSelection && (
