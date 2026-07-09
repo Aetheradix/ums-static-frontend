@@ -32,6 +32,7 @@ export const hmsUrls = {
   dispensary: `/${BASE}/dispensary`,
   addDispense: `/${BASE}/dispensary/add`,
   appointments: `/${BASE}/appointments`,
+  addAppointment: `/${BASE}/appointments/add`,
   guestUsers: `/${BASE}/guest-users`,
   addGuestUser: `/${BASE}/guest-users/add`,
   subscriptions: `/${BASE}/subscriptions`,

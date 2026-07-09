@@ -1,6 +1,9 @@
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FormPage, GridPanel, FormCard } from 'shared/new-components';
+import { Button } from 'shared/components/buttons';
 import { appointments } from '../../data';
+import { hmsUrls } from '../../urls';
 import { getHmsBreadcrumbs } from '../../utils';
 
 const statusColors: Record<string, string> = {
@@ -10,6 +13,7 @@ const statusColors: Record<string, string> = {
 };
 
 export default function AppointmentsPage() {
+  const navigate = useNavigate();
   const data = useMemo(() => appointments, []);
 
   return (
@@ -17,6 +21,13 @@ export default function AppointmentsPage() {
       title="Appointments"
       description="View and manage health service appointments."
       breadcrumbs={getHmsBreadcrumbs('Appointments')}
+      headerAction={
+        <Button
+          onClick={() => navigate(hmsUrls.addAppointment)}
+          label="Book Appointment"
+          icon="plus"
+        />
+      }
     >
       <FormCard title="All Appointments">
         <GridPanel
