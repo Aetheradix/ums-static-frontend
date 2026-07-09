@@ -6792,11 +6792,12 @@ export const menuConfig: Menu.MenuItem[] = [
     children: [
       {
         label: 'Governance',
-        slug: 'governance',
+        slug: 'governance-group',
         category: 'Governance',
         icon: 'bolt',
         colorScheme: 'blue',
         description: 'Track student competencies and skill development',
+        path: '/home/sub-menu/governance-group',
         children: [
           {
             label: 'Affiliation Management',
