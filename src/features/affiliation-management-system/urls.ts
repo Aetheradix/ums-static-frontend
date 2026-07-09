@@ -5,6 +5,8 @@ import { collegeRegistrationUrls } from './college-registration/urls';
 import { departmentRegistrationUrls } from './department-registration/urls';
 import { collegeRenewalUrls } from './college-renewal/urls';
 import { collegeRenewalAdminUrls } from './college-renewal-admin/urls';
+import { inspectionAssignmentUrls } from './inspection-assignment/urls';
+import { finalRegistrationApprovalUrls } from './final-registration-approval/urls';
 
 const baseUrl = '/affiliation-management-system';
 export const affiliationManagementSystemUrls = {
@@ -13,6 +15,8 @@ export const affiliationManagementSystemUrls = {
   collegeRegistrationApproval: collegeRegistrationApprovalUrls(baseUrl),
   collegeRenewal: collegeRenewalUrls(baseUrl),
   collegeRenewalAdmin: collegeRenewalAdminUrls(baseUrl),
+  inspectionAssignment: inspectionAssignmentUrls(baseUrl),
+  finalRegistrationApproval: finalRegistrationApprovalUrls(baseUrl),
   availableFacility: availableFacilityUrls(`${baseUrl}/affiliation-settings`),
   establishmentYear: establishmentYearUrls(`${baseUrl}/affiliation-settings`),
 };

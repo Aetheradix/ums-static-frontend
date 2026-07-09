@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Button } from 'primereact/button';
-import { Tag } from 'primereact/tag';
-import { FormPage, FormCard } from 'shared/new-components';
+import {
+  FormPage,
+  FormCard,
+  StatusBadge,
+  GridPanel,
+} from 'shared/new-components';
+import { Button } from 'shared/components/buttons';
 import { Modal } from 'shared/components/popups';
 import {
   DropDownList,
@@ -106,42 +108,11 @@ export default function EligibilityRuleEngine() {
     }
   };
 
-  const actionTemplate = (rowData: EligibilityRule) => {
-    return (
-      <div className="flex gap-2">
-        <Button
-          icon="pi pi-pencil"
-          rounded
-          text
-          severity="info"
-          aria-label="Edit"
-          tooltip="Edit Rule"
-          onClick={() => {
-            setEditingRule({ ...rowData });
-            setShowDialog(true);
-          }}
-        />
-        <Button
-          icon="pi pi-trash"
-          rounded
-          text
-          severity="danger"
-          aria-label="Delete"
-          tooltip="Delete Rule"
-          onClick={() => {
-            setRules(rules.filter(r => r.id !== rowData.id));
-            ToastService.success('Rule removed successfully.');
-          }}
-        />
-      </div>
-    );
-  };
-
   const statusTemplate = (rowData: EligibilityRule) => {
     return (
-      <Tag
-        value={rowData.status}
-        severity={rowData.status === 'Active' ? 'success' : 'danger'}
+      <StatusBadge
+        label={rowData.status}
+        variant={rowData.status === 'Active' ? 'success' : 'danger'}
       />
     );
   };
@@ -150,22 +121,17 @@ export default function EligibilityRuleEngine() {
     return rowData.requiredSubjects?.length ? (
       <div className="flex flex-wrap gap-1">
         {rowData.requiredSubjects.map(sub => (
-          <Tag key={sub} value={sub} severity="info" />
+          <StatusBadge key={sub} label={sub} variant="info" />
         ))}
       </div>
     ) : (
-      'None'
+      <span>None</span>
     );
   };
 
   // Footer is now inline in Modal
-  const header = (
-    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-      <h2 className="text-lg font-semibold text-gray-800 m-0">
-        Eligibility Rules Configuration
-      </h2>
-      <Button label="New Rule" icon="pi pi-plus" onClick={openNew} />
-    </div>
+  const toolbar = (
+    <Button label="New Rule" icon="pi pi-plus" onClick={openNew} />
   );
 
   return (
@@ -180,49 +146,41 @@ export default function EligibilityRuleEngine() {
       ]}
     >
       <FormCard>
-        <DataTable
-          value={rules}
-          paginator
-          rows={10}
-          dataKey="id"
-          header={header}
-          emptyMessage="No rules found."
-          className="p-datatable-sm"
-          stripedRows
-          rowHover
-        >
-          <Column
-            field="program"
-            header="Program"
-            sortable
-            style={{ minWidth: '150px' }}
-            className="font-semibold text-gray-800"
-          ></Column>
-          <Column
-            field="minPercentage"
-            header="Min. Percentage"
-            body={row => `${row.minPercentage}%`}
-            sortable
-          ></Column>
-          <Column
-            field="requiredSubjects"
-            header="Compulsory Subjects"
-            body={subjectsTemplate}
-          ></Column>
-          <Column field="entranceExam" header="Required Exam" sortable></Column>
-          <Column
-            field="status"
-            header="Status"
-            body={statusTemplate}
-            sortable
-          ></Column>
-          <Column
-            body={actionTemplate}
-            header="Actions"
-            exportable={false}
-            style={{ minWidth: '100px' }}
-          ></Column>
-        </DataTable>
+        <GridPanel
+          data={rules}
+          searchBox={true}
+          searchFields={['program', 'entranceExam', 'status']}
+          toolbar={toolbar}
+          onEdit={(rowData: EligibilityRule) => {
+            setEditingRule({ ...rowData });
+            setShowDialog(true);
+          }}
+          onRemove={(rowData: EligibilityRule) => {
+            setRules(rules.filter(r => r.id !== rowData.id));
+            ToastService.success('Rule removed successfully.');
+          }}
+          columns={[
+            { field: 'program', header: 'Program', sortable: true },
+            {
+              field: 'minPercentage',
+              header: 'Min. Percentage',
+              cell: row => <span>{row.minPercentage}%</span>,
+              sortable: true,
+            },
+            {
+              field: 'requiredSubjects',
+              header: 'Compulsory Subjects',
+              cell: subjectsTemplate,
+            },
+            { field: 'entranceExam', header: 'Required Exam', sortable: true },
+            {
+              field: 'status',
+              header: 'Status',
+              cell: statusTemplate,
+              sortable: true,
+            },
+          ]}
+        />
       </FormCard>
 
       <Modal
@@ -309,16 +267,15 @@ export default function EligibilityRuleEngine() {
             <Button
               label="Cancel"
               icon="pi pi-times"
-              text
-              severity="secondary"
+              variant="outlined"
               onClick={hideDialog}
             />
             <Button
               label="Save Rule"
               icon="pi pi-check"
+              variant="primary"
               onClick={saveRule}
               disabled={!editingRule?.program || !editingRule?.minPercentage}
-              autoFocus
             />
           </div>
         </div>

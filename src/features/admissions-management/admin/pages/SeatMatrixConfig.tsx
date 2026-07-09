@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { Button } from 'primereact/button';
+import { Button } from 'shared/components/buttons';
 import { DropDownList, TextBox } from 'shared/components/forms';
-import { Tag } from 'primereact/tag';
-import { FormPage, FormCard } from 'shared/new-components';
+import { FormPage, FormCard, StatusBadge } from 'shared/new-components';
 import { admissionsUrls } from '../../urls';
 import { ToastService } from 'services';
 
@@ -220,7 +219,10 @@ export default function SeatMatrixConfig() {
                 field="quotaPercentage"
                 header="Quota (%)"
                 body={row => (
-                  <Tag value={`${row.quotaPercentage}%`} severity="info" />
+                  <StatusBadge
+                    label={`${row.quotaPercentage}%`}
+                    variant="info"
+                  />
                 )}
               ></Column>
               <Column
@@ -236,9 +238,9 @@ export default function SeatMatrixConfig() {
                   >
                     {row.finalSeats}
                     {row.manualOverrideSeats !== null && (
-                      <Tag
-                        value="Override"
-                        severity="warning"
+                      <StatusBadge
+                        label="Override"
+                        variant="warning"
                         className="text-xs"
                       />
                     )}
@@ -253,13 +255,13 @@ export default function SeatMatrixConfig() {
               <Button
                 label="Reset to Calculated"
                 icon="pi pi-refresh"
-                text
-                severity="secondary"
+                variant="outlined"
                 onClick={handleReset}
               />
               <Button
                 label="Publish Matrix"
                 icon="pi pi-check"
+                variant="primary"
                 onClick={handlePublish}
                 disabled={!isValidMatrix}
               />

@@ -18,7 +18,7 @@ const PREDEFINED_COLORS = [
   { name: 'Dark Green', value: '#263b28' },
   { name: 'Deeper Slate', value: '#151e26' },
   { name: 'Deep Purple', value: '#412234' },
-  { name: 'Orange', value: '#892f00' },
+  { name: 'Orange', value: '#772500' },
 ];
 
 export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
