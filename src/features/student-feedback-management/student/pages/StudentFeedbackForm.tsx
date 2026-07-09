@@ -190,7 +190,6 @@ export default function StudentFeedbackForm() {
       <FormPage
         title=""
         breadcrumbs={[
-          { label: 'Home', to: '/home' },
           {
             label: 'Student Feedback',
             to: '/student-feedback-management/student',
@@ -223,7 +222,6 @@ export default function StudentFeedbackForm() {
       title={session.sessionName}
       description=""
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         {
           label: 'Student Feedback',
           to: '/student-feedback-management/student',

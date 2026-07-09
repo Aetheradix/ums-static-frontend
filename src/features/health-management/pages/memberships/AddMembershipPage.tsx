@@ -5,6 +5,7 @@ import { TextBox, DropDownList } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
 import { membershipTypes } from '../../data';
 import { hmsUrls } from '../../urls';
+import { getHmsBreadcrumbs } from '../../utils';
 
 const memberTypeOptions = [
   { label: 'Employee', value: 'Employee' },
@@ -43,12 +44,7 @@ export default function AddMembershipPage() {
     <FormPage
       title="Add Membership"
       description="Register a new health membership for an employee, student, or guest."
-      breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Health Services', to: hmsUrls.portal },
-        { label: 'Memberships', to: hmsUrls.memberships },
-        { label: 'Add Membership' },
-      ]}
+      breadcrumbs={getHmsBreadcrumbs('Memberships', 'Add Membership')}
     >
       <FormCard title="Membership Details">
         <FormGrid>

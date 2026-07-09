@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import HealthPortalPage from './pages/HealthPortalPage';
+import AddAppointmentPage from './pages/appointments/AddAppointmentPage';
 import AppointmentsPage from './pages/appointments/AppointmentsPage';
 import AdminDashboard from './pages/dashboard/AdminDashboard';
 import EmployeeDashboard from './pages/dashboard/EmployeeDashboard';
@@ -68,6 +69,7 @@ export default function HealthManagement() {
         element={<Placeholder title="Dispense Medicine" />}
       />
       <Route path="appointments" element={<AppointmentsPage />} />
+      <Route path="appointments/add" element={<AddAppointmentPage />} />
       <Route path="guest-users" element={<GuestUsersPage />} />
       <Route path="guest-users/add" element={<AddGuestUserPage />} />
       <Route

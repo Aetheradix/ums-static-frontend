@@ -1,26 +1,25 @@
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FormPage, GridPanel, FormCard } from 'shared/new-components';
-import { LinkButton } from 'shared/components/buttons';
+import { Button } from 'shared/components/buttons';
 import { prescriptions } from '../../data';
 import { hmsUrls } from '../../urls';
+import { getHmsBreadcrumbs } from '../../utils';
 
 export default function PrescriptionsPage() {
+  const navigate = useNavigate();
   const data = useMemo(() => prescriptions, []);
 
   return (
     <FormPage
       title="Prescriptions"
       description="Issue and manage medicine prescriptions."
-      breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Health Services', to: hmsUrls.portal },
-        { label: 'Prescriptions' },
-      ]}
+      breadcrumbs={getHmsBreadcrumbs('Prescriptions')}
       headerAction={
-        <LinkButton
-          to={hmsUrls.addPrescription}
+        <Button
+          onClick={() => navigate(hmsUrls.addPrescription)}
           label="New Prescription"
-          icon="add"
+          icon="plus"
         />
       }
     >

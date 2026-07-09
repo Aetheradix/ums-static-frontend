@@ -21,7 +21,6 @@ export default function AgentHighPriority() {
       title="High Priority Tickets"
       description="Critical and high priority tickets requiring immediate attention."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'High Priority' },
       ]}

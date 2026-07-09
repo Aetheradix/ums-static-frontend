@@ -1,0 +1,727 @@
+/* ============================================================
+   University ERP — Grievance Management System
+   Design Reference: Scholarship & DBT Module (Scholarship.css)
+   ============================================================ */
+
+/* ── Status Pills ─────────────────────────────────────────── */
+.grv-status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.688rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.grv-status-pill.draft {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+.grv-status-pill.submitted {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.grv-status-pill.assigned {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+.grv-status-pill.open {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.grv-status-pill.in-progress {
+  background: #fef3c7;
+  color: #b45309;
+}
+.grv-status-pill.under-review {
+  background: #fde8d0;
+  color: #c05621;
+}
+.grv-status-pill.forwarded {
+  background: #e9d5ff;
+  color: #7c3aed;
+}
+.grv-status-pill.escalated {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.grv-status-pill.resolved {
+  background: #d1fae5;
+  color: #065f46;
+}
+.grv-status-pill.closed {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+.grv-status-pill.rejected {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.grv-status-pill.appealed {
+  background: #fce7f3;
+  color: #9d174d;
+}
+.grv-status-pill.withdrawn {
+  background: #f3f4f6;
+  color: #9ca3af;
+}
+.grv-status-pill.sla-ok {
+  background: #d1fae5;
+  color: #065f46;
+}
+.grv-status-pill.sla-near {
+  background: #fef3c7;
+  color: #b45309;
+}
+.grv-status-pill.sla-breached {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.grv-status-pill.active {
+  background: #d1fae5;
+  color: #065f46;
+}
+.grv-status-pill.inactive {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+.grv-status-pill.pending {
+  background: #fef3c7;
+  color: #b45309;
+}
+.grv-status-pill.approved {
+  background: #dcfce7;
+  color: #15803d;
+}
+.grv-status-pill.connected {
+  background: #cffafe;
+  color: #0e7490;
+}
+.grv-status-pill.error {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.grv-status-pill.syncing {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+.grv-status-pill.anonymous {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+.grv-status-pill.critical {
+  background: #fee2e2;
+  color: #7f1d1d;
+}
+.grv-status-pill.high {
+  background: #fde8d0;
+  color: #9a3412;
+}
+.grv-status-pill.medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+.grv-status-pill.low {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+/* ── Stats Grid ───────────────────────────────────────────── */
+.grv-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Charts Row ──────────────────────────────────────────── */
+.grv-charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+@media (max-width: 768px) {
+  .grv-charts-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Bottom Row (2/3 + 1/3) ──────────────────────────────── */
+.grv-bottom-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+}
+@media (max-width: 900px) {
+  .grv-bottom-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Timeline ─────────────────────────────────────────────── */
+.grv-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.grv-timeline-step {
+  display: flex;
+  gap: 0.75rem;
+  padding-bottom: 1.5rem;
+  position: relative;
+}
+.grv-timeline-step:last-child {
+  padding-bottom: 0;
+}
+.grv-timeline-icon-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+.grv-timeline-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+.grv-timeline-line {
+  width: 2px;
+  flex: 1;
+  margin-top: 4px;
+}
+.grv-timeline-body {
+  flex: 1;
+  padding-top: 0.375rem;
+}
+.grv-timeline-title {
+  font-size: 0.813rem;
+  font-weight: 600;
+  color: #111827;
+}
+.grv-timeline-subtitle {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 2px;
+}
+.grv-timeline-date {
+  font-size: 0.688rem;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+.grv-timeline-remark {
+  font-size: 0.75rem;
+  color: #374151;
+  margin-top: 4px;
+  background: #f9fafb;
+  border-left: 3px solid #e5e7eb;
+  padding: 0.375rem 0.625rem;
+  border-radius: 0 4px 4px 0;
+}
+
+/* ── Stepper ──────────────────────────────────────────────── */
+.grv-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+.grv-step {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+.grv-step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 2px solid #e5e7eb;
+  color: #9ca3af;
+  background: #fff;
+}
+.grv-step-num.active {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+.grv-step-num.done {
+  border-color: #16a34a;
+  background: #16a34a;
+  color: #fff;
+}
+.grv-step-label {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  font-weight: 500;
+}
+.grv-step-label.active {
+  color: #2563eb;
+  font-weight: 600;
+}
+.grv-step-label.done {
+  color: #16a34a;
+  font-weight: 600;
+}
+.grv-step-connector {
+  flex: 1;
+  height: 2px;
+  background: #e5e7eb;
+  min-width: 20px;
+}
+.grv-step-connector.done {
+  background: #16a34a;
+}
+
+/* ── Progress Bar ─────────────────────────────────────────── */
+.grv-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.625rem;
+}
+.grv-bar-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  width: 110px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.grv-bar-track {
+  flex: 1;
+  height: 8px;
+  background: #f3f4f6;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.grv-bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.6s ease;
+}
+.grv-bar-value {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #374151;
+  width: 40px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ── SLA Counter ──────────────────────────────────────────── */
+.grv-sla-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  border: 1px solid;
+}
+.grv-sla-counter.ok {
+  background: #d1fae5;
+  color: #065f46;
+  border-color: #86efac;
+}
+.grv-sla-counter.near {
+  background: #fef3c7;
+  color: #b45309;
+  border-color: #fde047;
+}
+.grv-sla-counter.breached {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+
+/* ── Table ────────────────────────────────────────────────── */
+.grv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.813rem;
+}
+.grv-table th {
+  background: #f9fafb;
+  color: #6b7280;
+  font-size: 0.688rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.625rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+.grv-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #f9fafb;
+  color: #374151;
+  vertical-align: middle;
+}
+.grv-table tr:hover td {
+  background: #f9fafb;
+}
+
+/* ── Filters Row ──────────────────────────────────────────── */
+.grv-filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.grv-filter-select {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.813rem;
+  color: #374151;
+  background: #fff;
+  cursor: pointer;
+  outline: none;
+}
+.grv-filter-select:focus {
+  border-color: #2563eb;
+}
+.grv-search-input {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.813rem;
+  color: #374151;
+  background: #fff;
+  outline: none;
+  min-width: 220px;
+}
+.grv-search-input:focus {
+  border-color: #2563eb;
+}
+
+/* ── Info Field ───────────────────────────────────────────── */
+.grv-info-field {
+  margin-bottom: 0.875rem;
+}
+.grv-info-label {
+  font-size: 0.688rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+.grv-info-value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* ── Quick Actions ────────────────────────────────────────── */
+.grv-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+.grv-quick-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.813rem;
+  font-weight: 500;
+  color: #111827;
+  transition: all 0.15s;
+}
+.grv-quick-action-btn:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+/* ── Notesheet Panel ──────────────────────────────────────── */
+.grv-notesheet {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fffbeb;
+  padding: 1.25rem;
+}
+.grv-notesheet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #fde68a;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+}
+.grv-notesheet-no {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #92400e;
+  font-family: 'Courier New', monospace;
+  background: #fef3c7;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+}
+.grv-notesheet-stamp {
+  font-size: 0.688rem;
+  color: #9ca3af;
+}
+.grv-notesheet-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 1rem;
+}
+.grv-notesheet-field {
+  font-size: 0.813rem;
+}
+.grv-notesheet-field label {
+  display: block;
+  font-size: 0.688rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
+}
+.grv-notesheet-field span {
+  font-weight: 600;
+  color: #111827;
+}
+.grv-notesheet-remark-box {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 0.75rem;
+  font-size: 0.813rem;
+  color: #374151;
+  line-height: 1.6;
+  min-height: 80px;
+}
+.grv-notesheet-signature {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #fde68a;
+}
+.grv-sig-box {
+  border: 1px dashed #d1d5db;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  min-width: 140px;
+  text-align: center;
+}
+
+/* ── Complaint Card (List) ────────────────────────────────── */
+.grv-complaint-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem;
+  background: #fff;
+  transition:
+    box-shadow 0.15s,
+    border-color 0.15s;
+  cursor: pointer;
+}
+.grv-complaint-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+  border-color: #d1d5db;
+}
+.grv-complaint-card.escalated {
+  border-left: 3px solid #ef4444;
+}
+.grv-complaint-card.resolved {
+  border-left: 3px solid #16a34a;
+}
+.grv-complaint-card.pending {
+  border-left: 3px solid #f59e0b;
+}
+
+/* ── Integration Card ─────────────────────────────────────── */
+.grv-integration-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: box-shadow 0.15s;
+}
+.grv-integration-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+}
+.grv-integration-card.connected {
+  border-color: #86efac;
+  background: #f0fdf4;
+}
+.grv-integration-card.error {
+  border-color: #fca5a5;
+  background: #fef2f2;
+}
+
+/* ── Empty State ──────────────────────────────────────────── */
+.grv-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  color: #9ca3af;
+  text-align: center;
+  gap: 0.5rem;
+}
+.grv-empty i {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+.grv-empty p {
+  font-size: 0.875rem;
+}
+
+/* ── Alert Banner ─────────────────────────────────────────── */
+.grv-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.813rem;
+}
+.grv-alert.info {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1e40af;
+}
+.grv-alert.warning {
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  color: #92400e;
+}
+.grv-alert.error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+.grv-alert.success {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+}
+.grv-alert i {
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── Committee Badge ──────────────────────────────────────── */
+.grv-committee-badge {
+  display: inline-flex;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ── Escalation Matrix ────────────────────────────────────── */
+.grv-matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.813rem;
+}
+.grv-matrix-table th {
+  background: #1e3a5f;
+  color: #fff;
+  font-size: 0.688rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.625rem 0.75rem;
+  text-align: left;
+}
+.grv-matrix-table td {
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+  color: #374151;
+}
+.grv-matrix-table tr:nth-child(even) td {
+  background: #f9fafb;
+}
+
+/* ── Audit Log Row ─────────────────────────────────────────── */
+.grv-audit-row {
+  display: flex;
+  gap: 1rem;
+  padding: 0.625rem 0;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 0.813rem;
+  align-items: flex-start;
+}
+.grv-audit-time {
+  font-size: 0.688rem;
+  color: #9ca3af;
+  min-width: 110px;
+  flex-shrink: 0;
+  font-family: 'Courier New', monospace;
+}
+.grv-audit-action {
+  flex: 1;
+  color: #374151;
+}
+.grv-audit-user {
+  font-size: 0.688rem;
+  color: #6b7280;
+  min-width: 130px;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+/* ── Responsive Tweaks ────────────────────────────────────── */
+@media (max-width: 640px) {
+  .grv-stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .grv-notesheet-row {
+    grid-template-columns: 1fr;
+  }
+  .grv-bottom-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Blinking Status Lamp Indicator Animation ── */
+@keyframes grv-blink {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.92);
+  }
+}
+.grv-blink {
+  animation: grv-blink 1.2s infinite ease-in-out;
+}

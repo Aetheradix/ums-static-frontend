@@ -263,7 +263,6 @@ export default function AdminSettings() {
       title="Settings"
       description="Configure service desk parameters, services, SLA rules, and agent settings."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'Settings' },
       ]}

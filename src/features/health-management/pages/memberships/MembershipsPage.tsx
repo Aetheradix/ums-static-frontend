@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FormPage, GridPanel, FormCard } from 'shared/new-components';
-import { LinkButton } from 'shared/components/buttons';
+import { Button } from 'shared/components/buttons';
 import { memberships } from '../../data';
 import { hmsUrls } from '../../urls';
+import { getHmsBreadcrumbs } from '../../utils';
 
 const statusColors: Record<string, string> = {
   Active: 'bg-green-50 text-green-700',
@@ -20,22 +22,19 @@ function StatusBadge({ label }: { label: string }) {
 }
 
 export default function MembershipsPage() {
+  const navigate = useNavigate();
   const data = useMemo(() => memberships, []);
 
   return (
     <FormPage
       title="Memberships"
       description="Manage health memberships for employees, students, and guests."
-      breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Health Services', to: hmsUrls.portal },
-        { label: 'Memberships' },
-      ]}
+      breadcrumbs={getHmsBreadcrumbs('Memberships')}
       headerAction={
-        <LinkButton
-          to={hmsUrls.addMembership}
+        <Button
+          onClick={() => navigate(hmsUrls.addMembership)}
           label="Add Membership"
-          icon="add"
+          icon="plus"
         />
       }
     >

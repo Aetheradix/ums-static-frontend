@@ -15,7 +15,6 @@ export default function AdminClosedTickets() {
       title="Closed Tickets"
       description="All resolved and closed tickets."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'Closed Tickets' },
       ]}

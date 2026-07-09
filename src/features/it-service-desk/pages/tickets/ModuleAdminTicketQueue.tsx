@@ -31,7 +31,6 @@ export default function ModuleAdminTicketQueue() {
       title="Module Ticket Queue"
       description="Tickets from your assigned modules."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'Module Ticket Queue' },
       ]}

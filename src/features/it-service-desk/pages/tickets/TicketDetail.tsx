@@ -30,7 +30,6 @@ export default function TicketDetail() {
         title="Ticket Not Found"
         description="The requested ticket could not be found."
         breadcrumbs={[
-          { label: 'Home', to: '/home' },
           { label: 'IT Service Desk', to: itsmUrls.portal },
           { label: 'Not Found' },
         ]}
@@ -98,7 +97,6 @@ export default function TicketDetail() {
       title={`Ticket ${ticket.code}`}
       description={ticket.title}
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: ticket.code },
       ]}

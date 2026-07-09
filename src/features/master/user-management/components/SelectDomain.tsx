@@ -1,7 +1,6 @@
 import type { FieldValues } from 'react-hook-form';
 import { DropDownList } from 'shared/components/forms';
-
-const DOMAIN_OPTIONS = [{ name: 'GLOBAL', value: 'GLOBAL' }];
+import { DOMAINS } from '../static-data';
 
 export default function SelectDomain<T extends FieldValues>({
   label = 'Domain',
@@ -14,7 +13,7 @@ export default function SelectDomain<T extends FieldValues>({
 }) {
   return (
     <DropDownList
-      data={DOMAIN_OPTIONS}
+      data={DOMAINS}
       textField={'name'}
       optionValue={'value'}
       label={label}

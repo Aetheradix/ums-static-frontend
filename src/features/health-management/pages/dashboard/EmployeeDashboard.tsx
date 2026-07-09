@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FormPage, FormCard, GridPanel } from 'shared/new-components';
-import { LinkButton } from 'shared/components/buttons';
+import { Button } from 'shared/components/buttons';
 import {
   memberships,
   healthRecords,
@@ -9,7 +9,7 @@ import {
   mockCurrentUser,
 } from '../../data';
 import { hmsUrls } from '../../urls';
-
+import { getHmsBreadcrumbs } from '../../utils';
 const KPI_COLORS: Record<string, { bg: string; border: string; text: string }> =
   {
     blue: {
@@ -91,11 +91,12 @@ export default function EmployeeDashboard() {
     <FormPage
       title="My Health Dashboard"
       description="Your health records, memberships, and appointments at a glance."
-      breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Health Services', to: hmsUrls.portal },
-        { label: 'My Dashboard' },
-      ]}
+      breadcrumbs={getHmsBreadcrumbs(
+        'My Dashboard',
+        undefined,
+        'Employee Portal',
+        hmsUrls.employee.portal
+      )}
     >
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         <KpiCard
@@ -108,7 +109,7 @@ export default function EmployeeDashboard() {
           label="Health Records"
           value={myRecords.length}
           color="green"
-          icon="folder_medical"
+          icon="medical_information"
         />
         <KpiCard
           label="Upcoming Appointments"
@@ -125,10 +126,10 @@ export default function EmployeeDashboard() {
       </div>
 
       <div className="flex gap-3 mb-6">
-        <LinkButton
-          to={hmsUrls.appointments}
+        <Button
+          onClick={() => navigate(hmsUrls.appointments)}
           label="Book Appointment"
-          icon="calendar_add_on"
+          icon="calendar-plus"
         />
       </div>
 
@@ -183,7 +184,7 @@ export default function EmployeeDashboard() {
                 onClick={() => navigate(hmsUrls.records)}
               >
                 <span className="material-symbols-outlined text-green-600 text-sm mt-0.5">
-                  folder_medical
+                  medical_information
                 </span>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900">

@@ -21,7 +21,6 @@ export default function ModuleAdminMyTickets() {
       title="My Tickets"
       description="Your tickets within assigned modules."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'My Tickets' },
       ]}

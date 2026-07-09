@@ -27,7 +27,6 @@ export default function ModuleAdminPendingApproval() {
       title="Pending Approval"
       description="Module tickets awaiting your approval."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'Pending Approval' },
       ]}

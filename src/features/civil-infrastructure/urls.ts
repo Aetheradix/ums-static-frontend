@@ -22,6 +22,7 @@ export const civilUrls = {
   adminSORMaster: `${BASE}/admin/sor-master`,
   adminBOQCompilation: `${BASE}/admin/boq-compilation`,
   adminMilestones: `${BASE}/admin/milestones`,
+  milestoneApprovals: `${BASE}/admin/milestone-approvals`,
 
   // Engineer Pages
   engineerDashboard: `${BASE}/engineer/dashboard`,
@@ -35,6 +36,8 @@ export const civilUrls = {
   eMeasurementBook: `${BASE}/engineer/e-measurement-book`,
   eotRequest: `${BASE}/engineer/eot-request`,
   milestoneSignoff: `${BASE}/engineer/milestone-signoff`,
+  requestCC: `${BASE}/engineer/request-cc`,
+  mbReport: `${BASE}/engineer/mb-report`,
 
   // Finance Pages
   financeDashboard: `${BASE}/finance/dashboard`,

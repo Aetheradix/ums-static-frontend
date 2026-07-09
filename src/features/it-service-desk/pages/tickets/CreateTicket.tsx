@@ -67,7 +67,6 @@ export default function CreateTicket() {
       title="Create Support Ticket"
       description="Submit a new IT support request. Select the relevant service category and fill in the details."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'Create Ticket' },
       ]}

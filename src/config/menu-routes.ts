@@ -3716,7 +3716,7 @@ export const menuConfig: Menu.MenuItem[] = [
         slug: 'health-management',
         description:
           'Manage health records, memberships, prescriptions, and dispensary operations.',
-        path: '/health-management',
+        path: '/home/sub-menu/health-management',
         icon: 'local_hospital',
         colorScheme: 'green',
         children: [
@@ -3725,9 +3725,10 @@ export const menuConfig: Menu.MenuItem[] = [
             slug: 'hms-admin-portal',
             description:
               'Complete module control: manage memberships, records, stock, settings.',
-            path: '/home/sub-menu/hms-admin-portal',
+            path: '/health-management/admin',
             icon: 'admin_panel_settings',
             colorScheme: 'blue',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dashboard',
@@ -3791,9 +3792,10 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Doctor Portal',
             slug: 'hms-doctor-portal',
             description: 'Manage appointments, records, and prescriptions.',
-            path: '/home/sub-menu/hms-doctor-portal',
+            path: '/health-management/doctor',
             icon: 'stethoscope',
             colorScheme: 'purple',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Appointments',
@@ -3806,7 +3808,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 label: 'Health Records',
                 slug: 'hms-doctor-records',
                 path: '/health-management/records',
-                icon: 'folder_medical',
+                icon: 'medical_information',
                 colorScheme: 'purple',
               },
               {
@@ -3822,9 +3824,10 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Pharmacist Portal',
             slug: 'hms-pharmacist-portal',
             description: 'Dispense medicines and manage stock.',
-            path: '/home/sub-menu/hms-pharmacist-portal',
+            path: '/health-management/pharmacist',
             icon: 'medication',
             colorScheme: 'green',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dispensary',
@@ -3846,9 +3849,10 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Employee Portal',
             slug: 'hms-employee-portal',
             description: 'View records, memberships, and book appointments.',
-            path: '/home/sub-menu/hms-employee-portal',
+            path: '/health-management/employee',
             icon: 'personal_injury',
             colorScheme: 'orange',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dashboard',
@@ -5789,16 +5793,16 @@ export const menuConfig: Menu.MenuItem[] = [
         path: '/home/sub-menu/it-service-desk',
         icon: 'support',
         colorScheme: 'purple',
-        navigationStyle: 'sidebar',
         children: [
           {
             label: 'Admin Portal',
             slug: 'itsm-admin-portal',
             description:
               'Complete module control: manage tickets, agents, SLA, and settings.',
-            path: '/home/sub-menu/itsm-admin-portal',
+            path: '/it-service-desk/admin',
             icon: 'admin_panel_settings',
             colorScheme: 'blue',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dashboard',
@@ -5876,9 +5880,10 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Module Admin',
             slug: 'itsm-module-admin',
             description: 'Manage tickets for assigned ERP modules.',
-            path: '/home/sub-menu/itsm-module-admin',
+            path: '/it-service-desk/module-admin',
             icon: 'view_module',
             colorScheme: 'purple',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dashboard',
@@ -5929,9 +5934,10 @@ export const menuConfig: Menu.MenuItem[] = [
             slug: 'itsm-agent-portal',
             description:
               'Handle assigned tickets and communicate with requesters.',
-            path: '/home/sub-menu/itsm-agent-portal',
+            path: '/it-service-desk/agent',
             icon: 'support_agent',
             colorScheme: 'green',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dashboard',
@@ -5974,9 +5980,10 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Employee Portal',
             slug: 'itsm-employee-portal',
             description: 'Raise and track your own support tickets.',
-            path: '/home/sub-menu/itsm-employee-portal',
+            path: '/it-service-desk/employee',
             icon: 'person',
             colorScheme: 'orange',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dashboard',
@@ -6774,7 +6781,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'blue',
               },
               {
-                label: 'Masters & Registries',
+                label: 'Masters',
                 description:
                   'Manage SOR items, Third-Party Inspection (TPI) agencies, and Quality Lab registries.',
                 path: '/civil-infrastructure/admin/sor-master',
@@ -6796,6 +6803,14 @@ export const menuConfig: Menu.MenuItem[] = [
                 path: '/civil-infrastructure/admin/boq-compilation',
                 icon: 'edit_note',
                 colorScheme: 'indigo',
+              },
+              {
+                label: 'Milestone Definition',
+                description:
+                  'Set project execution milestones and link payments to completion.',
+                path: '/civil-infrastructure/admin/milestones',
+                icon: 'flag',
+                colorScheme: 'blue',
               },
               {
                 label: 'Administrative Approval',
@@ -6822,7 +6837,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'pink',
               },
               {
-                label: 'Agency Compliance / Registration',
+                label: 'Agency Registration',
                 description:
                   'Onboard contractor into vendor master and verify compliance.',
                 path: '/civil-infrastructure/admin/agency-verification',
@@ -6837,14 +6852,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'gavel',
                 colorScheme: 'teal',
               },
-              {
-                label: 'Milestone Definition',
-                description:
-                  'Set project execution milestones and link payments to completion.',
-                path: '/civil-infrastructure/admin/milestones',
-                icon: 'flag',
-                colorScheme: 'blue',
-              },
+
               {
                 label: 'Work Order Sign',
                 description:
@@ -6852,6 +6860,14 @@ export const menuConfig: Menu.MenuItem[] = [
                 path: '/civil-infrastructure/admin/work-order-sign',
                 icon: 'history_edu',
                 colorScheme: 'purple',
+              },
+              {
+                label: 'Milestone Sign-off Approvals',
+                description:
+                  'Review and approve site engineer milestone sign-offs and payment releases.',
+                path: '/civil-infrastructure/admin/milestone-approvals',
+                icon: 'check_circle',
+                colorScheme: 'indigo',
               },
               {
                 label: 'EOT requests for Extension of Time / Cost',
@@ -6870,7 +6886,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'green',
               },
               {
-                label: 'Reports & Register',
+                label: 'Reports',
                 description: 'Summary charts and work/contractor registries.',
                 path: '/civil-infrastructure/admin/reports',
                 icon: 'bar_chart',
@@ -6926,20 +6942,20 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'red',
               },
               {
-                label: 'Quality Framework',
+                label: 'Quality Lab Test',
                 description:
                   'Testing standard rules and Third Party Inspection (TPI).',
                 path: '/civil-infrastructure/engineer/quality-framework',
                 icon: 'assignment_turned_in',
                 colorScheme: 'pink',
               },
-              {
-                label: 'Quality Lab Uploads',
-                description: 'Record test results and upload lab certificates.',
-                path: '/civil-infrastructure/engineer/quality-testing',
-                icon: 'upload_file',
-                colorScheme: 'blue',
-              },
+              // {
+              //   label: 'Quality Lab Uploads',
+              //   description: 'Record test results and upload lab certificates.',
+              //   path: '/civil-infrastructure/engineer/quality-testing',
+              //   icon: 'upload_file',
+              //   colorScheme: 'blue',
+              // },
               {
                 label: 'Progress Monitoring',
                 description:
@@ -6957,12 +6973,12 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'purple',
               },
               {
-                label: 'EOT & Revised Estimate',
+                label: 'E-MB Report',
                 description:
-                  'Extension of time applications and revised estimates.',
-                path: '/civil-infrastructure/engineer/eot-request',
-                icon: 'more_time',
-                colorScheme: 'green',
+                  'Work-wise E-MB measurements, bills, and recovery ledger.',
+                path: '/civil-infrastructure/engineer/mb-report',
+                icon: 'assessment',
+                colorScheme: 'blue',
               },
               {
                 label: 'Milestone Sign-off',
@@ -6970,6 +6986,21 @@ export const menuConfig: Menu.MenuItem[] = [
                 path: '/civil-infrastructure/engineer/milestone-signoff',
                 icon: 'verified',
                 colorScheme: 'orange',
+              },
+              {
+                label: 'Work Extension',
+                description:
+                  'Extension of time applications and revised estimates.',
+                path: '/civil-infrastructure/engineer/eot-request',
+                icon: 'more_time',
+                colorScheme: 'green',
+              },
+              {
+                label: 'Request CC',
+                description: 'Apply for project completion certificate.',
+                path: '/civil-infrastructure/engineer/request-cc',
+                icon: 'emoji_events',
+                colorScheme: 'indigo',
               },
             ],
           },
@@ -6997,7 +7028,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'purple',
               },
               {
-                label: 'RA Bill Processing',
+                label: 'Running Bill Processing',
                 description:
                   'Deductions, recoveries and independent MB linkage checks.',
                 path: '/civil-infrastructure/finance/ra-bill-processing',
@@ -7042,11 +7073,12 @@ export const menuConfig: Menu.MenuItem[] = [
     children: [
       {
         label: 'Governance',
-        slug: 'governance',
+        slug: 'governance-group',
         category: 'Governance',
         icon: 'bolt',
         colorScheme: 'blue',
         description: 'Track student competencies and skill development',
+        path: '/home/sub-menu/governance-group',
         children: [
           {
             label: 'Affiliation Management',
@@ -7076,78 +7108,47 @@ export const menuConfig: Menu.MenuItem[] = [
             colorScheme: 'green',
             children: [
               {
-                label: 'Dashboard',
-                slug: 'grievance-dashboard',
-                description: 'Grievance overview and stats.',
-                path: '/grievance-management/dashboard',
-                icon: 'dashboard',
+                label: 'Student Portal',
+                slug: 'grievance-student-portal',
+                description: 'Raise, track, and manage your grievances.',
+                path: '/grievance-management/student',
+                icon: 'school',
                 colorScheme: 'blue',
               },
               {
-                label: 'Grievance Settings',
-                slug: 'grievance-settings',
-                description: 'Categories, Committees, and User mappings.',
-                path: '/home/sub-menu/grievance-settings',
-                icon: 'settings',
-                colorScheme: 'purple',
-                children: [
-                  {
-                    label: 'Grievance Category',
-                    slug: 'grievance-category',
-                    description: 'Define categories for grievances.',
-                    path: '/grievance-management/categories',
-                    icon: 'category',
-                    colorScheme: 'blue',
-                  },
-                  {
-                    label: 'Grievance Committee',
-                    slug: 'grievance-committee',
-                    description: 'Define grievance resolution committees.',
-                    path: '/grievance-management/committees',
-                    icon: 'groups',
-                    colorScheme: 'purple',
-                  },
-                  {
-                    label: 'Category User Mapping',
-                    slug: 'category-user-mapping',
-                    description: 'Map categories to admin users.',
-                    path: '/grievance-management/category-user-mapping',
-                    icon: 'assignment_ind',
-                    colorScheme: 'green',
-                  },
-                  {
-                    label: 'Grievance User Mapping',
-                    slug: 'grievance-user-mapping',
-                    description: 'Map specific grievances to resolving users.',
-                    path: '/grievance-management/grievance-user-mapping',
-                    icon: 'person_search',
-                    colorScheme: 'orange',
-                  },
-                ],
-              },
-              {
-                label: 'Grievances',
-                slug: 'grievances-list',
-                description: 'Submit, view and resolve internal grievances.',
-                path: '/grievance-management/grievances',
-                icon: 'list_alt',
+                label: 'Department Portal',
+                slug: 'grievance-department-portal',
+                description:
+                  'Review assigned complaints, manage notesheets, and record action taken.',
+                path: '/grievance-management/department',
+                icon: 'assignment_ind',
                 colorScheme: 'green',
               },
               {
-                label: 'Public Grievance',
-                slug: 'public-grievance',
+                label: 'Grievance Cell Portal',
+                slug: 'grievance-cell-portal',
                 description:
-                  'Handle complaints submitted by the general public.',
-                path: '/grievance-management/public-grievances',
-                icon: 'public',
+                  'Central monitoring, SLA tracking, and committee oversight.',
+                path: '/grievance-management/grievance-cell',
+                icon: 'support_agent',
+                colorScheme: 'purple',
+              },
+              {
+                label: 'Authority Portal',
+                slug: 'grievance-authority-portal',
+                description:
+                  'Review pending approvals, decide appeals, and log decisions.',
+                path: '/grievance-management/authority',
+                icon: 'gavel',
                 colorScheme: 'orange',
               },
               {
-                label: 'Reports',
-                slug: 'grievance-reports',
-                description: 'Generate internal and public grievance reports.',
-                path: '/grievance-management/reports',
-                icon: 'assessment',
+                label: 'Admin Portal',
+                slug: 'grievance-admin-portal',
+                description:
+                  'Configure categories, departments, SLA settings, and view audit trails.',
+                path: '/grievance-management/admin',
+                icon: 'admin_panel_settings',
                 colorScheme: 'red',
               },
             ],
@@ -7453,7 +7454,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 slug: 'rti-admin',
                 description:
                   'Manage RTI applications, forwarding, appeals, and reports.',
-                path: '/home/sub-menu/rti-admin',
+                path: '/rti-management/admin',
                 icon: 'admin_panel_settings',
                 colorScheme: 'blue',
                 navigationStyle: 'sidebar',
@@ -7525,7 +7526,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 slug: 'department-portal',
                 description:
                   'View assigned RTIs and submit departmental responses.',
-                path: '/home/sub-menu/department-portal',
+                path: '/rti-management/department',
                 icon: 'assignment_ind',
                 colorScheme: 'purple',
                 navigationStyle: 'sidebar',
@@ -8308,14 +8309,15 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'User Management',
             slug: 'user-management',
             description:
-              'Manage users, roles, role permissions, and user assignments.',
+              'Manage users, roles, role assignments, and access control.',
             path: '/home/sub-menu/user-management',
             icon: 'manage_accounts',
             colorScheme: 'blue',
             children: [
               {
-                label: 'User',
-                description: 'Manage users',
+                label: 'User Registration',
+                description:
+                  'Create and manage system user accounts, including credentials and profile information.',
                 path: '/master/user-management/users',
                 icon: 'person',
                 colorScheme: 'blue',
@@ -8323,8 +8325,9 @@ export const menuConfig: Menu.MenuItem[] = [
                 action: 'read',
               },
               {
-                label: 'Role',
-                description: 'Manage roles',
+                label: 'Role Masters',
+                description:
+                  'Define and manage roles that group users with similar responsibilities and access levels.',
                 path: '/master/user-management/roles',
                 icon: 'badge',
                 colorScheme: 'purple',
@@ -8332,21 +8335,23 @@ export const menuConfig: Menu.MenuItem[] = [
                 action: 'read',
               },
               {
-                label: 'Role Permissions',
-                description: 'Manage role permissions mapping',
-                path: '/master/user-management/role-permissions',
-                icon: 'vpn_key',
-                colorScheme: 'green',
-                feature: '@user-management/role-permissions',
+                label: 'User Role Assignment',
+                description:
+                  'Assign roles to users within specific domains to control their access across the system.',
+                path: '/master/user-management/user-assignments',
+                icon: 'assignment_ind',
+                colorScheme: 'blue',
+                feature: '@user-management/user-assignment',
                 action: 'read',
               },
               {
-                label: 'User Assignment',
-                description: 'Manage user role assignments',
-                path: '/master/user-management/user-assignments',
-                icon: 'assignment_ind',
-                colorScheme: 'orange',
-                feature: '@user-management/user-assignment',
+                label: 'Access Control',
+                description:
+                  'Configure which features and actions each role is permitted to perform across the application.',
+                path: '/master/user-management/role-permissions',
+                icon: 'vpn_key',
+                colorScheme: 'blue',
+                feature: '@user-management/role-permissions',
                 action: 'read',
               },
             ],
@@ -8980,11 +8985,19 @@ export const menuConfig: Menu.MenuItem[] = [
             path: '/home/sub-menu/student-feedback-management',
             children: [
               {
+                label: 'Student Portal',
+                slug: 'feedback-student',
+                description: 'View active feedback forms and submit responses.',
+                path: '/student-feedback-management/student',
+                icon: 'feedback',
+                colorScheme: 'green',
+              },
+              {
                 label: 'Admin Portal',
                 slug: 'feedback-admin',
                 description:
                   'Manage feedback sessions, templates, questions, assignments, and view analytics.',
-                path: '/home/sub-menu/feedback-admin',
+                path: '/student-feedback-management/admin',
                 icon: 'admin_panel_settings',
                 colorScheme: 'blue',
                 navigationStyle: 'sidebar',

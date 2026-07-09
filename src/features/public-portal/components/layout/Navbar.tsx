@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { clsx } from 'clsx';
-import { Home, LayoutGrid, Info, PhoneCall } from 'lucide-react';
+import { Home, LayoutGrid, Info, PhoneCall, FileText } from 'lucide-react';
 import { NAV_LINKS } from '../../constants/data';
 import Button from '../ui/Button';
 
@@ -161,6 +161,8 @@ export default function Navbar() {
                   return <Info className="w-4 h-4" />;
                 case '/cms/contact':
                   return <PhoneCall className="w-4 h-4" />;
+                case '/cms/public-grievance':
+                  return <FileText className="w-4 h-4" />;
                 default:
                   return null;
               }
