@@ -146,10 +146,22 @@ export default function AdminMilestoneDefinition() {
     }
     return initialMilestones;
   });
-  const [works] = useState(() => {
+  const [works, setWorks] = useState<any[]>(() => {
     const saved = localStorage.getItem('civil_works');
     return saved ? JSON.parse(saved) : civilWorks;
   });
+
+  // Watch storage updates to keep works sync'd
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const savedWorks = localStorage.getItem('civil_works');
+      if (savedWorks) {
+        setWorks(JSON.parse(savedWorks));
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
   const [selectedWorkId, setSelectedWorkId] = useState('1'); // Default to Science Wing
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
 
@@ -699,19 +711,10 @@ export default function AdminMilestoneDefinition() {
           <div style={{ marginTop: '0.5rem' }}>
             <DropDownList
               label="Awarded Civil Work *"
-              data={works
-                .filter((w: any) =>
-                  [
-                    'Tender Awarded',
-                    'Work Order Issued',
-                    'In Progress',
-                    'Completed',
-                  ].includes(w.status)
-                )
-                .map((w: any) => ({
-                  name: `${w.workId} — ${w.name} (Valuation: ₹${((w.contractAmount || w.estimatedCost) / 100000).toFixed(1)}L)`,
-                  value: w.id,
-                }))}
+              data={works.map((w: any) => ({
+                name: `${w.workId} — ${w.name} (${w.status})`,
+                value: w.id,
+              }))}
               textField={'name' as any}
               optionValue="value"
               value={selectedWorkId}

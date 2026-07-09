@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextBox } from 'shared/components/forms';
@@ -24,6 +24,11 @@ type PopupState =
   | { mode: 'edit'; item: BOQItem };
 
 export default function AdminBOQCompilation() {
+  const [works, setWorks] = useState<any[]>(() => {
+    const saved = localStorage.getItem('civil_works');
+    return saved ? JSON.parse(saved) : civilWorks;
+  });
+
   const [data, setData] = useState<BOQItem[]>(initialBOQ);
   const [selectedWorkId, setSelectedWorkId] = useState('1'); // Default to Academic Block
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
@@ -32,7 +37,19 @@ export default function AdminBOQCompilation() {
   const [selectedSorId, setSelectedSorId] = useState('');
   const [qty, setQty] = useState('');
 
-  const currentWork = civilWorks.find(w => w.id === selectedWorkId);
+  // Watch storage updates
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const savedWorks = localStorage.getItem('civil_works');
+      if (savedWorks) {
+        setWorks(JSON.parse(savedWorks));
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  const currentWork = works.find(w => w.id === selectedWorkId);
   const workBOQItems = data.filter(b => b.workId === selectedWorkId);
   const totalBOQAmount = workBOQItems.reduce((s, i) => s + i.amount, 0);
   const isLocked =
@@ -175,7 +192,7 @@ export default function AdminBOQCompilation() {
           <div style={{ marginTop: '0.5rem' }}>
             <DropDownList
               label="Work In-Progress / Registered *"
-              data={civilWorks.map(w => ({
+              data={works.map(w => ({
                 name: `${w.workId} — ${w.name} (${w.status})`,
                 value: w.id,
               }))}
