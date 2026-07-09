@@ -44,6 +44,7 @@ import StudentActivitiesClubs from './student-activities-clubs';
 import SportsManagement from './sports-management';
 import StudentFeedbackManagement from './student-feedback-management';
 import StudentManagement from './student-management';
+import StudentLifecycle from './student-lifecycle';
 import TrainingPlacement from './training-placement';
 import EndowmentManagementRoutes from './endowment-management';
 import ConvocationManagementRoutes from './convocation-management';
@@ -159,6 +160,10 @@ export default function Features() {
                       <Route
                         path="employee-management/*"
                         element={<EmployeeManagement />}
+                      />
+                      <Route
+                        path="student-lifecycle/*"
+                        element={<StudentLifecycle />}
                       />
                       <Route
                         path="recruitment-management/*"

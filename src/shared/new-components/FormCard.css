@@ -4,7 +4,7 @@
   @apply rounded-2xl border border-slate-200
          shadow-[0_1px_3px_rgba(0,0,0,0.04)]
          transition-all duration-300
-         bg-(--bg-white) mb-5;
+         bg-(--bg-white);
 }
 
 .dark .form-card {
@@ -29,7 +29,7 @@
 
 /* ICON */
 .form-card-icon {
-  @apply w-13 h-13 rounded-full flex items-center justify-center flex-shrink-0;
+  @apply w-13 h-13 rounded-full flex items-center justify-center shrink-0;
   background: linear-gradient(
     135deg,
     var(--color-gray-100),
@@ -63,7 +63,7 @@
 }
 
 .dark .form-card-subtitle {
-  @apply text-[var(--dark-text-secondary)];
+  @apply text-(--dark-text-secondary);
 }
 
 /* RIGHT ACTION */

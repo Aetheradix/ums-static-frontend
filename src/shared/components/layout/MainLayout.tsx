@@ -10,6 +10,10 @@ import './MainLayout.css';
  * with NO sidebar. Add any new portal-selector routes here.
  */
 const PORTAL_PATHS: string[] = [
+  '/home/sub-menu/student-lifecycle',
+  '/student-lifecycle/student',
+  '/student-lifecycle/faculty',
+  '/student-lifecycle/admin',
   '/employee-management',
   '/employee-management/admin-portal',
   '/employee-management/dashboard',

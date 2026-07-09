@@ -1,5 +1,4 @@
 @reference "tailwindcss";
-@reference "tailwindcss";
 /* WorkspaceTopBar */
 .ws-topbar {
   @apply bg-(--primary-color) text-white text-[13px] py-2.5 max-sm:hidden;
@@ -457,7 +456,8 @@
 
   /* Remove inline padding of menu and submenu containers in detached layout */
   .ws-root.has-desktop-sidebar.layout-detached .menu-page-container,
-  .ws-root.has-desktop-sidebar.layout-detached .submenu-page-container {
+  .ws-root.has-desktop-sidebar.layout-detached .submenu-page-container,
+  .ws-root.has-desktop-sidebar.layout-detached .portal-selector-wrapper {
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
