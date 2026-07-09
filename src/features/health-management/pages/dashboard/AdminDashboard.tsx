@@ -113,7 +113,7 @@ export default function AdminDashboard() {
           label="Health Records"
           value={totalRecords}
           color="green"
-          icon="folder_medical"
+          icon="medical_information"
         />
         <KpiCard
           label="Appointments"

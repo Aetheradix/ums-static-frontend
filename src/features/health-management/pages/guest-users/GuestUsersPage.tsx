@@ -1,10 +1,12 @@
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FormPage, GridPanel, FormCard } from 'shared/new-components';
-import { LinkButton } from 'shared/components/buttons';
+import { Button } from 'shared/components/buttons';
 import { guestUsers } from '../../data';
 import { hmsUrls } from '../../urls';
 
 export default function GuestUsersPage() {
+  const navigate = useNavigate();
   const data = useMemo(() => guestUsers, []);
 
   return (
@@ -17,7 +19,11 @@ export default function GuestUsersPage() {
         { label: 'Guest Users' },
       ]}
       headerAction={
-        <LinkButton to={hmsUrls.addGuestUser} label="Add Guest" icon="add" />
+        <Button
+          onClick={() => navigate(hmsUrls.addGuestUser)}
+          label="Add Guest"
+          icon="plus"
+        />
       }
     >
       <FormCard title="All Guest Users">

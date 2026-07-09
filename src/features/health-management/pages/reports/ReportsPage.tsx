@@ -36,7 +36,7 @@ export default function ReportsPage() {
       label: 'Health Records',
       value: stats.totalRecords,
       color: 'bg-green-50 border-green-200 text-green-700',
-      icon: 'folder_medical',
+      icon: 'medical_information',
     },
     {
       label: 'Stock Items',
@@ -112,7 +112,7 @@ export default function ReportsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {[
             { label: 'Membership Report', icon: 'card_membership' },
-            { label: 'Health Records Report', icon: 'folder_medical' },
+            { label: 'Health Records Report', icon: 'medical_information' },
             { label: 'Stock Report', icon: 'inventory_2' },
             { label: 'Prescription Report', icon: 'prescriptions' },
             { label: 'Appointment Report', icon: 'calendar_month' },

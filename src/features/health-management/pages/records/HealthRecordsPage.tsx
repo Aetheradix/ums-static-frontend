@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FormPage, GridPanel, FormCard } from 'shared/new-components';
-import { LinkButton } from 'shared/components/buttons';
+import { Button } from 'shared/components/buttons';
 import { healthRecords } from '../../data';
 import { hmsUrls } from '../../urls';
 
@@ -20,6 +21,7 @@ function ReferralBadge({ label }: { label: string }) {
 }
 
 export default function HealthRecordsPage() {
+  const navigate = useNavigate();
   const data = useMemo(() => healthRecords, []);
 
   return (
@@ -32,7 +34,11 @@ export default function HealthRecordsPage() {
         { label: 'Health Records' },
       ]}
       headerAction={
-        <LinkButton to={hmsUrls.addRecord} label="Add Record" icon="add" />
+        <Button
+          onClick={() => navigate(hmsUrls.addRecord)}
+          label="Add Record"
+          icon="plus"
+        />
       }
     >
       <FormCard title="All Health Records">

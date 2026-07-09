@@ -1,10 +1,12 @@
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FormPage, GridPanel, FormCard } from 'shared/new-components';
-import { LinkButton } from 'shared/components/buttons';
+import { Button } from 'shared/components/buttons';
 import { prescriptions } from '../../data';
 import { hmsUrls } from '../../urls';
 
 export default function PrescriptionsPage() {
+  const navigate = useNavigate();
   const data = useMemo(() => prescriptions, []);
 
   return (
@@ -17,10 +19,10 @@ export default function PrescriptionsPage() {
         { label: 'Prescriptions' },
       ]}
       headerAction={
-        <LinkButton
-          to={hmsUrls.addPrescription}
+        <Button
+          onClick={() => navigate(hmsUrls.addPrescription)}
           label="New Prescription"
-          icon="add"
+          icon="plus"
         />
       }
     >

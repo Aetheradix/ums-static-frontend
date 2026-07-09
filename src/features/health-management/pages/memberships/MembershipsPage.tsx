@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FormPage, GridPanel, FormCard } from 'shared/new-components';
-import { LinkButton } from 'shared/components/buttons';
+import { Button } from 'shared/components/buttons';
 import { memberships } from '../../data';
 import { hmsUrls } from '../../urls';
 
@@ -20,6 +21,7 @@ function StatusBadge({ label }: { label: string }) {
 }
 
 export default function MembershipsPage() {
+  const navigate = useNavigate();
   const data = useMemo(() => memberships, []);
 
   return (
@@ -32,10 +34,10 @@ export default function MembershipsPage() {
         { label: 'Memberships' },
       ]}
       headerAction={
-        <LinkButton
-          to={hmsUrls.addMembership}
+        <Button
+          onClick={() => navigate(hmsUrls.addMembership)}
           label="Add Membership"
-          icon="add"
+          icon="plus"
         />
       }
     >

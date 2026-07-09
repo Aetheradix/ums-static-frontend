@@ -1,10 +1,12 @@
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FormPage, GridPanel, FormCard } from 'shared/new-components';
-import { LinkButton } from 'shared/components/buttons';
+import { Button } from 'shared/components/buttons';
 import { medicalStocks } from '../../data';
 import { hmsUrls } from '../../urls';
 
 export default function MedicalStockPage() {
+  const navigate = useNavigate();
   const data = useMemo(() => medicalStocks, []);
 
   const isExpired = (expiry: string) => new Date(expiry) < new Date();
@@ -20,7 +22,11 @@ export default function MedicalStockPage() {
         { label: 'Medical Stock' },
       ]}
       headerAction={
-        <LinkButton to={hmsUrls.addStock} label="Add Stock" icon="add" />
+        <Button
+          onClick={() => navigate(hmsUrls.addStock)}
+          label="Add Stock"
+          icon="plus"
+        />
       }
     >
       <FormCard title="All Stock Items">
