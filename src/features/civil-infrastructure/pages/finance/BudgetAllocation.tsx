@@ -1,5 +1,8 @@
-import { useState } from 'react';
-import { FormCard, FormPage, GridPanel } from 'shared/new-components';
+import { useState, useEffect } from 'react';
+import { ToastService } from 'services';
+import { Button } from 'shared/components/buttons';
+import { TextArea } from 'shared/components/forms';
+import { FormCard, FormPage, FormPopup, GridPanel } from 'shared/new-components';
 import {
   civilWorks as initialWorks,
   raBills as initialBills,
@@ -8,7 +11,7 @@ import { civilUrls } from '../../urls';
 import '../civil.css';
 
 export default function BudgetAllocation() {
-  const [works] = useState(() => {
+  const [works, setWorks] = useState<any[]>(() => {
     const saved = localStorage.getItem('civil_works');
     return saved ? JSON.parse(saved) : initialWorks;
   });
@@ -17,6 +20,22 @@ export default function BudgetAllocation() {
     const saved = localStorage.getItem('civil_ra_bills');
     return saved ? JSON.parse(saved) : initialBills;
   });
+
+  const [popup, setPopup] = useState<{ visible: boolean; work?: any }>({ visible: false });
+  const [rejectRemarks, setRejectRemarks] = useState('');
+
+  useEffect(() => {
+    localStorage.setItem('civil_works', JSON.stringify(works));
+  }, [works]);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem('civil_works');
+      if (saved) setWorks(JSON.parse(saved));
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   // Budget allocation view
   const allocations = works.map((w: any) => {
@@ -41,8 +60,43 @@ export default function BudgetAllocation() {
       utilizedAmount: utilized,
       utilizationPct:
         w.tsAmount > 0 ? Math.round((utilized / w.tsAmount) * 100) : 0,
+      status: w.status,
+      budgetRemarks: w.budgetRemarks,
     };
   });
+
+  const handleApproveBudget = (workId: string) => {
+    setWorks(prev =>
+      prev.map(w =>
+        w.id === workId
+          ? { ...w, status: 'Budget Locked' }
+          : w
+      )
+    );
+    window.dispatchEvent(new Event('storage'));
+    ToastService.success('Budget allocation approved and locked successfully.');
+  };
+
+  const handleRejectBudget = () => {
+    if (!rejectRemarks.trim()) {
+      ToastService.error('Rejection remarks are required.');
+      return;
+    }
+    const work = popup.work;
+    if (!work) return;
+
+    setWorks(prev =>
+      prev.map(w =>
+        w.id === work.id
+          ? { ...w, status: 'Budget Rejected', budgetRemarks: rejectRemarks }
+          : w
+      )
+    );
+    window.dispatchEvent(new Event('storage'));
+    ToastService.success('Budget allocation request rejected.');
+    setPopup({ visible: false });
+    setRejectRemarks('');
+  };
 
   const totalTs = allocations.reduce((s: number, a: any) => s + a.tsAmount, 0);
   const totalUtilized = allocations.reduce(
@@ -205,12 +259,97 @@ export default function BudgetAllocation() {
                 </span>
               ),
             },
+            {
+              field: 'status',
+              header: 'Status',
+              cell: (a: any) => {
+                const isApproved = a.status !== 'Registered' && a.status !== 'Requirement Generated' && a.status !== 'AA Approved' && a.status !== 'Budget Rejected';
+                if (isApproved) {
+                  return <span className="civil-pill green">Budget Locked</span>;
+                }
+                if (a.status === 'Budget Rejected') {
+                  return (
+                    <span
+                      className="civil-pill red"
+                      title={`Rejection Reason: ${a.budgetRemarks || 'No reason provided'}`}
+                      style={{ cursor: 'help' }}
+                    >
+                      Rejected ⓘ
+                    </span>
+                  );
+                }
+                return <span className="civil-pill amber">Awaiting Approval</span>;
+              },
+            },
+            {
+              field: 'id',
+              header: 'Action',
+              sortable: false,
+              cell: (a: any) => {
+                const isPending = a.status === 'Registered' || a.status === 'Requirement Generated' || a.status === 'AA Approved';
+                if (!isPending) return <span style={{ color: '#9ca3af' }}>—</span>;
+                return (
+                  <div style={{ display: 'flex', gap: '0.375rem' }}>
+                    <Button
+                      size="small"
+                      label="Approve"
+                      icon="check"
+                      variant="success"
+                      onClick={() => handleApproveBudget(a.id)}
+                    />
+                    <Button
+                      size="small"
+                      label="Reject"
+                      icon="close"
+                      variant="danger"
+                      onClick={() => {
+                        setRejectRemarks('');
+                        setPopup({ visible: true, work: a });
+                      }}
+                    />
+                  </div>
+                );
+              },
+            },
           ]}
           searchBox
           searchPlaceholder="Filter allocations..."
           exportExcel
         />
       </FormCard>
+
+      <FormPopup
+        visible={popup.visible}
+        onHide={() => setPopup({ visible: false })}
+        title={`Reject Budget Allocation — ${popup.work?.workId}`}
+        subtitle="Provide administrative justification or budgeting constraints for rejection."
+      >
+        {popup.work && (
+          <>
+            <TextArea
+              label="Rejection Remarks / Reason *"
+              placeholder="e.g. Budget head allocation exceeded, incorrect costing codes, revision required..."
+              value={rejectRemarks}
+              onChange={setRejectRemarks}
+              rows={3}
+              required
+            />
+            <div className="flex justify-end gap-3 mt-4">
+              <Button
+                label="Cancel"
+                variant="outlined"
+                onClick={() => setPopup({ visible: false })}
+              />
+              <Button
+                label="Reject Request"
+                variant="danger"
+                icon="close"
+                onClick={handleRejectBudget}
+              />
+            </div>
+          </>
+        )}
+      </FormPopup>
     </FormPage>
   );
 }
