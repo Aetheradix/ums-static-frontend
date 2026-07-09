@@ -355,14 +355,6 @@ export default function WorkRegistration() {
               disabled
             />
           )}
-          <TextBox
-            label="Work Name / Title"
-            placeholder="e.g. New Academic Block – Science Wing"
-            value={form.name ?? ''}
-            onChange={v => setForm(f => ({ ...f, name: v }))}
-            required
-            disabled={isReadOnly}
-          />
           <DropDownList
             label="Work Type"
             data={CATEGORIES}
@@ -372,9 +364,6 @@ export default function WorkRegistration() {
             onChange={v => setForm(f => ({ ...f, category: v as any }))}
             disabled={isReadOnly}
           />
-        </FormGrid>
-
-        <FormGrid columns={3}>
           <DropDownList
             label="Category"
             data={DEPT_OPTIONS}
@@ -384,13 +373,12 @@ export default function WorkRegistration() {
             onChange={v => setForm(f => ({ ...f, department: v as string }))}
             disabled={isReadOnly}
           />
-          <DropDownList
-            label="Campus"
-            data={CAMPUS_OPTIONS}
-            textField={'name' as any}
-            optionValue="value"
-            value={form.campus}
-            onChange={v => setForm(f => ({ ...f, campus: v as string }))}
+          <TextBox
+            label="Work Name / Title"
+            placeholder="e.g. New Academic Block – Science Wing"
+            value={form.name ?? ''}
+            onChange={v => setForm(f => ({ ...f, name: v }))}
+            required
             disabled={isReadOnly}
           />
           <DropDownList
@@ -402,9 +390,15 @@ export default function WorkRegistration() {
             onChange={v => setForm(f => ({ ...f, priority: v as any }))}
             disabled={isReadOnly}
           />
-        </FormGrid>
-
-        <FormGrid columns={2}>
+          <DropDownList
+            label="Campus"
+            data={CAMPUS_OPTIONS}
+            textField={'name' as any}
+            optionValue="value"
+            value={form.campus}
+            onChange={v => setForm(f => ({ ...f, campus: v as string }))}
+            disabled={isReadOnly}
+          />
           <TextBox
             label="Location / Site Description"
             placeholder="e.g. Zone A – Plot 12"
@@ -412,18 +406,8 @@ export default function WorkRegistration() {
             onChange={v => setForm(f => ({ ...f, location: v }))}
             disabled={isReadOnly}
           />
-          <DropDownList
-            label="Execution Route (for issuing tender)"
-            data={ROUTE_OPTIONS}
-            textField={'name' as any}
-            optionValue="value"
-            value={form.executionRoute}
-            onChange={v => setForm(f => ({ ...f, executionRoute: v as any }))}
-            disabled={isReadOnly}
-          />
         </FormGrid>
-
-        <FormGrid columns={3}>
+        <FormGrid columns={2}>
           <TextBox
             label="Estimated Cost (₹)"
             placeholder="e.g. 28500000"
@@ -441,6 +425,9 @@ export default function WorkRegistration() {
             onChange={v => setForm(f => ({ ...f, fundingSource: v as string }))}
             disabled={isReadOnly}
           />
+        </FormGrid>
+
+        <FormGrid columns={2}>
           <DropDownList
             label="Site Engineer In-Charge"
             data={SITE_ENGINEERS}
@@ -450,9 +437,6 @@ export default function WorkRegistration() {
             onChange={v => setForm(f => ({ ...f, siteEngineer: v as string }))}
             disabled={isReadOnly}
           />
-        </FormGrid>
-
-        <FormGrid columns={2}>
           <DropDownList
             label="Work Basis (SOR or BOQ Based)"
             data={WORK_BASIS_OPTIONS}
@@ -460,6 +444,15 @@ export default function WorkRegistration() {
             optionValue="value"
             value={form.workBasis}
             onChange={v => setForm(f => ({ ...f, workBasis: v as any }))}
+            disabled={isReadOnly}
+          />
+          <DropDownList
+            label="Execution Route (for issuing tender)"
+            data={ROUTE_OPTIONS}
+            textField={'name' as any}
+            optionValue="value"
+            value={form.executionRoute}
+            onChange={v => setForm(f => ({ ...f, executionRoute: v as any }))}
             disabled={isReadOnly}
           />
         </FormGrid>
