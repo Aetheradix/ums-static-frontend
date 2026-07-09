@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FormCard, FormPage, StatCard } from 'shared/new-components';
 import {
-  civilWorks as initialWorks,
-  milestones as initialMilestones,
-  progressLogs,
-  qualityTests,
-  mbEntries,
+    milestones as initialMilestones,
+    civilWorks as initialWorks,
+    mbEntries,
+    progressLogs,
+    qualityTests as initialTests,
 } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -42,7 +42,53 @@ export default function EngineerDashboard() {
 
   const [milestones] = useState<any[]>(() => {
     const saved = localStorage.getItem('civil_milestones');
-    return saved ? JSON.parse(saved) : initialMilestones;
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      const merged = parsed.map((m: any) => {
+        const mockM = initialMilestones.find((mw: any) => mw.id === m.id);
+        if (mockM && mockM.qualityTestRequired) {
+          return {
+            ...m,
+            testName: m.testName || mockM.testName,
+            testType: m.testType || mockM.testType,
+            materialTested: m.materialTested || mockM.materialTested,
+            labName: m.labName || mockM.labName,
+            requiredValue: m.requiredValue || mockM.requiredValue,
+          };
+        }
+        return m;
+      });
+      const parsedIds = new Set(merged.map((m: any) => m.id));
+      const missing = initialMilestones.filter((m: any) => !parsedIds.has(m.id));
+      const finalMerged = [...merged, ...missing];
+      localStorage.setItem('civil_milestones', JSON.stringify(finalMerged));
+      return finalMerged;
+    }
+    return initialMilestones;
+  });
+
+  const [tests] = useState<any[]>(() => {
+    const saved = localStorage.getItem('civil_quality_tests');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      const merged = parsed.map((t: any) => {
+        const mockT = initialTests.find((mt: any) => mt.id === t.id || mt.milestoneId === t.milestoneId);
+        if (mockT) {
+          return {
+            ...t,
+            testName: t.testName || mockT.testName,
+            testType: t.testType || mockT.testType,
+            materialTested: t.materialTested || mockT.materialTested,
+            labName: t.labName || mockT.labName,
+            requiredValue: t.requiredValue || mockT.requiredValue,
+          };
+        }
+        return t;
+      });
+      localStorage.setItem('civil_quality_tests', JSON.stringify(merged));
+      return merged;
+    }
+    return initialTests;
   });
 
   const myWorks = works.filter((w: any) =>
@@ -51,7 +97,7 @@ export default function EngineerDashboard() {
   const pendingMilestones = milestones.filter(
     (m: any) => m.status === 'Pending' || m.status === 'In Progress'
   );
-  const pendingTests = qualityTests.filter((t: any) => t.result === 'Pending');
+  const pendingTests = tests.filter((t: any) => t.result === 'Pending' || t.result === undefined);
   const pendingMBs = mbEntries.filter(
     (m: any) => m.status === 'Draft' || m.status === 'Submitted'
   );
@@ -145,7 +191,7 @@ export default function EngineerDashboard() {
         />
         <StatCard
           title="Quality Tests Filed"
-          value={String(qualityTests.length)}
+          value={String(tests.length)}
           icon="science"
           colorScheme="purple"
         />

@@ -22,13 +22,24 @@ export default function WorkOrderSign() {
   // Load data from localStorage
   const [workOrders, setWorkOrders] = useState(() => {
     const saved = localStorage.getItem('civil_work_orders');
-    return saved ? JSON.parse(saved) : initialWorkOrders;
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      const parsedIds = new Set(parsed.map((w: any) => w.id));
+      const missing = initialWorkOrders.filter((w: any) => !parsedIds.has(w.id));
+      if (missing.length > 0) {
+        const merged = [...parsed, ...missing];
+        localStorage.setItem('civil_work_orders', JSON.stringify(merged));
+        return merged;
+      }
+      return parsed;
+    }
+    return initialWorkOrders;
   });
   const [contractors] = useState(() => {
     const saved = localStorage.getItem('civil_contractors');
     return saved ? JSON.parse(saved) : initialContractors;
   });
-  const [civilWorks] = useState(() => {
+  const [civilWorks, setCivilWorks] = useState(() => {
     const saved = localStorage.getItem('civil_works');
     return saved ? JSON.parse(saved) : initialWorks;
   });
@@ -57,6 +68,7 @@ export default function WorkOrderSign() {
             ...w,
             signedByContractor: true,
             signedByEE: true,
+            signedByAdmin: true,
             status: 'Work Started' as any,
           }
         : w
@@ -69,10 +81,11 @@ export default function WorkOrderSign() {
         ? { ...w, status: 'In Progress' as any }
         : w
     );
+    setCivilWorks(updatedWorks);
     localStorage.setItem('civil_works', JSON.stringify(updatedWorks));
 
     ToastService.success(
-      'Work Order digitally signed. Notice to Proceed issued. Project start timestamp recorded.'
+      'Work Order approved and signed by Admin. Notice to Proceed issued. Project start timestamp recorded.'
     );
     setPopup({ mode: 'closed' });
   };
@@ -173,6 +186,16 @@ export default function WorkOrderSign() {
                 ),
             },
             {
+              field: 'signedByAdmin',
+              header: 'Admin Sig.',
+              cell: (w: any) =>
+                w.signedByAdmin ? (
+                  <span className="civil-pill green">✓ Signed</span>
+                ) : (
+                  <span className="civil-pill red">Pending</span>
+                ),
+            },
+            {
               field: 'status',
               header: 'Status',
               cell: (w: any) => (
@@ -195,11 +218,11 @@ export default function WorkOrderSign() {
                     variant="outlined"
                     onClick={() => setPopup({ mode: 'view', item })}
                   />
-                  {!item.signedByEE && (
+                  {!item.signedByAdmin && (
                     <Button
                       size="small"
-                      label="Sign & Issue WO"
-                      icon="pen"
+                      label="Approve & Sign"
+                      icon="check"
                       variant="primary"
                       onClick={() => {
                         setRemarks('');
@@ -546,14 +569,12 @@ export default function WorkOrderSign() {
                     color: '#15803d',
                   }}
                 >
-                  <strong>Digital Signature Verification:</strong> This action
-                  records the digital signatures of both the Executive Engineer
-                  and the Contractor, formally transmits the Work Order (Notice
-                  to Proceed), and timestamps the official project start.
+                  <strong>Admin Approval & Final Submission:</strong> This action
+                  approves the work order, records the digital signatures, and formally transmits the final Work Order (Notice to Proceed), recording the official project start timestamp.
                 </div>
                 <TextArea
-                  label="EE Signing Remarks"
-                  placeholder="Agreement signing notes..."
+                  label="Admin Approval Remarks"
+                  placeholder="Admin approval and agreement signing notes..."
                   value={remarks}
                   onChange={setRemarks}
                   rows={2}
@@ -565,9 +586,9 @@ export default function WorkOrderSign() {
                     onClick={() => setPopup({ mode: 'closed' })}
                   />
                   <Button
-                    label="Sign & Issue Work Order (Notice to Proceed)"
+                    label="Approve, Sign & Issue Work Order"
                     variant="primary"
-                    icon="pen"
+                    icon="check"
                     onClick={handleSign}
                   />
                 </div>

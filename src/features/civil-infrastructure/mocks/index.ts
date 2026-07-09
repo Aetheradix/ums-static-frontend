@@ -50,6 +50,10 @@ export interface CivilWork {
   workBasis?: 'SOR Based' | 'BOQ Based';
   constructionAgreementDoc?: string;
   scopeOfWorkDoc?: string;
+  tpiAgencyId?: string;
+  tpiAgencyName?: string;
+  qualityLabId?: string;
+  qualityLabName?: string;
 }
 
 export const civilWorks: CivilWork[] = [
@@ -75,6 +79,10 @@ export const civilWorks: CivilWork[] = [
     physicalProgress: 42,
     financialProgress: 38,
     workBasis: 'SOR Based',
+    tpiAgencyId: 'TPI-01',
+    tpiAgencyName: 'RITES Limited',
+    qualityLabId: 'LAB-01',
+    qualityLabName: 'IIT Bhopal Civil Testing Lab',
   },
   {
     id: '2',
@@ -98,6 +106,10 @@ export const civilWorks: CivilWork[] = [
     physicalProgress: 8,
     financialProgress: 5,
     workBasis: 'BOQ Based',
+    tpiAgencyId: 'TPI-02',
+    tpiAgencyName: 'SGS India Pvt Ltd',
+    qualityLabId: 'LAB-02',
+    qualityLabName: 'MANIT Material Testing Lab',
   },
   {
     id: '3',
@@ -121,6 +133,10 @@ export const civilWorks: CivilWork[] = [
     physicalProgress: 68,
     financialProgress: 61,
     workBasis: 'SOR Based',
+    tpiAgencyId: 'TPI-03',
+    tpiAgencyName: 'WAPCOS Limited',
+    qualityLabId: 'LAB-03',
+    qualityLabName: 'MP PWD Central Laboratory',
   },
   {
     id: '4',
@@ -134,17 +150,21 @@ export const civilWorks: CivilWork[] = [
     estimatedCost: 7800000,
     aaAmount: 7600000,
     tsAmount: 7550000,
-    contractAmount: 0,
+    contractAmount: 7800000,
     fundingSource: 'State Govt',
     startDate: '2025-06-01',
     expectedEndDate: '2026-01-31',
     siteEngineer: 'Er. Mohan Singh',
-    status: 'Budget Locked',
+    status: 'Tender Awarded',
     priority: 'High',
     physicalProgress: 0,
     financialProgress: 0,
-    externalAgency: 'PWD MP Zone',
+    externalAgency: 'Sharma Constructions Pvt Ltd',
     workBasis: 'BOQ Based',
+    tpiAgencyId: 'TPI-01',
+    tpiAgencyName: 'RITES Limited',
+    qualityLabId: 'LAB-01',
+    qualityLabName: 'IIT Bhopal Civil Testing Lab',
   },
   {
     id: '5',
@@ -191,6 +211,10 @@ export const civilWorks: CivilWork[] = [
     physicalProgress: 78,
     financialProgress: 72,
     workBasis: 'SOR Based',
+    tpiAgencyId: 'TPI-03',
+    tpiAgencyName: 'WAPCOS Limited',
+    qualityLabId: 'LAB-02',
+    qualityLabName: 'MANIT Material Testing Lab',
   },
   {
     id: '7',
@@ -404,6 +428,7 @@ export interface BOQItem {
   approvedQty: number;
   amount: number; // govtRate × approvedQty
   isLocked: boolean;
+  milestoneId?: string;
 }
 
 export const boqItems: BOQItem[] = [
@@ -420,6 +445,7 @@ export const boqItems: BOQItem[] = [
     approvedQty: 850,
     amount: 297500,
     isLocked: true,
+    milestoneId: 'm1',
   },
   {
     id: 'b2',
@@ -433,6 +459,7 @@ export const boqItems: BOQItem[] = [
     approvedQty: 120,
     amount: 624000,
     isLocked: true,
+    milestoneId: 'm1',
   },
   {
     id: 'b3',
@@ -446,6 +473,7 @@ export const boqItems: BOQItem[] = [
     approvedQty: 900,
     amount: 6840000,
     isLocked: true,
+    milestoneId: 'm2',
   },
   {
     id: 'b4',
@@ -459,6 +487,7 @@ export const boqItems: BOQItem[] = [
     approvedQty: 95000,
     amount: 6460000,
     isLocked: true,
+    milestoneId: 'm2',
   },
   {
     id: 'b5',
@@ -472,6 +501,7 @@ export const boqItems: BOQItem[] = [
     approvedQty: 480,
     amount: 2976000,
     isLocked: true,
+    milestoneId: 'm3',
   },
   {
     id: 'b6',
@@ -485,6 +515,7 @@ export const boqItems: BOQItem[] = [
     approvedQty: 8500,
     amount: 1572500,
     isLocked: true,
+    milestoneId: 'm3',
   },
   {
     id: 'b7',
@@ -498,6 +529,7 @@ export const boqItems: BOQItem[] = [
     approvedQty: 3200,
     amount: 3040000,
     isLocked: true,
+    milestoneId: 'm4',
   },
   {
     id: 'b8',
@@ -511,6 +543,7 @@ export const boqItems: BOQItem[] = [
     approvedQty: 9000,
     amount: 855000,
     isLocked: true,
+    milestoneId: 'm4',
   },
 
   // CW-2025-003 (Road Resurfacing)
@@ -526,6 +559,7 @@ export const boqItems: BOQItem[] = [
     approvedQty: 400,
     amount: 140000,
     isLocked: true,
+    milestoneId: 'm7',
   },
   {
     id: 'b10',
@@ -539,6 +573,7 @@ export const boqItems: BOQItem[] = [
     approvedQty: 350,
     amount: 98000,
     isLocked: true,
+    milestoneId: 'm8',
   },
   {
     id: 'b11',
@@ -552,6 +587,7 @@ export const boqItems: BOQItem[] = [
     approvedQty: 180,
     amount: 936000,
     isLocked: true,
+    milestoneId: 'm8',
   },
 ];
 
@@ -591,6 +627,7 @@ export interface MBEntry {
   securityDeposit: number;
   netPayable: number;
   remarks?: string;
+  milestoneId?: string;
 }
 
 export const mbEntries: MBEntry[] = [
@@ -1022,6 +1059,17 @@ export interface Milestone {
   status: MilestoneStatus;
   qualityTestRequired: boolean;
   qualityTestStatus?: 'Pending' | 'Pass' | 'Fail';
+  // Optional quality test details
+  testName?: string;
+  testType?: string;
+  materialTested?: string;
+  labName?: string;
+  requiredValue?: string;
+  observedValue?: string;
+  certNo?: string;
+  testDate?: string;
+  uploadedDoc?: string;
+  testRemarks?: string;
 }
 
 export const milestones: Milestone[] = [
@@ -1037,9 +1085,19 @@ export const milestones: Milestone[] = [
     actualStartDate: '2024-11-05',
     actualEndDate: '2025-02-10',
     weightage: 10,
-    status: 'Completed',
+    status: 'In Progress',
     qualityTestRequired: true,
     qualityTestStatus: 'Pass',
+    testName: 'Compressive Strength of Concrete',
+    testType: 'Cube Test (IS 456)',
+    materialTested: 'RCC M20 Concrete',
+    labName: 'IIT Bhopal Civil Testing Lab',
+    requiredValue: '≥ 20 N/mm² at 28 days',
+    observedValue: '22.4 N/mm²',
+    certNo: 'IIT/BPL/CC/2025/0142',
+    testDate: '2025-01-20',
+    uploadedDoc: 'iit_bpl_cc_2025_0142.pdf',
+    testRemarks: 'All 6 cubes passed',
   },
   {
     id: 'm2',
@@ -1055,6 +1113,11 @@ export const milestones: Milestone[] = [
     status: 'In Progress',
     qualityTestRequired: true,
     qualityTestStatus: 'Pending',
+    testName: 'Compressive Strength of Concrete',
+    testType: 'Cube Test (IS 456)',
+    materialTested: 'RCC M20 Concrete – Columns & Slab',
+    labName: 'IIT Bhopal Civil Testing Lab',
+    requiredValue: '≥ 20 N/mm² at 28 days',
   },
   {
     id: 'm3',
@@ -1068,6 +1131,12 @@ export const milestones: Milestone[] = [
     weightage: 15,
     status: 'Pending',
     qualityTestRequired: true,
+    qualityTestStatus: 'Pending',
+    testName: 'Tensile Strength of Steel',
+    testType: 'UTM Test (IS 1786)',
+    materialTested: 'Fe415 HYSD Bars 16mm',
+    labName: 'MANIT Material Testing Lab',
+    requiredValue: 'UTS ≥ 485 N/mm²',
   },
   {
     id: 'm4',
@@ -1081,6 +1150,12 @@ export const milestones: Milestone[] = [
     weightage: 15,
     status: 'Pending',
     qualityTestRequired: true,
+    qualityTestStatus: 'Pending',
+    testName: 'Compressive Strength of Concrete',
+    testType: 'Cube Test (IS 456)',
+    materialTested: 'RCC M20 Concrete',
+    labName: 'MANIT Material Testing Lab',
+    requiredValue: '≥ 20 N/mm² at 28 days',
   },
   {
     id: 'm5',
@@ -1108,7 +1183,6 @@ export const milestones: Milestone[] = [
     status: 'Pending',
     qualityTestRequired: false,
   },
-
   {
     id: 'm7',
     workId: '3',
@@ -1121,7 +1195,7 @@ export const milestones: Milestone[] = [
     actualStartDate: '2025-03-05',
     actualEndDate: '2025-04-18',
     weightage: 20,
-    status: 'Completed',
+    status: 'In Progress',
     qualityTestRequired: false,
   },
   {
@@ -1138,6 +1212,11 @@ export const milestones: Milestone[] = [
     status: 'In Progress',
     qualityTestRequired: true,
     qualityTestStatus: 'Pending',
+    testName: 'Compaction Test – Sub Base',
+    testType: 'Proctor Density Test',
+    materialTested: 'Granular Sub Base Material',
+    labName: 'MPRRDA Lab, Bhopal',
+    requiredValue: '≥ 97% MDD',
   },
   {
     id: 'm9',
@@ -1151,6 +1230,98 @@ export const milestones: Milestone[] = [
     weightage: 45,
     status: 'Pending',
     qualityTestRequired: true,
+    qualityTestStatus: 'Pending',
+    testName: 'Bitumen Extraction Test',
+    testType: 'Centrifuge Extraction (AASHTO T164)',
+    materialTested: 'Bituminous Concrete Mix',
+    labName: 'MP PWD Central Laboratory',
+    requiredValue: 'Binder Content ≥ 5.0%',
+  },
+  {
+    id: 'm10',
+    workId: '2',
+    workName: 'Boys Hostel Block D – 200 Beds',
+    sequenceNo: 1,
+    milestoneName: 'Foundation & Earthwork',
+    description: 'Soil excavation, column footing casting, and backfilling',
+    plannedStartDate: '2025-01-15',
+    plannedEndDate: '2025-03-31',
+    actualStartDate: '2025-01-18',
+    actualEndDate: '2025-03-28',
+    weightage: 20,
+    status: 'In Progress',
+    qualityTestRequired: true,
+    qualityTestStatus: 'Pass',
+    testName: 'Soil Bearing Capacity Test',
+    testType: 'Plate Load Test (IS 1888)',
+    materialTested: 'Foundation Soil Subgrade',
+    labName: 'IIT Bhopal Civil Testing Lab',
+    requiredValue: 'SBC ≥ 150 kN/m²',
+    observedValue: '172 kN/m²',
+    certNo: 'IIT/BPL/SBC/2025/0087',
+    testDate: '2025-02-10',
+    uploadedDoc: 'iit_bpl_sbc_2025_0087.pdf',
+    testRemarks: 'Bearing capacity matches structural design requirements',
+  },
+  {
+    id: 'm11',
+    workId: '2',
+    workName: 'Boys Hostel Block D – 200 Beds',
+    sequenceNo: 2,
+    milestoneName: 'Superstructure (G+1 Slab)',
+    description: 'RCC pillar casting, floor beam slab reinforcement and concrete pouring',
+    plannedStartDate: '2025-04-01',
+    plannedEndDate: '2025-07-31',
+    actualStartDate: '2025-04-05',
+    weightage: 30,
+    status: 'In Progress',
+    qualityTestRequired: true,
+    qualityTestStatus: 'Pending',
+    testName: 'Compressive Strength of Concrete',
+    testType: 'Cube Test (IS 456)',
+    materialTested: 'RCC M25 Concrete - Column Pouring',
+    labName: 'MANIT Material Testing Lab',
+    requiredValue: '≥ 25 N/mm² at 28 days',
+  },
+  {
+    id: 'm12',
+    workId: '6',
+    workName: 'Sports Complex Boundary Wall',
+    sequenceNo: 1,
+    milestoneName: 'Excavation & Masonry foundation',
+    description: 'Foundation digging and brick masonry up to ground level',
+    plannedStartDate: '2025-02-01',
+    plannedEndDate: '2025-04-15',
+    actualStartDate: '2025-02-05',
+    actualEndDate: '2025-04-20',
+    weightage: 40,
+    status: 'In Progress',
+    qualityTestRequired: true,
+    qualityTestStatus: 'Pass',
+    testName: 'Brick Compressive strength',
+    testType: 'NABL Brick strength test',
+    materialTested: 'Clay Bricks',
+    labName: 'MP PWD Central Laboratory',
+    requiredValue: '7.5 N/mm²',
+    observedValue: '8.2 N/mm²',
+    certNo: 'PWD/BPL/2025/1109',
+    testDate: '2025-03-15',
+    uploadedDoc: 'pwd_bpl_2025_1109.pdf',
+    testRemarks: 'Meets standards',
+  },
+  {
+    id: 'm13',
+    workId: '6',
+    workName: 'Sports Complex Boundary Wall',
+    sequenceNo: 2,
+    milestoneName: 'Superstructure Brickwork & Plaster',
+    description: 'Brickwork walling up to 2.4m height and plastering',
+    plannedStartDate: '2025-04-16',
+    plannedEndDate: '2025-07-31',
+    actualStartDate: '2025-04-22',
+    weightage: 60,
+    status: 'In Progress',
+    qualityTestRequired: false,
   },
 ];
 
@@ -1372,6 +1543,8 @@ export interface ProgressLog {
   photoCount: number;
   issues?: string;
   weatherCondition: string;
+  milestoneId?: string;
+  milestoneName?: string;
 }
 
 export const progressLogs: ProgressLog[] = [
@@ -1387,6 +1560,8 @@ export const progressLogs: ProgressLog[] = [
     geoLongitude: '77.4200',
     photoCount: 8,
     weatherCondition: 'Partly Cloudy',
+    milestoneId: 'm2',
+    milestoneName: 'Plinth & Ground Floor Slab',
   },
   {
     id: '2',
@@ -1401,6 +1576,8 @@ export const progressLogs: ProgressLog[] = [
     photoCount: 6,
     weatherCondition: 'Clear',
     issues: 'Delay in steel delivery from supplier – 2 days',
+    milestoneId: 'm1',
+    milestoneName: 'Excavation & Foundation',
   },
   {
     id: '3',
@@ -1414,6 +1591,8 @@ export const progressLogs: ProgressLog[] = [
     geoLongitude: '77.4180',
     photoCount: 5,
     weatherCondition: 'Overcast',
+    milestoneId: 'm8',
+    milestoneName: 'Sub-base & Base Course',
   },
   {
     id: '4',
@@ -1427,6 +1606,8 @@ export const progressLogs: ProgressLog[] = [
     geoLongitude: '77.4250',
     photoCount: 4,
     weatherCondition: 'Clear',
+    milestoneId: 'm13',
+    milestoneName: 'Superstructure Brickwork & Plaster',
   },
 ];
 
@@ -1449,6 +1630,11 @@ export interface WorkOrder {
   status: 'Issued' | 'Work Started' | 'Suspended' | 'Completed' | 'Terminated';
   signedByContractor: boolean;
   signedByEE: boolean;
+  signedByAdmin: boolean;
+  tpiAgencyId?: string;
+  tpiAgencyName?: string;
+  qualityLabId?: string;
+  qualityLabName?: string;
 }
 
 export const workOrders: WorkOrder[] = [
@@ -1470,6 +1656,11 @@ export const workOrders: WorkOrder[] = [
     status: 'Work Started',
     signedByContractor: true,
     signedByEE: true,
+    signedByAdmin: true,
+    tpiAgencyId: 'TPI-01',
+    tpiAgencyName: 'RITES Limited',
+    qualityLabId: 'LAB-01',
+    qualityLabName: 'IIT Bhopal Civil Testing Lab',
   },
   {
     id: '2',
@@ -1489,6 +1680,11 @@ export const workOrders: WorkOrder[] = [
     status: 'Work Started',
     signedByContractor: true,
     signedByEE: true,
+    signedByAdmin: true,
+    tpiAgencyId: 'TPI-02',
+    tpiAgencyName: 'SGS India Pvt Ltd',
+    qualityLabId: 'LAB-02',
+    qualityLabName: 'MANIT Material Testing Lab',
   },
   {
     id: '3',
@@ -1508,6 +1704,55 @@ export const workOrders: WorkOrder[] = [
     status: 'Work Started',
     signedByContractor: true,
     signedByEE: true,
+    signedByAdmin: true,
+    tpiAgencyId: 'TPI-03',
+    tpiAgencyName: 'WAPCOS Limited',
+    qualityLabId: 'LAB-03',
+    qualityLabName: 'MP PWD Central Laboratory',
+  },
+  {
+    id: '4',
+    workOrderNo: 'WO/CW/2025-26/004',
+    workId: '4',
+    workName: 'Examination Hall Structural Strengthening',
+    contractorId: 'CON-001',
+    contractorName: 'Sharma Constructions Pvt Ltd',
+    issuedDate: '2025-06-15',
+    commencementDate: '2025-07-01',
+    completionDate: '2026-01-31',
+    contractAmount: 7600000,
+    advancePaid: 760000,
+    advanceRecoveryRate: 10,
+    sdPercentage: 5,
+    sdAmount: 380000,
+    status: 'Issued',
+    signedByContractor: true,
+    signedByEE: true,
+    signedByAdmin: false,
+    tpiAgencyId: 'TPI-01',
+    tpiAgencyName: 'RITES Limited',
+    qualityLabId: 'LAB-01',
+    qualityLabName: 'IIT Bhopal Civil Testing Lab',
+  },
+  {
+    id: '5',
+    workOrderNo: 'WO/CW/2025-26/005',
+    workId: '8',
+    workName: 'Outdoor Amphitheatre – Deposit Work (UGC)',
+    contractorId: 'CON-002',
+    contractorName: 'Nirmaan Infra Projects',
+    issuedDate: '2025-06-20',
+    commencementDate: '2025-07-01',
+    completionDate: '2026-06-30',
+    contractAmount: 9200000,
+    advancePaid: 920000,
+    advanceRecoveryRate: 10,
+    sdPercentage: 5,
+    sdAmount: 460000,
+    status: 'Issued',
+    signedByContractor: false,
+    signedByEE: false,
+    signedByAdmin: false,
   },
 ];
 

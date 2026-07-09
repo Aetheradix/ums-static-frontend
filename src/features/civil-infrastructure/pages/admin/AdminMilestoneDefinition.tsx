@@ -32,6 +32,7 @@ const PRESET_OPTIONS = [
     desc: '',
     weight: '',
     qa: 'No',
+    testName: '',
   },
   {
     value: 'b_found',
@@ -40,6 +41,7 @@ const PRESET_OPTIONS = [
     desc: 'Excavation, footings, and substructure foundation works',
     weight: '15',
     qa: 'Yes',
+    testName: 'Soil bearing test / PCC compressive test',
   },
   {
     value: 'b_plinth',
@@ -48,6 +50,7 @@ const PRESET_OPTIONS = [
     desc: 'Plinth beam laying, damp proof course and backfilling',
     weight: '20',
     qa: 'Yes',
+    testName: 'Cube Compressive Strength (IS 456)',
   },
   {
     value: 'b_masonry',
@@ -56,6 +59,7 @@ const PRESET_OPTIONS = [
     desc: 'Superstructure brickwork masonry and partition wall layout',
     weight: '25',
     qa: 'Yes',
+    testName: 'Brick Compressive strength & water absorption',
   },
   {
     value: 'b_slab',
@@ -64,6 +68,7 @@ const PRESET_OPTIONS = [
     desc: 'Slab reinforcement binding and RCC concrete pouring',
     weight: '25',
     qa: 'Yes',
+    testName: 'RCC Slab Concrete Cube test',
   },
   {
     value: 'b_finishing',
@@ -72,6 +77,7 @@ const PRESET_OPTIONS = [
     desc: 'Plastering, painting, flooring, MEP fittings and final handover',
     weight: '15',
     qa: 'No',
+    testName: '',
   },
   {
     value: 'r_grade',
@@ -80,6 +86,7 @@ const PRESET_OPTIONS = [
     desc: 'Excavation of old asphalt road surface, sub-grade grading and compaction',
     weight: '20',
     qa: 'Yes',
+    testName: 'Sub-grade Soil compaction test',
   },
   {
     value: 'r_base',
@@ -88,6 +95,7 @@ const PRESET_OPTIONS = [
     desc: 'Granular sub-base (GSB) and Wet Mix Macadam (WMM) layers',
     weight: '35',
     qa: 'Yes',
+    testName: 'Granular sub-base Proctor Compaction',
   },
   {
     value: 'r_asphalt',
@@ -96,6 +104,7 @@ const PRESET_OPTIONS = [
     desc: 'Laying of Dense Bituminous Macadam (DBM) and bituminous concrete wearing course',
     weight: '30',
     qa: 'Yes',
+    testName: 'Bitumen extraction & wearing course test',
   },
   {
     value: 'r_marking',
@@ -104,13 +113,36 @@ const PRESET_OPTIONS = [
     desc: 'Earthen shoulders, road painting, signs, and public safety markers',
     weight: '15',
     qa: 'No',
+    testName: '',
   },
 ];
 
 export default function AdminMilestoneDefinition() {
   const [data, setData] = useState<Milestone[]>(() => {
     const saved = localStorage.getItem('civil_milestones');
-    return saved ? JSON.parse(saved) : initialMilestones;
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      const merged = parsed.map((m: any) => {
+        const mockM = initialMilestones.find((mw: any) => mw.id === m.id);
+        if (mockM && mockM.qualityTestRequired) {
+          return {
+            ...m,
+            testName: m.testName || mockM.testName,
+            testType: m.testType || mockM.testType,
+            materialTested: m.materialTested || mockM.materialTested,
+            labName: m.labName || mockM.labName,
+            requiredValue: m.requiredValue || mockM.requiredValue,
+          };
+        }
+        return m;
+      });
+      const parsedIds = new Set(merged.map((m: any) => m.id));
+      const missing = initialMilestones.filter((m: any) => !parsedIds.has(m.id));
+      const finalMerged = [...merged, ...missing];
+      localStorage.setItem('civil_milestones', JSON.stringify(finalMerged));
+      return finalMerged;
+    }
+    return initialMilestones;
   });
   const [works] = useState(() => {
     const saved = localStorage.getItem('civil_works');
@@ -127,9 +159,39 @@ export default function AdminMilestoneDefinition() {
   const [mStart, setMStart] = useState('');
   const [mEnd, setMEnd] = useState('');
   const [qaRequired, setQaRequired] = useState('No');
+  const [testName, setTestName] = useState('');
 
   useEffect(() => {
     localStorage.setItem('civil_milestones', JSON.stringify(data));
+    
+    // Sync to civil_quality_tests in localStorage for engineer portal & dashboard
+    const savedTests = localStorage.getItem('civil_quality_tests');
+    const existingTests = savedTests ? JSON.parse(savedTests) : [];
+    
+    const updatedTests = data
+      .filter((m: any) => m.qualityTestRequired)
+      .map((m: any) => {
+        const existing = existingTests.find((t: any) => t.milestoneId === m.id || t.id === `qt_${m.id}`);
+        return {
+          id: existing?.id || `qt_${m.id}`,
+          workId: m.workId,
+          workName: m.workName,
+          milestoneId: m.id,
+          testName: m.testName || existing?.testName || 'Quality Test',
+          testType: m.testType || existing?.testType || 'Standard Test',
+          materialTested: m.materialTested || existing?.materialTested || 'Sample Material',
+          labName: m.labName || existing?.labName || 'Standard Lab',
+          testDate: m.testDate || existing?.testDate,
+          sampleQty: existing?.sampleQty || 6,
+          requiredValue: m.requiredValue || existing?.requiredValue || 'As per standard',
+          observedValue: m.observedValue || existing?.observedValue,
+          result: m.qualityTestStatus || existing?.result || 'Pending',
+          certNo: m.certNo || existing?.certNo,
+          uploadedDoc: m.uploadedDoc || existing?.uploadedDoc,
+          remarks: m.testRemarks || existing?.remarks,
+        };
+      });
+    localStorage.setItem('civil_quality_tests', JSON.stringify(updatedTests));
   }, [data]);
 
   const currentWork = works.find((w: any) => w.id === selectedWorkId);
@@ -161,6 +223,11 @@ export default function AdminMilestoneDefinition() {
       return;
     }
 
+    if (qaRequired === 'Yes' && !testName.trim()) {
+      ToastService.error('Quality Test Name is required.');
+      return;
+    }
+
     const nextSeq = workMilestones.length + 1;
     const newM: Milestone = {
       id: String(Date.now()),
@@ -178,6 +245,12 @@ export default function AdminMilestoneDefinition() {
       weightage: Number(mWeight),
       status: 'Pending',
       qualityTestRequired: qaRequired === 'Yes',
+      qualityTestStatus: qaRequired === 'Yes' ? 'Pending' : undefined,
+      testName: qaRequired === 'Yes' ? testName.trim() : undefined,
+      testType: qaRequired === 'Yes' ? 'NABL Standard Test' : undefined,
+      materialTested: qaRequired === 'Yes' ? 'Sample Material' : undefined,
+      labName: qaRequired === 'Yes' ? (currentWork?.qualityLabName || 'Approved Testing Lab') : undefined,
+      requiredValue: qaRequired === 'Yes' ? 'As per standard specification' : undefined,
     };
 
     setData(prev => [...prev, newM]);
@@ -191,6 +264,7 @@ export default function AdminMilestoneDefinition() {
     setMStart('');
     setMEnd('');
     setQaRequired('No');
+    setTestName('');
     setSelectedPresetId('custom');
   };
 
@@ -220,11 +294,13 @@ export default function AdminMilestoneDefinition() {
       setMDesc(preset.desc);
       setMWeight(preset.weight);
       setQaRequired(preset.qa);
+      setTestName(preset.testName || '');
     } else {
       setMName('');
       setMDesc('');
       setMWeight('');
       setQaRequired('No');
+      setTestName('');
     }
   };
 
@@ -941,6 +1017,18 @@ export default function AdminMilestoneDefinition() {
             onChange={v => setQaRequired(v as string)}
           />
         </FormGrid>
+
+        {qaRequired === 'Yes' && (
+          <div style={{ marginTop: '1.5rem', marginBottom: '0.5rem' }}>
+            <TextBox
+              label="Quality Test Name *"
+              placeholder="e.g. Compressive Strength of Concrete"
+              value={testName}
+              onChange={setTestName}
+              required
+            />
+          </div>
+        )}
 
         <TextBox
           label="Payment Released Equivalent Value"
