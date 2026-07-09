@@ -4,8 +4,8 @@ import { Button } from 'shared/components/buttons';
 import {
   DatePicker,
   DropDownList,
-  TextBox,
   TextArea,
+  TextBox,
 } from 'shared/components/forms';
 import {
   FormCard,
@@ -18,12 +18,12 @@ import {
 } from 'shared/new-components';
 import {
   type CivilTender,
-  tenders as initialTenders,
   contractors as initialContractors,
-  civilWorks as initialWorks,
-  workOrders as initialWorkOrders,
-  initialTPIAgencies,
   initialLabAgencies,
+  tenders as initialTenders,
+  initialTPIAgencies,
+  workOrders as initialWorkOrders,
+  civilWorks as initialWorks,
 } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -47,11 +47,52 @@ export default function TenderOversight() {
   });
   const [works, setWorks] = useState<any[]>(() => {
     const saved = localStorage.getItem('civil_works');
-    return saved ? JSON.parse(saved) : initialWorks;
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      const merged = parsed.map((w: any) => {
+        const mockW = initialWorks.find((mw: any) => mw.id === w.id);
+        if (mockW) {
+          return {
+            ...w,
+            status: w.status === 'Budget Locked' && mockW.status === 'Tender Awarded' ? 'Tender Awarded' : w.status,
+            contractAmount: w.contractAmount === 0 && mockW.contractAmount > 0 ? mockW.contractAmount : w.contractAmount,
+            tpiAgencyId: w.tpiAgencyId || mockW.tpiAgencyId,
+            tpiAgencyName: w.tpiAgencyName || mockW.tpiAgencyName,
+            qualityLabId: w.qualityLabId || mockW.qualityLabId,
+            qualityLabName: w.qualityLabName || mockW.qualityLabName,
+          };
+        }
+        return w;
+      });
+      localStorage.setItem('civil_works', JSON.stringify(merged));
+      return merged;
+    }
+    return initialWorks;
   });
   const [workOrders, setWorkOrders] = useState<any[]>(() => {
     const saved = localStorage.getItem('civil_work_orders');
-    return saved ? JSON.parse(saved) : initialWorkOrders;
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      const parsedIds = new Set(parsed.map((w: any) => w.id));
+      const missing = initialWorkOrders.filter((w: any) => !parsedIds.has(w.id));
+      const baseList = missing.length > 0 ? [...parsed, ...missing] : parsed;
+      const merged = baseList.map((w: any) => {
+        const mockW = initialWorkOrders.find((mw: any) => mw.id === w.id);
+        if (mockW) {
+          return {
+            ...w,
+            tpiAgencyId: w.tpiAgencyId || mockW.tpiAgencyId,
+            tpiAgencyName: w.tpiAgencyName || mockW.tpiAgencyName,
+            qualityLabId: w.qualityLabId || mockW.qualityLabId,
+            qualityLabName: w.qualityLabName || mockW.qualityLabName,
+          };
+        }
+        return w;
+      });
+      localStorage.setItem('civil_work_orders', JSON.stringify(merged));
+      return merged;
+    }
+    return initialWorkOrders;
   });
 
   const [popup, setPopup] = useState<{
@@ -150,6 +191,7 @@ export default function TenderOversight() {
       status: 'Issued' as any,
       signedByContractor: false,
       signedByEE: false,
+      signedByAdmin: false,
     };
     setWorkOrders((prev: any[]) => [...prev, newWO]);
 
@@ -266,6 +308,7 @@ export default function TenderOversight() {
       status: 'Issued' as any,
       signedByContractor: false,
       signedByEE: false,
+      signedByAdmin: false,
       tpiAgencyId: mapTpiAgencyId,
       tpiAgencyName: selectedTpi?.name ?? '—',
       qualityLabId: mapQualityLabId,
@@ -547,7 +590,7 @@ export default function TenderOversight() {
                 >
                   <FormGrid columns={1}>
                     <DropDownList
-                      label="Select Registered Work *"
+                      label="Registered Work *"
                       data={works
                         .filter((w: any) =>
                           [
@@ -573,7 +616,7 @@ export default function TenderOversight() {
                       }}
                     />
                     <DropDownList
-                      label="Select Contractor / Agency *"
+                      label="Contractor / Agency *"
                       data={contractors
                         .filter((c: any) => c.status === 'Active')
                         .map((c: any) => ({
@@ -586,7 +629,7 @@ export default function TenderOversight() {
                       onChange={v => setMapContractorId(v as string)}
                     />
                     <DropDownList
-                      label="Select TPI Quality Agency *"
+                      label="TPI Quality Agency *"
                       data={tpiAgencies
                         .filter((t: any) => t.status === 'Active')
                         .map((t: any) => ({ name: t.name, value: t.id }))}
@@ -596,7 +639,7 @@ export default function TenderOversight() {
                       onChange={v => setMapTpiAgencyId(v as string)}
                     />
                     <DropDownList
-                      label="Select Quality Lab Testing Agency *"
+                      label="Quality Lab Testing Agency *"
                       data={labAgencies
                         .filter((l: any) => l.status === 'Active')
                         .map((l: any) => ({ name: l.name, value: l.id }))}

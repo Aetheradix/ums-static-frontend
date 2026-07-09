@@ -409,7 +409,7 @@ export default function AgencyVerification() {
                 paddingTop: '0.75rem',
               }}
             >
-              3. Bank Mandate Tracking
+              3. Bank Details
             </h4>
             <FormGrid columns={4}>
               <TextBox

@@ -6555,6 +6555,14 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'indigo',
               },
               {
+                label: 'Milestone Definition',
+                description:
+                  'Set project execution milestones and link payments to completion.',
+                path: '/civil-infrastructure/admin/milestones',
+                icon: 'flag',
+                colorScheme: 'blue',
+              },
+              {
                 label: 'Administrative Approval',
                 description:
                   'VC / competent authority reviews justification and grants AA.',
@@ -6579,7 +6587,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'pink',
               },
               {
-                label: 'Agency Compliance / Registration',
+                label: 'Agency Registration',
                 description:
                   'Onboard contractor into vendor master and verify compliance.',
                 path: '/civil-infrastructure/admin/agency-verification',
@@ -6594,14 +6602,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'gavel',
                 colorScheme: 'teal',
               },
-              {
-                label: 'Milestone Definition',
-                description:
-                  'Set project execution milestones and link payments to completion.',
-                path: '/civil-infrastructure/admin/milestones',
-                icon: 'flag',
-                colorScheme: 'blue',
-              },
+
               {
                 label: 'Work Order Sign',
                 description:
@@ -6609,6 +6610,14 @@ export const menuConfig: Menu.MenuItem[] = [
                 path: '/civil-infrastructure/admin/work-order-sign',
                 icon: 'history_edu',
                 colorScheme: 'purple',
+              },
+              {
+                label: 'Milestone Sign-off Approvals',
+                description:
+                  'Review and approve site engineer milestone sign-offs and payment releases.',
+                path: '/civil-infrastructure/admin/milestone-approvals',
+                icon: 'check_circle',
+                colorScheme: 'indigo',
               },
               {
                 label: 'EOT requests for Extension of Time / Cost',
@@ -6627,7 +6636,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'green',
               },
               {
-                label: 'Reports & Register',
+                label: 'Reports',
                 description: 'Summary charts and work/contractor registries.',
                 path: '/civil-infrastructure/admin/reports',
                 icon: 'bar_chart',
@@ -6683,20 +6692,20 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'red',
               },
               {
-                label: 'Quality Framework',
+                label: 'Quality Lab Test',
                 description:
                   'Testing standard rules and Third Party Inspection (TPI).',
                 path: '/civil-infrastructure/engineer/quality-framework',
                 icon: 'assignment_turned_in',
                 colorScheme: 'pink',
               },
-              {
-                label: 'Quality Lab Uploads',
-                description: 'Record test results and upload lab certificates.',
-                path: '/civil-infrastructure/engineer/quality-testing',
-                icon: 'upload_file',
-                colorScheme: 'blue',
-              },
+              // {
+              //   label: 'Quality Lab Uploads',
+              //   description: 'Record test results and upload lab certificates.',
+              //   path: '/civil-infrastructure/engineer/quality-testing',
+              //   icon: 'upload_file',
+              //   colorScheme: 'blue',
+              // },
               {
                 label: 'Progress Monitoring',
                 description:
@@ -6714,6 +6723,21 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'purple',
               },
               {
+                label: 'E-MB Report',
+                description:
+                  'Work-wise E-MB measurements, bills, and recovery ledger.',
+                path: '/civil-infrastructure/engineer/mb-report',
+                icon: 'assessment',
+                colorScheme: 'blue',
+              },
+              {
+                label: 'Milestone Sign-off',
+                description: 'EE milestone checklist validation.',
+                path: '/civil-infrastructure/engineer/milestone-signoff',
+                icon: 'verified',
+                colorScheme: 'orange',
+              },
+              {
                 label: 'EOT & Revised Estimate',
                 description:
                   'Extension of time applications and revised estimates.',
@@ -6722,11 +6746,11 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'green',
               },
               {
-                label: 'Milestone Sign-off',
-                description: 'EE milestone checklist validation.',
-                path: '/civil-infrastructure/engineer/milestone-signoff',
-                icon: 'verified',
-                colorScheme: 'orange',
+                label: 'Request CC',
+                description: 'Apply for project completion certificate.',
+                path: '/civil-infrastructure/engineer/request-cc',
+                icon: 'emoji_events',
+                colorScheme: 'indigo',
               },
             ],
           },
@@ -6754,7 +6778,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'purple',
               },
               {
-                label: 'RA Bill Processing',
+                label: 'Running Bill Processing',
                 description:
                   'Deductions, recoveries and independent MB linkage checks.',
                 path: '/civil-infrastructure/finance/ra-bill-processing',

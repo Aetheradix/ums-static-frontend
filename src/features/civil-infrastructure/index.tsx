@@ -16,6 +16,7 @@ import AdminSORMaster from './pages/admin/AdminSORMaster';
 import AdminBOQCompilation from './pages/admin/AdminBOQCompilation';
 import AdminMilestoneDefinition from './pages/admin/AdminMilestoneDefinition';
 import AdminEOTRequest from './pages/admin/AdminEOTRequest';
+import MilestoneApprovals from './pages/admin/MilestoneApprovals';
 
 // ── Engineer Pages ───────────────────────────────────────────────
 import EngineerDashboard from './pages/engineer/Dashboard';
@@ -29,6 +30,8 @@ import QualityTesting from './pages/engineer/QualityTesting';
 import EMeasurementBook from './pages/engineer/EMeasurementBook';
 import EOTRequest from './pages/engineer/EOTRequest';
 import MilestoneSignoff from './pages/engineer/MilestoneSignoff';
+import RequestCC from './pages/engineer/RequestCC';
+import MBReport from './pages/engineer/MBReport';
 
 // ── Finance Pages ────────────────────────────────────────────────
 import FinanceDashboard from './pages/finance/Dashboard';
@@ -70,6 +73,7 @@ export default function CivilInfrastructure() {
         element={<AgencyVerification />}
       />
       <Route path="admin/work-order-sign" element={<WorkOrderSign />} />
+      <Route path="admin/milestone-approvals" element={<MilestoneApprovals />} />
       <Route path="admin/eot-requests" element={<AdminEOTRequest />} />
       <Route
         path="admin/completion-certificate"
@@ -105,6 +109,8 @@ export default function CivilInfrastructure() {
       />
       <Route path="engineer/eot-request" element={<EOTRequest />} />
       <Route path="engineer/milestone-signoff" element={<MilestoneSignoff />} />
+      <Route path="engineer/request-cc" element={<RequestCC />} />
+      <Route path="engineer/mb-report" element={<MBReport />} />
 
       {/* ── Finance Portal ───────────────────────────────────────── */}
       <Route

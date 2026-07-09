@@ -33,9 +33,22 @@ export default function AdminApproval() {
       ...w,
     }));
   });
+
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
   const [aaAmt, setAaAmt] = useState('');
   const [aaRemarks, setAaRemarks] = useState('');
+
+  // Watch local storage for external updates (e.g. from tenders/TS)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const savedWorks = localStorage.getItem('civil_works');
+      if (savedWorks) {
+        setData(JSON.parse(savedWorks));
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('civil_works', JSON.stringify(data));
@@ -67,14 +80,16 @@ export default function AdminApproval() {
     setAaRemarks('');
   };
 
+
+
   return (
     <FormPage
-      title="Administrative Approval (AA)"
-      description="Stage 7: Competent authority reviews economic justification and grants formal AA — legally binding the Project Budget."
+      title="Administrative Sanction (AA) Approvals"
+      description="Administrative approvals dashboard for granting official project sanctions and cost limits."
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
-        { label: 'Administrative Approval' },
+        { label: 'Administrative Approvals' },
       ]}
     >
       <FormCard subtitle="Only works with AA Amount not yet sanctioned or pending re-approval are shown below.">
@@ -192,7 +207,7 @@ export default function AdminApproval() {
         subtitle="Administrative Approval fixes the project budget. This action is legally binding."
         size="lg"
       >
-        {popup.mode !== 'closed' && (
+        {popup.mode !== 'closed' && (popup as any).item && (
           <>
             {/* Work Summary */}
             <FormCard title="Work Details" subtitle="">
