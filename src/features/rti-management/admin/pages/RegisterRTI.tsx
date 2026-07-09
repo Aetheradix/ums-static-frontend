@@ -92,7 +92,6 @@ export default function RegisterRTI() {
       title="Register RTI"
       description="Register a new RTI application with applicant details and information requested."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'RTI Management', to: rtiUrls.portal },
         { label: 'Admin Portal', to: rtiUrls.admin.portal },
         { label: 'Register RTI' },

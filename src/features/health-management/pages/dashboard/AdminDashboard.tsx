@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 import { FormPage, FormCard, GridPanel } from 'shared/new-components';
+import { hmsUrls } from '../../urls';
+import { getHmsBreadcrumbs } from '../../utils';
 import {
   memberships,
   healthRecords,
@@ -96,11 +98,12 @@ export default function AdminDashboard() {
     <FormPage
       title="Health Admin Dashboard"
       description="Overview of health center operations, memberships, records, and stock."
-      breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Health Services', to: '/health-management' },
-        { label: 'Admin Dashboard' },
-      ]}
+      breadcrumbs={getHmsBreadcrumbs(
+        'Admin Dashboard',
+        undefined,
+        'Health Admin Portal',
+        hmsUrls.admin.portal
+      )}
     >
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
         <KpiCard
@@ -113,7 +116,7 @@ export default function AdminDashboard() {
           label="Health Records"
           value={totalRecords}
           color="green"
-          icon="folder_medical"
+          icon="medical_information"
         />
         <KpiCard
           label="Appointments"

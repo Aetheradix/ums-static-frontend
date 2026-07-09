@@ -241,7 +241,6 @@ export default function Dashboard() {
       title="RTI Dashboard"
       description="Overview of RTI applications, deadlines, and department performance."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'RTI Management', to: rtiUrls.portal },
         { label: 'Admin Portal', to: rtiUrls.admin.portal },
         { label: 'Dashboard' },

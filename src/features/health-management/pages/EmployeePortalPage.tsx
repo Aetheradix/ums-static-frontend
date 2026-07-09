@@ -26,7 +26,7 @@ export default function EmployeePortalPage() {
         {
           title: 'Health Records',
           description: 'View your health records.',
-          icon: 'folder_medical',
+          icon: 'medical_information',
           colorScheme: 'teal',
           path: hmsUrls.records,
         },

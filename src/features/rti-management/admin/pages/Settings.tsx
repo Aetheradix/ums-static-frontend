@@ -22,7 +22,6 @@ export default function Settings() {
       title="Settings"
       description="Configure RTI system parameters and workflow settings."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'RTI Management', to: rtiUrls.portal },
         { label: 'Admin Portal', to: rtiUrls.admin.portal },
         { label: 'Settings' },

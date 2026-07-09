@@ -22,7 +22,6 @@ export default function AdminPendingApproval() {
       title="Pending Approval"
       description="Tickets awaiting your approval."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'Pending Approval' },
       ]}

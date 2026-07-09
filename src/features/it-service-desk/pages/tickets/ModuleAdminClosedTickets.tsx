@@ -21,7 +21,6 @@ export default function ModuleAdminClosedTickets() {
       title="Closed Tickets"
       description="Resolved and closed module tickets."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'Closed Tickets' },
       ]}

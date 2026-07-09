@@ -18,7 +18,6 @@ export default function AdminAssignedTickets() {
       title="Assigned Tickets"
       description="All tickets assigned to agents."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'Assigned Tickets' },
       ]}

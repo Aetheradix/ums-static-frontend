@@ -45,7 +45,6 @@ export default function Notifications() {
       title="Notifications"
       description="Configure notification templates and delivery channels for feedback events."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'Student Feedback Management', to: feedbackUrls.portal },
         { label: 'Admin Portal', to: feedbackUrls.admin.portal },
         { label: 'Notifications' },

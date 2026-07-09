@@ -77,7 +77,6 @@ export default function ModuleAdminSettings() {
       title="Module Settings"
       description="Configure module-level service desk settings."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'Module Settings' },
       ]}

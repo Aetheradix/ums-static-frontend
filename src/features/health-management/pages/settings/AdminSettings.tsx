@@ -19,6 +19,8 @@ import {
   prescriptionControl,
   settingsGeneral,
 } from '../../data';
+import { hmsUrls } from '../../urls';
+import { getHmsBreadcrumbs } from '../../utils';
 
 const tabs = [
   { id: 'membership', label: 'Membership', icon: 'card_membership' },
@@ -116,12 +118,12 @@ export default function AdminSettings() {
     <FormPage
       title="Health Management Settings"
       description="Configure membership types, health centers, doctors, referrals, medicines, and prescriptions."
-      breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Health Services', to: '/health-management' },
-        { label: 'Health Admin', to: '/health-management/admin' },
-        { label: 'Settings' },
-      ]}
+      breadcrumbs={getHmsBreadcrumbs(
+        'Settings',
+        undefined,
+        'Health Admin Portal',
+        hmsUrls.admin.portal
+      )}
       headerAction={
         <Button
           label="Save All"
