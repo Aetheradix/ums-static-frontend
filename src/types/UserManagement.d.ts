@@ -63,4 +63,15 @@ declare namespace UserManagement {
     userId: string;
     userName: string;
   }
+
+  // Domains — the institution a role is scoped to. Instances form a tree:
+  // one University root with UTD / Constituent / Affiliated children.
+  type DomainType = 'University' | 'UTD' | 'Constituent' | 'Affiliated';
+  interface Domain {
+    id: string;
+    name: string;
+    type: DomainType;
+    // null only for the University root; every other node points at it.
+    parentId: string | null;
+  }
 }

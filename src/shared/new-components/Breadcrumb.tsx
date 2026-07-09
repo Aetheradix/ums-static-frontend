@@ -62,6 +62,10 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
         label = 'Full Onboarding';
       } else if (path.toLowerCase() === 'settings') {
         label = 'Settings';
+      } else if (path.toLowerCase() === 'user-assignments') {
+        label = 'User Role Assignment';
+      } else if (path.toLowerCase() === 'role-permissions') {
+        label = 'Access Control';
       }
 
       let toPath = currentPath;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
@@ -10,12 +10,12 @@ import {
   GridPanel,
 } from 'shared/new-components';
 import {
-  type SORItem,
-  sorItems as initialData,
-  type TPIAgency,
-  initialTPIAgencies,
   type LabAgency,
+  type SORItem,
+  type TPIAgency,
+  sorItems as initialData,
   initialLabAgencies,
+  initialTPIAgencies,
 } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -232,7 +232,7 @@ export default function AdminSORMaster() {
         {[
           {
             key: 'SOR',
-            label: 'SOR Master Registry',
+            label: 'SOR Master',
             count: sorData.length,
             icon: 'list',
             desc: 'Government Schedule of Rates',
@@ -243,7 +243,7 @@ export default function AdminSORMaster() {
           },
           {
             key: 'TPI',
-            label: 'TPI Quality Agencies',
+            label: 'Quality Agencies',
             count: tpiData.length,
             icon: 'verified-user',
             desc: 'Third Party Inspection',
@@ -324,7 +324,7 @@ export default function AdminSORMaster() {
       {/* SOR Registry View */}
       {activeTab === 'SOR' && (
         <FormCard
-          title="Schedule of Rates (SOR) Registry"
+          title="Schedule of Rates (SOR)"
           subtitle="Rates acting as the legal price baseline for engineering designs."
         >
           <GridPanel

@@ -1,0 +1,117 @@
+@reference "tailwindcss";
+
+/* ── Overlay ── */
+.confirm-modal-overlay {
+  @apply fixed inset-0 z-50 flex items-center justify-center p-4;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  animation: confirm-modal-overlay-in 0.2s ease-out;
+}
+
+@keyframes confirm-modal-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Panel ── */
+.confirm-modal-panel {
+  @apply flex w-full flex-col overflow-hidden shadow-2xl;
+  max-width: 420px;
+  background-color: var(--bg-white);
+  border-radius: var(--radius-2xl);
+  animation: confirm-modal-slide-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes confirm-modal-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Body ── */
+.confirm-modal-body {
+  @apply flex flex-col items-center gap-4 px-8 py-8 text-center;
+}
+
+/* ── Icon ── */
+.confirm-modal-icon-wrap {
+  @apply flex items-center justify-center rounded-full flex-shrink-0;
+  width: 64px;
+  height: 64px;
+}
+
+.confirm-modal-icon-wrap--danger {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+.confirm-modal-icon-wrap--warning {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+.confirm-modal-icon-wrap--info {
+  background-color: #dbeafe;
+  color: #2563eb;
+}
+
+.confirm-modal-icon {
+  font-size: 28px !important;
+}
+
+/* ── Text ── */
+.confirm-modal-title {
+  @apply m-0 text-lg font-semibold text-slate-900;
+}
+
+.confirm-modal-message {
+  @apply m-0 text-sm text-slate-500;
+  max-width: 300px;
+  line-height: 1.6;
+}
+
+/* ── Footer ── */
+.confirm-modal-footer {
+  @apply flex flex-shrink-0 items-center justify-center gap-3 px-6 py-4;
+  border-top: 1px solid var(--color-gray-100);
+  background-color: var(--bg-white);
+}
+
+/* ── Dark ── */
+.dark .confirm-modal-overlay {
+  background: rgba(0, 0, 0, 0.6);
+}
+.dark .confirm-modal-panel {
+  background-color: var(--dark-card-bg);
+  border: 1px solid var(--dark-border);
+}
+.dark .confirm-modal-footer {
+  background-color: var(--dark-card-bg);
+  border-color: var(--dark-border);
+}
+.dark .confirm-modal-title {
+  @apply text-white;
+}
+.dark .confirm-modal-message {
+  @apply text-slate-400;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .confirm-modal-panel {
+    max-width: 100%;
+  }
+  .confirm-modal-body {
+    @apply px-6 py-6;
+  }
+  .confirm-modal-footer {
+    @apply flex-col-reverse items-stretch;
+  }
+}

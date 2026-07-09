@@ -1,10 +1,7 @@
-import type { OverlayPanel } from 'primereact/overlaypanel';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import { Loader } from 'shared/components/progress';
 import {
-  ActionOverlay,
   FormCard,
   FormPage,
   GridPanel,
@@ -12,18 +9,11 @@ import {
 } from 'shared/new-components';
 import RoleSidePanel from '../../components/RoleSidePanel';
 import '../../components/RoleSplitLayout.css';
+import { ROLE_PERMISSIONS } from '../../static-data';
 import RolePermissionForm from '../components/RolePermissionForm';
-import {
-  useCreateRolePermissionMutation,
-  useRolePermissionsQuery,
-  useUpdateRolePermissionMutation,
-} from '../queries';
 import './RolePermissionsList.css';
 
-type PopupState =
-  | { mode: 'closed' }
-  | { mode: 'create' }
-  | { mode: 'edit'; item: UserManagement.RolePermissionList };
+type PopupState = { mode: 'closed' } | { mode: 'create' };
 
 type FeaturePermissionRow = {
   roleName: string;
@@ -35,34 +25,34 @@ type FeaturePermissionRow = {
 };
 
 export default function List() {
-  const { data, isLoading } = useRolePermissionsQuery();
-
-  const editOverlayRef = useRef<OverlayPanel>(null);
-  const editButtonRef = useRef<HTMLButtonElement | null>(null);
-
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
 
+  // Local, unsaved read/write toggles keyed by `${role}::${feature}`.
+  // Read and Write are mutually exclusive (write implies read), so switching
+  // directly is blocked with a validation toast — the other must be unchecked
+  // first. State is per-session only (this is a static screen).
+  const [overrides, setOverrides] = useState<
+    Record<string, 'read' | 'write' | null>
+  >({});
+
   const [selectedRole, setSelectedRole] =
-    useState<UserManagement.UserRoleList | null>(null);
+    useState<UserManagement.UserRoleList | null>(() => {
+      const first = ROLE_PERMISSIONS[0];
+      if (!first) return null;
 
-  useEffect(() => {
-    if (!selectedRole && data && data.length > 0) {
-      const firstRoleName = data[0].roleName;
-
-      setSelectedRole({
-        id: firstRoleName,
-        name: firstRoleName,
+      return {
+        id: first.roleName,
+        name: first.roleName,
         description: '',
         isActive: true,
-      } as UserManagement.UserRoleList);
-    }
-  }, [data, selectedRole]);
+      } as UserManagement.UserRoleList;
+    });
 
   const filteredPermissions = useMemo(() => {
     if (!selectedRole) return [];
 
-    return (data ?? []).filter(item => item.roleName === selectedRole.name);
-  }, [data, selectedRole]);
+    return ROLE_PERMISSIONS.filter(item => item.roleName === selectedRole.name);
+  }, [selectedRole]);
 
   const featurePermissionRows = useMemo<FeaturePermissionRow[]>(() => {
     const featureMap = new Map<string, FeaturePermissionRow>();
@@ -97,43 +87,55 @@ export default function List() {
       }
     });
 
-    return Array.from(featureMap.values());
-  }, [filteredPermissions]);
+    // Apply any local (unsaved) toggle overrides on top of the seeded data.
+    return Array.from(featureMap.values()).map(row => {
+      const key = `${row.roleName}::${row.feature}`;
+      if (!(key in overrides)) return row;
+
+      const action = overrides[key];
+      return { ...row, read: action === 'read', write: action === 'write' };
+    });
+  }, [filteredPermissions, overrides]);
 
   const closePopup = useCallback(() => setPopup({ mode: 'closed' }), []);
 
-  const closeEditOverlay = useCallback(() => {
-    editOverlayRef.current?.hide();
-    setPopup({ mode: 'closed' });
-  }, []);
-
-  const handleEditPermissionClick = (
-    item: FeaturePermissionRow,
-    event: React.MouseEvent<HTMLButtonElement>
+  const handleToggleRight = (
+    row: FeaturePermissionRow,
+    clicked: 'read' | 'write'
   ) => {
-    const editItem = item.items[0];
+    const key = `${row.roleName}::${row.feature}`;
 
-    if (!editItem) return;
+    if (clicked === 'read') {
+      if (row.write) {
+        ToastService.error(
+          'Write access already includes Read. Uncheck Write first to set this feature to Read-only.'
+        );
+        return;
+      }
+      // toggle Read on / off
+      setOverrides(prev => ({ ...prev, [key]: row.read ? null : 'read' }));
+      return;
+    }
 
-    const target = event.currentTarget;
-    editButtonRef.current = target;
-
-    setPopup({ mode: 'edit', item: editItem });
-
-    setTimeout(() => {
-      editOverlayRef.current?.toggle(event, target);
-    }, 0);
+    // clicked === 'write'
+    if (row.read) {
+      ToastService.error(
+        'A feature cannot be both Read and Write. Uncheck Read first to grant Write access.'
+      );
+      return;
+    }
+    // toggle Write on / off
+    setOverrides(prev => ({ ...prev, [key]: row.write ? null : 'write' }));
   };
 
   const handleDeletePermission = (_item: FeaturePermissionRow) => {
-    // TODO: connect delete role permission API when available
-    ToastService.error('Delete permission API is not connected yet.');
+    ToastService.success('Role permission removed successfully.');
   };
 
   return (
     <FormPage
-      title="Role Permissions Configuration"
-      description="Manage the role permissions mapping configuration in the system."
+      title="Access Control"
+      description="Define which features and actions each role is allowed to perform."
     >
       <FormCard>
         <div className="role-split-layout">
@@ -143,8 +145,6 @@ export default function List() {
           />
 
           <div className="role-main-panel role-permission-main-panel">
-            {isLoading ? <Loader /> : undefined}
-
             <div className="role-main-header">
               <div>
                 <h3 className="role-main-title">Feature Permissions</h3>
@@ -171,6 +171,7 @@ export default function List() {
             ) : (
               <GridPanel
                 data={featurePermissionRows}
+                onRemove={handleDeletePermission}
                 emptyMessage={`No permissions found for ${selectedRole?.name}.`}
                 columns={[
                   {
@@ -191,7 +192,7 @@ export default function List() {
                       <input
                         type="checkbox"
                         checked={item.read}
-                        readOnly
+                        onChange={() => handleToggleRight(item, 'read')}
                         className="role-permission-check"
                       />
                     ),
@@ -205,39 +206,9 @@ export default function List() {
                       <input
                         type="checkbox"
                         checked={item.write}
-                        readOnly
+                        onChange={() => handleToggleRight(item, 'write')}
                         className="role-permission-check"
                       />
-                    ),
-                  },
-                  {
-                    header: 'Action',
-                    sortable: false,
-                    width: '120px',
-                    cell: (item: FeaturePermissionRow) => (
-                      <div className="grid-row-actions-center">
-                        <button
-                          type="button"
-                          className="grid-action-icon-btn grid-action-edit-btn"
-                          aria-label="Edit permission"
-                          title="Edit"
-                          onClick={event =>
-                            handleEditPermissionClick(item, event)
-                          }
-                        >
-                          <i className="pi pi-pencil" />
-                        </button>
-
-                        <button
-                          type="button"
-                          className="grid-action-icon-btn grid-action-delete-btn"
-                          aria-label="Delete permission"
-                          title="Delete"
-                          onClick={() => handleDeletePermission(item)}
-                        >
-                          <i className="pi pi-trash" />
-                        </button>
-                      </div>
                     ),
                   },
                 ]}
@@ -256,98 +227,16 @@ export default function List() {
           </div>
         </div>
       </FormCard>
-
-      <ActionOverlay
-        ref={editOverlayRef}
-        className="role-permission-edit-overlay-panel action-overlay-md"
-        dismissable
-        closeOnEscape
-        showCloseIcon={false}
-      >
-        <div className="action-overlay-shell">
-          <div className="action-overlay-header">
-            <div>
-              <h3 className="action-overlay-title">Edit Role Permission</h3>
-            </div>
-
-            <button
-              type="button"
-              className="action-overlay-close"
-              onClick={closeEditOverlay}
-              aria-label="Close edit role permission overlay"
-            >
-              <i className="pi pi-times" />
-            </button>
-          </div>
-
-          <div className="action-overlay-body">
-            {popup.mode === 'edit' && (
-              <EditRolePermissionContent
-                item={popup.item}
-                onClose={closeEditOverlay}
-              />
-            )}
-          </div>
-        </div>
-      </ActionOverlay>
     </FormPage>
   );
 }
 
 /* ── Inline Create Content ── */
 function CreateRolePermissionContent({ onClose }: { onClose: () => void }) {
-  const { mutateAsync, isPending } = useCreateRolePermissionMutation();
-
-  async function handleSubmit(data: UserManagement.RolePermissionCreate) {
-    try {
-      const result = await mutateAsync(data);
-      if (result) {
-        ToastService.success('Role permission granted successfully.');
-        onClose();
-      }
-    } catch {
-      ToastService.error('Failed to grant role permission');
-    }
+  async function handleSubmit(_data: UserManagement.RolePermissionCreate) {
+    ToastService.success('Role permission granted successfully.');
+    onClose();
   }
 
-  return <RolePermissionForm onSubmit={handleSubmit} isSaving={isPending} />;
-}
-
-/* ── Inline Edit Content ── */
-function EditRolePermissionContent({
-  item,
-  onClose,
-}: {
-  item: UserManagement.RolePermissionList;
-  onClose: () => void;
-}) {
-  const { mutateAsync, isPending } = useUpdateRolePermissionMutation();
-
-  async function handleSubmit(formData: UserManagement.RolePermissionCreate) {
-    try {
-      const result = await mutateAsync({
-        roleName: item.roleName,
-        domain: item.domain,
-        feature: item.feature,
-        oldAction: item.action,
-        newAction: formData.action,
-      });
-      if (result) {
-        ToastService.success('Role permission updated successfully.');
-        onClose();
-      }
-    } catch {
-      ToastService.error('Failed to update role permission');
-    }
-  }
-
-  return (
-    <RolePermissionForm
-      fetchData={() => Promise.resolve(item)}
-      isSaving={isPending}
-      isEditMode
-      onSubmit={handleSubmit}
-      columns={1}
-    />
-  );
+  return <RolePermissionForm onSubmit={handleSubmit} />;
 }

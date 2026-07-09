@@ -1,20 +1,12 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import { Loader } from 'shared/components/progress';
+import { ConfirmDialog } from 'shared/new-components';
 import RoleForm from '../role/components/RoleForm';
-import {
-  useCreateUserRoleMutation,
-  useUpdateUserRoleMutation,
-  useUserRoleQuery,
-  useUserRolesQuery,
-} from '../role/queries';
+import { ROLES } from '../static-data';
 import './RoleSidePanel.css';
 
-type RolePanelMode =
-  | { mode: 'closed' }
-  | { mode: 'create' }
-  | { mode: 'edit'; id: string };
+type RolePanelMode = { mode: 'closed' } | { mode: 'create' };
 
 interface RoleSidePanelProps {
   selectedRoleId?: string;
@@ -25,31 +17,30 @@ export default function RoleSidePanel({
   selectedRoleId,
   onRoleSelect,
 }: RoleSidePanelProps) {
-  const { data, isLoading } = useUserRolesQuery();
-
   const [search, setSearch] = useState('');
-  const [panelMode, setPanelMode] = useState<RolePanelMode>({
-    mode: 'closed',
-  });
+  const [panelMode, setPanelMode] = useState<RolePanelMode>({ mode: 'closed' });
+  const [confirmTarget, setConfirmTarget] =
+    useState<UserManagement.UserRoleList | null>(null);
 
-  const closePanel = useCallback(() => {
-    setPanelMode({ mode: 'closed' });
-  }, []);
+  const closePanel = () => setPanelMode({ mode: 'closed' });
 
-  const handleDeleteRole = () => {
-    // TODO: connect delete role API when available
-    ToastService.error('Delete role API is not connected yet.');
+  const handleDeleteRole = (role: UserManagement.UserRoleList) => {
+    setConfirmTarget(role);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!confirmTarget) return;
+    ToastService.success('Role deleted successfully.');
+    setConfirmTarget(null);
   };
 
   const filteredRoles = useMemo(() => {
-    const roles = data ?? [];
+    if (!search.trim()) return ROLES;
 
-    if (!search.trim()) return roles;
-
-    return roles.filter(role =>
+    return ROLES.filter(role =>
       role.name?.toLowerCase().includes(search.toLowerCase())
     );
-  }, [data, search]);
+  }, [search]);
 
   return (
     <aside className="role-side-panel">
@@ -101,35 +92,9 @@ export default function RoleSidePanel({
         </div>
       )}
 
-      {panelMode.mode === 'edit' && (
-        <div className="role-side-form-card">
-          <div className="role-side-form-header">
-            <div>
-              <h4 className="role-side-form-title">Edit Role</h4>
-              <p className="role-side-form-subtitle">
-                Update selected role details.
-              </p>
-            </div>
-
-            <button
-              type="button"
-              className="role-side-close"
-              onClick={closePanel}
-              aria-label="Close edit role form"
-            >
-              <i className="pi pi-times" />
-            </button>
-          </div>
-
-          <EditRoleContent id={panelMode.id} onClose={closePanel} />
-        </div>
-      )}
-
       <div className="role-side-list-scroll">
         <div className="role-side-list">
-          {isLoading ? <Loader /> : undefined}
-
-          {!isLoading && filteredRoles.length === 0 && (
+          {filteredRoles.length === 0 && (
             <div className="role-side-empty">No roles found.</div>
           )}
 
@@ -168,25 +133,12 @@ export default function RoleSidePanel({
                 <span className="role-side-item-actions">
                   <button
                     type="button"
-                    className="grid-action-icon-btn grid-action-edit-btn"
-                    aria-label="Edit role"
-                    title="Edit role"
-                    onClick={event => {
-                      event.stopPropagation();
-                      setPanelMode({ mode: 'edit', id: role.id });
-                    }}
-                  >
-                    <i className="pi pi-pencil" />
-                  </button>
-
-                  <button
-                    type="button"
                     className="grid-action-icon-btn grid-action-delete-btn"
                     aria-label="Delete role"
                     title="Delete role"
                     onClick={event => {
                       event.stopPropagation();
-                      handleDeleteRole();
+                      handleDeleteRole(role);
                     }}
                   >
                     <i className="pi pi-trash" />
@@ -199,63 +151,28 @@ export default function RoleSidePanel({
       </div>
 
       <div className="role-side-footer">
-        Showing {filteredRoles.length} of {data?.length ?? 0} roles
+        Showing {filteredRoles.length} of {ROLES.length} roles
       </div>
+
+      {/* Delete Confirm Dialog */}
+      <ConfirmDialog
+        visible={!!confirmTarget}
+        onHide={() => setConfirmTarget(null)}
+        onConfirm={handleConfirmDelete}
+        variant="danger"
+        title="Delete Role"
+        message={`Are you sure you want to delete "${confirmTarget?.name}"? All user assignments and feature permissions linked to this role will also be removed.`}
+        confirmLabel="Delete"
+      />
     </aside>
   );
 }
 
 function CreateRoleContent({ onClose }: { onClose: () => void }) {
-  const { mutateAsync, isPending } = useCreateUserRoleMutation();
-
-  async function handleSubmit(data: UserManagement.UserRoleForm) {
-    try {
-      const result = await mutateAsync(data);
-
-      if (result) {
-        ToastService.success('Role created successfully.');
-        onClose();
-      }
-    } catch {
-      ToastService.error('Failed to create role');
-    }
+  async function handleSubmit(_data: UserManagement.UserRoleForm) {
+    ToastService.success('Role created successfully.');
+    onClose();
   }
 
-  return <RoleForm onSubmit={handleSubmit} isSaving={isPending} columns={1} />;
-}
-
-function EditRoleContent({ id, onClose }: { id: string; onClose: () => void }) {
-  const { mutateAsync, isPending } = useUpdateUserRoleMutation(id);
-  const { data, isLoading } = useUserRoleQuery(id);
-
-  const DEFAULT: UserManagement.UserRoleForm = {
-    name: '',
-    description: '',
-    isActive: true,
-  };
-
-  async function handleSubmit(formData: UserManagement.UserRoleForm) {
-    try {
-      const result = await mutateAsync(formData);
-
-      if (result) {
-        ToastService.success('Role updated successfully.');
-        onClose();
-      }
-    } catch {
-      ToastService.error('Failed to update role');
-    }
-  }
-
-  if (isLoading) return <Loader />;
-
-  return (
-    <RoleForm
-      fetchData={data ?? DEFAULT}
-      isSaving={isPending}
-      isEditMode
-      onSubmit={handleSubmit}
-      columns={1}
-    />
-  );
+  return <RoleForm onSubmit={handleSubmit} columns={1} />;
 }

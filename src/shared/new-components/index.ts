@@ -1,6 +1,7 @@
 import ActionOverlay from './ActionOverlay/ActionOverlay';
 import Breadcrumb from './Breadcrumb';
 import BulkSelectTable from './BulkSelectTable/BulkSelectTable';
+import ConfirmDialog from './ConfirmDialog';
 import FormActions from './FormActions';
 import FormCard from './FormCard';
 import FormGrid from './FormGrid';
@@ -35,6 +36,7 @@ export {
   ActionOverlay,
   Breadcrumb,
   BulkSelectTable,
+  ConfirmDialog,
   FormActions,
   FormCard,
   FormGrid,
