@@ -410,7 +410,6 @@ export default function Dashboard() {
       title="Feedback Management Dashboard"
       description="Overview of feedback sessions, submissions, and analytics."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'Student Feedback Management', to: feedbackUrls.portal },
         { label: 'Admin Portal', to: feedbackUrls.admin.portal },
         { label: 'Dashboard' },

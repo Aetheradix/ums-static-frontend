@@ -99,7 +99,6 @@ export default function AdminReports() {
       title="Reports & Analytics"
       description="Comprehensive ticket analytics by agent, module, priority, SLA, and more."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'Reports' },
       ]}

@@ -15,7 +15,6 @@ export default function AdminMyTickets() {
       title="My Tickets"
       description="Tickets created by you."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'My Tickets' },
       ]}

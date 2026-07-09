@@ -16,7 +16,6 @@ export default function AgentMyAssignedTickets() {
       title="My Assigned Tickets"
       description={`Tickets assigned to ${agentName}.`}
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'My Assigned' },
       ]}

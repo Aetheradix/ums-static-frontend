@@ -37,7 +37,6 @@ export default function AdminDashboard() {
       title="Service Desk Admin Dashboard"
       description="Complete enterprise service desk KPIs, SLA compliance, and agent performance monitoring."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'Admin Dashboard' },
       ]}

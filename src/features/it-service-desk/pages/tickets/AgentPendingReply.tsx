@@ -21,7 +21,6 @@ export default function AgentPendingReply() {
       title="Pending Reply"
       description="Tickets waiting for your response."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'Pending Reply' },
       ]}

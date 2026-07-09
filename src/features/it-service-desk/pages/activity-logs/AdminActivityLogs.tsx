@@ -24,7 +24,6 @@ export default function AdminActivityLogs() {
       title="Activity Logs"
       description="Complete audit trail of all ticket events across the service desk."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'Activity Logs' },
       ]}

@@ -194,7 +194,6 @@ export default function PendingActions() {
       title="Pending Actions"
       description="Review department replies and issue final responses."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'RTI Management', to: rtiUrls.portal },
         { label: 'Admin Portal', to: rtiUrls.admin.portal },
         { label: 'Pending Actions' },

@@ -8711,6 +8711,14 @@ export const menuConfig: Menu.MenuItem[] = [
             path: '/home/sub-menu/student-feedback-management',
             children: [
               {
+                label: 'Student Portal',
+                slug: 'feedback-student',
+                description: 'View active feedback forms and submit responses.',
+                path: '/student-feedback-management/student',
+                icon: 'feedback',
+                colorScheme: 'green',
+              },
+              {
                 label: 'Admin Portal',
                 slug: 'feedback-admin',
                 description:

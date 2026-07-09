@@ -105,10 +105,9 @@ export default function FeedbackTemplates() {
       title="Feedback Templates"
       description="Create and manage reusable question templates for feedback sessions."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'Student Feedback Management', to: feedbackUrls.portal },
         { label: 'Admin Portal', to: feedbackUrls.admin.portal },
-        { label: 'Templates' },
+        { label: 'Feedback Templates' },
       ]}
     >
       <FormCard>

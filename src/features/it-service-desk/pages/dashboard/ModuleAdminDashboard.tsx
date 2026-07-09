@@ -34,7 +34,6 @@ export default function ModuleAdminDashboard() {
       title="Module Admin Dashboard"
       description="Tickets and metrics for your assigned ERP modules."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'Module Admin Dashboard' },
       ]}

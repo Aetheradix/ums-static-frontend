@@ -156,7 +156,6 @@ export default function QuestionBank() {
       title="Question Bank"
       description="Manage questions, categories, and answer types for feedback templates."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'Student Feedback Management', to: feedbackUrls.portal },
         { label: 'Admin Portal', to: feedbackUrls.admin.portal },
         { label: 'Question Bank' },

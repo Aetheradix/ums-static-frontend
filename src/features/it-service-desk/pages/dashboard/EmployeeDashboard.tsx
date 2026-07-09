@@ -38,7 +38,6 @@ export default function EmployeeDashboard() {
       title="My Service Desk"
       description="Track your support tickets and submit new requests."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'My Dashboard' },
       ]}
