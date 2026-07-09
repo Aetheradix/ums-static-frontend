@@ -6870,7 +6870,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'indigo',
               },
               {
-                label: 'EOT requests for Extension of Time / Cost',
+                label: 'Extension Request',
                 description:
                   'Review and approve contractor timeline extensions and revised estimates.',
                 path: '/civil-infrastructure/admin/eot-requests',
