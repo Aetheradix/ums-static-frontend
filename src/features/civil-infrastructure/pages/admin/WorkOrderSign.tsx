@@ -25,7 +25,9 @@ export default function WorkOrderSign() {
     if (saved) {
       const parsed = JSON.parse(saved);
       const parsedIds = new Set(parsed.map((w: any) => w.id));
-      const missing = initialWorkOrders.filter((w: any) => !parsedIds.has(w.id));
+      const missing = initialWorkOrders.filter(
+        (w: any) => !parsedIds.has(w.id)
+      );
       if (missing.length > 0) {
         const merged = [...parsed, ...missing];
         localStorage.setItem('civil_work_orders', JSON.stringify(merged));
@@ -569,8 +571,11 @@ export default function WorkOrderSign() {
                     color: '#15803d',
                   }}
                 >
-                  <strong>Admin Approval & Final Submission:</strong> This action
-                  approves the work order, records the digital signatures, and formally transmits the final Work Order (Notice to Proceed), recording the official project start timestamp.
+                  <strong>Admin Approval & Final Submission:</strong> This
+                  action approves the work order, records the digital
+                  signatures, and formally transmits the final Work Order
+                  (Notice to Proceed), recording the official project start
+                  timestamp.
                 </div>
                 <TextArea
                   label="Admin Approval Remarks"

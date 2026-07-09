@@ -1269,7 +1269,8 @@ export const milestones: Milestone[] = [
     workName: 'Boys Hostel Block D – 200 Beds',
     sequenceNo: 2,
     milestoneName: 'Superstructure (G+1 Slab)',
-    description: 'RCC pillar casting, floor beam slab reinforcement and concrete pouring',
+    description:
+      'RCC pillar casting, floor beam slab reinforcement and concrete pouring',
     plannedStartDate: '2025-04-01',
     plannedEndDate: '2025-07-31',
     actualStartDate: '2025-04-05',

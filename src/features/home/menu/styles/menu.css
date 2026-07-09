@@ -43,7 +43,7 @@
 }
 
 .welcome-banner-img {
-  @apply absolute right-0 top-0 bottom-0 h-full w-auto object-contain select-none pointer-events-none z-0;
+  @apply absolute right-0 top-0 bottom-0 h-full w-auto object-contain select-none pointer-events-none z-0 max-md:hidden;
 }
 
 .welcome-actions {

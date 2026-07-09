@@ -54,8 +54,14 @@ export default function TenderOversight() {
         if (mockW) {
           return {
             ...w,
-            status: w.status === 'Budget Locked' && mockW.status === 'Tender Awarded' ? 'Tender Awarded' : w.status,
-            contractAmount: w.contractAmount === 0 && mockW.contractAmount > 0 ? mockW.contractAmount : w.contractAmount,
+            status:
+              w.status === 'Budget Locked' && mockW.status === 'Tender Awarded'
+                ? 'Tender Awarded'
+                : w.status,
+            contractAmount:
+              w.contractAmount === 0 && mockW.contractAmount > 0
+                ? mockW.contractAmount
+                : w.contractAmount,
             tpiAgencyId: w.tpiAgencyId || mockW.tpiAgencyId,
             tpiAgencyName: w.tpiAgencyName || mockW.tpiAgencyName,
             qualityLabId: w.qualityLabId || mockW.qualityLabId,
@@ -74,7 +80,9 @@ export default function TenderOversight() {
     if (saved) {
       const parsed = JSON.parse(saved);
       const parsedIds = new Set(parsed.map((w: any) => w.id));
-      const missing = initialWorkOrders.filter((w: any) => !parsedIds.has(w.id));
+      const missing = initialWorkOrders.filter(
+        (w: any) => !parsedIds.has(w.id)
+      );
       const baseList = missing.length > 0 ? [...parsed, ...missing] : parsed;
       const merged = baseList.map((w: any) => {
         const mockW = initialWorkOrders.find((mw: any) => mw.id === w.id);

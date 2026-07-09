@@ -80,8 +80,6 @@ export default function AdminApproval() {
     setAaRemarks('');
   };
 
-
-
   return (
     <FormPage
       title="Administrative Sanction (AA) Approvals"

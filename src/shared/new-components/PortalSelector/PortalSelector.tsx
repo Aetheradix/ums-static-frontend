@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import Tile from '../../components/Tiles/Tile';
-import Breadcrumb from '../Breadcrumb';
+import Breadcrumb, { type BreadcrumbItem } from '../Breadcrumb';
 import './PortalSelector.css';
 
 export interface PortalOption {
@@ -29,6 +29,7 @@ interface PortalSelectorProps {
   backPath?: string;
   backLabel?: string;
   coverImage?: string;
+  breadcrumbs?: BreadcrumbItem[];
 }
 
 export default function PortalSelector({
@@ -38,6 +39,7 @@ export default function PortalSelector({
   backPath,
   backLabel = 'Home',
   coverImage,
+  breadcrumbs,
 }: PortalSelectorProps) {
   const navigate = useNavigate();
 
@@ -52,21 +54,40 @@ export default function PortalSelector({
           />
         </div>
       )}
-      <div className="portal-selector-header">
-        {backPath && (
-          <div className="portal-selector-back">
-            <Breadcrumb
-              items={[
-                { label: backLabel, to: backPath },
-                { label: moduleTitle },
-              ]}
-            />
+      <div className="form-page-header">
+        <div className="form-page-header-content w-full flex flex-col sm:flex-row justify-between gap-4">
+          {/* Left side: Title & Description */}
+          <div className="form-page-header-left flex flex-col gap-1 sm:order-1 order-2">
+            <h1 className="form-page-title">{moduleTitle}</h1>
+            {moduleDescription && (
+              <p className="form-page-description">{moduleDescription}</p>
+            )}
           </div>
-        )}
-        <h1 className="portal-selector-title">{moduleTitle}</h1>
-        {moduleDescription && (
-          <p className="portal-selector-description">{moduleDescription}</p>
-        )}
+
+          {/* Right side: Breadcrumbs and Back button */}
+          <div className="form-page-header-right flex flex-col sm:items-end items-start gap-2 sm:order-2 order-1">
+            <div className="form-page-breadcrumb-container flex flex-col sm:items-end items-start gap-1">
+              {breadcrumbs ? (
+                <Breadcrumb items={breadcrumbs} />
+              ) : backPath ? (
+                <Breadcrumb
+                  items={[
+                    { label: backLabel, to: backPath },
+                    { label: moduleTitle },
+                  ]}
+                />
+              ) : null}
+              <button
+                onClick={() => navigate(-1)}
+                className="hidden sm:flex items-center gap-1.5 text-[11px] font-bold text-[#2264dc] hover:text-[#1849a9] transition-colors mt-0.5 bg-slate-50 hover:bg-slate-100/80 px-2.5 py-1 rounded-md border border-slate-200 shadow-sm cursor-pointer"
+                type="button"
+              >
+                <i className="pi pi-arrow-left text-[9px]" />
+                <span>Back</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="portal-selector-grid">

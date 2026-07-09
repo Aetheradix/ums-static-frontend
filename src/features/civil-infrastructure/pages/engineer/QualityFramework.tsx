@@ -15,10 +15,7 @@ import {
   GridPanel,
   Tabs,
 } from 'shared/new-components';
-import {
-  civilWorks,
-  milestones as initialMilestones,
-} from '../../mocks';
+import { civilWorks, milestones as initialMilestones } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
@@ -91,8 +88,14 @@ export default function QualityFramework() {
         if (mockW) {
           return {
             ...w,
-            status: w.status === 'Budget Locked' && mockW.status === 'Tender Awarded' ? 'Tender Awarded' : w.status,
-            contractAmount: w.contractAmount === 0 && mockW.contractAmount > 0 ? mockW.contractAmount : w.contractAmount,
+            status:
+              w.status === 'Budget Locked' && mockW.status === 'Tender Awarded'
+                ? 'Tender Awarded'
+                : w.status,
+            contractAmount:
+              w.contractAmount === 0 && mockW.contractAmount > 0
+                ? mockW.contractAmount
+                : w.contractAmount,
             tpiAgencyId: w.tpiAgencyId || mockW.tpiAgencyId,
             tpiAgencyName: w.tpiAgencyName || mockW.tpiAgencyName,
             qualityLabId: w.qualityLabId || mockW.qualityLabId,
@@ -126,7 +129,9 @@ export default function QualityFramework() {
         return m;
       });
       const parsedIds = new Set(merged.map((m: any) => m.id));
-      const missing = initialMilestones.filter((m: any) => !parsedIds.has(m.id));
+      const missing = initialMilestones.filter(
+        (m: any) => !parsedIds.has(m.id)
+      );
       const finalMerged = [...merged, ...missing];
       localStorage.setItem('civil_milestones', JSON.stringify(finalMerged));
       return finalMerged;
@@ -176,7 +181,12 @@ export default function QualityFramework() {
             testDate,
             uploadedDoc: docName,
             testRemarks: remarks,
-            status: result === 'Fail' ? 'Quality Fail' as any : m.status === 'Quality Fail' ? 'In Progress' as any : m.status,
+            status:
+              result === 'Fail'
+                ? ('Quality Fail' as any)
+                : m.status === 'Quality Fail'
+                  ? ('In Progress' as any)
+                  : m.status,
           }
         : m
     );
@@ -302,7 +312,9 @@ export default function QualityFramework() {
                       field: 'testName',
                       header: 'Test Name',
                       cell: (m: any) => (
-                        <span style={{ fontWeight: 600 }}>{m.testName || '—'}</span>
+                        <span style={{ fontWeight: 600 }}>
+                          {m.testName || '—'}
+                        </span>
                       ),
                     },
                     {
@@ -312,7 +324,9 @@ export default function QualityFramework() {
                         const wk = works.find(
                           (w: any) => w.id === m.workId || w.workId === m.workId
                         );
-                        return <span>{wk?.qualityLabName ?? m.labName ?? '—'}</span>;
+                        return (
+                          <span>{wk?.qualityLabName ?? m.labName ?? '—'}</span>
+                        );
                       },
                     },
                     {
@@ -398,9 +412,16 @@ export default function QualityFramework() {
                                 setCertNo(item.certNo || '');
                                 setObservedValue(item.observedValue || '');
                                 setDocName(item.uploadedDoc || '');
-                                setResult(item.qualityTestStatus === 'Fail' ? 'Fail' : 'Pass');
+                                setResult(
+                                  item.qualityTestStatus === 'Fail'
+                                    ? 'Fail'
+                                    : 'Pass'
+                                );
                                 setRemarks(item.testRemarks || '');
-                                setTestDate(item.testDate || new Date().toISOString().split('T')[0]);
+                                setTestDate(
+                                  item.testDate ||
+                                    new Date().toISOString().split('T')[0]
+                                );
                                 setPopup({ mode: 'update', item });
                               }}
                             />
@@ -628,7 +649,10 @@ export default function QualityFramework() {
                   }}
                 >
                   {[
-                    ['Milestone Stage', `${popup.item.milestoneName} (Milestone ${popup.item.sequenceNo})`],
+                    [
+                      'Milestone Stage',
+                      `${popup.item.milestoneName} (Milestone ${popup.item.sequenceNo})`,
+                    ],
                     ['Milestone Description', popup.item.description],
                     ['Test Name', popup.item.testName || '—'],
                     ['Test Type / Standard', popup.item.testType || '—'],

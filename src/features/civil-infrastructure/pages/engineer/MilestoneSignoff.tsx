@@ -3,10 +3,10 @@ import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { TextArea } from 'shared/components/forms';
 import {
-    FormCard,
-    FormPage,
-    FormPopup,
-    GridPanel,
+  FormCard,
+  FormPage,
+  FormPopup,
+  GridPanel,
 } from 'shared/new-components';
 import {
   type Milestone,
@@ -51,8 +51,6 @@ export default function MilestoneSignoff() {
     return initialData;
   });
 
-
-
   const [selectedWorkId, setSelectedWorkId] = useState('');
   const [selectedMilestoneId, setSelectedMilestoneId] = useState('');
 
@@ -86,7 +84,11 @@ export default function MilestoneSignoff() {
 
   const canSignOff = (m: Milestone) => {
     const req = paymentRequests.find(r => r.milestoneId === m.id);
-    if (req && (req.status === 'Pending Admin Approval' || req.status === 'Approved by Admin')) {
+    if (
+      req &&
+      (req.status === 'Pending Admin Approval' ||
+        req.status === 'Approved by Admin')
+    ) {
       return false;
     }
     const s = m.status as string;
@@ -101,10 +103,13 @@ export default function MilestoneSignoff() {
 
     const work = civilWorks.find(w => w.id === item.workId);
     const contractAmt = work?.contractAmount || work?.estimatedCost || 15000000; // fallback default
-    const contractorName = work?.externalAgency || 'Sharma Constructions Pvt Ltd';
+    const contractorName =
+      work?.externalAgency || 'Sharma Constructions Pvt Ltd';
     const releaseAmt = contractAmt * (item.weightage / 100);
 
-    const savedRequests = localStorage.getItem('civil_milestone_payment_requests');
+    const savedRequests = localStorage.getItem(
+      'civil_milestone_payment_requests'
+    );
     const requestsList = savedRequests ? JSON.parse(savedRequests) : [];
     const newReq = {
       id: String(Date.now()),
@@ -123,7 +128,10 @@ export default function MilestoneSignoff() {
     };
 
     const updatedRequests = [...requestsList, newReq];
-    localStorage.setItem('civil_milestone_payment_requests', JSON.stringify(updatedRequests));
+    localStorage.setItem(
+      'civil_milestone_payment_requests',
+      JSON.stringify(updatedRequests)
+    );
     setPaymentRequests(updatedRequests);
 
     const updatedMilestones = data.map((m: any) =>
@@ -137,7 +145,9 @@ export default function MilestoneSignoff() {
     setData(updatedMilestones);
     localStorage.setItem('civil_milestones', JSON.stringify(updatedMilestones));
 
-    ToastService.success('Milestone sign-off & payment release request submitted to Admin.');
+    ToastService.success(
+      'Milestone sign-off & payment release request submitted to Admin.'
+    );
     window.dispatchEvent(new Event('storage'));
     setPopup({ mode: 'closed' });
     setRemarks('');
@@ -146,10 +156,17 @@ export default function MilestoneSignoff() {
   };
 
   const statusCls = (s: string) => {
-    if (s === 'Completed' || s === 'Payment Released' || s === 'Approved by Admin') return 'green';
+    if (
+      s === 'Completed' ||
+      s === 'Payment Released' ||
+      s === 'Approved by Admin'
+    )
+      return 'green';
     if (s === 'In Progress') return 'blue';
-    if (s === 'Delayed' || s === 'Quality Fail' || s === 'Rejected by Admin') return 'red';
-    if (s === 'Pending Sign-off' || s === 'Pending Admin Approval') return 'amber';
+    if (s === 'Delayed' || s === 'Quality Fail' || s === 'Rejected by Admin')
+      return 'red';
+    if (s === 'Pending Sign-off' || s === 'Pending Admin Approval')
+      return 'amber';
     return 'gray';
   };
 
@@ -255,7 +272,9 @@ export default function MilestoneSignoff() {
               header: 'Action',
               sortable: false,
               cell: (item: Milestone) => {
-                const req = paymentRequests.find(r => r.milestoneId === item.id);
+                const req = paymentRequests.find(
+                  r => r.milestoneId === item.id
+                );
                 return (
                   <div style={{ display: 'flex', gap: '0.375rem' }}>
                     <Button
@@ -271,7 +290,9 @@ export default function MilestoneSignoff() {
                         label="View Request"
                         icon="file"
                         variant="outlined"
-                        onClick={() => setPopup({ mode: 'view_request', requestItem: req })}
+                        onClick={() =>
+                          setPopup({ mode: 'view_request', requestItem: req })
+                        }
                       />
                     ) : (
                       canSignOff(item) && (
@@ -330,10 +351,16 @@ export default function MilestoneSignoff() {
           >
             {[
               ['Work ID / Name', popup.requestItem.workName],
-              ['Milestone Stage', `${popup.requestItem.milestoneName} (Milestone ${popup.requestItem.sequenceNo})`],
+              [
+                'Milestone Stage',
+                `${popup.requestItem.milestoneName} (Milestone ${popup.requestItem.sequenceNo})`,
+              ],
               ['Contractor / Vendor', popup.requestItem.contractorName],
               ['Milestone Weightage', `${popup.requestItem.weightage}%`],
-              ['Amount to Release', `₹${(popup.requestItem.amountToRelease).toLocaleString('en-IN')}`],
+              [
+                'Amount to Release',
+                `₹${popup.requestItem.amountToRelease.toLocaleString('en-IN')}`,
+              ],
               ['Request Date', popup.requestItem.requestDate],
               ['Status', popup.requestItem.status],
               ['Justification Remarks', popup.requestItem.remarks],
@@ -342,7 +369,17 @@ export default function MilestoneSignoff() {
               ['Payment Date', popup.requestItem.paymentDate || '—'],
               ['Payment NEFT/UTR Ref', popup.requestItem.paymentRef || '—'],
             ].map(([k, v]) => (
-              <div key={k} style={{ gridColumn: k === 'Justification Remarks' || k === 'Approval Remarks' || k === 'Work ID / Name' ? 'span 2' : 'span 1' }}>
+              <div
+                key={k}
+                style={{
+                  gridColumn:
+                    k === 'Justification Remarks' ||
+                    k === 'Approval Remarks' ||
+                    k === 'Work ID / Name'
+                      ? 'span 2'
+                      : 'span 1',
+                }}
+              >
                 <div
                   style={{
                     color: '#9ca3af',
@@ -363,9 +400,24 @@ export default function MilestoneSignoff() {
         {popup.mode === 'signoff' && (
           <>
             {!popup.item && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.25rem' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '1rem',
+                  marginBottom: '1.25rem',
+                }}
+              >
                 <div>
-                  <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#4b5563', display: 'block', marginBottom: '0.25rem' }}>
+                  <label
+                    style={{
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      color: '#4b5563',
+                      display: 'block',
+                      marginBottom: '0.25rem',
+                    }}
+                  >
                     Select Work / Project *
                   </label>
                   <select
@@ -379,7 +431,7 @@ export default function MilestoneSignoff() {
                       background: '#fff',
                     }}
                     value={selectedWorkId}
-                    onChange={(e) => {
+                    onChange={e => {
                       setSelectedWorkId(e.target.value);
                       setSelectedMilestoneId('');
                     }}
@@ -395,7 +447,15 @@ export default function MilestoneSignoff() {
 
                 {selectedWorkId && (
                   <div>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#4b5563', display: 'block', marginBottom: '0.25rem' }}>
+                    <label
+                      style={{
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        color: '#4b5563',
+                        display: 'block',
+                        marginBottom: '0.25rem',
+                      }}
+                    >
                       Select Completed Milestone Stage *
                     </label>
                     <select
@@ -409,17 +469,22 @@ export default function MilestoneSignoff() {
                         background: '#fff',
                       }}
                       value={selectedMilestoneId}
-                      onChange={(e) => setSelectedMilestoneId(e.target.value)}
+                      onChange={e => setSelectedMilestoneId(e.target.value)}
                     >
                       <option value="">-- Choose Milestone --</option>
                       {data
                         .filter(m => m.workId === selectedWorkId)
                         .map(m => {
-                          const req = paymentRequests.find(r => r.milestoneId === m.id);
+                          const req = paymentRequests.find(
+                            r => r.milestoneId === m.id
+                          );
                           const isEligible = canSignOff(m);
                           let label = `${m.milestoneName} (Milestone #${m.sequenceNo})`;
-                          const isActiveRequest = req && (req.status === 'Pending Admin Approval' || req.status === 'Approved by Admin');
-                          
+                          const isActiveRequest =
+                            req &&
+                            (req.status === 'Pending Admin Approval' ||
+                              req.status === 'Approved by Admin');
+
                           if (isActiveRequest) {
                             label += ` — Request Pending/Approved (${req.status})`;
                           } else if (req?.status === 'Payment Released') {
@@ -430,7 +495,11 @@ export default function MilestoneSignoff() {
                             label += ' — Ready to Release';
                           }
                           return (
-                            <option key={m.id} value={m.id} disabled={isActiveRequest || !isEligible}>
+                            <option
+                              key={m.id}
+                              value={m.id}
+                              disabled={isActiveRequest || !isEligible}
+                            >
                               {label}
                             </option>
                           );
@@ -442,166 +511,208 @@ export default function MilestoneSignoff() {
             )}
 
             {/* If popup.item is defined OR a milestone is selected in the dropdown */}
-            {(popup.item || selectedMilestoneId) && (() => {
-              const activeItem = popup.item || data.find(m => m.id === selectedMilestoneId);
-              if (!activeItem) return null;
+            {(popup.item || selectedMilestoneId) &&
+              (() => {
+                const activeItem =
+                  popup.item || data.find(m => m.id === selectedMilestoneId);
+                if (!activeItem) return null;
 
-              const work = civilWorks.find(w => w.id === activeItem.workId);
-              const contractAmt = work?.contractAmount || work?.estimatedCost || 15000000;
-              const contractorName = work?.externalAgency || 'Sharma Constructions Pvt Ltd';
-              const releaseAmt = contractAmt * (activeItem.weightage / 100);
+                const work = civilWorks.find(w => w.id === activeItem.workId);
+                const contractAmt =
+                  work?.contractAmount || work?.estimatedCost || 15000000;
+                const contractorName =
+                  work?.externalAgency || 'Sharma Constructions Pvt Ltd';
+                const releaseAmt = contractAmt * (activeItem.weightage / 100);
 
-              const isEligible = canSignOff(activeItem);
+                const isEligible = canSignOff(activeItem);
 
-              return (
-                <>
-                  <div
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(2, 1fr)',
-                      gap: '0.75rem 2rem',
-                      fontSize: '0.8125rem',
-                      padding: '1rem',
-                      background: '#f9fafb',
-                      borderRadius: '0.75rem',
-                      marginBottom: '1rem',
-                    }}
-                  >
-                    {[
-                      ['Work / Project', work?.name || activeItem.workName],
-                      ['Milestone', activeItem.milestoneName],
-                      ['Weightage', `${activeItem.weightage}%`],
-                      ['Contractor / Vendor', contractorName],
-                      ['Project Contract Value', `₹${contractAmt.toLocaleString('en-IN')}`],
-                      ['Release Amount (Calculated)', `₹${releaseAmt.toLocaleString('en-IN')}`],
-                      ['Planned End', activeItem.plannedEndDate],
-                      ['QA Test Required', activeItem.qualityTestRequired ? 'Yes' : 'No'],
-                      ['QA Status', activeItem.qualityTestStatus ?? 'N/A'],
-                    ].map(([k, v]) => (
-                      <div key={k} style={{ gridColumn: k === 'Work / Project' ? 'span 2' : 'span 1' }}>
-                        <div
-                          style={{
-                            color: '#9ca3af',
-                            fontSize: '0.6875rem',
-                            fontWeight: 600,
-                            textTransform: 'uppercase',
-                            marginBottom: 2,
-                          }}
-                        >
-                          {k}
-                        </div>
-                        <div style={{ fontWeight: 600 }}>{v}</div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {!isEligible && (
+                return (
+                  <>
                     <div
                       style={{
-                        background: '#fee2e2',
-                        border: '1px solid #fca5a5',
-                        borderRadius: '0.75rem',
-                        padding: '0.875rem 1rem',
-                        color: '#991b1b',
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(2, 1fr)',
+                        gap: '0.75rem 2rem',
                         fontSize: '0.8125rem',
-                        marginBottom: '0.75rem',
+                        padding: '1rem',
+                        background: '#f9fafb',
+                        borderRadius: '0.75rem',
+                        marginBottom: '1rem',
                       }}
                     >
-                      ❌ This milestone stage is not currently in progress or has already been signed off. Sign-off application is blocked.
+                      {[
+                        ['Work / Project', work?.name || activeItem.workName],
+                        ['Milestone', activeItem.milestoneName],
+                        ['Weightage', `${activeItem.weightage}%`],
+                        ['Contractor / Vendor', contractorName],
+                        [
+                          'Project Contract Value',
+                          `₹${contractAmt.toLocaleString('en-IN')}`,
+                        ],
+                        [
+                          'Release Amount (Calculated)',
+                          `₹${releaseAmt.toLocaleString('en-IN')}`,
+                        ],
+                        ['Planned End', activeItem.plannedEndDate],
+                        [
+                          'QA Test Required',
+                          activeItem.qualityTestRequired ? 'Yes' : 'No',
+                        ],
+                        ['QA Status', activeItem.qualityTestStatus ?? 'N/A'],
+                      ].map(([k, v]) => (
+                        <div
+                          key={k}
+                          style={{
+                            gridColumn:
+                              k === 'Work / Project' ? 'span 2' : 'span 1',
+                          }}
+                        >
+                          <div
+                            style={{
+                              color: '#9ca3af',
+                              fontSize: '0.6875rem',
+                              fontWeight: 600,
+                              textTransform: 'uppercase',
+                              marginBottom: 2,
+                            }}
+                          >
+                            {k}
+                          </div>
+                          <div style={{ fontWeight: 600 }}>{v}</div>
+                        </div>
+                      ))}
                     </div>
-                  )}
 
-                  {isEligible && (
-                    <>
+                    {!isEligible && (
                       <div
                         style={{
-                          background: '#fffbeb',
-                          border: '1px solid #fde68a',
+                          background: '#fee2e2',
+                          border: '1px solid #fca5a5',
                           borderRadius: '0.75rem',
                           padding: '0.875rem 1rem',
-                          color: '#b45309',
+                          color: '#991b1b',
                           fontSize: '0.8125rem',
                           marginBottom: '0.75rem',
                         }}
                       >
-                        ⚠️ Clicking Submit will apply for Milestone Sign-off and request a payment release of <strong>₹{releaseAmt.toLocaleString('en-IN')}</strong> to the Contractor.
+                        ❌ This milestone stage is not currently in progress or
+                        has already been signed off. Sign-off application is
+                        blocked.
                       </div>
-                      <TextArea
-                        label="Justification Remarks *"
-                        placeholder="Detail the percentage progress of construction, field check status, and metrics achieved..."
-                        value={remarks}
-                        onChange={setRemarks}
-                        rows={3}
-                        required
-                      />
-                      <div className="flex justify-end gap-3 mt-4">
-                        <Button
-                          label="Cancel"
-                          variant="outlined"
-                          onClick={() => setPopup({ mode: 'closed' })}
+                    )}
+
+                    {isEligible && (
+                      <>
+                        <div
+                          style={{
+                            background: '#fffbeb',
+                            border: '1px solid #fde68a',
+                            borderRadius: '0.75rem',
+                            padding: '0.875rem 1rem',
+                            color: '#b45309',
+                            fontSize: '0.8125rem',
+                            marginBottom: '0.75rem',
+                          }}
+                        >
+                          ⚠️ Clicking Submit will apply for Milestone Sign-off
+                          and request a payment release of{' '}
+                          <strong>₹{releaseAmt.toLocaleString('en-IN')}</strong>{' '}
+                          to the Contractor.
+                        </div>
+                        <TextArea
+                          label="Justification Remarks *"
+                          placeholder="Detail the percentage progress of construction, field check status, and metrics achieved..."
+                          value={remarks}
+                          onChange={setRemarks}
+                          rows={3}
+                          required
                         />
-                        <Button
-                          label="Submit Sign-off & Payment Request"
-                          variant="primary"
-                          icon="send"
-                          onClick={() => handleSignOff(activeItem)}
-                        />
-                      </div>
-                    </>
-                  )}
-                </>
-              );
-            })()}
+                        <div className="flex justify-end gap-3 mt-4">
+                          <Button
+                            label="Cancel"
+                            variant="outlined"
+                            onClick={() => setPopup({ mode: 'closed' })}
+                          />
+                          <Button
+                            label="Submit Sign-off & Payment Request"
+                            variant="primary"
+                            icon="send"
+                            onClick={() => handleSignOff(activeItem)}
+                          />
+                        </div>
+                      </>
+                    )}
+                  </>
+                );
+              })()}
           </>
         )}
 
-        {popup.mode === 'view' && popup.item && (() => {
-          const work = civilWorks.find(w => w.id === popup.item!.workId);
-          const contractAmt = work?.contractAmount || work?.estimatedCost || 15000000;
-          const contractorName = work?.externalAgency || 'Sharma Constructions Pvt Ltd';
-          const releaseAmt = contractAmt * (popup.item!.weightage / 100);
+        {popup.mode === 'view' &&
+          popup.item &&
+          (() => {
+            const work = civilWorks.find(w => w.id === popup.item!.workId);
+            const contractAmt =
+              work?.contractAmount || work?.estimatedCost || 15000000;
+            const contractorName =
+              work?.externalAgency || 'Sharma Constructions Pvt Ltd';
+            const releaseAmt = contractAmt * (popup.item!.weightage / 100);
 
-          return (
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: '0.75rem 2rem',
-                fontSize: '0.8125rem',
-                padding: '1rem',
-                background: '#f9fafb',
-                borderRadius: '0.75rem',
-              }}
-            >
-              {[
-                ['Work / Project', work?.name || popup.item!.workName],
-                ['MilestoneName', popup.item!.milestoneName],
-                ['Weightage', `${popup.item!.weightage}%`],
-                ['Contractor / Vendor', contractorName],
-                ['Project Contract Value', `₹${contractAmt.toLocaleString('en-IN')}`],
-                ['Release Amount (Calculated)', `₹${releaseAmt.toLocaleString('en-IN')}`],
-                ['Planned End', popup.item!.plannedEndDate],
-                ['QA Test Required', popup.item!.qualityTestRequired ? 'Yes' : 'No'],
-                ['QA Status', popup.item!.qualityTestStatus ?? 'N/A'],
-              ].map(([k, v]) => (
-                <div key={k} style={{ gridColumn: k === 'Work / Project' ? 'span 2' : 'span 1' }}>
+            return (
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(2, 1fr)',
+                  gap: '0.75rem 2rem',
+                  fontSize: '0.8125rem',
+                  padding: '1rem',
+                  background: '#f9fafb',
+                  borderRadius: '0.75rem',
+                }}
+              >
+                {[
+                  ['Work / Project', work?.name || popup.item!.workName],
+                  ['MilestoneName', popup.item!.milestoneName],
+                  ['Weightage', `${popup.item!.weightage}%`],
+                  ['Contractor / Vendor', contractorName],
+                  [
+                    'Project Contract Value',
+                    `₹${contractAmt.toLocaleString('en-IN')}`,
+                  ],
+                  [
+                    'Release Amount (Calculated)',
+                    `₹${releaseAmt.toLocaleString('en-IN')}`,
+                  ],
+                  ['Planned End', popup.item!.plannedEndDate],
+                  [
+                    'QA Test Required',
+                    popup.item!.qualityTestRequired ? 'Yes' : 'No',
+                  ],
+                  ['QA Status', popup.item!.qualityTestStatus ?? 'N/A'],
+                ].map(([k, v]) => (
                   <div
+                    key={k}
                     style={{
-                      color: '#9ca3af',
-                      fontSize: '0.6875rem',
-                      fontWeight: 600,
-                      textTransform: 'uppercase',
-                      marginBottom: 2,
+                      gridColumn: k === 'Work / Project' ? 'span 2' : 'span 1',
                     }}
                   >
-                    {k}
+                    <div
+                      style={{
+                        color: '#9ca3af',
+                        fontSize: '0.6875rem',
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        marginBottom: 2,
+                      }}
+                    >
+                      {k}
+                    </div>
+                    <div style={{ fontWeight: 600 }}>{v}</div>
                   </div>
-                  <div style={{ fontWeight: 600 }}>{v}</div>
-                </div>
-              ))}
-            </div>
-          );
-        })()}
+                ))}
+              </div>
+            );
+          })()}
       </FormPopup>
     </FormPage>
   );

@@ -47,7 +47,9 @@ export default function ProgressMonitoring() {
         return m;
       });
       const parsedIds = new Set(merged.map((m: any) => m.id));
-      const missing = initialMilestones.filter((m: any) => !parsedIds.has(m.id));
+      const missing = initialMilestones.filter(
+        (m: any) => !parsedIds.has(m.id)
+      );
       const finalMerged = [...merged, ...missing];
       localStorage.setItem('civil_milestones', JSON.stringify(finalMerged));
       return finalMerged;
@@ -103,7 +105,9 @@ export default function ProgressMonitoring() {
       ToastService.error('Work and description are required.');
       return;
     }
-    const availableMilestones = milestones.filter((m: any) => m.workId === workId);
+    const availableMilestones = milestones.filter(
+      (m: any) => m.workId === workId
+    );
     if (availableMilestones.length > 0 && !selectedMilestoneId) {
       ToastService.error('Please select the milestone.');
       return;
@@ -118,7 +122,9 @@ export default function ProgressMonitoring() {
       return;
     }
 
-    const matchedMilestone = milestones.find((m: any) => m.id === selectedMilestoneId);
+    const matchedMilestone = milestones.find(
+      (m: any) => m.id === selectedMilestoneId
+    );
     const newLog: ProgressLog = {
       id: String(Date.now()),
       workId,
@@ -132,7 +138,9 @@ export default function ProgressMonitoring() {
       issues: issues || undefined,
       weatherCondition: weather,
       milestoneId: selectedMilestoneId,
-      milestoneName: matchedMilestone ? matchedMilestone.milestoneName : undefined,
+      milestoneName: matchedMilestone
+        ? matchedMilestone.milestoneName
+        : undefined,
     };
     setLogs(prev => [newLog, ...prev]);
     ToastService.success('Progress log registered with geo-coordinates.');
@@ -340,13 +348,13 @@ export default function ProgressMonitoring() {
               icon="map-marker"
               variant="primary"
               onClick={() => {
-                 setWorkId('');
-                 setSelectedMilestoneId('');
-                 setProgress('');
-                 setDescription('');
-                 setIssues('');
-                 setUploadedPhotos([]);
-                 setPopup({ mode: 'create' });
+                setWorkId('');
+                setSelectedMilestoneId('');
+                setProgress('');
+                setDescription('');
+                setIssues('');
+                setUploadedPhotos([]);
+                setPopup({ mode: 'create' });
               }}
             />
           }
@@ -414,54 +422,118 @@ export default function ProgressMonitoring() {
               />
             </FormGrid>
 
-            {selectedMilestoneId && (() => {
-              const matchedMilestone = milestones.find((m: any) => m.id === selectedMilestoneId);
-              if (!matchedMilestone) return null;
-              
-              return (
-                <div
-                  style={{
-                    padding: '0.875rem 1.125rem',
-                    background: '#f8fafc',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '0.75rem',
-                    fontSize: '0.8125rem',
-                    marginBottom: '1rem',
-                  }}
-                >
-                  <div style={{ fontWeight: 700, color: '#1e293b', marginBottom: '0.5rem' }}>
-                    📋 Milestone Target Details
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.5rem 1rem', color: '#475569' }}>
-                    <div>
-                      <strong style={{ display: 'block', color: '#64748b', fontSize: '0.6875rem', textTransform: 'uppercase' }}>Scope / Description</strong>
-                      <span>{matchedMilestone.description || '—'}</span>
+            {selectedMilestoneId &&
+              (() => {
+                const matchedMilestone = milestones.find(
+                  (m: any) => m.id === selectedMilestoneId
+                );
+                if (!matchedMilestone) return null;
+
+                return (
+                  <div
+                    style={{
+                      padding: '0.875rem 1.125rem',
+                      background: '#f8fafc',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '0.75rem',
+                      fontSize: '0.8125rem',
+                      marginBottom: '1rem',
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontWeight: 700,
+                        color: '#1e293b',
+                        marginBottom: '0.5rem',
+                      }}
+                    >
+                      📋 Milestone Target Details
                     </div>
-                    <div>
-                      <strong style={{ display: 'block', color: '#64748b', fontSize: '0.6875rem', textTransform: 'uppercase' }}>Timeline Dates</strong>
-                      <span>📅 {matchedMilestone.plannedStartDate} to {matchedMilestone.plannedEndDate}</span>
-                    </div>
-                    <div>
-                      <strong style={{ display: 'block', color: '#64748b', fontSize: '0.6875rem', textTransform: 'uppercase' }}>Quality Test Gate?</strong>
-                      <span>{matchedMilestone.qualityTestRequired ? `Yes (${matchedMilestone.testName || 'Required'})` : 'No'}</span>
-                    </div>
-                    {matchedMilestone.qualityTestRequired && (
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(2, 1fr)',
+                        gap: '0.5rem 1rem',
+                        color: '#475569',
+                      }}
+                    >
                       <div>
-                        <strong style={{ display: 'block', color: '#64748b', fontSize: '0.6875rem', textTransform: 'uppercase' }}>Test Passed/Cleared?</strong>
-                        <span
+                        <strong
                           style={{
-                            fontWeight: 600,
-                            color: matchedMilestone.qualityTestStatus === 'Pass' ? '#16a34a' : '#ef4444',
+                            display: 'block',
+                            color: '#64748b',
+                            fontSize: '0.6875rem',
+                            textTransform: 'uppercase',
                           }}
                         >
-                          {matchedMilestone.qualityTestStatus === 'Pass' ? '✓ Yes, Passed' : '✗ Pending / Failed'}
+                          Scope / Description
+                        </strong>
+                        <span>{matchedMilestone.description || '—'}</span>
+                      </div>
+                      <div>
+                        <strong
+                          style={{
+                            display: 'block',
+                            color: '#64748b',
+                            fontSize: '0.6875rem',
+                            textTransform: 'uppercase',
+                          }}
+                        >
+                          Timeline Dates
+                        </strong>
+                        <span>
+                          📅 {matchedMilestone.plannedStartDate} to{' '}
+                          {matchedMilestone.plannedEndDate}
                         </span>
                       </div>
-                    )}
+                      <div>
+                        <strong
+                          style={{
+                            display: 'block',
+                            color: '#64748b',
+                            fontSize: '0.6875rem',
+                            textTransform: 'uppercase',
+                          }}
+                        >
+                          Quality Test Gate?
+                        </strong>
+                        <span>
+                          {matchedMilestone.qualityTestRequired
+                            ? `Yes (${matchedMilestone.testName || 'Required'})`
+                            : 'No'}
+                        </span>
+                      </div>
+                      {matchedMilestone.qualityTestRequired && (
+                        <div>
+                          <strong
+                            style={{
+                              display: 'block',
+                              color: '#64748b',
+                              fontSize: '0.6875rem',
+                              textTransform: 'uppercase',
+                            }}
+                          >
+                            Test Passed/Cleared?
+                          </strong>
+                          <span
+                            style={{
+                              fontWeight: 600,
+                              color:
+                                matchedMilestone.qualityTestStatus === 'Pass'
+                                  ? '#16a34a'
+                                  : '#ef4444',
+                            }}
+                          >
+                            {matchedMilestone.qualityTestStatus === 'Pass'
+                              ? '✓ Yes, Passed'
+                              : '✗ Pending / Failed'}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })()}
+                );
+              })()}
             <TextArea
               label="Progress Description *"
               placeholder="Describe work done today, quantities, locations, sections..."
@@ -472,19 +544,19 @@ export default function ProgressMonitoring() {
             />
             <FormCard title="🌍 Mandatory Geo-tagging">
               <FormGrid columns={2}>
-                 <TextBox
-                   label="GPS Latitude *"
-                   value={geoLat}
-                   disabled
-                   required
-                 />
-                 <TextBox
-                   label="GPS Longitude *"
-                   value={geoLon}
-                   disabled
-                   required
-                 />
-               </FormGrid>
+                <TextBox
+                  label="GPS Latitude *"
+                  value={geoLat}
+                  disabled
+                  required
+                />
+                <TextBox
+                  label="GPS Longitude *"
+                  value={geoLon}
+                  disabled
+                  required
+                />
+              </FormGrid>
               <FormGrid columns={3}>
                 <DropDownList
                   label="Weather Condition"
@@ -557,9 +629,25 @@ export default function ProgressMonitoring() {
                   }}
                 />
                 {uploadedPhotos.length > 0 && (
-                  <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#16a34a', fontWeight: 600 }}>
+                  <div
+                    style={{
+                      marginTop: '0.5rem',
+                      fontSize: '0.75rem',
+                      color: '#16a34a',
+                      fontWeight: 600,
+                    }}
+                  >
                     Selected files:
-                    <div style={{ color: '#475569', fontWeight: 400, marginTop: '4px', display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    <div
+                      style={{
+                        color: '#475569',
+                        fontWeight: 400,
+                        marginTop: '4px',
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: '0.5rem',
+                      }}
+                    >
                       {uploadedPhotos.map((name, idx) => (
                         <span
                           key={idx}
@@ -577,7 +665,9 @@ export default function ProgressMonitoring() {
                           <button
                             type="button"
                             onClick={() => {
-                              setUploadedPhotos(prev => prev.filter(item => item !== name));
+                              setUploadedPhotos(prev =>
+                                prev.filter(item => item !== name)
+                              );
                             }}
                             style={{
                               background: 'none',
@@ -663,14 +753,14 @@ export default function ProgressMonitoring() {
               }}
             >
               {[
-                 [
-                   'Work ID',
-                   civilWorks.find(w => w.id === popup.item!.workId)?.workId ??
-                     '—',
-                 ],
-                 ['Milestone Stage', popup.item.milestoneName ?? '—'],
-                 ['Log Date', popup.item.logDate],
-                 ['Physical Progress', `${popup.item.physicalProgress}%`],
+                [
+                  'Work ID',
+                  civilWorks.find(w => w.id === popup.item!.workId)?.workId ??
+                    '—',
+                ],
+                ['Milestone Stage', popup.item.milestoneName ?? '—'],
+                ['Log Date', popup.item.logDate],
+                ['Physical Progress', `${popup.item.physicalProgress}%`],
                 ['Engineer', popup.item.engineerName],
                 [
                   'GPS Location',

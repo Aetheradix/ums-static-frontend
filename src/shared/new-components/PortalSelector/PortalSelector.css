@@ -1,7 +1,7 @@
 @reference "tailwindcss";
 
 .portal-selector-wrapper {
-  @apply w-full px-6 py-8;
+  @apply w-full;
 }
 
 .portal-selector-header {
@@ -24,12 +24,7 @@
   @apply grid grid-cols-5 gap-[20px] max-xl:grid-cols-4 max-xl:gap-5 max-lg:grid-cols-3 max-md:grid-cols-2 max-md:gap-4 max-sm:grid-cols-2;
 }
 
-@media (max-width: 640px) {
-  .portal-selector-wrapper {
-    @apply px-4 py-6;
-  }
-}
-
+/* Dark Theme Overrides */
 .dark .portal-selector-title {
   color: var(--dark-text);
 }

@@ -30,7 +30,7 @@ export default function RequestCC() {
   });
 
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
-  
+
   // Form fields
   const [completionDate, setCompletionDate] = useState('');
   const [remarks, setRemarks] = useState('');
@@ -72,18 +72,24 @@ export default function RequestCC() {
       contractorName: item.externalAgency || 'Sharma Constructions Pvt Ltd',
       actualCompletionDate: completionDate,
       seRemarks: remarks.trim(),
-      finalBillNo: finalBillNo || 'BILL/FW/' + Math.floor(Math.random() * 10000),
+      finalBillNo:
+        finalBillNo || 'BILL/FW/' + Math.floor(Math.random() * 10000),
       requestDate: new Date().toISOString().split('T')[0],
       status: 'Pending Admin Action',
     };
 
-    const updatedCC = [...ccRequests.filter(r => r.workId !== item.id), newRequest];
+    const updatedCC = [
+      ...ccRequests.filter(r => r.workId !== item.id),
+      newRequest,
+    ];
     localStorage.setItem('civil_cc_requests', JSON.stringify(updatedCC));
     setCcRequests(updatedCC);
 
     // Also update physical progress to 100% and status to Completed in civil_works
     const updatedWorks = works.map(w =>
-      w.id === item.id ? { ...w, physicalProgress: 100, status: 'Completed' } : w
+      w.id === item.id
+        ? { ...w, physicalProgress: 100, status: 'Completed' }
+        : w
     );
     localStorage.setItem('civil_works', JSON.stringify(updatedWorks));
     setWorks(updatedWorks);
@@ -118,7 +124,13 @@ export default function RequestCC() {
               field: 'workId',
               header: 'Work ID',
               cell: (w: any) => (
-                <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#1d4ed8' }}>
+                <span
+                  style={{
+                    fontFamily: 'monospace',
+                    fontWeight: 700,
+                    color: '#1d4ed8',
+                  }}
+                >
                   {w.workId}
                 </span>
               ),
@@ -127,13 +139,20 @@ export default function RequestCC() {
             {
               field: 'category',
               header: 'Work Type',
-              cell: (w: any) => <span style={{ fontSize: '0.75rem' }}>{w.category}</span>,
+              cell: (w: any) => (
+                <span style={{ fontSize: '0.75rem' }}>{w.category}</span>
+              ),
             },
             {
               field: 'physicalProgress',
               header: 'Physical Progress',
               cell: (w: any) => (
-                <span style={{ fontWeight: 700, color: w.physicalProgress >= 100 ? '#16a34a' : '#d97706' }}>
+                <span
+                  style={{
+                    fontWeight: 700,
+                    color: w.physicalProgress >= 100 ? '#16a34a' : '#d97706',
+                  }}
+                >
                   {w.physicalProgress}%
                 </span>
               ),
@@ -146,8 +165,16 @@ export default function RequestCC() {
                 const currentStatus = req ? req.status : w.status;
                 let pillCls = 'gray';
                 if (currentStatus === 'Pending Admin Action') pillCls = 'amber';
-                if (currentStatus === 'Certificate Issued' || currentStatus === 'DLP Active') pillCls = 'green';
-                return <span className={`civil-pill ${pillCls}`}>{currentStatus}</span>;
+                if (
+                  currentStatus === 'Certificate Issued' ||
+                  currentStatus === 'DLP Active'
+                )
+                  pillCls = 'green';
+                return (
+                  <span className={`civil-pill ${pillCls}`}>
+                    {currentStatus}
+                  </span>
+                );
               },
             },
             {
@@ -163,7 +190,9 @@ export default function RequestCC() {
                       label="View Request"
                       icon="eye"
                       variant="outlined"
-                      onClick={() => setPopup({ mode: 'view', requestItem: req })}
+                      onClick={() =>
+                        setPopup({ mode: 'view', requestItem: req })
+                      }
                     />
                   );
                 }
@@ -175,7 +204,11 @@ export default function RequestCC() {
                     icon="send"
                     variant="primary"
                     disabled={!isEligible}
-                    tooltip={!isEligible ? 'Physical progress must be >= 90% to apply' : 'Apply for Completion Certificate'}
+                    tooltip={
+                      !isEligible
+                        ? 'Physical progress must be >= 90% to apply'
+                        : 'Apply for Completion Certificate'
+                    }
                     onClick={() => {
                       setCompletionDate(new Date().toISOString().split('T')[0]);
                       setRemarks('');
@@ -224,12 +257,36 @@ export default function RequestCC() {
               >
                 {[
                   ['Work ID / Name', popup.item.name],
-                  ['Contractor / Agency', popup.item.externalAgency || 'Sharma Constructions Pvt Ltd'],
-                  ['Category / Campus', `${popup.item.category} / ${popup.item.campus}`],
-                  ['Current Physical Progress', `${popup.item.physicalProgress}%`],
+                  [
+                    'Contractor / Agency',
+                    popup.item.externalAgency || 'Sharma Constructions Pvt Ltd',
+                  ],
+                  [
+                    'Category / Campus',
+                    `${popup.item.category} / ${popup.item.campus}`,
+                  ],
+                  [
+                    'Current Physical Progress',
+                    `${popup.item.physicalProgress}%`,
+                  ],
                 ].map(([k, v]) => (
-                  <div key={k} style={{ gridColumn: k === 'Work ID / Name' ? 'span 2' : 'span 1' }}>
-                    <div style={{ color: '#9ca3af', fontSize: '0.6875rem', fontWeight: 600, textTransform: 'uppercase', marginBottom: 2 }}>{k}</div>
+                  <div
+                    key={k}
+                    style={{
+                      gridColumn: k === 'Work ID / Name' ? 'span 2' : 'span 1',
+                    }}
+                  >
+                    <div
+                      style={{
+                        color: '#9ca3af',
+                        fontSize: '0.6875rem',
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        marginBottom: 2,
+                      }}
+                    >
+                      {k}
+                    </div>
                     <div style={{ fontWeight: 600 }}>{v}</div>
                   </div>
                 ))}
@@ -292,15 +349,44 @@ export default function RequestCC() {
                   ['Contractor Name', popup.requestItem.contractorName],
                   ['Request Status', popup.requestItem.status],
                   ['Request Date', popup.requestItem.requestDate],
-                  ['Actual Completion Date', popup.requestItem.actualCompletionDate],
+                  [
+                    'Actual Completion Date',
+                    popup.requestItem.actualCompletionDate,
+                  ],
                   ['Final Bill Ref No.', popup.requestItem.finalBillNo],
                   ['Site Engineer Remarks', popup.requestItem.seRemarks],
-                  ['Admin Certificate No.', popup.requestItem.certificateNo || '—'],
+                  [
+                    'Admin Certificate No.',
+                    popup.requestItem.certificateNo || '—',
+                  ],
                   ['Admin Issue Date', popup.requestItem.issueDate || '—'],
-                  ['Admin Review Remarks', popup.requestItem.adminRemarks || '—'],
+                  [
+                    'Admin Review Remarks',
+                    popup.requestItem.adminRemarks || '—',
+                  ],
                 ].map(([k, v]) => (
-                  <div key={k} style={{ gridColumn: k === 'Site Engineer Remarks' || k === 'Admin Review Remarks' || k === 'Work ID / Name' ? 'span 2' : 'span 1' }}>
-                    <div style={{ color: '#9ca3af', fontSize: '0.6875rem', fontWeight: 600, textTransform: 'uppercase', marginBottom: 2 }}>{k}</div>
+                  <div
+                    key={k}
+                    style={{
+                      gridColumn:
+                        k === 'Site Engineer Remarks' ||
+                        k === 'Admin Review Remarks' ||
+                        k === 'Work ID / Name'
+                          ? 'span 2'
+                          : 'span 1',
+                    }}
+                  >
+                    <div
+                      style={{
+                        color: '#9ca3af',
+                        fontSize: '0.6875rem',
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        marginBottom: 2,
+                      }}
+                    >
+                      {k}
+                    </div>
                     <div style={{ fontWeight: 600 }}>{v}</div>
                   </div>
                 ))}

@@ -1,7 +1,17 @@
 import { useState, useEffect } from 'react';
-import { FormCard, FormPage, FormPopup, GridPanel } from 'shared/new-components';
+import {
+  FormCard,
+  FormPage,
+  FormPopup,
+  GridPanel,
+} from 'shared/new-components';
 import { Button } from 'shared/components/buttons';
-import { civilWorks, raBills, contractors, milestones as initialMilestones } from '../../mocks';
+import {
+  civilWorks,
+  raBills,
+  contractors,
+  milestones as initialMilestones,
+} from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
@@ -23,7 +33,9 @@ export default function AdminReports() {
     return saved ? JSON.parse(saved) : raBills;
   });
 
-  const [popup, setPopup] = useState<{ visible: boolean; work?: any }>({ visible: false });
+  const [popup, setPopup] = useState<{ visible: boolean; work?: any }>({
+    visible: false,
+  });
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -31,7 +43,9 @@ export default function AdminReports() {
       if (savedWorks) setWorks(JSON.parse(savedWorks));
       const savedMilestones = localStorage.getItem('civil_milestones');
       if (savedMilestones) setMilestonesList(JSON.parse(savedMilestones));
-      const savedRequests = localStorage.getItem('civil_milestone_payment_requests');
+      const savedRequests = localStorage.getItem(
+        'civil_milestone_payment_requests'
+      );
       if (savedRequests) setPaymentRequests(JSON.parse(savedRequests));
       const savedBills = localStorage.getItem('civil_ra_bills');
       if (savedBills) setBills(JSON.parse(savedBills));
@@ -327,220 +341,357 @@ export default function AdminReports() {
       <FormPopup
         visible={popup.visible}
         onHide={() => setPopup({ visible: false })}
-        title={popup.work ? `Project Lifecycle Position — ${popup.work.workId}` : 'Project Details'}
+        title={
+          popup.work
+            ? `Project Lifecycle Position — ${popup.work.workId}`
+            : 'Project Details'
+        }
         subtitle="Consolidated technical logs, milestone progress, and financial release positions."
         size="lg"
       >
-        {popup.work && (() => {
-          const w = popup.work;
-          const workMs = milestonesList.filter((m: any) => m.workId === w.id);
-          const workRequests = paymentRequests.filter((r: any) => r.workId === w.id);
-          const workRaBills = bills.filter((b: any) => b.workId === w.id || b.workName === w.name);
+        {popup.work &&
+          (() => {
+            const w = popup.work;
+            const workMs = milestonesList.filter((m: any) => m.workId === w.id);
+            const workRequests = paymentRequests.filter(
+              (r: any) => r.workId === w.id
+            );
+            const workRaBills = bills.filter(
+              (b: any) => b.workId === w.id || b.workName === w.name
+            );
 
-          const totalPaidOnWork = workRaBills
-            .filter((b: any) => b.status === 'Paid')
-            .reduce((sum: number, b: any) => sum + b.netPayable, 0) + 
-            workRequests
-            .filter((r: any) => r.status === 'Payment Released')
-            .reduce((sum: number, r: any) => sum + r.amountToRelease, 0);
+            const totalPaidOnWork =
+              workRaBills
+                .filter((b: any) => b.status === 'Paid')
+                .reduce((sum: number, b: any) => sum + b.netPayable, 0) +
+              workRequests
+                .filter((r: any) => r.status === 'Payment Released')
+                .reduce((sum: number, r: any) => sum + r.amountToRelease, 0);
 
-          return (
-            <>
-              {/* Project Card Info */}
-              <FormCard title="Project Sanction & Executive Info" subtitle="">
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
-                    gap: '0.75rem 1.5rem',
-                    fontSize: '0.8125rem',
-                  }}
-                >
-                  {[
-                    ['Work ID', w.workId],
-                    ['Work Name', w.name],
-                    ['Category', w.category],
-                    ['Department', w.department],
-                    ['Campus', w.campus],
-                    ['Execution Route', w.executionRoute || 'Tender / L1 Agency'],
-                    ['Estimated Cost', `₹${(w.estimatedCost / 100000).toFixed(2)}L`],
-                    ['AA Amount', `₹${(w.aaAmount / 100000).toFixed(2)}L`],
-                    ['Contract Value', w.contractAmount > 0 ? `₹${(w.contractAmount / 100000).toFixed(2)}L` : '—'],
-                    ['Site Engineer', w.siteEngineer || 'Er. Rajesh Verma'],
-                    ['Contractor / Agency', w.externalAgency || 'Sharma Constructions Pvt Ltd'],
-                    ['Overall Status', w.status],
-                  ].map(([k, v]) => (
-                    <div key={k} style={{ gridColumn: k === 'Work Name' ? 'span 2' : 'span 1' }}>
+            return (
+              <>
+                {/* Project Card Info */}
+                <FormCard title="Project Sanction & Executive Info" subtitle="">
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(3, 1fr)',
+                      gap: '0.75rem 1.5rem',
+                      fontSize: '0.8125rem',
+                    }}
+                  >
+                    {[
+                      ['Work ID', w.workId],
+                      ['Work Name', w.name],
+                      ['Category', w.category],
+                      ['Department', w.department],
+                      ['Campus', w.campus],
+                      [
+                        'Execution Route',
+                        w.executionRoute || 'Tender / L1 Agency',
+                      ],
+                      [
+                        'Estimated Cost',
+                        `₹${(w.estimatedCost / 100000).toFixed(2)}L`,
+                      ],
+                      ['AA Amount', `₹${(w.aaAmount / 100000).toFixed(2)}L`],
+                      [
+                        'Contract Value',
+                        w.contractAmount > 0
+                          ? `₹${(w.contractAmount / 100000).toFixed(2)}L`
+                          : '—',
+                      ],
+                      ['Site Engineer', w.siteEngineer || 'Er. Rajesh Verma'],
+                      [
+                        'Contractor / Agency',
+                        w.externalAgency || 'Sharma Constructions Pvt Ltd',
+                      ],
+                      ['Overall Status', w.status],
+                    ].map(([k, v]) => (
                       <div
+                        key={k}
                         style={{
-                          color: '#9ca3af',
-                          fontSize: '0.6875rem',
-                          fontWeight: 600,
-                          textTransform: 'uppercase',
-                          marginBottom: 2,
+                          gridColumn: k === 'Work Name' ? 'span 2' : 'span 1',
                         }}
                       >
-                        {k}
+                        <div
+                          style={{
+                            color: '#9ca3af',
+                            fontSize: '0.6875rem',
+                            fontWeight: 600,
+                            textTransform: 'uppercase',
+                            marginBottom: 2,
+                          }}
+                        >
+                          {k}
+                        </div>
+                        <div style={{ fontWeight: 600, color: '#111827' }}>
+                          {v}
+                        </div>
                       </div>
-                      <div style={{ fontWeight: 600, color: '#111827' }}>{v}</div>
-                    </div>
-                  ))}
-                </div>
-              </FormCard>
-
-              {/* Milestones Audit Section */}
-              <div style={{ marginTop: '1.25rem' }}>
-                <FormCard
-                  title={`Milestones Status Audit (${workMs.length} Stages)`}
-                  subtitle="Detailed weights, milestone timelines, and completion positions."
-                >
-                  {workMs.length > 0 ? (
-                    <table className="civil-table" style={{ width: '100%' }}>
-                      <thead>
-                        <tr>
-                          <th>Seq</th>
-                          <th>Milestone Name</th>
-                          <th>Weightage</th>
-                          <th>Planned End</th>
-                          <th>Actual End</th>
-                          <th>Status / Workflow</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {workMs.map((m: any) => {
-                          const req = workRequests.find((r: any) => r.milestoneId === m.id);
-                          const currentStatus = req ? req.status : m.status;
-                          let statusCls = 'gray';
-                          if (currentStatus === 'Completed' || currentStatus === 'Payment Released') statusCls = 'green';
-                          if (currentStatus === 'In Progress') statusCls = 'blue';
-                          if (currentStatus === 'Pending Sign-off' || currentStatus === 'Pending Admin Approval' || currentStatus === 'Approved by Admin') statusCls = 'amber';
-                          if (currentStatus === 'Delayed' || currentStatus === 'Rejected by Admin') statusCls = 'red';
-
-                          return (
-                            <tr key={m.id}>
-                              <td style={{ fontWeight: 700 }}>#{m.sequenceNo}</td>
-                              <td style={{ fontWeight: 600 }}>{m.milestoneName}</td>
-                              <td style={{ fontWeight: 700 }}>{m.weightage}%</td>
-                              <td>{m.plannedEndDate}</td>
-                              <td>{m.actualEndDate || <span style={{ color: '#9ca3af' }}>—</span>}</td>
-                              <td>
-                                <span className={`civil-pill ${statusCls}`}>
-                                  {currentStatus}
-                                </span>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  ) : (
-                    <div style={{ padding: '1rem', color: '#9ca3af', textAlign: 'center', fontSize: '0.8125rem' }}>
-                      No milestones defined for this project.
-                    </div>
-                  )}
-                </FormCard>
-              </div>
-
-              {/* Financial Ledger Section */}
-              <div style={{ marginTop: '1.25rem' }}>
-                <FormCard
-                  title={`Financial Releases Ledger — Total Disbursed: ₹${totalPaidOnWork.toLocaleString('en-IN')}`}
-                  subtitle="Running account bills and milestone sanction logs combined."
-                >
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
-                    {/* RA Bills */}
-                    <div>
-                      <h4 style={{ fontSize: '0.8125rem', fontWeight: 700, marginBottom: '0.5rem', color: '#1f2937' }}>
-                        Running Account (RA) Bills
-                      </h4>
-                      {workRaBills.length > 0 ? (
-                        <table className="civil-table" style={{ width: '100%' }}>
-                          <thead>
-                            <tr>
-                              <th>Bill No</th>
-                              <th>Gross Amount</th>
-                              <th>Deductions (Adv + SD)</th>
-                              <th>Net Paid</th>
-                              <th>Payment Status</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {workRaBills.map((b: any) => (
-                              <tr key={b.billNo}>
-                                <td style={{ fontFamily: 'monospace', fontWeight: 700 }}>{b.billNo}</td>
-                                <td>₹{b.grossAmount.toLocaleString('en-IN')}</td>
-                                <td style={{ color: '#ef4444' }}>
-                                  -₹{(b.advanceRecovery + b.securityDeposit).toLocaleString('en-IN')}
-                                </td>
-                                <td style={{ fontWeight: 700 }}>₹{b.netPayable.toLocaleString('en-IN')}</td>
-                                <td>
-                                  <span className={`civil-pill ${b.status === 'Paid' ? 'green' : b.status === 'Rejected' ? 'red' : 'amber'}`}>
-                                    {b.status}
-                                  </span>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      ) : (
-                        <div style={{ padding: '0.75rem', color: '#9ca3af', fontSize: '0.75rem', background: '#f9fafb', borderRadius: '0.5rem' }}>
-                          No RA bills logged for this work.
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Milestone Release Requests */}
-                    <div style={{ marginTop: '0.5rem' }}>
-                      <h4 style={{ fontSize: '0.8125rem', fontWeight: 700, marginBottom: '0.5rem', color: '#1f2937' }}>
-                        Milestone Payment Requests
-                      </h4>
-                      {workRequests.length > 0 ? (
-                        <table className="civil-table" style={{ width: '100%' }}>
-                          <thead>
-                            <tr>
-                              <th>Milestone</th>
-                              <th>Requested Amt</th>
-                              <th>Request Date</th>
-                              <th>Approval Status</th>
-                              <th>UTR / NEFT Reference</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {workRequests.map((r: any) => (
-                              <tr key={r.id}>
-                                <td style={{ fontWeight: 600 }}>{r.milestoneName} (Seq #{r.sequenceNo})</td>
-                                <td style={{ fontWeight: 700 }}>₹{Number(r.amountToRelease).toLocaleString('en-IN')}</td>
-                                <td>{r.requestDate}</td>
-                                <td>
-                                  <span className={`civil-pill ${r.status === 'Payment Released' ? 'green' : r.status === 'Rejected by Admin' ? 'red' : 'amber'}`}>
-                                    {r.status}
-                                  </span>
-                                </td>
-                                <td style={{ fontFamily: 'monospace' }}>{r.paymentRef || <span style={{ color: '#9ca3af' }}>—</span>}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      ) : (
-                        <div style={{ padding: '0.75rem', color: '#9ca3af', fontSize: '0.75rem', background: '#f9fafb', borderRadius: '0.5rem' }}>
-                          No milestone payments requested for this work.
-                        </div>
-                      )}
-                    </div>
+                    ))}
                   </div>
                 </FormCard>
-              </div>
 
-              <div className="flex justify-end mt-4">
-                <Button
-                  label="Close"
-                  variant="outlined"
-                  onClick={() => setPopup({ visible: false })}
-                />
-              </div>
-            </>
-          );
-        })()}
+                {/* Milestones Audit Section */}
+                <div style={{ marginTop: '1.25rem' }}>
+                  <FormCard
+                    title={`Milestones Status Audit (${workMs.length} Stages)`}
+                    subtitle="Detailed weights, milestone timelines, and completion positions."
+                  >
+                    {workMs.length > 0 ? (
+                      <table className="civil-table" style={{ width: '100%' }}>
+                        <thead>
+                          <tr>
+                            <th>Seq</th>
+                            <th>Milestone Name</th>
+                            <th>Weightage</th>
+                            <th>Planned End</th>
+                            <th>Actual End</th>
+                            <th>Status / Workflow</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {workMs.map((m: any) => {
+                            const req = workRequests.find(
+                              (r: any) => r.milestoneId === m.id
+                            );
+                            const currentStatus = req ? req.status : m.status;
+                            let statusCls = 'gray';
+                            if (
+                              currentStatus === 'Completed' ||
+                              currentStatus === 'Payment Released'
+                            )
+                              statusCls = 'green';
+                            if (currentStatus === 'In Progress')
+                              statusCls = 'blue';
+                            if (
+                              currentStatus === 'Pending Sign-off' ||
+                              currentStatus === 'Pending Admin Approval' ||
+                              currentStatus === 'Approved by Admin'
+                            )
+                              statusCls = 'amber';
+                            if (
+                              currentStatus === 'Delayed' ||
+                              currentStatus === 'Rejected by Admin'
+                            )
+                              statusCls = 'red';
+
+                            return (
+                              <tr key={m.id}>
+                                <td style={{ fontWeight: 700 }}>
+                                  #{m.sequenceNo}
+                                </td>
+                                <td style={{ fontWeight: 600 }}>
+                                  {m.milestoneName}
+                                </td>
+                                <td style={{ fontWeight: 700 }}>
+                                  {m.weightage}%
+                                </td>
+                                <td>{m.plannedEndDate}</td>
+                                <td>
+                                  {m.actualEndDate || (
+                                    <span style={{ color: '#9ca3af' }}>—</span>
+                                  )}
+                                </td>
+                                <td>
+                                  <span className={`civil-pill ${statusCls}`}>
+                                    {currentStatus}
+                                  </span>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    ) : (
+                      <div
+                        style={{
+                          padding: '1rem',
+                          color: '#9ca3af',
+                          textAlign: 'center',
+                          fontSize: '0.8125rem',
+                        }}
+                      >
+                        No milestones defined for this project.
+                      </div>
+                    )}
+                  </FormCard>
+                </div>
+
+                {/* Financial Ledger Section */}
+                <div style={{ marginTop: '1.25rem' }}>
+                  <FormCard
+                    title={`Financial Releases Ledger — Total Disbursed: ₹${totalPaidOnWork.toLocaleString('en-IN')}`}
+                    subtitle="Running account bills and milestone sanction logs combined."
+                  >
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr',
+                        gap: '1rem',
+                      }}
+                    >
+                      {/* RA Bills */}
+                      <div>
+                        <h4
+                          style={{
+                            fontSize: '0.8125rem',
+                            fontWeight: 700,
+                            marginBottom: '0.5rem',
+                            color: '#1f2937',
+                          }}
+                        >
+                          Running Account (RA) Bills
+                        </h4>
+                        {workRaBills.length > 0 ? (
+                          <table
+                            className="civil-table"
+                            style={{ width: '100%' }}
+                          >
+                            <thead>
+                              <tr>
+                                <th>Bill No</th>
+                                <th>Gross Amount</th>
+                                <th>Deductions (Adv + SD)</th>
+                                <th>Net Paid</th>
+                                <th>Payment Status</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {workRaBills.map((b: any) => (
+                                <tr key={b.billNo}>
+                                  <td
+                                    style={{
+                                      fontFamily: 'monospace',
+                                      fontWeight: 700,
+                                    }}
+                                  >
+                                    {b.billNo}
+                                  </td>
+                                  <td>
+                                    ₹{b.grossAmount.toLocaleString('en-IN')}
+                                  </td>
+                                  <td style={{ color: '#ef4444' }}>
+                                    -₹
+                                    {(
+                                      b.advanceRecovery + b.securityDeposit
+                                    ).toLocaleString('en-IN')}
+                                  </td>
+                                  <td style={{ fontWeight: 700 }}>
+                                    ₹{b.netPayable.toLocaleString('en-IN')}
+                                  </td>
+                                  <td>
+                                    <span
+                                      className={`civil-pill ${b.status === 'Paid' ? 'green' : b.status === 'Rejected' ? 'red' : 'amber'}`}
+                                    >
+                                      {b.status}
+                                    </span>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        ) : (
+                          <div
+                            style={{
+                              padding: '0.75rem',
+                              color: '#9ca3af',
+                              fontSize: '0.75rem',
+                              background: '#f9fafb',
+                              borderRadius: '0.5rem',
+                            }}
+                          >
+                            No RA bills logged for this work.
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Milestone Release Requests */}
+                      <div style={{ marginTop: '0.5rem' }}>
+                        <h4
+                          style={{
+                            fontSize: '0.8125rem',
+                            fontWeight: 700,
+                            marginBottom: '0.5rem',
+                            color: '#1f2937',
+                          }}
+                        >
+                          Milestone Payment Requests
+                        </h4>
+                        {workRequests.length > 0 ? (
+                          <table
+                            className="civil-table"
+                            style={{ width: '100%' }}
+                          >
+                            <thead>
+                              <tr>
+                                <th>Milestone</th>
+                                <th>Requested Amt</th>
+                                <th>Request Date</th>
+                                <th>Approval Status</th>
+                                <th>UTR / NEFT Reference</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {workRequests.map((r: any) => (
+                                <tr key={r.id}>
+                                  <td style={{ fontWeight: 600 }}>
+                                    {r.milestoneName} (Seq #{r.sequenceNo})
+                                  </td>
+                                  <td style={{ fontWeight: 700 }}>
+                                    ₹
+                                    {Number(r.amountToRelease).toLocaleString(
+                                      'en-IN'
+                                    )}
+                                  </td>
+                                  <td>{r.requestDate}</td>
+                                  <td>
+                                    <span
+                                      className={`civil-pill ${r.status === 'Payment Released' ? 'green' : r.status === 'Rejected by Admin' ? 'red' : 'amber'}`}
+                                    >
+                                      {r.status}
+                                    </span>
+                                  </td>
+                                  <td style={{ fontFamily: 'monospace' }}>
+                                    {r.paymentRef || (
+                                      <span style={{ color: '#9ca3af' }}>
+                                        —
+                                      </span>
+                                    )}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        ) : (
+                          <div
+                            style={{
+                              padding: '0.75rem',
+                              color: '#9ca3af',
+                              fontSize: '0.75rem',
+                              background: '#f9fafb',
+                              borderRadius: '0.5rem',
+                            }}
+                          >
+                            No milestone payments requested for this work.
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </FormCard>
+                </div>
+
+                <div className="flex justify-end mt-4">
+                  <Button
+                    label="Close"
+                    variant="outlined"
+                    onClick={() => setPopup({ visible: false })}
+                  />
+                </div>
+              </>
+            );
+          })()}
       </FormPopup>
     </FormPage>
   );

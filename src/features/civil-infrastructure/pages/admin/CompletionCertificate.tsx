@@ -159,7 +159,11 @@ export default function CompletionCertificate() {
               header: 'Work Type',
               cell: (r: any) => {
                 const w = works.find(x => x.id === r.workId);
-                return <span style={{ fontSize: '0.75rem' }}>{w?.category || 'General'}</span>;
+                return (
+                  <span style={{ fontSize: '0.75rem' }}>
+                    {w?.category || 'General'}
+                  </span>
+                );
               },
             },
             {
@@ -203,9 +207,7 @@ export default function CompletionCertificate() {
                 <StatusBadge
                   label={r.status}
                   variant={
-                    r.status === 'Certificate Issued'
-                      ? 'approved'
-                      : 'pending'
+                    r.status === 'Certificate Issued' ? 'approved' : 'pending'
                   }
                 />
               ),

@@ -73,7 +73,10 @@ export default function CivilInfrastructure() {
         element={<AgencyVerification />}
       />
       <Route path="admin/work-order-sign" element={<WorkOrderSign />} />
-      <Route path="admin/milestone-approvals" element={<MilestoneApprovals />} />
+      <Route
+        path="admin/milestone-approvals"
+        element={<MilestoneApprovals />}
+      />
       <Route path="admin/eot-requests" element={<AdminEOTRequest />} />
       <Route
         path="admin/completion-certificate"

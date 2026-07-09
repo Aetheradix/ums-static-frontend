@@ -41,9 +41,11 @@ export default function MilestoneApprovals() {
   const handleApproveMilestone = (isApproved: boolean) => {
     if (popup.mode !== 'review_milestone') return;
     const targetReq = popup.requestItem;
-    
+
     // 1. Update the request status in local storage request list
-    const savedRequests = localStorage.getItem('civil_milestone_payment_requests');
+    const savedRequests = localStorage.getItem(
+      'civil_milestone_payment_requests'
+    );
     const requests = savedRequests ? JSON.parse(savedRequests) : [];
     const updatedRequests = requests.map((r: any) =>
       r.id === targetReq.id
@@ -54,35 +56,43 @@ export default function MilestoneApprovals() {
             approvalRemarks: milestoneRemarks,
           }
         : r
-     );
-     localStorage.setItem('civil_milestone_payment_requests', JSON.stringify(updatedRequests));
-     setPaymentRequests(updatedRequests);
+    );
+    localStorage.setItem(
+      'civil_milestone_payment_requests',
+      JSON.stringify(updatedRequests)
+    );
+    setPaymentRequests(updatedRequests);
 
-     // 2. If approved, change corresponding milestone status to 'Completed' in civil_milestones!
-     const savedMilestones = localStorage.getItem('civil_milestones');
-     if (savedMilestones) {
-       const milestonesList = JSON.parse(savedMilestones);
-       const updatedMilestones = milestonesList.map((m: any) =>
-         m.id === targetReq.milestoneId
-           ? {
-               ...m,
-               status: isApproved ? 'Completed' : 'In Progress',
-               actualEndDate: isApproved ? new Date().toISOString().split('T')[0] : undefined,
-             }
-           : m
-       );
-       localStorage.setItem('civil_milestones', JSON.stringify(updatedMilestones));
-     }
+    // 2. If approved, change corresponding milestone status to 'Completed' in civil_milestones!
+    const savedMilestones = localStorage.getItem('civil_milestones');
+    if (savedMilestones) {
+      const milestonesList = JSON.parse(savedMilestones);
+      const updatedMilestones = milestonesList.map((m: any) =>
+        m.id === targetReq.milestoneId
+          ? {
+              ...m,
+              status: isApproved ? 'Completed' : 'In Progress',
+              actualEndDate: isApproved
+                ? new Date().toISOString().split('T')[0]
+                : undefined,
+            }
+          : m
+      );
+      localStorage.setItem(
+        'civil_milestones',
+        JSON.stringify(updatedMilestones)
+      );
+    }
 
-     window.dispatchEvent(new Event('storage'));
+    window.dispatchEvent(new Event('storage'));
 
-     ToastService.success(
-       isApproved
-         ? 'Milestone sign-off approved and forwarded to Finance for payment processing.'
-         : 'Milestone sign-off request rejected. Site engineer notified.'
-     );
-     setPopup({ mode: 'closed' });
-     setMilestoneRemarks('');
+    ToastService.success(
+      isApproved
+        ? 'Milestone sign-off approved and forwarded to Finance for payment processing.'
+        : 'Milestone sign-off request rejected. Site engineer notified.'
+    );
+    setPopup({ mode: 'closed' });
+    setMilestoneRemarks('');
   };
 
   return (
@@ -104,7 +114,14 @@ export default function MilestoneApprovals() {
               field: 'workId',
               header: 'Work ID',
               cell: (r: any) => (
-                <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#1d4ed8', fontSize: '0.75rem' }}>
+                <span
+                  style={{
+                    fontFamily: 'monospace',
+                    fontWeight: 700,
+                    color: '#1d4ed8',
+                    fontSize: '0.75rem',
+                  }}
+                >
                   {civilWorks.find(w => w.id === r.workId)?.workId || r.workId}
                 </span>
               ),
@@ -121,12 +138,16 @@ export default function MilestoneApprovals() {
             {
               field: 'contractorName',
               header: 'Contractor',
-              cell: (r: any) => <span style={{ fontSize: '0.75rem' }}>{r.contractorName}</span>,
+              cell: (r: any) => (
+                <span style={{ fontSize: '0.75rem' }}>{r.contractorName}</span>
+              ),
             },
             {
               field: 'weightage',
               header: 'Weightage',
-              cell: (r: any) => <span style={{ fontWeight: 700 }}>{r.weightage}%</span>,
+              cell: (r: any) => (
+                <span style={{ fontWeight: 700 }}>{r.weightage}%</span>
+              ),
             },
             {
               field: 'amountToRelease',
@@ -147,7 +168,9 @@ export default function MilestoneApprovals() {
                 if (r.status === 'Approved by Admin') pillCls = 'blue';
                 if (r.status === 'Payment Released') pillCls = 'green';
                 if (r.status === 'Rejected by Admin') pillCls = 'red';
-                return <span className={`civil-pill ${pillCls}`}>{r.status}</span>;
+                return (
+                  <span className={`civil-pill ${pillCls}`}>{r.status}</span>
+                );
               },
             },
             {
@@ -161,7 +184,9 @@ export default function MilestoneApprovals() {
                     label=""
                     icon="eye"
                     variant="outlined"
-                    onClick={() => setPopup({ mode: 'view_milestone', requestItem: r })}
+                    onClick={() =>
+                      setPopup({ mode: 'view_milestone', requestItem: r })
+                    }
                   />
                   {r.status === 'Pending Admin Approval' && (
                     <Button
@@ -197,7 +222,10 @@ export default function MilestoneApprovals() {
       >
         {popup.mode !== 'closed' && (popup as any).requestItem && (
           <>
-            <FormCard title="Milestone Sign-off & Payment Release Request" subtitle="Details submitted by site engineer">
+            <FormCard
+              title="Milestone Sign-off & Payment Release Request"
+              subtitle="Details submitted by site engineer"
+            >
               <div
                 style={{
                   display: 'grid',
@@ -208,18 +236,49 @@ export default function MilestoneApprovals() {
               >
                 {[
                   ['Work ID / Name', (popup as any).requestItem.workName],
-                  ['Milestone Stage', `${(popup as any).requestItem.milestoneName} (Milestone #${(popup as any).requestItem.sequenceNo})`],
-                  ['Contractor / Vendor', (popup as any).requestItem.contractorName],
-                  ['Milestone Weightage', `${(popup as any).requestItem.weightage}%`],
-                  ['Amount to Release', `₹${(popup as any).requestItem.amountToRelease.toLocaleString('en-IN')}`],
+                  [
+                    'Milestone Stage',
+                    `${(popup as any).requestItem.milestoneName} (Milestone #${(popup as any).requestItem.sequenceNo})`,
+                  ],
+                  [
+                    'Contractor / Vendor',
+                    (popup as any).requestItem.contractorName,
+                  ],
+                  [
+                    'Milestone Weightage',
+                    `${(popup as any).requestItem.weightage}%`,
+                  ],
+                  [
+                    'Amount to Release',
+                    `₹${(popup as any).requestItem.amountToRelease.toLocaleString('en-IN')}`,
+                  ],
                   ['Request Date', (popup as any).requestItem.requestDate],
                   ['Workflow Status', (popup as any).requestItem.status],
                   ['Justification Remarks', (popup as any).requestItem.remarks],
-                  ['Approval Date', (popup as any).requestItem.approvalDate || '—'],
-                  ['Approval Remarks', (popup as any).requestItem.approvalRemarks || '—'],
-                  ['Payment NEFT/UTR Ref', (popup as any).requestItem.paymentRef || '—'],
+                  [
+                    'Approval Date',
+                    (popup as any).requestItem.approvalDate || '—',
+                  ],
+                  [
+                    'Approval Remarks',
+                    (popup as any).requestItem.approvalRemarks || '—',
+                  ],
+                  [
+                    'Payment NEFT/UTR Ref',
+                    (popup as any).requestItem.paymentRef || '—',
+                  ],
                 ].map(([k, v]) => (
-                  <div key={k} style={{ gridColumn: k === 'Justification Remarks' || k === 'Approval Remarks' || k === 'Work ID / Name' ? 'span 2' : 'span 1' }}>
+                  <div
+                    key={k}
+                    style={{
+                      gridColumn:
+                        k === 'Justification Remarks' ||
+                        k === 'Approval Remarks' ||
+                        k === 'Work ID / Name'
+                          ? 'span 2'
+                          : 'span 1',
+                    }}
+                  >
                     <div
                       style={{
                         color: '#9ca3af',
@@ -259,7 +318,9 @@ export default function MilestoneApprovals() {
                     icon="close"
                     onClick={() => {
                       if (!milestoneRemarks.trim()) {
-                        ToastService.error('Review remarks are required to reject the sign-off.');
+                        ToastService.error(
+                          'Review remarks are required to reject the sign-off.'
+                        );
                         return;
                       }
                       handleApproveMilestone(false);

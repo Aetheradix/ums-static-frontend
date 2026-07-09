@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FormCard, FormPage, StatCard } from 'shared/new-components';
 import {
-    milestones as initialMilestones,
-    civilWorks as initialWorks,
-    mbEntries,
-    progressLogs,
-    qualityTests as initialTests,
+  milestones as initialMilestones,
+  civilWorks as initialWorks,
+  mbEntries,
+  progressLogs,
+  qualityTests as initialTests,
 } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -59,7 +59,9 @@ export default function EngineerDashboard() {
         return m;
       });
       const parsedIds = new Set(merged.map((m: any) => m.id));
-      const missing = initialMilestones.filter((m: any) => !parsedIds.has(m.id));
+      const missing = initialMilestones.filter(
+        (m: any) => !parsedIds.has(m.id)
+      );
       const finalMerged = [...merged, ...missing];
       localStorage.setItem('civil_milestones', JSON.stringify(finalMerged));
       return finalMerged;
@@ -72,7 +74,9 @@ export default function EngineerDashboard() {
     if (saved) {
       const parsed = JSON.parse(saved);
       const merged = parsed.map((t: any) => {
-        const mockT = initialTests.find((mt: any) => mt.id === t.id || mt.milestoneId === t.milestoneId);
+        const mockT = initialTests.find(
+          (mt: any) => mt.id === t.id || mt.milestoneId === t.milestoneId
+        );
         if (mockT) {
           return {
             ...t,
@@ -97,7 +101,9 @@ export default function EngineerDashboard() {
   const pendingMilestones = milestones.filter(
     (m: any) => m.status === 'Pending' || m.status === 'In Progress'
   );
-  const pendingTests = tests.filter((t: any) => t.result === 'Pending' || t.result === undefined);
+  const pendingTests = tests.filter(
+    (t: any) => t.result === 'Pending' || t.result === undefined
+  );
   const pendingMBs = mbEntries.filter(
     (m: any) => m.status === 'Draft' || m.status === 'Submitted'
   );

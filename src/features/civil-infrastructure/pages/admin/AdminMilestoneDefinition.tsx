@@ -137,7 +137,9 @@ export default function AdminMilestoneDefinition() {
         return m;
       });
       const parsedIds = new Set(merged.map((m: any) => m.id));
-      const missing = initialMilestones.filter((m: any) => !parsedIds.has(m.id));
+      const missing = initialMilestones.filter(
+        (m: any) => !parsedIds.has(m.id)
+      );
       const finalMerged = [...merged, ...missing];
       localStorage.setItem('civil_milestones', JSON.stringify(finalMerged));
       return finalMerged;
@@ -163,15 +165,17 @@ export default function AdminMilestoneDefinition() {
 
   useEffect(() => {
     localStorage.setItem('civil_milestones', JSON.stringify(data));
-    
+
     // Sync to civil_quality_tests in localStorage for engineer portal & dashboard
     const savedTests = localStorage.getItem('civil_quality_tests');
     const existingTests = savedTests ? JSON.parse(savedTests) : [];
-    
+
     const updatedTests = data
       .filter((m: any) => m.qualityTestRequired)
       .map((m: any) => {
-        const existing = existingTests.find((t: any) => t.milestoneId === m.id || t.id === `qt_${m.id}`);
+        const existing = existingTests.find(
+          (t: any) => t.milestoneId === m.id || t.id === `qt_${m.id}`
+        );
         return {
           id: existing?.id || `qt_${m.id}`,
           workId: m.workId,
@@ -179,11 +183,13 @@ export default function AdminMilestoneDefinition() {
           milestoneId: m.id,
           testName: m.testName || existing?.testName || 'Quality Test',
           testType: m.testType || existing?.testType || 'Standard Test',
-          materialTested: m.materialTested || existing?.materialTested || 'Sample Material',
+          materialTested:
+            m.materialTested || existing?.materialTested || 'Sample Material',
           labName: m.labName || existing?.labName || 'Standard Lab',
           testDate: m.testDate || existing?.testDate,
           sampleQty: existing?.sampleQty || 6,
-          requiredValue: m.requiredValue || existing?.requiredValue || 'As per standard',
+          requiredValue:
+            m.requiredValue || existing?.requiredValue || 'As per standard',
           observedValue: m.observedValue || existing?.observedValue,
           result: m.qualityTestStatus || existing?.result || 'Pending',
           certNo: m.certNo || existing?.certNo,
@@ -249,8 +255,12 @@ export default function AdminMilestoneDefinition() {
       testName: qaRequired === 'Yes' ? testName.trim() : undefined,
       testType: qaRequired === 'Yes' ? 'NABL Standard Test' : undefined,
       materialTested: qaRequired === 'Yes' ? 'Sample Material' : undefined,
-      labName: qaRequired === 'Yes' ? (currentWork?.qualityLabName || 'Approved Testing Lab') : undefined,
-      requiredValue: qaRequired === 'Yes' ? 'As per standard specification' : undefined,
+      labName:
+        qaRequired === 'Yes'
+          ? currentWork?.qualityLabName || 'Approved Testing Lab'
+          : undefined,
+      requiredValue:
+        qaRequired === 'Yes' ? 'As per standard specification' : undefined,
     };
 
     setData(prev => [...prev, newM]);
