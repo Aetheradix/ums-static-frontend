@@ -6531,7 +6531,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'blue',
               },
               {
-                label: 'Masters & Registries',
+                label: 'Masters',
                 description:
                   'Manage SOR items, Third-Party Inspection (TPI) agencies, and Quality Lab registries.',
                 path: '/civil-infrastructure/admin/sor-master',
@@ -6738,7 +6738,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'orange',
               },
               {
-                label: 'EOT & Revised Estimate',
+                label: 'Work Extension',
                 description:
                   'Extension of time applications and revised estimates.',
                 path: '/civil-infrastructure/engineer/eot-request',
