@@ -121,10 +121,9 @@ export default function FeedbackSessions() {
       title="Feedback Sessions"
       description="Manage feedback collection sessions."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'Student Feedback Management', to: feedbackUrls.portal },
         { label: 'Admin Portal', to: feedbackUrls.admin.portal },
-        { label: 'Sessions' },
+        { label: 'Feedback Sessions' },
       ]}
     >
       <FormCard>

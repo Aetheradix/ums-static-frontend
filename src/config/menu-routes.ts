@@ -3466,7 +3466,7 @@ export const menuConfig: Menu.MenuItem[] = [
         slug: 'health-management',
         description:
           'Manage health records, memberships, prescriptions, and dispensary operations.',
-        path: '/health-management',
+        path: '/home/sub-menu/health-management',
         icon: 'local_hospital',
         colorScheme: 'green',
         children: [
@@ -3475,9 +3475,10 @@ export const menuConfig: Menu.MenuItem[] = [
             slug: 'hms-admin-portal',
             description:
               'Complete module control: manage memberships, records, stock, settings.',
-            path: '/home/sub-menu/hms-admin-portal',
+            path: '/health-management/admin',
             icon: 'admin_panel_settings',
             colorScheme: 'blue',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dashboard',
@@ -3541,9 +3542,10 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Doctor Portal',
             slug: 'hms-doctor-portal',
             description: 'Manage appointments, records, and prescriptions.',
-            path: '/home/sub-menu/hms-doctor-portal',
+            path: '/health-management/doctor',
             icon: 'stethoscope',
             colorScheme: 'purple',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Appointments',
@@ -3556,7 +3558,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 label: 'Health Records',
                 slug: 'hms-doctor-records',
                 path: '/health-management/records',
-                icon: 'folder_medical',
+                icon: 'medical_information',
                 colorScheme: 'purple',
               },
               {
@@ -3572,9 +3574,10 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Pharmacist Portal',
             slug: 'hms-pharmacist-portal',
             description: 'Dispense medicines and manage stock.',
-            path: '/home/sub-menu/hms-pharmacist-portal',
+            path: '/health-management/pharmacist',
             icon: 'medication',
             colorScheme: 'green',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dispensary',
@@ -3596,9 +3599,10 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Employee Portal',
             slug: 'hms-employee-portal',
             description: 'View records, memberships, and book appointments.',
-            path: '/home/sub-menu/hms-employee-portal',
+            path: '/health-management/employee',
             icon: 'personal_injury',
             colorScheme: 'orange',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dashboard',
@@ -5539,16 +5543,16 @@ export const menuConfig: Menu.MenuItem[] = [
         path: '/home/sub-menu/it-service-desk',
         icon: 'support',
         colorScheme: 'purple',
-        navigationStyle: 'sidebar',
         children: [
           {
             label: 'Admin Portal',
             slug: 'itsm-admin-portal',
             description:
               'Complete module control: manage tickets, agents, SLA, and settings.',
-            path: '/home/sub-menu/itsm-admin-portal',
+            path: '/it-service-desk/admin',
             icon: 'admin_panel_settings',
             colorScheme: 'blue',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dashboard',
@@ -5626,9 +5630,10 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Module Admin',
             slug: 'itsm-module-admin',
             description: 'Manage tickets for assigned ERP modules.',
-            path: '/home/sub-menu/itsm-module-admin',
+            path: '/it-service-desk/module-admin',
             icon: 'view_module',
             colorScheme: 'purple',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dashboard',
@@ -5679,9 +5684,10 @@ export const menuConfig: Menu.MenuItem[] = [
             slug: 'itsm-agent-portal',
             description:
               'Handle assigned tickets and communicate with requesters.',
-            path: '/home/sub-menu/itsm-agent-portal',
+            path: '/it-service-desk/agent',
             icon: 'support_agent',
             colorScheme: 'green',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dashboard',
@@ -5724,9 +5730,10 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Employee Portal',
             slug: 'itsm-employee-portal',
             description: 'Raise and track your own support tickets.',
-            path: '/home/sub-menu/itsm-employee-portal',
+            path: '/it-service-desk/employee',
             icon: 'person',
             colorScheme: 'orange',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dashboard',
@@ -6816,11 +6823,12 @@ export const menuConfig: Menu.MenuItem[] = [
     children: [
       {
         label: 'Governance',
-        slug: 'governance',
+        slug: 'governance-group',
         category: 'Governance',
         icon: 'bolt',
         colorScheme: 'blue',
         description: 'Track student competencies and skill development',
+        path: '/home/sub-menu/governance-group',
         children: [
           {
             label: 'Affiliation Management',
@@ -7196,7 +7204,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 slug: 'rti-admin',
                 description:
                   'Manage RTI applications, forwarding, appeals, and reports.',
-                path: '/home/sub-menu/rti-admin',
+                path: '/rti-management/admin',
                 icon: 'admin_panel_settings',
                 colorScheme: 'blue',
                 navigationStyle: 'sidebar',
@@ -7268,7 +7276,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 slug: 'department-portal',
                 description:
                   'View assigned RTIs and submit departmental responses.',
-                path: '/home/sub-menu/department-portal',
+                path: '/rti-management/department',
                 icon: 'assignment_ind',
                 colorScheme: 'purple',
                 navigationStyle: 'sidebar',
@@ -8727,11 +8735,19 @@ export const menuConfig: Menu.MenuItem[] = [
             path: '/home/sub-menu/student-feedback-management',
             children: [
               {
+                label: 'Student Portal',
+                slug: 'feedback-student',
+                description: 'View active feedback forms and submit responses.',
+                path: '/student-feedback-management/student',
+                icon: 'feedback',
+                colorScheme: 'green',
+              },
+              {
                 label: 'Admin Portal',
                 slug: 'feedback-admin',
                 description:
                   'Manage feedback sessions, templates, questions, assignments, and view analytics.',
-                path: '/home/sub-menu/feedback-admin',
+                path: '/student-feedback-management/admin',
                 icon: 'admin_panel_settings',
                 colorScheme: 'blue',
                 navigationStyle: 'sidebar',

@@ -236,7 +236,6 @@ export default function RTIInbox() {
       title="RTI Inbox"
       description="View and manage all RTI applications with search, filters, and actions."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'RTI Management', to: rtiUrls.portal },
         { label: 'Admin Portal', to: rtiUrls.admin.portal },
         { label: 'RTI Inbox' },

@@ -64,6 +64,11 @@ export interface Complaint {
   notesheetNo?: string;
   appealReason?: string;
   externalRefNo?: string;
+  complaintType?: 'Student' | 'Staff' | 'Faculty' | 'Public';
+  applicationNo?: string;
+  isForwardedToGovt?: boolean;
+  govtPortalName?: string;
+  govtRefNo?: string;
 }
 
 export interface TimelineEntry {
@@ -883,6 +888,113 @@ export const complaints: Complaint[] = [
       },
     ],
     notesheetNo: 'NS/2025/00198',
+    complaintType: 'Student',
+  },
+  {
+    id: 'GRV007',
+    ticketNo: 'GRV/DAVV/2026/00099',
+    studentName: 'Rajesh Kumar',
+    enrollmentNo: 'APP12345',
+    course: 'M.Sc. Chemistry',
+    department: 'Chemistry Department',
+    category: 'Admission Fees & Refunds',
+    subCategory: 'Refund of Admission Cancellation',
+    subject:
+      'Refund of admission fees pending since 30 days after cancellation',
+    description:
+      'I cancelled my admission for M.Sc Chemistry on 10 Dec 2025 and applied for refund. No status has been updated since then.',
+    priority: 'High',
+    status: 'Assigned',
+    isAnonymous: false,
+    incidentDate: '10 Dec 2025',
+    submittedDate: '12 Dec 2025',
+    location: 'Online Admission Portal',
+    assignedTo: 'Mr. Suresh Joshi (Finance Officer)',
+    assignedDept: 'Finance Department',
+    slaDeadline: '15 Dec 2025',
+    slaRemainingHrs: -48,
+    slaStatus: 'Breached',
+    escalationLevel: 1,
+    attachments: [],
+    timeline: makeTimeline([
+      {
+        action: 'Complaint Submitted',
+        performedBy: 'Rajesh Kumar',
+        role: 'Public Applicant',
+        date: '12 Dec 2025 10:00',
+        remarks: 'Filed via Public Portal with Application Code APP12345',
+        status: 'Submitted',
+        done: true,
+        active: false,
+      },
+      {
+        action: 'Assigned to Department',
+        performedBy: 'Grievance Cell',
+        role: 'Admin',
+        date: '12 Dec 2025 11:30',
+        remarks: 'Assigned to Finance Department for fee verify',
+        status: 'Assigned',
+        done: true,
+        active: true,
+      },
+    ]),
+    comments: [],
+    complaintType: 'Public',
+    applicationNo: 'APP12345',
+  },
+  {
+    id: 'GRV008',
+    ticketNo: 'GRV/DAVV/2026/00100',
+    studentName: 'Aarav Sharma',
+    enrollmentNo: 'CS2021008',
+    course: 'B.Tech CSE',
+    department: 'SCSIT',
+    category: 'Technical Portal Issue',
+    subCategory: 'Payment Gateway Timeout',
+    subject: 'Admission Fee Payment Deducted but admission status not updated',
+    description:
+      'Payment of ₹45,000 deducted on 05 Dec 2025. Still not updated, SLA breached at department level. Critical unresolved issue auto-forwarded to state tracking systems.',
+    priority: 'Critical',
+    status: 'Escalated',
+    isAnonymous: false,
+    incidentDate: '05 Dec 2025',
+    submittedDate: '07 Dec 2025',
+    location: 'Payment Gateway',
+    assignedTo: 'Mr. Suresh Joshi (Finance Officer)',
+    assignedDept: 'Finance Department',
+    slaDeadline: '10 Dec 2025',
+    slaRemainingHrs: -150,
+    slaStatus: 'Breached',
+    escalationLevel: 3,
+    attachments: [],
+    timeline: makeTimeline([
+      {
+        action: 'Complaint Submitted',
+        performedBy: 'Aarav Sharma',
+        role: 'Student',
+        date: '07 Dec 2025',
+        remarks: 'Payment gateway deduction failure reported',
+        status: 'Submitted',
+        done: true,
+        active: false,
+      },
+      {
+        action: 'SLA Breach Auto-Forward',
+        performedBy: 'System Engine',
+        role: 'Escalation Engine',
+        date: '10 Dec 2025',
+        remarks:
+          'Ticket unresolved at university level. Auto-forwarded to CM Helpline 181 and UGC e-Samadhan.',
+        status: 'Escalated',
+        done: true,
+        active: true,
+      },
+    ]),
+    comments: [],
+    complaintType: 'Student',
+    isForwardedToGovt: true,
+    govtPortalName: 'CM Helpline 181',
+    govtRefNo: 'CMH/2026/MP/987654',
   },
 ];
 

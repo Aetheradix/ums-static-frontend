@@ -19,7 +19,6 @@ export default function AgentOverdue() {
       title="Overdue Tickets"
       description="Tickets past their SLA deadline."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'Overdue' },
       ]}

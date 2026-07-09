@@ -87,7 +87,6 @@ export default function StudentDashboard() {
       title="My Feedback"
       description="Overview of your feedback forms."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'Student Feedback', to: feedbackUrls.student.dashboard },
         { label: 'Dashboard' },
       ]}

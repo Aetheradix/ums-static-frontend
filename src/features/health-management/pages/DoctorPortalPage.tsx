@@ -19,7 +19,7 @@ export default function DoctorPortalPage() {
         {
           title: 'Health Records',
           description: 'Create and view patient health records.',
-          icon: 'folder_medical',
+          icon: 'medical_information',
           colorScheme: 'green',
           path: hmsUrls.records,
         },

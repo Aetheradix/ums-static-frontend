@@ -213,10 +213,9 @@ export default function ReportsAnalytics() {
       title="Reports & Analytics"
       description="Analyze feedback data across sessions, faculty, departments, and questions."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'Student Feedback Management', to: feedbackUrls.portal },
         { label: 'Admin Portal', to: feedbackUrls.admin.portal },
-        { label: 'Reports' },
+        { label: 'Reports & Analytics' },
       ]}
       headerAction={
         <div className="flex gap-2">

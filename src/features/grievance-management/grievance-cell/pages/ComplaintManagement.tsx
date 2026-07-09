@@ -13,6 +13,7 @@ export default function GrievanceCellComplaintManagement() {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('ALL');
   const [status, setStatus] = useState('ALL');
+  const [sourceType, setSourceType] = useState('ALL');
 
   const filtered = list.filter(c => {
     const matchesSearch =
@@ -21,7 +22,13 @@ export default function GrievanceCellComplaintManagement() {
       c.subject.toLowerCase().includes(search.toLowerCase());
     const matchesCategory = category === 'ALL' || c.category === category;
     const matchesStatus = status === 'ALL' || c.status === status;
-    return matchesSearch && matchesCategory && matchesStatus;
+    const matchesSource =
+      sourceType === 'ALL' ||
+      (sourceType === 'Public' && c.complaintType === 'Public') ||
+      (sourceType === 'Student' &&
+        (c.complaintType === 'Student' || !c.complaintType)) ||
+      (sourceType === 'Govt' && c.isForwardedToGovt);
+    return matchesSearch && matchesCategory && matchesStatus && matchesSource;
   });
 
   const handleExport = (type: string) => {
@@ -80,6 +87,17 @@ export default function GrievanceCellComplaintManagement() {
 
         <select
           className="grv-filter-select"
+          value={sourceType}
+          onChange={e => setSourceType(e.target.value)}
+        >
+          <option value="ALL">All Sources</option>
+          <option value="Student">Internal Student</option>
+          <option value="Public">Public Applicant</option>
+          <option value="Govt">Forwarded to Govt Portals</option>
+        </select>
+
+        <select
+          className="grv-filter-select"
           value={status}
           onChange={e => setStatus(e.target.value)}
         >
@@ -105,6 +123,7 @@ export default function GrievanceCellComplaintManagement() {
             <thead>
               <tr>
                 <th>Ticket ID</th>
+                <th>Source</th>
                 <th>Complainant Name</th>
                 <th>Category</th>
                 <th>Subject Petition</th>
@@ -120,11 +139,30 @@ export default function GrievanceCellComplaintManagement() {
                     {c.ticketNo}
                   </td>
                   <td>
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        c.complaintType === 'Public'
+                          ? 'bg-purple-100 text-purple-800'
+                          : 'bg-blue-100 text-blue-800'
+                      }`}
+                    >
+                      {c.complaintType || 'Student'}
+                    </span>
+                    {c.isForwardedToGovt && (
+                      <div className="text-[9px] text-orange-600 font-extrabold mt-1 flex items-center gap-0.5 uppercase tracking-wider">
+                        <i className="pi pi-external-link text-[8px]"></i>
+                        <span>{c.govtPortalName}</span>
+                      </div>
+                    )}
+                  </td>
+                  <td>
                     <div className="font-bold text-slate-800">
                       {c.isAnonymous ? 'Anonymous' : c.studentName}
                     </div>
                     <span className="text-[10px] text-slate-400 font-mono">
-                      {c.enrollmentNo || 'N/A'}
+                      {c.complaintType === 'Public'
+                        ? `App Code: ${c.enrollmentNo}`
+                        : c.enrollmentNo || 'N/A'}
                     </span>
                   </td>
                   <td>{c.category}</td>

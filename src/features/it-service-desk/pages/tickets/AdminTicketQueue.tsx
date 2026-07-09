@@ -38,7 +38,6 @@ export default function AdminTicketQueue() {
       title="Ticket Queue"
       description="Full ticket queue with advanced filters."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'Ticket Queue' },
       ]}

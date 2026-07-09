@@ -66,7 +66,27 @@ export default function AdminIntegrationDashboard() {
                   }`}
                 >
                   <div className="flex justify-between items-center mb-1">
-                    <span className="font-extrabold text-xs text-slate-800">
+                    <span className="font-extrabold text-xs text-slate-800 flex items-center gap-2">
+                      <span className="flex h-2 w-2 relative shrink-0">
+                        <span
+                          className={`grv-blink absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                            p.status === 'Connected'
+                              ? 'bg-emerald-400'
+                              : p.status === 'Syncing'
+                                ? 'bg-cyan-400'
+                                : 'bg-red-400'
+                          }`}
+                        ></span>
+                        <span
+                          className={`relative inline-flex rounded-full h-2 w-2 ${
+                            p.status === 'Connected'
+                              ? 'bg-emerald-500'
+                              : p.status === 'Syncing'
+                                ? 'bg-cyan-500'
+                                : 'bg-red-500'
+                          }`}
+                        ></span>
+                      </span>
                       {p.name} ({p.acronym})
                     </span>
                     <span

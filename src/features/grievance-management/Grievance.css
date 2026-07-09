@@ -709,3 +709,19 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Blinking Status Lamp Indicator Animation ── */
+@keyframes grv-blink {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.92);
+  }
+}
+.grv-blink {
+  animation: grv-blink 1.2s infinite ease-in-out;
+}

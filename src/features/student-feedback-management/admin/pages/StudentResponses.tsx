@@ -52,10 +52,9 @@ export default function StudentResponses() {
       title="Student Responses"
       description="View and filter student feedback submissions."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'Student Feedback Management', to: feedbackUrls.portal },
         { label: 'Admin Portal', to: feedbackUrls.admin.portal },
-        { label: 'Responses' },
+        { label: 'Student Responses' },
       ]}
     >
       <FormCard>
