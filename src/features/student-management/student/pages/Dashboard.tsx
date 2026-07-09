@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
+import { useEffect, useRef } from 'react';
 import { FormCard, FormPage, StatCard } from 'shared/new-components';
 import { studentManagementUrls } from '../../urls';
 import './Dashboard.css';
@@ -11,6 +11,9 @@ const studentStats = {
   pendingFees: 0,
   creditsEarned: 110,
   creditsRequired: 160,
+  classRank: 12,
+  totalStudents: 180,
+  activeBacklogs: 0,
 };
 
 const recentNotifications = [
@@ -54,13 +57,66 @@ function SgpaTrendChart() {
             tension: 0.4,
             pointBackgroundColor: '#8b5cf6',
           },
+          {
+            label: 'Target CGPA Baseline',
+            data: [8.5, 8.5, 8.5, 8.5, 8.5],
+            borderColor: '#f59e0b',
+            borderDash: [5, 5],
+            borderWidth: 2,
+            pointRadius: 0,
+            fill: false,
+            tension: 0,
+          },
         ],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         scales: { y: { min: 0, max: 10 } },
-        plugins: { legend: { display: false } },
+        plugins: { legend: { position: 'top' } },
+      },
+    });
+    return () => chart.destroy();
+  }, []);
+  return <canvas ref={ref} />;
+}
+
+function SubjectMarksBarChart() {
+  const ref = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    if (!ref.current) return;
+    const ctx = ref.current.getContext('2d');
+    if (!ctx) return;
+    const chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: [
+          'Data Structures',
+          'OS',
+          'Database',
+          'Networking',
+          'Mathematics',
+        ],
+        datasets: [
+          {
+            label: 'Marks Obtained',
+            data: [85, 78, 92, 88, 74],
+            backgroundColor: '#3b82f6',
+            borderRadius: 4,
+          },
+          {
+            label: 'Class Average',
+            data: [72, 70, 75, 76, 68],
+            backgroundColor: '#9ca3af',
+            borderRadius: 4,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: { min: 0, max: 100 } },
+        plugins: { legend: { position: 'top' } },
       },
     });
     return () => chart.destroy();
@@ -98,7 +154,7 @@ function AttendanceDoughnutChart() {
   return <canvas ref={ref} />;
 }
 
-function SubjectMarksBarChart() {
+function SubjectWiseAttendanceChart() {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     if (!ref.current) return;
@@ -107,28 +163,45 @@ function SubjectMarksBarChart() {
     const chart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: [
-          'Data Structures',
-          'OS',
-          'Database',
-          'Networking',
-          'Mathematics',
-        ],
+        labels: ['DS', 'OS', 'DB', 'NW', 'Math'],
         datasets: [
           {
-            label: 'Marks Obtained',
-            data: [85, 78, 92, 88, 74],
-            backgroundColor: '#3b82f6',
+            label: 'Attendance %',
+            data: [92, 72, 95, 88, 81],
+            backgroundColor: context => {
+              const val = context.dataset.data[context.dataIndex] as number;
+              return val < 75 ? '#ef4444' : '#10b981';
+            },
             borderRadius: 4,
           },
         ],
       },
       options: {
+        indexAxis: 'y',
         responsive: true,
         maintainAspectRatio: false,
-        scales: { y: { min: 0, max: 100 } },
-        plugins: { legend: { display: false } },
-      },
+        scales: { x: { min: 0, max: 100 } },
+        plugins: {
+          legend: { display: false },
+          annotation: {
+            annotations: {
+              line1: {
+                type: 'line',
+                xMin: 75,
+                xMax: 75,
+                borderColor: '#ef4444',
+                borderWidth: 2,
+                borderDash: [4, 4],
+                label: {
+                  display: true,
+                  content: '75% Threshold',
+                  position: 'start',
+                },
+              },
+            },
+          },
+        },
+      } as any, // annotation plugin types might be missing, cast to any
     });
     return () => chart.destroy();
   }, []);
@@ -159,41 +232,19 @@ function SkillMatrixRadarChart() {
             borderColor: '#3b82f6',
             pointBackgroundColor: '#3b82f6',
           },
-        ],
-      },
-      options: { responsive: true, maintainAspectRatio: false },
-    });
-    return () => chart.destroy();
-  }, []);
-  return <canvas ref={ref} />;
-}
-
-function ActivityCreditsLineChart() {
-  const ref = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    if (!ref.current) return;
-    const ctx = ref.current.getContext('2d');
-    if (!ctx) return;
-    const chart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5'],
-        datasets: [
           {
-            label: 'Activity Points Earned',
-            data: [15, 25, 45, 60, 85],
-            borderColor: '#10b981',
-            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-            fill: true,
-            tension: 0.4,
-            pointBackgroundColor: '#10b981',
+            label: 'Class Average',
+            data: [75, 78, 80, 75, 72],
+            backgroundColor: 'rgba(156, 163, 175, 0.2)',
+            borderColor: '#9ca3af',
+            pointBackgroundColor: '#9ca3af',
           },
         ],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
+        plugins: { legend: { position: 'bottom' } },
       },
     });
     return () => chart.destroy();
@@ -216,7 +267,7 @@ export default function Dashboard() {
         { label: 'Dashboard' },
       ]}
     >
-      <div className="student-dashboard-stats-grid">
+      <div className="stats-grid-6 student-dashboard-stats-grid mb-6">
         <StatCard
           title="Current CGPA"
           value={studentStats.cgpa.toFixed(2)}
@@ -230,6 +281,7 @@ export default function Dashboard() {
           icon="event_available"
           colorScheme="green"
           trend={{ value: 2, direction: 'up', label: 'from last month' }}
+          subtitle="Warning: OS < 75%"
         />
         <StatCard
           title="Registered Courses"
@@ -245,6 +297,22 @@ export default function Dashboard() {
           colorScheme={studentStats.pendingFees > 0 ? 'orange' : 'teal'}
           subtitle={studentStats.pendingFees > 0 ? 'Due soon' : 'All clear'}
         />
+        <StatCard
+          title="Class Rank"
+          value={`${studentStats.classRank} / ${studentStats.totalStudents}`}
+          icon="military_tech"
+          colorScheme="purple"
+          trend={{ value: 3, direction: 'up', label: 'positions up' }}
+        />
+        <StatCard
+          title="Active Backlogs"
+          value={studentStats.activeBacklogs}
+          icon="assignment_late"
+          colorScheme={studentStats.activeBacklogs > 0 ? 'red' : 'green'}
+          subtitle={
+            studentStats.activeBacklogs > 0 ? 'Action required' : 'All clear'
+          }
+        />
       </div>
 
       <div className="dashboard-charts-grid">
@@ -254,53 +322,64 @@ export default function Dashboard() {
           </div>
         </FormCard>
 
-        <FormCard title="Current Subject Marks">
+        <FormCard title="Subject Marks Comparison">
           <div className="chart-container">
             <SubjectMarksBarChart />
           </div>
         </FormCard>
 
-        <FormCard title="Attendance Breakdown">
+        <FormCard title="Overall Attendance">
           <div className="chart-container">
             <AttendanceDoughnutChart />
           </div>
         </FormCard>
 
+        <FormCard title="Subject-wise Attendance">
+          <div className="chart-container">
+            <SubjectWiseAttendanceChart />
+          </div>
+        </FormCard>
+
         <FormCard title="Course Completion Status">
-          <div className="course-progress-container">
+          <div className="course-progress-container h-full flex flex-col justify-center">
             <div className="course-progress-header">
               <span className="course-progress-label">Credits Earned</span>
               <span className="course-progress-value">
                 {studentStats.creditsEarned} / {studentStats.creditsRequired}
               </span>
             </div>
-            <div className="course-progress-track">
-              <div
-                className="course-progress-fill"
-                style={{ width: `${creditsPct}%` }}
-              ></div>
+
+            <div className="credit-milestones mb-2 flex justify-between text-xs text-gray-400 font-medium px-1">
+              <span>0</span>
+              <span>40</span>
+              <span>80</span>
+              <span>120</span>
+              <span>160</span>
             </div>
-            <p className="course-progress-subtitle">
+            <div className="course-progress-track relative h-4">
+              <div
+                className="course-progress-fill absolute left-0 top-0 h-full rounded-full"
+                style={{ width: `${creditsPct}%`, zIndex: 1 }}
+              ></div>
+              <div className="absolute left-1/4 top-0 bottom-0 w-px bg-white/50 z-10"></div>
+              <div className="absolute left-2/4 top-0 bottom-0 w-px bg-white/50 z-10"></div>
+              <div className="absolute left-3/4 top-0 bottom-0 w-px bg-white/50 z-10"></div>
+            </div>
+            <p className="course-progress-subtitle font-medium">
               {creditsPct}% of degree requirements completed
             </p>
           </div>
         </FormCard>
 
-        <FormCard title="Skill Matrix">
+        <FormCard title="Skill Matrix Profile">
           <div className="chart-container">
             <SkillMatrixRadarChart />
-          </div>
-        </FormCard>
-
-        <FormCard title="Extracurricular Activity Points">
-          <div className="chart-container">
-            <ActivityCreditsLineChart />
           </div>
         </FormCard>
       </div>
 
       <div className="student-dashboard-content-split">
-        <FormCard title="Upcoming Assignments & Tests" icon="assignment">
+        <FormCard title="Upcoming Assignments & Tests">
           <ul className="assignment-list">
             <li>
               <div className="assignment-date">Oct 16</div>
@@ -308,6 +387,7 @@ export default function Dashboard() {
                 <strong>Data Structures Project Sub.</strong>
                 <p>Submit via LMS portal.</p>
                 <span className="badge badge-warning">Due in 2 days</span>
+                <span className="badge badge-outline ml-2">Assignment</span>
               </div>
             </li>
             <li>
@@ -316,12 +396,22 @@ export default function Dashboard() {
                 <strong>OS Lab Evaluation</strong>
                 <p>In-person viva.</p>
                 <span className="badge badge-info">Next week</span>
+                <span className="badge badge-outline ml-2">Internal Exam</span>
+              </div>
+            </li>
+            <li>
+              <div className="assignment-date">Nov 15</div>
+              <div className="assignment-content">
+                <strong>End Semester Exams Begin</strong>
+                <p>Check timetable for details.</p>
+                <span className="badge badge-alert">Important</span>
+                <span className="badge badge-outline ml-2">External Exam</span>
               </div>
             </li>
           </ul>
         </FormCard>
 
-        <FormCard title="Library Summary" icon="local_library">
+        <FormCard title="Library Summary">
           <div className="library-summary-container">
             <div className="library-stats">
               <div className="stat">
@@ -336,20 +426,40 @@ export default function Dashboard() {
             <ul className="book-list">
               <li>
                 <strong>Introduction to Algorithms</strong>
-                <span className="due-date text-red-500">Overdue (Oct 10)</span>
+                <div className="flex items-center gap-2">
+                  <span className="due-date text-red-500 font-medium">
+                    Overdue (Oct 10)
+                  </span>
+                  <span className="badge badge-warning text-xs">₹50 Fine</span>
+                </div>
               </li>
               <li>
                 <strong>Operating System Concepts</strong>
-                <span className="due-date">Due Oct 25</span>
+                <span className="due-date bg-green-50 text-green-700 px-2 py-1 rounded text-xs font-medium">
+                  Due Oct 25
+                </span>
+              </li>
+              <li>
+                <strong>Database Management Systems</strong>
+                <span className="due-date bg-green-50 text-green-700 px-2 py-1 rounded text-xs font-medium">
+                  Due Oct 28
+                </span>
               </li>
             </ul>
-            <button className="pay-fine-btn">Pay Fine</button>
+            <button className="pay-fine-btn w-full mt-2 py-2">
+              Pay Fine Online
+            </button>
           </div>
         </FormCard>
       </div>
 
       <div className="student-dashboard-split-row mt-6">
         <FormCard title="Recent Notifications" className="notifications-card">
+          <div className="flex justify-end mb-4">
+            <button className="text-sm text-indigo-600 font-medium hover:underline">
+              Mark all read
+            </button>
+          </div>
           <ul className="notifications-list">
             {recentNotifications.map(note => (
               <li
@@ -399,6 +509,20 @@ export default function Dashboard() {
             >
               <i className="pi pi-check-square text-orange-500" />
               <span>Subject Selection</span>
+            </a>
+            <a
+              href="/student-management/student/exam-schedule"
+              className="quick-link-item"
+            >
+              <i className="pi pi-calendar text-purple-500" />
+              <span>Exam Schedule</span>
+            </a>
+            <a
+              href="/student-management/student/fee-payment"
+              className="quick-link-item"
+            >
+              <i className="pi pi-wallet text-teal-500" />
+              <span>Fee Payment</span>
             </a>
           </div>
         </FormCard>
