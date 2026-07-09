@@ -3,6 +3,7 @@ export const NAV_LINKS = [
   { label: 'Solutions', href: '/cms/solutions' },
   { label: 'About', href: '/cms/about' },
   { label: 'Contact', href: '/cms/contact' },
+  { label: 'Raise Grievance', href: '/cms/public-grievance' },
 ] as const;
 
 export const HERO_CONTENT = {

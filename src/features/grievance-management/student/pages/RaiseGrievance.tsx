@@ -30,13 +30,6 @@ const DEPARTMENTS = [
   { name: 'Administration Office', value: 'Administration Office' },
 ];
 
-const PRIORITIES = [
-  { name: 'Low', value: 'Low' },
-  { name: 'Medium', value: 'Medium' },
-  { name: 'High', value: 'High' },
-  { name: 'Critical (UGC/SGRC Statutory)', value: 'Critical' },
-];
-
 export default function StudentRaiseGrievance() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
@@ -256,16 +249,6 @@ export default function StudentRaiseGrievance() {
               }
               disabled={!form.category}
               required
-            />
-            <DropDownList
-              label="Priority Level"
-              data={PRIORITIES}
-              textField="name"
-              optionValue="value"
-              value={form.priority}
-              onChange={val =>
-                setForm(f => ({ ...f, priority: String(val ?? 'Medium') }))
-              }
             />
             <DatePicker
               label="Incident Date"

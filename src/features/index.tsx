@@ -65,6 +65,9 @@ const PublicSolutions = React.lazy(
 );
 const PublicAbout = React.lazy(() => import('./public-portal/pages/About'));
 const PublicContact = React.lazy(() => import('./public-portal/pages/Contact'));
+const PublicGrievance = React.lazy(
+  () => import('./public-portal/pages/PublicGrievance')
+);
 
 export default function Features() {
   return (
@@ -107,6 +110,16 @@ export default function Features() {
             <PublicPortalLayout>
               <PublicRouteWrapper>
                 <PublicContact />
+              </PublicRouteWrapper>
+            </PublicPortalLayout>
+          }
+        />
+        <Route
+          path="public-grievance"
+          element={
+            <PublicPortalLayout>
+              <PublicRouteWrapper>
+                <PublicGrievance />
               </PublicRouteWrapper>
             </PublicPortalLayout>
           }
