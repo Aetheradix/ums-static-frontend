@@ -6972,14 +6972,14 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'menu_book',
                 colorScheme: 'purple',
               },
-              {
-                label: 'E-MB Report',
-                description:
-                  'Work-wise E-MB measurements, bills, and recovery ledger.',
-                path: '/civil-infrastructure/engineer/mb-report',
-                icon: 'assessment',
-                colorScheme: 'blue',
-              },
+              // {
+              //   label: 'E-MB Report',
+              //   description:
+              //     'Work-wise E-MB measurements, bills, and recovery ledger.',
+              //   path: '/civil-infrastructure/engineer/mb-report',
+              //   icon: 'assessment',
+              //   colorScheme: 'blue',
+              // },
               {
                 label: 'Milestone Sign-off',
                 description: 'EE milestone checklist validation.',
