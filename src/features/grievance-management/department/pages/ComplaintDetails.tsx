@@ -101,6 +101,33 @@ export default function DepartmentComplaintDetails() {
     ToastService.success('Grievance returned to Grievance Cell Hub.');
   };
 
+  const handleForwardToGovt = () => {
+    const govNo = `CMH/2026/MP/${Math.floor(Math.random() * 900000 + 100000)}`;
+    setComplaint(c => ({
+      ...c,
+      isForwardedToGovt: true,
+      govtPortalName: 'CM Helpline 181 & UGC Redressal',
+      govtRefNo: govNo,
+      timeline: [
+        ...c.timeline,
+        {
+          id: `TL${Date.now()}`,
+          action: 'Auto-Forwarded to Govt Gateway',
+          performedBy: 'System Nodal Engine',
+          role: 'Govt eOffice Connector',
+          date: 'Just Now',
+          remarks: `Grievance petition sync-forwarded because resolution is pending or marked critical at university level. Reference ID: ${govNo}`,
+          status: c.status,
+          done: true,
+          active: true,
+        },
+      ],
+    }));
+    ToastService.success(
+      'Grievance petition successfully sync-forwarded to UGC e-Samadhan & MP CM Helpline 181 gateways.'
+    );
+  };
+
   return (
     <FormPage
       title={`Department Action Desk: ${complaint.ticketNo}`}
@@ -119,17 +146,27 @@ export default function DepartmentComplaintDetails() {
           <FormCard title="Complainant & Grievance Information" icon="info">
             <FormGrid columns={3}>
               <div className="grv-info-field">
-                <span className="grv-info-label">Complainant Student</span>
-                <span className="grv-info-value">
+                <span className="grv-info-label">
+                  {complaint.complaintType === 'Public'
+                    ? 'Public Petitioner'
+                    : 'Complainant Student'}
+                </span>
+                <span className="grv-info-value font-bold text-slate-800">
                   {complaint.isAnonymous
                     ? 'Anonymous Request'
                     : complaint.studentName}
                 </span>
               </div>
               <div className="grv-info-field">
-                <span className="grv-info-label">Enrollment ID</span>
-                <span className="grv-info-value">
-                  {complaint.isAnonymous ? 'N/A' : complaint.enrollmentNo}
+                <span className="grv-info-label">
+                  {complaint.complaintType === 'Public'
+                    ? 'Application Code (Verified)'
+                    : 'Enrollment ID'}
+                </span>
+                <span className="grv-info-value font-mono">
+                  {complaint.isAnonymous
+                    ? 'N/A'
+                    : complaint.enrollmentNo || complaint.applicationNo}
                 </span>
               </div>
               <div className="grv-info-field">
@@ -159,6 +196,28 @@ export default function DepartmentComplaintDetails() {
                 </span>
               </div>
             </FormGrid>
+
+            {complaint.isForwardedToGovt && (
+              <div className="grv-alert error mt-4 flex items-start gap-2 bg-orange-50 border border-orange-200 text-orange-800 p-3 rounded-lg">
+                <i className="pi pi-external-link text-lg text-orange-600 shrink-0 mt-0.5"></i>
+                <div className="text-xs">
+                  <strong className="block text-orange-950 font-bold mb-0.5">
+                    External Gateway Auto-Forward Active
+                  </strong>
+                  This critical grievance has been auto-forwarded to{' '}
+                  <span className="font-bold text-slate-800">
+                    {complaint.govtPortalName}
+                  </span>{' '}
+                  due to university-level SLA resolution limits.
+                  <div className="mt-1 font-mono text-[10px]">
+                    Govt Reference ID:{' '}
+                    <span className="bg-orange-100 px-1 py-0.5 rounded font-black text-orange-900">
+                      {complaint.govtRefNo}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="border-t border-slate-100 mt-4 pt-4">
               <span className="grv-info-label">Subject Heading</span>
@@ -271,7 +330,17 @@ export default function DepartmentComplaintDetails() {
                   rows={3}
                   required
                 />
-                <div className="flex justify-end gap-2 mt-4">
+                <div className="flex justify-end gap-2 mt-4 flex-wrap">
+                  {!complaint.isForwardedToGovt && (
+                    <button
+                      type="button"
+                      onClick={handleForwardToGovt}
+                      className="text-xs border border-orange-300 bg-orange-50 hover:bg-orange-100 text-orange-800 font-bold px-3 py-2 rounded flex items-center gap-1 cursor-pointer transition-colors"
+                    >
+                      <i className="pi pi-external-link"></i>
+                      Forward to Govt Portal
+                    </button>
+                  )}
                   <Button
                     label="Return to Cell"
                     icon="reply"
