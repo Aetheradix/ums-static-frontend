@@ -4,6 +4,7 @@ import { FormPage, GridPanel, FormCard } from 'shared/new-components';
 import { Button } from 'shared/components/buttons';
 import { memberships } from '../../data';
 import { hmsUrls } from '../../urls';
+import { getHmsBreadcrumbs } from '../../utils';
 
 const statusColors: Record<string, string> = {
   Active: 'bg-green-50 text-green-700',
@@ -28,11 +29,7 @@ export default function MembershipsPage() {
     <FormPage
       title="Memberships"
       description="Manage health memberships for employees, students, and guests."
-      breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Health Services', to: hmsUrls.portal },
-        { label: 'Memberships' },
-      ]}
+      breadcrumbs={getHmsBreadcrumbs('Memberships')}
       headerAction={
         <Button
           onClick={() => navigate(hmsUrls.addMembership)}

@@ -4,6 +4,7 @@ import { FormPage, FormCard, FormGrid } from 'shared/new-components';
 import { TextBox, TextArea, DropDownList } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
 import { hmsUrls } from '../../urls';
+import { getHmsBreadcrumbs } from '../../utils';
 
 const genderOptions = [
   { label: 'Male', value: 'Male' },
@@ -45,12 +46,7 @@ export default function AddGuestUserPage() {
     <FormPage
       title="Add Guest User"
       description="Register a new guest user for health services."
-      breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Health Services', to: hmsUrls.portal },
-        { label: 'Guest Users', to: hmsUrls.guestUsers },
-        { label: 'Add Guest' },
-      ]}
+      breadcrumbs={getHmsBreadcrumbs('Guest Users', 'Add Guest')}
     >
       <FormCard title="Guest Details">
         <FormGrid>

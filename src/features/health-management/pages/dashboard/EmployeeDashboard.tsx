@@ -9,7 +9,7 @@ import {
   mockCurrentUser,
 } from '../../data';
 import { hmsUrls } from '../../urls';
-
+import { getHmsBreadcrumbs } from '../../utils';
 const KPI_COLORS: Record<string, { bg: string; border: string; text: string }> =
   {
     blue: {
@@ -91,11 +91,12 @@ export default function EmployeeDashboard() {
     <FormPage
       title="My Health Dashboard"
       description="Your health records, memberships, and appointments at a glance."
-      breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Health Services', to: hmsUrls.portal },
-        { label: 'My Dashboard' },
-      ]}
+      breadcrumbs={getHmsBreadcrumbs(
+        'My Dashboard',
+        undefined,
+        'Employee Portal',
+        hmsUrls.employee.portal
+      )}
     >
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         <KpiCard

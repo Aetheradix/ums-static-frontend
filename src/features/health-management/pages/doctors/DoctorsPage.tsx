@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { FormPage, GridPanel, FormCard } from 'shared/new-components';
 import { doctors } from '../../data';
-import { hmsUrls } from '../../urls';
+import { getHmsBreadcrumbs } from '../../utils';
 
 export default function DoctorsPage() {
   const data = useMemo(() => doctors, []);
@@ -10,11 +10,7 @@ export default function DoctorsPage() {
     <FormPage
       title="Doctor Schedule"
       description="View doctor availability, specialities, and visiting hours."
-      breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Health Services', to: hmsUrls.portal },
-        { label: 'Doctors' },
-      ]}
+      breadcrumbs={getHmsBreadcrumbs('Doctors')}
     >
       <FormCard title="All Doctors">
         <GridPanel

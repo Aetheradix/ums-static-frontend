@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { FormPage, GridPanel, FormCard } from 'shared/new-components';
 import { appointments } from '../../data';
-import { hmsUrls } from '../../urls';
+import { getHmsBreadcrumbs } from '../../utils';
 
 const statusColors: Record<string, string> = {
   Scheduled: 'bg-blue-50 text-blue-700',
@@ -16,11 +16,7 @@ export default function AppointmentsPage() {
     <FormPage
       title="Appointments"
       description="View and manage health service appointments."
-      breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Health Services', to: hmsUrls.portal },
-        { label: 'Appointments' },
-      ]}
+      breadcrumbs={getHmsBreadcrumbs('Appointments')}
     >
       <FormCard title="All Appointments">
         <GridPanel

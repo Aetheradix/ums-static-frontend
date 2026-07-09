@@ -4,6 +4,7 @@ import { FormPage, GridPanel, FormCard } from 'shared/new-components';
 import { Button } from 'shared/components/buttons';
 import { healthRecords } from '../../data';
 import { hmsUrls } from '../../urls';
+import { getHmsBreadcrumbs } from '../../utils';
 
 const recordColors: Record<string, string> = {
   Yes: 'bg-amber-50 text-amber-700',
@@ -28,11 +29,7 @@ export default function HealthRecordsPage() {
     <FormPage
       title="Health Records"
       description="View and manage patient health records across all health centers."
-      breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Health Services', to: hmsUrls.portal },
-        { label: 'Health Records' },
-      ]}
+      breadcrumbs={getHmsBreadcrumbs('Health Records')}
       headerAction={
         <Button
           onClick={() => navigate(hmsUrls.addRecord)}

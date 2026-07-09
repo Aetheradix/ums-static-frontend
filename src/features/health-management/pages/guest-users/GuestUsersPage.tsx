@@ -4,6 +4,7 @@ import { FormPage, GridPanel, FormCard } from 'shared/new-components';
 import { Button } from 'shared/components/buttons';
 import { guestUsers } from '../../data';
 import { hmsUrls } from '../../urls';
+import { getHmsBreadcrumbs } from '../../utils';
 
 export default function GuestUsersPage() {
   const navigate = useNavigate();
@@ -13,11 +14,7 @@ export default function GuestUsersPage() {
     <FormPage
       title="Guest Users"
       description="Manage guest health service users."
-      breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Health Services', to: hmsUrls.portal },
-        { label: 'Guest Users' },
-      ]}
+      breadcrumbs={getHmsBreadcrumbs('Guest Users')}
       headerAction={
         <Button
           onClick={() => navigate(hmsUrls.addGuestUser)}

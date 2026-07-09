@@ -6,7 +6,7 @@ import {
   medicalStocks,
   subscriptions,
 } from '../../data';
-import { hmsUrls } from '../../urls';
+import { getHmsBreadcrumbs } from '../../utils';
 
 export default function ReportsPage() {
   const stats = useMemo(
@@ -80,11 +80,7 @@ export default function ReportsPage() {
     <FormPage
       title="Reports"
       description="Health management system statistics and summaries."
-      breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Health Services', to: hmsUrls.portal },
-        { label: 'Reports' },
-      ]}
+      breadcrumbs={getHmsBreadcrumbs('Reports')}
     >
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
         {reportCards.map(card => (

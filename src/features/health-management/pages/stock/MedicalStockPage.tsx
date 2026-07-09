@@ -4,6 +4,7 @@ import { FormPage, GridPanel, FormCard } from 'shared/new-components';
 import { Button } from 'shared/components/buttons';
 import { medicalStocks } from '../../data';
 import { hmsUrls } from '../../urls';
+import { getHmsBreadcrumbs } from '../../utils';
 
 export default function MedicalStockPage() {
   const navigate = useNavigate();
@@ -16,11 +17,7 @@ export default function MedicalStockPage() {
     <FormPage
       title="Medical Stock"
       description="Track medicine inventory, expiry dates, and stock levels across health centers."
-      breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Health Services', to: hmsUrls.portal },
-        { label: 'Medical Stock' },
-      ]}
+      breadcrumbs={getHmsBreadcrumbs('Medical Stock')}
       headerAction={
         <Button
           onClick={() => navigate(hmsUrls.addStock)}
