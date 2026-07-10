@@ -1,4 +1,4 @@
-﻿import { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCareerAdvancement } from '../context';
 import '../career.css';
@@ -89,7 +89,7 @@ export default function AparAll() {
 
   return (
     <FormPage
-      title="APAR â€” All Applications"
+      title="APAR — All Applications"
       description="Initiate, process, and track APAR reviews for all employees"
       breadcrumbs={[
         { label: 'Home', to: '/home' },
@@ -167,7 +167,7 @@ export default function AparAll() {
               field: 'currentHandler',
               header: 'Current Handler',
               cell: (item: CareerAdvancement.CASAPARApplication) => (
-                <span>{item.currentHandler || 'â€”'}</span>
+                <span>{item.currentHandler || '—'}</span>
               ),
             },
             {

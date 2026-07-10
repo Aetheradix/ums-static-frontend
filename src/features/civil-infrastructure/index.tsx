@@ -56,7 +56,7 @@ export default function CivilInfrastructure() {
         element={<Navigate to="/home/sub-menu/civil-infrastructure" replace />}
       />
 
-      {/* ── Admin Portal ─────────────────────────────────────────── */}
+      {/* ── Admin Login ───────────────────────────────────────────── */}
       <Route path="admin" element={<Navigate to="admin/dashboard" replace />} />
       <Route path="admin/dashboard" element={<AdminDashboard />} />
       <Route path="admin/work-registration" element={<WorkRegistration />} />
@@ -87,7 +87,7 @@ export default function CivilInfrastructure() {
       <Route path="admin/boq-compilation" element={<AdminBOQCompilation />} />
       <Route path="admin/milestones" element={<AdminMilestoneDefinition />} />
 
-      {/* ── Engineer Portal ──────────────────────────────────────── */}
+      {/* ── Site Engineer Login ───────────────────────────────────── */}
       <Route
         path="engineer"
         element={<Navigate to="engineer/dashboard" replace />}
@@ -115,7 +115,7 @@ export default function CivilInfrastructure() {
       <Route path="engineer/request-cc" element={<RequestCC />} />
       <Route path="engineer/mb-report" element={<MBReport />} />
 
-      {/* ── Finance Portal ───────────────────────────────────────── */}
+      {/* ── Finance Login ─────────────────────────────────────────── */}
       <Route
         path="finance"
         element={<Navigate to="finance/dashboard" replace />}

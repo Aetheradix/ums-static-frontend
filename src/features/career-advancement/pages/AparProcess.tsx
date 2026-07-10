@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useCareerAdvancement } from '../context';
 import '../career.css';
@@ -97,7 +97,7 @@ export default function AparProcess() {
 
   return (
     <FormPage
-      title="APAR â€” Initiate Process Application"
+      title="APAR — Initiate Process Application"
       description="Initialize the appraisal report configuration, timelines and dates for the employee"
       breadcrumbs={[
         { label: 'Home', to: '/home' },
