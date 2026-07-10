@@ -5,8 +5,6 @@ import LinkAbcAccount from './student/pages/LinkAbcAccount';
 import StudentProfile from './student/profile/pages/StudentProfile';
 import SubjectSelection from './student/pages/SubjectSelection';
 
-import StudentDashboard from './student/pages/Dashboard';
-import AdminDashboard from './admin/pages/Dashboard';
 import MyCourses from './student/pages/MyCourses';
 import MyGrades from './student/pages/MyGrades';
 import TermReport from './student/pages/TermReport';
@@ -41,7 +39,7 @@ export default function StudentManagement() {
         path="admin"
         element={<Navigate to="/home/sub-menu/student-admin" replace />}
       />
-      <Route path="admin/dashboard" element={<AdminDashboard />} />
+
       <Route path="admin/directory" element={<StudentList />} />
       <Route path="admin/import" element={<ImportStudents />} />
 
@@ -49,7 +47,7 @@ export default function StudentManagement() {
         path="student"
         element={<Navigate to="/home/sub-menu/student-student" replace />}
       />
-      <Route path="student/dashboard" element={<StudentDashboard />} />
+
       <Route path="student/link-abc" element={<LinkAbcAccount />} />
       <Route path="student/profile/*" element={<StudentProfile />} />
       <Route path="student/my-courses" element={<MyCourses />} />
