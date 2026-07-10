@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Checkbox, DropDownList, TextBox } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
 import { FormCard, FormGrid, FormPage, GridPanel } from 'shared/new-components';
@@ -187,7 +187,7 @@ export default function RoomConfiguration() {
               valueField="id"
               value={form.hostelCode}
               onChange={v => set('hostelCode', v as string)}
-              defaultOptionText="â€” Select Hostel â€”"
+              defaultOptionText="— Select Hostel —"
             />
             <TextBox
               label="Room Number *"

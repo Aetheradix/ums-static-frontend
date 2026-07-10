@@ -1,4 +1,4 @@
-﻿import { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCareerAdvancement } from '../context';
 import '../career.css';
@@ -98,7 +98,7 @@ export default function DeanAcademics() {
 
   return (
     <FormPage
-      title="Dean Academics â€” Screening & Review"
+      title="Dean Academics — Screening & Review"
       description="Final screening stage: assign scores, verify IQAC, finish review, and generate print layout"
       breadcrumbs={[
         { label: 'Home', to: '/home' },
@@ -160,7 +160,7 @@ export default function DeanAcademics() {
 
         {app && (
           <FormCard
-            title={`Screening Committee Form â€” ${app.employeeName}`}
+            title={`Screening Committee Form — ${app.employeeName}`}
             icon="cog"
           >
             <div className="overflow-x-auto mb-6">
@@ -235,7 +235,7 @@ export default function DeanAcademics() {
                     <td className="p-3 text-slate-500">190</td>
                     <td className="p-3 text-cyan-600">177</td>
                     <td className="p-3 text-indigo-600 text-base font-black">
-                      {totalFinalScore || 'â€”'}
+                      {totalFinalScore || '—'}
                     </td>
                   </tr>
                 </tbody>
