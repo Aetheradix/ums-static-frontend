@@ -11790,7 +11790,7 @@ export const translations: Record<string, Record<string, string>> = {
     Present: 'उपस्थित',
     'Add Fee': 'शुल्क जोड़ें',
     Centers: 'केन्द्रों',
-    Default: 'गलती करना',
+    Default: 'डिफ़ॉल्ट',
     Results: 'परिणाम',
     Overdue: 'अतिदेय',
     Created: 'बनाया था',
@@ -12578,5 +12578,6 @@ export const translations: Record<string, Record<string, string>> = {
       'छात्र और कर्मचारी प्रतिक्रिया प्रणाली',
     'Manage convocation events, registrations, passes, and degree dispatch.':
       'दीक्षांत समारोह कार्यक्रमों, पंजीकरण, पास और डिग्री वितरण का प्रबंधन करें।',
+    Primary: 'प्राथमिक',
   },
 };
