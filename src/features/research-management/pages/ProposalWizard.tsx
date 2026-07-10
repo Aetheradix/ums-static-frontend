@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextBox } from 'shared/components/forms';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
@@ -445,7 +445,7 @@ export default function ProposalWizard() {
                 Ethics Board Clearance Dossier
               </p>
               <span className="text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                {proposalForm.ethicsDocs} â€” Verified âœ“
+                {proposalForm.ethicsDocs} — Verified ✓
               </span>
             </div>
             <div className="border-2 border-dashed border-slate-200 p-6 rounded-2xl bg-slate-50 flex flex-col items-center gap-2 text-center">
@@ -454,7 +454,7 @@ export default function ProposalWizard() {
                 Budget Justification Spreadsheet
               </p>
               <span className="text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                {proposalForm.budgetDocs} â€” Verified âœ“
+                {proposalForm.budgetDocs} — Verified ✓
               </span>
             </div>
           </div>
@@ -523,7 +523,7 @@ export default function ProposalWizard() {
               />
             ) : (
               <Button
-                label="Submit Proposal âœ“"
+                label="Submit Proposal ✓"
                 variant="primary"
                 onClick={handleSubmit}
               />
