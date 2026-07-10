@@ -546,7 +546,7 @@ export const LoginPage: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <h2 className="form-heading">Welcome back 👋</h2>
+                  <h2 className="form-heading">Sign in</h2>
                   <p className="form-subtitle">
                     Sign in to access your OCTAGON ERP account
                   </p>

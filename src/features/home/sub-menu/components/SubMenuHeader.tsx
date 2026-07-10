@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Breadcrumb from 'shared/new-components/Breadcrumb';
 import { useMenu } from '../../../../config/menu-routes';
 import { homeUrls } from '../../urls';
@@ -81,7 +81,7 @@ const SubMenuHeader: React.FC<SubMenuHeaderProps> = ({
             <Breadcrumb items={breadcrumbItems} />
             <button
               onClick={() => navigate(-1)}
-              className="hidden sm:flex items-center gap-1.5 text-[11px] font-bold text-[#2264dc] hover:text-[#1849a9] transition-colors mt-0.5 bg-slate-50 hover:bg-slate-100/80 px-2.5 py-1 rounded-md border border-slate-200 shadow-sm cursor-pointer"
+              className="hidden sm:flex items-center gap-1.5 text-[11px] font-bold text-[#2264dc] hover:text-[#1849a9] transition-colors mt-0.5 bg-white hover:bg-slate-100/50 px-2.5 py-1 rounded-md border border-slate-200 shadow-xs cursor-pointer"
               type="button"
             >
               <i className="pi pi-arrow-left text-[9px]" />

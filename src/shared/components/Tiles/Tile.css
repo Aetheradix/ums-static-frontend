@@ -121,7 +121,7 @@
    Description
 ───────────────────────────── */
 .db-card-description {
-  @apply text-[13px] leading-relaxed text-slate-500 mt-2;
+  @apply text-[13px] leading-relaxed text-slate-700 mt-2;
 }
 
 /* ─────────────────────────────

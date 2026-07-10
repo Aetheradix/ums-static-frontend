@@ -1,6 +1,7 @@
 import { Sidebar } from 'primereact/sidebar';
 import React, { useEffect, useState } from 'react';
 import { useLanguage } from 'shared/context/useLanguage';
+import DropDownList from 'shared/components/forms/DropDownList';
 
 interface ThemeSettingsSidebarProps {
   visible: boolean;
@@ -27,7 +28,7 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
   isDarkMode,
   toggleDarkMode,
 }) => {
-  const { language, toggleLanguage } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const [activeColor, setActiveColor] = useState('#002069');
   const [showTopNavbar, setShowTopNavbar] = useState(false);
   const [showDesktopSidebar, setShowDesktopSidebar] = useState(false);
@@ -196,38 +197,34 @@ export const ThemeSettingsSidebar: React.FC<ThemeSettingsSidebarProps> = ({
               Appearance
             </h3>
 
-            {/* Language Switch Toggle */}
-            <div className="flex items-center justify-between p-3 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800/50 mb-3">
+            {/* Language Switch Dropdown */}
+            <div className="flex flex-col gap-3 p-3 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800/50 mb-3">
               <div className="flex items-center gap-3">
                 <i className="pi pi-language text-xl text-slate-500 dark:text-zinc-400" />
                 <div>
                   <p className="font-medium text-slate-800 dark:text-zinc-200">
-                    {language === 'hi' ? 'हिन्दी (Hindi)' : 'English (US)'}
+                    Language
                   </p>
                   <p className="text-xs text-slate-500 dark:text-zinc-400">
-                    Switch application language
+                    Select application language
                   </p>
                 </div>
               </div>
-              <button
-                onClick={toggleLanguage}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900 p-0 shrink-0 ${
-                  language === 'hi'
-                    ? 'bg-primary'
-                    : 'bg-slate-300 dark:bg-zinc-700'
-                }`}
-                style={
-                  language === 'hi'
-                    ? { backgroundColor: 'var(--color-primary)' }
-                    : {}
-                }
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    language === 'hi' ? 'translate-x-5' : 'translate-x-1'
-                  }`}
+              <div className="w-full">
+                <DropDownList
+                  data={[
+                    { text: 'English (US)', value: 'en' },
+                    { text: 'हिन्दी (Hindi)', value: 'hi' },
+                  ]}
+                  value={language}
+                  onChange={val => {
+                    if (val) setLanguage(val as 'en' | 'hi');
+                  }}
+                  filter={false}
+                  textField="text"
+                  valueField="value"
                 />
-              </button>
+              </div>
             </div>
 
             <div className="flex items-center justify-between p-3 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800/50 mb-3">
