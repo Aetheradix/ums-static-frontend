@@ -6764,7 +6764,7 @@ export const menuConfig: Menu.MenuItem[] = [
         path: '/home/sub-menu/civil-infrastructure',
         children: [
           {
-            label: 'Admin Portal',
+            label: 'Admin Login',
             slug: 'civil-admin',
             description:
               'Administrative approvals, Technical Sanction, tender awards, and completion certificates.',
@@ -6895,7 +6895,7 @@ export const menuConfig: Menu.MenuItem[] = [
             ],
           },
           {
-            label: 'Site Engineer Portal',
+            label: 'Site Engineer Login',
             slug: 'civil-engineer',
             description:
               'Technical planning, SOR, BOQ compilation, E-MB entries, and quality testing.',
@@ -7005,7 +7005,7 @@ export const menuConfig: Menu.MenuItem[] = [
             ],
           },
           {
-            label: 'Finance Portal',
+            label: 'Finance Login',
             slug: 'civil-finance',
             description:
               'Financial ledger, budget tracking, RA bill clearing, and DLP release.',
