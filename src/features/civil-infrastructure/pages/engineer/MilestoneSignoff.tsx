@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { TextArea } from 'shared/components/forms';
@@ -224,7 +224,7 @@ export default function MilestoneSignoff() {
             { cell: (_, o) => <span>{o.rowIndex + 1}</span>, width: '50px' },
             {
               field: 'workName',
-              header: 'Work',
+              header: 'Work ID',
               cell: (m: Milestone) => (
                 <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>
                   {civilWorks.find(w => w.id === m.workId)?.workId}

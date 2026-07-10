@@ -285,7 +285,7 @@ export default function QualityFramework() {
                     },
                     {
                       field: 'workName',
-                      header: 'Work',
+                      header: 'Work ID',
                       cell: (m: any) => {
                         const wk = works.find(
                           (w: any) => w.id === m.workId || w.workId === m.workId
