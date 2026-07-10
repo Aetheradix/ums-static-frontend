@@ -1,7 +1,12 @@
 import Chart from 'chart.js/auto';
 import { useEffect, useRef } from 'react';
 import { FormCard, FormPage, StatCard } from 'shared/new-components';
+import { Icon } from 'shared/components/Icon/Icon';
 import { studentLifecycleUrls } from '../../urls';
+import { useLifecycleStore } from '../../store/useLifecycleStore';
+import { listStudents } from '../../data';
+import { toRoman } from '../../utils';
+import { GradeBadge } from '../../components';
 import './Dashboard.css';
 
 const studentStats = {
@@ -257,6 +262,15 @@ export default function Dashboard() {
     (studentStats.creditsEarned / studentStats.creditsRequired) * 100
   );
 
+  const currentStudentNo = useLifecycleStore(s => s.currentStudentNo);
+  const students = listStudents();
+  const student = students.find(s => s.enrollmentNo === currentStudentNo);
+  const completed =
+    student?.semesters.filter(s =>
+      s.courses.every(c => c.status !== 'Pending')
+    ) ?? [];
+  const latest = completed.at(-1);
+
   return (
     <FormPage
       title="Student Dashboard"
@@ -480,50 +494,77 @@ export default function Dashboard() {
           </ul>
         </FormCard>
 
-        <FormCard title="Quick Links" className="quick-links-card">
-          <div className="quick-links-grid">
-            <a
-              href={studentLifecycleUrls.student.profile}
-              className="quick-link-item"
-            >
-              <i className="pi pi-user text-indigo-500" />
-              <span>My Profile</span>
-            </a>
-            <a
-              href="/student-management/student/my-courses"
-              className="quick-link-item"
-            >
-              <i className="pi pi-book text-blue-500" />
-              <span>My Courses</span>
-            </a>
-            <a
-              href="/student-management/student/my-grades"
-              className="quick-link-item"
-            >
-              <i className="pi pi-star text-green-500" />
-              <span>My Grades</span>
-            </a>
-            <a
-              href="/student-management/student/subject-selection"
-              className="quick-link-item"
-            >
-              <i className="pi pi-check-square text-orange-500" />
-              <span>Subject Selection</span>
-            </a>
-            <a
-              href="/student-management/student/exam-schedule"
-              className="quick-link-item"
-            >
-              <i className="pi pi-calendar text-purple-500" />
-              <span>Exam Schedule</span>
-            </a>
-            <a
-              href="/student-management/student/fee-payment"
-              className="quick-link-item"
-            >
-              <i className="pi pi-wallet text-teal-500" />
-              <span>Fee Payment</span>
-            </a>
+        <FormCard className="latest-results-card p-0">
+          <div className="flex flex-col gap-4 p-5">
+            <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div className="flex items-center gap-2">
+                <Icon name="school" className="text-primary text-xl" />
+                <h3 className="font-bold text-slate-800 dark:text-slate-200">
+                  {latest
+                    ? `Latest Results — Semester ${toRoman(latest.semester)}`
+                    : 'Academic Results'}
+                </h3>
+              </div>
+              {latest && (
+                <span className="text-xs text-slate-400 font-medium">
+                  Session: {latest.session}
+                </span>
+              )}
+            </div>
+
+            {latest ? (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-slate-100 dark:border-slate-800 text-slate-400 font-semibold text-xs">
+                      <th className="py-2">Course</th>
+                      <th className="py-2 text-right">Total Marks</th>
+                      <th className="py-2 text-center">Letter Grade</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
+                    {latest.courses.map(c => (
+                      <tr
+                        key={c.courseCode}
+                        className="text-slate-700 dark:text-slate-300"
+                      >
+                        <td className="py-3">
+                          <span className="font-semibold block text-slate-800 dark:text-slate-200">
+                            {c.title}
+                          </span>
+                          <span className="text-[10px] text-slate-400">
+                            {c.courseCode} · {c.credits} Credits
+                          </span>
+                        </td>
+                        <td className="py-3 text-right font-mono text-slate-800 dark:text-slate-200">
+                          {c.internal !== null && c.external !== null
+                            ? c.internal + c.external
+                            : '—'}
+                        </td>
+                        <td className="py-3 text-center">
+                          <GradeBadge grade={c.grade} />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p className="text-sm text-slate-400 text-center py-6">
+                No results declared yet.
+              </p>
+            )}
+
+            {latest?.sgpa != null && (
+              <div className="flex items-center justify-end gap-2 border-t border-slate-100 dark:border-slate-800 pt-3 text-sm">
+                <span className="text-slate-400 font-medium">
+                  Semester SGPA:
+                </span>
+                <span className="font-bold text-lg text-primary">
+                  {latest.sgpa.toFixed(2)}
+                </span>
+              </div>
+            )}
           </div>
         </FormCard>
       </div>

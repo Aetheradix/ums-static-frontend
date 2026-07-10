@@ -1,12 +1,12 @@
-﻿import { FormCard, FormPage } from 'shared/new-components';
+import { ToastService } from 'services';
 import { Icon } from 'shared/components/Icon/Icon';
-import { useLifecycleStore } from '../../store/useLifecycleStore';
-import { listStudents, CALENDAR } from '../../data';
+import { FormCard, FormPage, GridPanel } from 'shared/new-components';
+import { CALENDAR, listStudents } from '../../data';
 import { ATTENDANCE_THRESHOLD, examEligibility } from '../../data/domain';
 import { generateHallTicket } from '../../pdf';
-import { formatDate, toRoman } from '../../utils';
-import { ToastService } from 'services';
+import { useLifecycleStore } from '../../store/useLifecycleStore';
 import { studentLifecycleUrls, studentServicesUrl } from '../../urls';
+import { formatDate, toRoman } from '../../utils';
 
 const STATUS_STYLE = {
   Eligible: 'bg-emerald-100 text-emerald-800 border-emerald-200',
@@ -137,23 +137,17 @@ export default function StudentExaminations() {
                   Course-wise Exam Eligibility
                 </h3>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
-                  <thead>
-                    <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/30 text-slate-400 font-semibold text-xs">
-                      <th className="px-5 py-3">Course</th>
-                      <th className="px-5 py-3 text-center">Attendance</th>
-                      <th className="px-5 py-3 text-center">Internal (/20)</th>
-                      <th className="px-5 py-3">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
-                    {elig.courses.map(c => (
-                      <tr
-                        key={c.courseCode}
-                        className="hover:bg-slate-50 dark:bg-slate-950/20 transition-colors"
-                      >
-                        <td className="px-5 py-3.5">
+              <GridPanel
+                data={elig.courses}
+                dataKey="courseCode"
+                emptyMessage="No courses found."
+                columns={
+                  [
+                    {
+                      field: 'title',
+                      header: 'Course',
+                      body: (c: any) => (
+                        <div className="py-2">
                           <span className="font-bold text-slate-800 dark:text-slate-200 block">
                             {c.title}
                           </span>
@@ -165,36 +159,52 @@ export default function StudentExaminations() {
                               {c.reasons.join(' ')}
                             </p>
                           )}
-                        </td>
-                        <td className="px-5 py-3.5 text-center">
+                        </div>
+                      ),
+                    },
+                    {
+                      field: 'attendance',
+                      header: 'Attendance',
+                      body: (c: any) => (
+                        <div className="text-center">
                           <span
                             className={`font-bold font-mono ${c.attendance < ATTENDANCE_THRESHOLD ? 'text-red-600' : 'text-slate-700 dark:text-slate-300'}`}
                           >
                             {c.attendance}%
                           </span>
-                        </td>
-                        <td className="px-5 py-3.5 text-center font-mono font-bold text-slate-700 dark:text-slate-300">
+                        </div>
+                      ),
+                    },
+                    {
+                      field: 'internal',
+                      header: 'Internal (/20)',
+                      body: (c: any) => (
+                        <div className="text-center font-mono font-bold text-slate-700 dark:text-slate-300">
                           {c.internal ?? '—'}
-                        </td>
-                        <td className="px-5 py-3.5">
+                        </div>
+                      ),
+                    },
+                    {
+                      field: 'eligible',
+                      header: 'Status',
+                      body: (c: any) => (
+                        <span
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
+                            c.eligible
+                              ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 border-emerald-200'
+                              : 'bg-red-50 dark:bg-red-950/40 text-red-700 border-red-200'
+                          }`}
+                        >
                           <span
-                            className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
-                              c.eligible
-                                ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 border-emerald-200'
-                                : 'bg-red-50 dark:bg-red-950/40 text-red-700 border-red-200'
-                            }`}
-                          >
-                            <span
-                              className={`w-1.5 h-1.5 rounded-full ${c.eligible ? 'bg-emerald-50 dark:bg-emerald-950/400' : 'bg-red-50 dark:bg-red-950/400'}`}
-                            />
-                            {c.eligible ? 'Eligible' : 'Not Eligible'}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                            className={`w-1.5 h-1.5 rounded-full ${c.eligible ? 'bg-emerald-50 dark:bg-emerald-950/400' : 'bg-red-50 dark:bg-red-950/400'}`}
+                          />
+                          {c.eligible ? 'Eligible' : 'Not Eligible'}
+                        </span>
+                      ),
+                    },
+                  ] as never[]
+                }
+              />
             </FormCard>
 
             {/* Examination schedule */}
