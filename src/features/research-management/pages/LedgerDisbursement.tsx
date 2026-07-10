@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextBox } from 'shared/components/forms';
 import { FormCard, FormGrid, FormPage, GridPanel } from 'shared/new-components';
@@ -30,7 +30,7 @@ export default function LedgerDisbursement() {
     { id: '', text: '-- Choose Active Project --' },
     ...projects.map(p => ({
       id: p.code,
-      text: `${p.code} â€” ${p.piName} (Ethics: ${p.ethicsStatus})`,
+      text: `${p.code} — ${p.piName} (Ethics: ${p.ethicsStatus})`,
     })),
   ];
 
@@ -167,7 +167,7 @@ export default function LedgerDisbursement() {
 
             <div className="flex justify-end">
               <Button
-                label="Authorize Tranche Disbursement âœ“"
+                label="Authorize Tranche Disbursement ✓"
                 variant="primary"
                 type="submit"
               />
@@ -186,7 +186,7 @@ export default function LedgerDisbursement() {
                 <div className="space-y-1">
                   <p className="font-bold text-slate-800">{log.piName}</p>
                   <p className="text-slate-500 font-mono">
-                    {log.agency} â€¢ Code: {log.code}
+                    {log.agency} • Code: {log.code}
                   </p>
                   <p className="text-slate-400">
                     Milestone #{log.milestone} Tranche Released | {log.date}

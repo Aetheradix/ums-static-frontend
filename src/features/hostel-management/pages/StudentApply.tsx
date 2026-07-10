@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Checkbox, DropDownList, TextBox } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
@@ -311,7 +311,7 @@ export default function StudentApply() {
             data={hostelDD}
             textField="text"
             valueField="id"
-            defaultOptionText="â€” Select â€”"
+            defaultOptionText="— Select —"
             value={form.hostelPreference}
             onChange={v => set('hostelPreference', v as string)}
           />
@@ -484,21 +484,21 @@ export default function StudentApply() {
           <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm space-y-1">
             <p>
               <span className="font-bold text-slate-600">Name:</span>{' '}
-              {form.name || 'â€”'}
+              {form.name || '—'}
             </p>
             <p>
               <span className="font-bold text-slate-600">Enrollment:</span>{' '}
-              {form.enrollmentNo || 'â€”'}
+              {form.enrollmentNo || '—'}
             </p>
             <p>
               <span className="font-bold text-slate-600">College:</span>{' '}
-              {form.college || 'â€”'}
+              {form.college || '—'}
             </p>
             <p>
               <span className="font-bold text-slate-600">
                 Preferred Hostel:
               </span>{' '}
-              {form.hostelPreference || 'â€”'}
+              {form.hostelPreference || '—'}
             </p>
           </div>
         </div>
@@ -543,7 +543,7 @@ export default function StudentApply() {
         {form.id && (
           <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800 font-semibold">
             âœï¸ Editing correction for Application ID:{' '}
-            <strong>{form.id}</strong> â€” {form.name}
+            <strong>{form.id}</strong> — {form.name}
           </div>
         )}
       </FormCard>

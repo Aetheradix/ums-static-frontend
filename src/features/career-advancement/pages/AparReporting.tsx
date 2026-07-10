@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCareerAdvancement } from '../context';
 import '../career.css';
@@ -67,7 +67,7 @@ export default function AparReporting() {
 
   return (
     <FormPage
-      title="APAR â€” Reporting Officer Appraisal"
+      title="APAR — Reporting Officer Appraisal"
       description="Review employee self-assessment and register your reporting appraisal scores"
       breadcrumbs={[
         { label: 'Home', to: '/home' },
@@ -87,7 +87,7 @@ export default function AparReporting() {
                 Duties Description
               </span>
               <p className="bg-white p-3 rounded-lg border border-slate-100 italic text-slate-700 font-medium">
-                "{app?.workOutputDescription || 'â€”'}"
+                "{app?.workOutputDescription || '—'}"
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -96,7 +96,7 @@ export default function AparReporting() {
                   Work Output Score
                 </span>
                 <p className="text-xl font-extrabold text-indigo-600 mt-1">
-                  {app?.workOutputScore || 'â€”'} / 10
+                  {app?.workOutputScore || '—'} / 10
                 </p>
               </div>
               <div className="bg-white p-3 rounded-lg border border-slate-100 text-center">

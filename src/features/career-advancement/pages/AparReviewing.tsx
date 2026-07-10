@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCareerAdvancement } from '../context';
 import '../career.css';
@@ -80,7 +80,7 @@ export default function AparReviewing() {
 
   return (
     <FormPage
-      title="APAR â€” Reviewing Officer Appraisal"
+      title="APAR — Reviewing Officer Appraisal"
       description="Perform final review and registration of the employee's APAR application"
       breadcrumbs={[
         { label: 'Home', to: '/home' },
@@ -105,10 +105,10 @@ export default function AparReviewing() {
               </p>
               <p>
                 <strong>Work description:</strong> "
-                {app?.workOutputDescription || 'â€”'}"
+                {app?.workOutputDescription || '—'}"
               </p>
               <p>
-                <strong>Claimed score:</strong> {app?.workOutputScore || 'â€”'}
+                <strong>Claimed score:</strong> {app?.workOutputScore || '—'}
                 /10
               </p>
             </div>
