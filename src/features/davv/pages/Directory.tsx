@@ -110,7 +110,9 @@ export default function Directory() {
             >
               All campuses
             </button>
-            {CAMPUSES.map(c => (
+            {CAMPUSES.filter(c =>
+              INSTITUTIONS.some(i => i.campusSlug === c.slug)
+            ).map(c => (
               <button
                 key={c.slug}
                 onClick={() => setCampus(c.slug)}
