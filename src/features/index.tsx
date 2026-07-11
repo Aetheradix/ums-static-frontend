@@ -61,6 +61,7 @@ import TrainerDevelopment from './trainer-development';
 import TransportManagement from './transport-management';
 import HealthManagement from './health-management';
 import EvaluationGrading from './evaluation-grading';
+import Davv from './davv';
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
   () => import('./public-portal/pages/Solutions')
@@ -70,12 +71,15 @@ const PublicContact = React.lazy(() => import('./public-portal/pages/Contact'));
 const PublicGrievance = React.lazy(
   () => import('./public-portal/pages/PublicGrievance')
 );
+const Universities = React.lazy(
+  () => import('./public-portal/pages/Universities')
+);
 
 export default function Features() {
   return (
     <Routes>
       {/* Public Marketing Landing Pages */}
-      <Route path="cms">
+      <Route path="octagon-cms">
         <Route
           index
           element={
@@ -126,7 +130,19 @@ export default function Features() {
             </PublicPortalLayout>
           }
         />
+        <Route
+          path="universities"
+          element={
+            <PublicPortalLayout>
+              <PublicRouteWrapper>
+                <Universities />
+              </PublicRouteWrapper>
+            </PublicPortalLayout>
+          }
+        />
       </Route>
+
+      <Route path="davv/*" element={<Davv />} />
 
       <Route path="public/*" element={<div>Public Page Placeholder</div>} />
       <Route path="login" element={<LoginPage />} />

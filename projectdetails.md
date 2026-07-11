@@ -72,7 +72,8 @@ src/
 │   ├── index.tsx          # Root route tree — see §7
 │   ├── components/         # Shared feature-level Select components (NOT a domain module)
 │   ├── home/               # Portal shell: service-tile menu / sub-menu pages (rendered outside MainLayout)
-│   ├── public-portal/      # Public marketing site ("cms/*" routes) — Lenis/GSAP/IntersectionObserver; see §18
+│   ├── public-portal/      # Public marketing site ("octagon-cms/*" routes) — Lenis/GSAP/IntersectionObserver; see §18
+│   ├── davv/               # DAVV University CMS — top-level /davv tenant (landing, directory, institution login); see docs/davv-cms-blueprint.md
 │   ├── master/             # Master-data CRUD hub (user-management, cms-management nested here, HR/college/academic masters)
 │   ├── mocks.ts            # (per-feature) findMock data sources feed ApiService
 │   └── … ~55 more domain modules …  # admissions-management, hrms, payroll, examination-management,
@@ -151,9 +152,16 @@ large hand-written `.dark …` PrimeReact-override block later in the file.
 
 **Brand literals vs. the token system:** the product brand is Octagon ERP navy (`#002069`). A few
 non-token literals exist for specific surfaces — the ERP-section blue `#15398f` (`.bg-erp-section`),
-the success green pair `#057e29`/`#263b28`, octagon-selection blues. **There is no
-saffron/green institutional tricolor** in this project (that's the sibling DAVV build). For
-app chrome use `--color-primary` via `bg-primary`/`text-primary`; don't invent new literals.
+the success green pair `#057e29`/`#263b28`, octagon-selection blues. For app chrome use
+`--color-primary` via `bg-primary`/`text-primary`; don't invent new literals.
+
+**DAVV brand palette** (added to `@theme`): `--color-davv` `#1e7a46` (deep green) + `--color-davv-dark`
+/ `--color-davv-darkest` / `--color-davv-light`, plus `--color-davv-saffron` `#c2410c` /
+`--color-davv-saffron-light` / `--color-davv-gold` — the deep-green + saffron identity of the DAVV
+crest, used **only** by the DAVV CMS (`src/features/davv`, via `bg-davv`/`text-davv`/`bg-davv-light`
+/etc.). DAVV logo/wordmark/campus assets live at `public/images/davv-logo.png`,
+`davv-logo-full.png`, `davv-campus.jpg`. Don't reach for these outside the DAVV CMS — Octagon chrome
+stays navy `--color-primary`.
 
 **No inline styles** except a value genuinely computed at runtime that cannot be a static class
 (e.g. `ProgressBar`'s `width: ${pct}%`, `Grid`'s per-column `width` via PrimeReact's `<Column>`
@@ -166,7 +174,8 @@ convert to utilities, not a pattern to copy.
 `features/index.tsx` is the root route tree:
 
 ```
-cms/*                       → Public marketing portal (PublicPortalLayout, lazy: Home/Solutions/About/Contact/Grievance)
+octagon-cms/*               → Public marketing portal (PublicPortalLayout, lazy: Home/Solutions/About/Contact/Grievance) + /octagon-cms/universities → Select University
+davv/*                      → DAVV University CMS (public, top-level tenant): /davv, /davv/campuses, /davv/:type/:institution login (e.g. /davv/utd/iet)
 public/*                    → placeholder
 login                       → LoginPage (public)
 callback                    → UniversityLoader (OIDC callback shell)
@@ -433,7 +442,7 @@ Server/data state is React Query (over the mock API); most other state is local 
 
 ## 18. Public marketing portal & other DOM-global behaviors
 
-- **`features/public-portal/`** (the `cms/*` routes, `PublicPortalLayout`) is a marketing site
+- **`features/public-portal/`** (the `octagon-cms/*` routes, `PublicPortalLayout`) is a marketing site
   layered with DOM-global hooks: `useLenis` (Lenis smooth scroll), `useScrollReveal`
   (IntersectionObserver at threshold 0.1 adding `.visible` to `.reveal*` elements), `useGSAPAnimations`.
   It toggles a `public-portal-active` class on **both `<html>` and `<body>`** to override global

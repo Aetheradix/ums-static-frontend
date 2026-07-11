@@ -107,7 +107,11 @@ export const LoginPage: React.FC = () => {
             />
           </svg>
 
-          <Link to="/cms" className="home-icon-btn" title="Back to Website">
+          <Link
+            to="/octagon-cms"
+            className="home-icon-btn"
+            title="Back to Website"
+          >
             <Home size={18} />
           </Link>
 
