@@ -96,6 +96,15 @@
   --color-accent: #06b6d4;
   --color-aliceblue: #f0f8ff;
 
+  /* DAVV institutional brand palette — deep green + saffron torch (used only by the DAVV CMS, src/features/davv) */
+  --color-davv: #1e7a46;
+  --color-davv-dark: #155e35;
+  --color-davv-darkest: #0c3a22;
+  --color-davv-light: #e7f3ec;
+  --color-davv-saffron: #c2410c;
+  --color-davv-saffron-light: #fdeee3;
+  --color-davv-gold: #b8860b;
+
   --font-display: 'Sora', sans-serif;
   --font-inter: 'Inter', sans-serif;
 

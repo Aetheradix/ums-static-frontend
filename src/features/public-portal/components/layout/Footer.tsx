@@ -12,7 +12,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 md:gap-12 mb-5 md:mb-16">
           {/* Column 1: Brand */}
           <div className="col-span-2 lg:col-span-1 space-y-4 sm:space-y-6">
-            <Link to="/cms" className="inline-block">
+            <Link to="/octagon-cms" className="inline-block">
               <img
                 src="/Octagon_Logo.png"
                 alt="OCTAGON ERP Logo"
@@ -38,16 +38,25 @@ export default function Footer() {
               Solutions
             </h4>
             <ul className="space-y-2.5 sm:space-y-3.5">
-              <FooterLink label="Academic Management" href="/cms/solutions" />
-              <FooterLink label="Governance & Admin" href="/cms/solutions" />
-              <FooterLink label="Finance & Fees" href="/cms/solutions" />
+              <FooterLink
+                label="Academic Management"
+                href="/octagon-cms/solutions"
+              />
+              <FooterLink
+                label="Governance & Admin"
+                href="/octagon-cms/solutions"
+              />
+              <FooterLink
+                label="Finance & Fees"
+                href="/octagon-cms/solutions"
+              />
               <FooterLink
                 label="HR & Employee Lifecycle"
-                href="/cms/solutions"
+                href="/octagon-cms/solutions"
               />
               <FooterLink
                 label="Analytics & BI Dashboards"
-                href="/cms/solutions"
+                href="/octagon-cms/solutions"
               />
             </ul>
           </div>
@@ -58,8 +67,8 @@ export default function Footer() {
               Company
             </h4>
             <ul className="space-y-2.5 sm:space-y-3.5">
-              <FooterLink label="About Us" href="/cms/about" />
-              <FooterLink label="Contact Sales" href="/cms/contact" />
+              <FooterLink label="About Us" href="/octagon-cms/about" />
+              <FooterLink label="Contact Sales" href="/octagon-cms/contact" />
               <FooterLink label="Careers" href="#" />
               <FooterLink label="Blog & Articles" href="#" />
               <FooterLink label="Privacy Policy" href="#" />

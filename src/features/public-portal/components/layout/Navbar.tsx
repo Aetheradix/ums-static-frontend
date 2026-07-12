@@ -1,7 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { clsx } from 'clsx';
-import { Home, LayoutGrid, Info, PhoneCall, FileText } from 'lucide-react';
+import {
+  Home,
+  LayoutGrid,
+  Info,
+  PhoneCall,
+  FileText,
+  LogIn,
+} from 'lucide-react';
 import { NAV_LINKS } from '../../constants/data';
 import Button from '../ui/Button';
 
@@ -32,7 +39,7 @@ export default function Navbar() {
   const useLightText = isDarkHero && !isScrolled;
 
   // Pages other than Home — navbar should always be white
-  const isLightPage = pathname !== '/cms';
+  const isLightPage = pathname !== '/octagon-cms';
 
   return (
     <nav
@@ -45,7 +52,7 @@ export default function Navbar() {
     >
       <div className="max-w-[1400px] mx-auto px-4 h-full flex items-center justify-between">
         {/* Logo */}
-        <Link to="/cms" className="flex items-center group">
+        <Link to="/octagon-cms" className="flex items-center group">
           <img
             src="/Octagon_Logo.png"
             alt="OCTAGON ERP Logo"
@@ -153,16 +160,18 @@ export default function Navbar() {
           {NAV_LINKS.map(link => {
             const getIcon = (href: string) => {
               switch (href) {
-                case '/cms':
+                case '/octagon-cms':
                   return <Home className="w-4 h-4" />;
-                case '/cms/solutions':
+                case '/octagon-cms/solutions':
                   return <LayoutGrid className="w-4 h-4" />;
-                case '/cms/about':
+                case '/octagon-cms/about':
                   return <Info className="w-4 h-4" />;
-                case '/cms/contact':
+                case '/octagon-cms/contact':
                   return <PhoneCall className="w-4 h-4" />;
-                case '/cms/public-grievance':
+                case '/octagon-cms/public-grievance':
                   return <FileText className="w-4 h-4" />;
+                case '/octagon-cms/universities':
+                  return <LogIn className="w-4 h-4" />;
                 default:
                   return null;
               }
