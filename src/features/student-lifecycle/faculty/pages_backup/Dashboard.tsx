@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Chart from 'chart.js/auto';
 import { FormPage, FormCard, StatCard } from 'shared/new-components';
-import { studentLifecycleUrls } from '../../urls';
+import { studentManagementUrls } from '../../urls';
 import './Dashboard.css';
 
 const facultyStats = {
@@ -249,7 +249,7 @@ export default function FacultyDashboard() {
       description="Overview of your assigned classes, assessments, and student progress."
       breadcrumbs={[
         { label: 'Home', to: '/home' },
-        { label: 'Faculty Portal', to: studentLifecycleUrls.faculty.root },
+        { label: 'Faculty Portal', to: studentManagementUrls.faculty.root },
         { label: 'Dashboard' },
       ]}
     >
@@ -395,7 +395,7 @@ export default function FacultyDashboard() {
             <li
               className="task-item border-orange"
               onClick={() =>
-                navigate(studentLifecycleUrls.faculty.marksEntry)
+                navigate(studentManagementUrls.faculty.internalAssessment)
               }
             >
               <div className="task-icon bg-orange-50 text-orange-500">
@@ -411,7 +411,7 @@ export default function FacultyDashboard() {
             </li>
             <li
               className="task-item border-blue"
-              onClick={() => navigate(studentLifecycleUrls.faculty.attendance)}
+              onClick={() => navigate(studentManagementUrls.faculty.progress)}
             >
               <div className="task-icon bg-blue-50 text-blue-500">
                 <i className="pi pi-chart-line"></i>
