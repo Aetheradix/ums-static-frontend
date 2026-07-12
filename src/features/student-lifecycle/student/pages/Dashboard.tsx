@@ -1,12 +1,7 @@
 import Chart from 'chart.js/auto';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FormCard, FormPage, StatCard } from 'shared/new-components';
-import { Icon } from 'shared/components/Icon/Icon';
 import { studentLifecycleUrls } from '../../urls';
-import { useLifecycleStore } from '../../store/useLifecycleStore';
-import { listStudents } from '../../data';
-import { toRoman } from '../../utils';
-import { GradeBadge } from '../../components';
 import './Dashboard.css';
 
 const studentStats = {
@@ -19,7 +14,17 @@ const studentStats = {
   classRank: 12,
   totalStudents: 180,
   activeBacklogs: 0,
+  miscFees: 2350,
 };
+
+const miscFeeBreakdown = [
+  { label: 'Library Fine', amount: 50 },
+  { label: 'Sports Fund', amount: 500 },
+  { label: 'Lab Charges', amount: 800 },
+  { label: 'Magazine Fee', amount: 200 },
+  { label: 'Alumni Fund', amount: 300 },
+  { label: 'Identity Card', amount: 500 },
+];
 
 const recentNotifications = [
   {
@@ -86,32 +91,58 @@ function SgpaTrendChart() {
   return <canvas ref={ref} />;
 }
 
-function SubjectMarksBarChart() {
+const marksDataBySemester: Record<string, { labels: string[], obtained: number[], average: number[] }> = {
+  '1': {
+    labels: ['Physics', 'Maths I', 'Engg Drawing', 'C Prog', 'English'],
+    obtained: [80, 85, 75, 90, 82],
+    average: [70, 75, 68, 75, 74],
+  },
+  '2': {
+    labels: ['Chemistry', 'Maths II', 'BEEE', 'Mechanics', 'EVS'],
+    obtained: [82, 88, 76, 84, 85],
+    average: [72, 78, 65, 72, 76],
+  },
+  '3': {
+    labels: ['Data Structures', 'OS', 'Database', 'Networking', 'Mathematics'],
+    obtained: [85, 78, 92, 88, 74],
+    average: [72, 70, 75, 76, 68],
+  },
+  'all': {
+    labels: ['Physics', 'Maths I', 'C Prog', 'Maths II', 'Data Struct', 'OS', 'Database'],
+    obtained: [80, 85, 90, 88, 85, 78, 92],
+    average: [70, 75, 75, 78, 72, 70, 75],
+  }
+};
+
+function SubjectMarksBarChart({ semester }: { semester: string }) {
   const ref = useRef<HTMLCanvasElement>(null);
+  const chartRef = useRef<Chart | null>(null);
+
   useEffect(() => {
     if (!ref.current) return;
     const ctx = ref.current.getContext('2d');
     if (!ctx) return;
-    const chart = new Chart(ctx, {
+    
+    if (chartRef.current) {
+      chartRef.current.destroy();
+    }
+    
+    const data = marksDataBySemester[semester] || marksDataBySemester['3'];
+
+    chartRef.current = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: [
-          'Data Structures',
-          'OS',
-          'Database',
-          'Networking',
-          'Mathematics',
-        ],
+        labels: data.labels,
         datasets: [
           {
             label: 'Marks Obtained',
-            data: [85, 78, 92, 88, 74],
+            data: data.obtained,
             backgroundColor: '#3b82f6',
             borderRadius: 4,
           },
           {
             label: 'Class Average',
-            data: [72, 70, 75, 76, 68],
+            data: data.average,
             backgroundColor: '#9ca3af',
             borderRadius: 4,
           },
@@ -124,12 +155,17 @@ function SubjectMarksBarChart() {
         plugins: { legend: { position: 'top' } },
       },
     });
-    return () => chart.destroy();
-  }, []);
+    
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.destroy();
+      }
+    };
+  }, [semester]);
   return <canvas ref={ref} />;
 }
 
-function AttendanceDoughnutChart() {
+function MiscFeesChart() {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     if (!ref.current) return;
@@ -138,20 +174,35 @@ function AttendanceDoughnutChart() {
     const chart = new Chart(ctx, {
       type: 'doughnut',
       data: {
-        labels: ['Present', 'Absent', 'On Leave'],
+        labels: miscFeeBreakdown.map(f => f.label),
         datasets: [
           {
-            data: [87, 10, 3],
-            backgroundColor: ['#10b981', '#ef4444', '#f59e0b'],
+            data: miscFeeBreakdown.map(f => f.amount),
+            backgroundColor: [
+              '#f59e0b',
+              '#3b82f6',
+              '#8b5cf6',
+              '#10b981',
+              '#ef4444',
+              '#06b6d4',
+            ],
             borderWidth: 2,
             borderColor: '#ffffff',
+            hoverOffset: 6,
           },
         ],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { position: 'bottom' } },
+        plugins: {
+          legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11 } } },
+          tooltip: {
+            callbacks: {
+              label: ctx => ` ₹${ctx.parsed}`,
+            },
+          },
+        },
       },
     });
     return () => chart.destroy();
@@ -258,18 +309,11 @@ function SkillMatrixRadarChart() {
 }
 
 export default function Dashboard() {
+  const [selectedSemester, setSelectedSemester] = useState<string>('3');
+  
   const creditsPct = Math.round(
     (studentStats.creditsEarned / studentStats.creditsRequired) * 100
   );
-
-  const currentStudentNo = useLifecycleStore(s => s.currentStudentNo);
-  const students = listStudents();
-  const student = students.find(s => s.enrollmentNo === currentStudentNo);
-  const completed =
-    student?.semesters.filter(s =>
-      s.courses.every(c => c.status !== 'Pending')
-    ) ?? [];
-  const latest = completed.at(-1);
 
   return (
     <FormPage
@@ -281,21 +325,13 @@ export default function Dashboard() {
         { label: 'Dashboard' },
       ]}
     >
-      <div className="stats-grid-6 student-dashboard-stats-grid mb-6">
+      <div className="stats-grid-5 student-dashboard-stats-grid mb-6">
         <StatCard
           title="Current CGPA"
           value={studentStats.cgpa.toFixed(2)}
           icon="grade"
           colorScheme="indigo"
           subtitle="Top 15% of class"
-        />
-        <StatCard
-          title="Attendance"
-          value={`${studentStats.attendance}%`}
-          icon="event_available"
-          colorScheme="green"
-          trend={{ value: 2, direction: 'up', label: 'from last month' }}
-          subtitle="Warning: OS < 75%"
         />
         <StatCard
           title="Registered Courses"
@@ -312,11 +348,11 @@ export default function Dashboard() {
           subtitle={studentStats.pendingFees > 0 ? 'Due soon' : 'All clear'}
         />
         <StatCard
-          title="Class Rank"
-          value={`${studentStats.classRank} / ${studentStats.totalStudents}`}
-          icon="military_tech"
-          colorScheme="purple"
-          trend={{ value: 3, direction: 'up', label: 'positions up' }}
+          title="Miscellaneous Fees"
+          value={`₹${studentStats.miscFees.toLocaleString('en-IN')}`}
+          icon="receipt_long"
+          colorScheme="amber"
+          subtitle="6 heads · Current year"
         />
         <StatCard
           title="Active Backlogs"
@@ -336,15 +372,29 @@ export default function Dashboard() {
           </div>
         </FormCard>
 
-        <FormCard title="Subject Marks Comparison">
+        <FormCard 
+          title="Subject Marks Comparison"
+          headerAction={
+            <select 
+              value={selectedSemester} 
+              onChange={e => setSelectedSemester(e.target.value)}
+              className="text-xs border border-slate-200 dark:border-slate-700 rounded-md shadow-sm py-1 pl-2 pr-6 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="1">Semester 1</option>
+              <option value="2">Semester 2</option>
+              <option value="3">Semester 3 (Current)</option>
+              <option value="all">All Semesters</option>
+            </select>
+          }
+        >
           <div className="chart-container">
-            <SubjectMarksBarChart />
+            <SubjectMarksBarChart semester={selectedSemester} />
           </div>
         </FormCard>
 
-        <FormCard title="Overall Attendance">
+        <FormCard title="Miscellaneous Fees Breakdown">
           <div className="chart-container">
-            <AttendanceDoughnutChart />
+            <MiscFeesChart />
           </div>
         </FormCard>
 
@@ -494,77 +544,50 @@ export default function Dashboard() {
           </ul>
         </FormCard>
 
-        <FormCard className="latest-results-card p-0">
-          <div className="flex flex-col gap-4 p-5">
-            <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div className="flex items-center gap-2">
-                <Icon name="school" className="text-primary text-xl" />
-                <h3 className="font-bold text-slate-800 dark:text-slate-200">
-                  {latest
-                    ? `Latest Results — Semester ${toRoman(latest.semester)}`
-                    : 'Academic Results'}
-                </h3>
-              </div>
-              {latest && (
-                <span className="text-xs text-slate-400 font-medium">
-                  Session: {latest.session}
-                </span>
-              )}
-            </div>
-
-            {latest ? (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
-                  <thead>
-                    <tr className="border-b border-slate-100 dark:border-slate-800 text-slate-400 font-semibold text-xs">
-                      <th className="py-2">Course</th>
-                      <th className="py-2 text-right">Total Marks</th>
-                      <th className="py-2 text-center">Letter Grade</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
-                    {latest.courses.map(c => (
-                      <tr
-                        key={c.courseCode}
-                        className="text-slate-700 dark:text-slate-300"
-                      >
-                        <td className="py-3">
-                          <span className="font-semibold block text-slate-800 dark:text-slate-200">
-                            {c.title}
-                          </span>
-                          <span className="text-[10px] text-slate-400">
-                            {c.courseCode} · {c.credits} Credits
-                          </span>
-                        </td>
-                        <td className="py-3 text-right font-mono text-slate-800 dark:text-slate-200">
-                          {c.internal !== null && c.external !== null
-                            ? c.internal + c.external
-                            : '—'}
-                        </td>
-                        <td className="py-3 text-center">
-                          <GradeBadge grade={c.grade} />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <p className="text-sm text-slate-400 text-center py-6">
-                No results declared yet.
-              </p>
-            )}
-
-            {latest?.sgpa != null && (
-              <div className="flex items-center justify-end gap-2 border-t border-slate-100 dark:border-slate-800 pt-3 text-sm">
-                <span className="text-slate-400 font-medium">
-                  Semester SGPA:
-                </span>
-                <span className="font-bold text-lg text-primary">
-                  {latest.sgpa.toFixed(2)}
-                </span>
-              </div>
-            )}
+        <FormCard title="Quick Links" className="quick-links-card">
+          <div className="quick-links-grid">
+            <a
+              href={studentLifecycleUrls.student.profile}
+              className="quick-link-item"
+            >
+              <i className="pi pi-user text-indigo-500" />
+              <span>My Profile</span>
+            </a>
+            <a
+              href="/student-management/student/my-courses"
+              className="quick-link-item"
+            >
+              <i className="pi pi-book text-blue-500" />
+              <span>My Courses</span>
+            </a>
+            <a
+              href="/student-management/student/my-grades"
+              className="quick-link-item"
+            >
+              <i className="pi pi-star text-green-500" />
+              <span>My Grades</span>
+            </a>
+            <a
+              href="/student-management/student/subject-selection"
+              className="quick-link-item"
+            >
+              <i className="pi pi-check-square text-orange-500" />
+              <span>Subject Selection</span>
+            </a>
+            <a
+              href="/student-management/student/exam-schedule"
+              className="quick-link-item"
+            >
+              <i className="pi pi-calendar text-purple-500" />
+              <span>Exam Schedule</span>
+            </a>
+            <a
+              href="/student-management/student/fee-payment"
+              className="quick-link-item"
+            >
+              <i className="pi pi-wallet text-teal-500" />
+              <span>Fee Payment</span>
+            </a>
           </div>
         </FormCard>
       </div>
