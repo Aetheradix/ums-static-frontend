@@ -1,12 +1,68 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Topbar from '../components/Navigation/Topbar';
 import Navbar from '../components/Navigation/Navbar';
+import Footer from '../components/Navigation/Footer';
+import { ArrowUp } from 'lucide-react';
 
 interface CMSLayoutProps {
   children: React.ReactNode;
 }
 
 export default function CMSLayout({ children }: CMSLayoutProps) {
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = (e: Event) => {
+      const target = e.target as any;
+      let scrollPos = 0;
+      if (target === document || target === window || !target) {
+        scrollPos =
+          window.scrollY ||
+          window.pageYOffset ||
+          document.documentElement.scrollTop ||
+          document.body.scrollTop;
+      } else {
+        scrollPos = (target as HTMLElement).scrollTop || 0;
+      }
+      setShowScrollTop(scrollPos > 300);
+    };
+
+    window.addEventListener('scroll', handleScroll, true);
+
+    const initialPos =
+      window.scrollY ||
+      window.pageYOffset ||
+      document.documentElement.scrollTop ||
+      document.body.scrollTop;
+    setShowScrollTop(initialPos > 300);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll, true);
+    };
+  }, []);
+
+  const scrollToTop = () => {
+    const scrollOptions: ScrollToOptions = {
+      top: 0,
+      behavior: 'smooth',
+    };
+
+    window.scrollTo(scrollOptions);
+    document.documentElement.scrollTo(scrollOptions);
+    document.body.scrollTo(scrollOptions);
+
+    // Also target #root and any other active scroll container
+    const rootEl = document.getElementById('root');
+    if (rootEl) {
+      rootEl.scrollTo(scrollOptions);
+    }
+
+    const scrollableEl = document.querySelector('.overflow-y-auto');
+    if (scrollableEl) {
+      scrollableEl.scrollTo(scrollOptions);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans antialiased text-navy">
       {/* Navigation Headers */}
@@ -17,23 +73,18 @@ export default function CMSLayout({ children }: CMSLayoutProps) {
       <main className="flex-1 w-full relative z-20">{children}</main>
 
       {/* Premium Footer */}
-      <footer className="bg-[#001833] text-white/80 py-8 border-t border-white/10 text-center text-xs select-none">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <img
-              src="/DAVV_Logo.png"
-              alt="DAVV logo"
-              className="w-8 h-8 object-contain"
-            />
-            <span className="font-bold text-white tracking-wide uppercase">
-              Devi Ahilya Vishwavidyalaya, Indore © {new Date().getFullYear()}
-            </span>
-          </div>
-          <p className="text-white/60">
-            Powered by Unified Campus Management System (CMS)
-          </p>
-        </div>
-      </footer>
+      <Footer />
+
+      {/* Scroll to Top Button */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-[#002147] hover:bg-blue text-white shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 border border-white/10 cursor-pointer"
+          aria-label="Scroll to top"
+        >
+          <ArrowUp className="w-5 h-5 stroke-[2.5]" />
+        </button>
+      )}
     </div>
   );
 }

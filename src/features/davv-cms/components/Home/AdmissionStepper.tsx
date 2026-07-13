@@ -3,10 +3,10 @@ import { ADMISSION_STEPS } from '../../constants/data';
 
 export default function AdmissionStepper() {
   return (
-    <section className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-12 select-none">
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs">
+    <div className="bg-slate-50/50 border border-slate-200/80 rounded-2xl p-4 sm:p-8 shadow-2xs h-full flex flex-col justify-between select-none">
+      <div>
         {/* Header */}
-        <div className="flex justify-between items-center mb-10 border-b border-slate-100 pb-5">
+        <div className="flex justify-between items-center mb-6 sm:mb-10 border-b border-slate-100 pb-5">
           <h3 className="font-display font-black text-[#002147] text-lg md:text-xl leading-none">
             Admissions 2024-25
           </h3>
@@ -20,7 +20,7 @@ export default function AdmissionStepper() {
         </div>
 
         {/* Stepper Roadmap Container */}
-        <div className="relative flex flex-col md:flex-row items-start justify-between gap-8 md:gap-4 md:px-4">
+        <div className="relative flex flex-col md:flex-row items-start justify-between gap-5 md:gap-4 md:px-4">
           {/* Connecting line (Desktop only) */}
           <div className="absolute top-[22px] left-[6%] right-[6%] h-[2px] bg-slate-200 z-0 hidden md:block" />
 
@@ -42,23 +42,23 @@ export default function AdmissionStepper() {
                 )}
 
                 {/* Step Circle & Connector */}
-                <div className="flex items-center md:flex-col gap-4 md:gap-0 w-full">
+                <div className="flex items-center md:flex-col gap-3 md:gap-0 w-full relative">
                   {/* Step Number Circle */}
-                  <div className="w-11 h-11 rounded-full bg-[#002147] text-white flex items-center justify-center font-display font-black text-sm md:mb-4 shrink-0 shadow-md group-hover:bg-blue group-hover:scale-105 transition-all">
+                  <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-[#002147] text-white flex items-center justify-center font-display font-black text-xs sm:text-sm md:mb-4 shrink-0 shadow-md group-hover:bg-blue group-hover:scale-105 transition-all">
                     {step.step}
                   </div>
 
                   {/* Vertical connecting line for mobile */}
                   {!isLast && (
-                    <div className="absolute left-[21px] top-[44px] bottom-[-32px] w-[2px] bg-slate-200 md:hidden z-0" />
+                    <div className="absolute left-[15px] sm:left-[21px] top-[32px] sm:top-[44px] bottom-[-24px] w-[2px] bg-slate-200 md:hidden z-0" />
                   )}
 
                   {/* Content (Text details) */}
-                  <div className="flex flex-col md:items-center text-left md:text-center space-y-1">
-                    <h4 className="font-display font-black text-navy text-sm md:text-base leading-snug group-hover:text-blue transition-colors">
+                  <div className="flex flex-col md:items-center text-left md:text-center space-y-0.5">
+                    <h4 className="font-display font-black text-navy text-xs sm:text-sm md:text-base leading-snug group-hover:text-blue transition-colors">
                       {step.title}
                     </h4>
-                    <p className="text-slate-500 text-xs md:text-[13px] leading-relaxed max-w-[200px] md:mx-auto">
+                    <p className="text-slate-500 text-[10px] sm:text-xs md:text-[13px] leading-relaxed max-w-[200px] md:mx-auto">
                       {step.description}
                     </p>
                   </div>
@@ -68,6 +68,6 @@ export default function AdmissionStepper() {
           })}
         </div>
       </div>
-    </section>
+    </div>
   );
 }

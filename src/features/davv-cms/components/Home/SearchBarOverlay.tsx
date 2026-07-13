@@ -11,7 +11,7 @@ export default function SearchBarOverlay() {
   };
 
   return (
-    <div className="relative -mt-10 max-w-[1000px] mx-auto px-4 z-30 select-none">
+    <div className="relative -mt-10 max-w-[820px] mx-auto px-4 z-30 select-none">
       <form
         onSubmit={handleSearch}
         className="w-full flex items-center gap-2 bg-white border border-slate-200/80 rounded-2xl md:rounded-full p-2.5 shadow-xl hover:shadow-2xl hover:border-blue/30 transition-all"

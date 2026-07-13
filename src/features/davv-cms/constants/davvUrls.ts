@@ -5,9 +5,9 @@
 //   /davv/campuses                 → campus & institution directory
 //   /davv/:type/:institution       → institution-scoped login  (e.g. /davv/utd/iet)
 
-import type { InstitutionType } from './data';
+import type { InstitutionType } from './davvData';
 
-const root = '/davv';
+const root = '/davv-cms';
 
 export const davvUrls = {
   root,

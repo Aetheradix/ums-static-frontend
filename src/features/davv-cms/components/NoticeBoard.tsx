@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { clsx } from 'clsx';
-import { NOTICES, NOTICE_CATEGORIES } from '../data';
+import { NOTICES, NOTICE_CATEGORIES } from '../constants/davvData';
+import type { Notice } from '../constants/davvData';
 
 const CATEGORY_STYLE: Record<string, string> = {
   Exams: 'bg-davv-light text-davv',
@@ -15,12 +16,14 @@ const CATEGORY_STYLE: Record<string, string> = {
 export default function NoticeBoard() {
   const [active, setActive] = useState<string>('All');
   const filtered =
-    active === 'All' ? NOTICES : NOTICES.filter(n => n.category === active);
+    active === 'All'
+      ? NOTICES
+      : NOTICES.filter((n: Notice) => n.category === active);
 
   return (
     <div className="bg-white border border-border/60 rounded-2xl p-5">
       <div className="flex flex-wrap gap-1.5 mb-4">
-        {NOTICE_CATEGORIES.map(cat => (
+        {NOTICE_CATEGORIES.map((cat: string) => (
           <button
             key={cat}
             onClick={() => setActive(cat)}
@@ -36,7 +39,7 @@ export default function NoticeBoard() {
         ))}
       </div>
       <ul className="divide-y divide-border/50">
-        {filtered.map(n => (
+        {filtered.map((n: Notice) => (
           <li key={n.id} className="py-3 flex items-start gap-3">
             <span
               className={clsx(

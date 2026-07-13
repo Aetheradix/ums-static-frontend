@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { ArrowUpRight } from 'lucide-react';
-import type { Institution } from '../data';
-import { INSTITUTION_TYPE_LABEL, campusOf } from '../data';
-import { davvUrls } from '../urls';
+import type { Institution } from '../constants/davvData';
+import { INSTITUTION_TYPE_LABEL, campusOf } from '../constants/davvData';
+import { davvUrls } from '../constants/davvUrls';
 
 const TYPE_BADGE: Record<string, string> = {
   utd: 'bg-davv-light text-davv',

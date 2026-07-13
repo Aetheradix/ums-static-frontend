@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { DAVV } from '../data';
-import { davvUrls } from '../urls';
+import { DAVV } from '../constants/davvData';
+import { davvUrls } from '../constants/davvUrls';
 
 export default function DavvFooter() {
   return (

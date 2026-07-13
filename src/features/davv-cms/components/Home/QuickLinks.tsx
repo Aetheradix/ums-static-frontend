@@ -1,25 +1,44 @@
 import { QUICK_LINKS } from '../../constants/data';
 
+const HOVER_GRADIENTS = [
+  'linear-gradient(180deg, rgba(37,99,235,0) 0%, rgba(37,99,235,0.3) 100%)',
+  'linear-gradient(180deg, rgba(16,185,129,0) 0%, rgba(16,185,129,0.3) 100%)',
+  'linear-gradient(180deg, rgba(147,51,234,0) 0%, rgba(147,51,234,0.3) 100%)',
+  'linear-gradient(180deg, rgba(217,119,6,0) 0%, rgba(217,119,6,0.3) 100%)',
+  'linear-gradient(180deg, rgba(225,29,72,0) 0%, rgba(225,29,72,0.3) 100%)',
+  'linear-gradient(180deg, rgba(6,182,212,0) 0%, rgba(6,182,212,0.3) 100%)',
+  'linear-gradient(180deg, rgba(249,115,22,0) 0%, rgba(249,115,22,0.3) 100%)',
+  'linear-gradient(180deg, rgba(236,72,153,0) 0%, rgba(236,72,153,0.3) 100%)',
+];
+
 export default function QuickLinks() {
   return (
-    <section className="max-w-[1400px] mx-auto px-4 sm:px-6 py-12 md:py-16 select-none">
+    <section className="max-w-[1400px] mx-auto px-0 sm:px-6 pt-0 pb-2 md:pb-3 select-none">
       <div className="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden">
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 divide-x divide-y divide-slate-100 sm:divide-y-0">
-          {QUICK_LINKS.map(link => {
+        <div className="grid grid-cols-4 sm:grid-cols-4 lg:grid-cols-8 divide-x divide-y divide-slate-100 sm:divide-y-0">
+          {QUICK_LINKS.map((link, index) => {
             const Icon = link.icon;
             return (
               <a
                 key={link.label}
                 href={link.href}
-                className="group flex flex-col items-center justify-center text-center p-6 sm:p-8 hover:bg-slate-50 transition-all duration-300 relative"
+                className="group relative flex flex-col items-center justify-center text-center p-3 sm:p-8 transition-all duration-300 overflow-hidden"
               >
-                {/* Outlined Icon with scale effect */}
-                <div className="w-12 h-12 rounded-xl bg-blue/5 text-[#002147] flex items-center justify-center group-hover:scale-110 group-hover:text-blue transition-all duration-300 shadow-2xs">
-                  <Icon className="w-6 h-6 stroke-[1.5]" />
+                {/* Multicolor gradient overlay — slides up from bottom on hover */}
+                <div
+                  className="absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out pointer-events-none"
+                  style={{ background: HOVER_GRADIENTS[index] }}
+                />
+
+                {/* Outlined Icon with scale effect — multicolor */}
+                <div
+                  className={`relative w-8 h-8 sm:w-12 sm:h-12 rounded-xl ${link.colorClass} flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-2xs`}
+                >
+                  <Icon className="w-4 h-4 sm:w-6 sm:h-6 stroke-[1.5]" />
                 </div>
 
                 {/* Title */}
-                <span className="text-[13px] font-bold text-navy group-hover:text-blue mt-4.5 transition-colors tracking-tight">
+                <span className="relative text-[10px] sm:text-[13px] font-black text-navy group-hover:text-blue mt-1.5 sm:mt-4.5 transition-colors tracking-tight">
                   {link.label}
                 </span>
               </a>

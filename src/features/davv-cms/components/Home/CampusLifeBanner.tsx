@@ -7,7 +7,7 @@ export default function CampusLifeBanner() {
   };
 
   return (
-    <section className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-12 select-none">
+    <section className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-3 sm:pb-8 select-none">
       <div className="relative w-full h-[220px] sm:h-[260px] md:h-[280px] rounded-2xl overflow-hidden shadow-lg border border-slate-200 z-0 group">
         {/* Background Campus Image */}
         <img
@@ -17,7 +17,7 @@ export default function CampusLifeBanner() {
         />
 
         {/* Navy Blue Gradient Overlay fading to right */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#002147] via-[#002147]/80 to-transparent z-10" />
+        <div className="absolute inset-0 bg-linear-to-r from-[#002147] via-[#002147]/80 to-transparent z-10" />
 
         {/* Content Wrapper */}
         <div className="absolute inset-0 flex items-center z-20 px-6 sm:px-12 md:px-16">

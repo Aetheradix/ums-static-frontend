@@ -226,7 +226,7 @@ export default function Universities() {
                 {/* Explore Portal Button for Mobile */}
                 <div className="pt-2 md:hidden">
                   <Button
-                    href="/davv-cms"
+                    href="/davv"
                     size="sm"
                     variant="primary"
                     className="shadow-sm group-hover:shadow-glow transition-all"
@@ -240,7 +240,7 @@ export default function Universities() {
               {/* Right Side Explore Portal Button for Desktop */}
               <div className="shrink-0 hidden md:flex items-center justify-center pr-8 pl-2 z-20">
                 <Button
-                  href="/davv-cms"
+                  href="/davv"
                   size="md"
                   variant="primary"
                   className="shadow-sm group-hover:shadow-glow transition-all whitespace-nowrap"

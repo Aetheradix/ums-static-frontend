@@ -3,7 +3,14 @@ import { NEWS_UPDATES, UPCOMING_EVENTS } from '../../constants/data';
 
 export default function NewsAndEvents() {
   return (
-    <section className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-12 select-none">
+    <section className="max-w-[1400px] mx-auto px-4 sm:px-6 py-3 sm:py-6 select-none">
+      <div className="flex flex-col items-center mb-8">
+        <h3 className="font-display font-black text-white text-xl md:text-2xl tracking-wide mb-2">
+          News & Events
+        </h3>
+        <div className="w-12 h-1 bg-[#F2A900] rounded-full" />
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Column 1: News & Updates */}
         <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs flex flex-col justify-between">
@@ -21,7 +28,7 @@ export default function NewsAndEvents() {
               </a>
             </div>
 
-            <div className="space-y-5">
+            <div className="space-y-5 max-h-[280px] overflow-y-auto pr-2">
               {NEWS_UPDATES.map((news, idx) => (
                 <div key={idx} className="flex gap-4 group cursor-pointer">
                   {/* Thumbnail */}
@@ -63,7 +70,7 @@ export default function NewsAndEvents() {
               </a>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-4 max-h-[280px] overflow-y-auto pr-2">
               {UPCOMING_EVENTS.map((event, idx) => (
                 <div
                   key={idx}

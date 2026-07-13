@@ -5,8 +5,8 @@ import DavvLayout from '../layout/DavvLayout';
 import SectionTitle from '../../public-portal/components/ui/SectionTitle';
 import ServiceTile from '../components/ServiceTile';
 import NoticeBoard from '../components/NoticeBoard';
-import { DAVV, DAVV_STATS, CAMPUSES, SERVICES } from '../data';
-import { davvUrls } from '../urls';
+import { DAVV, DAVV_STATS, CAMPUSES, SERVICES } from '../constants/davvData';
+import { davvUrls } from '../constants/davvUrls';
 
 const QUICK_CHIPS = [
   'Results',
@@ -35,7 +35,7 @@ export default function Landing() {
   return (
     <DavvLayout>
       {/* HERO / WELCOME */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-davv-light/50 via-white to-white border-b border-davv/10">
+      <section className="relative overflow-hidden bg-linear-to-b from-davv-light/50 via-white to-white border-b border-davv/10">
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-davv-saffron/5 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-davv/5 rounded-full blur-[120px] pointer-events-none" />
         <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 py-12 md:py-16 grid lg:grid-cols-2 gap-10 lg:gap-12 items-center">
@@ -94,7 +94,7 @@ export default function Landing() {
                 alt="DAVV campus"
                 className="w-full h-[340px] object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-davv-darkest/70 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-davv-darkest/70 via-transparent to-transparent" />
               <div className="absolute bottom-4 left-4 right-4 flex items-center gap-3">
                 <img
                   src="/images/davv-logo.png"

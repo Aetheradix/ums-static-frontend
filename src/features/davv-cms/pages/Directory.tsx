@@ -5,8 +5,8 @@ import { clsx } from 'clsx';
 import DavvLayout from '../layout/DavvLayout';
 import SectionTitle from '../../public-portal/components/ui/SectionTitle';
 import InstitutionCard from '../components/InstitutionCard';
-import { INSTITUTIONS, CAMPUSES, DAVV } from '../data';
-import type { InstitutionType } from '../data';
+import { INSTITUTIONS, CAMPUSES, DAVV } from '../constants/davvData';
+import type { InstitutionType } from '../constants/davvData';
 
 type TypeFilter = 'all' | InstitutionType;
 

@@ -2,52 +2,60 @@ import { ArrowRight } from 'lucide-react';
 
 export default function VCAndRecruiters() {
   return (
-    <section className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-12 select-none">
+    <section className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-3 sm:pb-8 select-none">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left Column: From the Vice Chancellor */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs flex flex-col justify-between">
-          <div>
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs flex flex-col relative overflow-hidden">
+          {/* Watermark logo */}
+          <div className="absolute -right-6 -bottom-6 w-48 h-48 opacity-[0.04] pointer-events-none select-none z-0">
+            <img
+              src="/DAVV_Logo.png"
+              alt="DAVV Logo Watermark"
+              className="w-full h-full object-contain"
+            />
+          </div>
+
+          <div className="relative z-10 grow flex flex-col justify-between">
             <h3 className="font-display font-black text-[#002147] text-lg md:text-xl mb-6 leading-none">
               From the Vice Chancellor
             </h3>
 
-            <div className="flex flex-col sm:flex-row gap-6 items-start mb-6">
-              {/* VC round avatar */}
-              <div className="w-24 h-24 rounded-full overflow-hidden shrink-0 border border-slate-100 shadow-sm z-0 mx-auto sm:mx-0">
+            <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-center grow justify-center py-2">
+              {/* VC portrait avatar */}
+              <div className="w-36 h-48 sm:w-48 sm:h-64 rounded-xl overflow-hidden shrink-0 border border-slate-100 shadow-md z-0 mx-auto sm:mx-0">
                 <img
-                  src="/vc_profile.png"
+                  src="/davv-cms/img1.png"
                   alt="Vice Chancellor Prof. Rakesh Singh"
                   className="w-full h-full object-cover"
                 />
               </div>
 
               {/* VC Message blurb */}
-              <div className="flex-1 text-center sm:text-left space-y-3">
-                <p className="text-slate-600 text-xs md:text-[13px] leading-relaxed italic">
+              <div className="flex-1 text-center sm:text-left space-y-4">
+                <p className="text-slate-650 text-sm sm:text-[15px] md:text-base leading-relaxed italic font-medium">
                   "At DAVV, our mission is to empower students through quality
                   education, research and ethical values. We are dedicated to
                   building a knowledge society and a better tomorrow."
                 </p>
                 <div>
-                  <h4 className="text-blue text-[13px] font-black tracking-tight leading-snug">
+                  <h4 className="text-blue text-[14px] sm:text-[15px] font-black tracking-tight leading-snug">
                     Prof. Rakesh Singh
                   </h4>
-                  <p className="text-slate-400 text-xs font-semibold">
+                  <p className="text-slate-400 text-xs font-semibold mt-0.5">
                     Vice-Chancellor
                   </p>
                 </div>
+                <div className="pt-2 flex justify-center sm:justify-start">
+                  <a
+                    href="#"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-[#002147] hover:bg-blue text-white font-black text-[10px] uppercase tracking-wider rounded-xl transition-all shadow-sm group"
+                  >
+                    <span>Read Message</span>
+                    <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
-
-          <div className="pt-2">
-            <a
-              href="#"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#002147] hover:bg-blue text-white font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm group"
-            >
-              <span>Read Message</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-            </a>
           </div>
         </div>
 
@@ -68,42 +76,34 @@ export default function VCAndRecruiters() {
               </a>
             </div>
 
-            {/* Grid of Recruiter Logos (3x2 Layout) */}
-            <div className="grid grid-cols-3 gap-6 md:gap-8 items-center justify-items-center py-4">
-              {/* TCS */}
-              <div className="font-sans font-black text-lg md:text-xl tracking-tighter text-[#E83C6C]">
-                tcs<span className="text-[#364964] font-medium text-xs">™</span>
-              </div>
+            {/* Grid of Recruiter Logos */}
+            <div className="grid grid-cols-3 gap-4 sm:gap-6 items-center justify-items-center py-2">
+              {[
+                { name: 'TCS', logo: '/davv-cms/recruiter/TCS.png' },
+                { name: 'Infosys', logo: '/davv-cms/recruiter/INFOSYS.png' },
+                { name: 'Wipro', logo: '/davv-cms/recruiter/WIPRO.png' },
+                { name: 'ICICI', logo: '/davv-cms/recruiter/ICICI.png' },
+                { name: 'HCL', logo: '/davv-cms/recruiter/HCL.png' },
+                { name: 'Axis', logo: '/davv-cms/recruiter/Axis.png' },
+              ].map((rec, idx) => (
+                <div
+                  key={idx}
+                  className="w-full h-16 sm:h-20 flex items-center justify-center p-3 border border-slate-100 rounded-xl bg-slate-50/50 hover:scale-105 hover:bg-slate-50 transition-all shadow-3xs"
+                >
+                  <img
+                    src={rec.logo}
+                    alt={`${rec.name} Logo`}
+                    className="max-h-full max-w-full object-contain"
+                  />
+                </div>
+              ))}
+            </div>
 
-              {/* Infosys */}
-              <div className="font-display font-bold text-base md:text-lg tracking-tight text-[#007CC3]">
-                Infosys<span className="text-[10px] align-super">®</span>
-              </div>
-
-              {/* Wipro */}
-              <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-linear-to-r from-red-500 via-yellow-400 to-blue" />
-                <span className="font-sans font-bold text-slate-800 text-sm md:text-base tracking-wide">
-                  wipro
-                </span>
-              </div>
-
-              {/* ICICI Bank */}
-              <div className="font-sans font-black text-xs md:text-sm text-[#F05A28]">
-                i<span className="text-[#842E1B]">CICI Bank</span>
-              </div>
-
-              {/* HCL */}
-              <div className="font-display font-black text-base md:text-lg tracking-wider text-[#00529B]">
-                HCL
-              </div>
-
-              {/* Axis Bank */}
-              <div className="flex items-center gap-1">
-                <span className="font-sans font-black text-[#861A49] text-xs md:text-sm tracking-widest uppercase">
-                  Axis Bank
-                </span>
-              </div>
+            {/* Bottom Right: & many more... */}
+            <div className="text-right mt-3 pr-2">
+              <span className="text-slate-400 text-xs font-semibold tracking-wide italic">
+                & many more...
+              </span>
             </div>
           </div>
         </div>

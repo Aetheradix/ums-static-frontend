@@ -2,11 +2,12 @@ import { EXPLORE_CARDS } from '../../constants/data';
 
 export default function ExploreSlider() {
   return (
-    <section className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-12 select-none">
-      <div className="text-center mb-8">
-        <h3 className="font-display font-black text-[#002147] text-xl md:text-2xl tracking-wide">
+    <section className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-3 sm:pb-8 select-none">
+      <div className="flex flex-col items-center mb-8">
+        <h3 className="font-display font-black text-[#002147] text-xl md:text-2xl tracking-wide mb-2">
           Explore DAVV
         </h3>
+        <div className="w-12 h-1 bg-[#F2A900] rounded-full" />
       </div>
 
       {/* Grid container representing the cards */}

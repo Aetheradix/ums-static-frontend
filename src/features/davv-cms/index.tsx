@@ -1,11 +1,12 @@
 import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
+import AccessPortal from './pages/AccessPortal';
 
 export default function DavvCMS() {
   return (
     <Routes>
       <Route index element={<Home />} />
-      {/* Dynamic sub-routes can be added here as we develop more pages */}
+      <Route path="access-portal" element={<AccessPortal />} />
     </Routes>
   );
 }

@@ -17,8 +17,8 @@ import {
   INSTITUTION_TYPE_REACH,
   campusOf,
   findInstitution,
-} from '../data';
-import { davvUrls } from '../urls';
+} from '../constants/davvData';
+import { davvUrls } from '../constants/davvUrls';
 
 export default function InstitutionLogin() {
   const { type = '', institution = '' } = useParams();
@@ -80,7 +80,7 @@ export default function InstitutionLogin() {
           alt=""
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-davv-darkest/95 via-davv-dark/90 to-davv/80" />
+        <div className="absolute inset-0 bg-linear-to-br from-davv-darkest/95 via-davv-dark/90 to-davv/80" />
 
         <div className="relative">
           <Link

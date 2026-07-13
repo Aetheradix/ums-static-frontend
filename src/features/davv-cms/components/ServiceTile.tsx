@@ -1,5 +1,5 @@
 import { ArrowUpRight } from 'lucide-react';
-import type { DavvService } from '../data';
+import type { DavvService } from '../constants/davvData';
 
 export default function ServiceTile({ service }: { service: DavvService }) {
   const Icon = service.icon;

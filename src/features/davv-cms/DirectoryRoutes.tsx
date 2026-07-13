@@ -3,11 +3,8 @@ import Landing from './pages/Landing';
 import Directory from './pages/Directory';
 import InstitutionLogin from './pages/InstitutionLogin';
 
-// DAVV CMS routes (mounted at the top-level /davv namespace, outside Octagon and pre-login):
-//   /davv                     → Landing
-//   /davv/campuses            → Directory
-//   /davv/:type/:institution  → InstitutionLogin  (e.g. /davv/utd/iet)
-export default function Davv() {
+// Mounted at /davv-cms/* in index.tsx
+export default function DavvDirectory() {
   return (
     <Routes>
       <Route index element={<Landing />} />

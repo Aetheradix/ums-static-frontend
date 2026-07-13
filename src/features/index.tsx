@@ -61,7 +61,7 @@ import TrainerDevelopment from './trainer-development';
 import TransportManagement from './transport-management';
 import HealthManagement from './health-management';
 import EvaluationGrading from './evaluation-grading';
-import Davv from './davv';
+import DavvDirectory from './davv-cms/DirectoryRoutes';
 import DavvCMS from './davv-cms';
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
@@ -143,8 +143,8 @@ export default function Features() {
         />
       </Route>
 
-      <Route path="davv/*" element={<Davv />} />
-      <Route path="davv-cms/*" element={<DavvCMS />} />
+      <Route path="davv/*" element={<DavvCMS />} />
+      <Route path="davv-cms/*" element={<DavvDirectory />} />
 
       <Route path="public/*" element={<div>Public Page Placeholder</div>} />
       <Route path="login" element={<LoginPage />} />

@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
-import { DAVV } from '../data';
-import { davvUrls } from '../urls';
+import { DAVV } from '../constants/davvData';
+import { davvUrls } from '../constants/davvUrls';
 
 const NAV = [
   { label: 'Home', to: davvUrls.landing },
