@@ -3,8 +3,6 @@ export const NAV_LINKS = [
   { label: 'Solutions', href: '/octagon-cms/solutions' },
   { label: 'About', href: '/octagon-cms/about' },
   { label: 'Contact', href: '/octagon-cms/contact' },
-  { label: 'Raise Grievance', href: '/octagon-cms/public-grievance' },
-  { label: 'University Login', href: '/octagon-cms/universities' },
 ] as const;
 
 export const HERO_CONTENT = {

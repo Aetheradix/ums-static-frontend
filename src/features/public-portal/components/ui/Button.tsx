@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 import { clsx } from 'clsx';
+import { Link } from 'react-router-dom';
 
 interface ButtonProps {
   children: ReactNode;
@@ -40,12 +41,21 @@ export default function Button({
   };
 
   const classes = clsx(base, variants[variant], sizes[size], className);
-  if (href)
+  if (href) {
+    const isExternal = href.startsWith('http') || href.startsWith('//');
+    if (isExternal) {
+      return (
+        <a href={href} className={classes}>
+          {children}
+        </a>
+      );
+    }
     return (
-      <a href={href} className={classes}>
+      <Link to={href} className={classes}>
         {children}
-      </a>
+      </Link>
     );
+  }
   return (
     <button type={type} onClick={onClick} className={classes}>
       {children}
