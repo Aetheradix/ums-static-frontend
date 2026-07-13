@@ -208,6 +208,41 @@ function CategoryDistributionDoughnutChart() {
   return <canvas ref={ref} />;
 }
 
+function SubcategoryDistributionDoughnutChart() {
+  const ref = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    if (!ref.current) return;
+    const ctx = ref.current.getContext('2d');
+    if (!ctx) return;
+    const chart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['PH (Divyang)', 'JKM (Migrants)', 'EMP Ward', 'NRI', 'EWS'],
+        datasets: [
+          {
+            data: [85, 42, 120, 95, 850],
+            backgroundColor: [
+              '#f59e0b',
+              '#10b981',
+              '#3b82f6',
+              '#ec4899',
+              '#8b5cf6',
+            ],
+            borderWidth: 0,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'right' } },
+      },
+    });
+    return () => chart.destroy();
+  }, []);
+  return <canvas ref={ref} />;
+}
+
 function FeeCollectionChart() {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -326,7 +361,7 @@ export default function AdminDashboard() {
         { label: 'Dashboard' },
       ]}
     >
-      <div className="stats-grid-6 student-admin-stats-grid">
+      <div className="stats-grid-5 student-admin-stats-grid">
         <StatCard
           title="Total Active Students"
           value={adminStats.totalActiveStudents}
@@ -340,13 +375,6 @@ export default function AdminDashboard() {
           icon="link"
           colorScheme="orange"
           subtitle="Requires attention"
-        />
-        <StatCard
-          title="Average CGPA"
-          value={adminStats.averageInstituteCgpa}
-          icon="insights"
-          colorScheme="green"
-          subtitle="Institute wide"
         />
         <StatCard
           title="Total Programs"
@@ -402,6 +430,12 @@ export default function AdminDashboard() {
           </div>
         </FormCard>
 
+        <FormCard title="Sub-category wise Distribution">
+          <div className="chart-container">
+            <SubcategoryDistributionDoughnutChart />
+          </div>
+        </FormCard>
+
         <FormCard title="Program Wise Fee Collection Progress">
           <div className="chart-container">
             <FeeCollectionChart />
@@ -420,6 +454,196 @@ export default function AdminDashboard() {
           </div>
         </FormCard>
       </div>
+
+      {/* Scholarship & Hackathon Summary Section */}
+      {/* <div className="student-admin-content-split mt-6">
+        <FormCard title="Scholarship Disbursal Summary" icon="wallet">
+          <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-3 gap-2 p-3 bg-slate-50 dark:bg-slate-800/40 rounded-lg text-xs md:text-sm">
+              <div>
+                <span className="text-slate-400 block font-medium">
+                  Awarded Students
+                </span>
+                <span className="font-bold text-slate-800 dark:text-slate-200 text-lg">
+                  1,420
+                </span>
+              </div>
+              <div className="border-l border-slate-200 dark:border-slate-700 pl-3">
+                <span className="text-slate-400 block font-medium">
+                  Total Disbursed
+                </span>
+                <span className="font-bold text-emerald-600 dark:text-emerald-400 text-lg">
+                  ₹3.84 Cr
+                </span>
+              </div>
+              <div className="border-l border-slate-200 dark:border-slate-700 pl-3">
+                <span className="text-slate-400 block font-medium">
+                  Pending Review
+                </span>
+                <span className="font-bold text-amber-500 text-lg">145</span>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="dept-summary-table w-full text-xs">
+                <thead>
+                  <tr>
+                    <th>Scholarship Scheme</th>
+                    <th className="text-right">Awardees</th>
+                    <th className="text-right">Disbursed Amt</th>
+                    <th className="text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="font-semibold text-slate-800 dark:text-slate-200">
+                      DAVV Merit Scholarship
+                    </td>
+                    <td className="text-right">320</td>
+                    <td className="text-right font-medium text-emerald-600">
+                      ₹89.60 L
+                    </td>
+                    <td className="text-center">
+                      <span className="badge badge-success bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400">
+                        Released
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="font-semibold text-slate-800 dark:text-slate-200">
+                      MP Post-Matric Scholarship (SC/ST/OBC)
+                    </td>
+                    <td className="text-right">840</td>
+                    <td className="text-right font-medium text-emerald-600">
+                      ₹2.35 Cr
+                    </td>
+                    <td className="text-center">
+                      <span className="badge badge-success bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400">
+                        Released
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="font-semibold text-slate-800 dark:text-slate-200">
+                      NSP Merit-cum-Means
+                    </td>
+                    <td className="text-right">260</td>
+                    <td className="text-right font-medium text-emerald-600">
+                      ₹59.80 L
+                    </td>
+                    <td className="text-center">
+                      <span className="badge bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400">
+                        145 Pending
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="mt-2 border-t border-slate-100 dark:border-slate-800/60 pt-3">
+              <a
+                href="#"
+                onClick={e => e.preventDefault()}
+                className="text-xs md:text-sm font-medium text-blue-600 hover:text-blue-500 inline-flex items-center gap-1"
+              >
+                View Scholarship Dashboard &rarr;
+              </a>
+            </div>
+          </div>
+        </FormCard>
+
+        <FormCard title="Hackathon & Co-curricular Analytics" icon="star">
+          <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-3 gap-2 p-3 bg-slate-50 dark:bg-slate-800/40 rounded-lg text-xs md:text-sm">
+              <div>
+                <span className="text-slate-400 block font-medium">
+                  Total Events
+                </span>
+                <span className="font-bold text-slate-800 dark:text-slate-200 text-lg">
+                  12
+                </span>
+              </div>
+              <div className="border-l border-slate-200 dark:border-slate-700 pl-3">
+                <span className="text-slate-400 block font-medium">
+                  Participations
+                </span>
+                <span className="font-bold text-slate-800 dark:text-slate-200 text-lg">
+                  450
+                </span>
+              </div>
+              <div className="border-l border-slate-200 dark:border-slate-700 pl-3">
+                <span className="text-slate-400 block font-medium">
+                  Podium Wins
+                </span>
+                <span className="font-bold text-indigo-600 dark:text-indigo-400 text-lg">
+                  38 Teams
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <div className="flex justify-between items-start p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800/60 text-xs">
+                <div className="flex-1 pr-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-slate-800 dark:text-slate-200">
+                      Smart India Hackathon 2025
+                    </span>
+                    <span className="text-[10px] text-slate-400">
+                      · National
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 mt-1">
+                    42 teams participated. <strong>3 Winners</strong> (Grand
+                    Prize: ₹3.0L)
+                  </p>
+                </div>
+                <span className="badge bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300">
+                  3 Winner Badges
+                </span>
+              </div>
+
+              <div className="flex justify-between items-start p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800/60 text-xs">
+                <div className="flex-1 pr-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-slate-800 dark:text-slate-200">
+                      DevFest Indore 2025
+                    </span>
+                    <span className="text-[10px] text-slate-400">· Zonal</span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 mt-1">
+                    18 teams participated.{' '}
+                    <strong>1 Winner, 2 Finalists</strong>
+                  </p>
+                </div>
+                <span className="badge bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300">
+                  1 Winner, 2 Finalists
+                </span>
+              </div>
+
+              <div className="flex justify-between items-start p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800/60 text-xs">
+                <div className="flex-1 pr-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-slate-800 dark:text-slate-200">
+                      National AI Hackathon 2026
+                    </span>
+                    <span className="text-[10px] text-slate-400">
+                      · National
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 mt-1">
+                    15 teams participated. <strong>1 Winner</strong> (Prize:
+                    ₹1.5L)
+                  </p>
+                </div>
+                <span className="badge bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300">
+                  1 Winner Badge
+                </span>
+              </div>
+            </div>
+          </div>
+        </FormCard>
+      </div> */}
 
       <div className="student-admin-content-split">
         <FormCard title="Department Summary" className="h-full">
