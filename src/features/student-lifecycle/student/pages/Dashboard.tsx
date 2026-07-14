@@ -91,7 +91,10 @@ function SgpaTrendChart() {
   return <canvas ref={ref} />;
 }
 
-const marksDataBySemester: Record<string, { labels: string[], obtained: number[], average: number[] }> = {
+const marksDataBySemester: Record<
+  string,
+  { labels: string[]; obtained: number[]; average: number[] }
+> = {
   '1': {
     labels: ['Physics', 'Maths I', 'Engg Drawing', 'C Prog', 'English'],
     obtained: [80, 85, 75, 90, 82],
@@ -107,11 +110,19 @@ const marksDataBySemester: Record<string, { labels: string[], obtained: number[]
     obtained: [85, 78, 92, 88, 74],
     average: [72, 70, 75, 76, 68],
   },
-  'all': {
-    labels: ['Physics', 'Maths I', 'C Prog', 'Maths II', 'Data Struct', 'OS', 'Database'],
+  all: {
+    labels: [
+      'Physics',
+      'Maths I',
+      'C Prog',
+      'Maths II',
+      'Data Struct',
+      'OS',
+      'Database',
+    ],
     obtained: [80, 85, 90, 88, 85, 78, 92],
     average: [70, 75, 75, 78, 72, 70, 75],
-  }
+  },
 };
 
 function SubjectMarksBarChart({ semester }: { semester: string }) {
@@ -122,11 +133,11 @@ function SubjectMarksBarChart({ semester }: { semester: string }) {
     if (!ref.current) return;
     const ctx = ref.current.getContext('2d');
     if (!ctx) return;
-    
+
     if (chartRef.current) {
       chartRef.current.destroy();
     }
-    
+
     const data = marksDataBySemester[semester] || marksDataBySemester['3'];
 
     chartRef.current = new Chart(ctx, {
@@ -155,7 +166,7 @@ function SubjectMarksBarChart({ semester }: { semester: string }) {
         plugins: { legend: { position: 'top' } },
       },
     });
-    
+
     return () => {
       if (chartRef.current) {
         chartRef.current.destroy();
@@ -196,7 +207,10 @@ function MiscFeesChart() {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11 } } },
+          legend: {
+            position: 'right',
+            labels: { boxWidth: 12, font: { size: 11 } },
+          },
           tooltip: {
             callbacks: {
               label: ctx => ` ₹${ctx.parsed}`,
@@ -310,7 +324,7 @@ function SkillMatrixRadarChart() {
 
 export default function Dashboard() {
   const [selectedSemester, setSelectedSemester] = useState<string>('3');
-  
+
   const creditsPct = Math.round(
     (studentStats.creditsEarned / studentStats.creditsRequired) * 100
   );
@@ -372,11 +386,11 @@ export default function Dashboard() {
           </div>
         </FormCard>
 
-        <FormCard 
+        <FormCard
           title="Subject Marks Comparison"
           headerAction={
-            <select 
-              value={selectedSemester} 
+            <select
+              value={selectedSemester}
               onChange={e => setSelectedSemester(e.target.value)}
               className="text-xs border border-slate-200 dark:border-slate-700 rounded-md shadow-sm py-1 pl-2 pr-6 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
@@ -513,6 +527,219 @@ export default function Dashboard() {
             <button className="pay-fine-btn w-full mt-2 py-2">
               Pay Fine Online
             </button>
+          </div>
+        </FormCard>
+      </div>
+
+      {/* Scholarship & Hackathon Section */}
+      <div className="student-dashboard-split-row mt-6">
+        <FormCard title="Scholarship Status & Eligibility" icon="wallet">
+          <div className="flex flex-col gap-4">
+            {/* Academic stats for eligibility */}
+            <div className="flex gap-4 p-3 bg-slate-50 dark:bg-slate-800/40 rounded-lg text-xs md:text-sm">
+              <div>
+                <span className="text-slate-400 block font-medium">
+                  Academic CGPA
+                </span>
+                <span className="font-bold text-slate-800 dark:text-slate-200 text-lg">
+                  8.40
+                </span>
+              </div>
+              <div className="border-l border-slate-200 dark:border-slate-700 pl-4">
+                <span className="text-slate-400 block font-medium">
+                  Category
+                </span>
+                <span className="font-bold text-slate-800 dark:text-slate-200 text-lg">
+                  SC
+                </span>
+              </div>
+            </div>
+
+            {/* Scheme Eligibility */}
+            <div>
+              <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">
+                Eligible Schemes & Criteria
+              </h4>
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800/60 text-xs md:text-sm">
+                  <div>
+                    <span className="font-semibold text-slate-800 dark:text-slate-200 block">
+                      DAVV Merit Scholarship
+                    </span>
+                    <span className="text-[11px] text-slate-400">
+                      Req: CGPA ≥ 8.5, (Open to All)
+                    </span>
+                  </div>
+                  <span className="badge badge-outline text-slate-400 border-slate-200">
+                    Not Eligible
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800/60 text-xs md:text-sm">
+                  <div>
+                    <span className="font-semibold text-slate-800 dark:text-slate-200 block">
+                      MP Post-Matric Scholarship
+                    </span>
+                    <span className="text-[11px] text-slate-400">
+                      Req: CGPA ≥ 6.0, (OBC/SC/ST Category)
+                    </span>
+                  </div>
+                  <span className="badge badge-success bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400">
+                    Eligible
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800/60 text-xs md:text-sm">
+                  <div>
+                    <span className="font-semibold text-slate-800 dark:text-slate-200 block">
+                      NSP Merit-cum-Means
+                    </span>
+                    <span className="text-[11px] text-slate-400">
+                      Req: CGPA ≥ 7.0, (All Categories)
+                    </span>
+                  </div>
+                  <span className="badge badge-success bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400">
+                    Eligible
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Current Application Status */}
+            <div className="border-t border-slate-100 dark:border-slate-800/60 pt-3 text-xs md:text-sm">
+              <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">
+                My Application & Award Details
+              </h4>
+              <div className="p-3 rounded-lg bg-indigo-50/40 dark:bg-indigo-950/20 border border-indigo-100/50 dark:border-indigo-900/30">
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <span className="font-bold text-indigo-950 dark:text-indigo-200 block">
+                      MP Post-Matric Scholarship (SC/ST/OBC) 2.0
+                    </span>
+                    <span className="text-xs text-slate-400">AY 2025-26</span>
+                  </div>
+                  <span className="badge bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                    Under Review
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-xs mt-2 border-t border-slate-200/50 dark:border-slate-700/50 pt-2 font-medium">
+                  <span className="text-slate-500">Scholarship Amount:</span>
+                  <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                    Est: ₹28,000
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </FormCard>
+
+        <FormCard title="Hackathons & Co-curriculars" icon="star">
+          <div className="flex flex-col gap-4">
+            {/* Overview Stats */}
+            <div className="flex gap-4 p-3 bg-slate-50 dark:bg-slate-800/40 rounded-lg text-xs md:text-sm">
+              <div>
+                <span className="text-slate-400 block font-medium">
+                  Participations
+                </span>
+                <span className="font-bold text-slate-800 dark:text-slate-200 text-lg">
+                  3
+                </span>
+              </div>
+              <div className="border-l border-slate-200 dark:border-slate-700 pl-4">
+                <span className="text-slate-400 block font-medium">
+                  Wins / Podium
+                </span>
+                <span className="font-bold text-slate-800 dark:text-slate-200 text-lg">
+                  2
+                </span>
+              </div>
+            </div>
+
+            {/* Hackathon List */}
+            <div>
+              <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">
+                Participation & Achievements
+              </h4>
+              <div className="flex flex-col gap-3 max-h-[300px] overflow-y-auto">
+                <div className="flex justify-between items-start p-3 rounded-lg bg-slate-50 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800/60 text-xs md:text-sm">
+                  <div className="flex-1 pr-2">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-slate-800 dark:text-slate-200">
+                        Smart India Hackathon 2025
+                      </span>
+                      <span className="text-[10px] text-slate-400">
+                        · Dec 2025
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      <strong>Project:</strong> Smart Crop Yield Predictor
+                    </p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                      <strong>Role:</strong> Team Lead / ML Dev
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-end gap-1">
+                    <span className="badge bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300">
+                      Winner
+                    </span>
+                    <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                      ₹1,00,000
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-start p-3 rounded-lg bg-slate-50 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800/60 text-xs md:text-sm">
+                  <div className="flex-1 pr-2">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-slate-800 dark:text-slate-200">
+                        IET College Code-a-Thon
+                      </span>
+                      <span className="text-[10px] text-slate-400">
+                        · Jan 2026
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      <strong>Project:</strong> Student Attendance Tracker
+                    </p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                      <strong>Role:</strong> Full Stack Developer
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-end gap-1">
+                    <span className="badge bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300">
+                      Runner-up
+                    </span>
+                    <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                      ₹10,000
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-start p-3 rounded-lg bg-slate-50 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800/60 text-xs md:text-sm">
+                  <div className="flex-1 pr-2">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-slate-800 dark:text-slate-200">
+                        Central Zone Hackfest
+                      </span>
+                      <span className="text-[10px] text-slate-400">
+                        · Nov 2025
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      <strong>Project:</strong> Rural Medical Assistant
+                    </p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                      <strong>Role:</strong> UI Designer
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-end gap-1">
+                    <span className="badge bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300">
+                      Participated
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </FormCard>
       </div>
