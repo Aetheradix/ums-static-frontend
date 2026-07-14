@@ -29,7 +29,7 @@ export default function Home() {
       </div>
 
       {/* 4. Announcements and Important Links Section */}
-      <div className="bg-slate-50 dark:bg-slate-950 py-2 sm:py-4 pt-28 xs:pt-32 sm:pt-36 md:pt-40 transition-colors duration-300">
+      <div className="bg-slate-100 dark:bg-slate-950 py-2 sm:py-4 pt-28 xs:pt-32 sm:pt-36 md:pt-40 transition-colors duration-300">
         <AnnouncementsAndLinks />
       </div>
 
@@ -39,7 +39,7 @@ export default function Home() {
       </div>
 
       {/* 6. Statistics Glance Banner */}
-      <div className="bg-slate-50 dark:bg-slate-950 py-2 sm:py-4 transition-colors duration-300">
+      <div className="bg-slate-100 dark:bg-slate-950 py-2 sm:py-4 transition-colors duration-300">
         <StatsBanner />
       </div>
 
@@ -76,7 +76,7 @@ export default function Home() {
       </div>
 
       {/* 10. Vice Chancellor & Top Recruiters Section */}
-      <div className="bg-slate-50 dark:bg-slate-950 py-2 sm:py-4 transition-colors duration-300">
+      <div className="bg-slate-100 dark:bg-slate-950 py-2 sm:py-4 transition-colors duration-300">
         <VCAndRecruiters />
       </div>
 

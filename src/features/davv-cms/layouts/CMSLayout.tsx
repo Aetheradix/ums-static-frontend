@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Topbar from '../components/Navigation/Topbar';
 import Navbar from '../components/Navigation/Navbar';
 import Footer from '../components/Navigation/Footer';
@@ -10,11 +11,23 @@ interface CMSLayoutProps {
 }
 
 export default function CMSLayout({ children }: CMSLayoutProps) {
+  const { pathname } = useLocation();
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
     document.body.classList.remove('dark');
   }, []);
+
+  // Disable browser scroll restoration to ensure we control scroll position
+  // Scroll to top on every route change
+  useEffect(() => {
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTo(0, 0);
+    document.body.scrollTo(0, 0);
+  }, [pathname]);
 
   useEffect(() => {
     const handleScroll = (e: Event) => {

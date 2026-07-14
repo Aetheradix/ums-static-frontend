@@ -7,7 +7,12 @@ import DavvFooter from '../components/DavvFooter';
 // so it inherits Octagon's design tokens/typography/utility classes exactly.
 export default function DavvLayout({ children }: { children: ReactNode }) {
   useEffect(() => {
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
     window.scrollTo(0, 0);
+    document.documentElement.scrollTo(0, 0);
+    document.body.scrollTo(0, 0);
   }, []);
 
   // Force removal of dark mode class to run strictly in light mode

@@ -6,6 +6,14 @@ export default function VCAndRecruiters() {
 
   return (
     <section className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-3 sm:pb-8 select-none">
+      {/* Section Heading */}
+      <div className="flex flex-col items-center mb-6 sm:mb-8">
+        <h3 className="font-display font-black text-[#002147] dark:text-white text-xl md:text-2xl tracking-wide">
+          {t('Leadership & Placements')}
+        </h3>
+        <div className="w-12 h-1 bg-[#F2A900] rounded-full mt-2" />
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left Column: From the Vice Chancellor */}
         <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-8 shadow-xs dark:shadow-slate-900/50 flex flex-col relative overflow-hidden">

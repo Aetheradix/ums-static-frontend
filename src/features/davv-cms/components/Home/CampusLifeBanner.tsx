@@ -58,7 +58,7 @@ export default function CampusLifeBanner() {
         {/* Dynamic Static Campus Background Graphic */}
         <div className="absolute inset-0 bg-slate-900 z-0">
           <img
-            src="/davv-cms/crousel/Slide1.jpg"
+            src="/davv-cms/campus.jpg"
             alt="Vibrant DAVV Campus Life"
             className="w-full h-full object-cover opacity-85 dark:opacity-40 dark:brightness-75 group-hover:scale-103 transition-transform duration-700 ease-out"
           />
@@ -69,7 +69,7 @@ export default function CampusLifeBanner() {
           className="absolute inset-0 z-10 transition-opacity duration-300"
           style={{
             backgroundImage:
-              'linear-gradient(to right, var(--color-davv-darkest) 0%, color-mix(in srgb, var(--color-davv-dark) 80%, transparent) 50%, transparent 100%)',
+              'linear-gradient(to right, var(--primary-color-dark) 0%, color-mix(in srgb, var(--color-primary) 80%, transparent) 50%, transparent 100%)',
           }}
         />
 
@@ -93,7 +93,7 @@ export default function CampusLifeBanner() {
               className="flex items-center gap-3.5 group/btn cursor-pointer"
             >
               {/* Circular play icon */}
-              <div className="w-10 h-10 rounded-full bg-white text-[#002147] flex items-center justify-center shadow-lg group-hover/btn:scale-110 transition-transform">
+              <div className="w-10 h-10 rounded-full bg-white text-davv-navy flex items-center justify-center shadow-lg group-hover/btn:scale-110 transition-transform">
                 <Play className="w-4.5 h-4.5 fill-current stroke-0 ml-0.5" />
               </div>
               {/* Dark pill label */}

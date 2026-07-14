@@ -183,17 +183,22 @@ export default function FloatingBar() {
     const savedTheme = localStorage.getItem('davv-cms-theme') || '#002147';
     const savedThemeDark =
       localStorage.getItem('davv-cms-theme-dark') || '#001833';
-    const style = document.documentElement.style;
-    style.setProperty('--primary-color', savedTheme);
-    style.setProperty('--primary-color-dark', savedThemeDark);
-    style.setProperty('--color-primary', savedTheme);
+    const root = document.querySelector('.davv-cms-root') as HTMLElement;
+    if (root) {
+      root.style.setProperty('--primary-color', savedTheme);
+      root.style.setProperty('--primary-color-dark', savedThemeDark);
+      root.style.setProperty('--color-primary', savedTheme);
+    }
   }, []);
 
   // Theme Switcher Logic (Saves to localStorage)
   const changeTheme = (hex: string, dark: string, name: string) => {
-    document.documentElement.style.setProperty('--primary-color', hex);
-    document.documentElement.style.setProperty('--primary-color-dark', dark);
-    document.documentElement.style.setProperty('--color-primary', hex);
+    const root = document.querySelector('.davv-cms-root') as HTMLElement;
+    if (root) {
+      root.style.setProperty('--primary-color', hex);
+      root.style.setProperty('--primary-color-dark', dark);
+      root.style.setProperty('--color-primary', hex);
+    }
     setSelectedTheme(hex);
     localStorage.setItem('davv-cms-theme', hex);
     localStorage.setItem('davv-cms-theme-dark', dark);
@@ -626,64 +631,64 @@ export default function FloatingBar() {
   return (
     <>
       <style>{`
-        /* Overrides for hardcoded Tailwind colors */
-        .text-\\[\\#002147\\] {
+        /* Overrides for hardcoded Tailwind colors — scoped to .davv-cms-root only */
+        .davv-cms-root .text-\\[\\#002147\\] {
           color: var(--primary-color) !important;
         }
-        .bg-\\[\\#002147\\] {
+        .davv-cms-root .bg-\\[\\#002147\\] {
           background-color: var(--primary-color) !important;
         }
-        .border-\\[\\#002147\\] {
+        .davv-cms-root .border-\\[\\#002147\\] {
           border-color: var(--primary-color) !important;
         }
-        .from-\\[\\#002147\\] {
+        .davv-cms-root .from-\\[\\#002147\\] {
           --tw-gradient-from: var(--primary-color) !important;
           --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(0, 33, 71, 0)) !important;
         }
-        .via-\\[\\#002147\\] {
+        .davv-cms-root .via-\\[\\#002147\\] {
           --tw-gradient-stops: var(--tw-gradient-from), var(--primary-color) !important;
         }
-        .to-\\[\\#002147\\] {
+        .davv-cms-root .to-\\[\\#002147\\] {
           --tw-gradient-to: var(--primary-color) !important;
         }
 
         /* Overrides for #001833 (darker primary color variant) */
-        .text-\\[\\#001833\\] {
+        .davv-cms-root .text-\\[\\#001833\\] {
           color: var(--primary-color-dark) !important;
         }
-        .bg-\\[\\#001833\\] {
+        .davv-cms-root .bg-\\[\\#001833\\] {
           background-color: var(--primary-color-dark) !important;
         }
-        .border-\\[\\#001833\\] {
+        .davv-cms-root .border-\\[\\#001833\\] {
           border-color: var(--primary-color-dark) !important;
         }
         
         /* Hover overrides */
-        .hover\\:text-\\[\\#002147\\]:hover {
+        .davv-cms-root .hover\\:text-\\[\\#002147\\]:hover {
           color: var(--primary-color) !important;
         }
-        .hover\\:bg-\\[\\#002147\\]:hover {
+        .davv-cms-root .hover\\:bg-\\[\\#002147\\]:hover {
           background-color: var(--primary-color) !important;
         }
         
-        /* Custom scrollbars matching theme color */
-        ::-webkit-scrollbar {
+        /* Custom scrollbars matching theme color — scoped to .davv-cms-root */
+        .davv-cms-root ::-webkit-scrollbar {
           width: 8px;
           height: 8px;
         }
-        ::-webkit-scrollbar-track {
+        .davv-cms-root ::-webkit-scrollbar-track {
           background: #f1f5f9;
         }
-        ::-webkit-scrollbar-thumb {
+        .davv-cms-root ::-webkit-scrollbar-thumb {
           background: var(--primary-color);
           border-radius: 9999px;
         }
-        ::-webkit-scrollbar-thumb:hover {
+        .davv-cms-root ::-webkit-scrollbar-thumb:hover {
           background: var(--primary-color-dark);
         }
         
         /* Firefox support */
-        * {
+        .davv-cms-root * {
           scrollbar-width: thin;
           scrollbar-color: var(--primary-color) #f1f5f9;
         }
