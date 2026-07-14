@@ -97,14 +97,14 @@ export default function Navbar() {
         {/* Action Buttons */}
         <div className="hidden md:flex items-center gap-3 lg:gap-4">
           <Button
-            href="/login"
+            href="/octagon-cms/universities"
             size={isScrolled ? 'sm' : 'md'}
             variant={useLightText ? 'white-outline' : 'ghost'}
             className={
               useLightText ? '' : 'border border-border/80 hover:border-blue/30'
             }
           >
-            Sign In
+            Universities
           </Button>
           <Button
             href="/contact"
@@ -204,12 +204,12 @@ export default function Navbar() {
           })}
           <div className="pt-2 flex flex-col gap-2">
             <Button
-              href="/login"
+              href="/octagon-cms/universities"
               className="w-full border border-border/80 hover:border-blue/30"
               size="sm"
               variant="ghost"
             >
-              Sign In
+              Universities
             </Button>
             <Button href="/contact" className="w-full" size="sm">
               Request Demo

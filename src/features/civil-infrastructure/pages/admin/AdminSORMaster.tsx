@@ -28,7 +28,8 @@ const initialNewSorData = [
     subTitle: 'Section A - Soil Excavation',
     serialNo: '1.1',
     serialNoDesc: 'Excavation for road foundation',
-    workDesc: 'Excavation in ordinary soil up to 1.5m depth including dressing and disposal.',
+    workDesc:
+      'Excavation in ordinary soil up to 1.5m depth including dressing and disposal.',
     cementBags: '0',
     unit: 'Cum',
     rate: '450',
@@ -45,7 +46,8 @@ const initialNewSorData = [
     subTitle: 'Section C - Concrete works',
     serialNo: '3.4',
     serialNoDesc: 'RCC columns and beam structure',
-    workDesc: 'Providing and laying M25 grade concrete including curing, testing, and shuttering.',
+    workDesc:
+      'Providing and laying M25 grade concrete including curing, testing, and shuttering.',
     cementBags: '6.2',
     unit: 'Cum',
     rate: '1200',
@@ -96,39 +98,142 @@ const EMPTY_LAB: Partial<LabAgency> = {
 };
 
 const initialSorTypes = [
-  { id: 'T1', code: 'ROAD', type: 'Roads & Highways', description: 'Schedule of rates for construction and maintenance of roads and highways.' },
-  { id: 'T2', code: 'BLDG', type: 'Buildings & Structures', description: 'Schedule of rates for residential, commercial, and institutional building works.' },
-  { id: 'T3', code: 'ELEC', type: 'Electrical Works', description: 'Schedule of rates for internal and external electrical installations.' },
+  {
+    id: 'T1',
+    code: 'ROAD',
+    type: 'Roads & Highways',
+    description:
+      'Schedule of rates for construction and maintenance of roads and highways.',
+  },
+  {
+    id: 'T2',
+    code: 'BLDG',
+    type: 'Buildings & Structures',
+    description:
+      'Schedule of rates for residential, commercial, and institutional building works.',
+  },
+  {
+    id: 'T3',
+    code: 'ELEC',
+    type: 'Electrical Works',
+    description:
+      'Schedule of rates for internal and external electrical installations.',
+  },
 ];
 
 const initialSorChapters = [
-  { id: 'C1', sorTypeCode: 'ROAD', chapterNo: 'Ch-1', chapterDesc: 'Earthwork and Site Clearance' },
-  { id: 'C2', sorTypeCode: 'ROAD', chapterNo: 'Ch-2', chapterDesc: 'Sub-base and Base Courses' },
-  { id: 'C3', sorTypeCode: 'BLDG', chapterNo: 'Ch-1', chapterDesc: 'Concrete and RCC Works' },
-  { id: 'C4', sorTypeCode: 'BLDG', chapterNo: 'Ch-2', chapterDesc: 'Brick Masonry and Plastering' },
-  { id: 'C5', sorTypeCode: 'ELEC', chapterNo: 'Ch-1', chapterDesc: 'Wiring and Conduit Installation' },
+  {
+    id: 'C1',
+    sorTypeCode: 'ROAD',
+    chapterNo: 'Ch-1',
+    chapterDesc: 'Earthwork and Site Clearance',
+  },
+  {
+    id: 'C2',
+    sorTypeCode: 'ROAD',
+    chapterNo: 'Ch-2',
+    chapterDesc: 'Sub-base and Base Courses',
+  },
+  {
+    id: 'C3',
+    sorTypeCode: 'BLDG',
+    chapterNo: 'Ch-1',
+    chapterDesc: 'Concrete and RCC Works',
+  },
+  {
+    id: 'C4',
+    sorTypeCode: 'BLDG',
+    chapterNo: 'Ch-2',
+    chapterDesc: 'Brick Masonry and Plastering',
+  },
+  {
+    id: 'C5',
+    sorTypeCode: 'ELEC',
+    chapterNo: 'Ch-1',
+    chapterDesc: 'Wiring and Conduit Installation',
+  },
 ];
 
 const initialSorSubjects = [
-  { id: 'S1', sorTypeCode: 'ROAD', chapterNo: 'Ch-1', chapterDesc: 'Earthwork and Site Clearance', subjectName: 'Excavation in ordinary soil', subjectDesc: 'Excavation in ordinary soil up to 1.5m depth including dressing and disposal.', refIsCode: 'IS 1200 Part 1', newPara: 'Para 3.1.2' },
-  { id: 'S2', sorTypeCode: 'BLDG', chapterNo: 'Ch-1', chapterDesc: 'Concrete and RCC Works', subjectName: 'M25 Grade Reinforcement Concrete', subjectDesc: 'Providing and laying M25 grade concrete including curing, testing, and shuttering.', refIsCode: 'IS 456:2000', newPara: 'Para 5.4' },
+  {
+    id: 'S1',
+    sorTypeCode: 'ROAD',
+    chapterNo: 'Ch-1',
+    chapterDesc: 'Earthwork and Site Clearance',
+    subjectName: 'Excavation in ordinary soil',
+    subjectDesc:
+      'Excavation in ordinary soil up to 1.5m depth including dressing and disposal.',
+    refIsCode: 'IS 1200 Part 1',
+    newPara: 'Para 3.1.2',
+  },
+  {
+    id: 'S2',
+    sorTypeCode: 'BLDG',
+    chapterNo: 'Ch-1',
+    chapterDesc: 'Concrete and RCC Works',
+    subjectName: 'M25 Grade Reinforcement Concrete',
+    subjectDesc:
+      'Providing and laying M25 grade concrete including curing, testing, and shuttering.',
+    refIsCode: 'IS 456:2000',
+    newPara: 'Para 5.4',
+  },
 ];
 
 const initialSorUnits = [
-  { id: 'U1', name: 'Cum', description: 'Cubic Meter - unit of volume measurement' },
-  { id: 'U2', name: 'Sqm', description: 'Square Meter - unit of area measurement' },
-  { id: 'U3', name: 'Kg', description: 'Kilogram - unit of mass/weight measurement' },
-  { id: 'U4', name: 'Rmt', description: 'Running Meter - unit of length measurement' },
+  {
+    id: 'U1',
+    name: 'Cum',
+    description: 'Cubic Meter - unit of volume measurement',
+  },
+  {
+    id: 'U2',
+    name: 'Sqm',
+    description: 'Square Meter - unit of area measurement',
+  },
+  {
+    id: 'U3',
+    name: 'Kg',
+    description: 'Kilogram - unit of mass/weight measurement',
+  },
+  {
+    id: 'U4',
+    name: 'Rmt',
+    description: 'Running Meter - unit of length measurement',
+  },
 ];
 
 const initialProjects = [
-  { id: 'P1', area: 'Academic Block-3 Construction', campus: 'Main Campus', location: 'Behind Central Library, adjacent to block-2' },
-  { id: 'P2', area: 'Hostel Ground leveling', campus: 'South Campus', location: 'Sports complex parking annex' },
-  { id: 'P3', area: 'Electrical substation wiring', campus: 'North Campus', location: 'Utility zone near north gate' },
+  {
+    id: 'P1',
+    area: 'Academic Block-3 Construction',
+    campus: 'Main Campus',
+    location: 'Behind Central Library, adjacent to block-2',
+  },
+  {
+    id: 'P2',
+    area: 'Hostel Ground leveling',
+    campus: 'South Campus',
+    location: 'Sports complex parking annex',
+  },
+  {
+    id: 'P3',
+    area: 'Electrical substation wiring',
+    campus: 'North Campus',
+    location: 'Utility zone near north gate',
+  },
 ];
 
 export default function AdminSORMaster() {
-  const [activeTab, setActiveTab] = useState<'SOR_TYPE' | 'SOR_CHAPTER' | 'SOR_SUBJECT' | 'UNIT' | 'SOR' | 'TPI' | 'LAB' | 'PROJECT'>('SOR_TYPE');
+  const [activeTab, setActiveTab] = useState<
+    | 'SOR_TYPE'
+    | 'SOR_CHAPTER'
+    | 'SOR_SUBJECT'
+    | 'UNIT'
+    | 'SOR'
+    | 'TPI'
+    | 'LAB'
+    | 'PROJECT'
+  >('SOR_TYPE');
 
   // SOR Type State
   const [sorTypes, setSorTypes] = useState<any[]>(() => {
@@ -291,9 +396,13 @@ export default function AdminSORMaster() {
 
     if (sorTypePopup.mode === 'create') {
       if (
-        sorTypes.some(d => d.code.toLowerCase() === sorTypeForm.code.toLowerCase())
+        sorTypes.some(
+          d => d.code.toLowerCase() === sorTypeForm.code.toLowerCase()
+        )
       ) {
-        ToastService.error(`SOR Type with code ${sorTypeForm.code} already exists.`);
+        ToastService.error(
+          `SOR Type with code ${sorTypeForm.code} already exists.`
+        );
         return;
       }
       const newItem = { ...sorTypeForm, id: `T-${Date.now()}` };
@@ -301,7 +410,9 @@ export default function AdminSORMaster() {
       ToastService.success('New SOR Type added successfully.');
     } else {
       setSorTypes(prev =>
-        prev.map(d => (d.id === sorTypePopup.item.id ? { ...d, ...sorTypeForm } : d))
+        prev.map(d =>
+          d.id === sorTypePopup.item.id ? { ...d, ...sorTypeForm } : d
+        )
       );
       ToastService.success('SOR Type updated successfully.');
     }
@@ -332,7 +443,9 @@ export default function AdminSORMaster() {
             d.chapterNo.toLowerCase() === sorChapterForm.chapterNo.toLowerCase()
         )
       ) {
-        ToastService.error(`Chapter ${sorChapterForm.chapterNo} already exists for selected SOR Type.`);
+        ToastService.error(
+          `Chapter ${sorChapterForm.chapterNo} already exists for selected SOR Type.`
+        );
         return;
       }
       const newItem = { ...sorChapterForm, id: `C-${Date.now()}` };
@@ -340,7 +453,9 @@ export default function AdminSORMaster() {
       ToastService.success('New SOR Chapter added successfully.');
     } else {
       setSorChapters(prev =>
-        prev.map(d => (d.id === sorChapterPopup.item.id ? { ...d, ...sorChapterForm } : d))
+        prev.map(d =>
+          d.id === sorChapterPopup.item.id ? { ...d, ...sorChapterForm } : d
+        )
       );
       ToastService.success('SOR Chapter updated successfully.');
     }
@@ -369,7 +484,9 @@ export default function AdminSORMaster() {
       ToastService.success('New SOR Subject details added successfully.');
     } else {
       setSorSubjects(prev =>
-        prev.map(d => (d.id === sorSubjectPopup.item.id ? { ...d, ...sorSubjectForm } : d))
+        prev.map(d =>
+          d.id === sorSubjectPopup.item.id ? { ...d, ...sorSubjectForm } : d
+        )
       );
       ToastService.success('SOR Subject details updated successfully.');
     }
@@ -394,9 +511,13 @@ export default function AdminSORMaster() {
 
     if (sorUnitPopup.mode === 'create') {
       if (
-        sorUnits.some(d => d.name.toLowerCase() === sorUnitForm.name.toLowerCase())
+        sorUnits.some(
+          d => d.name.toLowerCase() === sorUnitForm.name.toLowerCase()
+        )
       ) {
-        ToastService.error(`Unit with name ${sorUnitForm.name} already exists.`);
+        ToastService.error(
+          `Unit with name ${sorUnitForm.name} already exists.`
+        );
         return;
       }
       const newItem = { ...sorUnitForm, id: `U-${Date.now()}` };
@@ -404,7 +525,9 @@ export default function AdminSORMaster() {
       ToastService.success('New Unit added successfully.');
     } else {
       setSorUnits(prev =>
-        prev.map(d => (d.id === sorUnitPopup.item.id ? { ...d, ...sorUnitForm } : d))
+        prev.map(d =>
+          d.id === sorUnitPopup.item.id ? { ...d, ...sorUnitForm } : d
+        )
       );
       ToastService.success('Unit updated successfully.');
     }
@@ -429,7 +552,9 @@ export default function AdminSORMaster() {
       ToastService.success('New Project added successfully.');
     } else {
       setProjects(prev =>
-        prev.map(d => (d.id === projectPopup.item.id ? { ...d, ...projectForm } : d))
+        prev.map(d =>
+          d.id === projectPopup.item.id ? { ...d, ...projectForm } : d
+        )
       );
       ToastService.success('Project updated successfully.');
     }
@@ -575,7 +700,9 @@ export default function AdminSORMaster() {
             color: '#0891b2',
             bg: activeTab === 'SOR_TYPE' ? '#ecfeff' : '#ffffff',
             border:
-              activeTab === 'SOR_TYPE' ? '2px solid #0891b2' : '1px solid #e5e7eb',
+              activeTab === 'SOR_TYPE'
+                ? '2px solid #0891b2'
+                : '1px solid #e5e7eb',
           },
           {
             key: 'SOR_CHAPTER',
@@ -586,7 +713,9 @@ export default function AdminSORMaster() {
             color: '#ea580c',
             bg: activeTab === 'SOR_CHAPTER' ? '#fff7ed' : '#ffffff',
             border:
-              activeTab === 'SOR_CHAPTER' ? '2px solid #ea580c' : '1px solid #e5e7eb',
+              activeTab === 'SOR_CHAPTER'
+                ? '2px solid #ea580c'
+                : '1px solid #e5e7eb',
           },
           {
             key: 'SOR_SUBJECT',
@@ -597,7 +726,9 @@ export default function AdminSORMaster() {
             color: '#db2777',
             bg: activeTab === 'SOR_SUBJECT' ? '#fdf2f8' : '#ffffff',
             border:
-              activeTab === 'SOR_SUBJECT' ? '2px solid #db2777' : '1px solid #e5e7eb',
+              activeTab === 'SOR_SUBJECT'
+                ? '2px solid #db2777'
+                : '1px solid #e5e7eb',
           },
           {
             key: 'UNIT',
@@ -652,7 +783,9 @@ export default function AdminSORMaster() {
             color: '#dc2626',
             bg: activeTab === 'PROJECT' ? '#fef2f2' : '#ffffff',
             border:
-              activeTab === 'PROJECT' ? '2px solid #dc2626' : '1px solid #e5e7eb',
+              activeTab === 'PROJECT'
+                ? '2px solid #dc2626'
+                : '1px solid #e5e7eb',
           },
         ].map(t => (
           <div
@@ -1043,7 +1176,10 @@ export default function AdminSORMaster() {
                 field: 'sorTypeCode',
                 header: 'SOR Type',
                 cell: (s: any) => (
-                  <span className="civil-pill cyan" style={{ fontSize: '0.65rem' }}>
+                  <span
+                    className="civil-pill cyan"
+                    style={{ fontSize: '0.65rem' }}
+                  >
                     {s.sorTypeCode}
                   </span>
                 ),
@@ -1075,12 +1211,16 @@ export default function AdminSORMaster() {
               {
                 field: 'serialNo',
                 header: 'Serial No.',
-                cell: (s: any) => <span style={{ fontWeight: 700 }}>{s.serialNo}</span>,
+                cell: (s: any) => (
+                  <span style={{ fontWeight: 700 }}>{s.serialNo}</span>
+                ),
               },
               {
                 field: 'serialNoDesc',
                 header: 'Serial Desc',
-                cell: (s: any) => <span style={{ fontSize: '0.75rem' }}>{s.serialNoDesc}</span>,
+                cell: (s: any) => (
+                  <span style={{ fontSize: '0.75rem' }}>{s.serialNoDesc}</span>
+                ),
               },
               {
                 field: 'workDesc',
@@ -1127,7 +1267,9 @@ export default function AdminSORMaster() {
                 field: 'rateSet',
                 header: 'Rate Set',
                 cell: (s: any) => (
-                  <span className={`civil-pill ${s.rateSet ? 'green' : 'gray'}`}>
+                  <span
+                    className={`civil-pill ${s.rateSet ? 'green' : 'gray'}`}
+                  >
                     {s.rateSet ? 'Yes' : 'No'}
                   </span>
                 ),
@@ -1136,7 +1278,9 @@ export default function AdminSORMaster() {
                 field: 'percentage',
                 header: 'Percentage (%)',
                 cell: (s: any) => (
-                  <span>{s.rateSet && s.percentage ? `${s.percentage}%` : '-'}</span>
+                  <span>
+                    {s.rateSet && s.percentage ? `${s.percentage}%` : '-'}
+                  </span>
                 ),
               },
               {
@@ -1379,13 +1523,18 @@ export default function AdminSORMaster() {
               {
                 field: 'area',
                 header: 'Project Area',
-                cell: (s: any) => <span style={{ fontWeight: 600 }}>{s.area}</span>,
+                cell: (s: any) => (
+                  <span style={{ fontWeight: 600 }}>{s.area}</span>
+                ),
               },
               {
                 field: 'campus',
                 header: 'Campus',
                 cell: (s: any) => (
-                  <span className="civil-pill blue" style={{ fontSize: '0.7rem' }}>
+                  <span
+                    className="civil-pill blue"
+                    style={{ fontSize: '0.7rem' }}
+                  >
                     {s.campus}
                   </span>
                 ),
@@ -1419,7 +1568,11 @@ export default function AdminSORMaster() {
                 icon="plus"
                 variant="primary"
                 onClick={() => {
-                  setProjectForm({ area: '', campus: 'Main Campus', location: '' });
+                  setProjectForm({
+                    area: '',
+                    campus: 'Main Campus',
+                    location: '',
+                  });
                   setProjectPopup({ mode: 'create' });
                 }}
               />
@@ -1443,12 +1596,17 @@ export default function AdminSORMaster() {
         <FormGrid columns={2}>
           <DropDownList
             label="SOR Type *"
-            data={sorTypes.map(t => ({ name: `${t.code} - ${t.type}`, value: t.code }))}
+            data={sorTypes.map(t => ({
+              name: `${t.code} - ${t.type}`,
+              value: t.code,
+            }))}
             textField="name"
             optionValue="value"
             value={sorForm.sorTypeCode}
             onChange={v => {
-              const matchingChapters = sorChapters.filter(c => c.sorTypeCode === v);
+              const matchingChapters = sorChapters.filter(
+                c => c.sorTypeCode === v
+              );
               const defaultChapter = matchingChapters[0]?.chapterNo ?? '';
               const matchedSubject = sorSubjects.find(
                 s => s.sorTypeCode === v && s.chapterNo === defaultChapter
@@ -1525,7 +1683,9 @@ export default function AdminSORMaster() {
               label="Serial No. Description"
               placeholder="Enter serial number details..."
               value={sorForm.serialNoDesc ?? ''}
-              onChange={v => setSorForm((f: any) => ({ ...f, serialNoDesc: v }))}
+              onChange={v =>
+                setSorForm((f: any) => ({ ...f, serialNoDesc: v }))
+              }
               rows={2}
             />
             <TextArea
@@ -1553,7 +1713,9 @@ export default function AdminSORMaster() {
               textField="name"
               optionValue="value"
               value={sorForm.unit}
-              onChange={v => setSorForm((f: any) => ({ ...f, unit: v as string }))}
+              onChange={v =>
+                setSorForm((f: any) => ({ ...f, unit: v as string }))
+              }
             />
           </FormGrid>
         </div>
@@ -1571,22 +1733,36 @@ export default function AdminSORMaster() {
               label="Effective Date *"
               type="date"
               value={sorForm.effectiveDate ?? ''}
-              onChange={v => setSorForm((f: any) => ({ ...f, effectiveDate: v }))}
+              onChange={v =>
+                setSorForm((f: any) => ({ ...f, effectiveDate: v }))
+              }
               required
             />
           </FormGrid>
         </div>
 
-        <div style={{ marginTop: '1rem', display: 'flex', gap: '2rem', alignItems: 'center' }}>
+        <div
+          style={{
+            marginTop: '1rem',
+            display: 'flex',
+            gap: '2rem',
+            alignItems: 'center',
+          }}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <input
               type="checkbox"
               id="rateSet"
               checked={!!sorForm.rateSet}
-              onChange={e => setSorForm((f: any) => ({ ...f, rateSet: e.target.checked }))}
+              onChange={e =>
+                setSorForm((f: any) => ({ ...f, rateSet: e.target.checked }))
+              }
               style={{ width: '1.25rem', height: '1.25rem', cursor: 'pointer' }}
             />
-            <label htmlFor="rateSet" style={{ fontWeight: 600, cursor: 'pointer', userSelect: 'none' }}>
+            <label
+              htmlFor="rateSet"
+              style={{ fontWeight: 600, cursor: 'pointer', userSelect: 'none' }}
+            >
               Rate Set
             </label>
           </div>
@@ -1597,7 +1773,9 @@ export default function AdminSORMaster() {
                 label="Percentage (%) *"
                 placeholder="e.g. 10"
                 value={sorForm.percentage ?? ''}
-                onChange={v => setSorForm((f: any) => ({ ...f, percentage: v }))}
+                onChange={v =>
+                  setSorForm((f: any) => ({ ...f, percentage: v }))
+                }
                 required
               />
             </div>
@@ -1829,7 +2007,9 @@ export default function AdminSORMaster() {
             label="Description *"
             placeholder="Enter category description..."
             value={sorTypeForm.description ?? ''}
-            onChange={v => setSorTypeForm((f: any) => ({ ...f, description: v }))}
+            onChange={v =>
+              setSorTypeForm((f: any) => ({ ...f, description: v }))
+            }
             rows={3}
             required
           />
@@ -1854,7 +2034,9 @@ export default function AdminSORMaster() {
         visible={sorChapterPopup.mode !== 'closed'}
         onHide={() => setSorChapterPopup({ mode: 'closed' })}
         title={
-          sorChapterPopup.mode === 'create' ? 'Add New SOR Chapter' : 'Edit SOR Chapter'
+          sorChapterPopup.mode === 'create'
+            ? 'Add New SOR Chapter'
+            : 'Edit SOR Chapter'
         }
         subtitle="Manage chapters categorized under SOR Types."
         size="lg"
@@ -1862,17 +2044,27 @@ export default function AdminSORMaster() {
         <FormGrid columns={2}>
           <DropDownList
             label="SOR Type *"
-            data={sorTypes.map(t => ({ name: `${t.code} - ${t.type}`, value: t.code }))}
+            data={sorTypes.map(t => ({
+              name: `${t.code} - ${t.type}`,
+              value: t.code,
+            }))}
             textField="name"
             optionValue="value"
             value={sorChapterForm.sorTypeCode}
-            onChange={v => setSorChapterForm((f: any) => ({ ...f, sorTypeCode: v as string }))}
+            onChange={v =>
+              setSorChapterForm((f: any) => ({
+                ...f,
+                sorTypeCode: v as string,
+              }))
+            }
           />
           <TextBox
             label="Chapter No. *"
             placeholder="e.g. Ch-1"
             value={sorChapterForm.chapterNo ?? ''}
-            onChange={v => setSorChapterForm((f: any) => ({ ...f, chapterNo: v }))}
+            onChange={v =>
+              setSorChapterForm((f: any) => ({ ...f, chapterNo: v }))
+            }
             required
           />
         </FormGrid>
@@ -1881,7 +2073,9 @@ export default function AdminSORMaster() {
             label="Chapter Description *"
             placeholder="Enter chapter description..."
             value={sorChapterForm.chapterDesc ?? ''}
-            onChange={v => setSorChapterForm((f: any) => ({ ...f, chapterDesc: v }))}
+            onChange={v =>
+              setSorChapterForm((f: any) => ({ ...f, chapterDesc: v }))
+            }
             rows={3}
             required
           />
@@ -1906,7 +2100,9 @@ export default function AdminSORMaster() {
         visible={sorSubjectPopup.mode !== 'closed'}
         onHide={() => setSorSubjectPopup({ mode: 'closed' })}
         title={
-          sorSubjectPopup.mode === 'create' ? 'Add New SOR Subject' : 'Edit SOR Subject'
+          sorSubjectPopup.mode === 'create'
+            ? 'Add New SOR Subject'
+            : 'Edit SOR Subject'
         }
         subtitle="Manage subject details under SOR types and chapters."
         size="lg"
@@ -1914,12 +2110,17 @@ export default function AdminSORMaster() {
         <FormGrid columns={2}>
           <DropDownList
             label="SOR Type *"
-            data={sorTypes.map(t => ({ name: `${t.code} - ${t.type}`, value: t.code }))}
+            data={sorTypes.map(t => ({
+              name: `${t.code} - ${t.type}`,
+              value: t.code,
+            }))}
             textField="name"
             optionValue="value"
             value={sorSubjectForm.sorTypeCode}
             onChange={v => {
-              const matchingChapters = sorChapters.filter(c => c.sorTypeCode === v);
+              const matchingChapters = sorChapters.filter(
+                c => c.sorTypeCode === v
+              );
               setSorSubjectForm((f: any) => ({
                 ...f,
                 sorTypeCode: v as string,
@@ -1938,7 +2139,9 @@ export default function AdminSORMaster() {
             value={sorSubjectForm.chapterNo}
             onChange={v => {
               const chapter = sorChapters.find(
-                c => c.sorTypeCode === sorSubjectForm.sorTypeCode && c.chapterNo === v
+                c =>
+                  c.sorTypeCode === sorSubjectForm.sorTypeCode &&
+                  c.chapterNo === v
               );
               setSorSubjectForm((f: any) => ({
                 ...f,
@@ -1954,7 +2157,9 @@ export default function AdminSORMaster() {
             label="Chapter Description (Autofilled)"
             placeholder="Chapter description will autofill..."
             value={sorSubjectForm.chapterDesc ?? ''}
-            onChange={v => setSorSubjectForm((f: any) => ({ ...f, chapterDesc: v }))}
+            onChange={v =>
+              setSorSubjectForm((f: any) => ({ ...f, chapterDesc: v }))
+            }
             rows={2}
             disabled
           />
@@ -1966,14 +2171,18 @@ export default function AdminSORMaster() {
               label="Subject Name *"
               placeholder="Enter subject name..."
               value={sorSubjectForm.subjectName ?? ''}
-              onChange={v => setSorSubjectForm((f: any) => ({ ...f, subjectName: v }))}
+              onChange={v =>
+                setSorSubjectForm((f: any) => ({ ...f, subjectName: v }))
+              }
               required
             />
             <TextBox
               label="Ref. IS Code"
               placeholder="e.g. IS 456:2000"
               value={sorSubjectForm.refIsCode ?? ''}
-              onChange={v => setSorSubjectForm((f: any) => ({ ...f, refIsCode: v }))}
+              onChange={v =>
+                setSorSubjectForm((f: any) => ({ ...f, refIsCode: v }))
+              }
             />
           </FormGrid>
         </div>
@@ -1984,14 +2193,18 @@ export default function AdminSORMaster() {
               label="Subject Description"
               placeholder="Enter subject technical details..."
               value={sorSubjectForm.subjectDesc ?? ''}
-              onChange={v => setSorSubjectForm((f: any) => ({ ...f, subjectDesc: v }))}
+              onChange={v =>
+                setSorSubjectForm((f: any) => ({ ...f, subjectDesc: v }))
+              }
               rows={2}
             />
             <TextBox
               label="New Para"
               placeholder="e.g. Para 5.4"
               value={sorSubjectForm.newPara ?? ''}
-              onChange={v => setSorSubjectForm((f: any) => ({ ...f, newPara: v }))}
+              onChange={v =>
+                setSorSubjectForm((f: any) => ({ ...f, newPara: v }))
+              }
             />
           </FormGrid>
         </div>
@@ -2015,9 +2228,7 @@ export default function AdminSORMaster() {
       <FormPopup
         visible={sorUnitPopup.mode !== 'closed'}
         onHide={() => setSorUnitPopup({ mode: 'closed' })}
-        title={
-          sorUnitPopup.mode === 'create' ? 'Add New Unit' : 'Edit Unit'
-        }
+        title={sorUnitPopup.mode === 'create' ? 'Add New Unit' : 'Edit Unit'}
         subtitle="Manage baseline units of measurement."
         size="lg"
       >
@@ -2036,7 +2247,9 @@ export default function AdminSORMaster() {
             label="Description"
             placeholder="Enter unit description / conversion notes..."
             value={sorUnitForm.description ?? ''}
-            onChange={v => setSorUnitForm((f: any) => ({ ...f, description: v }))}
+            onChange={v =>
+              setSorUnitForm((f: any) => ({ ...f, description: v }))
+            }
             rows={3}
           />
         </div>
@@ -2075,11 +2288,18 @@ export default function AdminSORMaster() {
           />
           <DropDownList
             label="Campus *"
-            data={['Main Campus', 'North Campus', 'South Campus', 'Off-Campus Centre'].map(v => ({ name: v, value: v }))}
+            data={[
+              'Main Campus',
+              'North Campus',
+              'South Campus',
+              'Off-Campus Centre',
+            ].map(v => ({ name: v, value: v }))}
             textField="name"
             optionValue="value"
             value={projectForm.campus}
-            onChange={v => setProjectForm((f: any) => ({ ...f, campus: v as string }))}
+            onChange={v =>
+              setProjectForm((f: any) => ({ ...f, campus: v as string }))
+            }
           />
         </FormGrid>
 

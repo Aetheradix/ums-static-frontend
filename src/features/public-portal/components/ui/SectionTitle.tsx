@@ -28,7 +28,7 @@ export default function SectionTitle({
           {badge}
         </span>
       )}
-      <h2 className="font-display text-[22px] sm:text-3xl md:text-4xl font-bold text-navy leading-tight mb-2 md:mb-4">
+      <h2 className="font-display text-[22px] sm:text-3xl md:text-4xl font-bold text-navy dark:text-white leading-tight mb-2 md:mb-4">
         {title}
       </h2>
       {subtitle && (
