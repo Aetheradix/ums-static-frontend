@@ -1,394 +1,208 @@
-import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { ToastService } from 'services';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { FormCard, FormPage } from 'shared/new-components';
 import { Button } from 'shared/components/buttons';
-import { TextArea } from 'shared/components/forms';
-import { FormCard, FormGrid, FormPage } from 'shared/new-components';
-import { complaints, notesheets } from '../../mocks';
+import { complaints } from '../../mocks';
 import { grvUrls } from '../../urls';
 import '../../Grievance.css';
 
+const statusColors: Record<string, string> = {
+  Submitted: 'grv-status-pill pending',
+  'Department Review': 'grv-status-pill review',
+  'HoD Review': 'grv-status-pill review',
+  'Committee Review': 'grv-status-pill review',
+  'Registrar Decision': 'grv-status-pill approved',
+  Closed: 'grv-status-pill closed',
+};
+
 export default function StudentComplaintDetails() {
-  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const stateId = location.state?.complaintId;
-  const complaintId = stateId || 'GRV001';
+  const id = searchParams.get('id');
+  const grievance = id ? complaints.find(c => c.id === id) : complaints[0];
 
-  const [complaint, setComplaint] = useState(
-    complaints.find(c => c.id === complaintId) || complaints[0]
-  );
-
-  const [commentText, setCommentText] = useState('');
-  const relatedNotesheet = notesheets.find(
-    n => n.notesheetNo === complaint.notesheetNo
-  );
-
-  const handleAddComment = () => {
-    if (!commentText.trim()) return;
-    const newComment = {
-      id: Date.now().toString(),
-      author: 'Arjun Sharma (Student)',
-      role: 'Student',
-      message: commentText,
-      date: 'Just Now',
-      isInternal: false,
-    };
-    setComplaint(c => ({
-      ...c,
-      comments: [...c.comments, newComment],
-    }));
-    setCommentText('');
-    ToastService.success('Comment posted successfully.');
-  };
-
-  const handleCloseTicket = () => {
-    setComplaint(c => ({
-      ...c,
-      status: 'Closed',
-    }));
-    ToastService.success('Ticket closed successfully.');
-  };
-
-  const isClosed = complaint.status === 'Closed';
-  const isResolved = complaint.status === 'Resolved';
-  const isBreached = complaint.slaStatus === 'Breached';
-  const isNearBreach = complaint.slaStatus === 'Near Breach';
+  if (!grievance) {
+    return (
+      <FormPage
+        title="Complaint Details"
+        description=""
+        breadcrumbs={[
+          { label: 'Home', to: '/home' },
+          { label: 'Grievance Management', to: grvUrls.portal },
+          { label: 'Student Portal', to: grvUrls.student.portal },
+          { label: 'Details' },
+        ]}
+      >
+        <FormCard title="">
+          <div className="text-center py-16 text-slate-400">
+            Grievance not found.
+          </div>
+        </FormCard>
+      </FormPage>
+    );
+  }
 
   return (
     <FormPage
-      title={`Complaint Actions Desk: ${complaint.ticketNo}`}
-      description="View real-time investigation progress, notesheets, and submit comments."
+      title="Grievance Details"
+      description={`Ticket: ${grievance.ticketNo}`}
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Grievance Management', to: grvUrls.portal },
         { label: 'Student Portal', to: grvUrls.student.portal },
-        { label: 'Track Complaint', to: grvUrls.student.track },
-        { label: 'Grievance Details' },
+        { label: 'My Grievances', to: grvUrls.student.myGrievances },
+        { label: 'Details' },
       ]}
     >
-      <div className="grv-bottom-row">
-        {/* Left Column: Complaint Details & Timeline */}
-        <div className="space-y-6">
-          {/* Main Info */}
-          <FormCard title="Grievance Details Information" icon="info">
-            <FormGrid columns={2}>
-              <div className="grv-info-field">
-                <span className="grv-info-label">Category / Area</span>
-                <span className="grv-info-value">{complaint.category}</span>
-              </div>
-              <div className="grv-info-field">
-                <span className="grv-info-label">Sub-Category</span>
-                <span className="grv-info-value">{complaint.subCategory}</span>
-              </div>
-              <div className="grv-info-field">
-                <span className="grv-info-label">Incident Date</span>
-                <span className="grv-info-value">{complaint.incidentDate}</span>
-              </div>
-              <div className="grv-info-field">
-                <span className="grv-info-label">Submitted On</span>
-                <span className="grv-info-value">
-                  {complaint.submittedDate}
-                </span>
-              </div>
-              <div className="grv-info-field">
-                <span className="grv-info-label">Assigned Department</span>
-                <span className="grv-info-value">{complaint.assignedDept}</span>
-              </div>
-              <div className="grv-info-field">
-                <span className="grv-info-label">Current Nodal Officer</span>
-                <span className="grv-info-value">{complaint.assignedTo}</span>
-              </div>
-            </FormGrid>
-
-            <div className="border-t border-slate-100 mt-4 pt-4">
-              <span className="grv-info-label">Subject Petition</span>
-              <p className="font-bold text-slate-800 text-sm mb-3">
-                {complaint.subject}
-              </p>
-
-              <span className="grv-info-label">Elaborated Description</span>
-              <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-lg border border-slate-100">
-                {complaint.description}
-              </p>
-            </div>
-          </FormCard>
-
-          {/* Digital Notesheet Panel */}
-          {relatedNotesheet && (
-            <FormCard
-              title="Digital eOffice Notesheet Action Trail"
-              icon="history_edu"
-            >
-              <div className="grv-notesheet">
-                <div className="grv-notesheet-header">
-                  <span className="grv-notesheet-no">
-                    {relatedNotesheet.notesheetNo}
-                  </span>
-                  <span className="grv-notesheet-stamp">
-                    File Ref: {relatedNotesheet.fileNo}
-                  </span>
-                </div>
-                <div className="grv-notesheet-row">
-                  <div className="grv-notesheet-field">
-                    <label>Current Custodian Officer</label>
-                    <span>
-                      {relatedNotesheet.currentOfficer} (
-                      {relatedNotesheet.officerDesignation})
-                    </span>
-                  </div>
-                  <div className="grv-notesheet-field">
-                    <label>Department Section</label>
-                    <span>{relatedNotesheet.department}</span>
-                  </div>
-                </div>
-                <div className="mt-3">
-                  <label className="text-[10px] text-amber-800 font-bold block mb-1">
-                    OFFICER NOTES & REMARKS
-                  </label>
-                  <p className="grv-notesheet-remark-box">
-                    {relatedNotesheet.remarks}
-                  </p>
-                </div>
-                <div className="mt-3">
-                  <label className="text-[10px] text-amber-800 font-bold block mb-1">
-                    PROPOSED RECOMMENDATION
-                  </label>
-                  <p className="text-xs text-slate-700">
-                    {relatedNotesheet.recommendation}
-                  </p>
-                </div>
-                {relatedNotesheet.digitalSigned && (
-                  <div className="grv-notesheet-signature">
-                    <i className="pi pi-verified text-emerald-600 text-lg"></i>
-                    <div className="grv-sig-box">
-                      <strong>Digitally Signed via eSign</strong>
-                      <div className="text-[9px] font-mono">
-                        Date: {relatedNotesheet.createdDate}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </FormCard>
-          )}
-
-          {/* Evidence Attachments */}
-          <FormCard title="Attached Supporting Documents" icon="cloud_download">
-            {complaint.attachments.length === 0 ? (
-              <p className="text-xs text-slate-400">
-                No file attachments uploaded for this ticket.
-              </p>
-            ) : (
-              <div className="space-y-2">
-                {complaint.attachments.map(a => (
-                  <div
-                    key={a.id}
-                    className="flex justify-between items-center p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs"
-                  >
-                    <div className="flex items-center gap-2">
-                      <i className="pi pi-file-pdf text-red-500 text-lg"></i>
-                      <div>
-                        <span className="font-bold text-slate-800 block">
-                          {a.name}
-                        </span>
-                        <span className="text-[10px] text-slate-400">
-                          {a.size} · Uploaded by {a.uploadedBy} on{' '}
-                          {a.uploadedOn}
-                        </span>
-                      </div>
-                    </div>
-                    <Button
-                      label="Download"
-                      icon="download"
-                      variant="outlined"
-                      size="small"
-                      onClick={() =>
-                        ToastService.success(
-                          `Downloading attachment file: ${a.name}`
-                        )
-                      }
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </FormCard>
-
-          {/* Comments Section */}
-          <FormCard title="Petition Comments & Queries thread" icon="comment">
-            <div className="space-y-4 mb-4">
-              {complaint.comments.map(c => (
-                <div
-                  key={c.id}
-                  className="p-3 bg-slate-50 border border-slate-100 rounded-lg text-xs"
-                >
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="font-bold text-slate-800">{c.author}</span>
-                    <span className="text-[10px] text-slate-400">{c.date}</span>
-                  </div>
-                  <p className="text-slate-600">{c.message}</p>
-                </div>
-              ))}
-            </div>
-
-            {!isClosed && (
-              <div className="space-y-3">
-                <TextArea
-                  label="Add Comment or Clarification Request"
-                  value={commentText}
-                  onChange={setCommentText}
-                  placeholder="Type your message to the redressal team..."
-                  rows={3}
-                />
-                <div className="flex justify-end">
-                  <Button
-                    label="Submit Message"
-                    icon="send"
-                    variant="primary"
-                    onClick={handleAddComment}
-                  />
-                </div>
-              </div>
-            )}
-          </FormCard>
-        </div>
-
-        {/* Right Column: Workflow Journey & SLA indicators */}
-        <div className="space-y-6">
-          {/* SLA Status Widget */}
-          <FormCard title="SLA & Escalation Info" icon="schedule">
-            <div className="space-y-3">
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-slate-400">Current Status:</span>
-                <span
-                  className={`grv-status-pill ${complaint.status.toLowerCase().replace(' ', '-')}`}
-                >
-                  {complaint.status}
-                </span>
-              </div>
-
-              {!isClosed && !isResolved && (
-                <div>
-                  <span className="text-[10px] text-slate-400 block mb-1">
-                    TIME REMAINING TO BREACH
-                  </span>
-                  <div
-                    className={`grv-sla-counter ${isBreached ? 'breached' : isNearBreach ? 'near' : 'ok'} w-full justify-center`}
-                  >
-                    {isBreached
-                      ? 'SLA VIOLATED / ESCALATED'
-                      : `${complaint.slaRemainingHrs} Hours Left`}
-                  </div>
-                  <div className="grv-bar-track mt-2">
-                    <div
-                      className={`grv-bar-fill ${isBreached ? 'bg-red-500' : isNearBreach ? 'bg-amber-500' : 'bg-green-500'}`}
-                      style={{
-                        width: `${Math.max(0, Math.min(100, (complaint.slaRemainingHrs / 72) * 100))}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              <div className="border-t border-slate-100 pt-3 text-xs space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Escalation Stage:</span>
-                  <span className="font-bold text-slate-700">
-                    Level {complaint.escalationLevel}
-                  </span>
-                </div>
-                {complaint.escalatedTo && (
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Escalated To:</span>
-                    <span className="font-bold text-red-600">
-                      {complaint.escalatedTo}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-          </FormCard>
-
-          {/* Timeline journey */}
-          <FormCard title="Grievance Redressal Timeline" icon="track_changes">
-            <div className="grv-timeline">
-              {complaint.timeline.map((step, idx) => (
-                <div key={step.id} className="grv-timeline-step">
-                  <div className="grv-timeline-icon-wrap">
-                    <div
-                      className="grv-timeline-icon"
-                      style={{
-                        background: step.done
-                          ? '#dcfce7'
-                          : step.active
-                            ? '#dbeafe'
-                            : '#f3f4f6',
-                        color: step.done
-                          ? '#16a34a'
-                          : step.active
-                            ? '#2563eb'
-                            : '#9ca3af',
-                      }}
-                    >
-                      {step.done ? (
-                        <i className="pi pi-check text-xs"></i>
-                      ) : (
-                        idx + 1
-                      )}
-                    </div>
-                    {idx < complaint.timeline.length - 1 && (
-                      <div
-                        className={`grv-timeline-line ${step.done ? 'bg-green-500' : 'bg-slate-200'}`}
-                      />
-                    )}
-                  </div>
-                  <div className="grv-timeline-body">
-                    <span className="grv-timeline-title block">
-                      {step.action}
-                    </span>
-                    <span className="grv-timeline-subtitle block text-[10px]">
-                      {step.performedBy} ({step.role})
-                    </span>
-                    <span className="grv-timeline-date block">{step.date}</span>
-                    {step.remarks && (
-                      <p className="grv-timeline-remark">{step.remarks}</p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </FormCard>
-
-          {/* Actions */}
-          {!isClosed && (
-            <FormCard title="Actions Box">
-              <div className="space-y-2">
-                {isResolved && (
-                  <Button
-                    label="Accept Resolution & Close Ticket"
-                    icon="check"
-                    variant="primary"
-                    className="w-full text-xs"
-                    onClick={handleCloseTicket}
-                  />
-                )}
-                <Button
-                  label="Initiate Appeal Review"
-                  icon="shield"
-                  variant="danger"
-                  className="w-full text-xs"
-                  onClick={() =>
-                    navigate(grvUrls.student.appeal, {
-                      state: { complaintId: complaint.id },
-                    })
-                  }
-                  disabled={isClosed}
-                />
-              </div>
-            </FormCard>
-          )}
-        </div>
+      <div className="mb-4">
+        <Button
+          label="← My Grievances"
+          variant="outlined"
+          onClick={() => navigate(grvUrls.student.myGrievances)}
+        />
       </div>
+
+      <FormCard title="Grievance Information">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+          <div>
+            <p className="text-xs text-slate-400">Ticket No</p>
+            <p className="font-mono font-bold text-blue-700">
+              {grievance.ticketNo}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs text-slate-400">Status</p>
+            <span className={statusColors[grievance.status]}>
+              {grievance.status}
+            </span>
+          </div>
+          <div>
+            <p className="text-xs text-slate-400">Category</p>
+            <p className="font-semibold">{grievance.category}</p>
+          </div>
+          <div>
+            <p className="text-xs text-slate-400">Sub-Category</p>
+            <p>{grievance.subCategory}</p>
+          </div>
+          <div>
+            <p className="text-xs text-slate-400">Department</p>
+            <p>{grievance.assignedDept}</p>
+          </div>
+          <div>
+            <p className="text-xs text-slate-400">Submitted</p>
+            <p>{grievance.submittedDate}</p>
+          </div>
+        </div>
+        <div className="mt-3 p-3 bg-slate-50 rounded text-sm border">
+          <p className="text-xs text-slate-400 mb-1">Subject</p>
+          <p className="font-medium text-slate-700">{grievance.subject}</p>
+        </div>
+        <div className="mt-2 p-3 bg-slate-50 rounded text-sm border">
+          <p className="text-xs text-slate-400 mb-1">Description</p>
+          <p className="text-slate-600">{grievance.description}</p>
+        </div>
+      </FormCard>
+
+      {grievance.attachments.length > 0 && (
+        <FormCard title="Uploaded Attachments">
+          <div className="space-y-2">
+            {grievance.attachments.map(att => (
+              <div
+                key={att.id}
+                className="flex items-center justify-between p-3 bg-slate-50 rounded border text-xs"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-8 h-8 bg-blue-100 text-blue-600 rounded flex items-center justify-center font-bold">
+                    {att.type === 'PDF' ? '📄' : '🖼'}
+                  </span>
+                  <div>
+                    <p className="font-semibold text-slate-700">{att.name}</p>
+                    <p className="text-slate-400">
+                      {att.size} · Uploaded {att.uploadedOn}
+                    </p>
+                  </div>
+                </div>
+                <button className="text-blue-600 hover:underline text-xs font-medium">
+                  Download
+                </button>
+              </div>
+            ))}
+          </div>
+        </FormCard>
+      )}
+
+      {grievance.notesheet && (
+        <FormCard title="🟢 eOffice Green Notesheet">
+          <div className="mb-3 grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+            <div>
+              <p className="text-slate-400">Notesheet No</p>
+              <p className="font-mono font-bold text-green-700">
+                {grievance.notesheet.notesheetNo}
+              </p>
+            </div>
+            <div>
+              <p className="text-slate-400">Department</p>
+              <p className="font-semibold">{grievance.notesheet.department}</p>
+            </div>
+            <div>
+              <p className="text-slate-400">Created</p>
+              <p>{grievance.notesheet.createdDate}</p>
+            </div>
+            <div>
+              <p className="text-slate-400">Status</p>
+              <span className="grv-status-pill approved">
+                {grievance.notesheet.status}
+              </span>
+            </div>
+          </div>
+          {grievance.notesheet.entries.map(entry => (
+            <div
+              key={entry.id}
+              className="border-l-4 border-green-500 bg-green-50 p-3 rounded mb-2 text-xs"
+            >
+              <div className="flex justify-between">
+                <p className="font-bold text-green-800">
+                  {entry.officerName} · {entry.officerDesignation}
+                </p>
+                <p className="text-slate-400">{entry.timestamp}</p>
+              </div>
+              <p className="text-slate-500 mt-1">
+                <span className="font-semibold text-slate-600">
+                  Action Taken:
+                </span>{' '}
+                {entry.actionTaken}
+              </p>
+              <p className="text-slate-600 mt-1">{entry.remarks}</p>
+            </div>
+          ))}
+        </FormCard>
+      )}
+
+      <FormCard title="Activity Timeline">
+        <div className="space-y-3">
+          {grievance.timeline.map(t => (
+            <div
+              key={t.id}
+              className="flex gap-3 pb-3 border-b border-slate-100 last:border-0 text-xs"
+            >
+              <div
+                className={`mt-1.5 w-2.5 h-2.5 rounded-full flex-shrink-0 ${t.active ? 'bg-blue-500' : t.done ? 'bg-green-500' : 'bg-slate-200'}`}
+              />
+              <div className="flex-1">
+                <p className="font-semibold text-slate-700">{t.action}</p>
+                <p className="text-slate-400">
+                  {t.performedBy} ({t.role}) · {t.date}
+                </p>
+                <p className="text-slate-500 bg-slate-50 p-1.5 rounded mt-1">
+                  {t.remarks}
+                </p>
+              </div>
+              <span className={statusColors[t.status] || 'grv-status-pill'}>
+                {t.status}
+              </span>
+            </div>
+          ))}
+        </div>
+      </FormCard>
     </FormPage>
   );
 }

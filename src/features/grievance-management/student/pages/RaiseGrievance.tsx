@@ -1,121 +1,103 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ToastService } from 'services';
-import { Button } from 'shared/components/buttons';
-import {
-  DropDownList,
-  TextBox,
-  TextArea,
-  Checkbox,
-  DatePicker,
-} from 'shared/components/forms';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
-import { grievanceCategories } from '../../mocks';
+import { Button } from 'shared/components/buttons';
+import { TextBox, TextArea, DropDownList } from 'shared/components/forms';
+import { ToastService } from 'services';
+import { grievanceCategories, departmentMappings } from '../../mocks';
 import { grvUrls } from '../../urls';
 import '../../Grievance.css';
 
-const STEPS = [
-  'Personal Information',
-  'Grievance Intake Info',
-  'Upload Evidences',
-  'Compliance & Submission',
-];
-
-const DEPARTMENTS = [
-  { name: 'SCSIT', value: 'SCSIT' },
-  { name: 'School of Commerce', value: 'School of Commerce' },
-  { name: 'School of Law', value: 'School of Law' },
-  { name: 'School of Science', value: 'School of Science' },
-  { name: 'Accounts & Finance', value: 'Accounts & Finance' },
-  { name: 'Administration Office', value: 'Administration Office' },
-];
-
 export default function StudentRaiseGrievance() {
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(0);
-  const [submitting, setSubmitting] = useState(false);
+  const [step, setStep] = useState(1);
+  const [category, setCategory] = useState('');
+  const [subCategory, setSubCategory] = useState('');
+  const [department, setDepartment] = useState('');
+  const [subject, setSubject] = useState('');
+  const [description, setDescription] = useState('');
+  const [incidentDate, setIncidentDate] = useState('');
+  const [location, setLocation] = useState('');
+  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [declared, setDeclared] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  const [form, setForm] = useState({
-    // Step 1
-    fullName: 'Arjun Sharma',
-    enrollmentNo: 'CS2021001',
-    course: 'B.Tech CSE',
-    mobile: '9876543210',
-    email: 'arjun.sharma@davv.ac.in',
-    department: 'SCSIT',
-    isAnonymous: false,
-
-    // Step 2
-    category: '',
-    subCategory: '',
-    subject: '',
-    description: '',
-    priority: 'Medium',
-    incidentDate: undefined as Date | undefined,
-    location: '',
-
-    // Step 3
-    documentName: '',
-    fileSize: '',
-
-    // Step 4
-    complianceAcknowledge: false,
-    declaration: false,
-    remarks: '',
-  });
-
-  const selectedCategory = grievanceCategories.find(
-    c => c.name === form.category
-  );
-  const subCategoryOptions = selectedCategory
-    ? selectedCategory.subCategories.map(s => ({ name: s, value: s }))
-    : [];
-
-  const handleNext = () => {
-    if (currentStep === 0) {
-      if (!form.fullName || !form.enrollmentNo || !form.course) {
-        ToastService.error('Personal information must be completed.');
-        return;
-      }
-    }
-    if (currentStep === 1) {
-      if (!form.category || !form.subject || !form.description) {
-        ToastService.error('Please fill category, subject, and description.');
-        return;
-      }
-    }
-    setCurrentStep(s => Math.min(s + 1, STEPS.length - 1));
-  };
-
-  const handlePrev = () => {
-    setCurrentStep(s => Math.max(s - 1, 0));
-  };
-
-  const handleSaveDraft = () => {
-    ToastService.success('Grievance draft application saved successfully.');
-  };
+  const selectedCat = grievanceCategories.find(c => c.name === category);
+  const subCats =
+    selectedCat?.subCategories.map(s => ({ name: s, value: s })) || [];
+  const catOptions = grievanceCategories.map(c => ({
+    name: c.name,
+    value: c.name,
+  }));
+  const deptOptions = departmentMappings.map(d => ({
+    name: d.primaryDepartment,
+    value: d.primaryDepartment,
+  }));
 
   const handleSubmit = () => {
-    if (!form.declaration || !form.complianceAcknowledge) {
-      ToastService.error(
-        'You must accept compliance acknowledgement and declaration.'
-      );
+    if (!declared) {
+      ToastService.error('Please accept the declaration.');
       return;
     }
-    setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      ToastService.success(
-        'Grievance ticket generated: GRV/DAVV/2026/00452. Notification sent via SMS & In-App.'
-      );
-      navigate(grvUrls.student.track);
-    }, 1000);
+    setSubmitted(true);
   };
+
+  if (submitted) {
+    const ticketNo = `GRV/2026/${Math.floor(10000 + Math.random() * 90000)}`;
+    return (
+      <FormPage
+        title="Grievance Submitted"
+        description="Your grievance has been registered successfully"
+        breadcrumbs={[
+          { label: 'Home', to: '/home' },
+          { label: 'Grievance Management', to: grvUrls.portal },
+          { label: 'Student Portal', to: grvUrls.student.portal },
+          { label: 'Submitted' },
+        ]}
+      >
+        <FormCard title="">
+          <div className="flex flex-col items-center py-10 gap-4">
+            <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-4xl">
+              ✓
+            </div>
+            <h2 className="text-xl font-bold text-slate-800">
+              Grievance Registered!
+            </h2>
+            <p className="text-slate-500 text-sm text-center max-w-md">
+              Your grievance has been successfully submitted. The Department
+              Officer will review and initiate the notesheet drafting shortly.
+            </p>
+            <div className="bg-slate-50 border rounded-lg p-4 w-full max-w-sm text-center">
+              <p className="text-xs text-slate-500 mb-1">Your Ticket Number</p>
+              <p className="text-2xl font-mono font-bold text-blue-700">
+                {ticketNo}
+              </p>
+              <p className="text-xs text-slate-400 mt-1">
+                Save this number to track your grievance
+              </p>
+            </div>
+            <div className="flex gap-3 mt-2">
+              <Button
+                label="Track This Grievance"
+                variant="primary"
+                onClick={() => navigate(grvUrls.student.track)}
+              />
+              <Button
+                label="Go to Dashboard"
+                variant="outlined"
+                onClick={() => navigate(grvUrls.student.dashboard)}
+              />
+            </div>
+          </div>
+        </FormCard>
+      </FormPage>
+    );
+  }
 
   return (
     <FormPage
-      title="File a New Grievance"
-      description="Lodge your complaint under SGRC, Anti-Ragging, ICC, Women Cell, or SC/ST Cell regulations."
+      title="Raise New Grievance"
+      description="File your complaint — DAVV University Grievance Redressal System"
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Grievance Management', to: grvUrls.portal },
@@ -123,311 +105,204 @@ export default function StudentRaiseGrievance() {
         { label: 'Raise Grievance' },
       ]}
     >
-      {/* Stepper display */}
-      <div className="grv-stepper">
-        {STEPS.map((step, idx) => (
-          <div key={step} className="grv-step">
+      <div className="mb-4">
+        <Button
+          label="← Back to Portal"
+          variant="outlined"
+          onClick={() => navigate(grvUrls.student.portal)}
+        />
+      </div>
+
+      {/* Step Indicator */}
+      <div className="flex items-center gap-2 mb-6">
+        {[1, 2, 3].map(s => (
+          <div key={s} className="flex items-center gap-2">
             <div
-              className={`grv-step-num ${idx < currentStep ? 'done' : idx === currentStep ? 'active' : ''}`}
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-all ${step >= s ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-300 text-slate-400'}`}
             >
-              {idx < currentStep ? (
-                <i className="pi pi-check text-xs"></i>
-              ) : (
-                idx + 1
-              )}
+              {s}
             </div>
-            <span
-              className={`grv-step-label ${idx <= currentStep ? 'active' : ''}`}
-            >
-              {step}
-            </span>
-            {idx < STEPS.length - 1 && (
+            {s < 3 && (
               <div
-                className={`grv-step-connector ${idx < currentStep ? 'done' : ''}`}
-                style={{ width: 60 }}
+                className={`h-1 w-12 rounded ${step > s ? 'bg-blue-600' : 'bg-slate-200'}`}
               />
             )}
           </div>
         ))}
+        <span className="text-xs text-slate-500 ml-2">
+          {step === 1
+            ? 'Category & Location'
+            : step === 2
+              ? 'Description'
+              : 'Review & Submit'}
+        </span>
       </div>
 
-      {/* Step 1: Personal Info */}
-      {currentStep === 0 && (
-        <FormCard title="Step 1: Complainant Details" icon="person">
-          <div className="mb-4">
-            <Checkbox
-              label="Submit Anonymously (Identity hidden except to Internal Review Panel)"
-              checked={form.isAnonymous}
-              onChange={val => setForm(f => ({ ...f, isAnonymous: val }))}
-            />
-          </div>
-          {!form.isAnonymous && (
-            <FormGrid columns={3}>
-              <TextBox
-                label="Full Name"
-                value={form.fullName}
-                onChange={val => setForm(f => ({ ...f, fullName: val }))}
-                required
-              />
-              <TextBox
-                label="Enrollment No."
-                value={form.enrollmentNo}
-                onChange={val => setForm(f => ({ ...f, enrollmentNo: val }))}
-                required
-              />
-              <TextBox
-                label="Course / Program"
-                value={form.course}
-                onChange={val => setForm(f => ({ ...f, course: val }))}
-                required
-              />
-              <TextBox
-                label="Mobile No."
-                value={form.mobile}
-                onChange={val => setForm(f => ({ ...f, mobile: val }))}
-              />
-              <TextBox
-                label="University Email"
-                value={form.email}
-                onChange={val => setForm(f => ({ ...f, email: val }))}
-              />
-              <DropDownList
-                label="Primary Department"
-                data={DEPARTMENTS}
-                textField="name"
-                optionValue="value"
-                value={form.department}
-                onChange={val =>
-                  setForm(f => ({ ...f, department: String(val ?? '') }))
-                }
-              />
-            </FormGrid>
-          )}
-          {form.isAnonymous && (
-            <div className="grv-alert warning">
-              <i className="pi pi-exclamation-triangle"></i>
-              <div>
-                <strong>Anonymous Lodging:</strong> Your personal details will
-                not be printed on the digital notesheet. However, you will still
-                be able to track this complaint via your dashboard token.
-              </div>
-            </div>
-          )}
-        </FormCard>
-      )}
-
-      {/* Step 2: Grievance Details */}
-      {currentStep === 1 && (
-        <FormCard title="Step 2: Grievance Information" icon="edit_note">
+      {step === 1 && (
+        <FormCard title="Step 1 — Grievance Category & Location">
           <FormGrid columns={2}>
             <DropDownList
-              label="Grievance Category"
-              data={grievanceCategories.map(c => ({
-                name: c.name,
-                value: c.name,
-              }))}
+              label="Grievance Category *"
+              data={catOptions}
               textField="name"
               optionValue="value"
-              value={form.category}
-              onChange={val =>
-                setForm(f => ({
-                  ...f,
-                  category: String(val ?? ''),
-                  subCategory: '',
-                }))
-              }
-              required
+              value={category}
+              onChange={val => {
+                setCategory(val as string);
+                setSubCategory('');
+              }}
             />
             <DropDownList
-              label="Sub Category"
-              data={subCategoryOptions}
+              label="Sub-Category *"
+              data={subCats}
               textField="name"
               optionValue="value"
-              value={form.subCategory}
-              onChange={val =>
-                setForm(f => ({ ...f, subCategory: String(val ?? '') }))
-              }
-              disabled={!form.category}
-              required
+              value={subCategory}
+              onChange={val => setSubCategory(val as string)}
             />
-            <DatePicker
-              label="Incident Date"
-              value={form.incidentDate}
-              onChange={val =>
-                setForm(f => ({ ...f, incidentDate: val as Date }))
-              }
+            <DropDownList
+              label="Department *"
+              data={deptOptions}
+              textField="name"
+              optionValue="value"
+              value={department}
+              onChange={val => setDepartment(val as string)}
             />
             <TextBox
-              label="Location of Incident"
-              placeholder="e.g. Science block classroom, online portal, mess..."
-              value={form.location}
-              onChange={val => setForm(f => ({ ...f, location: val }))}
+              label="Incident Date *"
+              placeholder="DD/MM/YYYY"
+              value={incidentDate}
+              onChange={setIncidentDate}
             />
-          </FormGrid>
-
-          <div className="mt-4">
             <TextBox
-              label="Brief Subject Heading"
-              placeholder="Short title of the problem"
-              value={form.subject}
-              onChange={val => setForm(f => ({ ...f, subject: val }))}
-              required
+              label="Location of Incident *"
+              placeholder="e.g. SCSIT Block, Exam Hall 2"
+              value={location}
+              onChange={setLocation}
             />
-          </div>
-
-          <div className="mt-4">
-            <TextArea
-              label="Detailed Description of Grievance"
-              placeholder="Provide a comprehensive timeline of events, names if any, and other relevant details..."
-              value={form.description}
-              onChange={val => setForm(f => ({ ...f, description: val }))}
-              rows={5}
-              required
-            />
-          </div>
-        </FormCard>
-      )}
-
-      {/* Step 3: Document Upload */}
-      {currentStep === 2 && (
-        <FormCard title="Step 3: Upload Evidence Materials" icon="cloud_upload">
-          <p className="text-xs text-gray-500 mb-4">
-            You can upload fee receipts, screenshot proofs, marksheet drafts, or
-            medical certificates. Allowed formats: PDF, PNG, JPG. Max size: 5MB.
-          </p>
-          <FormGrid columns={2}>
-            <TextBox
-              label="Document Title / Name"
-              placeholder="e.g. Fees Receipt Dec 2025"
-              value={form.documentName}
-              onChange={val => setForm(f => ({ ...f, documentName: val }))}
-            />
-            <div className="flex flex-col justify-end">
-              <Button
-                label="Simulate File Attachment"
-                icon="upload"
-                variant="outlined"
-                onClick={() => {
-                  setForm(f => ({
-                    ...f,
-                    documentName: 'Evidence_receipt.pdf',
-                    fileSize: '412 KB',
-                  }));
-                  ToastService.success(
-                    'Evidence_receipt.pdf attached successfully.'
-                  );
-                }}
+            <div className="flex items-center gap-3 mt-6">
+              <input
+                type="checkbox"
+                id="anon"
+                checked={isAnonymous}
+                onChange={e => setIsAnonymous(e.target.checked)}
+                className="w-4 h-4"
               />
+              <label htmlFor="anon" className="text-sm text-slate-600">
+                Submit Anonymously
+              </label>
             </div>
           </FormGrid>
-
-          {form.documentName && (
-            <div className="mt-4 p-3 bg-emerald-50 border border-emerald-200 rounded-lg flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                <i className="pi pi-file text-emerald-600 text-lg"></i>
-                <div>
-                  <span className="text-xs font-bold block text-emerald-800">
-                    {form.documentName}
-                  </span>
-                  <span className="text-[10px] text-emerald-600">
-                    {form.fileSize || '350 KB'} · Uploaded Ready
-                  </span>
-                </div>
-              </div>
-              <button
-                className="text-red-500 hover:text-red-700"
-                onClick={() =>
-                  setForm(f => ({ ...f, documentName: '', fileSize: '' }))
-                }
-              >
-                <i className="pi pi-trash"></i>
-              </button>
-            </div>
-          )}
-        </FormCard>
-      )}
-
-      {/* Step 4: Submission */}
-      {currentStep === 3 && (
-        <FormCard
-          title="Step 4: Statutory Disclosures & Compliance"
-          icon="verified_user"
-        >
-          <div className="space-y-4">
-            <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg text-xs space-y-2">
-              <span className="font-bold text-slate-800">
-                Compliance & Regulatory Undertaking:
-              </span>
-              <p>
-                As per the UGC Student Grievance Redressal Regulations (2019),
-                filing a false or malicious complaint is a serious disciplinary
-                offence. Action may be initiated against complainants who raise
-                unsubstantiated malicious complaints.
-              </p>
-            </div>
-
-            <Checkbox
-              label="I acknowledge the compliance statement and understand the rules regarding false complaints."
-              checked={form.complianceAcknowledge}
-              onChange={val =>
-                setForm(f => ({ ...f, complianceAcknowledge: val }))
-              }
-            />
-
-            <Checkbox
-              label="I declare that all the information provided in this grievance petition is true and correct to the best of my knowledge."
-              checked={form.declaration}
-              onChange={val => setForm(f => ({ ...f, declaration: val }))}
-            />
-
-            <TextArea
-              label="Closing Remarks / Proposed Solution (Optional)"
-              placeholder="Suggest a possible corrective action that you would consider satisfactory..."
-              value={form.remarks}
-              onChange={val => setForm(f => ({ ...f, remarks: val }))}
-              rows={3}
-            />
-          </div>
-        </FormCard>
-      )}
-
-      {/* Buttons */}
-      <div className="flex justify-between items-center mt-6">
-        <div>
-          {currentStep > 0 && (
+          <div className="flex justify-end mt-4">
             <Button
-              label="Previous Step"
-              icon="arrow-left"
+              label="Next →"
+              variant="primary"
+              onClick={() => {
+                if (!category || !subCategory || !department) {
+                  ToastService.error('Please fill all required fields.');
+                  return;
+                }
+                setStep(2);
+              }}
+            />
+          </div>
+        </FormCard>
+      )}
+
+      {step === 2 && (
+        <FormCard title="Step 2 — Grievance Description">
+          <FormGrid columns={1}>
+            <TextBox
+              label="Subject of Grievance *"
+              placeholder="Brief subject (max 100 chars)"
+              value={subject}
+              onChange={setSubject}
+            />
+            <TextArea
+              label="Detailed Description *"
+              placeholder="Describe your grievance in detail. Include dates, names, events, and expected resolution..."
+              value={description}
+              onChange={setDescription}
+              rows={6}
+            />
+          </FormGrid>
+          <div className="flex justify-between mt-4">
+            <Button
+              label="← Back"
               variant="outlined"
-              onClick={handlePrev}
+              onClick={() => setStep(1)}
             />
-          )}
-        </div>
-        <div className="flex gap-2">
-          <Button
-            label="Save Draft"
-            icon="save"
-            variant="outlined"
-            onClick={handleSaveDraft}
-          />
-          {currentStep < STEPS.length - 1 ? (
             <Button
-              label="Next Step"
-              icon="arrow-right"
+              label="Next →"
               variant="primary"
-              onClick={handleNext}
+              onClick={() => {
+                if (!subject || !description) {
+                  ToastService.error('Please fill subject and description.');
+                  return;
+                }
+                setStep(3);
+              }}
             />
-          ) : (
+          </div>
+        </FormCard>
+      )}
+
+      {step === 3 && (
+        <FormCard title="Step 3 — Review & Submit">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-4">
+            <div className="bg-slate-50 rounded p-3">
+              <p className="text-xs text-slate-400 mb-1">Category</p>
+              <p className="font-semibold">{category}</p>
+            </div>
+            <div className="bg-slate-50 rounded p-3">
+              <p className="text-xs text-slate-400 mb-1">Sub-Category</p>
+              <p className="font-semibold">{subCategory}</p>
+            </div>
+            <div className="bg-slate-50 rounded p-3">
+              <p className="text-xs text-slate-400 mb-1">Department</p>
+              <p className="font-semibold">{department}</p>
+            </div>
+            <div className="bg-slate-50 rounded p-3">
+              <p className="text-xs text-slate-400 mb-1">Incident Date</p>
+              <p className="font-semibold">{incidentDate}</p>
+            </div>
+            <div className="bg-slate-50 rounded p-3 md:col-span-2">
+              <p className="text-xs text-slate-400 mb-1">Subject</p>
+              <p className="font-semibold">{subject}</p>
+            </div>
+            <div className="bg-slate-50 rounded p-3 md:col-span-2">
+              <p className="text-xs text-slate-400 mb-1">Description</p>
+              <p className="text-slate-600">{description}</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3 mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
+            <input
+              type="checkbox"
+              id="declare"
+              checked={declared}
+              onChange={e => setDeclared(e.target.checked)}
+              className="mt-1 w-4 h-4"
+            />
+            <label htmlFor="declare" className="text-xs text-slate-700">
+              I hereby declare that the information provided above is true and
+              correct to the best of my knowledge. I understand that providing
+              false information may result in disciplinary action.
+            </label>
+          </div>
+          <div className="flex justify-between">
             <Button
-              label="Lodge Grievance"
-              icon="send"
+              label="← Back"
+              variant="outlined"
+              onClick={() => setStep(2)}
+            />
+            <Button
+              label="Submit Grievance ✓"
               variant="primary"
-              isLoading={submitting}
               onClick={handleSubmit}
             />
-          )}
-        </div>
-      </div>
+          </div>
+        </FormCard>
+      )}
     </FormPage>
   );
 }

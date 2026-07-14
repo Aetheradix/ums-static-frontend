@@ -1,61 +1,26 @@
-import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Chart from 'chart.js/auto';
 import { FormCard, FormPage, StatCard } from 'shared/new-components';
-import { complaints, integrationPortals } from '../../mocks';
+import {
+  complaints,
+  grievanceCategories,
+  departmentMappings,
+  integrationPortals,
+} from '../../mocks';
 import { grvUrls } from '../../urls';
 import '../../Grievance.css';
-
-function PortalSyncVolumeChart() {
-  const ref = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    if (!ref.current) return;
-    const ctx = ref.current.getContext('2d');
-    if (!ctx) return;
-    const chart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: [
-          'UGC e-Samadhan',
-          'CM Helpline',
-          'CPGRAMS',
-          'DigiLocker',
-          'eSign',
-        ],
-        datasets: [
-          {
-            label: 'API Request Syncs Volume',
-            data: [248, 312, 178, 890, 234],
-            backgroundColor: '#3b82f6',
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-        },
-      },
-    });
-    return () => chart.destroy();
-  }, []);
-  return <canvas ref={ref}></canvas>;
-}
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
 
-  const totalComplaints = complaints.length;
-  const connectedAPIs = integrationPortals.filter(
-    p => p.status === 'Connected'
-  ).length;
-  const totalAPIs = integrationPortals.length;
+  const total = complaints.length;
+  const categoriesCount = grievanceCategories.length;
+  const deptsCount = departmentMappings.length;
+  const integrationsCount = integrationPortals.length;
 
   return (
     <FormPage
-      title="ERP System Administration Hub"
-      description="Configure grievance rules, monitor external portal integrations and track system audit trail logs."
+      title="ERP Administration Hub"
+      description="DAVV Indore — Central control hub for configuring categories, managing workflows, mapping roles, and checking security audit trails."
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Grievance Management', to: grvUrls.portal },
@@ -66,139 +31,95 @@ export default function AdminDashboard() {
       <div className="grv-stats-grid">
         <StatCard
           title="Total Registered Complaints"
-          value={totalComplaints}
+          value={total}
           icon="folder"
           colorScheme="blue"
-          subtitle="DAVV all features"
+          subtitle="All lodgings in system"
         />
         <StatCard
-          title="Integrated Gateways"
-          value={`${connectedAPIs}/${totalAPIs}`}
-          icon="api"
+          title="Grievance Categories"
+          value={categoriesCount}
+          icon="tags"
           colorScheme="green"
-          subtitle="API connections active"
+          subtitle="Configured intake categories"
         />
         <StatCard
-          title="Escalated Alerts"
-          value="2"
-          icon="warning"
-          colorScheme="red"
-          subtitle="Critical SLA breaches"
-        />
-        <StatCard
-          title="System Logs Generated"
-          value="1,490"
-          icon="history"
+          title="Mapped Departments"
+          value={deptsCount}
+          icon="business"
           colorScheme="purple"
-          subtitle="RTI trail compliant"
+          subtitle="Active routing channels"
+        />
+        <StatCard
+          title="Active Integrations"
+          value={integrationsCount}
+          icon="sync"
+          colorScheme="orange"
+          subtitle="National/State API portals"
         />
       </div>
 
-      <div className="grv-charts-row">
-        <FormCard title="External Portal Sync Volume Share">
-          <div style={{ height: 220 }}>
-            <PortalSyncVolumeChart />
-          </div>
-        </FormCard>
-
-        <FormCard title="Administration Configurations Desk">
-          <div className="grv-quick-actions font-bold">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <FormCard title="Administration Quick Links">
+          <div className="grv-quick-actions">
             <button
               className="grv-quick-action-btn"
-              onClick={() => navigate(grvUrls.admin.categories)}
+              onClick={() => navigate(grvUrls.admin.masters)}
             >
-              <i className="pi pi-tags text-blue-600"></i>
-              <span>Category Master</span>
+              <i className="pi pi-cog text-blue-600"></i>
+              <span>Masters</span>
             </button>
             <button
               className="grv-quick-action-btn"
-              onClick={() => navigate(grvUrls.admin.departments)}
+              onClick={() => navigate(grvUrls.admin.users)}
             >
-              <i className="pi pi-map text-green-600"></i>
-              <span>Department Mapping</span>
+              <i className="pi pi-users text-green-600"></i>
+              <span>User & Roles</span>
             </button>
             <button
               className="grv-quick-action-btn"
               onClick={() => navigate(grvUrls.admin.workflow)}
             >
-              <i className="pi pi-sliders-h text-yellow-600"></i>
-              <span>Workflow & Escalation</span>
+              <i className="pi pi-sitemap text-purple-600"></i>
+              <span>Workflow Setup</span>
             </button>
             <button
               className="grv-quick-action-btn"
-              onClick={() => navigate(grvUrls.admin.sla)}
+              onClick={() => navigate(grvUrls.admin.reports)}
             >
-              <i className="pi pi-clock text-red-600"></i>
-              <span>SLA Configuration</span>
-            </button>
-            <button
-              className="grv-quick-action-btn"
-              onClick={() => navigate(grvUrls.admin.notifications)}
-            >
-              <i className="pi pi-bell text-teal-600"></i>
-              <span>Notification Templates</span>
-            </button>
-            <button
-              className="grv-quick-action-btn"
-              onClick={() => navigate(grvUrls.admin.integrations)}
-            >
-              <i className="pi pi-globe text-indigo-600"></i>
-              <span>Integration Gateway</span>
-            </button>
-            <button
-              className="grv-quick-action-btn"
-              onClick={() => navigate(grvUrls.admin.audit)}
-            >
-              <i className="pi pi-lock text-gray-600"></i>
-              <span>Audit Trails</span>
+              <i className="pi pi-history text-red-600"></i>
+              <span>Audit & Reports</span>
             </button>
           </div>
         </FormCard>
-      </div>
 
-      <FormCard title="Direct API Connections Status" icon="api">
-        <table className="grv-table">
-          <thead>
-            <tr>
-              <th>Portal Name</th>
-              <th>Endpoint URL</th>
-              <th>Status</th>
-              <th>Last Sync</th>
-              <th>Total Transferred</th>
-              <th>Failed Request Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {integrationPortals.slice(0, 4).map(p => (
-              <tr key={p.id}>
-                <td className="font-bold text-slate-800">
-                  {p.name} ({p.acronym})
-                </td>
-                <td className="font-mono text-xs text-slate-500">
-                  {p.endpoint}
-                </td>
-                <td>
-                  <span
-                    className={`grv-status-pill ${p.status === 'Connected' ? 'active' : 'sla-breached'}`}
-                  >
-                    {p.status}
-                  </span>
-                </td>
-                <td>{p.lastSync}</td>
-                <td>{p.totalSynced} items</td>
-                <td>
-                  <button
-                    onClick={() => navigate(grvUrls.admin.integrations)}
-                    className="text-xs bg-slate-100 border hover:bg-slate-200 text-slate-700 font-bold px-2 py-1 rounded"
-                  >
-                    Setup API
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </FormCard>
+        <FormCard title="Active External Gateways">
+          <div className="overflow-x-auto text-[11px]">
+            <table className="grv-table w-full">
+              <thead>
+                <tr>
+                  <th>Portal</th>
+                  <th>Last Sync</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {integrationPortals.map(p => (
+                  <tr key={p.id}>
+                    <td className="font-bold text-slate-700">{p.name}</td>
+                    <td className="font-mono text-slate-500">{p.lastSync}</td>
+                    <td>
+                      <span className="grv-status-pill approved">
+                        {p.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </FormCard>
+      </div>
     </FormPage>
   );
 }

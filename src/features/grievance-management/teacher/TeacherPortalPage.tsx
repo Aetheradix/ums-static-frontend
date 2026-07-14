@@ -1,11 +1,11 @@
 import { PortalSelector } from 'shared/new-components';
 import { grvUrls } from '../urls';
 
-export default function StudentPortalPage() {
+export default function TeacherPortalPage() {
   return (
     <PortalSelector
-      moduleTitle="Student Portal — Grievance Redressal"
-      moduleDescription="DAVV Indore — UGC & AICTE compliant portal for students to lodge, track and appeal grievances."
+      moduleTitle="Teacher / Employee Portal — Grievance Redressal"
+      moduleDescription="DAVV Indore — Institutional desk for faculty and staff members to lodge and track employment-related grievances."
       backPath={grvUrls.portal}
       backLabel="Grievance Management System"
       portals={[
@@ -14,7 +14,7 @@ export default function StudentPortalPage() {
           description: 'Overview of complaints status and quick links.',
           icon: 'dashboard',
           colorScheme: 'blue',
-          path: grvUrls.student.dashboard,
+          path: grvUrls.teacher.dashboard,
         },
         {
           title: 'Raise Grievance',
@@ -22,7 +22,7 @@ export default function StudentPortalPage() {
             'Lodge a new grievance with attachments and department mapping.',
           icon: 'edit_note',
           colorScheme: 'red',
-          path: grvUrls.student.raise,
+          path: grvUrls.teacher.raise,
         },
         {
           title: 'Track Status',
@@ -30,7 +30,7 @@ export default function StudentPortalPage() {
             'Follow the digital notesheet file movement and timeline.',
           icon: 'map',
           colorScheme: 'purple',
-          path: grvUrls.student.track,
+          path: grvUrls.teacher.track,
         },
         {
           title: 'File Appeal',
@@ -38,21 +38,21 @@ export default function StudentPortalPage() {
             'Lodge appeal to SGRC panel for resolved/closed complaints.',
           icon: 'gavel',
           colorScheme: 'orange',
-          path: grvUrls.student.appeal,
+          path: grvUrls.teacher.appeal,
         },
         {
           title: 'Complaint History',
           description: 'Log of all previously closed and resolved cases.',
           icon: 'history',
           colorScheme: 'gray',
-          path: grvUrls.student.history,
+          path: grvUrls.teacher.history,
         },
         {
           title: 'Communication Center',
           description: 'Submit clarifications and read official updates.',
           icon: 'chat',
           colorScheme: 'indigo',
-          path: grvUrls.student.communication,
+          path: grvUrls.teacher.communication,
         },
       ]}
     />

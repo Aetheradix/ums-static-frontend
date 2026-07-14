@@ -1,130 +1,90 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ToastService } from 'services';
-import { Button } from 'shared/components/buttons';
 import { FormCard, FormPage } from 'shared/new-components';
 import { complaints } from '../../mocks';
 import { grvUrls } from '../../urls';
 import '../../Grievance.css';
 
+const statusColors: Record<string, string> = {
+  Submitted: 'grv-status-pill pending',
+  'Department Review': 'grv-status-pill review',
+  'HoD Review': 'grv-status-pill review',
+  'Committee Review': 'grv-status-pill review',
+  'Registrar Decision': 'grv-status-pill approved',
+  Closed: 'grv-status-pill closed',
+};
+
 export default function StudentComplaintHistory() {
   const navigate = useNavigate();
-  const [search, setSearch] = useState('');
-
-  // Active mock student
-  const STUDENT_ENROLL = 'CS2021001';
-  // Include resolved/closed/withdrawn/rejected/appealed complaints
-  const historyComplaints = complaints.filter(
-    c =>
-      (c.enrollmentNo === STUDENT_ENROLL || !c.isAnonymous) &&
-      ['Resolved', 'Closed', 'Rejected', 'Withdrawn'].includes(c.status)
-  );
-
-  const filtered = historyComplaints.filter(
-    c =>
-      c.ticketNo.toLowerCase().includes(search.toLowerCase()) ||
-      c.subject.toLowerCase().includes(search.toLowerCase()) ||
-      c.category.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const handleExport = (type: string) => {
-    ToastService.success(`Exporting grievance history in ${type} format...`);
-  };
+  const myComplaints = complaints.filter(c => c.complaintType === 'Student');
 
   return (
     <FormPage
-      title="Complaint Archival History"
-      description="View full list of your past closed, resolved, withdrawn, or settled grievance files."
+      title="Complaint History"
+      description="Complete history of all grievances filed by you"
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Grievance Management', to: grvUrls.portal },
         { label: 'Student Portal', to: grvUrls.student.portal },
-        { label: 'Complaint History' },
+        { label: 'History' },
       ]}
     >
-      <div className="flex gap-2 mb-4">
-        <Button
-          label="Export PDF"
-          icon="file-pdf"
-          variant="outlined"
-          size="small"
-          onClick={() => handleExport('PDF')}
-        />
-        <Button
-          label="Export Excel"
-          icon="file-excel"
-          variant="outlined"
-          size="small"
-          onClick={() => handleExport('Excel')}
-        />
-      </div>
-
-      <FormCard title="Resolved / Inactive Grievance Archives">
-        <div className="mb-4">
-          <input
-            type="text"
-            className="grv-search-input w-full"
-            placeholder="Search archive history by ticket, category, subject..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
-        </div>
-
-        {filtered.length === 0 ? (
-          <div className="grv-empty">
-            <i className="pi pi-history text-gray-300"></i>
-            <p>
-              No historical records matching the filter criteria were found.
-            </p>
+      {myComplaints.map(c => (
+        <FormCard key={c.id} title={c.ticketNo}>
+          <div className="flex justify-between items-start mb-3">
+            <div>
+              <p className="font-semibold text-slate-800 text-sm">
+                {c.subject}
+              </p>
+              <p className="text-xs text-slate-400 mt-0.5">
+                {c.category} · {c.subCategory}
+              </p>
+            </div>
+            <span className={statusColors[c.status]}>{c.status}</span>
           </div>
-        ) : (
-          <table className="grv-table">
-            <thead>
-              <tr>
-                <th>Ticket No.</th>
-                <th>Category</th>
-                <th>Subject Petition</th>
-                <th>Date Lodged</th>
-                <th>Resolution Date</th>
-                <th>Status</th>
-                <th>Details</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map(c => (
-                <tr key={c.id}>
-                  <td className="font-mono font-bold text-blue-600">
-                    {c.ticketNo}
-                  </td>
-                  <td>{c.category}</td>
-                  <td>{c.subject}</td>
-                  <td>{c.submittedDate}</td>
-                  <td>{c.resolvedDate || c.closedDate || '—'}</td>
-                  <td>
-                    <span
-                      className={`grv-status-pill ${c.status.toLowerCase().replace(' ', '-')}`}
-                    >
-                      {c.status}
-                    </span>
-                  </td>
-                  <td>
-                    <button
-                      onClick={() =>
-                        navigate(grvUrls.student.details, {
-                          state: { complaintId: c.id },
-                        })
-                      }
-                      className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-2 py-1 rounded"
-                    >
-                      Audit View
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </FormCard>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs mb-3">
+            <div>
+              <p className="text-slate-400">Submitted</p>
+              <p className="font-medium">{c.submittedDate}</p>
+            </div>
+            <div>
+              <p className="text-slate-400">Department</p>
+              <p className="font-medium">{c.assignedDept}</p>
+            </div>
+            <div>
+              <p className="text-slate-400">Incident Date</p>
+              <p className="font-medium">{c.incidentDate}</p>
+            </div>
+            <div>
+              <p className="text-slate-400">Location</p>
+              <p className="font-medium">{c.location}</p>
+            </div>
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            {c.timeline.map(t => (
+              <div
+                key={t.id}
+                className={`text-[10px] px-2 py-1 rounded-full border font-medium ${t.done ? 'bg-green-50 border-green-300 text-green-700' : t.active ? 'bg-blue-50 border-blue-300 text-blue-700' : 'bg-slate-50 border-slate-200 text-slate-400'}`}
+              >
+                {t.action}
+              </div>
+            ))}
+          </div>
+          <div className="flex gap-2 mt-3">
+            <button
+              className="text-blue-600 underline text-xs hover:text-blue-800"
+              onClick={() => navigate(`${grvUrls.student.details}?id=${c.id}`)}
+            >
+              View Details →
+            </button>
+            <button
+              className="text-blue-600 underline text-xs hover:text-blue-800"
+              onClick={() => navigate(`${grvUrls.student.track}?id=${c.id}`)}
+            >
+              Track Status →
+            </button>
+          </div>
+        </FormCard>
+      ))}
     </FormPage>
   );
 }

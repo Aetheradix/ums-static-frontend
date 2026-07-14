@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FormCard, FormPage } from 'shared/new-components';
 import { Button } from 'shared/components/buttons';
-import { complaints } from '../../mocks';
+import { complaints, grievanceCategories } from '../../mocks';
 import { grvUrls } from '../../urls';
 import '../../Grievance.css';
 
@@ -15,99 +15,77 @@ const statusColors: Record<string, string> = {
   Closed: 'grv-status-pill closed',
 };
 
-export default function GrievanceCellComplaintManagement() {
+export default function DepartmentOfficerComplaintInbox() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
-  const [filterStatus, setFilterStatus] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedStatus, setSelectedStatus] = useState('All');
 
-  const filtered = complaints.filter(c => {
-    const matchSearch =
+  const filteredComplaints = complaints.filter(c => {
+    const matchesSearch =
       c.ticketNo.toLowerCase().includes(search.toLowerCase()) ||
       c.studentName.toLowerCase().includes(search.toLowerCase()) ||
       c.subject.toLowerCase().includes(search.toLowerCase());
-    const matchStatus = filterStatus === 'All' || c.status === filterStatus;
-    return matchSearch && matchStatus;
+    const matchesCategory =
+      selectedCategory === 'All' || c.category === selectedCategory;
+
+    let matchesStatus = true;
+    if (selectedStatus === 'New') {
+      matchesStatus = c.status === 'Submitted';
+    } else if (selectedStatus === 'Under Process') {
+      matchesStatus =
+        c.status === 'Department Review' ||
+        c.status === 'HoD Review' ||
+        c.status === 'Committee Review';
+    } else if (selectedStatus === 'Completed') {
+      matchesStatus =
+        c.status === 'Closed' || c.status === 'Registrar Decision';
+    }
+
+    return matchesSearch && matchesCategory && matchesStatus;
   });
 
-  const stats = {
-    total: complaints.length,
-    pending: complaints.filter(c => c.status === 'Submitted').length,
-    inProcess: complaints.filter(c =>
-      ['Department Review', 'HoD Review', 'Committee Review'].includes(c.status)
-    ).length,
-    decided: complaints.filter(c => c.status === 'Registrar Decision').length,
-    closed: complaints.filter(c => c.status === 'Closed').length,
-  };
+  const catOptions = ['All', ...grievanceCategories.map(c => c.name)];
 
   return (
     <FormPage
-      title="Complaint Management"
-      description="Grievance Cell — Central complaint monitoring dashboard"
+      title="Complaint Inbox"
+      description="Department Officer — Incoming grievances assigned to your section"
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Grievance Management', to: grvUrls.portal },
-        { label: 'Grievance Cell', to: grvUrls.cell.portal },
-        { label: 'Complaint Management' },
+        { label: 'Dept Officer', to: grvUrls.departmentOfficer.portal },
+        { label: 'Inbox' },
       ]}
     >
-      <div className="mb-4">
-        <Button
-          label="← Back to Cell Portal"
-          variant="outlined"
-          onClick={() => navigate(grvUrls.cell.portal)}
-        />
-      </div>
-
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
-        {[
-          { label: 'Total', value: stats.total, color: 'text-slate-700' },
-          {
-            label: 'Submitted',
-            value: stats.pending,
-            color: 'text-orange-600',
-          },
-          {
-            label: 'In Process',
-            value: stats.inProcess,
-            color: 'text-blue-600',
-          },
-          {
-            label: 'Registrar',
-            value: stats.decided,
-            color: 'text-purple-600',
-          },
-          { label: 'Closed', value: stats.closed, color: 'text-green-600' },
-        ].map(s => (
-          <div
-            key={s.label}
-            className="bg-white rounded-lg border p-3 text-center"
-          >
-            <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
-            <p className="text-xs text-slate-400 mt-1">{s.label}</p>
-          </div>
-        ))}
-      </div>
-
-      <FormCard title="All Complaints">
+      <FormCard title={`Complaint Queue (${filteredComplaints.length})`}>
         <div className="flex flex-col md:flex-row gap-3 mb-4">
           <input
             className="grv-input flex-1"
-            placeholder="Search by Ticket, Name, Subject..."
+            placeholder="Search by Ticket No, Name, Subject..."
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
           <select
             className="grv-input w-52"
-            value={filterStatus}
-            onChange={e => setFilterStatus(e.target.value)}
+            value={selectedCategory}
+            onChange={e => setSelectedCategory(e.target.value)}
+          >
+            {catOptions.map(c => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+          <select
+            className="grv-input w-40"
+            value={selectedStatus}
+            onChange={e => setSelectedStatus(e.target.value)}
           >
             <option value="All">All Status</option>
-            <option value="Submitted">Submitted</option>
-            <option value="Department Review">Department Review</option>
-            <option value="HoD Review">HoD Review</option>
-            <option value="Committee Review">Committee Review</option>
-            <option value="Registrar Decision">Registrar Decision</option>
-            <option value="Closed">Closed</option>
+            <option value="New">New</option>
+            <option value="Under Process">Under Process</option>
+            <option value="Completed">Completed</option>
           </select>
         </div>
 
@@ -125,14 +103,14 @@ export default function GrievanceCellComplaintManagement() {
             </tr>
           </thead>
           <tbody>
-            {filtered.length === 0 && (
+            {filteredComplaints.length === 0 && (
               <tr>
                 <td colSpan={8} className="text-center py-8 text-slate-400">
                   No complaints found.
                 </td>
               </tr>
             )}
-            {filtered.map(c => (
+            {filteredComplaints.map(c => (
               <tr key={c.id}>
                 <td className="font-mono font-bold text-blue-700">
                   {c.ticketNo}
@@ -148,7 +126,7 @@ export default function GrievanceCellComplaintManagement() {
                     {c.complaintType}
                   </span>
                 </td>
-                <td>{c.category}</td>
+                <td className="max-w-32 truncate">{c.category}</td>
                 <td className="max-w-xs truncate">{c.subject}</td>
                 <td>{c.submittedDate}</td>
                 <td>
@@ -158,10 +136,12 @@ export default function GrievanceCellComplaintManagement() {
                 </td>
                 <td className="text-center">
                   <Button
-                    label="Review →"
+                    label="Open →"
                     variant="primary"
                     onClick={() =>
-                      navigate(`${grvUrls.cell.committee}?id=${c.id}`)
+                      navigate(
+                        `${grvUrls.departmentOfficer.details}?id=${c.id}`
+                      )
                     }
                   />
                 </td>

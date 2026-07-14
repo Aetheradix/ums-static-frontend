@@ -4,57 +4,41 @@ import { grvUrls } from '../urls';
 export default function GrievanceCellPortalPage() {
   return (
     <PortalSelector
-      moduleTitle="Grievance Cell Portal — Central Monitoring"
-      moduleDescription="System-wide complaint management, SLA monitoring, committee oversight and reporting."
+      moduleTitle="Grievance Cell Portal — Administration"
+      moduleDescription="DAVV Indore — Nodal cell management. Oversee all university complaints, coordinate committee reviews, and compile analytical reports."
       backPath={grvUrls.portal}
-      backLabel="Grievance Management"
+      backLabel="Grievance Management System"
       portals={[
         {
-          title: 'Cell Dashboard',
+          title: 'Dashboard',
           description:
-            'System-wide KPIs, escalation alerts, SLA breach indicators and live complaint statistics.',
-          icon: 'analytics',
-          colorScheme: 'purple',
+            'Grievance statistics, active reviews, and closed counters.',
+          icon: 'dashboard',
+          colorScheme: 'blue',
           path: grvUrls.cell.dashboard,
         },
         {
           title: 'Complaint Management',
           description:
-            'Master list of all complaints across departments with advanced search and filter options.',
-          icon: 'list_alt',
-          colorScheme: 'blue',
+            'Access the list of all filed complaints, search/filters, and view details.',
+          icon: 'manage_accounts',
+          colorScheme: 'green',
           path: grvUrls.cell.management,
         },
         {
-          title: 'Complaint Assignment',
+          title: 'Committee Review',
           description:
-            'Assign unassigned complaints to departments, officers and committees.',
-          icon: 'assignment_turned_in',
-          colorScheme: 'teal',
-          path: grvUrls.cell.assignment,
+            'Coordinate review with statutory advisory panels, log member remarks, and recommendation letters.',
+          icon: 'people',
+          colorScheme: 'purple',
+          path: grvUrls.cell.committee,
         },
         {
-          title: 'SLA Monitoring',
+          title: 'Reports & Audits',
           description:
-            'Real-time SLA countdown dashboard. Identify near-breach and breached complaints immediately.',
-          icon: 'timer',
-          colorScheme: 'red',
-          path: grvUrls.cell.sla,
-        },
-        {
-          title: 'Committee Management',
-          description:
-            'Manage SGRC, Anti-Ragging, ICC, SC/ST Cell, Exam and Finance committees.',
-          icon: 'groups',
+            'Analytical reports mapping category-wise, department-wise, monthly, and resolution metrics.',
+          icon: 'analytics',
           colorScheme: 'indigo',
-          path: grvUrls.cell.committees,
-        },
-        {
-          title: 'Reports & Analytics',
-          description:
-            'Department, category, escalation, SLA compliance, NAAC, NIRF and UGC reports.',
-          icon: 'bar_chart',
-          colorScheme: 'orange',
           path: grvUrls.cell.reports,
         },
       ]}
