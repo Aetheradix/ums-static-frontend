@@ -1,0 +1,666 @@
+@reference "../../../../index.css";
+
+@layer components {
+  /* =========================================================
+     DASHBOARD
+  ========================================================== */
+
+  .financial-command-page {
+    @apply flex w-full flex-col gap-5 pb-6;
+  }
+
+  .financial-command-toolbar {
+    @apply flex w-full items-center justify-between gap-4;
+  }
+
+  .financial-command-year-field {
+    @apply flex items-center gap-3;
+  }
+
+  .financial-command-year-field label {
+    @apply whitespace-nowrap text-sm font-bold text-gray-800
+      dark:text-gray-100;
+  }
+
+  .financial-command-year-dropdown {
+    @apply h-10 min-w-[150px] rounded-lg border-gray-200 bg-white
+      dark:border-gray-700 dark:bg-gray-950;
+  }
+
+  .financial-command-year-dropdown .p-dropdown-label {
+    @apply h-10 py-0 text-sm font-semibold leading-10 text-gray-800
+      dark:text-gray-100;
+  }
+
+  .financial-command-counter {
+    @apply shrink-0 rounded-full border border-blue-100 bg-blue-50 px-3.5
+      py-2.5 text-xs font-semibold text-blue-700 dark:border-blue-900/60
+      dark:bg-blue-950/40 dark:text-blue-300;
+  }
+
+  .financial-command-tab-content {
+    @apply flex flex-col gap-5;
+  }
+
+  .financial-command-kpi-section {
+    @apply flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-5
+      shadow-sm dark:border-gray-800 dark:bg-gray-900;
+  }
+
+  .financial-command-kpi-section--secondary {
+    @apply border-blue-100 bg-gradient-to-br from-blue-50/80 to-white
+      dark:border-blue-950 dark:from-blue-950/20 dark:to-gray-900;
+  }
+
+  .financial-command-section-heading {
+    @apply flex items-start justify-between gap-4 border-b border-gray-100 pb-4
+      dark:border-gray-800;
+  }
+
+  .financial-command-section-heading span,
+  .financial-command-section-banner span,
+  .financial-command-chart-eyebrow {
+    @apply text-[10px] font-bold uppercase tracking-[0.12em] text-primary
+      dark:text-blue-300;
+  }
+
+  .financial-command-section-heading h2,
+  .financial-command-section-banner h2 {
+    @apply mt-1 text-base font-bold text-gray-900 dark:text-white;
+  }
+
+  .financial-command-section-heading > svg,
+  .financial-command-section-banner > svg {
+    @apply h-6 w-6 shrink-0 text-primary dark:text-blue-300;
+  }
+
+  .financial-command-kpi-grid {
+    @apply grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4;
+  }
+
+  .financial-command-kpi-link {
+    @apply block h-full text-inherit no-underline;
+  }
+
+  .financial-command-kpi-card {
+    @apply relative flex h-full min-h-[124px] cursor-pointer flex-col
+      justify-between overflow-hidden rounded-xl border border-gray-200 bg-white
+      p-4 shadow-sm transition-all duration-200 dark:border-gray-800
+      dark:bg-gray-950;
+  }
+
+  .financial-command-kpi-card::before {
+    @apply absolute inset-y-0 left-0 w-1 bg-primary/80 content-[''];
+  }
+
+  .financial-command-kpi-card::after {
+    @apply absolute -right-10 -top-10 h-24 w-24 rounded-full bg-blue-50
+      opacity-70 content-[''] dark:bg-blue-950/40;
+  }
+
+  .financial-command-kpi-link:hover .financial-command-kpi-card {
+    @apply -translate-y-1 border-blue-200 shadow-lg dark:border-blue-800;
+  }
+
+  .financial-command-kpi-top {
+    @apply relative z-10 mb-4 flex items-start gap-3.5 pl-1;
+  }
+
+  .financial-command-kpi-icon {
+    @apply flex h-11 w-11 shrink-0 items-center justify-center rounded-xl
+      bg-blue-50 text-primary shadow-sm dark:bg-blue-950/50 dark:text-blue-300;
+  }
+
+  .financial-command-kpi-icon svg {
+    @apply h-5 w-5;
+  }
+
+  .financial-command-kpi-label {
+    @apply pt-1.5 text-xs font-bold uppercase tracking-[0.045em] text-gray-700
+      dark:text-gray-200;
+  }
+
+  .financial-command-kpi-footer {
+    @apply relative z-10 flex items-end justify-between gap-3 pl-1;
+  }
+
+  .financial-command-kpi-content {
+    @apply flex min-w-0 flex-1 flex-col items-start gap-2;
+  }
+
+  .financial-command-kpi-value {
+    @apply min-w-0 text-lg font-bold text-gray-900 dark:text-white;
+  }
+
+  .financial-command-kpi-status {
+    @apply max-w-full rounded-md px-2 py-1 text-[10px] font-semibold leading-tight;
+  }
+
+  .financial-command-kpi-status--up {
+    @apply bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40
+      dark:text-emerald-300;
+  }
+
+  .financial-command-kpi-status--down {
+    @apply bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300;
+  }
+
+  .financial-command-kpi-status--stable {
+    @apply bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300;
+  }
+
+  .financial-command-kpi-arrow {
+    @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-full border
+      border-gray-200 bg-gray-50 text-gray-600 transition-all duration-200
+      dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300;
+  }
+
+  .financial-command-kpi-arrow svg {
+    @apply h-4 w-4;
+  }
+
+  .financial-command-kpi-link:hover .financial-command-kpi-arrow {
+    @apply border-primary bg-primary text-white dark:border-blue-500
+      dark:bg-blue-500;
+  }
+
+  .financial-command-filter-panel {
+    @apply flex items-center justify-between gap-5 rounded-2xl border
+      border-blue-100 bg-blue-50/70 px-5 py-4 shadow-sm dark:border-blue-950
+      dark:bg-blue-950/20;
+  }
+
+  .financial-command-filter-label {
+    @apply text-sm font-bold text-gray-900 dark:text-white;
+  }
+
+  .financial-command-filter-help {
+    @apply mt-1 text-xs text-gray-500 dark:text-gray-400;
+  }
+
+  .financial-command-model-toggle {
+    @apply flex shrink-0 justify-end gap-2;
+  }
+
+  .financial-command-model-button {
+    @apply cursor-pointer rounded-lg border border-gray-200 bg-white px-4 py-2
+      text-xs font-semibold text-gray-600 shadow-sm transition-all duration-200
+      dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300;
+  }
+
+  .financial-command-model-button:hover {
+    @apply border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800
+      dark:bg-blue-950/40 dark:text-blue-300;
+  }
+
+  .financial-command-model-button--active {
+    @apply border-primary bg-primary text-white shadow-md dark:border-blue-500
+      dark:bg-blue-500;
+  }
+
+  .financial-command-section-banner {
+    @apply flex items-center justify-between gap-4 rounded-2xl border
+      border-emerald-100 bg-gradient-to-r from-emerald-50 to-white p-5
+      shadow-sm dark:border-emerald-950 dark:from-emerald-950/20
+      dark:to-gray-900;
+  }
+
+  .financial-command-section-banner p {
+    @apply mt-1 text-xs text-gray-500 dark:text-gray-400;
+  }
+
+  .financial-command-chart-full {
+    @apply w-full;
+  }
+
+  .financial-command-chart-grid {
+    @apply grid grid-cols-1 gap-5 xl:grid-cols-2;
+  }
+
+  .financial-command-chart-grid > div,
+  .financial-command-chart-full > div {
+    @apply h-full;
+  }
+
+  .financial-command-chart-grid .p-card,
+  .financial-command-chart-full .p-card {
+    @apply h-full rounded-2xl border border-gray-200 bg-white shadow-sm
+      transition-shadow duration-200 hover:shadow-md dark:border-gray-800
+      dark:bg-gray-900;
+  }
+
+  .financial-command-chart-header {
+    @apply mb-4 flex items-start justify-between gap-4 border-b border-gray-100
+      pb-3 dark:border-gray-800;
+  }
+
+  .financial-command-chart-header h2 {
+    @apply mt-1 text-sm font-bold text-gray-800 dark:text-white;
+  }
+
+  .financial-command-chart-icon {
+    @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-lg
+      bg-blue-50 text-primary dark:bg-blue-950/50 dark:text-blue-300;
+  }
+
+  .financial-command-chart-icon svg {
+    @apply h-4 w-4;
+  }
+
+  .financial-command-chart {
+    @apply h-[300px] w-full;
+  }
+
+  .financial-command-chart--large {
+    @apply h-[350px];
+  }
+
+  .financial-command-prime-chart,
+  .financial-command-prime-chart canvas {
+    @apply h-full w-full;
+  }
+
+  /* =========================================================
+     KPI DETAIL PAGE
+  ========================================================== */
+
+  .kpi-detail-page {
+    @apply flex w-full flex-col gap-5 pb-6 text-gray-900 dark:text-gray-100;
+  }
+
+  .kpi-detail-hero {
+    @apply relative grid grid-cols-1 gap-5 overflow-hidden rounded-2xl border
+      border-blue-100 bg-gradient-to-br from-blue-50 via-white to-indigo-50
+      p-6 shadow-sm lg:grid-cols-[1fr_auto] dark:border-blue-950
+      dark:from-blue-950/30 dark:via-gray-900 dark:to-indigo-950/20;
+  }
+
+  .kpi-detail-hero::before {
+    @apply absolute inset-y-0 left-0 w-1.5 bg-primary content-['']
+      dark:bg-blue-400;
+  }
+
+  .kpi-detail-hero::after {
+    @apply absolute -right-16 -top-20 h-56 w-56 rounded-full bg-blue-100/70
+      blur-2xl content-[''] dark:bg-blue-900/20;
+  }
+
+  .kpi-detail-hero-content,
+  .kpi-detail-verified {
+    @apply relative z-10;
+  }
+
+  .kpi-detail-eyebrow {
+    @apply text-[11px] font-bold uppercase tracking-[0.12em] text-primary
+      dark:text-blue-300;
+  }
+
+  .kpi-detail-title {
+    @apply mt-2 text-2xl font-bold tracking-tight text-gray-950
+      dark:text-white;
+  }
+
+  .kpi-detail-description {
+    @apply mt-2 max-w-3xl text-sm leading-6 text-gray-600 dark:text-gray-400;
+  }
+
+  .kpi-detail-verified {
+    @apply flex h-fit items-center gap-3 rounded-xl border border-emerald-200
+      bg-white/90 px-4 py-3 shadow-sm backdrop-blur dark:border-emerald-900
+      dark:bg-gray-950/80;
+  }
+
+  .kpi-detail-verified > svg {
+    @apply h-6 w-6 text-emerald-600 dark:text-emerald-300;
+  }
+
+  .kpi-detail-verified strong {
+    @apply block text-xs font-bold text-gray-900 dark:text-white;
+  }
+
+  .kpi-detail-verified span {
+    @apply mt-0.5 block text-[11px] text-gray-500 dark:text-gray-400;
+  }
+
+  .kpi-detail-summary-grid {
+    @apply grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4;
+  }
+
+  .kpi-detail-summary-card {
+    @apply relative flex min-h-[132px] flex-col overflow-hidden rounded-xl
+      border border-gray-200 bg-white p-4 shadow-sm transition-all duration-200
+      hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-md
+      dark:border-gray-800 dark:bg-gray-900 dark:hover:border-blue-800;
+  }
+
+  .kpi-detail-summary-card::before {
+    @apply absolute inset-y-0 left-0 w-1 bg-primary content-['']
+      dark:bg-blue-400;
+  }
+
+  .kpi-detail-summary-card::after {
+    @apply absolute -right-8 -top-8 h-24 w-24 rounded-full bg-blue-50
+      content-[''] dark:bg-blue-950/30;
+  }
+
+  .kpi-detail-summary-icon {
+    @apply relative z-10 mb-4 flex h-11 w-11 items-center justify-center
+      rounded-xl bg-blue-50 text-primary shadow-sm dark:bg-blue-950/50
+      dark:text-blue-300;
+  }
+
+  .kpi-detail-summary-icon svg {
+    @apply h-5 w-5;
+  }
+
+  .kpi-detail-summary-card p {
+    @apply relative z-10 text-xs font-bold uppercase tracking-[0.045em]
+      text-gray-700 dark:text-gray-200;
+  }
+
+  .kpi-detail-summary-card strong {
+    @apply relative z-10 mt-2 block text-xl font-bold text-gray-950
+      dark:text-white;
+  }
+
+  .kpi-detail-summary-card > span:last-child {
+    @apply relative z-10 mt-1.5 block text-xs font-medium text-gray-500
+      dark:text-gray-400;
+  }
+
+  .kpi-detail-summary-card:nth-child(1) {
+    @apply border-blue-100 bg-gradient-to-br from-blue-50/70 to-white
+      dark:border-blue-950 dark:from-blue-950/30 dark:to-gray-900;
+  }
+
+  .kpi-detail-summary-card:nth-child(1)::before {
+    @apply bg-blue-500;
+  }
+
+  .kpi-detail-summary-card:nth-child(2) {
+    @apply border-violet-100 bg-gradient-to-br from-violet-50/70 to-white
+      dark:border-violet-950 dark:from-violet-950/30 dark:to-gray-900;
+  }
+
+  .kpi-detail-summary-card:nth-child(2)::before {
+    @apply bg-violet-500;
+  }
+
+  .kpi-detail-summary-card:nth-child(2) .kpi-detail-summary-icon {
+    @apply bg-violet-50 text-violet-600 dark:bg-violet-950/50
+      dark:text-violet-300;
+  }
+
+  .kpi-detail-summary-card:nth-child(3) {
+    @apply border-emerald-100 bg-gradient-to-br from-emerald-50/70 to-white
+      dark:border-emerald-950 dark:from-emerald-950/30 dark:to-gray-900;
+  }
+
+  .kpi-detail-summary-card:nth-child(3)::before {
+    @apply bg-emerald-500;
+  }
+
+  .kpi-detail-summary-card:nth-child(3) .kpi-detail-summary-icon {
+    @apply bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50
+      dark:text-emerald-300;
+  }
+
+  .kpi-detail-summary-card:nth-child(4) {
+    @apply border-amber-100 bg-gradient-to-br from-amber-50/70 to-white
+      dark:border-amber-950 dark:from-amber-950/30 dark:to-gray-900;
+  }
+
+  .kpi-detail-summary-card:nth-child(4)::before {
+    @apply bg-amber-500;
+  }
+
+  .kpi-detail-summary-card:nth-child(4) .kpi-detail-summary-icon {
+    @apply bg-amber-50 text-amber-600 dark:bg-amber-950/50
+      dark:text-amber-300;
+  }
+
+  .kpi-detail-content-grid {
+    @apply grid grid-cols-1 gap-5 xl:grid-cols-[1.55fr_1fr];
+  }
+
+  .kpi-detail-content-grid .p-card,
+  .kpi-detail-page > .p-card {
+    @apply overflow-hidden rounded-2xl border border-gray-200 bg-white
+      shadow-sm transition-shadow duration-200 hover:shadow-md
+      dark:border-gray-800 dark:bg-gray-900;
+  }
+
+  .kpi-detail-content-grid > .p-card:nth-child(2) {
+    @apply border-indigo-100 bg-gradient-to-br from-indigo-50/60 via-white
+      to-blue-50/40 dark:border-indigo-950 dark:from-indigo-950/25
+      dark:via-gray-900 dark:to-blue-950/20;
+  }
+
+  .kpi-detail-content-grid > .p-card:nth-child(2) .kpi-detail-card-header {
+    @apply border-indigo-100 dark:border-indigo-900/50;
+  }
+
+  .kpi-detail-content-grid
+    > .p-card:nth-child(2)
+    .kpi-detail-card-header
+    > svg {
+    @apply text-indigo-600 dark:text-indigo-300;
+  }
+
+  .kpi-detail-content-grid > .p-card:nth-child(2) .kpi-detail-info-list > div {
+    @apply border-indigo-100/70 dark:border-indigo-900/40;
+  }
+
+  .kpi-detail-content-grid .p-card .p-card-body,
+  .kpi-detail-page > .p-card .p-card-body {
+    @apply p-5;
+  }
+
+  .kpi-detail-card-header {
+    @apply mb-4 flex items-start justify-between gap-4 border-b
+      border-gray-100 pb-4 dark:border-gray-800;
+  }
+
+  .kpi-detail-card-header span {
+    @apply text-[10px] font-bold uppercase tracking-[0.12em] text-primary
+      dark:text-blue-300;
+  }
+
+  .kpi-detail-card-header h3 {
+    @apply mt-1 text-base font-bold text-gray-900 dark:text-white;
+  }
+
+  .kpi-detail-card-header p {
+    @apply mt-1 text-xs leading-5 text-gray-500 dark:text-gray-400;
+  }
+
+  .kpi-detail-card-header > svg {
+    @apply h-5 w-5 text-primary dark:text-blue-300;
+  }
+
+  .kpi-detail-chart {
+    @apply h-[310px] w-full;
+  }
+
+  .kpi-detail-chart .p-chart,
+  .kpi-detail-chart canvas {
+    @apply h-full w-full;
+  }
+
+  .kpi-detail-info-list {
+    @apply flex flex-col;
+  }
+
+  .kpi-detail-info-list > div {
+    @apply flex items-start justify-between gap-5 border-b border-gray-100 py-3.5
+      dark:border-gray-800;
+  }
+
+  .kpi-detail-info-list > div:last-child {
+    @apply border-b-0;
+  }
+
+  .kpi-detail-info-list dt {
+    @apply text-xs font-semibold text-gray-500 dark:text-gray-400;
+  }
+
+  .kpi-detail-info-list dd {
+    @apply max-w-[62%] text-right text-sm font-bold leading-5 text-gray-900
+      dark:text-gray-100;
+  }
+
+  .kpi-detail-table-wrapper {
+    @apply overflow-x-auto rounded-xl border border-gray-200
+      dark:border-gray-800;
+  }
+
+  .kpi-detail-table {
+    @apply w-full border-collapse text-left;
+  }
+
+  .kpi-detail-table th {
+    @apply border-b border-gray-200 bg-gray-50 px-4 py-3 text-[11px]
+      font-bold uppercase tracking-[0.06em] text-gray-600
+      dark:border-gray-800 dark:bg-gray-950 dark:text-gray-400;
+  }
+
+  .kpi-detail-table td {
+    @apply border-b border-gray-100 px-4 py-3.5 text-sm text-gray-700
+      dark:border-gray-800 dark:text-gray-300;
+  }
+
+  .kpi-detail-table tbody tr {
+    @apply transition-colors duration-150;
+  }
+
+  .kpi-detail-table tbody tr:hover {
+    @apply bg-blue-50/60 dark:bg-blue-950/20;
+  }
+
+  .kpi-detail-table tbody tr:last-child td {
+    @apply border-b-0;
+  }
+
+  .kpi-detail-status {
+    @apply inline-flex items-center rounded-full px-2.5 py-1 text-[11px]
+      font-bold;
+  }
+
+  .kpi-detail-status--success {
+    @apply bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40
+      dark:text-emerald-300;
+  }
+
+  .kpi-detail-status--pending {
+    @apply bg-amber-50 text-amber-700 dark:bg-amber-950/40
+      dark:text-amber-300;
+  }
+
+  @media (max-width: 767px) {
+    .financial-command-toolbar {
+      @apply items-start;
+    }
+
+    .financial-command-year-field {
+      @apply min-w-0 flex-1 flex-wrap;
+    }
+
+    .financial-command-counter {
+      @apply hidden;
+    }
+
+    .financial-command-filter-panel {
+      @apply flex-col items-stretch;
+    }
+
+    .financial-command-model-toggle {
+      @apply justify-start;
+    }
+
+    .financial-command-model-button {
+      @apply flex-1;
+    }
+
+    .financial-command-chart,
+    .financial-command-chart--large,
+    .kpi-detail-chart {
+      @apply h-[280px];
+    }
+
+    .kpi-detail-verified {
+      @apply w-full;
+    }
+  }
+
+  /* KPI category tones */
+
+  .financial-command-kpi-card--primary::before {
+    @apply bg-blue-500;
+  }
+
+  .financial-command-kpi-card--primary .financial-command-kpi-icon {
+    @apply bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-300;
+  }
+
+  .financial-command-kpi-card--success::before {
+    @apply bg-emerald-500;
+  }
+
+  .financial-command-kpi-card--success .financial-command-kpi-icon {
+    @apply bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50
+    dark:text-emerald-300;
+  }
+
+  .financial-command-kpi-card--warning::before {
+    @apply bg-amber-500;
+  }
+
+  .financial-command-kpi-card--warning .financial-command-kpi-icon {
+    @apply bg-amber-50 text-amber-600 dark:bg-amber-950/50 dark:text-amber-300;
+  }
+
+  .financial-command-kpi-card--danger::before {
+    @apply bg-rose-500;
+  }
+
+  .financial-command-kpi-card--danger .financial-command-kpi-icon {
+    @apply bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-300;
+  }
+
+  .financial-command-kpi-card--violet::before {
+    @apply bg-violet-500;
+  }
+
+  .financial-command-kpi-card--violet .financial-command-kpi-icon {
+    @apply bg-violet-50 text-violet-600 dark:bg-violet-950/50
+    dark:text-violet-300;
+  }
+}
+
+/* Replace the old kpi-detail-table styles with this */
+
+.kpi-detail-grid-wrapper {
+  @apply overflow-hidden rounded-xl border border-gray-200
+    dark:border-gray-800;
+}
+
+.kpi-detail-grid-wrapper .p-datatable {
+  @apply border-0;
+}
+
+.kpi-detail-grid-wrapper .p-datatable-thead > tr > th {
+  @apply bg-gray-50 text-[11px] font-bold uppercase tracking-[0.06em]
+    text-gray-600 dark:bg-gray-950 dark:text-gray-400;
+}
+
+.kpi-detail-grid-wrapper .p-datatable-tbody > tr {
+  @apply transition-colors duration-150;
+}
+
+.kpi-detail-grid-wrapper .p-datatable-tbody > tr:hover {
+  @apply bg-blue-50/60 dark:bg-blue-950/20;
+}
+
+.kpi-detail-grid-wrapper .p-datatable-tbody > tr > td {
+  @apply text-sm text-gray-700 dark:text-gray-300;
+}

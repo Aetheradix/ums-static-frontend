@@ -1,631 +1,1252 @@
-import React, { useState, useEffect } from 'react';
+import {
+  ArrowRight,
+  BadgeCheck,
+  BadgeIndianRupee,
+  Banknote,
+  BarChart3,
+  BookOpen,
+  Boxes,
+  Briefcase,
+  Building2,
+  Calculator,
+  Car,
+  ChartNoAxesCombined,
+  CircleAlert,
+  CircleDollarSign,
+  ClipboardCheck,
+  Clock3,
+  CreditCard,
+  FileCheck2,
+  FileText,
+  Gauge,
+  GraduationCap,
+  HandCoins,
+  HardHat,
+  Landmark,
+  LayoutDashboard,
+  LineChart,
+  PackageCheck,
+  PieChart,
+  PiggyBank,
+  Receipt,
+  RotateCcw,
+  Scale,
+  ShieldCheck,
+  ShoppingCart,
+  TrendingDown,
+  TrendingUp,
+  Users,
+  Wallet,
+  WalletCards,
+  Wrench,
+} from 'lucide-react';
+import { motion, type Variants } from 'motion/react';
+import { Chart } from 'primereact/chart';
+import { Dropdown } from 'primereact/dropdown';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FormCard, FormPage } from 'shared/new-components';
-import {
-  DASHBOARD_KPIS,
-  RECENT_TRANSACTIONS,
-  DASHBOARD_ALERTS,
-} from '../../mock-data';
-import { motion, type Variants } from 'motion/react';
-import {
-  Wallet,
-  PiggyBank,
-  ArrowDownRight,
-  ArrowUpRight,
-  ShoppingCart,
-  AlertTriangle,
-  Clock,
-  FileText,
-  Store,
-  Building2,
-  Package,
-  PieChart,
-  TrendingUp,
-  Activity,
-  BarChart3,
-  PlusCircle,
-  ListTodo,
-  History,
-  Receipt,
-  FileSpreadsheet,
-} from 'lucide-react';
-import { Chart } from 'primereact/chart';
+import './Dashboard.css';
 
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    maximumFractionDigits: 0,
-  }).format(value);
+type UniversityType = 'gov' | 'private';
+type KpiStatus = 'up' | 'down' | 'stable';
+
+interface KpiItem {
+  label: string;
+  value: string;
+  change: string;
+  status: KpiStatus;
+}
+
+interface UniversityModel {
+  labels: string[];
+  budget: number[];
+  actual: number[];
+  departmentNames: string[];
+  departmentAllocation: number[];
+  departmentSpent: number[];
+  departmentUsagePercentage: number[];
+  monthlyIncome: number[];
+  monthlyExpense: number[];
+  executiveKpis: KpiItem[];
+  operationsKpis: KpiItem[];
+}
+
+interface ChartPanelProps {
+  title: string;
+  type: 'line' | 'bar' | 'doughnut' | 'pie' | 'polarArea';
+  data: Record<string, unknown>;
+  options: Record<string, unknown>;
+  large?: boolean;
 }
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.15 },
+    transition: {
+      staggerChildren: 0.08,
+    },
   },
 };
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: {
+    opacity: 0,
+    y: 16,
+  },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: 'spring', stiffness: 300, damping: 24 },
+    transition: {
+      type: 'spring',
+      stiffness: 280,
+      damping: 24,
+    },
   },
 };
 
-interface KpiCardProps {
-  title: string;
-  value: string;
-  subtitle?: string;
-  icon: React.ReactNode;
-  colorClass: string;
-  trend?: { value: string; isPositive: boolean };
+const fiscalMonths = [
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+  'Jan',
+  'Feb',
+  'Mar',
+];
+
+const financialYearOptions = [
+  { label: '2025-2026', value: '2025-2026' },
+  { label: '2024-2025', value: '2024-2025' },
+  { label: '2023-2024', value: '2023-2024' },
+  { label: '2022-2023', value: '2022-2023' },
+];
+
+function createKpiSlug(label: string) {
+  return label
+    .toLowerCase()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
 }
 
-function KpiCard({
-  title,
-  value,
-  subtitle,
-  icon,
-  colorClass,
-  trend,
-}: KpiCardProps) {
-  return (
-    <motion.div
-      variants={itemVariants}
-      className={`flex flex-col gap-3 p-5 rounded-2xl border bg-white shadow-sm hover:shadow-md transition-shadow relative overflow-hidden ${colorClass}`}
-    >
-      <div className="absolute top-0 right-0 p-4 opacity-10 transform translate-x-2 -translate-y-2 pointer-events-none">
-        {icon}
-      </div>
-      <div className="flex items-center gap-4 relative z-10">
-        <div
-          className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center shadow-sm bg-white`}
-        >
-          {icon}
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide truncate">
-            {title}
-          </p>
-          <p className="text-2xl font-bold text-gray-900 truncate mt-0.5">
-            {value}
-          </p>
-        </div>
-      </div>
-      <div className="flex items-center justify-between mt-1 relative z-10">
-        {subtitle && (
-          <p className="text-xs text-gray-500 font-medium truncate">
-            {subtitle}
-          </p>
-        )}
-        {trend && (
-          <div
-            className={`flex items-center gap-1 text-xs font-bold ${trend.isPositive ? 'text-emerald-600' : 'text-red-600'}`}
-          >
-            {trend.isPositive ? (
-              <ArrowUpRight className="w-3 h-3" />
-            ) : (
-              <ArrowDownRight className="w-3 h-3" />
-            )}
-            {trend.value}
-          </div>
-        )}
-      </div>
-    </motion.div>
+const universityData: Record<UniversityType, UniversityModel> = {
+  gov: {
+    labels: [
+      'Income Framework Base',
+      'Income Realization',
+      'Expenditure Blueprint',
+      'Expenditure Realization',
+    ],
+    budget: [23000000, 22450000, 21500000, 20800000],
+    actual: [22500000, 22450000, 21000000, 20800000],
+    departmentNames: [
+      'Engineering',
+      'Sciences',
+      'Medical School',
+      'Arts & Liberal Studies',
+      'Research Cost Centres',
+    ],
+    departmentAllocation: [5500000, 4500000, 7000000, 2500000, 2000000],
+    departmentSpent: [5400000, 4200000, 6800000, 2100000, 2300000],
+    departmentUsagePercentage: [98.1, 93.3, 97.1, 84, 115],
+    monthlyIncome: [
+      1800000, 1950000, 1750000, 2100000, 1850000, 1900000, 2200000, 1700000,
+      1650000, 2000000, 1850000, 1700000,
+    ],
+    monthlyExpense: [
+      1600000, 1720000, 1680000, 1850000, 1700000, 1790000, 1900000, 1650000,
+      1600000, 1800000, 1750000, 1760000,
+    ],
+    executiveKpis: [
+      {
+        label: 'Total Annual Budget',
+        value: '₹25,000,000',
+        change: 'Approved Plan',
+        status: 'stable',
+      },
+      {
+        label: 'Income Budget and Utilization',
+        value: '97.6% Realized',
+        change: '22.45M of 23.0M',
+        status: 'up',
+      },
+      {
+        label: 'Expenditure Budget and Utilization',
+        value: '96.7% Disbursed',
+        change: '20.8M of 21.5M',
+        status: 'up',
+      },
+      {
+        label: 'Remaining Budget',
+        value: '₹4,200,000',
+        change: 'Uncommitted Balance',
+        status: 'stable',
+      },
+      {
+        label: 'Fund Availability',
+        value: '₹5,450,000',
+        change: 'Treasury Reserve',
+        status: 'up',
+      },
+      {
+        label: 'Total Income',
+        value: '₹22,450,000',
+        change: 'State & UGC Funds',
+        status: 'up',
+      },
+      {
+        label: 'Total Expenditure',
+        value: '₹20,800,000',
+        change: 'YTD Outlays',
+        status: 'down',
+      },
+      {
+        label: 'Monthly Income',
+        value: '₹1,950,000',
+        change: 'Grant Disbursal',
+        status: 'up',
+      },
+      {
+        label: 'Monthly Expense',
+        value: '₹1,720,000',
+        change: 'Payroll & Vendors',
+        status: 'stable',
+      },
+      {
+        label: 'Annual Surplus / Deficit',
+        value: '₹1,650,000',
+        change: 'Surplus Profile',
+        status: 'up',
+      },
+    ],
+    operationsKpis: [
+      {
+        label: 'Grant Utilization',
+        value: '94.2%',
+        change: 'UC Statements Filed',
+        status: 'up',
+      },
+      {
+        label: 'Fee Collection Efficiency',
+        value: '92.5%',
+        change: 'Subsidy Applied',
+        status: 'stable',
+      },
+      {
+        label: 'Total Fee Collection',
+        value: '₹10,000,000',
+        change: 'Analytic Tracked',
+        status: 'up',
+      },
+      {
+        label: 'Outstanding Fee',
+        value: '₹500,000',
+        change: 'Verified',
+        status: 'up',
+      },
+      {
+        label: 'Outstanding Payments',
+        value: '₹450,000',
+        change: 'Contractor Pending',
+        status: 'down',
+      },
+      {
+        label: 'Outstanding Liabilities',
+        value: '₹1,200,000',
+        change: 'Long-term Debt',
+        status: 'stable',
+      },
+      {
+        label: 'Pending Bills',
+        value: '14 Open Bills',
+        change: 'In Verification',
+        status: 'down',
+      },
+      {
+        label: 'Pending Approvals',
+        value: '4 Vouchers',
+        change: 'VC Sign-off',
+        status: 'stable',
+      },
+      {
+        label: 'Audit Compliance Rate',
+        value: '98.4%',
+        change: 'No Major Flags',
+        status: 'up',
+      },
+      {
+        label: 'Monthly Cash Flow',
+        value: '₹1,840,000',
+        change: 'Positive Flow',
+        status: 'up',
+      },
+      {
+        label: 'Scholarship Report',
+        value: '₹850,000',
+        change: 'Disbursed',
+        status: 'up',
+      },
+    ],
+  },
+  private: {
+    labels: [
+      'Income Framework Base',
+      'Income Realization',
+      'Expenditure Blueprint',
+      'Expenditure Realization',
+    ],
+    budget: [32000000, 33100000, 28500000, 29200000],
+    actual: [31500000, 33100000, 28000000, 29200000],
+    departmentNames: [
+      'Business School',
+      'Computing & IT',
+      'Design & Media',
+      'Executive Programs',
+      'Corporate Hub',
+    ],
+    departmentAllocation: [8000000, 9000000, 4500000, 5000000, 2000000],
+    departmentSpent: [8200000, 9500000, 4100000, 4800000, 2600000],
+    departmentUsagePercentage: [102.5, 105.5, 91.1, 96, 130],
+    monthlyIncome: [
+      2500000, 2900000, 2400000, 3400000, 2800000, 2600000, 3100000, 2350000,
+      2200000, 2840000, 2950000, 3060000,
+    ],
+    monthlyExpense: [
+      2100000, 2410000, 2250000, 2600000, 2300000, 2450000, 2800000, 2200000,
+      2100000, 2410000, 2600000, 2980000,
+    ],
+    executiveKpis: [
+      {
+        label: 'Total Annual Budget',
+        value: '₹35,000,000',
+        change: 'Board Approved',
+        status: 'stable',
+      },
+      {
+        label: 'Income Budget and Utilization',
+        value: '103.4% Collected',
+        change: '33.1M of 32.0M',
+        status: 'up',
+      },
+      {
+        label: 'Expenditure Budget and Utilization',
+        value: '102.4% Expended',
+        change: '29.2M of 28.5M',
+        status: 'down',
+      },
+      {
+        label: 'Remaining Budget',
+        value: '₹5,800,000',
+        change: 'Operating Buffer',
+        status: 'stable',
+      },
+      {
+        label: 'Fund Availability',
+        value: '₹8,120,000',
+        change: 'Liquid Cash',
+        status: 'up',
+      },
+      {
+        label: 'Total Income',
+        value: '₹33,100,000',
+        change: 'Tuition & CSR',
+        status: 'up',
+      },
+      {
+        label: 'Total Expenditure',
+        value: '₹29,200,000',
+        change: 'Infrastructure',
+        status: 'down',
+      },
+      {
+        label: 'Monthly Income',
+        value: '₹2,840,000',
+        change: 'Term Milestones',
+        status: 'up',
+      },
+      {
+        label: 'Monthly Expense',
+        value: '₹2,410,000',
+        change: 'Procurement',
+        status: 'down',
+      },
+      {
+        label: 'Annual Surplus / Deficit',
+        value: '₹3,900,000',
+        change: 'Retained Wealth',
+        status: 'up',
+      },
+    ],
+    operationsKpis: [
+      {
+        label: 'Department Budget Usage',
+        value: 'Live Analytics',
+        change: 'High Velocity',
+        status: 'up',
+      },
+      {
+        label: 'Department Expense',
+        value: 'Donut Analytics',
+        change: 'IT Highest',
+        status: 'down',
+      },
+      {
+        label: 'Grant Utilization',
+        value: '88.5%',
+        change: 'Sponsored Projects',
+        status: 'stable',
+      },
+      {
+        label: 'Fee Collection Efficiency',
+        value: '98.1%',
+        change: 'Automated Gateway',
+        status: 'up',
+      },
+      {
+        label: 'Outstanding Payments',
+        value: '₹180,000',
+        change: 'Vendor Retainers',
+        status: 'up',
+      },
+      {
+        label: 'Outstanding Liabilities',
+        value: '₹620,000',
+        change: 'Construction Debt',
+        status: 'up',
+      },
+      {
+        label: 'Pending Bills',
+        value: '5 Open Bills',
+        change: 'OCR Pipeline',
+        status: 'up',
+      },
+      {
+        label: 'Pending Approvals',
+        value: '2 Vouchers',
+        change: 'Finance Review',
+        status: 'stable',
+      },
+      {
+        label: 'Audit Compliance Rate',
+        value: '99.1%',
+        change: 'Evaluated',
+        status: 'up',
+      },
+      {
+        label: 'Monthly Cash Flow',
+        value: '₹3,150,000',
+        change: 'Strong Reserve',
+        status: 'up',
+      },
+      {
+        label: 'Scholarship Report',
+        value: '₹420,000',
+        change: 'Merit Disbursal',
+        status: 'stable',
+      },
+    ],
+  },
+};
+
+function useDashboardTheme() {
+  const [isDark, setIsDark] = useState(() =>
+    document.documentElement.classList.contains('dark')
   );
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  return isDark;
 }
 
-interface SectionHeaderProps {
-  title: string;
-  icon: React.ReactNode;
+function getKpiIcon(label: string) {
+  const iconMap: Record<string, React.ReactNode> = {
+    'Total Annual Budget': <WalletCards />,
+    'Income Budget and Utilization': <TrendingUp />,
+    'Expenditure Budget and Utilization': <TrendingDown />,
+    'Remaining Budget': <PiggyBank />,
+    'Fund Availability': <Wallet />,
+    'Total Income': <Banknote />,
+    'Total Expenditure': <Receipt />,
+    'Monthly Income': <CircleDollarSign />,
+    'Monthly Expense': <CreditCard />,
+    'Annual Surplus / Deficit': <Scale />,
+
+    'Grant Utilization': <HandCoins />,
+    'Fee Collection Efficiency': <Gauge />,
+    'Total Fee Collection': <BadgeIndianRupee />,
+    'Outstanding Fee': <Clock3 />,
+    'Outstanding Payments': <FileText />,
+    'Outstanding Liabilities': <Landmark />,
+    'Pending Bills': <Receipt />,
+    'Pending Approvals': <ClipboardCheck />,
+    'Audit Compliance Rate': <ShieldCheck />,
+    'Monthly Cash Flow': <LineChart />,
+    'Scholarship Report': <GraduationCap />,
+
+    'Department Budget Usage': <BarChart3 />,
+    'Department Expense': <PieChart />,
+
+    'Total Monthly Payroll Gross': <Banknote />,
+    'Faculty-to-Staff Cost Ratio': <Users />,
+    'Benefits & Insurance Expense': <ShieldCheck />,
+    'Student Employee Outlays': <GraduationCap />,
+    'Overtime / Adjunct Premium': <Clock3 />,
+    'Payroll Tax Liability Accrued': <Calculator />,
+    'Average Labor Cost per Credit Hour': <BookOpen />,
+    'Retirement Pool Funding Status': <PiggyBank />,
+
+    'Total Accounts Payable': <CreditCard />,
+    'Days Payable Outstanding': <Clock3 />,
+    'Gross Purchases (MTD)': <ShoppingCart />,
+    'Debit Note Returns': <RotateCcw />,
+    'Purchase Orders Pending': <FileText />,
+    'Early Payment Discounts': <BadgeCheck />,
+    'Vendor Compliance Rate': <PackageCheck />,
+    'Accrued Expenses': <Receipt />,
+    'Cost of Goods Sold': <Boxes />,
+
+    'Campus Facility Depreciation': <Building2 />,
+    'Deferred Maintenance Liability': <Wrench />,
+    'Equipment Replacement Fund': <HardHat />,
+    'Capital Project Spending (YTD)': <Landmark />,
+    'Fixed Asset Turnover': <RotateCcw />,
+    'ROI on Capital Investments': <TrendingUp />,
+    'Fleet Maintenance Cost': <Car />,
+    'Space Utilization Yield': <LayoutDashboard />,
+
+    'Accrued Sales Tax / VAT': <Calculator />,
+    'Corporate Income Tax Provision': <Landmark />,
+    'Withholding Tax Liability': <Receipt />,
+    'Open Journal Adjustments': <BookOpen />,
+    'Bank Reconciled Accounts': <BadgeCheck />,
+    'Intercompany Balance': <Scale />,
+    'Audit Exception Flags': <CircleAlert />,
+    'Unposted Batch Vouchers': <FileCheck2 />,
+
+    'Cash & Bank Balances': <Landmark />,
+    'Petty Cash Pool': <Wallet />,
+    'Total Working Capital': <Briefcase />,
+    'Net Worth / Equity': <TrendingUp />,
+    'Total Capital Employed': <Building2 />,
+    'Undrawn Credit Lines': <CreditCard />,
+    'Marketable Securities': <ChartNoAxesCombined />,
+    'Restricted Cash Reserve': <PiggyBank />,
+  };
+
+  return iconMap[label] ?? <CircleDollarSign />;
 }
 
-function SectionHeader({ title, icon }: SectionHeaderProps) {
+function getKpiTone(label: string) {
+  const normalizedLabel = label.toLowerCase();
+
+  if (
+    normalizedLabel.includes('income') ||
+    normalizedLabel.includes('collection') ||
+    normalizedLabel.includes('cash') ||
+    normalizedLabel.includes('surplus') ||
+    normalizedLabel.includes('roi')
+  ) {
+    return 'success';
+  }
+
+  if (
+    normalizedLabel.includes('pending') ||
+    normalizedLabel.includes('outstanding') ||
+    normalizedLabel.includes('liabilit') ||
+    normalizedLabel.includes('overdue') ||
+    normalizedLabel.includes('exception')
+  ) {
+    return 'warning';
+  }
+
+  if (
+    normalizedLabel.includes('expense') ||
+    normalizedLabel.includes('expenditure') ||
+    normalizedLabel.includes('cost') ||
+    normalizedLabel.includes('tax')
+  ) {
+    return 'danger';
+  }
+
+  if (
+    normalizedLabel.includes('scholarship') ||
+    normalizedLabel.includes('student') ||
+    normalizedLabel.includes('department')
+  ) {
+    return 'violet';
+  }
+
+  return 'primary';
+}
+
+function getChartIcon(title: string, type: ChartPanelProps['type']) {
+  const normalizedTitle = title.toLowerCase();
+
+  if (normalizedTitle.includes('scholarship')) {
+    return <GraduationCap />;
+  }
+
+  if (
+    normalizedTitle.includes('expense distribution') ||
+    normalizedTitle.includes('clearance rates') ||
+    type === 'pie' ||
+    type === 'doughnut'
+  ) {
+    return <PieChart />;
+  }
+
+  if (
+    normalizedTitle.includes('timeline') ||
+    normalizedTitle.includes('trend') ||
+    type === 'line'
+  ) {
+    return <LineChart />;
+  }
+
+  if (normalizedTitle.includes('compliance') || type === 'polarArea') {
+    return <ShieldCheck />;
+  }
+
+  return <BarChart3 />;
+}
+
+function KpiGrid({ items }: { items: KpiItem[] }) {
   return (
-    <div className="flex items-center gap-2 mb-4 pb-2 border-b border-gray-100">
-      <div className="text-gray-400">{icon}</div>
-      <h2 className="text-base font-bold text-gray-700 uppercase tracking-wider">
-        {title}
-      </h2>
+    <div className="financial-command-kpi-grid">
+      {items.map(item => {
+        const kpiPath = `/finance-supply-chain/dashboard/${createKpiSlug(
+          item.label
+        )}`;
+
+        return (
+          <motion.div key={item.label} variants={itemVariants}>
+            <Link
+              aria-label={`Open ${item.label}`}
+              className="financial-command-kpi-link"
+              state={{
+                title: item.label,
+                value: item.value,
+                change: item.change,
+              }}
+              to={kpiPath}
+            >
+              <article
+                className={`financial-command-kpi-card financial-command-kpi-card--${getKpiTone(item.label)}`}
+              >
+                <div className="financial-command-kpi-top">
+                  <span className="financial-command-kpi-icon">
+                    {getKpiIcon(item.label)}
+                  </span>
+                  <p className="financial-command-kpi-label">{item.label}</p>
+                </div>
+
+                <div className="financial-command-kpi-footer">
+                  <div className="financial-command-kpi-content">
+                    <strong className="financial-command-kpi-value">
+                      {item.value}
+                    </strong>
+
+                    <span
+                      className={`financial-command-kpi-status financial-command-kpi-status--${item.status}`}
+                    >
+                      {item.change}
+                    </span>
+                  </div>
+
+                  <span
+                    aria-hidden="true"
+                    className="financial-command-kpi-arrow"
+                  >
+                    <ArrowRight />
+                  </span>
+                </div>
+              </article>
+            </Link>
+          </motion.div>
+        );
+      })}
     </div>
   );
 }
 
-export default function DashboardPage() {
-  const k = DASHBOARD_KPIS;
+function ChartPanel({
+  title,
+  type,
+  data,
+  options,
+  large = false,
+}: ChartPanelProps) {
+  return (
+    <motion.div variants={itemVariants}>
+      <FormCard>
+        <div className="financial-command-chart-header">
+          <div>
+            <span className="financial-command-chart-eyebrow">
+              Financial Analytics
+            </span>
+            <h2>{title}</h2>
+          </div>
+          <span className="financial-command-chart-icon">
+            {getChartIcon(title, type)}
+          </span>
+        </div>
 
-  const budgetCards: KpiCardProps[] = [
-    {
-      title: 'Total Budget',
-      value: formatCurrency(k.totalBudget),
-      subtitle: 'Annual Approved FY 24-25',
-      icon: <PiggyBank className="w-6 h-6 text-blue-600" />,
-      colorClass:
-        'border-l-4 border-l-blue-500 border-y-gray-200 border-r-gray-200',
-    },
-    {
-      title: 'Expenditure',
-      value: formatCurrency(k.totalExpenditure),
-      subtitle: `${k.budgetUtilizationPct}% utilized`,
-      icon: <Wallet className="w-6 h-6 text-orange-600" />,
-      colorClass:
-        'border-l-4 border-l-orange-500 border-y-gray-200 border-r-gray-200',
-      trend: { value: '+2.4%', isPositive: false },
-    },
-    {
-      title: 'Available Funds',
-      value: formatCurrency(k.remainingBudget),
-      subtitle: 'Ready to spend',
-      icon: <PieChart className="w-6 h-6 text-emerald-600" />,
-      colorClass:
-        'border-l-4 border-l-emerald-500 border-y-gray-200 border-r-gray-200',
-    },
-    {
-      title: 'Total Receipts',
-      value: formatCurrency(k.totalReceipts),
-      subtitle: 'Fees & Grants',
-      icon: <ArrowDownRight className="w-6 h-6 text-teal-600" />,
-      colorClass:
-        'border-l-4 border-l-teal-500 border-y-gray-200 border-r-gray-200',
-      trend: { value: '+12%', isPositive: true },
-    },
-  ];
+        <div
+          className={
+            large
+              ? 'financial-command-chart financial-command-chart--large'
+              : 'financial-command-chart'
+          }
+        >
+          <Chart
+            key={`${title}-${type}`}
+            className="financial-command-prime-chart"
+            data={data}
+            options={options}
+            type={type}
+          />
+        </div>
+      </FormCard>
+    </motion.div>
+  );
+}
 
-  const payableCards: KpiCardProps[] = [
-    {
-      title: 'Pending Payables',
-      value: formatCurrency(k.pendingPayables),
-      subtitle: 'Bills awaiting payment',
-      icon: <Clock className="w-6 h-6 text-amber-500" />,
-      colorClass:
-        'border-l-4 border-l-amber-400 border-y-gray-200 border-r-gray-200',
-    },
-    {
-      title: 'Overdue Payables',
-      value: formatCurrency(k.overduePayables),
-      subtitle: 'Past due date',
-      icon: <AlertTriangle className="w-6 h-6 text-red-500" />,
-      colorClass:
-        'border-l-4 border-l-red-500 border-y-gray-200 border-r-gray-200',
-      trend: { value: '-1.2%', isPositive: true },
-    },
-    {
-      title: 'Open POs',
-      value: String(k.openPOs),
-      subtitle: 'Awaiting delivery',
-      icon: <ShoppingCart className="w-6 h-6 text-purple-500" />,
-      colorClass:
-        'border-l-4 border-l-purple-500 border-y-gray-200 border-r-gray-200',
-    },
-    {
-      title: 'Pending Requisitions',
-      value: String(k.pendingPRs),
-      subtitle: 'Awaiting approval',
-      icon: <FileText className="w-6 h-6 text-pink-500" />,
-      colorClass:
-        'border-l-4 border-l-pink-500 border-y-gray-200 border-r-gray-200',
-    },
-  ];
+export default function FinancialCommandCenter() {
+  const isDark = useDashboardTheme();
+  const [financialYear, setFinancialYear] = useState('2025-2026');
+  const [universityType, setUniversityType] = useState<UniversityType>('gov');
 
-  const operationsCards: KpiCardProps[] = [
-    {
-      title: 'Active Vendors',
-      value: String(k.totalVendors),
-      subtitle: 'Registered partners',
-      icon: <Store className="w-6 h-6 text-indigo-500" />,
-      colorClass:
-        'border-l-4 border-l-indigo-500 border-y-gray-200 border-r-gray-200',
-    },
-    {
-      title: 'Total Assets',
-      value: String(k.totalAssets),
-      subtitle: 'Fixed assets registered',
-      icon: <Building2 className="w-6 h-6 text-cyan-500" />,
-      colorClass:
-        'border-l-4 border-l-cyan-500 border-y-gray-200 border-r-gray-200',
-    },
-    {
-      title: 'Pending GRNs',
-      value: String(k.pendingGRNs),
-      subtitle: 'Awaiting entry',
-      icon: <Package className="w-6 h-6 text-slate-500" />,
-      colorClass:
-        'border-l-4 border-l-slate-500 border-y-gray-200 border-r-gray-200',
-    },
-  ];
+  const activeUniversity = universityData[universityType];
 
-  // Chart Data Preparation
-  const [chartData, setChartData] = useState<any>({});
-  const [chartOptions, setChartOptions] = useState<any>({});
+  const chartTextColor = isDark ? '#d4d4d8' : '#475569';
+  const chartMutedColor = isDark ? '#a1a1aa' : '#64748b';
+  const chartGridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : '#eef2f7';
 
-  const [doughnutData, setDoughnutData] = useState<any>({});
-  const [doughnutOptions, setDoughnutOptions] = useState<any>({});
+  const baseChartOptions = useMemo(
+    () => ({
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: {
+            color: chartTextColor,
+            usePointStyle: true,
+            boxWidth: 8,
+            font: {
+              size: 11,
+            },
+          },
+        },
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: chartMutedColor,
+          },
+          grid: {
+            color: chartGridColor,
+          },
+        },
+        y: {
+          ticks: {
+            color: chartMutedColor,
+          },
+          grid: {
+            color: chartGridColor,
+          },
+        },
+      },
+    }),
+    [chartGridColor, chartMutedColor, chartTextColor]
+  );
 
-  const [barData, setBarData] = useState<any>({});
-  const [barOptions, setBarOptions] = useState<any>({});
-
-  useEffect(() => {
-    const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--text-color') || '#333';
-    const textColorSecondary =
-      documentStyle.getPropertyValue('--text-color-secondary') || '#666';
-    const surfaceBorder =
-      documentStyle.getPropertyValue('--surface-border') || '#ddd';
-
-    // 1. Cash Flow Line Chart Data
-    setChartData({
-      labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+  const monthlyTrendData = useMemo(
+    () => ({
+      labels: fiscalMonths,
       datasets: [
         {
-          label: 'Income',
-          data: [6500000, 5900000, 8000000, 8100000, 5600000, 5500000],
-          fill: false,
+          label: 'Monthly Income',
+          data: activeUniversity.monthlyIncome,
           borderColor: '#10b981',
-          tension: 0.4,
+          backgroundColor: 'rgba(16, 185, 129, 0.08)',
+          fill: true,
+          tension: 0.35,
+          borderWidth: 2,
+          pointRadius: 3,
         },
         {
-          label: 'Expenses',
-          data: [2800000, 4800000, 4000000, 1900000, 8600000, 2700000],
-          fill: false,
+          label: 'Monthly Expenditure',
+          data: activeUniversity.monthlyExpense,
           borderColor: '#f43f5e',
-          tension: 0.4,
+          backgroundColor: 'rgba(244, 63, 94, 0.06)',
+          fill: true,
+          tension: 0.35,
+          borderWidth: 2,
+          pointRadius: 3,
         },
       ],
-    });
+    }),
+    [activeUniversity]
+  );
 
-    setChartOptions({
-      maintainAspectRatio: false,
-      aspectRatio: 0.8,
-      plugins: {
-        legend: { labels: { color: textColor } },
-      },
-      scales: {
-        x: {
-          ticks: { color: textColorSecondary },
-          grid: { color: surfaceBorder },
-        },
-        y: {
-          ticks: { color: textColorSecondary },
-          grid: { color: surfaceBorder },
-        },
-      },
-    });
-
-    // 2. Budget Utilization Doughnut
-    setDoughnutData({
-      labels: ['Spent', 'Committed', 'Available'],
+  const frameworkData = useMemo(
+    () => ({
+      labels: activeUniversity.labels,
       datasets: [
         {
-          data: [k.totalExpenditure, 5000000, k.remainingBudget - 5000000],
-          backgroundColor: ['#f97316', '#a855f7', '#10b981'],
-          hoverBackgroundColor: ['#ea580c', '#9333ea', '#059669'],
+          label: 'Budget Targets',
+          data: activeUniversity.budget,
+          backgroundColor: '#cbd5e1',
+          borderRadius: 6,
         },
-      ],
-    });
-
-    setDoughnutOptions({
-      maintainAspectRatio: false,
-      cutout: '60%',
-      plugins: {
-        legend: { position: 'bottom', labels: { color: textColor } },
-      },
-    });
-
-    // 3. Departmental Bar Chart
-    const utilizationItems = [
-      { head: 'Salary', alloc: 120, used: 95 },
-      { head: 'Lab Equip', alloc: 20, used: 19 },
-      { head: 'Library', alloc: 8, used: 8 },
-      { head: 'Building', alloc: 30, used: 12 },
-      { head: 'IT H/W', alloc: 15, used: 17 },
-      { head: 'Office', alloc: 5, used: 3 },
-    ];
-
-    setBarData({
-      labels: utilizationItems.map(i => i.head),
-      datasets: [
         {
-          label: 'Allocated (Lakhs)',
+          label: 'Realized Outlays',
+          data: activeUniversity.actual,
           backgroundColor: '#3b82f6',
-          data: utilizationItems.map(i => i.alloc),
-        },
-        {
-          label: 'Utilized (Lakhs)',
-          backgroundColor: '#f97316',
-          data: utilizationItems.map(i => i.used),
+          borderRadius: 6,
         },
       ],
-    });
+    }),
+    [activeUniversity]
+  );
 
-    setBarOptions({
-      maintainAspectRatio: false,
-      aspectRatio: 0.8,
-      plugins: {
-        legend: { labels: { color: textColor } },
-      },
+  const departmentBudgetData = useMemo(
+    () => ({
+      labels: activeUniversity.departmentNames,
+      datasets: [
+        {
+          label: 'Allocated Limit',
+          data: activeUniversity.departmentAllocation,
+          backgroundColor: '#94a3b8',
+          borderRadius: 6,
+        },
+        {
+          label: 'Actual Expense',
+          data: activeUniversity.departmentSpent,
+          backgroundColor: '#6366f1',
+          borderRadius: 6,
+        },
+      ],
+    }),
+    [activeUniversity]
+  );
+
+  const departmentUsageData = useMemo(
+    () => ({
+      labels: activeUniversity.departmentNames,
+      datasets: [
+        {
+          label: 'Budget Utilization (%)',
+          data: activeUniversity.departmentUsagePercentage,
+          backgroundColor: [
+            '#3b82f6',
+            '#10b981',
+            '#f59e0b',
+            '#ec4899',
+            '#ef4444',
+          ],
+          borderRadius: 6,
+        },
+      ],
+    }),
+    [activeUniversity]
+  );
+
+  const departmentUsageOptions = useMemo(
+    () => ({
+      ...baseChartOptions,
+      indexAxis: 'y',
       scales: {
         x: {
-          ticks: { color: textColorSecondary, font: { weight: 500 } },
-          grid: { display: false, drawBorder: false },
+          ticks: {
+            color: chartMutedColor,
+            callback: (value: number | string) => `${value}%`,
+          },
+          grid: {
+            color: chartGridColor,
+          },
         },
         y: {
-          ticks: { color: textColorSecondary },
-          grid: { color: surfaceBorder, drawBorder: false },
+          ticks: {
+            color: chartMutedColor,
+          },
+          grid: {
+            display: false,
+          },
         },
       },
-    });
-  }, [k.totalExpenditure, k.remainingBudget]);
+    }),
+    [baseChartOptions, chartGridColor, chartMutedColor]
+  );
+
+  const departmentExpenseData = useMemo(
+    () => ({
+      labels: activeUniversity.departmentNames,
+      datasets: [
+        {
+          data: activeUniversity.departmentSpent,
+          backgroundColor: [
+            '#6366f1',
+            '#14b8a6',
+            '#f43f5e',
+            '#a855f7',
+            '#06b6d4',
+          ],
+          hoverOffset: 6,
+        },
+      ],
+    }),
+    [activeUniversity]
+  );
+
+  const pieChartOptions = useMemo(
+    () => ({
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: chartTextColor,
+            usePointStyle: true,
+            boxWidth: 8,
+            padding: 16,
+            font: {
+              size: 11,
+            },
+          },
+        },
+        tooltip: {
+          enabled: true,
+        },
+      },
+    }),
+    [chartTextColor]
+  );
+
+  const doughnutChartOptions = useMemo(
+    () => ({
+      ...pieChartOptions,
+      cutout: '58%',
+    }),
+    [pieChartOptions]
+  );
+
+  const scholarshipReceiptsData = useMemo(
+    () => ({
+      labels: [
+        'NSP Central SC',
+        'MP State Medhavi',
+        'NSP ST Scheme',
+        'MAHA DBT OBC',
+      ],
+      datasets: [
+        {
+          data: [28, 42, 20, 10],
+          backgroundColor: ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b'],
+          hoverOffset: 6,
+        },
+      ],
+    }),
+    []
+  );
+
+  const dbtProgressData = useMemo(
+    () => ({
+      labels: [
+        'Aadhaar Seeded',
+        'Verification Done',
+        'Requisition Generated',
+        'DBT Credited',
+      ],
+      datasets: [
+        {
+          label: 'Completion Rate (%)',
+          data: [92, 85, 60, 45],
+          backgroundColor: '#3b82f6',
+          borderRadius: 6,
+        },
+      ],
+    }),
+    []
+  );
+
+  const scholarshipAllocationData = useMemo(
+    () => ({
+      labels: [
+        'Central SC/ST',
+        'State Schemes',
+        'University Merit Pool',
+        'Private Endowments',
+      ],
+      datasets: [
+        {
+          label: 'Allocation (₹ in Lakhs)',
+          data: [20.5, 18.4, 4.5, 2.4],
+          backgroundColor: '#10b981',
+          borderRadius: 6,
+        },
+      ],
+    }),
+    []
+  );
+
+  const clearanceRateData = useMemo(
+    () => ({
+      labels: [
+        'APBS Bridge',
+        'NEFT Direct',
+        'State Push',
+        'Manual Requisition',
+      ],
+      datasets: [
+        {
+          data: [28, 27, 24, 21],
+          backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444'],
+          hoverOffset: 6,
+        },
+      ],
+    }),
+    []
+  );
+
+  const percentageBarOptions = useMemo(
+    () => ({
+      ...baseChartOptions,
+      scales: {
+        x: {
+          ticks: {
+            color: chartMutedColor,
+          },
+          grid: {
+            display: false,
+          },
+        },
+        y: {
+          beginAtZero: true,
+          max: 100,
+          ticks: {
+            color: chartMutedColor,
+            callback: (value: number | string) => `${value}%`,
+          },
+          grid: {
+            color: chartGridColor,
+          },
+        },
+      },
+    }),
+    [baseChartOptions, chartGridColor, chartMutedColor]
+  );
 
   return (
     <FormPage
-      title="Finance & Supply Chain Dashboard"
-      description="Overview of budget, expenditure, procurement, and financial health for FY 2024-25."
+      title="Executive Financial Command"
+      description="Cross-ledger institutional accounting matrices and visual intelligence modules."
     >
       <motion.div
-        className="flex flex-col gap-6"
-        variants={containerVariants}
-        initial="hidden"
         animate="visible"
+        className="financial-command-page"
+        initial="hidden"
+        variants={containerVariants}
       >
-        {/* Core Financial KPIs */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          {budgetCards.map(card => (
-            <KpiCard key={card.title} {...card} />
-          ))}
-        </div>
-
-        {/* Operational KPIs */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          {payableCards.map(card => (
-            <KpiCard key={card.title} {...card} />
-          ))}
-        </div>
-
-        {/* Charts Section 1 */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Line Chart */}
-          <motion.div variants={itemVariants} className="lg:col-span-2">
-            <FormCard>
-              <SectionHeader
-                title="Cash Flow Trend (6 Months)"
-                icon={<TrendingUp className="w-5 h-5" />}
-              />
-              <div className="h-[300px] w-full mt-4">
-                {chartData.datasets && (
-                  <Chart
-                    type="line"
-                    data={chartData}
-                    options={chartOptions}
-                    className="h-full w-full"
-                  />
-                )}
-              </div>
-            </FormCard>
-          </motion.div>
-
-          {/* Doughnut Chart */}
-          <motion.div variants={itemVariants} className="lg:col-span-1">
-            <FormCard>
-              <SectionHeader
-                title="Budget Allocation"
-                icon={<PieChart className="w-5 h-5" />}
-              />
-              <div className="h-[300px] w-full mt-4">
-                {doughnutData.datasets && (
-                  <Chart
-                    type="doughnut"
-                    data={doughnutData}
-                    options={doughnutOptions}
-                    className="w-full h-full"
-                  />
-                )}
-              </div>
-            </FormCard>
-          </motion.div>
-        </div>
-
-        {/* Charts Section 2 */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Bar Chart */}
-          <motion.div variants={itemVariants} className="lg:col-span-2">
-            <FormCard>
-              <SectionHeader
-                title="Budget Head Utilization"
-                icon={<BarChart3 className="w-5 h-5" />}
-              />
-              <div className="h-[300px] w-full mt-4">
-                {barData.datasets && (
-                  <Chart
-                    type="bar"
-                    data={barData}
-                    options={barOptions}
-                    className="h-full w-full"
-                  />
-                )}
-              </div>
-            </FormCard>
-          </motion.div>
-
-          {/* Mini Stats or recent activity */}
-          <motion.div variants={itemVariants} className="lg:col-span-1">
-            <FormCard>
-              <SectionHeader
-                title="Other Metrics"
-                icon={<Activity className="w-5 h-5" />}
-              />
-              <div className="flex flex-col gap-4 mt-4">
-                {operationsCards.map((card, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 bg-gray-50 hover:bg-gray-100 transition-colors"
-                  >
-                    <div className="p-2 bg-white rounded-md shadow-sm border border-gray-100">
-                      {card.icon}
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold text-gray-700">
-                        {card.title}
-                      </p>
-                      <p className="text-xs text-gray-500">{card.subtitle}</p>
-                    </div>
-                    <div className="text-lg font-bold text-gray-900">
-                      {card.value}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </FormCard>
-          </motion.div>
-        </div>
-
-        {/* Quick Actions & Alerts */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Quick Actions */}
-          <motion.div variants={itemVariants} className="lg:col-span-1">
-            <FormCard>
-              <SectionHeader
-                title="Quick Actions"
-                icon={<PlusCircle className="w-5 h-5" />}
-              />
-              <div className="flex flex-col gap-3 mt-4">
-                <Link
-                  to="/finance-supply-chain/accounting/receipt-voucher/create"
-                  className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 bg-white hover:bg-gray-50 hover:border-blue-200 hover:shadow-sm transition-all group"
-                >
-                  <div className="p-2 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-100 transition-colors">
-                    <Receipt className="w-5 h-5" />
-                  </div>
-                  <span className="flex-1 font-medium text-gray-700 group-hover:text-blue-700">
-                    New Receipt Voucher
-                  </span>
-                </Link>
-                <Link
-                  to="/finance-supply-chain/procurement/purchase-requisition/create"
-                  className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 bg-white hover:bg-gray-50 hover:border-purple-200 hover:shadow-sm transition-all group"
-                >
-                  <div className="p-2 bg-purple-50 text-purple-600 rounded-lg group-hover:bg-purple-100 transition-colors">
-                    <ShoppingCart className="w-5 h-5" />
-                  </div>
-                  <span className="flex-1 font-medium text-gray-700 group-hover:text-purple-700">
-                    Create Purchase Req
-                  </span>
-                </Link>
-                <Link
-                  to="/finance-supply-chain/budget-management/budget-allocation/create"
-                  className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 bg-white hover:bg-gray-50 hover:border-emerald-200 hover:shadow-sm transition-all group"
-                >
-                  <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg group-hover:bg-emerald-100 transition-colors">
-                    <PieChart className="w-5 h-5" />
-                  </div>
-                  <span className="flex-1 font-medium text-gray-700 group-hover:text-emerald-700">
-                    Allocate Budget
-                  </span>
-                </Link>
-                <Link
-                  to="/finance-supply-chain/accounting/journal-voucher/create"
-                  className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 bg-white hover:bg-gray-50 hover:border-orange-200 hover:shadow-sm transition-all group"
-                >
-                  <div className="p-2 bg-orange-50 text-orange-600 rounded-lg group-hover:bg-orange-100 transition-colors">
-                    <FileSpreadsheet className="w-5 h-5" />
-                  </div>
-                  <span className="flex-1 font-medium text-gray-700 group-hover:text-orange-700">
-                    New Journal Entry
-                  </span>
-                </Link>
-              </div>
-            </FormCard>
-          </motion.div>
-
-          {/* Alerts & Tasks */}
-          <motion.div variants={itemVariants} className="lg:col-span-2">
-            <FormCard>
-              <SectionHeader
-                title="Alerts & Tasks"
-                icon={<ListTodo className="w-5 h-5" />}
-              />
-              <div className="flex flex-col gap-3 mt-4">
-                {DASHBOARD_ALERTS.map(alert => (
-                  <div
-                    key={alert.id}
-                    className="flex items-center justify-between p-3 rounded-lg border border-gray-100 bg-white shadow-sm"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-2 h-10 rounded-full ${alert.severity === 'high' ? 'bg-red-500' : 'bg-yellow-400'}`}
-                      ></div>
-                      <div>
-                        <p className="text-sm font-semibold text-gray-800">
-                          {alert.message}
-                        </p>
-                        <p className="text-xs text-gray-500">{alert.module}</p>
-                      </div>
-                    </div>
-                    <button className="text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 px-3 py-1.5 rounded-md hover:bg-blue-100 transition-colors">
-                      Action
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </FormCard>
-          </motion.div>
-        </div>
-
-        {/* Recent Transactions Table */}
-        <motion.div variants={itemVariants} className="w-full">
-          <FormCard>
-            <SectionHeader
-              title="Recent Transactions"
-              icon={<History className="w-5 h-5" />}
+        <motion.div
+          className="financial-command-toolbar"
+          variants={itemVariants}
+        >
+          <div className="financial-command-year-field">
+            <label htmlFor="financial-year">Financial Year</label>
+            <Dropdown
+              className="financial-command-year-dropdown"
+              inputId="financial-year"
+              onChange={event => setFinancialYear(event.value)}
+              options={financialYearOptions}
+              value={financialYear}
             />
-            <div className="overflow-x-auto mt-4">
-              <table className="w-full text-left text-sm text-gray-600">
-                <thead className="bg-gray-50 text-gray-700 font-semibold border-b border-gray-200">
-                  <tr>
-                    <th className="px-4 py-3 rounded-tl-lg">Transaction ID</th>
-                    <th className="px-4 py-3">Type</th>
-                    <th className="px-4 py-3">Date</th>
-                    <th className="px-4 py-3 text-right">Amount</th>
-                    <th className="px-4 py-3 rounded-tr-lg">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {RECENT_TRANSACTIONS.map(tx => (
-                    <tr
-                      key={tx.id}
-                      className="hover:bg-gray-50 transition-colors"
-                    >
-                      <td className="px-4 py-3 font-medium text-gray-900">
-                        {tx.transactionId}
-                      </td>
-                      <td className="px-4 py-3">{tx.type}</td>
-                      <td className="px-4 py-3">{tx.date}</td>
-                      <td className="px-4 py-3 text-right font-medium text-gray-800">
-                        {formatCurrency(tx.amount)}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span
-                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-md ${
-                            tx.status === 'Approved'
-                              ? 'bg-emerald-100 text-emerald-700'
-                              : tx.status === 'Pending'
-                                ? 'bg-amber-100 text-amber-700'
-                                : 'bg-gray-100 text-gray-700'
-                          }`}
-                        >
-                          {tx.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </FormCard>
+          </div>
+
+          <span className="financial-command-counter">
+            Active Tracking: 83 Metrics
+          </span>
         </motion.div>
+
+        <div className="financial-command-tab-content">
+          <motion.section
+            className="financial-command-kpi-section"
+            variants={itemVariants}
+          >
+            <div className="financial-command-section-heading">
+              <div>
+                <span>Financial Overview</span>
+                <h2>Executive Budgets, Allocations & Utilizations</h2>
+              </div>
+              <WalletCards />
+            </div>
+
+            <KpiGrid items={activeUniversity.executiveKpis} />
+          </motion.section>
+
+          <motion.section
+            className="financial-command-kpi-section financial-command-kpi-section--secondary"
+            variants={itemVariants}
+          >
+            <div className="financial-command-section-heading">
+              <div>
+                <span>Operational Control</span>
+                <h2>Operations, Liabilities & Verification Controls</h2>
+              </div>
+              <ShieldCheck />
+            </div>
+
+            <KpiGrid items={activeUniversity.operationsKpis} />
+          </motion.section>
+
+          <motion.div
+            className="financial-command-filter-panel"
+            variants={itemVariants}
+          >
+            <div>
+              <p className="financial-command-filter-label">
+                University Financial Model
+              </p>
+              <p className="financial-command-filter-help">
+                Switch the institutional model to compare financial behavior.
+              </p>
+            </div>
+
+            <div className="financial-command-model-toggle">
+              <button
+                className={`financial-command-model-button ${
+                  universityType === 'gov'
+                    ? 'financial-command-model-button--active'
+                    : ''
+                }`}
+                onClick={() => setUniversityType('gov')}
+                type="button"
+              >
+                Government Model
+              </button>
+
+              <button
+                className={`financial-command-model-button ${
+                  universityType === 'private'
+                    ? 'financial-command-model-button--active'
+                    : ''
+                }`}
+                onClick={() => setUniversityType('private')}
+                type="button"
+              >
+                Private Model
+              </button>
+            </div>
+          </motion.div>
+
+          <div className="financial-command-chart-full">
+            <ChartPanel
+              data={monthlyTrendData}
+              large
+              options={baseChartOptions}
+              title="Month-wise Income vs Expenditure Financial Year Timeline"
+              type="line"
+            />
+          </div>
+
+          <div className="financial-command-chart-grid">
+            <ChartPanel
+              data={frameworkData}
+              options={baseChartOptions}
+              title="Global Income & Expenditure Allocation Framework"
+              type="bar"
+            />
+
+            <ChartPanel
+              data={departmentBudgetData}
+              options={baseChartOptions}
+              title="Department-wise Budget Targets vs Actual Expense"
+              type="bar"
+            />
+          </div>
+
+          <div className="financial-command-chart-grid">
+            <ChartPanel
+              data={departmentUsageData}
+              options={departmentUsageOptions}
+              title="Department-wise Budget Usage (%)"
+              type="bar"
+            />
+
+            <ChartPanel
+              data={departmentExpenseData}
+              options={doughnutChartOptions}
+              title="Department-wise Expense Distribution"
+              type="doughnut"
+            />
+          </div>
+
+          <motion.div
+            className="financial-command-section-banner"
+            variants={itemVariants}
+          >
+            <div>
+              <span>Student Finance</span>
+              <h2>Scholarship & DBT Analytics</h2>
+              <p>
+                Portal-wise receipts, execution progress, allocation and
+                disbursement clearance.
+              </p>
+            </div>
+            <BadgeIndianRupee />
+          </motion.div>
+
+          <div className="financial-command-chart-grid">
+            <ChartPanel
+              data={scholarshipReceiptsData}
+              options={doughnutChartOptions}
+              title="Scholarship Receipts Distribution by Portal"
+              type="doughnut"
+            />
+
+            <ChartPanel
+              data={dbtProgressData}
+              options={percentageBarOptions}
+              title="DBT Execution Progress Rates"
+              type="bar"
+            />
+          </div>
+
+          <div className="financial-command-chart-grid">
+            <ChartPanel
+              data={scholarshipAllocationData}
+              options={baseChartOptions}
+              title="Scholarship Allocations by Source Agency"
+              type="bar"
+            />
+
+            <ChartPanel
+              data={clearanceRateData}
+              options={pieChartOptions}
+              title="Disbursement Clearance Rates (APBS vs NEFT)"
+              type="pie"
+            />
+          </div>
+        </div>
       </motion.div>
     </FormPage>
   );
