@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { GLANCE_STATS } from '../../constants/data';
+import { useLanguage } from '../../../../shared/context/useLanguage';
 
 function Counter({ value }: { value: string }) {
   const [count, setCount] = useState(0);
@@ -55,11 +56,13 @@ function Counter({ value }: { value: string }) {
 }
 
 export default function StatsBanner() {
+  const { t } = useLanguage();
+
   return (
     <section className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-3 sm:pb-8 select-none">
       <div className="flex flex-col items-center mb-6">
         <h3 className="font-display font-black text-[#002147] text-xl md:text-2xl tracking-wide mb-2">
-          DAVV at a Glance
+          {t('DAVV at a Glance')}
         </h3>
         <div className="w-12 h-1 bg-[#F2A900] rounded-full" />
       </div>
@@ -91,7 +94,7 @@ export default function StatsBanner() {
 
                   {/* Label */}
                   <div className="text-white/80 text-[10px] sm:text-xs md:text-sm font-semibold tracking-wide uppercase leading-tight">
-                    {stat.label}
+                    {t(stat.label)}
                   </div>
                 </div>
               );

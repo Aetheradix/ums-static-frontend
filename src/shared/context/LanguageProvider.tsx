@@ -1,7 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { translations } from '../constants/translations';
+import { translations as erpTranslations } from '../constants/translations';
+import { translations as davvTranslations } from '../../features/davv-cms/constants/translations';
 import type { Language } from './LanguageContext';
 import { LanguageContext } from './LanguageContext';
+
+// Merge both dictionaries dynamically
+const translations: Record<string, Record<string, string>> = {
+  en: { ...erpTranslations.en, ...davvTranslations.en },
+  hi: { ...erpTranslations.hi, ...davvTranslations.hi },
+};
 
 interface LanguageProviderProps {
   children: React.ReactNode;
@@ -26,7 +33,6 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   const toggleLanguage = () => {
     setLanguage(language === 'hi' ? 'en' : 'hi');
   };
-
   const t = (key: string): string => {
     if (!key) return '';
 
@@ -34,6 +40,11 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
     const activeDict = translations[language];
     if (activeDict && activeDict[key] !== undefined) {
       return activeDict[key];
+    }
+
+    // If active language is English, do not fall back to Hindi
+    if (language === 'en') {
+      return key;
     }
 
     // Fall back to Hindi
@@ -50,7 +61,6 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
 
     return key;
   };
-
   // ─── Translation Guard helpers ─────────────────────────────────────────
   // Returns true if an element is an icon and should NOT be translated
   const isIconElement = (el: HTMLElement): boolean => {

@@ -1,10 +1,12 @@
 import { MapPin, Phone, Mail, Link2 } from 'lucide-react';
+import { useLanguage } from '../../../../shared/context/useLanguage';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const { t } = useLanguage();
 
   const ACADEMIC_LINKS = [
-    { label: 'Admissions 2024-25', href: '#' },
+    { label: 'Admissions 2026-27', href: '#' },
     { label: 'Courses & Schemes', href: '#' },
     { label: 'Affiliated Colleges', href: '#' },
     { label: 'Academic Calendar', href: '#' },
@@ -73,18 +75,18 @@ export default function Footer() {
               />
               <div>
                 <h4 className="font-display font-black text-white text-sm sm:text-base uppercase tracking-wider leading-tight">
-                  Devi Ahilya
+                  {t('Devi Ahilya')}
                 </h4>
                 <h4 className="font-display font-black text-white/70 text-xs uppercase tracking-widest leading-none mt-0.5">
-                  Vishwavidyalaya
+                  {t('Vishwavidyalaya')}
                 </h4>
               </div>
             </div>
 
             <p className="text-white/60 text-xs sm:text-[13px] leading-relaxed">
-              Devi Ahilya Vishwavidyalaya (Indore), formerly Indore University,
-              is a premier state university of Madhya Pradesh, India. Accredited
-              with <strong className="text-[#F2A900]">NAAC A+ Grade</strong>.
+              {t(
+                'Devi Ahilya Vishwavidyalaya (Indore), formerly Indore University, is a premier state university of Madhya Pradesh, India. Accredited with NAAC A+ Grade.'
+              )}
             </p>
 
             {/* Social Media Links */}
@@ -105,9 +107,9 @@ export default function Footer() {
 
             {/* Last Updated */}
             <div className="pt-2 flex items-center gap-1.5 text-[10px] sm:text-[11px] text-white/40 font-semibold tracking-wide uppercase">
-              <span>Last Updated:</span>
+              <span>{t('Last Updated:')}</span>
               <span className="text-yellow-400/80 font-black">
-                13 July 2026
+                {t('13 July 2026')}
               </span>
             </div>
           </div>
@@ -115,7 +117,7 @@ export default function Footer() {
           {/* Column 2: Academics */}
           <div>
             <h4 className="font-display font-black text-white text-[13px] sm:text-sm uppercase tracking-wider mb-4 pb-2 border-b border-white/10 inline-block">
-              Academics
+              {t('Academics')}
             </h4>
             <ul className="space-y-2.5">
               {ACADEMIC_LINKS.map((link, idx) => (
@@ -125,7 +127,7 @@ export default function Footer() {
                     className="text-white/60 hover:text-yellow-400 text-xs sm:text-[13px] transition-colors flex items-center gap-2 group"
                   >
                     <Link2 className="w-3.5 h-3.5 text-yellow-400/60 group-hover:text-yellow-400 transition-colors" />
-                    <span>{link.label}</span>
+                    <span>{t(link.label)}</span>
                   </a>
                 </li>
               ))}
@@ -135,7 +137,7 @@ export default function Footer() {
           {/* Column 3: Resources */}
           <div>
             <h4 className="font-display font-black text-white text-[13px] sm:text-sm uppercase tracking-wider mb-4 pb-2 border-b border-white/10 inline-block">
-              Student Resources
+              {t('Student Resources')}
             </h4>
             <ul className="space-y-2.5">
               {RESOURCES_LINKS.map((link, idx) => (
@@ -145,7 +147,7 @@ export default function Footer() {
                     className="text-white/60 hover:text-yellow-400 text-xs sm:text-[13px] transition-colors flex items-center gap-2 group"
                   >
                     <Link2 className="w-3.5 h-3.5 text-yellow-400/60 group-hover:text-yellow-400 transition-colors" />
-                    <span>{link.label}</span>
+                    <span>{t(link.label)}</span>
                   </a>
                 </li>
               ))}
@@ -155,14 +157,15 @@ export default function Footer() {
           {/* Column 4: Contact Us */}
           <div className="space-y-4">
             <h4 className="font-display font-black text-white text-[13px] sm:text-sm uppercase tracking-wider pb-2 border-b border-white/10 inline-block">
-              Contact Details
+              {t('Contact Details')}
             </h4>
             <ul className="space-y-3 text-xs sm:text-[13px] mb-4">
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-yellow-400 shrink-0 mt-0.5" />
                 <span className="text-white/60 leading-relaxed">
-                  Nalanda Campus, R.N.T. Marg, Indore, Madhya Pradesh, India -
-                  452001
+                  {t(
+                    'Nalanda Campus, R.N.T. Marg, Indore, Madhya Pradesh, India - 452001'
+                  )}
                 </span>
               </li>
               <li className="flex items-center gap-2.5">
@@ -185,7 +188,7 @@ export default function Footer() {
             {/* Visitor Counter */}
             <div className="pt-4 border-t border-white/5 flex flex-col gap-1.5">
               <span className="text-[10px] font-black uppercase tracking-wider text-white/40">
-                Visitor Count
+                {t('Visitor Count')}
               </span>
               <div className="flex items-center gap-1">
                 {'0842795'.split('').map((char, index) => (
@@ -204,25 +207,25 @@ export default function Footer() {
         {/* Bottom copyright and legal links bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
           <p className="text-white/50 text-center md:text-left">
-            Devi Ahilya Vishwavidyalaya, Indore © {currentYear}. All Rights
-            Reserved.
+            {t('Devi Ahilya Vishwavidyalaya, Indore')} © {currentYear}.{' '}
+            {t('All Rights Reserved.')}
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-white/50">
             <a href="#" className="hover:text-yellow-400 transition-colors">
-              Privacy Policy
+              {t('Privacy Policy')}
             </a>
             <span>•</span>
             <a href="#" className="hover:text-yellow-400 transition-colors">
-              Terms & Conditions
+              {t('Terms & Conditions')}
             </a>
             <span>•</span>
             <a href="#" className="hover:text-yellow-400 transition-colors">
-              Help Desk
+              {t('Help Desk')}
             </a>
             <span>•</span>
             <a href="#" className="hover:text-yellow-400 transition-colors">
-              Site Map
+              {t('Site Map')}
             </a>
           </div>
         </div>

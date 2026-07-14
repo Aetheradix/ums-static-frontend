@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Topbar from '../components/Navigation/Topbar';
 import Navbar from '../components/Navigation/Navbar';
 import Footer from '../components/Navigation/Footer';
+import FloatingBar from '../components/Navigation/FloatingBar';
 import { ArrowUp } from 'lucide-react';
 
 interface CMSLayoutProps {
@@ -22,7 +23,19 @@ export default function CMSLayout({ children }: CMSLayoutProps) {
           document.documentElement.scrollTop ||
           document.body.scrollTop;
       } else {
-        scrollPos = (target as HTMLElement).scrollTop || 0;
+        // Only trigger scroll-to-top for main page containers.
+        // Ignore sub-lists like the announcements marquee, dropdowns, etc.
+        const isMainElement =
+          target.id === 'root' ||
+          target.tagName === 'BODY' ||
+          target.tagName === 'HTML' ||
+          target.classList?.contains('main-scroll-container');
+
+        if (isMainElement) {
+          scrollPos = (target as HTMLElement).scrollTop || 0;
+        } else {
+          return; // Ignore sub-scrolling elements
+        }
       }
       setShowScrollTop(scrollPos > 300);
     };
@@ -79,12 +92,15 @@ export default function CMSLayout({ children }: CMSLayoutProps) {
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-[#002147] hover:bg-blue text-white shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 border border-white/10 cursor-pointer"
+          className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-50 p-2 sm:p-3 rounded-full bg-[#002147] hover:bg-blue text-white shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 border border-white/10 cursor-pointer"
           aria-label="Scroll to top"
         >
-          <ArrowUp className="w-5 h-5 stroke-[2.5]" />
+          <ArrowUp className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" />
         </button>
       )}
+
+      {/* Floating Actions Sidebar Bar */}
+      <FloatingBar />
     </div>
   );
 }

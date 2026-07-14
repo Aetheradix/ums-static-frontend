@@ -1,6 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&display=swap');
 @import 'tailwindcss';
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* Language specific font override */
+html.lang-hi {
+  --font-sans: 'Hind', sans-serif !important;
+  --font-display: 'Hind', sans-serif !important;
+}
+html.lang-hi,
+html.lang-hi *,
+html.lang-hi body,
+html.lang-hi input,
+html.lang-hi button,
+html.lang-hi select,
+html.lang-hi textarea {
+  font-family: 'Hind', sans-serif !important;
+}
+
+.font-hindi {
+  font-family: 'Hind', sans-serif !important;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none !important;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none !important; /* IE and Edge */
+  scrollbar-width: none !important; /* Firefox */
+}
 
 /* ============================================================
    1. TAILWIND v4 THEME — DESIGN TOKENS
@@ -82,6 +109,7 @@
   --font-sans:
     'Plus Jakarta Sans', 'Poppins', 'Inter', 'Segoe UI', Roboto, Helvetica,
     Arial, sans-serif;
+  --font-hindi: 'Hind', 'Plus Jakarta Sans', sans-serif;
 
   /* Scoped Marketing Theme Config */
   --breakpoint-xs: 480px;

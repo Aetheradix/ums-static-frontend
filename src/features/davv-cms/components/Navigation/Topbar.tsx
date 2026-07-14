@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Moon, ChevronDown, ExternalLink, Globe } from 'lucide-react';
+import { Moon, ExternalLink, Globe } from 'lucide-react';
 import { TOPBAR_LINKS } from '../../constants/data';
+import { useLanguage } from '../../../../shared/context/useLanguage';
 
 export default function Topbar() {
   const [fontSize, setFontSizeState] = useState<'small' | 'normal' | 'large'>(
     'normal'
   );
+
+  const { language, toggleLanguage, t } = useLanguage();
+  const isHindi = language === 'hi';
 
   useEffect(() => {
     const saved = localStorage.getItem('davv-cms-font-size') as
@@ -18,6 +22,17 @@ export default function Topbar() {
       applyFontSize(saved);
     }
   }, []);
+
+  // Update document attributes/classes for language and font compatibility
+  useEffect(() => {
+    if (language === 'hi') {
+      document.documentElement.classList.add('lang-hi');
+      document.documentElement.lang = 'hi';
+    } else {
+      document.documentElement.classList.remove('lang-hi');
+      document.documentElement.lang = 'en';
+    }
+  }, [language]);
 
   const applyFontSize = (size: 'small' | 'normal' | 'large') => {
     let percentage = '100%';
@@ -33,12 +48,12 @@ export default function Topbar() {
   };
 
   return (
-    <div className="bg-[#002147] text-white text-[10px] xs:text-xs py-1.5 xs:py-2 px-2 xs:px-4 border-b border-white/10 select-none z-50 relative">
-      <div className="max-w-[1400px] mx-auto flex justify-between items-center gap-1">
-        {/* Left Side: Empty or tiny indicator */}
+    <div className="bg-[#002147] text-white text-[10px] xs:text-xs py-1.5 xs:py-2 px-4 sm:px-8 md:px-12 border-b border-white/10 select-none z-50 relative">
+      <div className="w-full flex justify-between items-center gap-1">
+        {/* Left Side: NAAC Grade Indicator */}
         <div className="flex items-center gap-1 xs:gap-2 shrink-0">
           <span className="text-[8px] xs:text-[10px] text-white/70 uppercase tracking-widest font-semibold hidden sm:inline">
-            Official University Portal — NAAC, A+ Grade
+            {t('Official University Portal — NAAC, A+ Grade')}
           </span>
         </div>
 
@@ -51,7 +66,7 @@ export default function Topbar() {
                   href={link.href}
                   className="group inline-flex items-center gap-1 hover:text-amber-400 transition-colors text-[9px] xs:text-[11px] sm:text-xs text-white/90 hover:underline py-0.5 xs:py-1 whitespace-nowrap"
                 >
-                  {link.label}
+                  {t(link.label)}
                   <ExternalLink className="w-2.5 h-2.5 xs:w-3 xs:h-3 opacity-60 group-hover:opacity-100" />
                 </a>
               </li>
@@ -87,11 +102,16 @@ export default function Topbar() {
               </button>
             </div>
 
-            <button className="flex items-center gap-0.5 xs:gap-1 hover:text-amber-400 transition-colors text-[9px] xs:text-[11px] sm:text-xs whitespace-nowrap">
-              <Globe className="w-2.5 h-2.5 xs:w-3.5 xs:h-3.5" />
-              English
-              <ChevronDown className="w-2.5 h-2.5 xs:w-3.5 xs:h-3.5" />
+            {/* Language Toggle Button (Switches global i18n context) */}
+            <button
+              onClick={toggleLanguage}
+              className="flex items-center gap-1 hover:text-amber-400 transition-colors text-[9px] xs:text-[11px] sm:text-xs whitespace-nowrap cursor-pointer font-bold border border-white/10 rounded-lg px-2 py-0.5 bg-white/5 hover:bg-white/10"
+              title={isHindi ? 'Switch to English' : 'हिन्दी में बदलें'}
+            >
+              <Globe className="w-2.5 h-2.5 xs:w-3.5 xs:h-3.5 text-amber-400" />
+              <span>{isHindi ? 'हिन्दी' : 'English'}</span>
             </button>
+
             <button className="hover:text-amber-400 transition-colors py-0.5">
               <Moon className="w-3 h-3 xs:w-3.5 xs:h-3.5" />
             </button>

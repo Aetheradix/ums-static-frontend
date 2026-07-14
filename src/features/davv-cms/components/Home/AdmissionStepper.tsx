@@ -1,20 +1,23 @@
 import { ArrowRight, ChevronRight } from 'lucide-react';
 import { ADMISSION_STEPS } from '../../constants/data';
+import { useLanguage } from '../../../../shared/context/useLanguage';
 
 export default function AdmissionStepper() {
+  const { t } = useLanguage();
+
   return (
     <div className="bg-slate-50/50 border border-slate-200/80 rounded-2xl p-4 sm:p-8 shadow-2xs h-full flex flex-col justify-between select-none">
       <div>
         {/* Header */}
         <div className="flex justify-between items-center mb-6 sm:mb-10 border-b border-slate-100 pb-5">
           <h3 className="font-display font-black text-[#002147] text-lg md:text-xl leading-none">
-            Admissions 2024-25
+            {t('Admissions 2026-27')}
           </h3>
           <a
             href="#"
             className="inline-flex items-center gap-1 text-xs font-bold text-blue hover:text-[#002147] transition-colors"
           >
-            <span>View Details</span>
+            <span>{t('View Details')}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </a>
         </div>
@@ -56,16 +59,32 @@ export default function AdmissionStepper() {
                   {/* Content (Text details) */}
                   <div className="flex flex-col md:items-center text-left md:text-center space-y-0.5">
                     <h4 className="font-display font-black text-navy text-xs sm:text-sm md:text-base leading-snug group-hover:text-blue transition-colors">
-                      {step.title}
+                      {t(step.title)}
                     </h4>
                     <p className="text-slate-500 text-[10px] sm:text-xs md:text-[13px] leading-relaxed max-w-[200px] md:mx-auto">
-                      {step.description}
+                      {t(step.description)}
                     </p>
                   </div>
                 </div>
               </div>
             );
           })}
+        </div>
+      </div>
+
+      {/* Tagline & Live Status */}
+      <div className="mt-8 pt-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+        <div className="flex items-center gap-2 text-slate-500">
+          <span className="flex h-2 w-2 relative">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span className="font-medium tracking-tight">
+            {t('Admissions for Academic Session 2026-27 are currently active.')}
+          </span>
+        </div>
+        <div className="text-slate-400 font-display italic">
+          "{t('Empowering Minds, Shaping Futures since 1964.')}"
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useLanguage } from '../../../../shared/context/useLanguage';
 
 const SLIDES = [
   {
@@ -51,6 +52,7 @@ const SLIDES = [
 
 export default function HeroSlider() {
   const [current, setCurrent] = useState(0);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -68,7 +70,7 @@ export default function HeroSlider() {
   };
 
   return (
-    <section className="relative w-full h-[380px] xs:h-[420px] md:h-[500px] lg:h-[580px] overflow-hidden bg-slate-900 select-none rounded-b-2xl md:rounded-b-3xl">
+    <section className="relative w-full h-[380px] xs:h-[420px] md:h-[500px] lg:h-[600px] overflow-hidden bg-slate-900 select-none rounded-b-2xl md:rounded-b-3xl">
       {/* Slides */}
       {SLIDES.map((slide, index) => (
         <div
@@ -89,11 +91,11 @@ export default function HeroSlider() {
             <div className="max-w-[1400px] mx-auto px-4 sm:px-6 w-full text-left flex flex-col items-start gap-3 md:gap-5">
               <div className="space-y-1 xs:space-y-2 max-w-2xl">
                 <h2 className="font-display font-black text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-tight drop-shadow-lg">
-                  {slide.title} <br />
-                  <span className="text-[#F2A900]">{slide.highlight}</span>
+                  {t(slide.title)} <br />
+                  <span className="text-[#F2A900]">{t(slide.highlight)}</span>
                 </h2>
                 <p className="text-white/90 text-xs sm:text-sm md:text-base max-w-lg font-medium leading-relaxed drop-shadow-md pt-2">
-                  {slide.description}
+                  {t(slide.description)}
                 </p>
               </div>
 
@@ -102,7 +104,7 @@ export default function HeroSlider() {
                 href={slide.link}
                 className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 bg-[#F2A900] hover:bg-[#d99700] text-[#002147] font-black text-xs sm:text-sm uppercase tracking-wider rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 group"
               >
-                {slide.ctaText}
+                {t(slide.ctaText)}
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </a>
             </div>
@@ -110,27 +112,72 @@ export default function HeroSlider() {
         </div>
       ))}
 
-      {/* Navigation Arrows */}
+      {/* Combined Controls & Indicators Pill - Mobile Only */}
+      <div className="absolute bottom-16 sm:bottom-20 left-1/2 -translate-x-1/2 z-25 md:hidden flex items-center gap-1 bg-black/60 backdrop-blur-md px-2 py-1 rounded-full border border-white/10 shadow-xl transition-all duration-300">
+        {/* Prev Button */}
+        <button
+          onClick={prevSlide}
+          className="text-white/70 hover:text-white p-0.5 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          aria-label="Previous slide"
+        >
+          <ChevronLeft className="w-3.5 h-3.5" />
+        </button>
+
+        {/* Dot Indicators */}
+        <div className="flex items-center gap-1 px-2 border-x border-white/10">
+          {SLIDES.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrent(index)}
+              className={`h-1 rounded-full transition-all duration-300 cursor-pointer ${
+                index === current
+                  ? 'w-3 bg-[#F2A900]'
+                  : 'w-1 bg-white/40 hover:bg-white/60'
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+
+        {/* Next Button */}
+        <button
+          onClick={nextSlide}
+          className="text-white/70 hover:text-white p-0.5 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          aria-label="Next slide"
+        >
+          <ChevronRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
+
+      {/* Desktop Controls (Left & Right Side Arrows) */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur-xs transition-all z-25 hover:scale-105 border border-white/10"
+        className="absolute left-6 top-1/2 -translate-y-1/2 z-25 hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-black/35 hover:bg-black/55 text-white border border-white/10 hover:scale-105 active:scale-95 transition-all cursor-pointer backdrop-blur-xs shadow-lg"
+        aria-label="Previous slide"
       >
-        <ChevronLeft className="w-5 h-5" />
-      </button>
-      <button
-        onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur-xs transition-all z-25 hover:scale-105 border border-white/10"
-      >
-        <ChevronRight className="w-5 h-5" />
+        <ChevronLeft className="w-6 h-6" />
       </button>
 
-      {/* Dot Indicators */}
-      <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex items-center gap-2.5 z-25">
+      <button
+        onClick={nextSlide}
+        className="absolute right-6 top-1/2 -translate-y-1/2 z-25 hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-black/35 hover:bg-black/55 text-white border border-white/10 hover:scale-105 active:scale-95 transition-all cursor-pointer backdrop-blur-xs shadow-lg"
+        aria-label="Next slide"
+      >
+        <ChevronRight className="w-6 h-6" />
+      </button>
+
+      {/* Desktop Simple Indicator Dots */}
+      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-25 hidden md:flex items-center gap-1.5 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5 shadow-md">
         {SLIDES.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrent(index)}
-            className={`h-2 rounded-full transition-all duration-300 ${index === current ? 'w-8 bg-[#F2A900]' : 'w-2 bg-white/50'}`}
+            className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+              index === current
+                ? 'w-4 bg-[#F2A900]'
+                : 'w-1.5 bg-white/40 hover:bg-white/60'
+            }`}
+            aria-label={`Go to slide ${index + 1}`}
           />
         ))}
       </div>

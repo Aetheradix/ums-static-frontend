@@ -1,4 +1,5 @@
 import { QUICK_LINKS } from '../../constants/data';
+import { useLanguage } from '../../../../shared/context/useLanguage';
 
 const HOVER_GRADIENTS = [
   'linear-gradient(180deg, rgba(37,99,235,0) 0%, rgba(37,99,235,0.3) 100%)',
@@ -12,6 +13,8 @@ const HOVER_GRADIENTS = [
 ];
 
 export default function QuickLinks() {
+  const { t } = useLanguage();
+
   return (
     <section className="max-w-[1400px] mx-auto px-0 sm:px-6 pt-0 pb-2 md:pb-3 select-none">
       <div className="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden">
@@ -39,7 +42,7 @@ export default function QuickLinks() {
 
                 {/* Title */}
                 <span className="relative text-[10px] sm:text-[13px] font-black text-navy group-hover:text-blue mt-1.5 sm:mt-4.5 transition-colors tracking-tight">
-                  {link.label}
+                  {t(link.label)}
                 </span>
               </a>
             );

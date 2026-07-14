@@ -1,6 +1,9 @@
 import { ArrowRight } from 'lucide-react';
+import { useLanguage } from '../../../../shared/context/useLanguage';
 
 export default function VCAndRecruiters() {
+  const { t } = useLanguage();
+
   return (
     <section className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-3 sm:pb-8 select-none">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -17,7 +20,7 @@ export default function VCAndRecruiters() {
 
           <div className="relative z-10 grow flex flex-col justify-between">
             <h3 className="font-display font-black text-[#002147] text-lg md:text-xl mb-6 leading-none">
-              From the Vice Chancellor
+              {t('From the Vice Chancellor')}
             </h3>
 
             <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-center grow justify-center py-2">
@@ -25,7 +28,7 @@ export default function VCAndRecruiters() {
               <div className="w-36 h-48 sm:w-48 sm:h-64 rounded-xl overflow-hidden shrink-0 border border-slate-100 shadow-md z-0 mx-auto sm:mx-0">
                 <img
                   src="/davv-cms/img1.png"
-                  alt="Vice Chancellor Prof. Rakesh Singh"
+                  alt={t('Vice Chancellor Prof. Rakesh Singh')}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -33,16 +36,18 @@ export default function VCAndRecruiters() {
               {/* VC Message blurb */}
               <div className="flex-1 text-center sm:text-left space-y-4">
                 <p className="text-slate-650 text-sm sm:text-[15px] md:text-base leading-relaxed italic font-medium">
-                  "At DAVV, our mission is to empower students through quality
-                  education, research and ethical values. We are dedicated to
-                  building a knowledge society and a better tomorrow."
+                  "
+                  {t(
+                    'At DAVV, our mission is to empower students through quality education, research and ethical values. We are dedicated to building a knowledge society and a better tomorrow.'
+                  )}
+                  "
                 </p>
                 <div>
                   <h4 className="text-blue text-[14px] sm:text-[15px] font-black tracking-tight leading-snug">
-                    Prof. Rakesh Singh
+                    {t('Prof. Rakesh Singh')}
                   </h4>
                   <p className="text-slate-400 text-xs font-semibold mt-0.5">
-                    Vice-Chancellor
+                    {t('Vice-Chancellor')}
                   </p>
                 </div>
                 <div className="pt-2 flex justify-center sm:justify-start">
@@ -50,7 +55,7 @@ export default function VCAndRecruiters() {
                     href="#"
                     className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-[#002147] hover:bg-blue text-white font-black text-[10px] uppercase tracking-wider rounded-xl transition-all shadow-sm group"
                   >
-                    <span>Read Message</span>
+                    <span>{t('Read Message')}</span>
                     <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
                   </a>
                 </div>
@@ -65,13 +70,13 @@ export default function VCAndRecruiters() {
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
               <h3 className="font-display font-black text-[#002147] text-lg md:text-xl leading-none">
-                Top Recruiters
+                {t('Top Recruiters')}
               </h3>
               <a
                 href="#"
                 className="inline-flex items-center gap-1 text-xs font-bold text-blue hover:text-[#002147] transition-colors"
               >
-                <span>View All</span>
+                <span>{t('View All')}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </a>
             </div>
@@ -102,7 +107,7 @@ export default function VCAndRecruiters() {
             {/* Bottom Right: & many more... */}
             <div className="text-right mt-3 pr-2">
               <span className="text-slate-400 text-xs font-semibold tracking-wide italic">
-                & many more...
+                {t('& many more...')}
               </span>
             </div>
           </div>

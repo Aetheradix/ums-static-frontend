@@ -1,4 +1,5 @@
 import { SERVICES_CARDS } from '../../constants/data';
+import { useLanguage } from '../../../../shared/context/useLanguage';
 
 const SERVICE_STYLES: Record<
   string,
@@ -43,12 +44,14 @@ const SERVICE_STYLES: Record<
 };
 
 export default function ImportantServices() {
+  const { t } = useLanguage();
+
   return (
     <div className="bg-slate-50/50 border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-2xs h-full flex flex-col justify-between select-none">
       <div>
         <div className="text-left mb-10 border-b border-slate-100 pb-5">
           <h3 className="font-display font-black text-[#002147] text-lg md:text-xl leading-none">
-            Important Services
+            {t('Important Services')}
           </h3>
         </div>
 
@@ -78,7 +81,7 @@ export default function ImportantServices() {
                 <span
                   className={`text-xs font-black mt-3 transition-colors tracking-tight leading-snug ${styles.textColor} group-hover:text-blue-600`}
                 >
-                  {service.label}
+                  {t(service.label)}
                 </span>
               </a>
             );

@@ -35,11 +35,11 @@ import {
 } from 'lucide-react';
 
 export const TOPBAR_LINKS = [
-  { label: 'Student Login', href: '#' },
-  { label: 'Staff Login', href: '#' },
-  { label: 'Alumni', href: '#' },
-  { label: 'Webmail', href: '#' },
-  { label: 'Career', href: '#' },
+  { label: 'Student Login', labelHi: 'छात्र लॉगिन', href: '#' },
+  { label: 'Staff Login', labelHi: 'कर्मचारी लॉगिन', href: '#' },
+  { label: 'Alumni', labelHi: 'एलुमनाई', href: '#' },
+  { label: 'Webmail', labelHi: 'वेबमेल', href: '#' },
+  { label: 'Career', labelHi: 'करियर', href: '#' },
 ];
 
 export const NAV_LINKS = [
@@ -160,6 +160,30 @@ export const NAV_LINKS = [
       },
     ],
   },
+  {
+    label: 'Governance',
+    megaMenu: true,
+    columns: [
+      {
+        title: 'Administration',
+        items: [
+          { label: 'Executive Council', href: '#', icon: Landmark },
+          { label: 'Academic Council', href: '#', icon: ScrollText },
+          { label: 'University Officers', href: '#', icon: Users },
+          { label: 'RTI Cell', href: '#', icon: ShieldCheck },
+        ],
+      },
+      {
+        title: 'Offices & Cells',
+        items: [
+          { label: 'Development Section', href: '#', icon: Briefcase },
+          { label: 'Dean Student Welfare', href: '#', icon: HeartHandshake },
+          { label: 'SC/ST/OBC Cell', href: '#', icon: Users },
+          { label: 'NSS & NCC', href: '#', icon: ShieldCheck },
+        ],
+      },
+    ],
+  },
 ];
 
 export const QUICK_LINKS = [
@@ -218,71 +242,71 @@ export const ANNOUNCEMENTS = [
     category: 'Admission',
     tag: 'Important',
     tagColor: 'bg-red-600 text-white',
-    title: 'Admission open for various UG, PG & Diploma Programs 2024-25',
-    date: '20 May 2024',
+    title: 'Admission open for various UG, PG & Diploma Programs 2026-27',
+    date: '20 May 2026',
   },
   {
     category: 'Examination',
     tag: 'Examination',
     tagColor: 'bg-blue text-white',
-    title: 'Time Table for UG/PG Even Semester Exams May-June 2024',
-    date: '18 May 2024',
+    title: 'Time Table for UG/PG Even Semester Exams May-June 2026',
+    date: '18 May 2026',
   },
   {
     category: 'Admission',
     tag: 'Admission',
     tagColor: 'bg-emerald-600 text-white',
-    title: 'CUET (UG) Counselling Schedule Released',
-    date: '17 May 2024',
+    title: 'CUET (UG) Counselling Schedule Released 2026',
+    date: '17 May 2026',
   },
   {
     category: 'Circular',
     tag: 'Circular',
     tagColor: 'bg-orange-500 text-white',
     title: 'Holiday Notice on account of University Foundation Day',
-    date: '15 May 2024',
+    date: '15 May 2026',
   },
   {
     category: 'Tender',
     tag: 'Tender',
     tagColor: 'bg-indigo-600 text-white',
     title: 'Tender invited for Supply of Lab Equipment in IET',
-    date: '12 May 2024',
+    date: '12 May 2026',
   },
   {
     category: 'Events',
     tag: 'Events',
     tagColor: 'bg-purple-600 text-white',
     title: 'National Level Seminar on NEP 2020 Implementations',
-    date: '10 May 2024',
+    date: '10 May 2026',
   },
   {
     category: 'Examination',
     tag: 'Examination',
     tagColor: 'bg-blue text-white',
     title: 'Result of B.Ed. & M.Ed. Semester Exams Declared',
-    date: '08 May 2024',
+    date: '08 May 2026',
   },
   {
     category: 'Circular',
     tag: 'Circular',
     tagColor: 'bg-orange-500 text-white',
     title: 'Revised Guidelines for PhD Course Work Registration',
-    date: '05 May 2024',
+    date: '05 May 2026',
   },
   {
     category: 'Events',
     tag: 'Events',
     tagColor: 'bg-purple-600 text-white',
     title: 'Youth Festival & Cultural Activities Registration Open',
-    date: '02 May 2024',
+    date: '02 May 2026',
   },
   {
     category: 'Tender',
     tag: 'Tender',
     tagColor: 'bg-indigo-600 text-white',
     title: 'E-Tender for Security Services at University Campus',
-    date: '28 Apr 2024',
+    date: '28 Apr 2026',
   },
 ];
 
@@ -322,32 +346,52 @@ export const GLANCE_STATS = [
 export const EXPLORE_CARDS = [
   {
     title: 'Campus Life',
-    image: '/DAVV_Uni.jpg',
+    images: [
+      '/davv-cms/explore/campus_life.png',
+      '/davv-cms/explore/departments.png',
+    ],
     icon: Compass,
   },
   {
     title: 'Departments',
-    image: '/Davv_Gate.jpg',
+    images: [
+      '/davv-cms/explore/departments.png',
+      '/davv-cms/explore/research.png',
+    ],
     icon: Layers,
   },
   {
     title: 'Research',
-    image: '/DAVV_Uni.jpg',
+    images: [
+      '/davv-cms/explore/research.png',
+      '/davv-cms/explore/innovation.png',
+      '/davv-cms/explore/placements.png',
+    ],
     icon: FlaskConical,
   },
   {
     title: 'Placements',
-    image: '/Davv_Gate.jpg',
+    images: [
+      '/davv-cms/explore/placements.png',
+      '/davv-cms/explore/campus_life.png',
+    ],
     icon: Briefcase,
   },
   {
     title: 'Innovation',
-    image: '/DAVV_Uni.jpg',
+    images: [
+      '/davv-cms/explore/innovation.png',
+      '/davv-cms/explore/international_cell.png',
+    ],
     icon: Lightbulb,
   },
   {
     title: 'International Cell',
-    image: '/Davv_Gate.jpg',
+    images: [
+      '/davv-cms/explore/international_cell.png',
+      '/davv-cms/explore/innovation.png',
+      '/davv-cms/explore/campus_life.png',
+    ],
     icon: Globe,
   },
 ];
