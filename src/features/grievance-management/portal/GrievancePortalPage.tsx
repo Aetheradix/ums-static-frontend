@@ -10,39 +10,55 @@ export default function GrievancePortalPage() {
         {
           title: 'Student Portal',
           description:
-            'Raise grievances, track complaints, file appeals and communicate with the grievance cell.',
+            'Raise grievances, track complaint timelines, view status, and download resolution letters.',
           icon: 'school',
           colorScheme: 'blue',
           path: grvUrls.student.portal,
         },
         {
-          title: 'Department / Teacher Portal',
+          title: 'Teacher / Employee Portal',
           description:
-            'Review assigned complaints, create digital notesheets, take action and forward to authority.',
+            'File complaints, track status, view notifications, and access resolved letters.',
+          icon: 'badge',
+          colorScheme: 'indigo',
+          path: grvUrls.teacher.portal,
+        },
+        {
+          title: 'Department Officer Portal',
+          description:
+            'Review complaints, draft and create green digital notesheets, forward or return files.',
           icon: 'assignment_ind',
           colorScheme: 'green',
-          path: grvUrls.department.portal,
+          path: grvUrls.departmentOfficer.portal,
+        },
+        {
+          title: 'HoD Portal',
+          description:
+            'Access pending complaints inbox, review digital notesheets, write official remarks, forward or return files.',
+          icon: 'supervisor_account',
+          colorScheme: 'teal',
+          path: grvUrls.hod.portal,
         },
         {
           title: 'Grievance Cell Portal',
           description:
-            'Manage all complaints, monitor SLA, assign departments and oversee committee operations.',
+            'Manage university complaints, assign departments, conduct committee reviews, and view analytical reports.',
           icon: 'support_agent',
           colorScheme: 'purple',
           path: grvUrls.cell.portal,
         },
         {
-          title: 'Authority Portal (HoD / Registrar)',
+          title: 'Registrar Portal',
           description:
-            'Review pending approvals, manage appeals and issue final decisions.',
+            'Review recommendations, access full notesheet history, generate final resolution letters, and close files.',
           icon: 'gavel',
           colorScheme: 'orange',
-          path: grvUrls.authority.portal,
+          path: grvUrls.registrar.portal,
         },
         {
           title: 'Admin Portal',
           description:
-            'Configure categories, SLA rules, notification templates, integration APIs and view audit logs.',
+            'Configure masters, categories, committees, mapping, user roles, routing flows, and audit logs.',
           icon: 'admin_panel_settings',
           colorScheme: 'red',
           path: grvUrls.admin.portal,

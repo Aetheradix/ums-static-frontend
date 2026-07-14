@@ -1,61 +1,100 @@
 import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { ToastService } from 'services';
-import { Button } from 'shared/components/buttons';
-import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
+import { useNavigate } from 'react-router-dom';
 import { FormCard, FormGrid, FormPage } from 'shared/new-components';
-import { complaints } from '../../mocks';
+import { Button } from 'shared/components/buttons';
+import { TextArea, DropDownList } from 'shared/components/forms';
+import { ToastService } from 'services';
 import { grvUrls } from '../../urls';
 import '../../Grievance.css';
 
 export default function StudentAppeal() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const stateId = location.state?.complaintId;
+  const [ticketNo, setTicketNo] = useState('');
+  const [appealReason, setAppealReason] = useState('');
+  const [additionalInfo, setAdditionalInfo] = useState('');
+  const [submitted, setSubmitted] = useState(false);
 
-  // Filter resolved/closed complaints that student can appeal
-  const eligibleComplaints = complaints.filter(
-    c => c.status === 'Resolved' || c.status === 'Closed'
-  );
-
-  const [form, setForm] = useState({
-    ticketId: stateId || (eligibleComplaints[0]?.id ?? ''),
-    reason: '',
-    solution: '',
-    evidenceName: '',
-  });
-
-  const [submitting, setSubmitting] = useState(false);
-
-  const handleFileAttach = () => {
-    setForm(f => ({ ...f, evidenceName: 'Appended_Fresh_Evidence.pdf' }));
-    ToastService.success('Appended_Fresh_Evidence.pdf attached.');
-  };
+  const reasonOptions = [
+    {
+      name: 'Resolution not satisfactory',
+      value: 'Resolution not satisfactory',
+    },
+    {
+      name: 'No action taken within timeline',
+      value: 'No action taken within timeline',
+    },
+    {
+      name: 'Grievance was wrongly closed',
+      value: 'Grievance was wrongly closed',
+    },
+    {
+      name: 'New evidence / documents available',
+      value: 'New evidence / documents available',
+    },
+    { name: 'Procedural irregularity', value: 'Procedural irregularity' },
+  ];
 
   const handleSubmit = () => {
-    if (!form.ticketId) {
-      ToastService.error('Please select a ticket to appeal.');
+    if (!ticketNo || !appealReason || !additionalInfo) {
+      ToastService.error('Please fill all required fields.');
       return;
     }
-    if (!form.reason.trim() || !form.solution.trim()) {
-      ToastService.error('Appeal reason and requested solution are required.');
-      return;
-    }
-
-    setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      ToastService.success(
-        'Appeal filed successfully. Ticket auto-escalated to Level 4 (HoD/Registrar Panel).'
-      );
-      navigate(grvUrls.student.track);
-    }, 1000);
+    setSubmitted(true);
   };
+
+  if (submitted) {
+    const appealNo = `APL/2026/${Math.floor(10000 + Math.random() * 90000)}`;
+    return (
+      <FormPage
+        title="Appeal Submitted"
+        description="Your appeal has been filed with the Registrar"
+        breadcrumbs={[
+          { label: 'Home', to: '/home' },
+          { label: 'Grievance Management', to: grvUrls.portal },
+          { label: 'Student Portal', to: grvUrls.student.portal },
+          { label: 'Appeal' },
+        ]}
+      >
+        <FormCard title="">
+          <div className="flex flex-col items-center py-10 gap-4">
+            <div className="w-20 h-20 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-4xl">
+              ⚖️
+            </div>
+            <h2 className="text-xl font-bold text-slate-800">
+              Appeal Registered Successfully!
+            </h2>
+            <p className="text-slate-500 text-sm text-center max-w-md">
+              Your appeal has been forwarded to the Registrar's desk for final
+              review. You will be notified of the decision.
+            </p>
+            <div className="bg-slate-50 border rounded-lg p-4 w-full max-w-sm text-center">
+              <p className="text-xs text-slate-500 mb-1">Your Appeal Number</p>
+              <p className="text-2xl font-mono font-bold text-orange-700">
+                {appealNo}
+              </p>
+            </div>
+            <div className="flex gap-3 mt-2">
+              <Button
+                label="Track Grievance"
+                variant="primary"
+                onClick={() => navigate(grvUrls.student.track)}
+              />
+              <Button
+                label="Go to Dashboard"
+                variant="outlined"
+                onClick={() => navigate(grvUrls.student.dashboard)}
+              />
+            </div>
+          </div>
+        </FormCard>
+      </FormPage>
+    );
+  }
 
   return (
     <FormPage
       title="File an Appeal"
-      description="Lodge an appeal to the SGRC appellate authority if you are unsatisfied with the lower-level resolution."
+      description="Appeal to the Registrar if you are not satisfied with the grievance resolution"
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Grievance Management', to: grvUrls.portal },
@@ -63,128 +102,68 @@ export default function StudentAppeal() {
         { label: 'Appeal' },
       ]}
     >
-      <div className="grv-alert info">
-        <i className="pi pi-shield"></i>
-        <div>
-          <strong>UGC SGRC Appellate Protocol:</strong> Complainants have the
-          statutory right to file an appeal within 15 days of resolution
-          publication. Appeals are routed straight to Level 4 (HoD / Registrar
-          Office).
-        </div>
+      <div className="mb-4">
+        <Button
+          label="← Back to Portal"
+          variant="outlined"
+          onClick={() => navigate(grvUrls.student.portal)}
+        />
       </div>
 
-      <div
-        className="grv-bottom-row"
-        style={{ gridTemplateColumns: '1.5fr 1fr' }}
-      >
-        <FormCard title="Appeal Petition Form" icon="edit_note">
-          <FormGrid columns={1}>
-            <DropDownList
-              label="Select Resolved/Closed Ticket to Appeal"
-              data={eligibleComplaints.map(c => ({
-                name: `${c.ticketNo} — ${c.subject.substring(0, 50)}...`,
-                value: c.id,
-              }))}
-              textField="name"
-              optionValue="value"
-              value={form.ticketId}
-              onChange={val =>
-                setForm(f => ({ ...f, ticketId: String(val ?? '') }))
-              }
-              required
+      <div className="mb-4 p-4 bg-orange-50 border border-orange-200 rounded-lg text-sm">
+        <p className="font-semibold text-orange-800 mb-1">
+          ⚠️ When to file an Appeal?
+        </p>
+        <ul className="text-orange-700 text-xs space-y-1 list-disc ml-4">
+          <li>Your grievance was closed but the issue remains unresolved</li>
+          <li>No action was taken within the expected timeframe</li>
+          <li>You have new supporting evidence to submit</li>
+          <li>A procedural irregularity occurred during review</li>
+        </ul>
+      </div>
+
+      <FormCard title="Appeal Details">
+        <FormGrid columns={2}>
+          <div>
+            <label className="grv-label">Grievance Ticket No *</label>
+            <input
+              className="grv-input w-full"
+              placeholder="e.g. GRV/2026/00101"
+              value={ticketNo}
+              onChange={e => setTicketNo(e.target.value)}
             />
-
-            <div className="mt-2">
-              <TextArea
-                label="Detailed Reason of Appeal"
-                placeholder="Explain why the resolution remarks provided by the department are unsatisfactory..."
-                value={form.reason}
-                onChange={val => setForm(f => ({ ...f, reason: val }))}
-                rows={4}
-                required
-              />
-            </div>
-
-            <div className="mt-2">
-              <TextArea
-                label="Proposed / Desired Correction Solution"
-                placeholder="Specify what exact corrective action will satisfy this grievance..."
-                value={form.solution}
-                onChange={val => setForm(f => ({ ...f, solution: val }))}
-                rows={3}
-                required
-              />
-            </div>
-
-            <div className="mt-2">
-              <TextBox
-                label="Add Fresh Evidentiary Materials"
-                placeholder="Name of newly added evidence document"
-                value={form.evidenceName}
-                onChange={val => setForm(f => ({ ...f, evidenceName: val }))}
-                disabled
-              />
-              <div className="mt-2 flex justify-start">
-                <Button
-                  label="Attach Fresh Document"
-                  icon="upload"
-                  variant="outlined"
-                  size="small"
-                  onClick={handleFileAttach}
-                />
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-2 border-t border-slate-100 pt-4 mt-4">
-              <Button
-                label="Cancel"
-                variant="outlined"
-                onClick={() => navigate(grvUrls.student.portal)}
-              />
-              <Button
-                label="Lodge Appeal"
-                icon="send"
-                variant="primary"
-                isLoading={submitting}
-                onClick={handleSubmit}
-              />
-            </div>
-          </FormGrid>
-        </FormCard>
-
-        {/* Info panel */}
-        <div className="space-y-4">
-          <FormCard title="Eligible Tickets Status" icon="list">
-            {eligibleComplaints.length === 0 ? (
-              <p className="text-xs text-slate-400">
-                You have no resolved or closed tickets eligible for appeal.
-              </p>
-            ) : (
-              <div className="space-y-2">
-                {eligibleComplaints.map(c => (
-                  <div
-                    key={c.id}
-                    className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs"
-                  >
-                    <span className="font-extrabold text-blue-600 block">
-                      {c.ticketNo}
-                    </span>
-                    <span className="font-bold text-slate-700 block my-1">
-                      {c.subject}
-                    </span>
-                    <span className="text-[10px] text-slate-400 block">
-                      Resolved Date: {c.resolvedDate || '—'}
-                    </span>
-                    <p className="text-[10px] text-slate-500 mt-1 italic">
-                      Resolution: "{c.resolutionRemarks || 'N/A'}"
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </FormCard>
+          </div>
+          <DropDownList
+            label="Reason for Appeal *"
+            data={reasonOptions}
+            textField="name"
+            optionValue="value"
+            value={appealReason}
+            onChange={val => setAppealReason(val as string)}
+          />
+          <div className="md:col-span-2">
+            <TextArea
+              label="Additional Information & Supporting Statement *"
+              placeholder="Provide a detailed statement of why you are appealing, what resolution you expect, and any new information..."
+              value={additionalInfo}
+              onChange={setAdditionalInfo}
+              rows={5}
+            />
+          </div>
+        </FormGrid>
+        <div className="flex justify-end mt-4 gap-3">
+          <Button
+            label="Cancel"
+            variant="outlined"
+            onClick={() => navigate(grvUrls.student.portal)}
+          />
+          <Button
+            label="Submit Appeal ⚖️"
+            variant="primary"
+            onClick={handleSubmit}
+          />
         </div>
-      </div>
+      </FormCard>
     </FormPage>
   );
 }

@@ -1,151 +1,302 @@
 import { useState } from 'react';
-import { ToastService } from 'services';
-import { Button } from 'shared/components/buttons';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FormCard, FormPage } from 'shared/new-components';
+import { Button } from 'shared/components/buttons';
+import { TextArea } from 'shared/components/forms';
+import { ToastService } from 'services';
+import { complaints } from '../../mocks';
 import { grvUrls } from '../../urls';
 import '../../Grievance.css';
 
-interface MessageLog {
+interface Message {
   id: string;
-  type: 'SMS' | 'Email' | 'WhatsApp' | 'In-App';
-  sender: string;
-  recipient: string;
-  subject?: string;
-  body: string;
-  timestamp: string;
-  status: 'Sent' | 'Read' | 'Failed';
+  from: 'me' | 'officer';
+  name: string;
+  role: string;
+  text: string;
+  time: string;
+  read: boolean;
 }
 
-const INITIAL_LOGS: MessageLog[] = [
-  {
-    id: 'MSG001',
-    type: 'WhatsApp',
-    sender: 'DAVV Grievance Desk',
-    recipient: '9876543210',
-    body: '✅ Grievance GRV/DAVV/2025/00312 under review. The exam committee will reassess Data Structures answer sheets. Expected resolution: 18 Dec 2025.',
-    timestamp: '16 Dec 2025 14:05',
-    status: 'Sent',
-  },
-  {
-    id: 'MSG002',
-    type: 'SMS',
-    sender: 'DAVV_ERP',
-    recipient: '9876543210',
-    body: 'Dear Arjun, Your academic grievance GRV/DAVV/2025/00312 has been successfully registered. Track status at: davv.erp/track. Team DAVV.',
-    timestamp: '15 Dec 2025 09:15',
-    status: 'Sent',
-  },
-  {
-    id: 'MSG003',
-    type: 'Email',
-    sender: 'grievance.cell@davv.ac.in',
-    recipient: 'arjun.sharma@davv.ac.in',
-    subject: 'Grievance Petition Filed: GRV/DAVV/2025/00312',
-    body: 'Dear Arjun Sharma,\n\nWe acknowledge the receipt of your grievance petition regarding re-evaluation of CS302 exam paper. The petition has been assigned to the Examination Nodal Officer Dr. Rakesh Verma under UGC SGRC guidelines.\n\nBest Regards,\nDAVV Grievance Redressal Cell.',
-    timestamp: '15 Dec 2025 09:20',
-    status: 'Read',
-  },
-];
+const mockThreads: Record<string, Message[]> = {
+  'GRV/2026/00101': [
+    {
+      id: 'm1',
+      from: 'officer',
+      name: 'Dr. Amit Joshi',
+      role: 'Dept Officer — SCSIT',
+      text: 'We have received your grievance regarding examination result discrepancy. Please provide your admit card number and the subject(s) in question so we can initiate a formal check with the examination section.',
+      time: '12 Jul 2026, 10:30 AM',
+      read: true,
+    },
+    {
+      id: 'm2',
+      from: 'me',
+      name: 'Arjun Sharma',
+      role: 'Student',
+      text: 'My admit card number is 2021CS0047. The discrepancy is in Advanced Java (CS-501) and Data Structures (CS-401).',
+      time: '12 Jul 2026, 11:15 AM',
+      read: true,
+    },
+    {
+      id: 'm3',
+      from: 'officer',
+      name: 'Dr. Amit Joshi',
+      role: 'Dept Officer — SCSIT',
+      text: 'Thank you. The matter has been forwarded to the HoD for review. You will receive an update within 3 working days. Please track the notesheet for real-time status.',
+      time: '12 Jul 2026, 02:45 PM',
+      read: false,
+    },
+  ],
+  'GRV/2026/00099': [
+    {
+      id: 'm4',
+      from: 'officer',
+      name: 'Registrar Office',
+      role: 'Grievance Cell',
+      text: 'Your earlier grievance regarding hostel fee refund has been reviewed and a Resolution Order has been issued. Please download the resolution letter from the Downloads section.',
+      time: '05 Jul 2026, 11:00 AM',
+      read: true,
+    },
+  ],
+};
 
 export default function StudentCommunicationCenter() {
-  const [logs, setLogs] = useState<MessageLog[]>(INITIAL_LOGS);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isTeacher = location.pathname.includes('/teacher');
+  const portalUrls = isTeacher ? grvUrls.teacher : grvUrls.student;
 
-  const handleClearAll = () => {
-    setLogs([]);
-    ToastService.success('Notification center logs cleared.');
+  const myComplaints = complaints.filter(
+    c => c.complaintType === (isTeacher ? 'Teacher' : 'Student')
+  );
+
+  const [selectedTicket, setSelectedTicket] = useState<string | null>(
+    myComplaints.length > 0 ? myComplaints[0].ticketNo : null
+  );
+  const [replyText, setReplyText] = useState('');
+  const [localMessages, setLocalMessages] =
+    useState<Record<string, Message[]>>(mockThreads);
+
+  const thread = selectedTicket ? localMessages[selectedTicket] || [] : [];
+
+  const handleSend = () => {
+    if (!replyText.trim()) return;
+    if (!selectedTicket) return;
+
+    const newMsg: Message = {
+      id: `m-${Date.now()}`,
+      from: 'me',
+      name: isTeacher ? 'Dr. Vivek Kumar' : 'Arjun Sharma',
+      role: isTeacher ? 'Teaching Staff' : 'Student',
+      text: replyText.trim(),
+      time: new Date().toLocaleString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+      read: true,
+    };
+
+    setLocalMessages(prev => ({
+      ...prev,
+      [selectedTicket]: [...(prev[selectedTicket] || []), newMsg],
+    }));
+    setReplyText('');
+    ToastService.success('Message sent successfully!');
   };
+
+  const unreadCount = (ticket: string) =>
+    (localMessages[ticket] || []).filter(m => m.from === 'officer' && !m.read)
+      .length;
 
   return (
     <FormPage
-      title="Communication Hub"
-      description="View full SMS, Email, and WhatsApp log records dispatched regarding your grievances."
+      title="Communication Center"
+      description="Official correspondence with Grievance Cell and Department Officers"
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Grievance Management', to: grvUrls.portal },
-        { label: 'Student Portal', to: grvUrls.student.portal },
-        { label: 'Communication Center' },
+        {
+          label: isTeacher ? 'Teacher Portal' : 'Student Portal',
+          to: portalUrls.portal,
+        },
+        { label: 'Communication' },
       ]}
     >
-      <div className="flex justify-between items-center mb-4">
-        <span className="text-xs text-slate-500 font-bold">
-          Total Dispatches: {logs.length}
-        </span>
-        {logs.length > 0 && (
-          <Button
-            label="Clear Logs"
-            icon="trash"
-            variant="danger"
-            size="small"
-            onClick={handleClearAll}
-          />
-        )}
+      <div className="mb-4">
+        <Button
+          label={`← Back to ${isTeacher ? 'Teacher' : 'Student'} Portal`}
+          variant="outlined"
+          onClick={() => navigate(portalUrls.portal)}
+        />
       </div>
 
-      <div className="space-y-4">
-        {logs.length === 0 ? (
-          <div className="grv-empty">
-            <i className="pi pi-bell-slash text-gray-300"></i>
-            <p>Your notification history is empty.</p>
-          </div>
-        ) : (
-          logs.map(log => {
-            const isEmail = log.type === 'Email';
-            const isSms = log.type === 'SMS';
-            const isWa = log.type === 'WhatsApp';
+      <div className="grv-alert info">
+        <i className="pi pi-info-circle" />
+        <div>
+          <span className="font-bold">Official Channel:</span> All messages here
+          are recorded on the grievance notesheet and form part of the official
+          record. Do not share sensitive personal information.
+        </div>
+      </div>
 
-            return (
-              <FormCard key={log.id}>
-                <div className="flex justify-between items-start gap-4">
-                  <div className="flex gap-3">
-                    <div className="p-2 rounded-lg bg-slate-100 flex items-center justify-center self-start">
-                      <i
-                        className={`pi ${isEmail ? 'pi-envelope text-blue-600' : isSms ? 'pi-phone text-purple-600' : isWa ? 'pi-whatsapp text-emerald-600' : 'pi-bell text-yellow-600'} text-lg`}
-                      ></i>
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-extrabold text-xs text-slate-800">
-                          {log.type} Delivery
-                        </span>
-                        <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono">
-                          {log.id}
-                        </span>
-                      </div>
-                      {log.subject && (
-                        <h4 className="font-bold text-slate-800 text-xs mb-1">
-                          Sub: {log.subject}
-                        </h4>
-                      )}
-                      <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-line">
-                        {log.body}
-                      </p>
-
-                      <div className="flex items-center gap-3 text-[10px] text-slate-400 mt-2">
-                        <span>
-                          Recipient: <strong>{log.recipient}</strong>
-                        </span>
-                        <span>
-                          Sender Node: <strong>{log.sender}</strong>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="text-right">
-                    <span className="text-[10px] text-slate-400 block font-mono mb-1">
-                      {log.timestamp}
-                    </span>
-                    <span
-                      className={`text-[10px] font-bold ${log.status === 'Read' ? 'text-blue-600' : 'text-emerald-600'}`}
+      <div
+        className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4"
+        style={{ minHeight: '500px' }}
+      >
+        {/* Thread List */}
+        <div className="md:col-span-1">
+          <FormCard title="My Grievance Threads">
+            {myComplaints.length === 0 ? (
+              <div className="text-center py-10 text-slate-400">
+                <p className="text-3xl mb-2">💬</p>
+                <p className="text-sm">No active grievances found.</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {myComplaints.map(c => {
+                  const unread = unreadCount(c.ticketNo);
+                  const isActive = selectedTicket === c.ticketNo;
+                  return (
+                    <button
+                      key={c.id}
+                      onClick={() => setSelectedTicket(c.ticketNo)}
+                      className={`w-full text-left p-3 rounded-lg border text-xs transition-all ${
+                        isActive
+                          ? 'bg-blue-50 border-blue-400 shadow-sm'
+                          : 'bg-white border-slate-200 hover:border-blue-200 hover:bg-slate-50'
+                      }`}
                     >
-                      {log.status.toUpperCase()}
-                    </span>
+                      <div className="flex justify-between items-start mb-1">
+                        <span className="font-mono font-bold text-blue-700 text-[11px]">
+                          {c.ticketNo}
+                        </span>
+                        {unread > 0 && (
+                          <span className="bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold">
+                            {unread}
+                          </span>
+                        )}
+                      </div>
+                      <p className="font-medium text-slate-700 truncate">
+                        {c.subject}
+                      </p>
+                      <p className="text-slate-400 mt-0.5">{c.category}</p>
+                      <div className="flex items-center gap-1 mt-1">
+                        <span
+                          className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${
+                            c.status === 'Closed'
+                              ? 'bg-green-100 text-green-700'
+                              : 'bg-blue-100 text-blue-700'
+                          }`}
+                        >
+                          {c.status}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </FormCard>
+        </div>
+
+        {/* Message Thread */}
+        <div className="md:col-span-2">
+          {!selectedTicket ? (
+            <FormCard title="">
+              <div className="flex flex-col items-center justify-center py-20 text-slate-400">
+                <p className="text-5xl mb-4">💬</p>
+                <p className="text-lg font-medium text-slate-500">
+                  Select a grievance thread
+                </p>
+                <p className="text-sm text-slate-400">
+                  Choose a complaint from the left to view messages
+                </p>
+              </div>
+            </FormCard>
+          ) : (
+            <FormCard title={`Thread: ${selectedTicket}`}>
+              {/* Messages */}
+              <div className="space-y-4 mb-4 max-h-80 overflow-y-auto pr-1">
+                {thread.length === 0 ? (
+                  <div className="text-center py-10 text-slate-400">
+                    <p className="text-3xl mb-2">📭</p>
+                    <p className="text-sm">
+                      No messages yet. Start the conversation below.
+                    </p>
+                  </div>
+                ) : (
+                  thread.map(msg => (
+                    <div
+                      key={msg.id}
+                      className={`flex ${msg.from === 'me' ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div
+                        className={`max-w-[80%] rounded-2xl px-4 py-3 text-xs shadow-sm ${
+                          msg.from === 'me'
+                            ? 'bg-blue-600 text-white rounded-br-sm'
+                            : 'bg-slate-100 text-slate-800 border border-slate-200 rounded-bl-sm'
+                        }`}
+                      >
+                        <div
+                          className={`flex gap-2 items-center mb-1.5 ${msg.from === 'me' ? 'justify-end' : ''}`}
+                        >
+                          <span
+                            className={`font-bold text-[11px] ${msg.from === 'me' ? 'text-blue-100' : 'text-blue-700'}`}
+                          >
+                            {msg.name}
+                          </span>
+                          <span
+                            className={`text-[9px] ${msg.from === 'me' ? 'text-blue-200' : 'text-slate-400'}`}
+                          >
+                            · {msg.role}
+                          </span>
+                        </div>
+                        <p className="leading-relaxed">{msg.text}</p>
+                        <p
+                          className={`mt-1.5 text-[9px] ${msg.from === 'me' ? 'text-blue-200 text-right' : 'text-slate-400'}`}
+                        >
+                          {msg.time}
+                          {msg.from === 'me' && (
+                            <span className="ml-1">✓✓</span>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Reply Box */}
+              <div className="border-t border-slate-100 pt-3">
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <TextArea
+                      label=""
+                      placeholder="Type your official reply here..."
+                      value={replyText}
+                      onChange={setReplyText}
+                      rows={3}
+                    />
                   </div>
                 </div>
-              </FormCard>
-            );
-          })
-        )}
+                <div className="flex justify-between items-center mt-2">
+                  <p className="text-[10px] text-slate-400">
+                    This message will be recorded on the official notesheet.
+                  </p>
+                  <Button
+                    label="Send Message →"
+                    variant="primary"
+                    onClick={handleSend}
+                  />
+                </div>
+              </div>
+            </FormCard>
+          )}
+        </div>
       </div>
     </FormPage>
   );

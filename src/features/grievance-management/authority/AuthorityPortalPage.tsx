@@ -4,42 +4,26 @@ import { grvUrls } from '../urls';
 export default function AuthorityPortalPage() {
   return (
     <PortalSelector
-      moduleTitle="Authority Portal — HoD / Registrar"
-      moduleDescription="Review pending approvals, notesheets, decisions, and appeal hearings."
+      moduleTitle="Authority Portal — Grievance Administration"
+      moduleDescription="DAVV Indore — Select authority level to review green notesheets, verify recommendations, and sanction final resolution orders."
       backPath={grvUrls.portal}
-      backLabel="Grievance Management"
+      backLabel="Grievance Management System"
       portals={[
         {
-          title: 'Dashboard',
+          title: 'Head of Department (HoD) Desk',
           description:
-            'Overview of approvals pending, appeal rates, decision count and urgent items.',
-          icon: 'dashboard',
-          colorScheme: 'orange',
-          path: grvUrls.authority.dashboard,
+            'Access department level inbox, review notesheets, append official remarks, and forward/return files.',
+          icon: 'supervisor_account',
+          colorScheme: 'teal',
+          path: grvUrls.hod.portal,
         },
         {
-          title: 'Pending Approvals',
+          title: 'Registrar Desk',
           description:
-            'Approve, reject, or return digital notesheets and resolutions forwarded to you.',
-          icon: 'rule',
-          colorScheme: 'blue',
-          path: grvUrls.authority.approvals,
-        },
-        {
-          title: 'Appeal Management',
-          description:
-            'Hear appeals submitted by students/faculty against previous resolution decisions.',
+            'Review statutory committee recommendations, verify full notesheet history, and sanction final closing orders.',
           icon: 'gavel',
-          colorScheme: 'red',
-          path: grvUrls.authority.appeals,
-        },
-        {
-          title: 'Decision History',
-          description:
-            'Log of all final decisions, approved notesheets and closed cases signed by you.',
-          icon: 'history',
-          colorScheme: 'gray',
-          path: grvUrls.authority.history,
+          colorScheme: 'orange',
+          path: grvUrls.registrar.portal,
         },
       ]}
     />

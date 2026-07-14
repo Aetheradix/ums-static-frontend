@@ -1,174 +1,241 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FormPage } from 'shared/new-components';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { FormCard, FormPage } from 'shared/new-components';
+import { Button } from 'shared/components/buttons';
 import { complaints } from '../../mocks';
 import { grvUrls } from '../../urls';
 import '../../Grievance.css';
 
+const statusOrder = [
+  'Submitted',
+  'Department Review',
+  'HoD Review',
+  'Committee Review',
+  'Registrar Decision',
+  'Closed',
+];
+
+const statusColors: Record<string, string> = {
+  Submitted: 'grv-status-pill pending',
+  'Department Review': 'grv-status-pill review',
+  'HoD Review': 'grv-status-pill review',
+  'Committee Review': 'grv-status-pill review',
+  'Registrar Decision': 'grv-status-pill approved',
+  Closed: 'grv-status-pill closed',
+};
+
 export default function StudentTrackComplaint() {
   const navigate = useNavigate();
-  const [filterStatus, setFilterStatus] = useState('ALL');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get('id');
 
-  // Active mock student
-  const STUDENT_ENROLL = 'CS2021001';
-  const myComplaints = complaints.filter(
-    c => c.enrollmentNo === STUDENT_ENROLL || !c.isAnonymous
-  );
+  const grievance = id ? complaints.find(c => c.id === id) : complaints[0];
 
-  const statuses = [
-    'ALL',
-    'Submitted',
-    'Assigned',
-    'Under Review',
-    'Forwarded',
-    'Escalated',
-    'Resolved',
-    'Closed',
-  ];
+  if (!grievance) {
+    return (
+      <FormPage
+        title="Track Complaint"
+        description="Real-time status of your grievance"
+        breadcrumbs={[
+          { label: 'Home', to: '/home' },
+          { label: 'Grievance Management', to: grvUrls.portal },
+          { label: 'Student Portal', to: grvUrls.student.portal },
+          { label: 'Track' },
+        ]}
+      >
+        <FormCard title="">
+          <div className="text-center py-16 text-slate-400">
+            <p className="text-4xl mb-3">🔍</p>
+            <p className="text-lg font-medium">Grievance not found</p>
+          </div>
+        </FormCard>
+      </FormPage>
+    );
+  }
 
-  const filtered = myComplaints.filter(c => {
-    const matchesStatus = filterStatus === 'ALL' || c.status === filterStatus;
-    const matchesSearch =
-      c.ticketNo.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.category.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesStatus && matchesSearch;
-  });
+  const currentIdx = statusOrder.indexOf(grievance.status);
 
   return (
     <FormPage
-      title="Track Active Grievances"
-      description="Monitor the real-time processing status, assigned department and SLA metrics of your filed tickets."
+      title="Track Grievance"
+      description={`Ticket No: ${grievance.ticketNo}`}
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Grievance Management', to: grvUrls.portal },
         { label: 'Student Portal', to: grvUrls.student.portal },
-        { label: 'Track Complaint' },
+        { label: 'My Grievances', to: grvUrls.student.myGrievances },
+        { label: 'Track' },
       ]}
     >
-      {/* Filters row */}
-      <div className="grv-filters-row">
-        <input
-          type="text"
-          className="grv-search-input"
-          placeholder="Search by Ticket No., Subject, Category..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
+      <div className="mb-4">
+        <Button
+          label="← My Grievances"
+          variant="outlined"
+          onClick={() => navigate(grvUrls.student.myGrievances)}
         />
-        <select
-          className="grv-filter-select"
-          value={filterStatus}
-          onChange={e => setFilterStatus(e.target.value)}
-        >
-          {statuses.map(s => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </select>
       </div>
 
-      {/* Grid of complaints */}
-      <div className="space-y-4">
-        {filtered.length === 0 ? (
-          <div className="grv-empty">
-            <i className="pi pi-search text-gray-300"></i>
-            <p>
-              No active grievances matching the selected filters were found.
+      <FormCard title="Grievance Overview">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+          <div>
+            <p className="text-xs text-slate-400">Ticket Number</p>
+            <p className="font-mono font-bold text-blue-700">
+              {grievance.ticketNo}
             </p>
           </div>
-        ) : (
-          filtered.map(c => {
-            const isEscalated = c.status === 'Escalated';
-            const isNearBreach = c.slaStatus === 'Near Breach';
-            const isBreached = c.slaStatus === 'Breached';
+          <div>
+            <p className="text-xs text-slate-400">Category</p>
+            <p className="font-semibold">{grievance.category}</p>
+          </div>
+          <div>
+            <p className="text-xs text-slate-400">Submitted On</p>
+            <p className="font-semibold">{grievance.submittedDate}</p>
+          </div>
+          <div>
+            <p className="text-xs text-slate-400">Current Status</p>
+            <span className={statusColors[grievance.status]}>
+              {grievance.status}
+            </span>
+          </div>
+        </div>
+        <div className="mt-3 p-3 bg-slate-50 rounded text-sm">
+          <p className="text-xs text-slate-400 mb-1">Subject</p>
+          <p className="font-medium text-slate-700">{grievance.subject}</p>
+        </div>
+      </FormCard>
 
+      <FormCard title="Workflow Progress">
+        <div className="flex items-start justify-between relative">
+          <div
+            className="absolute top-4 left-0 right-0 h-1 bg-slate-100 z-0"
+            style={{ margin: '0 32px' }}
+          >
+            <div
+              className="h-full bg-blue-500 rounded transition-all"
+              style={{
+                width: `${(currentIdx / (statusOrder.length - 1)) * 100}%`,
+              }}
+            />
+          </div>
+          {statusOrder.map((status, idx) => {
+            const done = idx < currentIdx;
+            const active = idx === currentIdx;
             return (
               <div
-                key={c.id}
-                className={`grv-complaint-card ${isEscalated ? 'escalated' : c.status === 'Resolved' ? 'resolved' : 'pending'}`}
-                onClick={() =>
-                  navigate(grvUrls.student.details, {
-                    state: { complaintId: c.id },
-                  })
-                }
+                key={status}
+                className="flex flex-col items-center gap-2 z-10 flex-1"
               >
-                <div className="flex justify-between items-start flex-wrap gap-2">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-bold text-slate-400">
-                        TICKET
-                      </span>
-                      <span className="text-sm font-extrabold text-blue-600 font-mono">
-                        {c.ticketNo}
-                      </span>
-                      {c.isAnonymous && (
-                        <span className="grv-status-pill anonymous">
-                          Anonymous
-                        </span>
-                      )}
-                    </div>
-                    <h3 className="font-bold text-slate-800 text-base mb-1">
-                      {c.subject}
-                    </h3>
-                    <p className="text-xs text-slate-500 mb-2">
-                      {c.category} · Sub-category: {c.subCategory}
-                    </p>
-
-                    <div className="flex items-center gap-3 text-xs text-slate-400">
-                      <span>
-                        Submitted:{' '}
-                        <strong className="text-slate-600">
-                          {c.submittedDate}
-                        </strong>
-                      </span>
-                      <span>
-                        Assigned to:{' '}
-                        <strong className="text-slate-600">
-                          {c.assignedDept}
-                        </strong>
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="text-right flex flex-col items-end gap-2">
-                    <span
-                      className={`grv-status-pill ${c.status.toLowerCase().replace(' ', '-')}`}
-                    >
-                      {c.status}
-                    </span>
-
-                    {/* Live SLA Badge */}
-                    {c.status !== 'Closed' && c.status !== 'Resolved' && (
-                      <span
-                        className={`grv-sla-counter ${isBreached ? 'breached' : isNearBreach ? 'near' : 'ok'}`}
-                      >
-                        {isBreached
-                          ? 'SLA BREACHED'
-                          : `SLA: ${c.slaRemainingHrs} hrs left`}
-                      </span>
-                    )}
-                  </div>
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm border-2 font-bold transition-all ${done ? 'bg-blue-600 border-blue-600 text-white' : active ? 'bg-white border-blue-600 text-blue-600' : 'bg-white border-slate-200 text-slate-300'}`}
+                >
+                  {done ? '✓' : idx + 1}
                 </div>
-
-                <div className="border-t border-slate-100 mt-3 pt-3 flex justify-between items-center text-xs">
-                  <span className="text-slate-400">
-                    Latest Activity:{' '}
-                    <strong className="text-slate-600">
-                      {c.timeline.find(t => t.active)?.action ||
-                        'Awaiting assignment'}
-                    </strong>
-                  </span>
-                  <span className="text-blue-600 font-bold flex items-center gap-1 hover:underline">
-                    Action Desk Desk{' '}
-                    <i className="pi pi-chevron-right text-[10px]"></i>
-                  </span>
-                </div>
+                <p
+                  className={`text-center text-[9px] font-medium leading-tight max-w-16 ${active ? 'text-blue-700' : done ? 'text-slate-600' : 'text-slate-300'}`}
+                >
+                  {status}
+                </p>
               </div>
             );
-          })
-        )}
+          })}
+        </div>
+      </FormCard>
+
+      <FormCard title="Activity Timeline">
+        <div className="space-y-4">
+          {grievance.timeline.map(t => (
+            <div
+              key={t.id}
+              className="flex gap-4 pb-4 border-b border-slate-100 last:border-0"
+            >
+              <div
+                className={`mt-1 w-3 h-3 rounded-full flex-shrink-0 ${t.active ? 'bg-blue-500 ring-4 ring-blue-100' : t.done ? 'bg-green-500' : 'bg-slate-200'}`}
+              />
+              <div className="flex-1">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-semibold text-slate-800 text-sm">
+                      {t.action}
+                    </p>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      {t.performedBy} ({t.role}) · {t.date}
+                    </p>
+                  </div>
+                  <span className={statusColors[t.status] || 'grv-status-pill'}>
+                    {t.status}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-600 mt-2 bg-slate-50 p-2 rounded border">
+                  {t.remarks}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </FormCard>
+
+      {grievance.notesheet && (
+        <FormCard title="🟢 eOffice Green Notesheet">
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs mb-3">
+              <div>
+                <p className="text-slate-400">Notesheet No</p>
+                <p className="font-mono font-bold text-green-700">
+                  {grievance.notesheet.notesheetNo}
+                </p>
+              </div>
+              <div>
+                <p className="text-slate-400">Department</p>
+                <p className="font-semibold">
+                  {grievance.notesheet.department}
+                </p>
+              </div>
+              <div>
+                <p className="text-slate-400">Created</p>
+                <p className="font-semibold">
+                  {grievance.notesheet.createdDate}
+                </p>
+              </div>
+              <div>
+                <p className="text-slate-400">Status</p>
+                <span className="grv-status-pill approved">
+                  {grievance.notesheet.status}
+                </span>
+              </div>
+            </div>
+            {grievance.notesheet.entries.map(e => (
+              <div
+                key={e.id}
+                className="border border-green-200 bg-green-50 rounded p-3 text-xs"
+              >
+                <div className="flex justify-between mb-2">
+                  <p className="font-bold text-green-800">
+                    {e.officerName} — {e.officerDesignation}
+                  </p>
+                  <p className="text-slate-400">{e.timestamp}</p>
+                </div>
+                <p className="text-slate-600 mb-1">
+                  <span className="font-semibold">Action:</span> {e.actionTaken}
+                </p>
+                <p className="text-slate-600">{e.remarks}</p>
+              </div>
+            ))}
+          </div>
+        </FormCard>
+      )}
+
+      <div className="flex gap-3">
+        <Button
+          label="← My Grievances"
+          variant="outlined"
+          onClick={() => navigate(grvUrls.student.myGrievances)}
+        />
+        <Button
+          label="View Full Details"
+          variant="primary"
+          onClick={() =>
+            navigate(`${grvUrls.student.details}?id=${grievance.id}`)
+          }
+        />
       </div>
     </FormPage>
   );

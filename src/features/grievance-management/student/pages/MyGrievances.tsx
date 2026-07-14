@@ -15,89 +15,48 @@ const statusColors: Record<string, string> = {
   Closed: 'grv-status-pill closed',
 };
 
-export default function GrievanceCellComplaintManagement() {
+export default function StudentMyGrievances() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
 
-  const filtered = complaints.filter(c => {
+  const myComplaints = complaints.filter(c => c.complaintType === 'Student');
+  const filtered = myComplaints.filter(c => {
     const matchSearch =
       c.ticketNo.toLowerCase().includes(search.toLowerCase()) ||
-      c.studentName.toLowerCase().includes(search.toLowerCase()) ||
       c.subject.toLowerCase().includes(search.toLowerCase());
     const matchStatus = filterStatus === 'All' || c.status === filterStatus;
     return matchSearch && matchStatus;
   });
 
-  const stats = {
-    total: complaints.length,
-    pending: complaints.filter(c => c.status === 'Submitted').length,
-    inProcess: complaints.filter(c =>
-      ['Department Review', 'HoD Review', 'Committee Review'].includes(c.status)
-    ).length,
-    decided: complaints.filter(c => c.status === 'Registrar Decision').length,
-    closed: complaints.filter(c => c.status === 'Closed').length,
-  };
-
   return (
     <FormPage
-      title="Complaint Management"
-      description="Grievance Cell — Central complaint monitoring dashboard"
+      title="My Grievances"
+      description="View and track all grievances submitted by you"
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Grievance Management', to: grvUrls.portal },
-        { label: 'Grievance Cell', to: grvUrls.cell.portal },
-        { label: 'Complaint Management' },
+        { label: 'Student Portal', to: grvUrls.student.portal },
+        { label: 'My Grievances' },
       ]}
     >
       <div className="mb-4">
         <Button
-          label="← Back to Cell Portal"
+          label="← Back to Portal"
           variant="outlined"
-          onClick={() => navigate(grvUrls.cell.portal)}
+          onClick={() => navigate(grvUrls.student.portal)}
         />
       </div>
-
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
-        {[
-          { label: 'Total', value: stats.total, color: 'text-slate-700' },
-          {
-            label: 'Submitted',
-            value: stats.pending,
-            color: 'text-orange-600',
-          },
-          {
-            label: 'In Process',
-            value: stats.inProcess,
-            color: 'text-blue-600',
-          },
-          {
-            label: 'Registrar',
-            value: stats.decided,
-            color: 'text-purple-600',
-          },
-          { label: 'Closed', value: stats.closed, color: 'text-green-600' },
-        ].map(s => (
-          <div
-            key={s.label}
-            className="bg-white rounded-lg border p-3 text-center"
-          >
-            <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
-            <p className="text-xs text-slate-400 mt-1">{s.label}</p>
-          </div>
-        ))}
-      </div>
-
-      <FormCard title="All Complaints">
+      <FormCard title="">
         <div className="flex flex-col md:flex-row gap-3 mb-4">
           <input
             className="grv-input flex-1"
-            placeholder="Search by Ticket, Name, Subject..."
+            placeholder="Search by Ticket No or Subject..."
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
           <select
-            className="grv-input w-52"
+            className="grv-input w-48"
             value={filterStatus}
             onChange={e => setFilterStatus(e.target.value)}
           >
@@ -109,14 +68,17 @@ export default function GrievanceCellComplaintManagement() {
             <option value="Registrar Decision">Registrar Decision</option>
             <option value="Closed">Closed</option>
           </select>
+          <Button
+            label="＋ Raise New"
+            variant="primary"
+            onClick={() => navigate(grvUrls.student.raise)}
+          />
         </div>
 
         <table className="grv-table w-full text-xs">
           <thead>
             <tr>
               <th>Ticket No</th>
-              <th>Complainant</th>
-              <th>Type</th>
               <th>Category</th>
               <th>Subject</th>
               <th>Submitted</th>
@@ -127,8 +89,8 @@ export default function GrievanceCellComplaintManagement() {
           <tbody>
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={8} className="text-center py-8 text-slate-400">
-                  No complaints found.
+                <td colSpan={6} className="text-center py-8 text-slate-400">
+                  No grievances found.
                 </td>
               </tr>
             )}
@@ -136,17 +98,6 @@ export default function GrievanceCellComplaintManagement() {
               <tr key={c.id}>
                 <td className="font-mono font-bold text-blue-700">
                   {c.ticketNo}
-                </td>
-                <td>
-                  <p className="font-semibold">{c.studentName}</p>
-                  <p className="text-slate-400">{c.enrollmentNo}</p>
-                </td>
-                <td>
-                  <span
-                    className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${c.complaintType === 'Student' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}`}
-                  >
-                    {c.complaintType}
-                  </span>
                 </td>
                 <td>{c.category}</td>
                 <td className="max-w-xs truncate">{c.subject}</td>
@@ -157,13 +108,14 @@ export default function GrievanceCellComplaintManagement() {
                   </span>
                 </td>
                 <td className="text-center">
-                  <Button
-                    label="Review →"
-                    variant="primary"
+                  <button
+                    className="text-blue-600 underline text-xs hover:text-blue-800"
                     onClick={() =>
-                      navigate(`${grvUrls.cell.committee}?id=${c.id}`)
+                      navigate(`${grvUrls.student.details}?id=${c.id}`)
                     }
-                  />
+                  >
+                    View Details
+                  </button>
                 </td>
               </tr>
             ))}
