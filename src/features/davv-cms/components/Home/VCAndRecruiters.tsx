@@ -8,7 +8,7 @@ export default function VCAndRecruiters() {
     <section className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-3 sm:pb-8 select-none">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left Column: From the Vice Chancellor */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs flex flex-col relative overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-8 shadow-xs dark:shadow-slate-900/50 flex flex-col relative overflow-hidden">
           {/* Watermark logo */}
           <div className="absolute -right-6 -bottom-6 w-48 h-48 opacity-[0.04] pointer-events-none select-none z-0">
             <img
@@ -19,13 +19,13 @@ export default function VCAndRecruiters() {
           </div>
 
           <div className="relative z-10 grow flex flex-col justify-between">
-            <h3 className="font-display font-black text-[#002147] text-lg md:text-xl mb-6 leading-none">
+            <h3 className="font-display font-black text-[#002147] dark:text-white text-lg md:text-xl mb-6 leading-none">
               {t('From the Vice Chancellor')}
             </h3>
 
             <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-center grow justify-center py-2">
               {/* VC portrait avatar */}
-              <div className="w-36 h-48 sm:w-48 sm:h-64 rounded-xl overflow-hidden shrink-0 border border-slate-100 shadow-md z-0 mx-auto sm:mx-0">
+              <div className="w-36 h-48 sm:w-48 sm:h-64 rounded-xl overflow-hidden shrink-0 border border-slate-100 dark:border-slate-600 shadow-md dark:shadow-slate-900 z-0 mx-auto sm:mx-0">
                 <img
                   src="/davv-cms/img1.png"
                   alt={t('Vice Chancellor Prof. Rakesh Singh')}
@@ -35,7 +35,7 @@ export default function VCAndRecruiters() {
 
               {/* VC Message blurb */}
               <div className="flex-1 text-center sm:text-left space-y-4">
-                <p className="text-slate-650 text-sm sm:text-[15px] md:text-base leading-relaxed italic font-medium">
+                <p className="text-slate-650 dark:text-slate-300 text-sm sm:text-[15px] md:text-base leading-relaxed italic font-medium">
                   "
                   {t(
                     'At DAVV, our mission is to empower students through quality education, research and ethical values. We are dedicated to building a knowledge society and a better tomorrow.'
@@ -65,11 +65,11 @@ export default function VCAndRecruiters() {
         </div>
 
         {/* Right Column: Top Recruiters */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs flex flex-col justify-between">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 sm:p-8 shadow-xs dark:shadow-slate-900/50 flex flex-col justify-between">
           <div>
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
-              <h3 className="font-display font-black text-[#002147] text-lg md:text-xl leading-none">
+              <h3 className="font-display font-black text-[#002147] dark:text-white text-lg md:text-xl leading-none">
                 {t('Top Recruiters')}
               </h3>
               <a
@@ -93,7 +93,7 @@ export default function VCAndRecruiters() {
               ].map((rec, idx) => (
                 <div
                   key={idx}
-                  className="w-full h-16 sm:h-20 flex items-center justify-center p-3 border border-slate-100 rounded-xl bg-slate-50/50 hover:scale-105 hover:bg-slate-50 transition-all shadow-3xs"
+                  className="w-full h-16 sm:h-20 flex items-center justify-center p-3 border border-slate-100 dark:border-slate-700 rounded-xl bg-white dark:bg-white hover:scale-105 transition-all shadow-3xs"
                 >
                   <img
                     src={rec.logo}
@@ -106,7 +106,7 @@ export default function VCAndRecruiters() {
 
             {/* Bottom Right: & many more... */}
             <div className="text-right mt-3 pr-2">
-              <span className="text-slate-400 text-xs font-semibold tracking-wide italic">
+              <span className="text-slate-400 dark:text-slate-500 text-xs font-semibold tracking-wide italic">
                 {t('& many more...')}
               </span>
             </div>

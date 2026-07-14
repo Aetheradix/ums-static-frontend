@@ -1,8 +1,8 @@
 import { ChevronDown, LogIn, Menu, Search, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { NAV_LINKS } from '../../constants/data';
 import { useLanguage } from '../../../../shared/context/useLanguage';
+import { NAV_LINKS } from '../../constants/data';
 
 const MenuIcon = ({ icon: Icon }: { icon: any }) => {
   if (!Icon) return null;
@@ -15,6 +15,7 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
+  const isDark = false;
 
   const { t } = useLanguage();
 
@@ -55,11 +56,19 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`sticky top-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 transition duration-300 ${
-          scrolled ? 'shadow-md shadow-slate-100/50' : ''
+        className={`sticky top-0 left-0 right-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-700/80 transition duration-300 ${
+          scrolled
+            ? 'shadow-md shadow-slate-100/50 dark:shadow-slate-900/50'
+            : ''
         }`}
         style={{
-          backgroundColor: scrolled ? 'rgba(255, 255, 255, 0.85)' : undefined,
+          backgroundColor: isDark
+            ? scrolled
+              ? 'rgba(15, 23, 42, 0.85)'
+              : 'rgba(15, 23, 42, 0.9)'
+            : scrolled
+              ? 'rgba(255, 255, 255, 0.85)'
+              : undefined,
           WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none',
           boxShadow: scrolled
             ? '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05)'
@@ -87,13 +96,13 @@ export default function Navbar() {
               className="hidden sm:block w-8 h-8 sm:w-12 sm:h-12 md:w-14 md:h-14 object-contain rounded-full"
             />
             <div className="text-left">
-              <h1 className="font-display font-black text-[#002147] text-[9px] xs:text-xs sm:text-sm md:text-lg leading-tight uppercase tracking-tight">
+              <h1 className="font-display font-black text-[#002147] dark:text-white text-[9px] xs:text-xs sm:text-sm md:text-lg leading-tight uppercase tracking-tight">
                 {t('Devi Ahilya')}
               </h1>
-              <h2 className="font-display font-bold text-[#002147] text-[7.5px] xs:text-[10px] sm:text-xs md:text-sm leading-none uppercase tracking-wider block">
+              <h2 className="font-display font-bold text-[#002147] dark:text-white text-[7.5px] xs:text-[10px] sm:text-xs md:text-sm leading-none uppercase tracking-wider block">
                 {t('Vishwavidyalaya, Indore')}
               </h2>
-              <p className="text-slate-500 font-hindi text-[7px] xs:text-[9px] md:text-[10px] leading-tight mt-0.5 sm:mt-1 tracking-wide hidden xs:block">
+              <p className="text-slate-500 dark:text-slate-400 font-hindi text-[7px] xs:text-[9px] md:text-[10px] leading-tight mt-0.5 sm:mt-1 tracking-wide hidden xs:block">
                 धियो यो नः प्रचोदयात्
               </p>
             </div>
@@ -103,7 +112,7 @@ export default function Navbar() {
           <nav className="hidden xl:flex items-center gap-1">
             <Link
               to="/davv"
-              className="flex items-center px-3 py-2 text-xs xl:text-sm font-bold text-[#002147] hover:text-blue hover:bg-slate-50 rounded-lg transition-colors cursor-pointer mr-1"
+              className="flex items-center px-3 py-2 text-xs xl:text-sm font-bold text-[#002147] dark:text-white hover:text-blue dark:hover:text-blue hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer mr-1"
               title="Home"
             >
               <span>{t('Home')}</span>
@@ -116,7 +125,7 @@ export default function Navbar() {
                 onMouseEnter={() => setActiveDropdown(link.label)}
                 onMouseLeave={() => setActiveDropdown(null)}
               >
-                <button className="flex items-center gap-1 px-3 py-2 text-xs xl:text-sm font-bold text-navy/90 hover:text-blue transition-colors rounded-lg hover:bg-slate-50">
+                <button className="flex items-center gap-1 px-3 py-2 text-xs xl:text-sm font-bold text-navy/90 dark:text-white/90 hover:text-blue dark:hover:text-blue transition-colors rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800">
                   {t(link.label)}
                   <ChevronDown
                     className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === link.label ? 'rotate-180' : ''}`}
@@ -127,7 +136,7 @@ export default function Navbar() {
                 {activeDropdown === link.label &&
                   link.megaMenu &&
                   link.columns && (
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white border border-slate-200 rounded-xl shadow-xl p-5 z-50 animate-fadeIn w-[620px]">
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl dark:shadow-slate-900/50 p-5 z-50 animate-fadeIn w-[620px]">
                       <div
                         className="grid gap-6"
                         style={{
@@ -144,10 +153,10 @@ export default function Navbar() {
                                 <li key={item.label}>
                                   <a
                                     href={item.href}
-                                    className="flex items-center gap-2 py-2 px-3 text-sm font-semibold text-slate-700 hover:text-white hover:bg-blue rounded-lg transition-all group/item"
+                                    className="flex items-center gap-2 py-2 px-3 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-white hover:bg-blue dark:hover:bg-blue rounded-lg transition-all group/item"
                                   >
                                     {item.icon && (
-                                      <span className="text-slate-400 group-hover/item:text-white transition-colors duration-150">
+                                      <span className="text-slate-400 dark:text-slate-500 group-hover/item:text-white transition-colors duration-150">
                                         <MenuIcon icon={item.icon} />
                                       </span>
                                     )}
@@ -165,7 +174,7 @@ export default function Navbar() {
             ))}
             <a
               href="#"
-              className="px-3 py-2 text-xs xl:text-sm font-bold text-navy/90 hover:text-blue transition-colors"
+              className="px-3 py-2 text-xs xl:text-sm font-bold text-navy/90 dark:text-white/90 hover:text-blue dark:hover:text-blue transition-colors"
             >
               {t('Contact Us')}
             </a>
@@ -176,7 +185,7 @@ export default function Navbar() {
             {/* Search Button */}
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-100 text-navy flex items-center justify-center hover:bg-slate-200 transition-colors cursor-pointer"
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-100 dark:bg-slate-700 text-navy dark:text-white flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
             >
               <Search className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
@@ -198,7 +207,7 @@ export default function Navbar() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(true)}
-              className="xl:hidden w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-100 text-navy flex items-center justify-center hover:bg-slate-200 transition-colors cursor-pointer"
+              className="xl:hidden w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-100 dark:bg-slate-700 text-navy dark:text-white flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
             >
               <Menu className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
@@ -206,30 +215,25 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* Global Search Bar Overlay */}
+      {/* Global Search Bar — appears directly below the navbar */}
       {searchOpen && (
-        <div className="fixed inset-0 z-50 bg-[#002147]/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 w-full max-w-2xl shadow-2xl relative animate-zoomIn">
-            <button
-              onClick={() => setSearchOpen(false)}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 text-slate-500 transition-colors"
-            >
-              <X className="w-4 h-4" />
-            </button>
-            <h3 className="font-display font-black text-[#002147] text-lg uppercase mb-3 text-left">
-              {t('Search DAVV Portal')}
-            </h3>
-            <div className="flex gap-2">
+        <div className="border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm dark:shadow-slate-900/50">
+          <div className="w-full px-4 sm:px-8 md:px-12 py-3 sm:py-4">
+            <div className="flex items-center gap-3 max-w-4xl mx-auto border border-slate-300 dark:border-slate-600 rounded-xl px-4 py-2.5 bg-white dark:bg-slate-800 shadow-sm focus-within:border-blue focus-within:ring-1 focus-within:ring-blue/20 transition-all">
+              <Search className="w-5 h-5 text-slate-400 dark:text-slate-500 shrink-0" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder={t('Search courses, departments, services...')}
-                className="flex-1 border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-blue transition-colors text-slate-800"
+                className="flex-1 bg-transparent border-none outline-none text-sm sm:text-base text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 font-medium"
                 autoFocus
               />
-              <button className="bg-blue hover:bg-blue-dark text-white font-bold text-xs uppercase tracking-wider rounded-xl px-5 py-2.5 transition-colors">
-                {t('Search')}
+              <button
+                onClick={() => setSearchOpen(false)}
+                className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-500 dark:text-slate-300 transition-colors shrink-0 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -244,22 +248,22 @@ export default function Navbar() {
             onClick={closeMobile}
           />
           {/* Drawer */}
-          <div className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl z-50 overflow-y-auto p-5 space-y-2 animate-slideInRight">
+          <div className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white dark:bg-slate-800 shadow-2xl dark:shadow-slate-900/80 z-50 overflow-y-auto p-5 space-y-2 animate-slideInRight">
             {/* Header with close */}
-            <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-200">
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-200 dark:border-slate-700">
               <div className="flex items-center gap-2">
                 <img
                   src="/DAVV_Logo.png"
                   alt="DAVV"
                   className="w-8 h-8 object-contain"
                 />
-                <span className="font-bold text-xs text-[#002147] uppercase leading-tight">
+                <span className="font-bold text-xs text-[#002147] dark:text-white uppercase leading-tight">
                   DAVV, Indore
                 </span>
               </div>
               <button
                 onClick={closeMobile}
-                className="w-8 h-8 rounded-lg bg-slate-100 text-navy flex items-center justify-center hover:bg-slate-200 transition-colors"
+                className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 text-navy dark:text-white flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -269,16 +273,19 @@ export default function Navbar() {
             <Link
               to="/davv"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center py-2.5 text-sm font-bold text-navy border-b border-slate-100"
+              className="flex items-center py-2.5 text-sm font-bold text-navy dark:text-white border-b border-slate-100 dark:border-slate-700"
             >
               <span>{t('Home')}</span>
             </Link>
 
             {NAV_LINKS.map(link => (
-              <div key={link.label} className="border-b border-slate-100 pb-2">
+              <div
+                key={link.label}
+                className="border-b border-slate-100 dark:border-slate-700 pb-2"
+              >
                 <button
                   onClick={() => toggleDropdown(link.label)}
-                  className="w-full flex justify-between items-center py-2 text-sm font-bold text-navy text-left"
+                  className="w-full flex justify-between items-center py-2 text-sm font-bold text-navy dark:text-white text-left"
                 >
                   {t(link.label)}
                   <ChevronDown
@@ -289,7 +296,7 @@ export default function Navbar() {
                 {activeDropdown === link.label &&
                   link.megaMenu &&
                   link.columns && (
-                    <div className="pl-4 mt-2 space-y-3 bg-slate-50/50 rounded-lg p-3">
+                    <div className="pl-4 mt-2 space-y-3 bg-slate-50/50 dark:bg-slate-700/50 rounded-lg p-3">
                       {link.columns.map(col => (
                         <div key={col.title}>
                           <h4 className="text-[#F2A900] font-bold text-xs uppercase tracking-wider mb-1.5">
@@ -300,10 +307,10 @@ export default function Navbar() {
                               <a
                                 key={item.label}
                                 href={item.href}
-                                className="flex items-center gap-2 py-1.5 px-2 text-xs font-semibold text-slate-600 hover:text-blue rounded-md transition-all"
+                                className="flex items-center gap-2 py-1.5 px-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue dark:hover:text-blue rounded-md transition-all"
                               >
                                 {item.icon && (
-                                  <span className="shrink-0 text-slate-400">
+                                  <span className="shrink-0 text-slate-400 dark:text-slate-500">
                                     <MenuIcon icon={item.icon} />
                                   </span>
                                 )}
@@ -319,7 +326,7 @@ export default function Navbar() {
             ))}
             <a
               href="#"
-              className="block py-2.5 text-sm font-bold text-navy border-b border-slate-100"
+              className="block py-2.5 text-sm font-bold text-navy dark:text-white border-b border-slate-100 dark:border-slate-700"
             >
               {t('Contact Us')}
             </a>

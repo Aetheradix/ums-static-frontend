@@ -34,14 +34,6 @@ export default function DavvFooter() {
             </li>
             <li>
               <Link
-                to={davvUrls.directory}
-                className="hover:text-white transition-colors"
-              >
-                Campuses &amp; Institutions
-              </Link>
-            </li>
-            <li>
-              <Link
                 to={davvUrls.selectUniversity}
                 className="hover:text-white transition-colors"
               >

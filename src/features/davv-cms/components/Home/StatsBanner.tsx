@@ -61,13 +61,13 @@ export default function StatsBanner() {
   return (
     <section className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-3 sm:pb-8 select-none">
       <div className="flex flex-col items-center mb-6">
-        <h3 className="font-display font-black text-[#002147] text-xl md:text-2xl tracking-wide mb-2">
+        <h3 className="font-display font-black text-[#002147] dark:text-white text-xl md:text-2xl tracking-wide mb-2">
           {t('DAVV at a Glance')}
         </h3>
         <div className="w-12 h-1 bg-[#F2A900] rounded-full" />
       </div>
 
-      <div className="bg-[#002147] text-white rounded-2xl p-5 sm:p-8 md:p-10 shadow-lg relative overflow-hidden">
+      <div className="bg-[#002147] dark:bg-slate-950/85 text-white rounded-2xl p-5 sm:p-8 md:p-10 shadow-lg relative overflow-hidden transition-colors duration-300">
         {/* Subtle decorative background blur shapes */}
         <div className="absolute -top-12 -left-12 w-48 h-48 bg-blue/10 rounded-full blur-2xl pointer-events-none" />
         <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-amber-400/5 rounded-full blur-2xl pointer-events-none" />

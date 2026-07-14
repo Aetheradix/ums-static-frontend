@@ -60,7 +60,7 @@ export default function CampusLifeBanner() {
           <img
             src="/davv-cms/crousel/Slide1.jpg"
             alt="Vibrant DAVV Campus Life"
-            className="w-full h-full object-cover opacity-85 group-hover:scale-103 transition-transform duration-700 ease-out"
+            className="w-full h-full object-cover opacity-85 dark:opacity-40 dark:brightness-75 group-hover:scale-103 transition-transform duration-700 ease-out"
           />
         </div>
 
@@ -69,7 +69,7 @@ export default function CampusLifeBanner() {
           className="absolute inset-0 z-10 transition-opacity duration-300"
           style={{
             backgroundImage:
-              'linear-gradient(to right, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color-dark) 80%, transparent) 50%, transparent 100%)',
+              'linear-gradient(to right, var(--color-davv-darkest) 0%, color-mix(in srgb, var(--color-davv-dark) 80%, transparent) 50%, transparent 100%)',
           }}
         />
 

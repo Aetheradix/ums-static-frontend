@@ -15,7 +15,7 @@ export default function ExploreSlider() {
   return (
     <section className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-3 sm:pb-8 select-none">
       <div className="flex flex-col items-center mb-8">
-        <h3 className="font-display font-black text-[#002147] text-xl md:text-2xl tracking-wide mb-2">
+        <h3 className="font-display font-black text-[#002147] dark:text-white text-xl md:text-2xl tracking-wide mb-2">
           {t('Explore DAVV')}
         </h3>
         <div className="w-12 h-1 bg-[#F2A900] rounded-full" />
@@ -31,7 +31,7 @@ export default function ExploreSlider() {
               onClick={() =>
                 setPreview({ images: card.images, title: card.title, index: 0 })
               }
-              className="group bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col hover:-translate-y-1 relative cursor-pointer"
+              className="group bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 rounded-2xl overflow-hidden shadow-xs dark:shadow-slate-900/50 hover:shadow-lg dark:hover:shadow-slate-900 transition-all duration-300 flex flex-col hover:-translate-y-1 relative cursor-pointer"
             >
               {/* Image Container */}
               <div className="relative h-32 md:h-36 overflow-hidden z-0">
@@ -49,8 +49,8 @@ export default function ExploreSlider() {
               </div>
 
               {/* Title Content */}
-              <div className="p-5 pt-8 bg-white flex-1 flex items-center z-10">
-                <h4 className="font-display font-black text-navy text-[13px] md:text-sm tracking-tight leading-snug group-hover:text-blue transition-colors">
+              <div className="p-5 pt-8 bg-white dark:bg-slate-800 flex-1 flex items-center z-10">
+                <h4 className="font-display font-black text-navy dark:text-slate-100 text-[13px] md:text-sm tracking-tight leading-snug group-hover:text-blue dark:group-hover:text-blue transition-colors">
                   {t(card.title)}
                 </h4>
               </div>

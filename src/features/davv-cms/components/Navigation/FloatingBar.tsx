@@ -1,19 +1,19 @@
-import { useState, useEffect, useRef } from 'react';
 import {
-  MessageSquare,
-  Video,
   Calendar as CalendarIcon,
-  Share2,
-  Palette,
-  CheckCircle2,
-  Play,
-  Send,
-  Download,
-  Copy,
   Check,
+  CheckCircle2,
   ChevronLeft,
   ChevronRight,
+  Copy,
+  Download,
+  MessageSquare,
+  Palette,
+  Play,
+  Send,
+  Share2,
+  Video,
 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 const ACTIONS = [
   {

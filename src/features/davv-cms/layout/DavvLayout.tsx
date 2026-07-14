@@ -10,8 +10,13 @@ export default function DavvLayout({ children }: { children: ReactNode }) {
     window.scrollTo(0, 0);
   }, []);
 
+  // Force removal of dark mode class to run strictly in light mode
+  useEffect(() => {
+    document.body.classList.remove('dark');
+  }, []);
+
   return (
-    <div className="octagon-theme min-h-screen bg-slate-50 text-navy flex flex-col">
+    <div className="davv-cms-root octagon-theme min-h-screen bg-slate-50 dark:bg-slate-950 text-navy dark:text-slate-100 flex flex-col transition-colors duration-300">
       <DavvHeader />
       <main className="flex-1">{children}</main>
       <DavvFooter />

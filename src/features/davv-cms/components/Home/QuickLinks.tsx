@@ -17,8 +17,8 @@ export default function QuickLinks() {
 
   return (
     <section className="max-w-[1400px] mx-auto px-0 sm:px-6 pt-0 pb-2 md:pb-3 select-none">
-      <div className="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden">
-        <div className="grid grid-cols-4 sm:grid-cols-4 lg:grid-cols-8 divide-x divide-y divide-slate-100 sm:divide-y-0">
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xs dark:shadow-slate-900/50 overflow-hidden">
+        <div className="grid grid-cols-4 sm:grid-cols-4 lg:grid-cols-8 divide-x divide-y divide-slate-100 dark:divide-slate-700 sm:divide-y-0">
           {QUICK_LINKS.map((link, index) => {
             const Icon = link.icon;
             return (
@@ -41,7 +41,7 @@ export default function QuickLinks() {
                 </div>
 
                 {/* Title */}
-                <span className="relative text-[10px] sm:text-[13px] font-black text-navy group-hover:text-blue mt-1.5 sm:mt-4.5 transition-colors tracking-tight">
+                <span className="relative text-[10px] sm:text-[13px] font-black text-navy dark:text-slate-100 group-hover:text-blue dark:group-hover:text-blue mt-1.5 sm:mt-4.5 transition-colors tracking-tight">
                   {t(link.label)}
                 </span>
               </a>

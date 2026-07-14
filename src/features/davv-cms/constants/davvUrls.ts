@@ -7,12 +7,12 @@
 
 import type { InstitutionType } from './davvData';
 
-const root = '/davv-cms';
+const root = '/davv';
 
 export const davvUrls = {
   root,
   landing: root,
-  directory: `${root}/campuses`,
+  directory: root,
   institution: (type: InstitutionType | string, slug: string) =>
     `${root}/${type}/${slug}`,
   // The Octagon-side entry point that lists universities (stays under the Octagon namespace).

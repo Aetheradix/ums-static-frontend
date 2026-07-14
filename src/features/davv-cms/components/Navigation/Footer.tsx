@@ -61,7 +61,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-[#001833] text-white/80 border-t border-white/10 select-none pt-12 pb-6">
+    <footer className="bg-[#001833] dark:bg-slate-950 text-white/80 border-t border-white/10 dark:border-slate-800 select-none pt-12 pb-6 transition-colors duration-300">
       {/* Main Footer Links Container */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10 pb-8 border-b border-white/5">
@@ -194,7 +194,7 @@ export default function Footer() {
                 {'0842795'.split('').map((char, index) => (
                   <span
                     key={index}
-                    className="w-5.5 h-7.5 bg-white/5 border border-white/10 rounded flex items-center justify-center font-mono font-black text-yellow-400 text-xs shadow-3xs"
+                    className="w-5.5 h-7.5 bg-white/5 dark:bg-slate-900 border border-white/10 dark:border-slate-800 rounded flex items-center justify-center font-mono font-black text-yellow-400 text-xs shadow-3xs"
                   >
                     {char}
                   </span>

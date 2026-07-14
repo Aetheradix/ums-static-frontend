@@ -13,6 +13,10 @@ export default function CMSLayout({ children }: CMSLayoutProps) {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
+    document.body.classList.remove('dark');
+  }, []);
+
+  useEffect(() => {
     const handleScroll = (e: Event) => {
       const target = e.target as any;
       let scrollPos = 0;
@@ -77,13 +81,25 @@ export default function CMSLayout({ children }: CMSLayoutProps) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans antialiased text-navy">
+    <div className="davv-cms-root min-h-screen flex flex-col font-sans antialiased text-navy dark:text-slate-100 transition-colors duration-300">
+      {/* Fixed background layer — stays in place, never scrolls */}
+      <div
+        className="fixed inset-0 -z-10 transition-colors duration-300"
+        style={{
+          backgroundColor: '#002147',
+          backgroundImage: 'url(/DAVV_Uni.jpg)',
+          backgroundSize: 'cover',
+          backgroundAttachment: 'fixed',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      />
       {/* Navigation Headers */}
       <Topbar />
       <Navbar />
 
       {/* Main Content Area */}
-      <main className="flex-1 w-full relative z-20">{children}</main>
+      <main className="flex-1 w-full">{children}</main>
 
       {/* Premium Footer */}
       <Footer />

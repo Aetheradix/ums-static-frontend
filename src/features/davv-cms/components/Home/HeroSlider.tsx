@@ -1,6 +1,5 @@
-import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useLanguage } from '../../../../shared/context/useLanguage';
 
 const SLIDES = [
   {
@@ -52,7 +51,6 @@ const SLIDES = [
 
 export default function HeroSlider() {
   const [current, setCurrent] = useState(0);
-  const { t } = useLanguage();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -81,34 +79,8 @@ export default function HeroSlider() {
           <img
             src={slide.image}
             alt={slide.title}
-            className="w-full h-full object-cover object-center scale-102"
+            className="w-full h-full object-cover object-center scale-102 dark:opacity-70 dark:brightness-75 transition-all duration-300"
           />
-          {/* Dark Overlay mask — darker on left side for text readability */}
-          <div className="absolute inset-0 bg-linear-to-r from-black via-black/40 to-transparent" />
-
-          {/* Slide Text Content overlay */}
-          <div className="absolute inset-0 flex items-center">
-            <div className="max-w-[1400px] mx-auto px-4 sm:px-6 w-full text-left flex flex-col items-start gap-3 md:gap-5">
-              <div className="space-y-1 xs:space-y-2 max-w-2xl">
-                <h2 className="font-display font-black text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-tight drop-shadow-lg">
-                  {t(slide.title)} <br />
-                  <span className="text-[#F2A900]">{t(slide.highlight)}</span>
-                </h2>
-                <p className="text-white/90 text-xs sm:text-sm md:text-base max-w-lg font-medium leading-relaxed drop-shadow-md pt-2">
-                  {t(slide.description)}
-                </p>
-              </div>
-
-              {/* Action Button */}
-              <a
-                href={slide.link}
-                className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 bg-[#F2A900] hover:bg-[#d99700] text-[#002147] font-black text-xs sm:text-sm uppercase tracking-wider rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 group"
-              >
-                {t(slide.ctaText)}
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </a>
-            </div>
-          </div>
         </div>
       ))}
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Moon, ExternalLink, Globe } from 'lucide-react';
+import { ExternalLink, Globe } from 'lucide-react';
 import { TOPBAR_LINKS } from '../../constants/data';
 import { useLanguage } from '../../../../shared/context/useLanguage';
 
@@ -48,7 +48,7 @@ export default function Topbar() {
   };
 
   return (
-    <div className="bg-[#002147] text-white text-[10px] xs:text-xs py-1.5 xs:py-2 px-4 sm:px-8 md:px-12 border-b border-white/10 select-none z-50 relative">
+    <div className="bg-[#002147] dark:bg-slate-950 text-white text-[10px] xs:text-xs py-1.5 xs:py-2 px-4 sm:px-8 md:px-12 border-b border-white/10 dark:border-slate-800 select-none z-50 relative transition-colors duration-300">
       <div className="w-full flex justify-between items-center gap-1">
         {/* Left Side: NAAC Grade Indicator */}
         <div className="flex items-center gap-1 xs:gap-2 shrink-0">
@@ -110,10 +110,6 @@ export default function Topbar() {
             >
               <Globe className="w-2.5 h-2.5 xs:w-3.5 xs:h-3.5 text-amber-400" />
               <span>{isHindi ? 'हिन्दी' : 'English'}</span>
-            </button>
-
-            <button className="hover:text-amber-400 transition-colors py-0.5">
-              <Moon className="w-3 h-3 xs:w-3.5 xs:h-3.5" />
             </button>
           </div>
         </div>

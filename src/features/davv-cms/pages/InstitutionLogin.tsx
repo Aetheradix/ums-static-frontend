@@ -37,9 +37,14 @@ export default function InstitutionLogin() {
       : `${DAVV.shortName} Login`;
   }, [inst]);
 
+  // Force removal of dark mode class to run strictly in light mode
+  useEffect(() => {
+    document.body.classList.remove('dark');
+  }, []);
+
   if (!inst) {
     return (
-      <div className="octagon-theme min-h-screen grid place-items-center bg-slate-50 text-navy px-6">
+      <div className="octagon-theme min-h-screen grid place-items-center bg-slate-50 dark:bg-slate-950 text-navy dark:text-slate-100 px-6 transition-colors duration-300">
         <div className="text-center">
           <img
             src="/images/davv-logo.png"
@@ -72,7 +77,7 @@ export default function InstitutionLogin() {
   };
 
   return (
-    <div className="octagon-theme min-h-screen grid lg:grid-cols-2 bg-white text-navy">
+    <div className="octagon-theme min-h-screen grid lg:grid-cols-2 bg-white dark:bg-slate-950 text-navy dark:text-slate-100 transition-colors duration-300">
       {/* LEFT — institution branding over the campus image */}
       <div className="relative hidden lg:flex flex-col justify-between p-12 overflow-hidden text-white">
         <img
@@ -136,47 +141,47 @@ export default function InstitutionLogin() {
             </div>
           </div>
 
-          <h2 className="font-display text-2xl font-bold text-navy mb-1">
+          <h2 className="font-display text-2xl font-bold text-navy dark:text-white mb-1">
             Sign in
           </h2>
-          <p className="text-muted text-sm mb-8">
+          <p className="text-muted dark:text-slate-400 text-sm mb-8">
             Access the {inst.shortName} portal on Octagon.
           </p>
 
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
-              <label className="block text-[13px] font-semibold text-navy mb-1.5">
+              <label className="block text-[13px] font-semibold text-navy dark:text-slate-200 mb-1.5">
                 Username
               </label>
-              <div className="flex items-center gap-2 border border-border rounded-xl px-3 focus-within:border-davv transition-colors">
-                <User className="w-4 h-4 text-muted shrink-0" />
+              <div className="flex items-center gap-2 border border-border dark:border-slate-800 rounded-xl px-3 focus-within:border-davv transition-colors">
+                <User className="w-4 h-4 text-muted dark:text-slate-500 shrink-0" />
                 <input
                   value={username}
                   onChange={e => setUsername(e.target.value)}
                   required
-                  className="flex-1 bg-transparent outline-none text-navy text-sm py-3"
+                  className="flex-1 bg-transparent outline-none text-navy dark:text-white text-sm py-3"
                   placeholder="Enrollment no. / username"
                 />
               </div>
             </div>
             <div>
-              <label className="block text-[13px] font-semibold text-navy mb-1.5">
+              <label className="block text-[13px] font-semibold text-navy dark:text-slate-200 mb-1.5">
                 Password
               </label>
-              <div className="flex items-center gap-2 border border-border rounded-xl px-3 focus-within:border-davv transition-colors">
-                <Lock className="w-4 h-4 text-muted shrink-0" />
+              <div className="flex items-center gap-2 border border-border dark:border-slate-800 rounded-xl px-3 focus-within:border-davv transition-colors">
+                <Lock className="w-4 h-4 text-muted dark:text-slate-500 shrink-0" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
-                  className="flex-1 bg-transparent outline-none text-navy text-sm py-3"
+                  className="flex-1 bg-transparent outline-none text-navy dark:text-white text-sm py-3"
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(s => !s)}
-                  className="text-muted hover:text-navy transition-colors"
+                  className="text-muted dark:text-slate-500 hover:text-navy dark:hover:text-white transition-colors cursor-pointer"
                 >
                   {showPassword ? (
                     <EyeOff className="w-4 h-4" />
@@ -187,13 +192,13 @@ export default function InstitutionLogin() {
               </div>
             </div>
             <div className="flex items-center justify-between text-[13px]">
-              <label className="flex items-center gap-2 text-muted">
+              <label className="flex items-center gap-2 text-muted dark:text-slate-400">
                 <input type="checkbox" defaultChecked /> Remember me
               </label>
               <a
                 href="#"
                 onClick={e => e.preventDefault()}
-                className="text-davv font-semibold"
+                className="text-davv dark:text-emerald-450 font-semibold"
               >
                 Forgot password?
               </a>
@@ -201,7 +206,7 @@ export default function InstitutionLogin() {
             <button
               type="submit"
               disabled={isLoggingIn}
-              className="w-full inline-flex items-center justify-center gap-2 bg-davv text-white font-bold rounded-xl py-3.5 hover:bg-davv-dark transition-all disabled:opacity-70"
+              className="w-full inline-flex items-center justify-center gap-2 bg-davv text-white font-bold rounded-xl py-3.5 hover:bg-davv-dark transition-all disabled:opacity-70 cursor-pointer"
             >
               {isLoggingIn ? (
                 'Signing in…'
@@ -213,9 +218,9 @@ export default function InstitutionLogin() {
             </button>
           </form>
 
-          <div className="flex items-center gap-2 mt-8 text-[12px] text-muted">
-            <ShieldCheck className="w-4 h-4 text-davv" /> Secure
-            institution-scoped sign-in
+          <div className="flex items-center gap-2 mt-8 text-[12px] text-muted dark:text-slate-400">
+            <ShieldCheck className="w-4 h-4 text-davv dark:text-emerald-450" />{' '}
+            Secure institution-scoped sign-in
           </div>
         </div>
       </div>

@@ -138,11 +138,11 @@ export default function AnnouncementsAndLinks() {
     <section className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-3 sm:pb-8 select-none">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Latest Announcements (Takes 2 columns of grid) */}
-        <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col">
+        <div className="lg:col-span-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 sm:p-6 shadow-xs dark:shadow-slate-900/50 flex flex-col">
           <div>
             {/* Header */}
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-display font-black text-[#002147] text-lg md:text-xl leading-none">
+              <h3 className="font-display font-black text-[#002147] dark:text-white text-lg md:text-xl leading-none">
                 {t('Latest Announcements')}
               </h3>
               <a
@@ -155,7 +155,7 @@ export default function AnnouncementsAndLinks() {
             </div>
 
             {/* Category Filter Pills */}
-            <div className="flex flex-wrap items-center gap-1.5 mb-3 border-b border-slate-100 pb-3">
+            <div className="flex flex-wrap items-center gap-1.5 mb-3 border-b border-slate-100 dark:border-slate-700 pb-3">
               {CATEGORIES.map(cat => (
                 <button
                   key={cat}
@@ -163,7 +163,7 @@ export default function AnnouncementsAndLinks() {
                   className={`px-2.5 py-1 text-[10px] sm:text-xs font-bold rounded-full border transition-all duration-300 cursor-pointer ${
                     activeCategory === cat
                       ? 'bg-[#002147] border-[#002147] text-white shadow-sm'
-                      : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100 hover:border-slate-300'
+                      : 'bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600 hover:border-slate-300 dark:hover:border-slate-500'
                   }`}
                 >
                   {t(cat)}
@@ -185,7 +185,7 @@ export default function AnnouncementsAndLinks() {
                 duplicatedAnnouncements.map((ann, idx) => (
                   <div
                     key={idx}
-                    className="py-1.5 border-b border-slate-100 last:border-b-0 hover:bg-slate-50/50 px-1.5 rounded-xl transition-all"
+                    className="py-1.5 border-b border-slate-100 dark:border-slate-700 last:border-b-0 hover:bg-slate-50/50 dark:hover:bg-slate-700/50 px-1.5 rounded-xl transition-all"
                   >
                     <div className="flex items-start justify-between gap-3 w-full">
                       <div className="flex items-start gap-2.5 min-w-0 flex-1">
@@ -198,21 +198,21 @@ export default function AnnouncementsAndLinks() {
                         {/* Title */}
                         <a
                           href="#"
-                          className="text-navy text-xs sm:text-sm font-bold leading-snug hover:text-blue transition-colors"
+                          className="text-navy dark:text-slate-200 text-xs sm:text-sm font-bold leading-snug hover:text-blue transition-colors"
                         >
                           {t(ann.title)}
                         </a>
                       </div>
 
                       {/* Date Badge */}
-                      <span className="shrink-0 px-2 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider rounded-md bg-slate-100 text-slate-500 border border-slate-200/60 whitespace-nowrap mt-0.5">
+                      <span className="shrink-0 px-2 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider rounded-md bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 border border-slate-200/60 dark:border-slate-600/60 whitespace-nowrap mt-0.5">
                         {t(ann.date)}
                       </span>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="text-center py-6 text-slate-400 text-sm font-medium">
+                <div className="text-center py-6 text-slate-400 dark:text-slate-500 text-sm font-medium">
                   {t('No announcements found in this category.')}
                 </div>
               )}
@@ -221,7 +221,7 @@ export default function AnnouncementsAndLinks() {
         </div>
 
         {/* Right Column: Important Links Sidebar (Takes 1 column) */}
-        <div className="bg-[#002147] text-white rounded-2xl p-5 sm:p-6 shadow-lg flex flex-col">
+        <div className="bg-[#002147] dark:bg-slate-950/80 text-white rounded-2xl p-5 sm:p-6 shadow-lg flex flex-col transition-colors duration-300">
           <div className="h-full flex flex-col justify-between">
             <div>
               <h3 className="font-display font-black text-yellow-400 text-lg md:text-xl mb-4 tracking-wide">

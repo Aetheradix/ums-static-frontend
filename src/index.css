@@ -131,7 +131,8 @@ html.lang-hi textarea {
   --color-davv-light: #e7f3ec;
   --color-davv-saffron: #c2410c;
   --color-davv-saffron-light: #fdeee3;
-  --color-davv-gold: #b8860b;
+  --color-davv-navy: #002147;
+  --color-davv-gold: #f2a900;
 
   --font-display: 'Sora', sans-serif;
   --font-inter: 'Inter', sans-serif;
@@ -314,8 +315,8 @@ html.lang-hi textarea {
    3. DARK MODE VARIABLES
 ============================================================ */
 
-.dark body,
-[data-theme='dark'] body {
+body.dark,
+body[data-theme='dark'] {
   --primary-color: #fafafa;
   --primary-rgb: 92, 94, 216;
   --secondary-color: #0a0a0a;
@@ -324,6 +325,12 @@ html.lang-hi textarea {
   color: var(--dark-text);
 
   --text-secondary: #d4d4d8;
+}
+
+.dark .davv-cms-root,
+body.dark .davv-cms-root,
+.davv-cms-root.dark {
+  --primary-color: var(--color-primary) !important;
 }
 
 /* ============================================================
