@@ -21,7 +21,11 @@ const SubMenuGrid: React.FC<SubMenuGridProps> = ({ items }) => {
           description={item.description}
           onClick={() => {
             if (item.path) {
-              navigate(item.path);
+              if (item.path.startsWith('http')) {
+                window.open(item.path, '_blank');
+              } else {
+                navigate(item.path);
+              }
             } else if (item.slug) {
               navigate(`/home/sub-menu/${item.slug}`);
             }

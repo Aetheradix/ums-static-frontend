@@ -269,7 +269,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                         setOpenModuleSlug(isModuleOpen ? null : moduleSlug);
                         setOpenSubMenuSlug(null); // Close sub-level accordion when changing top-level
                       } else if (module.path) {
-                        navigate(module.path);
+                        if (module.path.startsWith('http')) {
+                          window.open(module.path, '_blank');
+                        } else {
+                          navigate(module.path);
+                        }
                       } else if (module.slug) {
                         navigate(`/home/sub-menu/${module.slug}`);
                       }
@@ -322,7 +326,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                                       isSubMenuOpen ? null : subMenuSlug
                                     );
                                   } else if (subMenu.path) {
-                                    navigate(subMenu.path);
+                                    if (subMenu.path.startsWith('http')) {
+                                      window.open(subMenu.path, '_blank');
+                                    } else {
+                                      navigate(subMenu.path);
+                                    }
                                   }
                                 }}
                               >
@@ -362,7 +370,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                                           className={`app-sidebar-leaf-item ${isLeafActive ? 'active' : ''}`}
                                           onClick={() => {
                                             if (leaf.path) {
-                                              navigate(leaf.path);
+                                              if (leaf.path.startsWith('http')) {
+                                                window.open(leaf.path, '_blank');
+                                              } else {
+                                                navigate(leaf.path);
+                                              }
                                             }
                                           }}
                                         >

@@ -183,7 +183,13 @@ const AllPagesGrid: React.FC<AllPagesGridProps> = ({ searchQuery = '' }) => {
                     icon={page.icon}
                     colorScheme={page.colorScheme as any}
                     description={page.breadcrumb || page.description}
-                    onClick={() => navigate(page.path)}
+                    onClick={() => {
+                      if (page.path.startsWith('http')) {
+                        window.open(page.path, '_blank');
+                      } else {
+                        navigate(page.path);
+                      }
+                    }}
                   />
                 ))}
               </div>
