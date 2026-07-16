@@ -4,7 +4,7 @@ import { grvUrls } from '../urls';
 export default function GrievanceCellPortalPage() {
   return (
     <PortalSelector
-      moduleTitle="Grievance Cell Portal — Administration"
+      moduleTitle="Grievance Cell Login — Administration"
       moduleDescription="DAVV Indore — Nodal cell management. Oversee all university complaints, coordinate committee reviews, and compile analytical reports."
       backPath={grvUrls.portal}
       backLabel="Grievance Management System"

@@ -7107,7 +7107,7 @@ export const menuConfig: Menu.MenuItem[] = [
             colorScheme: 'green',
             children: [
               {
-                label: 'Student Portal',
+                label: 'Student Login',
                 slug: 'grievance-student-portal',
                 description: 'Raise, track, and manage your grievances.',
                 path: '/grievance-management/student',
@@ -7115,7 +7115,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'blue',
               },
               {
-                label: 'Department Portal',
+                label: 'Department Login',
                 slug: 'grievance-department-portal',
                 description:
                   'Review assigned complaints, manage notesheets, and record action taken.',
@@ -7124,7 +7124,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'green',
               },
               {
-                label: 'Grievance Cell Portal',
+                label: 'Grievance Cell',
                 slug: 'grievance-cell-portal',
                 description:
                   'Central monitoring, SLA tracking, and committee oversight.',
@@ -7133,7 +7133,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'purple',
               },
               {
-                label: 'Authority Portal',
+                label: 'Authority Login',
                 slug: 'grievance-authority-portal',
                 description:
                   'Review pending approvals, decide appeals, and log decisions.',
@@ -7142,7 +7142,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'orange',
               },
               {
-                label: 'Admin Portal',
+                label: 'Admin Login',
                 slug: 'grievance-admin-portal',
                 description:
                   'Configure categories, departments, SLA settings, and view audit trails.',

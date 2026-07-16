@@ -4,8 +4,8 @@ import { grvUrls } from '../urls';
 export default function StudentPortalPage() {
   return (
     <PortalSelector
-      moduleTitle="Student Portal — Grievance Redressal"
-      moduleDescription="DAVV Indore — UGC & AICTE compliant portal for students to lodge, track and appeal grievances."
+      moduleTitle="Student Login — Grievance Redressal"
+      moduleDescription="DAVV Indore — UGC & AICTE compliant system for students to lodge, track and appeal grievances."
       backPath={grvUrls.portal}
       backLabel="Grievance Management System"
       portals={[

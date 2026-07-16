@@ -181,25 +181,36 @@ export default function AdminWorkflowConfiguration() {
             </div>
           </FormCard>
 
-          <FormCard title="Active Committees">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {committees.map(c => (
-                <div key={c.id} className="border rounded-lg p-3 text-xs">
-                  <div className="flex justify-between items-center mb-2">
-                    <p className="font-bold text-blue-700">{c.acronym}</p>
-                    <span
-                      className={`grv-status-pill ${c.status === 'Active' ? 'approved' : 'closed'}`}
-                    >
-                      {c.status}
-                    </span>
-                  </div>
-                  <p className="font-medium text-slate-700 mb-1">{c.name}</p>
-                  <p className="text-slate-500">
-                    <span className="font-semibold">Chair:</span> {c.chair}
-                  </p>
-                  <p className="text-slate-400 mt-1">{c.mandate}</p>
-                </div>
-              ))}
+          <FormCard title="Category → Committee Mappings Grid">
+            <div className="overflow-x-auto rounded-xl border border-slate-200">
+              <table className="grv-table w-full text-xs">
+                <thead>
+                  <tr>
+                    <th>Grievance Category</th>
+                    <th>Assigned Committee</th>
+                    <th>Category Code</th>
+                    <th className="text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {grievanceCategories.map(cat => (
+                    <tr key={cat.id}>
+                      <td className="font-semibold text-slate-700">
+                        {cat.name}
+                      </td>
+                      <td>
+                        <span className="font-medium text-blue-700">
+                          {cat.committee || 'Not Assigned'}
+                        </span>
+                      </td>
+                      <td className="font-mono text-slate-400">{cat.code}</td>
+                      <td className="text-center">
+                        <span className="grv-status-pill approved">Active</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </FormCard>
         </>

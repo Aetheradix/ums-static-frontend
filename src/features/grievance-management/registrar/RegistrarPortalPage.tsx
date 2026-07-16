@@ -4,8 +4,8 @@ import { grvUrls } from '../urls';
 export default function RegistrarPortalPage() {
   return (
     <PortalSelector
-      moduleTitle="Registrar Desk Portal — Final Authority"
-      moduleDescription="DAVV Indore — Final sanction and dispute resolution authority desk. Review green notesheets, approve committee recommendations, and issue final resolution letters."
+      moduleTitle="Registrar Login — Final Authority Desk"
+      moduleDescription="DAVV Indore — Final sanction and dispute resolution authority. Review notesheets, approve committee recommendations, and issue resolution letters."
       backPath={grvUrls.portal}
       backLabel="Grievance Management System"
       portals={[

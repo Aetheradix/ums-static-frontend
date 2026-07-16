@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 
 // Portal Page selector
 import GrievancePortalPage from './portal/GrievancePortalPage';
+import WorkflowDiagram from './portal/WorkflowDiagram';
 
 // Student Pages
 import StudentPortalPage from './student/StudentPortalPage';
@@ -36,6 +37,7 @@ import GrievanceCellPortalPage from './grievance-cell/GrievanceCellPortalPage';
 import GrievanceCellDashboard from './grievance-cell/pages/Dashboard';
 import GrievanceCellComplaintManagement from './grievance-cell/pages/ComplaintManagement';
 import GrievanceCellCommitteeReview from './grievance-cell/pages/CommitteeReview';
+import GrievanceCellCommitteeManagement from './grievance-cell/pages/CommitteeManagement';
 import GrievanceCellReports from './grievance-cell/pages/Reports';
 
 // Registrar Pages
@@ -81,6 +83,7 @@ export default function GrievanceManagementRoutes() {
         path="student/communication"
         element={<StudentCommunicationCenter />}
       />
+      <Route path="student/workflow" element={<WorkflowDiagram />} />
 
       {/* LOGIN 2: TEACHER / EMPLOYEE LOGIN (Reuses student workflow dynamically) */}
       <Route path="teacher" element={<TeacherPortalPage />} />
@@ -105,6 +108,7 @@ export default function GrievanceManagementRoutes() {
         path="teacher/communication"
         element={<StudentCommunicationCenter />}
       />
+      <Route path="teacher/workflow" element={<WorkflowDiagram />} />
 
       {/* LOGIN 3: DEPARTMENT OFFICER LOGIN */}
       <Route
@@ -162,6 +166,11 @@ export default function GrievanceManagementRoutes() {
         path="grievance-cell/committee-review"
         element={<GrievanceCellCommitteeReview />}
       />
+      <Route
+        path="grievance-cell/committee-management"
+        element={<GrievanceCellCommitteeManagement />}
+      />
+      <Route path="grievance-cell/workflow" element={<WorkflowDiagram />} />
       <Route path="grievance-cell/reports" element={<GrievanceCellReports />} />
 
       {/* LOGIN 6: REGISTRAR LOGIN */}

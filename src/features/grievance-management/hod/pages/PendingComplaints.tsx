@@ -70,6 +70,7 @@ export default function HodPendingComplaints() {
               <th>Subject</th>
               <th>Dept</th>
               <th>Submitted</th>
+              <th>Hearing Date</th>
               <th>Status</th>
               <th className="text-center">Review</th>
             </tr>
@@ -77,7 +78,7 @@ export default function HodPendingComplaints() {
           <tbody>
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={8} className="text-center py-8 text-slate-400">
+                <td colSpan={9} className="text-center py-8 text-slate-400">
                   No pending complaints found.
                 </td>
               </tr>
@@ -95,6 +96,13 @@ export default function HodPendingComplaints() {
                 <td className="max-w-xs truncate">{c.subject}</td>
                 <td className="text-slate-500">{c.assignedDept}</td>
                 <td>{c.submittedDate}</td>
+                <td>
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${c.hearingDate && c.hearingDate !== '—' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-500'}`}
+                  >
+                    {c.hearingDate ?? '—'}
+                  </span>
+                </td>
                 <td>
                   <span className={statusColors[c.status] || 'grv-status-pill'}>
                     {c.status}

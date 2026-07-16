@@ -89,6 +89,7 @@ export interface Complaint {
   isAnonymous: boolean;
   incidentDate: string;
   submittedDate: string;
+  hearingDate?: string;
   location: string;
   assignedDept: string;
   resolvedDate?: string;
@@ -115,13 +116,33 @@ export interface Committee {
   totalCases: number;
 }
 
+export type CommitteeMemberRole =
+  | 'Chairman'
+  | 'Convener'
+  | 'Member Secretary'
+  | 'Academic Member'
+  | 'Faculty Representative'
+  | 'Administrative Officer'
+  | 'Student Welfare Officer'
+  | 'SC/ST Cell Representative'
+  | 'OBC Cell Representative'
+  | 'Women Cell Representative'
+  | 'Anti-Ragging Cell Representative'
+  | 'Hostel Representative'
+  | 'Legal Officer'
+  | 'External Expert';
+
 export interface CommitteeMember {
   id: string;
   name: string;
   designation: string;
   department: string;
-  role: 'Chair' | 'Member Secretary' | 'Member';
-  contact: string;
+  email: string;
+  mobile: string;
+  role: CommitteeMemberRole;
+  status: 'Active' | 'Inactive';
+  activeFrom: string;
+  activeTill: string;
 }
 
 export interface IntegrationPortal {
@@ -360,32 +381,84 @@ export const committees: Committee[] = [
         name: 'Prof. Maya Bose',
         designation: 'Professor',
         department: 'School of Economics',
-        role: 'Chair',
-        contact: 'mbose@davv.edu',
+        email: 'mbose@davv.edu',
+        mobile: '9826100001',
+        role: 'Chairman',
+        status: 'Active',
+        activeFrom: '2024-01-01',
+        activeTill: '2026-12-31',
       },
       {
         id: 'CM2',
         name: 'Dr. Sanjay Singh',
         designation: 'Associate Professor',
         department: 'School of Law',
+        email: 'ssingh@davv.edu',
+        mobile: '9826100002',
         role: 'Member Secretary',
-        contact: 'ssingh@davv.edu',
+        status: 'Active',
+        activeFrom: '2024-01-01',
+        activeTill: '2026-12-31',
       },
       {
         id: 'CM3',
         name: 'Shri Ram K. Sharma',
         designation: 'Deputy Registrar',
         department: 'Administration',
-        role: 'Member',
-        contact: 'rsharma@davv.edu',
+        email: 'rsharma@davv.edu',
+        mobile: '9826100003',
+        role: 'Administrative Officer',
+        status: 'Active',
+        activeFrom: '2024-01-01',
+        activeTill: '2026-12-31',
       },
       {
         id: 'CM4',
         name: 'Ananya Rao',
         designation: 'Student Representative',
         department: 'School of Commerce',
-        role: 'Member',
-        contact: 'ananya.std@davv.edu',
+        email: 'ananya.std@davv.edu',
+        mobile: '9826100004',
+        role: 'Student Welfare Officer',
+        status: 'Active',
+        activeFrom: '2024-01-01',
+        activeTill: '2025-12-31',
+      },
+      {
+        id: 'CM5',
+        name: 'Dr. Kavya Reddy',
+        designation: 'Associate Professor',
+        department: 'Dept of Women Studies',
+        email: 'kreddy@davv.edu',
+        mobile: '9826100005',
+        role: 'Women Cell Representative',
+        status: 'Active',
+        activeFrom: '2024-01-01',
+        activeTill: '2026-12-31',
+      },
+      {
+        id: 'CM6',
+        name: 'Dr. Hari Mohan',
+        designation: 'Liaison Officer',
+        department: 'SC/ST Redressal Cell',
+        email: 'hmohan@davv.edu',
+        mobile: '9826100006',
+        role: 'SC/ST Cell Representative',
+        status: 'Active',
+        activeFrom: '2024-01-01',
+        activeTill: '2026-12-31',
+      },
+      {
+        id: 'CM7',
+        name: 'Adv. Priya Mehta',
+        designation: 'Legal Advisor',
+        department: 'University Legal Cell',
+        email: 'pmehta@davv.edu',
+        mobile: '9826100007',
+        role: 'Legal Officer',
+        status: 'Active',
+        activeFrom: '2024-01-01',
+        activeTill: '2026-12-31',
       },
     ],
   },
@@ -402,28 +475,52 @@ export const committees: Committee[] = [
     totalCases: 5,
     members: [
       {
-        id: 'CM5',
+        id: 'ARC1',
         name: 'Prof. Alok Gupta',
         designation: 'Dean Student Welfare',
         department: 'School of Physics',
-        role: 'Chair',
-        contact: 'agupta@davv.edu',
+        email: 'agupta@davv.edu',
+        mobile: '9826200001',
+        role: 'Chairman',
+        status: 'Active',
+        activeFrom: '2024-01-01',
+        activeTill: '2026-12-31',
       },
       {
-        id: 'CM6',
+        id: 'ARC2',
         name: 'Shri Vipin Adhiya',
         designation: 'DSP - Indore Civil Admin',
         department: 'External Police Nominee',
-        role: 'Member',
-        contact: 'vipin.pol@mp.gov.in',
+        email: 'vipin.pol@mp.gov.in',
+        mobile: '9826200002',
+        role: 'External Expert',
+        status: 'Active',
+        activeFrom: '2024-01-01',
+        activeTill: '2026-12-31',
       },
       {
-        id: 'CM7',
+        id: 'ARC3',
         name: 'Dr. Ritu Sen',
         designation: 'Assistant Warden',
         department: 'Hostel Section',
+        email: 'ritusen@davv.edu',
+        mobile: '9826200003',
         role: 'Member Secretary',
-        contact: 'ritusen@davv.edu',
+        status: 'Active',
+        activeFrom: '2024-01-01',
+        activeTill: '2026-12-31',
+      },
+      {
+        id: 'ARC4',
+        name: 'Dr. Priya Shukla',
+        designation: 'Anti-Ragging Officer',
+        department: 'Proctor Office',
+        email: 'pshukla@davv.edu',
+        mobile: '9826200004',
+        role: 'Anti-Ragging Cell Representative',
+        status: 'Active',
+        activeFrom: '2024-01-01',
+        activeTill: '2026-12-31',
       },
     ],
   },
@@ -440,28 +537,52 @@ export const committees: Committee[] = [
     totalCases: 3,
     members: [
       {
-        id: 'CM8',
+        id: 'ICC1',
         name: 'Prof. Arundhati Mitra',
         designation: 'Professor & HOD',
         department: 'School of Life Sciences',
-        role: 'Chair',
-        contact: 'amitra@davv.edu',
+        email: 'amitra@davv.edu',
+        mobile: '9826300001',
+        role: 'Chairman',
+        status: 'Active',
+        activeFrom: '2024-01-01',
+        activeTill: '2026-12-31',
       },
       {
-        id: 'CM9',
+        id: 'ICC2',
         name: 'Smt. Seema Nair',
         designation: 'NGO Coordinator',
         department: 'Aanchal Social Trust',
-        role: 'Member',
-        contact: 'seema.aanchal@gmail.com',
+        email: 'seema.aanchal@gmail.com',
+        mobile: '9826300002',
+        role: 'External Expert',
+        status: 'Active',
+        activeFrom: '2024-01-01',
+        activeTill: '2026-12-31',
       },
       {
-        id: 'CM10',
+        id: 'ICC3',
         name: 'Dr. Preeti Verma',
         designation: 'Associate Professor',
         department: 'School of Chemistry',
+        email: 'pverma@davv.edu',
+        mobile: '9826300003',
         role: 'Member Secretary',
-        contact: 'pverma@davv.edu',
+        status: 'Active',
+        activeFrom: '2024-01-01',
+        activeTill: '2026-12-31',
+      },
+      {
+        id: 'ICC4',
+        name: 'Dr. Reena Joshi',
+        designation: 'Women Cell Head',
+        department: 'Dept of Women Studies',
+        email: 'rjoshi@davv.edu',
+        mobile: '9826300004',
+        role: 'Women Cell Representative',
+        status: 'Active',
+        activeFrom: '2024-01-01',
+        activeTill: '2026-12-31',
       },
     ],
   },
@@ -634,6 +755,7 @@ export const complaints: Complaint[] = [
     isAnonymous: false,
     incidentDate: '10 Jul 2026',
     submittedDate: '12 Jul 2026',
+    hearingDate: '22 Jul 2026',
     location: 'SCSIT Block, Examination Section',
     assignedDept: 'School of Computer Science & IT (SCSIT)',
     attachments: [
@@ -701,6 +823,7 @@ export const complaints: Complaint[] = [
     isAnonymous: false,
     incidentDate: '08 Jul 2026',
     submittedDate: '10 Jul 2026',
+    hearingDate: '20 Jul 2026',
     location: 'Girls Hostel No. 3, DAVV Campus',
     assignedDept: 'Estate & Warden Section',
     attachments: [
@@ -777,6 +900,7 @@ export const complaints: Complaint[] = [
     isAnonymous: false,
     incidentDate: '15 Jun 2026',
     submittedDate: '01 Jul 2026',
+    hearingDate: '15 Jul 2026',
     location: 'Accounts Desk 4, Administrative Block',
     assignedDept: 'Finance & Accounts Division',
     attachments: [
@@ -866,6 +990,7 @@ export const complaints: Complaint[] = [
     isAnonymous: false,
     incidentDate: '02 Jul 2026',
     submittedDate: '03 Jul 2026',
+    hearingDate: '18 Jul 2026',
     location: 'Physics Department corridor, Science Block',
     assignedDept: 'Proctor Office & Security Desk',
     attachments: [],
@@ -968,6 +1093,7 @@ export const complaints: Complaint[] = [
     isAnonymous: false,
     incidentDate: '30 May 2026',
     submittedDate: '10 Jun 2026',
+    hearingDate: '25 Jun 2026',
     location: 'HRMS Section, Administration Building',
     assignedDept: 'Administration Office',
     attachments: [
@@ -1080,6 +1206,7 @@ export const complaints: Complaint[] = [
     isAnonymous: false,
     incidentDate: '10 May 2026',
     submittedDate: '11 May 2026',
+    hearingDate: '—',
     location: 'Hostel 2 Mess Kitchen, DAVV Campus',
     assignedDept: 'Estate & Warden Section',
     attachments: [

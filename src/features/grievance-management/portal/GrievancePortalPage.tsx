@@ -5,10 +5,10 @@ export default function GrievancePortalPage() {
   return (
     <PortalSelector
       moduleTitle="University ERP — Grievance Management System"
-      moduleDescription="DAVV Indore — UGC & AICTE compliant Grievance Redressal Portal. Select your role to proceed."
+      moduleDescription="DAVV Indore — UGC & AICTE compliant Grievance Redressal System. Select your login role to proceed."
       portals={[
         {
-          title: 'Student Portal',
+          title: 'Student Login',
           description:
             'Raise grievances, track complaint timelines, view status, and download resolution letters.',
           icon: 'school',
@@ -16,7 +16,7 @@ export default function GrievancePortalPage() {
           path: grvUrls.student.portal,
         },
         {
-          title: 'Teacher / Employee Portal',
+          title: 'Employee Login',
           description:
             'File complaints, track status, view notifications, and access resolved letters.',
           icon: 'badge',
@@ -24,15 +24,15 @@ export default function GrievancePortalPage() {
           path: grvUrls.teacher.portal,
         },
         {
-          title: 'Department Officer Portal',
+          title: 'Department Login',
           description:
-            'Review complaints, draft and create green digital notesheets, forward or return files.',
+            'Review complaints, draft green digital notesheets, forward or return files.',
           icon: 'assignment_ind',
           colorScheme: 'green',
           path: grvUrls.departmentOfficer.portal,
         },
         {
-          title: 'HoD Portal',
+          title: 'HOD Login',
           description:
             'Access pending complaints inbox, review digital notesheets, write official remarks, forward or return files.',
           icon: 'supervisor_account',
@@ -40,7 +40,7 @@ export default function GrievancePortalPage() {
           path: grvUrls.hod.portal,
         },
         {
-          title: 'Grievance Cell Portal',
+          title: 'Grievance Cell',
           description:
             'Manage university complaints, assign departments, conduct committee reviews, and view analytical reports.',
           icon: 'support_agent',
@@ -48,7 +48,7 @@ export default function GrievancePortalPage() {
           path: grvUrls.cell.portal,
         },
         {
-          title: 'Registrar Portal',
+          title: 'Registrar Login',
           description:
             'Review recommendations, access full notesheet history, generate final resolution letters, and close files.',
           icon: 'gavel',
@@ -56,7 +56,7 @@ export default function GrievancePortalPage() {
           path: grvUrls.registrar.portal,
         },
         {
-          title: 'Admin Portal',
+          title: 'Admin Login',
           description:
             'Configure masters, categories, committees, mapping, user roles, routing flows, and audit logs.',
           icon: 'admin_panel_settings',
