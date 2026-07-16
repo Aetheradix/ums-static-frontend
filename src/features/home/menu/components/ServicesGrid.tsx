@@ -68,7 +68,11 @@ const ServicesGrid: React.FC<ServicesGridProps> = ({ activeFilter }) => {
           description={getServiceDescription(service)}
           onClick={() => {
             if (service.path) {
-              navigate(service.path);
+              if (service.path.startsWith('http')) {
+                window.open(service.path, '_blank');
+              } else {
+                navigate(service.path);
+              }
             } else if (service.slug) {
               navigate(homeUrls.subMenu.root(service.slug));
             }

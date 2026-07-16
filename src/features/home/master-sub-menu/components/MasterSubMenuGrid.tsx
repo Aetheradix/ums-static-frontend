@@ -19,7 +19,17 @@ const MasterSubMenuGrid: React.FC<MasterSubMenuGridProps> = ({ items }) => {
           icon={item.icon}
           colorScheme={item.colorScheme}
           description={item.description}
-          onClick={item.path ? () => navigate(item.path!) : undefined}
+          onClick={
+            item.path
+              ? () => {
+                  if (item.path!.startsWith('http')) {
+                    window.open(item.path!, '_blank');
+                  } else {
+                    navigate(item.path!);
+                  }
+                }
+              : undefined
+          }
         />
       ))}
     </div>

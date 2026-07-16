@@ -5713,6 +5713,15 @@ export const menuConfig: Menu.MenuItem[] = [
           },
         ],
       },
+      {
+        label: 'Finance Portal',
+        slug: 'finance-portal',
+        category: 'Finance',
+        icon: 'account_balance',
+        colorScheme: 'amber',
+        description: 'Access the external DAVV Finance Portal.',
+        path: 'https://davvfinance.tserver.co.in/',
+      },
     ],
   },
   {

@@ -41,7 +41,11 @@ export const WorkspaceNavbar: React.FC = () => {
   const handleItemClick = (item: any) => {
     const targetPath = getFirstAvailablePath(item);
     if (targetPath) {
-      navigate(targetPath);
+      if (targetPath.startsWith('http')) {
+        window.open(targetPath, '_blank');
+      } else {
+        navigate(targetPath);
+      }
     }
   };
 

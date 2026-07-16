@@ -159,7 +159,11 @@ const Header: React.FC = () => {
       e.preventDefault();
       const selected = searchResults[selectedIndex];
       if (selected?.resolvedPath) {
-        navigate(selected.resolvedPath);
+        if (selected.resolvedPath.startsWith('http')) {
+          window.open(selected.resolvedPath, '_blank');
+        } else {
+          navigate(selected.resolvedPath);
+        }
         setSearchQuery('');
         setIsSearchOpen(false);
       }
@@ -304,7 +308,11 @@ const Header: React.FC = () => {
                       className={`ws-search-result-item ${idx === selectedIndex ? 'selected' : ''}`}
                       onMouseDown={e => {
                         e.preventDefault(); // Prevents input blur from overriding click
-                        navigate(item.resolvedPath);
+                        if (item.resolvedPath.startsWith('http')) {
+                          window.open(item.resolvedPath, '_blank');
+                        } else {
+                          navigate(item.resolvedPath);
+                        }
                         setSearchQuery('');
                         setIsSearchOpen(false);
                       }}
