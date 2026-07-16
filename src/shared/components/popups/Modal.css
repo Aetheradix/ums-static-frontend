@@ -146,7 +146,7 @@
 
 .modal-card {
   border: 1px solid var(--primary-color);
-  box-shadow: 0 8px 32px var(--dropdown-shadow-color);
+  box-shadow: 0 0px 10px var(--color-gray-400) !important;
 }
 
 /* Custom UI Override Classes */

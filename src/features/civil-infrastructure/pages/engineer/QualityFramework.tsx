@@ -1,7 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
+import {
+  DatePicker,
+  DropDownList,
+  TextArea,
+  TextBox,
+} from 'shared/components/forms';
 import {
   FormCard,
   FormGrid,
@@ -10,7 +15,7 @@ import {
   GridPanel,
   Tabs,
 } from 'shared/new-components';
-import { qualityTests as initialTests, civilWorks } from '../../mocks';
+import { civilWorks, milestones as initialMilestones } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
@@ -76,13 +81,66 @@ export default function QualityFramework() {
   // Works state from localStorage
   const [works] = useState<any[]>(() => {
     const saved = localStorage.getItem('civil_works');
-    return saved ? JSON.parse(saved) : civilWorks;
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      const merged = parsed.map((w: any) => {
+        const mockW = civilWorks.find((mw: any) => mw.id === w.id);
+        if (mockW) {
+          return {
+            ...w,
+            status:
+              w.status === 'Budget Locked' && mockW.status === 'Tender Awarded'
+                ? 'Tender Awarded'
+                : w.status,
+            contractAmount:
+              w.contractAmount === 0 && mockW.contractAmount > 0
+                ? mockW.contractAmount
+                : w.contractAmount,
+            tpiAgencyId: w.tpiAgencyId || mockW.tpiAgencyId,
+            tpiAgencyName: w.tpiAgencyName || mockW.tpiAgencyName,
+            qualityLabId: w.qualityLabId || mockW.qualityLabId,
+            qualityLabName: w.qualityLabName || mockW.qualityLabName,
+          };
+        }
+        return w;
+      });
+      localStorage.setItem('civil_works', JSON.stringify(merged));
+      return merged;
+    }
+    return civilWorks;
   });
 
-  // Quality Tests state shared with QualityTesting.tsx
-  const [tests, setTests] = useState<any[]>(() => {
-    const saved = localStorage.getItem('civil_quality_tests');
-    return saved ? JSON.parse(saved) : initialTests;
+  const [milestones, setMilestones] = useState<any[]>(() => {
+    const saved = localStorage.getItem('civil_milestones');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      const merged = parsed.map((m: any) => {
+        const mockM = initialMilestones.find((mw: any) => mw.id === m.id);
+        if (mockM && mockM.qualityTestRequired) {
+          return {
+            ...m,
+            testName: m.testName || mockM.testName,
+            testType: m.testType || mockM.testType,
+            materialTested: m.materialTested || mockM.materialTested,
+            labName: m.labName || mockM.labName,
+            requiredValue: m.requiredValue || mockM.requiredValue,
+          };
+        }
+        return m;
+      });
+      const parsedIds = new Set(merged.map((m: any) => m.id));
+      const missing = initialMilestones.filter(
+        (m: any) => !parsedIds.has(m.id)
+      );
+      const finalMerged = [...merged, ...missing];
+      localStorage.setItem('civil_milestones', JSON.stringify(finalMerged));
+      return finalMerged;
+    }
+    return initialMilestones;
+  });
+
+  const [selectedWorkId, setSelectedWorkId] = useState<string>(() => {
+    return works[0]?.id || '';
   });
 
   const [popup, setPopup] = useState<{
@@ -96,10 +154,7 @@ export default function QualityFramework() {
   );
   const [remarks, setRemarks] = useState('');
   const [docName, setDocName] = useState('');
-
-  useEffect(() => {
-    localStorage.setItem('civil_quality_tests', JSON.stringify(tests));
-  }, [tests]);
+  const [testDate, setTestDate] = useState('');
 
   const handleUpdate = () => {
     if (!popup.item) return;
@@ -107,26 +162,60 @@ export default function QualityFramework() {
       ToastService.error('Lab certificate number is required.');
       return;
     }
+    if (!testDate) {
+      ToastService.error('Test date is required.');
+      return;
+    }
     if (!docName) {
       ToastService.error('Document upload file name is required.');
       return;
     }
 
-    const updatedTests = tests.map((t: any) =>
-      t.id === popup.item!.id
+    const updatedMilestones = milestones.map((m: any) =>
+      m.id === popup.item.id
         ? {
-            ...t,
-            result,
+            ...m,
+            qualityTestStatus: result,
             observedValue,
             certNo,
-            testDate: new Date().toISOString().split('T')[0],
-            remarks,
+            testDate,
             uploadedDoc: docName,
+            testRemarks: remarks,
+            status:
+              result === 'Fail'
+                ? ('Quality Fail' as any)
+                : m.status === 'Quality Fail'
+                  ? ('In Progress' as any)
+                  : m.status,
           }
-        : t
+        : m
     );
 
-    setTests(updatedTests);
+    setMilestones(updatedMilestones);
+    localStorage.setItem('civil_milestones', JSON.stringify(updatedMilestones));
+
+    // Sync to civil_quality_tests for other parts of the app (like Dashboard)
+    const updatedTests = updatedMilestones
+      .filter((m: any) => m.qualityTestRequired)
+      .map((m: any) => ({
+        id: `qt_${m.id}`,
+        workId: m.workId,
+        workName: m.workName,
+        milestoneId: m.id,
+        testName: m.testName || 'Quality Test',
+        testType: m.testType || 'Standard Test',
+        materialTested: m.materialTested || 'Sample Material',
+        labName: m.labName || 'Standard Lab',
+        testDate: m.testDate,
+        sampleQty: 6,
+        requiredValue: m.requiredValue || 'As per standard',
+        observedValue: m.observedValue,
+        result: m.qualityTestStatus || 'Pending',
+        certNo: m.certNo,
+        uploadedDoc: m.uploadedDoc,
+        remarks: m.testRemarks,
+      }));
+    localStorage.setItem('civil_quality_tests', JSON.stringify(updatedTests));
 
     if (result === 'Fail') {
       ToastService.error(
@@ -150,6 +239,10 @@ export default function QualityFramework() {
     ].includes(w.status)
   );
 
+  const filteredMilestones = milestones
+    .filter((m: any) => m.workId === selectedWorkId && m.qualityTestRequired)
+    .sort((a: any, b: any) => a.sequenceNo - b.sequenceNo);
+
   return (
     <FormPage
       title="Quality Assurance Framework"
@@ -169,8 +262,22 @@ export default function QualityFramework() {
                 title="Material Verification Registry"
                 subtitle="Record, verify, and upload document certificates for NABL/TPI laboratory tests."
               >
+                <div style={{ marginBottom: '1.5rem', maxWidth: '400px' }}>
+                  <DropDownList
+                    label="Select Project / Work"
+                    data={works.map((w: any) => ({
+                      label: `${w.workId} - ${w.name}`,
+                      value: w.id,
+                    }))}
+                    textField="label"
+                    optionValue="value"
+                    value={selectedWorkId}
+                    onChange={(val: any) => setSelectedWorkId(val as string)}
+                  />
+                </div>
+
                 <GridPanel
-                  data={tests}
+                  data={filteredMilestones}
                   columns={[
                     {
                       cell: (_, o) => <span>{o.rowIndex + 1}</span>,
@@ -178,43 +285,56 @@ export default function QualityFramework() {
                     },
                     {
                       field: 'workName',
-                      header: 'Work',
-                      cell: (t: any) => {
+                      header: 'Work ID',
+                      cell: (m: any) => {
                         const wk = works.find(
-                          (w: any) => w.id === t.workId || w.workId === t.workId
+                          (w: any) => w.id === m.workId || w.workId === m.workId
                         );
                         return (
                           <span
                             style={{ fontSize: '0.75rem', fontWeight: 600 }}
                           >
-                            {wk?.workId ?? t.workId}
+                            {wk?.workId ?? m.workId}
                           </span>
                         );
                       },
                     },
                     {
+                      field: 'milestoneName',
+                      header: 'Milestone Stage',
+                      cell: (m: any) => (
+                        <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>
+                          {m.milestoneName} (Milestone {m.sequenceNo})
+                        </span>
+                      ),
+                    },
+                    {
                       field: 'testName',
                       header: 'Test Name',
-                      cell: (t: any) => (
-                        <span style={{ fontWeight: 600 }}>{t.testName}</span>
+                      cell: (m: any) => (
+                        <span style={{ fontWeight: 600 }}>
+                          {m.testName || '—'}
+                        </span>
                       ),
                     },
                     {
                       field: 'labName',
                       header: 'Testing Lab',
-                      cell: (t: any) => {
+                      cell: (m: any) => {
                         const wk = works.find(
-                          (w: any) => w.id === t.workId || w.workId === t.workId
+                          (w: any) => w.id === m.workId || w.workId === m.workId
                         );
-                        return <span>{wk?.qualityLabName ?? t.labName}</span>;
+                        return (
+                          <span>{wk?.qualityLabName ?? m.labName ?? '—'}</span>
+                        );
                       },
                     },
                     {
                       field: 'testDate',
                       header: 'Test Date',
-                      cell: (t: any) =>
-                        t.testDate ? (
-                          <span>{t.testDate}</span>
+                      cell: (m: any) =>
+                        m.testDate ? (
+                          <span>{m.testDate}</span>
                         ) : (
                           <span style={{ color: '#9ca3af' }}>Pending</span>
                         ),
@@ -222,48 +342,48 @@ export default function QualityFramework() {
                     {
                       field: 'observedValue',
                       header: 'Observed Value',
-                      cell: (t: any) =>
-                        t.observedValue ? (
-                          <span>{t.observedValue}</span>
+                      cell: (m: any) =>
+                        m.observedValue ? (
+                          <span>{m.observedValue}</span>
                         ) : (
                           <span className="civil-pill amber">Awaited</span>
                         ),
                     },
                     {
-                      field: 'result',
+                      field: 'qualityTestStatus',
                       header: 'Result',
-                      cell: (t: any) => (
+                      cell: (m: any) => (
                         <span
-                          className={`civil-pill ${RESULT_COLORS[t.result] ?? 'gray'}`}
+                          className={`civil-pill ${RESULT_COLORS[m.qualityTestStatus || 'Pending'] ?? 'gray'}`}
                         >
-                          {t.result}
+                          {m.qualityTestStatus || 'Pending'}
                         </span>
                       ),
                     },
                     {
                       field: 'certNo',
                       header: 'Cert. No',
-                      cell: (t: any) =>
-                        t.certNo ? (
+                      cell: (m: any) =>
+                        m.certNo ? (
                           <span
                             style={{
                               fontFamily: 'monospace',
                               fontSize: '0.72rem',
                             }}
                           >
-                            {t.certNo}
+                            {m.certNo}
                           </span>
                         ) : (
                           <span className="civil-pill amber">Pending</span>
                         ),
                     },
                     {
-                      field: 'uploadedDoc' as any,
+                      field: 'uploadedDoc',
                       header: 'Uploaded Document',
-                      cell: (t: any) =>
-                        t.uploadedDoc ? (
+                      cell: (m: any) =>
+                        m.uploadedDoc ? (
                           <span style={{ color: '#2563eb', fontWeight: 600 }}>
-                            📄 {t.uploadedDoc}
+                            📄 {m.uploadedDoc}
                           </span>
                         ) : (
                           <span style={{ color: '#9ca3af' }}>—</span>
@@ -282,18 +402,26 @@ export default function QualityFramework() {
                             variant="outlined"
                             onClick={() => setPopup({ mode: 'view', item })}
                           />
-                          {item.result === 'Pending' && (
+                          {(item.qualityTestStatus || 'Pending') !== 'Pass' && (
                             <Button
                               size="small"
                               label="Update Result"
                               icon="upload"
                               variant="primary"
                               onClick={() => {
-                                setCertNo('');
-                                setObservedValue('');
-                                setDocName('');
-                                setResult('Pass');
-                                setRemarks('');
+                                setCertNo(item.certNo || '');
+                                setObservedValue(item.observedValue || '');
+                                setDocName(item.uploadedDoc || '');
+                                setResult(
+                                  item.qualityTestStatus === 'Fail'
+                                    ? 'Fail'
+                                    : 'Pass'
+                                );
+                                setRemarks(item.testRemarks || '');
+                                setTestDate(
+                                  item.testDate ||
+                                    new Date().toISOString().split('T')[0]
+                                );
                                 setPopup({ mode: 'update', item });
                               }}
                             />
@@ -494,8 +622,8 @@ export default function QualityFramework() {
         onHide={() => setPopup({ mode: 'closed' })}
         title={
           popup.mode === 'update'
-            ? `Upload Lab Result — ${popup.item?.testName}`
-            : `Test Details — ${popup.item?.testName}`
+            ? `Upload Lab Result — ${popup.item?.milestoneName}`
+            : `Test Details — ${popup.item?.milestoneName}`
         }
         subtitle="Lab certificate upload for quality gate clearance."
         size="lg"
@@ -521,17 +649,20 @@ export default function QualityFramework() {
                   }}
                 >
                   {[
-                    ['Test Name', popup.item.testName],
-                    ['Test Type / Standard', popup.item.testType],
-                    ['Material Tested', popup.item.materialTested],
+                    [
+                      'Milestone Stage',
+                      `${popup.item.milestoneName} (Milestone ${popup.item.sequenceNo})`,
+                    ],
+                    ['Milestone Description', popup.item.description],
+                    ['Test Name', popup.item.testName || '—'],
+                    ['Test Type / Standard', popup.item.testType || '—'],
+                    ['Material Tested', popup.item.materialTested || '—'],
                     [
                       'Testing Laboratory',
-                      wk?.qualityLabName ?? popup.item.labName,
+                      wk?.qualityLabName ?? popup.item.labName ?? '—',
                     ],
                     ['TPI Quality check Agency', wk?.tpiAgencyName ?? '—'],
-                    ['No. of Samples', String(popup.item.sampleQty)],
-                    ['Required Value', popup.item.requiredValue],
-                    ['TPI Engineer', popup.item.tpiEngineer ?? '—'],
+                    ['Required Value', popup.item.requiredValue || '—'],
                     [
                       'Uploaded Document',
                       popup.item.uploadedDoc
@@ -586,11 +717,12 @@ export default function QualityFramework() {
                         value={result}
                         onChange={v => setResult(v as any)}
                       />
-                      <TextBox
-                        label="Test Date"
-                        value={new Date().toISOString().split('T')[0]}
-                        onChange={() => {}}
-                        disabled
+                      <DatePicker
+                        label="Test Date *"
+                        value={testDate ? new Date(testDate) : undefined}
+                        onChange={v =>
+                          setTestDate(v ? v.toISOString().split('T')[0] : '')
+                        }
                       />
                     </FormGrid>
                     <div style={{ marginBottom: '1rem' }}>

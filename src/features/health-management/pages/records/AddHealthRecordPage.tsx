@@ -5,6 +5,7 @@ import { TextBox, TextArea, DropDownList } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
 import { memberships, doctors, hospitals, referralTemplates } from '../../data';
 import { hmsUrls } from '../../urls';
+import { getHmsBreadcrumbs } from '../../utils';
 
 const bloodGroupOptions = [
   { label: 'A+', value: 'A+' },
@@ -74,12 +75,7 @@ export default function AddHealthRecordPage() {
     <FormPage
       title="Add Health Record"
       description="Create a new patient health record with examination details and prescription."
-      breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Health Services', to: hmsUrls.portal },
-        { label: 'Health Records', to: hmsUrls.records },
-        { label: 'Add Record' },
-      ]}
+      breadcrumbs={getHmsBreadcrumbs('Health Records', 'Add Record')}
     >
       <FormCard title="Patient Information">
         <FormGrid>

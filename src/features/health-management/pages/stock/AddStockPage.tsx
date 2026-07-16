@@ -10,6 +10,7 @@ import {
   medicineStockTypes,
 } from '../../data';
 import { hmsUrls } from '../../urls';
+import { getHmsBreadcrumbs } from '../../utils';
 
 export default function AddStockPage() {
   const navigate = useNavigate();
@@ -53,12 +54,7 @@ export default function AddStockPage() {
     <FormPage
       title="Add Stock"
       description="Add a new medicine batch to the medical stock inventory."
-      breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Health Services', to: hmsUrls.portal },
-        { label: 'Medical Stock', to: hmsUrls.stock },
-        { label: 'Add Stock' },
-      ]}
+      breadcrumbs={getHmsBreadcrumbs('Medical Stock', 'Add Stock')}
     >
       <FormCard title="Stock Details">
         <FormGrid>

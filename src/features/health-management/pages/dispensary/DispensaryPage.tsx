@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { FormPage, GridPanel, FormCard } from 'shared/new-components';
 import { dispensaries } from '../../data';
-import { hmsUrls } from '../../urls';
+import { getHmsBreadcrumbs } from '../../utils';
 
 export default function DispensaryPage() {
   const data = useMemo(() => dispensaries, []);
@@ -10,11 +10,7 @@ export default function DispensaryPage() {
     <FormPage
       title="Dispensary"
       description="View dispensed medicines and manage prescription fulfillment."
-      breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Health Services', to: hmsUrls.portal },
-        { label: 'Dispensary' },
-      ]}
+      breadcrumbs={getHmsBreadcrumbs('Dispensary')}
     >
       <FormCard title="Dispensed Items">
         <GridPanel

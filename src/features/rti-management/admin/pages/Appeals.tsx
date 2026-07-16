@@ -148,7 +148,6 @@ export default function Appeals() {
       title="Appeals"
       description="Manage First Appellate Authority (FAA) and Second Appellate Authority (SAA) appeals."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'RTI Management', to: rtiUrls.portal },
         { label: 'Admin Portal', to: rtiUrls.admin.portal },
         { label: 'Appeals' },

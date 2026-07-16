@@ -107,7 +107,11 @@ export const LoginPage: React.FC = () => {
             />
           </svg>
 
-          <Link to="/cms" className="home-icon-btn" title="Back to Website">
+          <Link
+            to="/octagon-cms"
+            className="home-icon-btn"
+            title="Back to Website"
+          >
             <Home size={18} />
           </Link>
 
@@ -546,7 +550,7 @@ export const LoginPage: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <h2 className="form-heading">Welcome back 👋</h2>
+                  <h2 className="form-heading">Sign in</h2>
                   <p className="form-subtitle">
                     Sign in to access your OCTAGON ERP account
                   </p>

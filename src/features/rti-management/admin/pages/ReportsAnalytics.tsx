@@ -128,10 +128,9 @@ export default function ReportsAnalytics() {
       title="Reports & Analytics"
       description="Analyze RTI data with charts, department-wise statistics, and export options."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'RTI Management', to: rtiUrls.portal },
         { label: 'Admin Portal', to: rtiUrls.admin.portal },
-        { label: 'Reports' },
+        { label: 'Reports & Analytics' },
       ]}
       headerAction={
         <div className="flex gap-2">

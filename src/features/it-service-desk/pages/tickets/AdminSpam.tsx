@@ -20,7 +20,6 @@ export default function AdminSpam() {
       title="Spam Tickets"
       description="Flagged and spam tickets."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'Spam' },
       ]}

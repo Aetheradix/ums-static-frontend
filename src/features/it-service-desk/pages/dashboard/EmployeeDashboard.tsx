@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FormPage, FormCard, GridPanel } from 'shared/new-components';
-import { LinkButton } from 'shared/components/buttons';
+import { Button } from 'shared/components/buttons';
 import { KpiCard, TicketStatusBadge, PriorityBadge } from '../../components';
 import { initialTickets, TicketStatus } from '../../data';
 import { itsmUrls } from '../../urls';
@@ -38,7 +38,6 @@ export default function EmployeeDashboard() {
       title="My Service Desk"
       description="Track your support tickets and submit new requests."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'My Dashboard' },
       ]}
@@ -71,10 +70,10 @@ export default function EmployeeDashboard() {
       </div>
 
       <div className="flex gap-3 mb-6">
-        <LinkButton
-          to={itsmUrls.createTicket}
+        <Button
+          onClick={() => navigate(itsmUrls.createTicket)}
           label="Create New Ticket"
-          icon="add_circle"
+          icon="plus-circle"
         />
       </div>
 

@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import { FormCard, FormPage, GridPanel } from 'shared/new-components';
 import { useResearch } from '../context';
@@ -66,7 +66,7 @@ export default function AdminReview() {
         `Proposal approved. Project ${projCode} established in registry.`
       );
     } else {
-      triggerNotification(`Proposal ${selectedProp.id} â€” Status: ${status}`);
+      triggerNotification(`Proposal ${selectedProp.id} — Status: ${status}`);
     }
 
     setSelectedProp(null);
@@ -179,7 +179,7 @@ export default function AdminReview() {
           {selectedProp ? (
             <div className="space-y-4">
               <FormCard
-                title={`Screening: ${selectedProp.id} â€” ${selectedProp.piName}`}
+                title={`Screening: ${selectedProp.id} — ${selectedProp.piName}`}
                 icon="search"
               >
                 {/* Proposal coordinates */}
@@ -257,7 +257,7 @@ export default function AdminReview() {
                       >
                         {selectedProp.plagiarismScore > 15
                           ? 'Flagged âš '
-                          : 'Safe âœ“'}
+                          : 'Safe ✓'}
                       </span>
                     </div>
                     <div className="p-4 rounded-xl border flex items-center justify-between bg-slate-50">
@@ -316,7 +316,7 @@ export default function AdminReview() {
                   />
                   <div className="flex flex-wrap gap-2 justify-end">
                     <Button
-                      label="Authorize Project âœ“"
+                      label="Authorize Project ✓"
                       variant="primary"
                       onClick={() => handleReviewAction('Approved')}
                     />

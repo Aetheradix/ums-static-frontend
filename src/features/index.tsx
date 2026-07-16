@@ -44,6 +44,7 @@ import StudentActivitiesClubs from './student-activities-clubs';
 import SportsManagement from './sports-management';
 import StudentFeedbackManagement from './student-feedback-management';
 import StudentManagement from './student-management';
+import StudentLifecycle from './student-lifecycle';
 import TrainingPlacement from './training-placement';
 import EndowmentManagementRoutes from './endowment-management';
 import ConvocationManagementRoutes from './convocation-management';
@@ -60,6 +61,7 @@ import TrainerDevelopment from './trainer-development';
 import TransportManagement from './transport-management';
 import HealthManagement from './health-management';
 import EvaluationGrading from './evaluation-grading';
+import DavvCMS from './davv-cms';
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
   () => import('./public-portal/pages/Solutions')
@@ -69,12 +71,15 @@ const PublicContact = React.lazy(() => import('./public-portal/pages/Contact'));
 const PublicGrievance = React.lazy(
   () => import('./public-portal/pages/PublicGrievance')
 );
+const Universities = React.lazy(
+  () => import('./public-portal/pages/Universities')
+);
 
 export default function Features() {
   return (
     <Routes>
       {/* Public Marketing Landing Pages */}
-      <Route path="cms">
+      <Route path="octagon-cms">
         <Route
           index
           element={
@@ -125,7 +130,19 @@ export default function Features() {
             </PublicPortalLayout>
           }
         />
+        <Route
+          path="universities"
+          element={
+            <PublicPortalLayout>
+              <PublicRouteWrapper>
+                <Universities />
+              </PublicRouteWrapper>
+            </PublicPortalLayout>
+          }
+        />
       </Route>
+
+      <Route path="davv/*" element={<DavvCMS />} />
 
       <Route path="public/*" element={<div>Public Page Placeholder</div>} />
       <Route path="login" element={<LoginPage />} />
@@ -172,6 +189,10 @@ export default function Features() {
                       <Route
                         path="employee-management/*"
                         element={<EmployeeManagement />}
+                      />
+                      <Route
+                        path="student-lifecycle/*"
+                        element={<StudentLifecycle />}
                       />
                       <Route
                         path="recruitment-management/*"

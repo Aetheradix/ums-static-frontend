@@ -17,6 +17,12 @@
   }
 }
 
+@media (min-width: 1280px) {
+  .stats-grid-5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
 .dashboard-charts-grid {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -30,8 +36,14 @@
   }
 }
 
+@media (min-width: 1280px) {
+  .dashboard-charts-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .chart-container {
-  height: 250px;
+  height: 280px;
   position: relative;
 }
 
@@ -60,22 +72,20 @@
 
 .course-progress-track {
   width: 100%;
-  height: 0.75rem;
   background-color: #e5e7eb;
   border-radius: 9999px;
   overflow: hidden;
 }
 
 .course-progress-fill {
-  height: 100%;
-  background-color: #3b82f6;
+  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
   transition: width 0.5s ease-out;
 }
 
 .course-progress-subtitle {
   font-size: 0.75rem;
   color: #6b7280;
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
   text-align: right;
 }
 
@@ -184,6 +194,17 @@
   color: #0369a1;
 }
 
+.badge-alert {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+.badge-outline {
+  background-color: transparent;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+}
+
 .library-summary-container {
   display: flex;
   flex-direction: column;
@@ -252,11 +273,6 @@
   color: #374151;
 }
 
-.book-list li .due-date {
-  font-size: 0.75rem;
-  color: #6b7280;
-}
-
 .pay-fine-btn {
   background-color: #ef4444;
   color: white;
@@ -266,6 +282,7 @@
   font-weight: 500;
   cursor: pointer;
   margin-top: 0.5rem;
+  transition: background-color 0.2s;
 }
 
 .pay-fine-btn:hover {
@@ -289,6 +306,16 @@
   border-radius: 0.5rem;
   background-color: #f9fafb;
   border: 1px solid #f3f4f6;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.notification-item:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .notification-item.type-info {
@@ -337,6 +364,12 @@
   gap: 1rem;
 }
 
+@media (min-width: 640px) {
+  .quick-links-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 .quick-link-item {
   display: flex;
   flex-direction: column;
@@ -356,9 +389,101 @@
 
 .quick-link-item:hover {
   background-color: #f3f4f6;
-  border-color: #e5e7eb;
+  border-color: #d1d5db;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .quick-link-item i {
   font-size: 1.5rem;
+}
+
+/* Timetable Styles */
+.timetable-table {
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.timetable-table th,
+.timetable-table td {
+  border: 1px solid #e5e7eb;
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.timetable-table th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+}
+
+.time-col {
+  background-color: #f9fafb;
+  font-weight: 500;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.lunch-break {
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Results Table Styles */
+.results-table {
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.results-table th {
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid #e5e7eb;
+  color: #6b7280;
+  font-weight: 600;
+  text-align: left;
+}
+
+.results-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: middle;
+}
+
+.grade-badge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+.grade-A-plus,
+.grade-O {
+  background-color: #dcfce7;
+  color: #166534;
+}
+.grade-A {
+  background-color: #bbf7d0;
+  color: #166534;
+}
+.grade-B-plus {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}
+.grade-B {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+.grade-C {
+  background-color: #fef08a;
+  color: #854d0e;
+}
+.grade-D {
+  background-color: #ffedd5;
+  color: #9a3412;
+}
+.grade-F {
+  background-color: #fee2e2;
+  color: #991b1b;
 }

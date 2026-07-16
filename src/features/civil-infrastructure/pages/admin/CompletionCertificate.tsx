@@ -14,9 +14,13 @@ import { civilUrls } from '../../urls';
 import '../civil.css';
 
 export default function CompletionCertificate() {
-  const [works, setWorks] = useState(() => {
+  const [works, setWorks] = useState<any[]>(() => {
     const saved = localStorage.getItem('civil_works');
     return saved ? JSON.parse(saved) : civilWorks;
+  });
+  const [ccRequests, setCcRequests] = useState<any[]>(() => {
+    const saved = localStorage.getItem('civil_cc_requests');
+    return saved ? JSON.parse(saved) : [];
   });
   const [popup, setPopup] = useState<{
     mode: 'closed' | 'view' | 'certify';
@@ -36,19 +40,57 @@ export default function CompletionCertificate() {
     );
   }, [certified]);
 
+  // Sync state on storage updates
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const savedCC = localStorage.getItem('civil_cc_requests');
+      if (savedCC) {
+        setCcRequests(JSON.parse(savedCC));
+      }
+      const savedWorks = localStorage.getItem('civil_works');
+      if (savedWorks) {
+        setWorks(JSON.parse(savedWorks));
+      }
+      const savedCert = localStorage.getItem('civil_certified_set');
+      if (savedCert) {
+        setCertified(new Set(JSON.parse(savedCert)));
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   const handleCertify = () => {
     if (!certNo) {
       ToastService.error('Certificate number is required.');
       return;
     }
-    setCertified(prev => new Set([...prev, popup.item?.id]));
+    const item = popup.item; // CCRequest item
+    setCertified(prev => new Set([...prev, item.workId]));
 
-    // Update work status to DLP Active/Completed
+    // Update ccRequests status in local storage
+    const updatedRequests = ccRequests.map((r: any) =>
+      r.workId === item.workId
+        ? {
+            ...r,
+            status: 'Certificate Issued',
+            certificateNo: certNo,
+            issueDate: new Date().toISOString().split('T')[0],
+            adminRemarks: certRemarks,
+          }
+        : r
+    );
+    localStorage.setItem('civil_cc_requests', JSON.stringify(updatedRequests));
+    setCcRequests(updatedRequests);
+
+    // Update work status to DLP Active in civil_works
     const updatedWorks = works.map((w: any) =>
-      w.id === popup.item?.id ? { ...w, status: 'DLP Active' as any } : w
+      w.id === item.workId ? { ...w, status: 'DLP Active' as any } : w
     );
     setWorks(updatedWorks);
     localStorage.setItem('civil_works', JSON.stringify(updatedWorks));
+
+    window.dispatchEvent(new Event('storage'));
 
     ToastService.success(
       'Project Completion Certificate issued. DLP timer automatically started.'
@@ -62,12 +104,7 @@ export default function CompletionCertificate() {
   const allPassed = (wid: string) =>
     workTests(wid).every(t => t.result === 'Pass' || t.result === 'Pending');
 
-  const data = works.filter(
-    (w: any) =>
-      w.physicalProgress >= 95 ||
-      w.status === 'Completed' ||
-      w.status === 'DLP Active'
-  );
+  const data = ccRequests;
 
   return (
     <FormPage
@@ -104,7 +141,7 @@ export default function CompletionCertificate() {
             {
               field: 'workId',
               header: 'Work ID',
-              cell: (w: any) => (
+              cell: (r: any) => (
                 <span
                   style={{
                     fontFamily: 'monospace',
@@ -112,54 +149,65 @@ export default function CompletionCertificate() {
                     color: '#1d4ed8',
                   }}
                 >
-                  {w.workId}
+                  {r.workNo}
                 </span>
               ),
             },
-            { field: 'name', header: 'Work Name' },
+            { field: 'workName', header: 'Work Name' },
             {
               field: 'category',
               header: 'Work Type',
-              cell: (w: any) => (
-                <span style={{ fontSize: '0.75rem' }}>{w.category}</span>
-              ),
+              cell: (r: any) => {
+                const w = works.find(x => x.id === r.workId);
+                return (
+                  <span style={{ fontSize: '0.75rem' }}>
+                    {w?.category || 'General'}
+                  </span>
+                );
+              },
             },
-            { field: 'department', header: 'Category' },
+            {
+              field: 'department',
+              header: 'Category',
+              cell: (r: any) => {
+                const w = works.find(x => x.id === r.workId);
+                return <span>{w?.department || 'Civil'}</span>;
+              },
+            },
             {
               field: 'workBasis',
               header: 'Work Basis',
-              cell: (w: any) => (
-                <span
-                  className={`civil-pill ${w.workBasis === 'BOQ Based' ? 'purple' : 'blue'}`}
-                >
-                  {w.workBasis ?? 'SOR Based'}
-                </span>
-              ),
+              cell: (r: any) => {
+                const w = works.find(x => x.id === r.workId);
+                return (
+                  <span
+                    className={`civil-pill ${w?.workBasis === 'BOQ Based' ? 'purple' : 'blue'}`}
+                  >
+                    {w?.workBasis ?? 'SOR Based'}
+                  </span>
+                );
+              },
             },
             {
               field: 'physicalProgress',
               header: 'Physical %',
-              cell: (w: any) => (
-                <span
-                  style={{
-                    fontWeight: 700,
-                    color: w.physicalProgress >= 100 ? '#16a34a' : '#d97706',
-                  }}
-                >
-                  {w.physicalProgress}%
-                </span>
-              ),
+              cell: (r: any) => {
+                const w = works.find(x => x.id === r.workId);
+                return (
+                  <span style={{ fontWeight: 700, color: '#16a34a' }}>
+                    {w?.physicalProgress || 100}%
+                  </span>
+                );
+              },
             },
             {
               field: 'status',
               header: 'Work Status',
-              cell: (w: any) => (
+              cell: (r: any) => (
                 <StatusBadge
-                  label={w.status}
+                  label={r.status}
                   variant={
-                    w.status === 'Completed' || w.status === 'DLP Active'
-                      ? 'approved'
-                      : 'pending'
+                    r.status === 'Certificate Issued' ? 'approved' : 'pending'
                   }
                 />
               ),
@@ -167,20 +215,20 @@ export default function CompletionCertificate() {
             {
               field: 'id',
               header: 'QA Status',
-              cell: (w: any) =>
-                allPassed(w.id) ? (
+              cell: (r: any) =>
+                allPassed(r.workId) ? (
                   <span className="civil-pill green">QA Cleared ✓</span>
                 ) : (
                   <span className="civil-pill amber">Tests Pending</span>
                 ),
             },
-            { field: 'expectedEndDate', header: 'Completion Date' },
+            { field: 'actualCompletionDate', header: 'Completion Date' },
             {
               field: 'id',
               header: 'Certificate',
               sortable: false,
-              cell: (item: any) =>
-                certified.has(item.id) ? (
+              cell: (r: any) =>
+                certified.has(r.workId) || r.status === 'Certificate Issued' ? (
                   <span className="civil-pill green">✓ Cert Issued</span>
                 ) : (
                   <Button
@@ -193,7 +241,7 @@ export default function CompletionCertificate() {
                         `COMP/CW/${new Date().getFullYear()}/${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}`
                       );
                       setCertRemarks('');
-                      setPopup({ mode: 'certify', item });
+                      setPopup({ mode: 'certify', item: r });
                     }}
                   />
                 ),
@@ -207,7 +255,7 @@ export default function CompletionCertificate() {
       <FormPopup
         visible={popup.mode !== 'closed'}
         onHide={() => setPopup({ mode: 'closed' })}
-        title={`Issue Completion Certificate — ${popup.item?.workId}`}
+        title={`Issue Completion Certificate — ${popup.item?.workNo}`}
         subtitle="Joint audit confirmation and DLP trigger."
         size="lg"
       >

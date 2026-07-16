@@ -276,7 +276,7 @@ export default function PublicGrievance() {
         <nav className="flex items-center gap-2 text-xs text-slate-500 mb-6 font-medium">
           <span
             className="hover:text-blue-700 cursor-pointer"
-            onClick={() => navigate('/cms')}
+            onClick={() => navigate('/octagon-cms')}
           >
             Home
           </span>
@@ -741,7 +741,7 @@ export default function PublicGrievance() {
               <div className="sticky bottom-0 bg-white border-t border-slate-200 py-4 px-2 sm:px-6 shadow-lg sm:shadow-none sm:relative sm:border-none sm:bg-transparent flex flex-row justify-end gap-3 z-10 rounded-xl">
                 <button
                   type="button"
-                  onClick={() => navigate('/cms')}
+                  onClick={() => navigate('/octagon-cms')}
                   className="border border-slate-300 hover:border-slate-400 text-slate-700 bg-white font-bold text-xs uppercase tracking-wider py-3 px-6 rounded-lg transition-colors cursor-pointer"
                 >
                   Cancel
@@ -767,7 +767,7 @@ export default function PublicGrievance() {
             <div className="flex justify-end gap-3 pt-2">
               <button
                 type="button"
-                onClick={() => navigate('/cms')}
+                onClick={() => navigate('/octagon-cms')}
                 className="border border-slate-300 hover:border-slate-400 text-slate-700 bg-white font-bold text-xs uppercase tracking-wider py-3 px-6 rounded-lg transition-colors cursor-pointer"
               >
                 Cancel and Go Back
@@ -862,7 +862,7 @@ export default function PublicGrievance() {
                 type="button"
                 onClick={() => {
                   setShowSuccessDialog(false);
-                  navigate('/cms');
+                  navigate('/octagon-cms');
                 }}
                 className="border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs py-3 rounded-lg cursor-pointer transition-all"
               >

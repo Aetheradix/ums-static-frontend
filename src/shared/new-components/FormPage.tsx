@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Breadcrumb, { type BreadcrumbItem } from './Breadcrumb';
 import './FormPage.css';
 import SkeletonLoader from './skeleton/SkeletonLoader';
@@ -21,6 +22,7 @@ export default function FormPage({
   className = '',
 }: FormPageProps) {
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -44,8 +46,16 @@ export default function FormPage({
 
             {/* Breadcrumb & Action - Right on Desktop (order 2), Top on Mobile (order 1) */}
             <div className="form-page-header-right flex flex-col md:items-end items-start gap-2 md:order-2 order-1">
-              <div className="form-page-breadcrumb-container">
+              <div className="form-page-breadcrumb-container flex flex-col md:items-end items-start gap-1">
                 <Breadcrumb items={breadcrumbs} />
+                <button
+                  onClick={() => navigate(-1)}
+                  className="hidden sm:flex items-center gap-1.5 text-[11px] font-bold text-[#2264dc] hover:text-[#1849a9] transition-colors mt-0.5  bg-white hover:bg-slate-100/50 px-2.5 py-1 rounded-md border border-slate-200 shadow-xs cursor-pointer"
+                  type="button"
+                >
+                  <i className="pi pi-arrow-left text-[9px]" />
+                  <span>Back</span>
+                </button>
               </div>
               {headerAction && (
                 <div className="form-page-action">{headerAction}</div>

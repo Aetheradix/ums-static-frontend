@@ -111,10 +111,9 @@ export default function FeedbackAssignmentPage() {
       title="Feedback Assignment"
       description="Assign feedback templates to courses, faculty, and student groups."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'Student Feedback Management', to: feedbackUrls.portal },
         { label: 'Admin Portal', to: feedbackUrls.admin.portal },
-        { label: 'Assignments' },
+        { label: 'Feedback Assignments' },
       ]}
     >
       <FormCard>

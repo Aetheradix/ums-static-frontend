@@ -43,7 +43,6 @@ export default function KnowledgeBase() {
       title="Knowledge Base"
       description="Search for solutions, guides, and troubleshooting articles."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'Knowledge Base' },
       ]}

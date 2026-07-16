@@ -16,7 +16,6 @@ export default function EmployeeMyTickets() {
       title="My Tickets"
       description="View and track all your support tickets."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'My Tickets' },
       ]}

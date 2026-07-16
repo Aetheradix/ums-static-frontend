@@ -43,7 +43,7 @@
 }
 
 .welcome-banner-img {
-  @apply absolute right-0 top-0 bottom-0 h-full w-auto object-contain select-none pointer-events-none z-0;
+  @apply absolute right-0 top-0 bottom-0 h-full w-auto object-contain select-none pointer-events-none z-0 max-md:hidden;
 }
 
 .welcome-actions {
@@ -94,7 +94,7 @@
 }
 
 .service-filter-tab {
-  @apply px-[18px] py-2 rounded-full border-none text-sm font-semibold flex items-center gap-1.5 transition-all duration-200 cursor-pointer shrink-0 shadow-xs bg-white text-slate-700;
+  @apply px-[18px] py-2 rounded-full border-none text-sm font-semibold flex items-center gap-1.5 transition-all duration-200 cursor-pointer shrink-0 shadow-sm bg-white text-slate-700;
 }
 
 .service-filter-tab.active {

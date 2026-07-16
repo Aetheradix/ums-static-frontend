@@ -5,6 +5,7 @@ import { TextBox, TextArea, DropDownList } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
 import { doctors, medicalStocks, prescriptionCodes } from '../../data';
 import { hmsUrls } from '../../urls';
+import { getHmsBreadcrumbs } from '../../utils';
 
 export default function AddPrescriptionPage() {
   const navigate = useNavigate();
@@ -42,12 +43,7 @@ export default function AddPrescriptionPage() {
     <FormPage
       title="New Prescription"
       description="Create a new medicine prescription for a patient."
-      breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Health Services', to: hmsUrls.portal },
-        { label: 'Prescriptions', to: hmsUrls.prescriptions },
-        { label: 'New Prescription' },
-      ]}
+      breadcrumbs={getHmsBreadcrumbs('Prescriptions', 'New Prescription')}
     >
       <FormCard title="Prescription Details">
         <FormGrid>

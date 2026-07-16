@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
@@ -13,9 +13,10 @@ import {
 } from 'shared/new-components';
 import {
   type MBEntry,
-  mbEntries as initialData,
   boqItems,
   civilWorks,
+  mbEntries as initialData,
+  milestones as initialMilestones,
 } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -53,7 +54,55 @@ export default function EMeasurementBook() {
     )
     .map((w: any) => ({ name: `${w.workId} — ${w.name}`, value: w.id }));
 
-  const [data, setData] = useState(initialData);
+  const [milestones] = useState<any[]>(() => {
+    const saved = localStorage.getItem('civil_milestones');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      const merged = parsed.map((m: any) => {
+        const mockM = initialMilestones.find((mw: any) => mw.id === m.id);
+        if (mockM && mockM.qualityTestRequired) {
+          return {
+            ...m,
+            testName: m.testName || mockM.testName,
+            testType: m.testType || mockM.testType,
+            materialTested: m.materialTested || mockM.materialTested,
+            labName: m.labName || mockM.labName,
+            requiredValue: m.requiredValue || mockM.requiredValue,
+          };
+        }
+        return m;
+      });
+      const parsedIds = new Set(merged.map((m: any) => m.id));
+      const missing = initialMilestones.filter(
+        (m: any) => !parsedIds.has(m.id)
+      );
+      const finalMerged = [...merged, ...missing];
+      localStorage.setItem('civil_milestones', JSON.stringify(finalMerged));
+      return finalMerged;
+    }
+    return initialMilestones;
+  });
+
+  const [data, setData] = useState<MBEntry[]>(() => {
+    const saved = localStorage.getItem('civil_mb_entries');
+    return saved ? JSON.parse(saved) : initialData;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('civil_mb_entries', JSON.stringify(data));
+  }, [data]);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem('civil_mb_entries');
+      if (saved) {
+        setData(JSON.parse(saved));
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
 
   // Form state for new MB
@@ -158,8 +207,11 @@ export default function EMeasurementBook() {
       securityDeposit: sdAmount,
       netPayable,
       remarks: mbRemarks,
+      milestoneId: boqItem?.milestoneId,
     };
     setData(prev => [newEntry, ...prev]);
+    // Dispatch window storage event to notify other portals instantly
+    window.dispatchEvent(new Event('storage'));
     ToastService.success(
       'MB Entry submitted successfully. Forwarded to AE for verification.'
     );
@@ -622,11 +674,19 @@ export default function EMeasurementBook() {
             }}
           />
           <DropDownList
-            label="BOQ Item (SOR-linked) * — Rule 3 Enforced"
-            data={getAvailableBOQItems(selectedWorkId).map(b => ({
-              name: `${b.sorCode} — ${b.description} (BOQ: ${b.approvedQty} ${b.unit})`,
-              value: b.id,
-            }))}
+            label="BOQ Item (SOR-linked) * "
+            data={getAvailableBOQItems(selectedWorkId).map(b => {
+              const matchedMilestone = milestones.find(
+                (m: any) => m.id === b.milestoneId
+              );
+              const milestoneLabel = matchedMilestone
+                ? `${matchedMilestone.milestoneName} (Milestone ${matchedMilestone.sequenceNo}) — ${b.sorCode}`
+                : `No Milestone — ${b.sorCode}`;
+              return {
+                name: milestoneLabel,
+                value: b.id,
+              };
+            })}
             textField={'name' as any}
             optionValue="value"
             value={selectedBOQItemId}
@@ -636,6 +696,159 @@ export default function EMeasurementBook() {
             }}
           />
         </FormGrid>
+
+        {boqItem &&
+          (() => {
+            const matchedMilestone = milestones.find(
+              (m: any) => m.id === boqItem.milestoneId
+            );
+            if (!matchedMilestone) return null;
+
+            const isQualityPassed =
+              matchedMilestone.qualityTestStatus === 'Pass';
+
+            return (
+              <div
+                style={{
+                  marginTop: '1.25rem',
+                  padding: '1rem 1.25rem',
+                  background: '#f8fafc',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '0.875rem',
+                  fontSize: '0.8125rem',
+                  marginBottom: '1rem',
+                }}
+              >
+                <div
+                  style={{
+                    fontWeight: 700,
+                    color: '#1e293b',
+                    marginBottom: '0.75rem',
+                    fontSize: '0.875rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                  }}
+                >
+                  📍 Linked Milestone: {matchedMilestone.milestoneName}{' '}
+                  (Milestone {matchedMilestone.sequenceNo})
+                </div>
+
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(2, 1fr)',
+                    gap: '0.75rem 1.5rem',
+                    color: '#475569',
+                  }}
+                >
+                  <div>
+                    <strong
+                      style={{
+                        display: 'block',
+                        color: '#64748b',
+                        fontSize: '0.6875rem',
+                        textTransform: 'uppercase',
+                        marginBottom: '2px',
+                      }}
+                    >
+                      Scope of Work
+                    </strong>
+                    <span>{matchedMilestone.description || '—'}</span>
+                  </div>
+                  <div>
+                    <strong
+                      style={{
+                        display: 'block',
+                        color: '#64748b',
+                        fontSize: '0.6875rem',
+                        textTransform: 'uppercase',
+                        marginBottom: '2px',
+                      }}
+                    >
+                      Timeline (Start – End)
+                    </strong>
+                    <span>
+                      📅 {matchedMilestone.plannedStartDate} to{' '}
+                      {matchedMilestone.plannedEndDate}
+                    </span>
+                  </div>
+                  <div>
+                    <strong
+                      style={{
+                        display: 'block',
+                        color: '#64748b',
+                        fontSize: '0.6875rem',
+                        textTransform: 'uppercase',
+                        marginBottom: '2px',
+                      }}
+                    >
+                      Quality Test Gate (TPI) Required?
+                    </strong>
+                    <span
+                      style={{
+                        fontWeight: 600,
+                        color: matchedMilestone.qualityTestRequired
+                          ? '#b45309'
+                          : '#475569',
+                      }}
+                    >
+                      {matchedMilestone.qualityTestRequired
+                        ? 'Yes (Mandatory Clearance)'
+                        : 'No'}
+                    </span>
+                  </div>
+                  {matchedMilestone.qualityTestRequired && (
+                    <div>
+                      <strong
+                        style={{
+                          display: 'block',
+                          color: '#64748b',
+                          fontSize: '0.6875rem',
+                          textTransform: 'uppercase',
+                          marginBottom: '2px',
+                        }}
+                      >
+                        Quality Test Status
+                      </strong>
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.375rem',
+                          marginTop: '2px',
+                        }}
+                      >
+                        <span
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            padding: '0.125rem 0.5rem',
+                            borderRadius: '9999px',
+                            fontSize: '0.75rem',
+                            fontWeight: 600,
+                            background: isQualityPassed ? '#dcfce7' : '#fee2e2',
+                            color: isQualityPassed ? '#15803d' : '#ef4444',
+                          }}
+                        >
+                          {isQualityPassed
+                            ? '✓ Passed / Cleared'
+                            : '✗ Pending / Failed'}
+                        </span>
+                        {matchedMilestone.testName && (
+                          <span
+                            style={{ fontSize: '0.75rem', color: '#64748b' }}
+                          >
+                            ({matchedMilestone.testName})
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
 
         {/* Quantity Validator */}
         {boqItem && (

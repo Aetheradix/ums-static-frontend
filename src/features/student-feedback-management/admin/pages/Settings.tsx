@@ -26,7 +26,6 @@ export default function Settings() {
       title="Feedback Settings"
       description="Configure system-wide feedback parameters."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'Student Feedback Management', to: feedbackUrls.portal },
         { label: 'Admin Portal', to: feedbackUrls.admin.portal },
         { label: 'Settings' },

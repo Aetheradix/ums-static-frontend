@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FormPage, GridPanel, FormCard } from 'shared/new-components';
-import { LinkButton } from 'shared/components/buttons';
+import { Button } from 'shared/components/buttons';
 import { healthRecords } from '../../data';
 import { hmsUrls } from '../../urls';
+import { getHmsBreadcrumbs } from '../../utils';
 
 const recordColors: Record<string, string> = {
   Yes: 'bg-amber-50 text-amber-700',
@@ -20,19 +22,20 @@ function ReferralBadge({ label }: { label: string }) {
 }
 
 export default function HealthRecordsPage() {
+  const navigate = useNavigate();
   const data = useMemo(() => healthRecords, []);
 
   return (
     <FormPage
       title="Health Records"
       description="View and manage patient health records across all health centers."
-      breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Health Services', to: hmsUrls.portal },
-        { label: 'Health Records' },
-      ]}
+      breadcrumbs={getHmsBreadcrumbs('Health Records')}
       headerAction={
-        <LinkButton to={hmsUrls.addRecord} label="Add Record" icon="add" />
+        <Button
+          onClick={() => navigate(hmsUrls.addRecord)}
+          label="Add Record"
+          icon="plus"
+        />
       }
     >
       <FormCard title="All Health Records">

@@ -44,7 +44,6 @@ export default function AgentDashboard() {
       title="Agent Dashboard"
       description={`Welcome back, ${agentName}. Your current workload and performance metrics.`}
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
         { label: 'IT Service Desk', to: itsmUrls.portal },
         { label: 'Agent Dashboard' },
       ]}

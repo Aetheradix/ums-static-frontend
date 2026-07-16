@@ -4,6 +4,255 @@ import { hasPermission } from 'shared/utils/permissionCheck';
 
 export const menuConfig: Menu.MenuItem[] = [
   {
+    label: 'Student\nLifecycle',
+    slug: 'student-lifecycle',
+    category: 'Student Services',
+    icon: 'autorenew',
+    colorScheme: 'indigo',
+    description:
+      'Student Lifecycle Portal — from admission through registration, academics, examinations, results and degree.',
+    path: '/student-lifecycle',
+    children: [
+      {
+        label: 'Student Portal',
+        slug: 'slc-student-portal',
+        description:
+          'Dashboard, CBCS registrations, internal assessments, exam form, hall ticket, results, grade cards and services.',
+        path: '/student-lifecycle/student',
+        icon: 'school',
+        colorScheme: 'blue',
+        children: [
+          {
+            label: 'Dashboard',
+            slug: 'slc-student-dashboard',
+            description: 'Student academic standing, CGPA, attendance gauges.',
+            path: '/student-lifecycle/student/dashboard',
+            icon: 'dashboard',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Admission Details',
+            slug: 'slc-student-admission',
+            description: 'DTE admissions details and documents.',
+            path: '/student-lifecycle/student/admission',
+            icon: 'badge',
+            colorScheme: 'teal',
+          },
+          {
+            label: 'My Courses',
+            slug: 'slc-student-courses',
+            description: 'List of registered courses and syllabus.',
+            path: '/student-lifecycle/student/courses',
+            icon: 'menu_book',
+            colorScheme: 'indigo',
+          },
+          {
+            label: 'Semester Registration',
+            slug: 'slc-student-registration',
+            description:
+              'Choice selection for CBCS core and elective subjects.',
+            path: '/student-lifecycle/student/registration',
+            icon: 'how_to_reg',
+            colorScheme: 'purple',
+          },
+          {
+            label: 'Internal Assessment',
+            slug: 'slc-student-assessment',
+            description: 'Internal marks overview (MST-1, MST-2, Quizzes).',
+            path: '/student-lifecycle/student/assessment',
+            icon: 'fact_check',
+            colorScheme: 'orange',
+          },
+          {
+            label: 'Examinations',
+            slug: 'slc-student-examinations',
+            description:
+              'Exam form submission, ATKT backlogs, hall ticket generation.',
+            path: '/student-lifecycle/student/examinations',
+            icon: 'assignment',
+            colorScheme: 'red',
+          },
+          {
+            label: 'Results & CGPA',
+            slug: 'slc-student-results',
+            description: 'Display SGPA/CGPA cards and grade reports.',
+            path: '/student-lifecycle/student/results',
+            icon: 'grade',
+            colorScheme: 'green',
+          },
+          {
+            label: 'Degree Audit',
+            slug: 'slc-student-degree-audit',
+            description: 'Degree audit metrics showing completed credits.',
+            path: '/student-lifecycle/student/degree-audit',
+            icon: 'verified_user',
+            colorScheme: 'pink',
+          },
+          {
+            label: 'Services & Certificates',
+            slug: 'slc-student-services',
+            description:
+              'Requests for Bonafide, Migration, or Transfer certificates.',
+            path: '/student-lifecycle/student/services',
+            icon: 'card_membership',
+            colorScheme: 'teal',
+          },
+          {
+            label: 'Fees & Payments',
+            slug: 'slc-student-fees',
+            description: 'Pending academic/exam fees and payments.',
+            path: '/student-lifecycle/student/fees',
+            icon: 'payments',
+            colorScheme: 'amber',
+          },
+          {
+            label: 'Profile & Contact',
+            slug: 'slc-student-profile',
+            description: 'Basic student profile and details.',
+            path: '/student-lifecycle/student/profile',
+            icon: 'person',
+            colorScheme: 'gray',
+          },
+          {
+            label: 'Notifications',
+            slug: 'slc-student-notifications',
+            description: 'List of student-specific notification alerts.',
+            path: '/student-lifecycle/student/notifications',
+            icon: 'notifications',
+            colorScheme: 'blue',
+          },
+        ],
+      },
+      {
+        label: 'Faculty Portal',
+        slug: 'slc-faculty-portal',
+        description:
+          'Class roster, student attendance entry, and mid-sem (MST) and quiz marks entry.',
+        path: '/student-lifecycle/faculty',
+        icon: 'groups',
+        colorScheme: 'purple',
+        children: [
+          {
+            label: 'Dashboard',
+            slug: 'slc-faculty-dashboard',
+            description: 'Faculty metrics dashboard.',
+            path: '/student-lifecycle/faculty/dashboard',
+            icon: 'dashboard',
+            colorScheme: 'purple',
+          },
+          {
+            label: 'Class List / Roster',
+            slug: 'slc-faculty-classlist',
+            description: 'List of enrolled students in courses.',
+            path: '/student-lifecycle/faculty/class-list',
+            icon: 'list_alt',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Attendance Entry',
+            slug: 'slc-faculty-attendance',
+            description: 'Student attendance sheet entry.',
+            path: '/student-lifecycle/faculty/attendance',
+            icon: 'event_available',
+            colorScheme: 'green',
+          },
+          {
+            label: 'Marks Entry',
+            slug: 'slc-faculty-marks-entry',
+            description: 'Form to edit internal test and assignment marks.',
+            path: '/student-lifecycle/faculty/marks-entry',
+            icon: 'border_color',
+            colorScheme: 'orange',
+          },
+        ],
+      },
+      {
+        label: 'Admin Portal',
+        slug: 'slc-admin-portal',
+        description:
+          'Manage settings, fees structures, course masters, roles and permissions, announcements, and audit reports.',
+        path: '/student-lifecycle/admin',
+        icon: 'admin_panel_settings',
+        colorScheme: 'red',
+        children: [
+          {
+            label: 'Dashboard',
+            slug: 'slc-admin-dashboard',
+            description:
+              'Overview of total student metrics and fees collection.',
+            path: '/student-lifecycle/admin/dashboard',
+            icon: 'dashboard',
+            colorScheme: 'red',
+          },
+          {
+            label: 'User Accounts',
+            slug: 'slc-admin-users',
+            description: 'Roster of faculty/staff logins.',
+            path: '/student-lifecycle/admin/users',
+            icon: 'people',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Student Roster',
+            slug: 'slc-admin-students',
+            description: 'Student details and profiles management.',
+            path: '/student-lifecycle/admin/students',
+            icon: 'school',
+            colorScheme: 'teal',
+          },
+          {
+            label: 'Masters Config',
+            slug: 'slc-admin-masters',
+            description: 'Department, course, and syllabus configs.',
+            path: '/student-lifecycle/admin/masters',
+            icon: 'settings_applications',
+            colorScheme: 'indigo',
+          },
+          {
+            label: 'Fees Config',
+            slug: 'slc-admin-fees',
+            description: 'Fee structures definitions.',
+            path: '/student-lifecycle/admin/fees',
+            icon: 'payments',
+            colorScheme: 'amber',
+          },
+          {
+            label: 'Announcements',
+            slug: 'slc-admin-announcements',
+            description: 'Creating and broadcasting alerts.',
+            path: '/student-lifecycle/admin/announcements',
+            icon: 'campaign',
+            colorScheme: 'orange',
+          },
+          {
+            label: 'Reports & Exports',
+            slug: 'slc-admin-reports',
+            description: 'Export student lists, grades, or fee summaries.',
+            path: '/student-lifecycle/admin/reports',
+            icon: 'summarize',
+            colorScheme: 'purple',
+          },
+          {
+            label: 'Roles & Permissions',
+            slug: 'slc-admin-roles',
+            description: 'Editing permission mappings.',
+            path: '/student-lifecycle/admin/roles',
+            icon: 'security',
+            colorScheme: 'red',
+          },
+          {
+            label: 'Portal Settings',
+            slug: 'slc-admin-settings',
+            description: 'Portal configurations and settings.',
+            path: '/student-lifecycle/admin/settings',
+            icon: 'settings',
+            colorScheme: 'gray',
+          },
+        ],
+      },
+    ],
+  },
+  {
     label: 'HRMS (Human Resource Management System)',
     slug: 'hrms',
     category: 'HRMS',
@@ -3466,7 +3715,7 @@ export const menuConfig: Menu.MenuItem[] = [
         slug: 'health-management',
         description:
           'Manage health records, memberships, prescriptions, and dispensary operations.',
-        path: '/health-management',
+        path: '/home/sub-menu/health-management',
         icon: 'local_hospital',
         colorScheme: 'green',
         children: [
@@ -3475,9 +3724,10 @@ export const menuConfig: Menu.MenuItem[] = [
             slug: 'hms-admin-portal',
             description:
               'Complete module control: manage memberships, records, stock, settings.',
-            path: '/home/sub-menu/hms-admin-portal',
+            path: '/health-management/admin',
             icon: 'admin_panel_settings',
             colorScheme: 'blue',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dashboard',
@@ -3541,9 +3791,10 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Doctor Portal',
             slug: 'hms-doctor-portal',
             description: 'Manage appointments, records, and prescriptions.',
-            path: '/home/sub-menu/hms-doctor-portal',
+            path: '/health-management/doctor',
             icon: 'stethoscope',
             colorScheme: 'purple',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Appointments',
@@ -3556,7 +3807,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 label: 'Health Records',
                 slug: 'hms-doctor-records',
                 path: '/health-management/records',
-                icon: 'folder_medical',
+                icon: 'medical_information',
                 colorScheme: 'purple',
               },
               {
@@ -3572,9 +3823,10 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Pharmacist Portal',
             slug: 'hms-pharmacist-portal',
             description: 'Dispense medicines and manage stock.',
-            path: '/home/sub-menu/hms-pharmacist-portal',
+            path: '/health-management/pharmacist',
             icon: 'medication',
             colorScheme: 'green',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dispensary',
@@ -3596,9 +3848,10 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Employee Portal',
             slug: 'hms-employee-portal',
             description: 'View records, memberships, and book appointments.',
-            path: '/home/sub-menu/hms-employee-portal',
+            path: '/health-management/employee',
             icon: 'personal_injury',
             colorScheme: 'orange',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dashboard',
@@ -5539,16 +5792,16 @@ export const menuConfig: Menu.MenuItem[] = [
         path: '/home/sub-menu/it-service-desk',
         icon: 'support',
         colorScheme: 'purple',
-        navigationStyle: 'sidebar',
         children: [
           {
             label: 'Admin Portal',
             slug: 'itsm-admin-portal',
             description:
               'Complete module control: manage tickets, agents, SLA, and settings.',
-            path: '/home/sub-menu/itsm-admin-portal',
+            path: '/it-service-desk/admin',
             icon: 'admin_panel_settings',
             colorScheme: 'blue',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dashboard',
@@ -5626,9 +5879,10 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Module Admin',
             slug: 'itsm-module-admin',
             description: 'Manage tickets for assigned ERP modules.',
-            path: '/home/sub-menu/itsm-module-admin',
+            path: '/it-service-desk/module-admin',
             icon: 'view_module',
             colorScheme: 'purple',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dashboard',
@@ -5679,9 +5933,10 @@ export const menuConfig: Menu.MenuItem[] = [
             slug: 'itsm-agent-portal',
             description:
               'Handle assigned tickets and communicate with requesters.',
-            path: '/home/sub-menu/itsm-agent-portal',
+            path: '/it-service-desk/agent',
             icon: 'support_agent',
             colorScheme: 'green',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dashboard',
@@ -5724,9 +5979,10 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Employee Portal',
             slug: 'itsm-employee-portal',
             description: 'Raise and track your own support tickets.',
-            path: '/home/sub-menu/itsm-employee-portal',
+            path: '/it-service-desk/employee',
             icon: 'person',
             colorScheme: 'orange',
+            navigationStyle: 'sidebar',
             children: [
               {
                 label: 'Dashboard',
@@ -6507,7 +6763,7 @@ export const menuConfig: Menu.MenuItem[] = [
         path: '/home/sub-menu/civil-infrastructure',
         children: [
           {
-            label: 'Admin Portal',
+            label: 'Admin Login',
             slug: 'civil-admin',
             description:
               'Administrative approvals, Technical Sanction, tender awards, and completion certificates.',
@@ -6524,7 +6780,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'blue',
               },
               {
-                label: 'Masters & Registries',
+                label: 'Masters',
                 description:
                   'Manage SOR items, Third-Party Inspection (TPI) agencies, and Quality Lab registries.',
                 path: '/civil-infrastructure/admin/sor-master',
@@ -6546,6 +6802,14 @@ export const menuConfig: Menu.MenuItem[] = [
                 path: '/civil-infrastructure/admin/boq-compilation',
                 icon: 'edit_note',
                 colorScheme: 'indigo',
+              },
+              {
+                label: 'Milestone Definition',
+                description:
+                  'Set project execution milestones and link payments to completion.',
+                path: '/civil-infrastructure/admin/milestones',
+                icon: 'flag',
+                colorScheme: 'blue',
               },
               {
                 label: 'Administrative Approval',
@@ -6572,7 +6836,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'pink',
               },
               {
-                label: 'Agency Compliance / Registration',
+                label: 'Agency Registration',
                 description:
                   'Onboard contractor into vendor master and verify compliance.',
                 path: '/civil-infrastructure/admin/agency-verification',
@@ -6587,14 +6851,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'gavel',
                 colorScheme: 'teal',
               },
-              {
-                label: 'Milestone Definition',
-                description:
-                  'Set project execution milestones and link payments to completion.',
-                path: '/civil-infrastructure/admin/milestones',
-                icon: 'flag',
-                colorScheme: 'blue',
-              },
+
               {
                 label: 'Work Order Sign',
                 description:
@@ -6604,7 +6861,15 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'purple',
               },
               {
-                label: 'EOT requests for Extension of Time / Cost',
+                label: 'Milestone Sign-off Approvals',
+                description:
+                  'Review and approve site engineer milestone sign-offs and payment releases.',
+                path: '/civil-infrastructure/admin/milestone-approvals',
+                icon: 'check_circle',
+                colorScheme: 'indigo',
+              },
+              {
+                label: 'Extension Request',
                 description:
                   'Review and approve contractor timeline extensions and revised estimates.',
                 path: '/civil-infrastructure/admin/eot-requests',
@@ -6620,7 +6885,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'green',
               },
               {
-                label: 'Reports & Register',
+                label: 'Reports',
                 description: 'Summary charts and work/contractor registries.',
                 path: '/civil-infrastructure/admin/reports',
                 icon: 'bar_chart',
@@ -6629,7 +6894,7 @@ export const menuConfig: Menu.MenuItem[] = [
             ],
           },
           {
-            label: 'Site Engineer Portal',
+            label: 'Site Engineer Login',
             slug: 'civil-engineer',
             description:
               'Technical planning, SOR, BOQ compilation, E-MB entries, and quality testing.',
@@ -6676,20 +6941,20 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'red',
               },
               {
-                label: 'Quality Framework',
+                label: 'Quality Lab Test',
                 description:
                   'Testing standard rules and Third Party Inspection (TPI).',
                 path: '/civil-infrastructure/engineer/quality-framework',
                 icon: 'assignment_turned_in',
                 colorScheme: 'pink',
               },
-              {
-                label: 'Quality Lab Uploads',
-                description: 'Record test results and upload lab certificates.',
-                path: '/civil-infrastructure/engineer/quality-testing',
-                icon: 'upload_file',
-                colorScheme: 'blue',
-              },
+              // {
+              //   label: 'Quality Lab Uploads',
+              //   description: 'Record test results and upload lab certificates.',
+              //   path: '/civil-infrastructure/engineer/quality-testing',
+              //   icon: 'upload_file',
+              //   colorScheme: 'blue',
+              // },
               {
                 label: 'Progress Monitoring',
                 description:
@@ -6706,14 +6971,14 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'menu_book',
                 colorScheme: 'purple',
               },
-              {
-                label: 'EOT & Revised Estimate',
-                description:
-                  'Extension of time applications and revised estimates.',
-                path: '/civil-infrastructure/engineer/eot-request',
-                icon: 'more_time',
-                colorScheme: 'green',
-              },
+              // {
+              //   label: 'E-MB Report',
+              //   description:
+              //     'Work-wise E-MB measurements, bills, and recovery ledger.',
+              //   path: '/civil-infrastructure/engineer/mb-report',
+              //   icon: 'assessment',
+              //   colorScheme: 'blue',
+              // },
               {
                 label: 'Milestone Sign-off',
                 description: 'EE milestone checklist validation.',
@@ -6721,10 +6986,25 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'verified',
                 colorScheme: 'orange',
               },
+              {
+                label: 'Work Extension',
+                description:
+                  'Extension of time applications and revised estimates.',
+                path: '/civil-infrastructure/engineer/eot-request',
+                icon: 'more_time',
+                colorScheme: 'green',
+              },
+              {
+                label: 'Request CC',
+                description: 'Apply for project completion certificate.',
+                path: '/civil-infrastructure/engineer/request-cc',
+                icon: 'emoji_events',
+                colorScheme: 'indigo',
+              },
             ],
           },
           {
-            label: 'Finance Portal',
+            label: 'Finance Login',
             slug: 'civil-finance',
             description:
               'Financial ledger, budget tracking, RA bill clearing, and DLP release.',
@@ -6747,7 +7027,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'purple',
               },
               {
-                label: 'RA Bill Processing',
+                label: 'Running Bill Processing',
                 description:
                   'Deductions, recoveries and independent MB linkage checks.',
                 path: '/civil-infrastructure/finance/ra-bill-processing',
@@ -7173,7 +7453,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 slug: 'rti-admin',
                 description:
                   'Manage RTI applications, forwarding, appeals, and reports.',
-                path: '/home/sub-menu/rti-admin',
+                path: '/rti-management/admin',
                 icon: 'admin_panel_settings',
                 colorScheme: 'blue',
                 navigationStyle: 'sidebar',
@@ -7245,7 +7525,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 slug: 'department-portal',
                 description:
                   'View assigned RTIs and submit departmental responses.',
-                path: '/home/sub-menu/department-portal',
+                path: '/rti-management/department',
                 icon: 'assignment_ind',
                 colorScheme: 'purple',
                 navigationStyle: 'sidebar',
@@ -8704,11 +8984,19 @@ export const menuConfig: Menu.MenuItem[] = [
             path: '/home/sub-menu/student-feedback-management',
             children: [
               {
+                label: 'Student Portal',
+                slug: 'feedback-student',
+                description: 'View active feedback forms and submit responses.',
+                path: '/student-feedback-management/student',
+                icon: 'feedback',
+                colorScheme: 'green',
+              },
+              {
                 label: 'Admin Portal',
                 slug: 'feedback-admin',
                 description:
                   'Manage feedback sessions, templates, questions, assignments, and view analytics.',
-                path: '/home/sub-menu/feedback-admin',
+                path: '/student-feedback-management/admin',
                 icon: 'admin_panel_settings',
                 colorScheme: 'blue',
                 navigationStyle: 'sidebar',

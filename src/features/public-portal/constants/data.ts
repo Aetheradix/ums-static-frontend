@@ -1,9 +1,8 @@
 export const NAV_LINKS = [
-  { label: 'Home', href: '/cms' },
-  { label: 'Solutions', href: '/cms/solutions' },
-  { label: 'About', href: '/cms/about' },
-  { label: 'Contact', href: '/cms/contact' },
-  { label: 'Raise Grievance', href: '/cms/public-grievance' },
+  { label: 'Home', href: '/octagon-cms' },
+  { label: 'Solutions', href: '/octagon-cms/solutions' },
+  { label: 'About', href: '/octagon-cms/about' },
+  { label: 'Contact', href: '/octagon-cms/contact' },
 ] as const;
 
 export const HERO_CONTENT = {

@@ -1,6 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&display=swap');
 @import 'tailwindcss';
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* Language specific font override */
+html.lang-hi {
+  --font-sans: 'Hind', sans-serif !important;
+  --font-display: 'Hind', sans-serif !important;
+}
+html.lang-hi,
+html.lang-hi *,
+html.lang-hi body,
+html.lang-hi input,
+html.lang-hi button,
+html.lang-hi select,
+html.lang-hi textarea {
+  font-family: 'Hind', sans-serif !important;
+}
+
+.font-hindi {
+  font-family: 'Hind', sans-serif !important;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none !important;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none !important; /* IE and Edge */
+  scrollbar-width: none !important; /* Firefox */
+}
 
 /* ============================================================
    1. TAILWIND v4 THEME — DESIGN TOKENS
@@ -82,6 +109,7 @@
   --font-sans:
     'Plus Jakarta Sans', 'Poppins', 'Inter', 'Segoe UI', Roboto, Helvetica,
     Arial, sans-serif;
+  --font-hindi: 'Hind', 'Plus Jakarta Sans', sans-serif;
 
   /* Scoped Marketing Theme Config */
   --breakpoint-xs: 480px;
@@ -95,6 +123,16 @@
   --color-border: #e2e8f0;
   --color-accent: #06b6d4;
   --color-aliceblue: #f0f8ff;
+
+  /* DAVV institutional brand palette — deep green + saffron torch (used only by the DAVV CMS, src/features/davv) */
+  --color-davv: #1e7a46;
+  --color-davv-dark: #155e35;
+  --color-davv-darkest: #0c3a22;
+  --color-davv-light: #e7f3ec;
+  --color-davv-saffron: #c2410c;
+  --color-davv-saffron-light: #fdeee3;
+  --color-davv-navy: #002147;
+  --color-davv-gold: #f2a900;
 
   --font-display: 'Sora', sans-serif;
   --font-inter: 'Inter', sans-serif;
@@ -277,8 +315,8 @@
    3. DARK MODE VARIABLES
 ============================================================ */
 
-.dark body,
-[data-theme='dark'] body {
+body.dark,
+body[data-theme='dark'] {
   --primary-color: #fafafa;
   --primary-rgb: 92, 94, 216;
   --secondary-color: #0a0a0a;
@@ -287,6 +325,12 @@
   color: var(--dark-text);
 
   --text-secondary: #d4d4d8;
+}
+
+.dark .davv-cms-root,
+body.dark .davv-cms-root,
+.davv-cms-root.dark {
+  --primary-color: var(--color-primary) !important;
 }
 
 /* ============================================================

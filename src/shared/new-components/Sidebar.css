@@ -108,7 +108,7 @@
 /* Sidebar Item */
 .app-sidebar-item {
   @apply w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-transparent border-0 text-left cursor-pointer;
-  @apply transition-all duration-300 ease-out text-gray-600 font-semibold text-[0.85rem] relative;
+  @apply transition-all duration-300 ease-out text-gray-600 font-semibold text-[0.95rem] relative;
 }
 
 .app-sidebar-item:hover {
@@ -125,7 +125,7 @@
 }
 
 .app-sidebar-icon {
-  @apply text-[1.1rem] text-gray-400 transition-colors duration-200 w-5 text-center;
+  @apply text-[1.2rem] text-gray-400 transition-colors duration-200 w-5 text-center;
 }
 
 .app-sidebar-arrow {
@@ -379,7 +379,7 @@
 
 .app-sidebar-module-item {
   @apply w-full flex items-center gap-3 px-3 py-2 rounded-xl bg-transparent border-0 text-left cursor-pointer;
-  @apply transition-all duration-200 ease-out text-gray-600 font-semibold text-[0.82rem] relative;
+  @apply transition-all duration-200 ease-out text-gray-600 font-semibold text-[0.88rem] relative;
 }
 
 .app-sidebar-module-item:hover {
@@ -408,7 +408,7 @@
 }
 
 .app-sidebar-module-icon i {
-  @apply text-sm;
+  @apply text-[0.95rem];
 }
 
 .app-sidebar-module-label {
@@ -436,7 +436,7 @@
 /* Level 1 Item */
 .app-sidebar-submenu-item {
   @apply w-full flex items-center gap-2.5 px-3 py-2 rounded-lg bg-transparent border-0 text-left cursor-pointer;
-  @apply transition-all duration-200 ease-out text-gray-500 font-semibold text-[0.78rem] relative;
+  @apply transition-all duration-200 ease-out text-gray-500 font-semibold text-[0.84rem] relative;
 }
 
 .app-sidebar-submenu-item:hover {
@@ -460,7 +460,7 @@
 }
 
 .app-sidebar-submenu-icon {
-  @apply text-xs text-gray-400 w-4 text-center;
+  @apply text-[0.8rem] text-gray-400 w-4 text-center;
 }
 
 .app-sidebar-submenu-label {
@@ -487,7 +487,7 @@
 /* Level 2 Leaf Item */
 .app-sidebar-leaf-item {
   @apply w-full flex items-center gap-2 px-3 py-1.5 rounded-md bg-transparent border-0 text-left cursor-pointer;
-  @apply transition-all duration-200 ease-out text-gray-400 font-semibold text-[0.74rem] relative;
+  @apply transition-all duration-200 ease-out text-gray-400 font-semibold text-[0.80rem] relative;
 }
 
 .app-sidebar-leaf-item:hover {
@@ -1083,4 +1083,48 @@ body.dark
   .app-sidebar-leaf-item.active
   .app-sidebar-leaf-bullet {
   color: #ffffff !important;
+}
+
+/* ========================================================
+   CUSTOM FONT AND ICON SIZE INCREASES (STANDARD CSS OVERRIDES)
+   ======================================================== */
+
+/* Level 0 Menu Items (Primary items or Module items) */
+.app-sidebar-item {
+  font-size: 1.02rem !important;
+}
+.app-sidebar-label {
+  font-size: 1.02rem !important;
+}
+.app-sidebar-icon {
+  font-size: 1.25rem !important;
+}
+
+.app-sidebar-module-item {
+  font-size: 0.95rem !important;
+}
+.app-sidebar-module-label {
+  font-size: 0.95rem !important;
+}
+.app-sidebar-module-icon i {
+  font-size: 1.1rem !important;
+}
+
+/* Level 1 Submenu Items */
+.app-sidebar-submenu-item {
+  font-size: 0.88rem !important;
+}
+.app-sidebar-submenu-label {
+  font-size: 0.88rem !important;
+}
+.app-sidebar-submenu-icon {
+  font-size: 0.95rem !important;
+}
+
+/* Level 2 Leaf Items */
+.app-sidebar-leaf-item {
+  font-size: 0.82rem !important;
+}
+.app-sidebar-leaf-label {
+  font-size: 0.82rem !important;
 }
