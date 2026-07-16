@@ -28,6 +28,7 @@ export interface Project {
   manager: string;
   priority: Priority;
   status: ProjectStatus;
+  constructionPermissionDoc?: string;
 }
 
 export const projects: Project[] = [

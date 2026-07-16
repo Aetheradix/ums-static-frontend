@@ -22,7 +22,7 @@
 .form-popup-panel {
   @apply flex w-full flex-col overflow-hidden shadow-2xl;
   max-width: 560px;
-  max-height: calc(100vh - 2rem);
+  max-height: calc(100vh - 1rem);
   background-color: var(--bg-white);
   border-radius: var(--radius-2xl);
   animation: form-popup-slide-in 0.25s ease-out;
@@ -93,7 +93,7 @@
 
 /* Popup without footer keeps existing height behavior */
 .form-popup-panel:not(.form-popup-with-footer) .form-popup-body {
-  max-height: 65vh;
+  max-height: 85vh;
 }
 
 /* Popup with footer uses the available panel height */

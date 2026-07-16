@@ -129,6 +129,27 @@ export default function TenderOversight() {
   const [mapCommenceDate, setMapCommenceDate] = useState('');
   const [mapComplDate, setMapComplDate] = useState('');
   const [mapSdAmount, setMapSdAmount] = useState('');
+  const [mapTenderPricingType, setMapTenderPricingType] = useState('At Par');
+  const [mapActualTenderAmt, setMapActualTenderAmt] = useState('');
+  const [mapTenderPercent, setMapTenderPercent] = useState('');
+
+  useEffect(() => {
+    if (mapTenderPricingType === 'At Par') {
+      setMapActualTenderAmt(mapContractAmt);
+      setMapTenderPercent('');
+    } else if (
+      (mapTenderPricingType === 'Below' || mapTenderPricingType === 'Above') &&
+      mapContractAmt &&
+      mapTenderPercent
+    ) {
+      const base = Number(mapContractAmt);
+      const pct = Number(mapTenderPercent);
+      if (!isNaN(base) && !isNaN(pct) && pct > 0) {
+        const factor = mapTenderPricingType === 'Below' ? 1 - pct / 100 : 1 + pct / 100;
+        setMapActualTenderAmt(String(Math.round(base * factor)));
+      }
+    }
+  }, [mapTenderPricingType, mapContractAmt, mapTenderPercent]);
 
   // Persist all data changes to localStorage
   useEffect(() => {
@@ -214,13 +235,14 @@ export default function TenderOversight() {
       !mapWorkId ||
       !mapContractorId ||
       !mapContractAmt ||
+      !mapActualTenderAmt ||
       !mapCommenceDate ||
       !mapComplDate ||
       !mapTpiAgencyId ||
       !mapQualityLabId
     ) {
       ToastService.error(
-        'Please fill in all mapping fields, including TPI and Lab agencies.'
+        'Please fill in all mapping fields, including TPI, Lab agencies, and actual tender amount.'
       );
       return;
     }
@@ -247,7 +269,9 @@ export default function TenderOversight() {
                 ...t,
                 l1ContractorId: selectedContractor.id,
                 l1ContractorName: selectedContractor.companyName,
-                l1BidAmount: Number(mapContractAmt),
+                l1BidAmount: Number(mapActualTenderAmt),
+                tenderPricingType: mapTenderPricingType,
+                actualTenderAmount: Number(mapActualTenderAmt),
                 status: 'Awarded',
               }
             : t
@@ -264,17 +288,19 @@ export default function TenderOversight() {
         publishDate: new Date().toISOString().split('T')[0],
         closingDate: mapCommenceDate,
         preBidDate: new Date().toISOString().split('T')[0],
-        emdAmount: Number(mapContractAmt) * 0.02,
+        emdAmount: Number(mapActualTenderAmt) * 0.02,
         estimatedValue: selectedWork.estimatedCost,
         l1ContractorId: selectedContractor.id,
         l1ContractorName: selectedContractor.companyName,
-        l1BidAmount: Number(mapContractAmt),
+        l1BidAmount: Number(mapActualTenderAmt),
         l1Percentage:
-          ((Number(mapContractAmt) - selectedWork.estimatedCost) /
+          ((Number(mapActualTenderAmt) - selectedWork.estimatedCost) /
             selectedWork.estimatedCost) *
           100,
         totalBidsReceived: 3,
         eligibilityCriteria: `Class ${selectedContractor.grade} contractor limits apply`,
+        tenderPricingType: mapTenderPricingType as any,
+        actualTenderAmount: Number(mapActualTenderAmt),
         status: 'Awarded',
       };
       setTenders((prev: any[]) => [...prev, newTender]);
@@ -287,7 +313,7 @@ export default function TenderOversight() {
           ? {
               ...w,
               status: 'Tender Awarded',
-              contractAmount: Number(mapContractAmt),
+              contractAmount: Number(mapActualTenderAmt),
               tpiAgencyId: mapTpiAgencyId,
               tpiAgencyName: selectedTpi?.name ?? '—',
               qualityLabId: mapQualityLabId,
@@ -308,11 +334,11 @@ export default function TenderOversight() {
       issuedDate: new Date().toISOString().split('T')[0],
       commencementDate: mapCommenceDate,
       completionDate: mapComplDate,
-      contractAmount: Number(mapContractAmt),
-      advancePaid: Number(mapContractAmt) * 0.1,
+      contractAmount: Number(mapActualTenderAmt),
+      advancePaid: Number(mapActualTenderAmt) * 0.1,
       advanceRecoveryRate: 10,
       sdPercentage: 5,
-      sdAmount: Number(mapSdAmount) || Number(mapContractAmt) * 0.05,
+      sdAmount: Number(mapSdAmount) || Number(mapActualTenderAmt) * 0.05,
       status: 'Issued' as any,
       signedByContractor: false,
       signedByEE: false,
@@ -337,6 +363,8 @@ export default function TenderOversight() {
     setMapCommenceDate('');
     setMapComplDate('');
     setMapSdAmount('');
+    setMapTenderPricingType('At Par');
+    setMapActualTenderAmt('');
   };
 
   const publishedBids = tenders.filter(
@@ -657,13 +685,42 @@ export default function TenderOversight() {
                       onChange={v => setMapQualityLabId(v as string)}
                     />
                     <TextBox
-                      label="Agreed Contract Value (₹) *"
+                      label="BOQ Value (₹) *"
                       placeholder="e.g. 26200000"
                       value={mapContractAmt}
                       onChange={v => setMapContractAmt(v)}
                     />
+                    <DropDownList
+                      label="Tender Obtained At *"
+                      data={['Below', 'Above', 'At Par'].map(v => ({
+                        name: v,
+                        value: v,
+                      }))}
+                      textField="name"
+                      optionValue="value"
+                      value={mapTenderPricingType}
+                      onChange={v => {
+                        setMapTenderPricingType(v as string);
+                        setMapTenderPercent('');
+                      }}
+                    />
+                    {(mapTenderPricingType === 'Below' || mapTenderPricingType === 'Above') && (
+                      <TextBox
+                        label={`Percentage ${mapTenderPricingType === 'Below' ? 'Below' : 'Above'} BOQ Value (%)`}
+                        placeholder={`e.g. 5 (means ${mapTenderPricingType === 'Below' ? '5% below' : '5% above'} BOQ value)`}
+                        value={mapTenderPercent}
+                        onChange={v => setMapTenderPercent(v)}
+                      />
+                    )}
                     <TextBox
-                      label="Security Deposit Amount (₹) - Leave blank for 5% default"
+                      label="Actual Tender Amount (₹) *"
+                      placeholder="e.g. 25000000"
+                      value={mapActualTenderAmt}
+                      onChange={v => setMapActualTenderAmt(v)}
+                      required
+                    />
+                    <TextBox
+                      label="Security Deposit Amount "
                       placeholder="e.g. 1310000"
                       value={mapSdAmount}
                       onChange={v => setMapSdAmount(v)}

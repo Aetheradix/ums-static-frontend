@@ -344,6 +344,7 @@ export default function AdminSORMaster() {
     area: '',
     campus: 'Main Campus',
     location: '',
+    constructionPermissionDoc: '',
   });
 
   // Persists
@@ -559,7 +560,7 @@ export default function AdminSORMaster() {
       ToastService.success('Project updated successfully.');
     }
     setProjectPopup({ mode: 'closed' });
-    setProjectForm({ area: '', campus: 'Main Campus', location: '' });
+    setProjectForm({ area: '', campus: 'Main Campus', location: '', constructionPermissionDoc: '' });
   };
 
   // SOR Actions
@@ -1545,6 +1546,19 @@ export default function AdminSORMaster() {
                 cell: (s: any) => <span>{s.location}</span>,
               },
               {
+                field: 'constructionPermissionDoc',
+                header: 'Construction Permission',
+                cell: (s: any) => (
+                  s.constructionPermissionDoc ? (
+                    <span style={{ color: '#16a34a', fontWeight: 500, fontSize: '0.75rem' }}>
+                      📄 {s.constructionPermissionDoc}
+                    </span>
+                  ) : (
+                    <span style={{ color: '#9ca3af', fontSize: '0.75rem' }}>No Doc</span>
+                  )
+                ),
+              },
+              {
                 field: 'id',
                 header: 'Action',
                 sortable: false,
@@ -1555,7 +1569,10 @@ export default function AdminSORMaster() {
                     icon="pencil"
                     variant="outlined"
                     onClick={() => {
-                      setProjectForm(item);
+                      setProjectForm({
+                        constructionPermissionDoc: '',
+                        ...item,
+                      });
                       setProjectPopup({ mode: 'edit', item });
                     }}
                   />
@@ -1572,6 +1589,7 @@ export default function AdminSORMaster() {
                     area: '',
                     campus: 'Main Campus',
                     location: '',
+                    constructionPermissionDoc: '',
                   });
                   setProjectPopup({ mode: 'create' });
                 }}
@@ -2311,6 +2329,54 @@ export default function AdminSORMaster() {
             onChange={v => setProjectForm((f: any) => ({ ...f, location: v }))}
             rows={3}
           />
+        </div>
+
+        <div style={{ marginTop: '1rem' }}>
+          <label
+            style={{
+              fontSize: '0.78rem',
+              fontWeight: 600,
+              color: '#374151',
+              display: 'block',
+              marginBottom: '0.375rem',
+            }}
+          >
+            Construction Permission
+          </label>
+          <input
+            type="file"
+            accept=".pdf,.doc,.docx"
+            onChange={e => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setProjectForm((f: any) => ({ ...f, constructionPermissionDoc: file.name }));
+                ToastService.success(
+                  `Uploaded construction permission: ${file.name}`
+                );
+              }
+            }}
+            style={{
+              width: '100%',
+              padding: '0.375rem',
+              border: '1px solid #d1d5db',
+              borderRadius: '0.375rem',
+              fontSize: '0.8125rem',
+              background: '#ffffff',
+            }}
+          />
+          {projectForm.constructionPermissionDoc && (
+            <span
+              style={{
+                fontSize: '0.72rem',
+                color: '#16a34a',
+                display: 'block',
+                marginTop: '0.25rem',
+                fontWeight: 600,
+              }}
+            >
+              ✓ Selected: {projectForm.constructionPermissionDoc}
+            </span>
+          )}
         </div>
 
         <div className="flex justify-end gap-3 mt-4">

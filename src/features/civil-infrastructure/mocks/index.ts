@@ -47,13 +47,19 @@ export interface CivilWork {
   physicalProgress: number; // 0–100
   financialProgress: number; // 0–100
   externalAgency?: string; // for Deposit Work
-  workBasis?: 'SOR Based' | 'BOQ Based';
+  workBasis?: 'SOR' | 'Non-SOR' | 'SOR Based' | 'BOQ Based';
   constructionAgreementDoc?: string;
   scopeOfWorkDoc?: string;
+  layoutDrawingDoc?: string;
   tpiAgencyId?: string;
   tpiAgencyName?: string;
   qualityLabId?: string;
   qualityLabName?: string;
+  projectArea?: string;
+  landOwnershipType?: string;
+  ownershipVerified?: string;
+  // Dynamic documents uploaded via document master
+  mandateDocs?: Record<string, string>; // { docTypeName: uploadedFileName }
 }
 
 export const civilWorks: CivilWork[] = [
@@ -968,6 +974,8 @@ export interface CivilTender {
   l1Percentage?: number; // above/below estimated %
   totalBidsReceived?: number;
   eligibilityCriteria: string;
+  tenderPricingType?: 'Below' | 'Above' | 'At Par';
+  actualTenderAmount?: number;
   status: TenderStatus;
 }
 

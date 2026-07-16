@@ -36,6 +36,9 @@ export default function AdminBOQCompilation() {
   // Add/Edit Form State
   const [selectedSorId, setSelectedSorId] = useState('');
   const [qty, setQty] = useState('');
+  const [nonSorDescription, setNonSorDescription] = useState('');
+  const [nonSorRate, setNonSorRate] = useState('');
+  const [nonSorUnit, setNonSorUnit] = useState('');
 
   // Watch storage updates
   useEffect(() => {
@@ -57,43 +60,85 @@ export default function AdminBOQCompilation() {
 
   const getSorItem = () => sorItems.find(s => s.id === selectedSorId);
   const selectedSor = getSorItem();
-  const calculatedAmt =
-    selectedSor && qty ? Number(qty) * selectedSor.govtRate : 0;
+
+  // Non-SOR detection
+  const isNonSOR = currentWork?.workBasis === 'Non-SOR';
+
+  const calculatedAmt = (() => {
+    if (isNonSOR) {
+      // For Non-SOR: use custom rate * qty
+      const rate = Number(nonSorRate);
+      const q = Number(qty);
+      return rate > 0 && q > 0 ? rate * q : 0;
+    }
+    return selectedSor && qty ? Number(qty) * selectedSor.govtRate : 0;
+  })();
 
   const handleSaveItem = () => {
     if (popup.mode === 'add') {
-      if (!selectedSorId) {
-        ToastService.error('SOR Item must be selected.');
-        return;
+      if (isNonSOR) {
+        // Non-SOR flow: description + rate + qty required
+        if (!nonSorDescription.trim()) {
+          ToastService.error('Item description is required for Non-SOR work.');
+          return;
+        }
+        if (!nonSorRate || Number(nonSorRate) <= 0) {
+          ToastService.error('Rate must be greater than 0 for Non-SOR item.');
+          return;
+        }
+        if (!qty || Number(qty) <= 0) {
+          ToastService.error('Quantity must be greater than 0.');
+          return;
+        }
+        // Auto-select first SOR item as reference (as per Non-SOR flow spec)
+        const refSor = sorItems[0];
+        const newItem: BOQItem = {
+          id: String(Date.now()),
+          boqId: `BOQ-${selectedWorkId.padStart(3, '0')}`,
+          workId: selectedWorkId,
+          sorItemId: refSor?.id ?? 'non-sor',
+          sorCode: 'NON-SOR',
+          description: nonSorDescription,
+          unit: nonSorUnit || refSor?.unit || 'Unit',
+          govtRate: Number(nonSorRate),
+          approvedQty: Number(qty),
+          amount: calculatedAmt,
+          isLocked: false,
+        };
+        setData(prev => [...prev, newItem]);
+        ToastService.success('Non-SOR item added to BOQ compiler.');
+      } else {
+        // SOR flow (existing)
+        if (!selectedSorId) {
+          ToastService.error('SOR Item must be selected.');
+          return;
+        }
+        if (!qty || Number(qty) <= 0) {
+          ToastService.error('Quantity must be greater than 0.');
+          return;
+        }
+        if (workBOQItems.some(i => i.sorItemId === selectedSorId)) {
+          ToastService.error(
+            'This SOR Item is already added to the BOQ. Edit its quantity instead.'
+          );
+          return;
+        }
+        const newItem: BOQItem = {
+          id: String(Date.now()),
+          boqId: `BOQ-${selectedWorkId.padStart(3, '0')}`,
+          workId: selectedWorkId,
+          sorItemId: selectedSorId,
+          sorCode: selectedSor?.code ?? '',
+          description: selectedSor?.description ?? '',
+          unit: selectedSor?.unit ?? '',
+          govtRate: selectedSor?.govtRate ?? 0,
+          approvedQty: Number(qty),
+          amount: calculatedAmt,
+          isLocked: false,
+        };
+        setData(prev => [...prev, newItem]);
+        ToastService.success('Item added to BOQ compiler.');
       }
-      if (!qty || Number(qty) <= 0) {
-        ToastService.error('Quantity must be greater than 0.');
-        return;
-      }
-
-      // Check if item already exists in BOQ
-      if (workBOQItems.some(i => i.sorItemId === selectedSorId)) {
-        ToastService.error(
-          'This SOR Item is already added to the BOQ. Edit its quantity instead.'
-        );
-        return;
-      }
-
-      const newItem: BOQItem = {
-        id: String(Date.now()),
-        boqId: `BOQ-${selectedWorkId.padStart(3, '0')}`,
-        workId: selectedWorkId,
-        sorItemId: selectedSorId,
-        sorCode: selectedSor?.code ?? '',
-        description: selectedSor?.description ?? '',
-        unit: selectedSor?.unit ?? '',
-        govtRate: selectedSor?.govtRate ?? 0,
-        approvedQty: Number(qty),
-        amount: calculatedAmt,
-        isLocked: false,
-      };
-      setData(prev => [...prev, newItem]);
-      ToastService.success('Item added to BOQ compiler.');
     } else if (popup.mode === 'edit' && popup.item) {
       if (!qty || Number(qty) <= 0) {
         ToastService.error('Quantity must be greater than 0.');
@@ -115,6 +160,9 @@ export default function AdminBOQCompilation() {
     setPopup({ mode: 'closed' });
     setSelectedSorId('');
     setQty('');
+    setNonSorDescription('');
+    setNonSorRate('');
+    setNonSorUnit('');
   };
 
   const handleDeleteItem = (itemId: string) => {
@@ -193,7 +241,7 @@ export default function AdminBOQCompilation() {
             <DropDownList
               label="Work In-Progress / Registered *"
               data={works.map(w => ({
-                name: `${w.workId} — ${w.name} (${w.status})`,
+                name: `${w.workId} — ${w.name}${w.workBasis ? ` [${w.workBasis}]` : ''}`,
                 value: w.id,
               }))}
               textField="name"
@@ -380,6 +428,9 @@ export default function AdminBOQCompilation() {
                     onClick={() => {
                       setSelectedSorId('');
                       setQty('');
+                      setNonSorDescription('');
+                      setNonSorRate('');
+                      setNonSorUnit('');
                       setPopup({ mode: 'add' });
                     }}
                   />
@@ -424,21 +475,90 @@ export default function AdminBOQCompilation() {
         size="lg"
       >
         {popup.mode === 'add' && (
-          <div style={{ marginBottom: '1rem' }}>
-            <DropDownList
-              label="Select Item from Government SOR Master *"
-              data={sorItems.map(s => ({
-                name: `${s.code} — ${s.description.substring(0, 70)}... (₹${s.govtRate}/${s.unit})`,
-                value: s.id,
-              }))}
-              textField="name"
-              optionValue="value"
-              value={selectedSorId}
-              onChange={v => {
-                setSelectedSorId(v as string);
-                setQty('');
-              }}
-            />
+          <div>
+            {isNonSOR ? (
+              // ── Non-SOR BOQ Item Entry ──────────────────────────────────────
+              <div>
+                <div
+                  style={{
+                    background: '#f0fdf4',
+                    border: '1px solid #86efac',
+                    borderRadius: '0.75rem',
+                    padding: '0.75rem 1rem',
+                    marginBottom: '1rem',
+                    fontSize: '0.8125rem',
+                    color: '#166534',
+                  }}
+                >
+                  <strong>ℹ️ Non-SOR Work:</strong> This work is classified as <strong>Non-SOR</strong>.
+                  Government SOR rates, approved quantities, and costs are pre-applied from the SOR Master automatically.
+                  Please provide a custom item description, unit, rate, and quantity for this item.
+                </div>
+                <FormGrid columns={2}>
+                  <TextBox
+                    label="Item Description *"
+                    placeholder="e.g. Providing and laying interlocking paver blocks"
+                    value={nonSorDescription}
+                    onChange={setNonSorDescription}
+                    required
+                  />
+                  <TextBox
+                    label="Unit *"
+                    placeholder="e.g. Sqm, Cum, RM"
+                    value={nonSorUnit}
+                    onChange={setNonSorUnit}
+                  />
+                  <TextBox
+                    label="Rate per Unit (₹) *"
+                    placeholder="e.g. 850"
+                    value={nonSorRate}
+                    onChange={setNonSorRate}
+                    required
+                  />
+                  <TextBox
+                    label="Approved Quantity *"
+                    placeholder="e.g. 500"
+                    value={qty}
+                    onChange={setQty}
+                    required
+                  />
+                </FormGrid>
+                {calculatedAmt > 0 && (
+                  <div
+                    style={{
+                      marginTop: '0.75rem',
+                      background: '#eff6ff',
+                      border: '1px solid #bfdbfe',
+                      borderRadius: '0.5rem',
+                      padding: '0.5rem 0.75rem',
+                      fontSize: '0.8125rem',
+                      color: '#1d4ed8',
+                      fontWeight: 600,
+                    }}
+                  >
+                    💰 Estimated Total: ₹{calculatedAmt.toLocaleString('en-IN')}
+                  </div>
+                )}
+              </div>
+            ) : (
+              // ── SOR-Based BOQ Item Entry (existing flow) ────────────────────
+              <div style={{ marginBottom: '1rem' }}>
+                <DropDownList
+                  label="Select Item from Government SOR Master *"
+                  data={sorItems.map(s => ({
+                    name: `${s.code} — ${s.description.substring(0, 70)}... (₹${s.govtRate}/${s.unit})`,
+                    value: s.id,
+                  }))}
+                  textField="name"
+                  optionValue="value"
+                  value={selectedSorId}
+                  onChange={v => {
+                    setSelectedSorId(v as string);
+                    setQty('');
+                  }}
+                />
+              </div>
+            )}
           </div>
         )}
 
@@ -461,31 +581,56 @@ export default function AdminBOQCompilation() {
         )}
 
         <FormGrid columns={2}>
-          <TextBox
-            label={
-              popup.mode === 'add' && selectedSor
-                ? `Quantity (${selectedSor.unit}) *`
-                : popup.mode === 'edit' && popup.item
-                  ? `Quantity (${popup.item.unit}) *`
-                  : 'Approved Quantity *'
-            }
-            placeholder="e.g. 500"
-            value={qty}
-            onChange={setQty}
-            required
-          />
-          <TextBox
-            label="Calculated Estimated Cost (₹)"
-            value={
-              popup.mode === 'add' && calculatedAmt > 0
-                ? `₹${calculatedAmt.toLocaleString('en-IN')}`
-                : popup.mode === 'edit' && popup.item && qty
-                  ? `₹ ${(Number(qty) * popup.item.govtRate).toLocaleString('en-IN')}`
-                  : '—'
-            }
-            onChange={() => {}}
-            disabled
-          />
+          {!isNonSOR && (
+            <>
+              <TextBox
+                label={
+                  popup.mode === 'add' && selectedSor
+                    ? `Quantity (${selectedSor.unit}) *`
+                    : popup.mode === 'edit' && popup.item
+                      ? `Quantity (${popup.item.unit}) *`
+                      : 'Approved Quantity *'
+                }
+                placeholder="e.g. 500"
+                value={qty}
+                onChange={setQty}
+                required
+              />
+              <TextBox
+                label="Calculated Estimated Cost (₹)"
+                value={
+                  popup.mode === 'add' && calculatedAmt > 0
+                    ? `₹${calculatedAmt.toLocaleString('en-IN')}`
+                    : popup.mode === 'edit' && popup.item && qty
+                      ? `₹ ${(Number(qty) * popup.item.govtRate).toLocaleString('en-IN')}`
+                      : '—'
+                }
+                onChange={() => {}}
+                disabled
+              />
+            </>
+          )}
+          {isNonSOR && popup.mode === 'edit' && popup.item && (
+            <>
+              <TextBox
+                label={`Quantity (${popup.item.unit}) *`}
+                placeholder="e.g. 500"
+                value={qty}
+                onChange={setQty}
+                required
+              />
+              <TextBox
+                label="Calculated Cost (₹)"
+                value={
+                  qty
+                    ? `₹ ${(Number(qty) * popup.item.govtRate).toLocaleString('en-IN')}`
+                    : '—'
+                }
+                onChange={() => {}}
+                disabled
+              />
+            </>
+          )}
         </FormGrid>
 
         <div className="flex justify-end gap-3 mt-4">
