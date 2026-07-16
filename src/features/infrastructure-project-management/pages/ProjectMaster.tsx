@@ -72,6 +72,7 @@ const EMPTY: Partial<Project> = {
   manager: '',
   priority: 'High',
   status: 'Planning',
+  constructionPermissionDoc: '',
 };
 
 const statusVariant = (s: string) => {
@@ -173,6 +174,19 @@ export default function ProjectMaster() {
                   label={item.status}
                   variant={statusVariant(item.status)}
                 />
+              ),
+            },
+            {
+              field: 'constructionPermissionDoc',
+              header: 'Construction Permission',
+              cell: (item: Project) => (
+                item.constructionPermissionDoc ? (
+                  <span style={{ color: '#16a34a', fontWeight: 500, fontSize: '0.75rem' }}>
+                    📄 {item.constructionPermissionDoc}
+                  </span>
+                ) : (
+                  <span style={{ color: '#9ca3af', fontSize: '0.75rem' }}>No Doc</span>
+                )
               ),
             },
             {
@@ -362,6 +376,68 @@ export default function ProjectMaster() {
             onChange={v => setForm(f => ({ ...f, status: v as any }))}
             disabled={isReadOnly}
           />
+        </FormGrid>
+        <h4
+          style={{
+            fontSize: '0.875rem',
+            fontWeight: 700,
+            color: '#1f2937',
+            marginBottom: '0.5rem',
+            borderTop: '1px solid #f3f4f6',
+            paddingTop: '0.75rem',
+          }}
+        >
+          📄 Upload Mandate Documents
+        </h4>
+        <FormGrid columns={1}>
+          <div>
+            <label
+              style={{
+                fontSize: '0.78rem',
+                fontWeight: 600,
+                color: '#374151',
+                display: 'block',
+                marginBottom: '0.375rem',
+              }}
+            >
+              Construction Permission
+            </label>
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx"
+              disabled={isReadOnly}
+              onChange={e => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setForm(f => ({ ...f, constructionPermissionDoc: file.name }));
+                  ToastService.success(
+                    `Uploaded construction permission: ${file.name}`
+                  );
+                }
+              }}
+              style={{
+                width: '100%',
+                padding: '0.375rem',
+                border: '1px solid #d1d5db',
+                borderRadius: '0.375rem',
+                fontSize: '0.8125rem',
+                background: '#ffffff',
+              }}
+            />
+            {form.constructionPermissionDoc && (
+              <span
+                style={{
+                  fontSize: '0.72rem',
+                  color: '#16a34a',
+                  display: 'block',
+                  marginTop: '0.25rem',
+                  fontWeight: 600,
+                }}
+              >
+                ✓ Selected: {form.constructionPermissionDoc}
+              </span>
+            )}
+          </div>
         </FormGrid>
         {!isReadOnly && (
           <div className="flex justify-end gap-3 mt-4">

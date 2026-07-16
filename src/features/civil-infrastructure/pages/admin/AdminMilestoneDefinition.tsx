@@ -712,7 +712,7 @@ export default function AdminMilestoneDefinition() {
             <DropDownList
               label="Awarded Civil Work *"
               data={works.map((w: any) => ({
-                name: `${w.workId} — ${w.name} (${w.status})`,
+                name: `${w.workId} — ${w.name}${w.category ? ` [${w.category}]` : ''}`,
                 value: w.id,
               }))}
               textField={'name' as any}

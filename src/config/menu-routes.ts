@@ -6813,14 +6813,6 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'indigo',
               },
               {
-                label: 'Milestone Definition',
-                description:
-                  'Set project execution milestones and link payments to completion.',
-                path: '/civil-infrastructure/admin/milestones',
-                icon: 'flag',
-                colorScheme: 'blue',
-              },
-              {
                 label: 'Administrative Approval',
                 description:
                   'VC / competent authority reviews justification and grants AA.',
@@ -6868,6 +6860,14 @@ export const menuConfig: Menu.MenuItem[] = [
                 path: '/civil-infrastructure/admin/work-order-sign',
                 icon: 'history_edu',
                 colorScheme: 'purple',
+              },
+              {
+                label: 'Milestone Definition',
+                description:
+                  'Set project execution milestones and link payments to completion.',
+                path: '/civil-infrastructure/admin/milestones',
+                icon: 'flag',
+                colorScheme: 'blue',
               },
               {
                 label: 'Milestone Sign-off Approvals',
