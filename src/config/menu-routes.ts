@@ -6919,14 +6919,14 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'dashboard',
                 colorScheme: 'blue',
               },
-              {
-                label: 'Planning Workbench',
-                description:
-                  'Input site dimensions, soil data, and resource projections.',
-                path: '/civil-infrastructure/engineer/technical-planning',
-                icon: 'architecture',
-                colorScheme: 'purple',
-              },
+              // {
+              //   label: 'Planning Workbench',
+              //   description:
+              //     'Input site dimensions, soil data, and resource projections.',
+              //   path: '/civil-infrastructure/engineer/technical-planning',
+              //   icon: 'architecture',
+              //   colorScheme: 'purple',
+              // },
               {
                 label: 'SOR Rate Master',
                 description:

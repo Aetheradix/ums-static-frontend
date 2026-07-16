@@ -13,6 +13,42 @@ import { civilWorks, milestones, qualityTests } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
+const INITIAL_CC_REQUESTS = [
+  {
+    id: 'cc_1',
+    workId: '1',
+    workNo: 'CW-2025-001',
+    workName: 'New Academic Block – Science Wing',
+    status: 'Pending',
+    actualCompletionDate: '2026-06-15',
+    certificateNo: '',
+    issueDate: '',
+    adminRemarks: '',
+  },
+  {
+    id: 'cc_2',
+    workId: '2',
+    workNo: 'CW-2025-002',
+    workName: 'Bays Hostel Block D – 200 Beds',
+    status: 'Certificate Issued',
+    actualCompletionDate: '2026-05-10',
+    certificateNo: 'COMP/CW/2026/024',
+    issueDate: '2026-05-12',
+    adminRemarks: 'Inspected and certified by Chief Engineer.',
+  },
+  {
+    id: 'cc_3',
+    workId: '3',
+    workNo: 'CW-2025-003',
+    workName: 'Internal Campus Road Resurfacing',
+    status: 'Pending',
+    actualCompletionDate: '2026-07-01',
+    certificateNo: '',
+    issueDate: '',
+    adminRemarks: '',
+  },
+];
+
 export default function CompletionCertificate() {
   const [works, setWorks] = useState<any[]>(() => {
     const saved = localStorage.getItem('civil_works');
@@ -20,7 +56,7 @@ export default function CompletionCertificate() {
   });
   const [ccRequests, setCcRequests] = useState<any[]>(() => {
     const saved = localStorage.getItem('civil_cc_requests');
-    return saved ? JSON.parse(saved) : [];
+    return saved ? JSON.parse(saved) : INITIAL_CC_REQUESTS;
   });
   const [popup, setPopup] = useState<{
     mode: 'closed' | 'view' | 'certify';

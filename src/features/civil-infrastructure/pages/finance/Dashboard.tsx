@@ -1,19 +1,19 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  BarChart,
   Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
 } from 'recharts';
 import { FormCard, FormPage, StatCard } from 'shared/new-components';
 import {
-  civilWorks as initialWorks,
   raBills as initialBills,
   dlpRecords as initialDlp,
+  civilWorks as initialWorks,
 } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -101,6 +101,36 @@ export default function FinanceDashboard() {
         { label: 'Finance Dashboard' },
       ]}
     >
+      {/* KPI Stats */}
+      <div className="civil-stats-grid">
+        <StatCard
+          title="Total Allocated Budget"
+          value={`₹${(totalAllocated / 10000000).toFixed(2)} Cr`}
+          icon="account_balance"
+          colorScheme="blue"
+          subtitle="TS-approved funds"
+        />
+        <StatCard
+          title="Total Payments Released"
+          value={`₹${(totalUtilized / 100000).toFixed(1)}L`}
+          icon="payments"
+          colorScheme="green"
+        />
+        <StatCard
+          title="Budget Utilization"
+          value={`${totalAllocated > 0 ? ((totalUtilized / totalAllocated) * 100).toFixed(1) : 0}%`}
+          icon="pie_chart"
+          colorScheme="teal"
+        />
+        <StatCard
+          title="DLP Retention Held"
+          value={`₹${(dlpRetention / 100000).toFixed(2)}L`}
+          icon="lock"
+          colorScheme="purple"
+          subtitle="Pending release"
+        />
+      </div>
+
       {/* Action Center */}
       <div className="civil-action-center">
         <div className="civil-action-header">
@@ -153,36 +183,6 @@ export default function FinanceDashboard() {
             </div>
           ))}
         </div>
-      </div>
-
-      {/* KPI Stats */}
-      <div className="civil-stats-grid">
-        <StatCard
-          title="Total Allocated Budget"
-          value={`₹${(totalAllocated / 10000000).toFixed(2)} Cr`}
-          icon="account_balance"
-          colorScheme="blue"
-          subtitle="TS-approved funds"
-        />
-        <StatCard
-          title="Total Payments Released"
-          value={`₹${(totalUtilized / 100000).toFixed(1)}L`}
-          icon="payments"
-          colorScheme="green"
-        />
-        <StatCard
-          title="Budget Utilization"
-          value={`${totalAllocated > 0 ? ((totalUtilized / totalAllocated) * 100).toFixed(1) : 0}%`}
-          icon="pie_chart"
-          colorScheme="teal"
-        />
-        <StatCard
-          title="DLP Retention Held"
-          value={`₹${(dlpRetention / 100000).toFixed(2)}L`}
-          icon="lock"
-          colorScheme="purple"
-          subtitle="Pending release"
-        />
       </div>
 
       {/* Chart + Quick Actions */}

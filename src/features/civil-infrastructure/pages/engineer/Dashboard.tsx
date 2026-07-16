@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { FormCard, FormPage, StatCard } from 'shared/new-components';
 import {
   milestones as initialMilestones,
+  qualityTests as initialTests,
   civilWorks as initialWorks,
   mbEntries,
   progressLogs,
-  qualityTests as initialTests,
 } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -118,6 +118,37 @@ export default function EngineerDashboard() {
         { label: 'Engineer Dashboard' },
       ]}
     >
+      {/* Stats */}
+      <div className="civil-stats-grid">
+        <StatCard
+          title="My Active Works"
+          value={String(myWorks.length)}
+          icon="engineering"
+          colorScheme="blue"
+        />
+        <StatCard
+          title="MB Entries This Month"
+          value={String(mbEntries.length)}
+          icon="book"
+          colorScheme="teal"
+          subtitle="E-Measurement Book"
+        />
+        <StatCard
+          title="Milestones Completed"
+          value={String(
+            milestones.filter((m: any) => m.status === 'Completed').length
+          )}
+          icon="flag"
+          colorScheme="green"
+        />
+        <StatCard
+          title="Quality Tests Filed"
+          value={String(tests.length)}
+          icon="science"
+          colorScheme="purple"
+        />
+      </div>
+
       {/* Action Center */}
       <div className="civil-action-center">
         <div className="civil-action-header">
@@ -170,37 +201,6 @@ export default function EngineerDashboard() {
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Stats */}
-      <div className="civil-stats-grid">
-        <StatCard
-          title="My Active Works"
-          value={String(myWorks.length)}
-          icon="engineering"
-          colorScheme="blue"
-        />
-        <StatCard
-          title="MB Entries This Month"
-          value={String(mbEntries.length)}
-          icon="book"
-          colorScheme="teal"
-          subtitle="E-Measurement Book"
-        />
-        <StatCard
-          title="Milestones Completed"
-          value={String(
-            milestones.filter((m: any) => m.status === 'Completed').length
-          )}
-          icon="flag"
-          colorScheme="green"
-        />
-        <StatCard
-          title="Quality Tests Filed"
-          value={String(tests.length)}
-          icon="science"
-          colorScheme="purple"
-        />
       </div>
 
       <div className="civil-bottom-row">
