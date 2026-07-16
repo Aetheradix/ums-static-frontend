@@ -4,7 +4,7 @@ import { grvUrls } from '../urls';
 export default function HodPortalPage() {
   return (
     <PortalSelector
-      moduleTitle="Head of Department (HoD) Portal — Grievance Management"
+      moduleTitle="HOD Login — Grievance Review Desk"
       moduleDescription="DAVV Indore — Department Head evaluation desk. Review digital notesheets, forward files to Committees/Registrar, or return with remarks."
       backPath={grvUrls.portal}
       backLabel="Grievance Management System"

@@ -50,7 +50,7 @@ export default function StudentDownloadsNotifications() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Grievance Management', to: grvUrls.portal },
-        { label: 'Student Portal', to: grvUrls.student.portal },
+        { label: 'Student Login', to: grvUrls.student.portal },
         { label: 'Downloads' },
       ]}
     >

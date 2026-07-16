@@ -93,7 +93,7 @@ export default function GrievanceCellCommitteeReview() {
         />
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
         <div className="bg-white border rounded-lg p-3 text-center">
           <p className="text-xs text-slate-400">Current Status</p>
           <span className={statusColors[grievance.status]}>
@@ -111,6 +111,12 @@ export default function GrievanceCellCommitteeReview() {
         <div className="bg-white border rounded-lg p-3 text-center">
           <p className="text-xs text-slate-400">Submitted</p>
           <p className="text-sm font-semibold">{grievance.submittedDate}</p>
+        </div>
+        <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-3 text-center">
+          <p className="text-xs text-indigo-500 font-medium">Hearing Date</p>
+          <p className="text-sm font-bold text-indigo-700">
+            {grievance.hearingDate ?? '—'}
+          </p>
         </div>
       </div>
 
@@ -148,6 +154,14 @@ export default function GrievanceCellCommitteeReview() {
             <div>
               <p className="text-xs text-slate-400">Incident Date</p>
               <p>{grievance.incidentDate}</p>
+            </div>
+            <div>
+              <p className="text-xs text-indigo-500 font-semibold">
+                Hearing Date
+              </p>
+              <p className="font-semibold text-indigo-700">
+                {grievance.hearingDate ?? '—'}
+              </p>
             </div>
             <div>
               <p className="text-xs text-slate-400">Location</p>
@@ -272,46 +286,108 @@ export default function GrievanceCellCommitteeReview() {
               </div>
             </div>
           ) : (
-            <FormGrid columns={2}>
-              <DropDownList
-                label="Assign to Committee *"
-                data={committeeOptions}
-                textField="name"
-                optionValue="value"
-                value={committeeId}
-                onChange={val => setCommitteeId(val as string)}
-              />
-              <div>
-                <label className="grv-label">Hearing Date</label>
-                <input
-                  className="grv-input w-full"
-                  type="date"
-                  value={hearingDate}
-                  onChange={e => setHearingDate(e.target.value)}
-                />
-              </div>
-              <div className="md:col-span-2">
-                <TextArea
-                  label="Committee Recommendation *"
-                  placeholder="Enter the committee's formal recommendation / findings to be forwarded to the Registrar for final sanction..."
-                  value={recommendation}
-                  onChange={setRecommendation}
-                  rows={5}
-                />
-              </div>
-              <div className="md:col-span-2 flex justify-end gap-3">
-                <Button
-                  label="Cancel"
-                  variant="outlined"
-                  onClick={() => navigate(grvUrls.cell.management)}
-                />
-                <Button
-                  label="Forward to Registrar →"
-                  variant="primary"
-                  onClick={handleForward}
-                />
-              </div>
-            </FormGrid>
+            (() => {
+              const selectedCommittee = committees.find(
+                c => c.id === committeeId
+              );
+              return (
+                <FormGrid columns={2}>
+                  <DropDownList
+                    label="Assign to Committee *"
+                    data={committeeOptions}
+                    textField="name"
+                    optionValue="value"
+                    value={committeeId}
+                    onChange={val => setCommitteeId(val as string)}
+                  />
+                  <div>
+                    <label className="grv-label">Hearing Date</label>
+                    <input
+                      className="grv-input w-full"
+                      type="date"
+                      value={hearingDate}
+                      onChange={e => setHearingDate(e.target.value)}
+                    />
+                  </div>
+
+                  {selectedCommittee && (
+                    <div className="md:col-span-2 border border-purple-200 rounded-xl p-3 bg-purple-50/40">
+                      <p className="text-xs font-bold text-purple-900 mb-2 flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-base">
+                          groups
+                        </span>
+                        Committee Members Panel ({selectedCommittee.acronym})
+                      </p>
+                      <div className="overflow-x-auto rounded-lg border border-purple-100 bg-white">
+                        <table className="w-full text-xs">
+                          <thead className="bg-purple-50/80 border-b border-purple-100">
+                            <tr>
+                              <th className="px-3 py-1.5 text-left text-slate-500 font-semibold">
+                                Name
+                              </th>
+                              <th className="px-3 py-1.5 text-left text-slate-500 font-semibold">
+                                Role
+                              </th>
+                              <th className="px-3 py-1.5 text-left text-slate-500 font-semibold">
+                                Designation
+                              </th>
+                              <th className="px-3 py-1.5 text-left text-slate-500 font-semibold">
+                                Department
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-purple-50">
+                            {selectedCommittee.members.map(member => (
+                              <tr
+                                key={member.id}
+                                className="hover:bg-purple-50/20 transition-colors"
+                              >
+                                <td className="px-3 py-2 font-bold text-slate-800">
+                                  {member.name}
+                                </td>
+                                <td className="px-3 py-2">
+                                  <span className="text-[10px] font-semibold bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">
+                                    {member.role}
+                                  </span>
+                                </td>
+                                <td className="px-3 py-2 text-slate-600">
+                                  {member.designation}
+                                </td>
+                                <td className="px-3 py-2 text-slate-500">
+                                  {member.department}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="md:col-span-2">
+                    <TextArea
+                      label="Committee Recommendation *"
+                      placeholder="Enter the committee's formal recommendation / findings to be forwarded to the Registrar for final sanction..."
+                      value={recommendation}
+                      onChange={setRecommendation}
+                      rows={5}
+                    />
+                  </div>
+                  <div className="md:col-span-2 flex justify-end gap-3">
+                    <Button
+                      label="Cancel"
+                      variant="outlined"
+                      onClick={() => navigate(grvUrls.cell.management)}
+                    />
+                    <Button
+                      label="Forward to Registrar →"
+                      variant="primary"
+                      onClick={handleForward}
+                    />
+                  </div>
+                </FormGrid>
+              );
+            })()
           )}
         </FormCard>
       )}

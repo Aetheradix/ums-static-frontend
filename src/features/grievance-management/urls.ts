@@ -13,10 +13,12 @@ export const grvUrls = {
     myGrievances: '/grievance-management/student/my-grievances',
     track: '/grievance-management/student/track',
     downloads: '/grievance-management/student/downloads',
+    notifications: '/grievance-management/student/downloads',
     details: '/grievance-management/student/complaint-details',
     communication: '/grievance-management/student/communication',
     appeal: '/grievance-management/student/appeal',
     history: '/grievance-management/student/history',
+    workflow: '/grievance-management/student/workflow',
   },
 
   teacher: {
@@ -26,10 +28,12 @@ export const grvUrls = {
     myGrievances: '/grievance-management/teacher/my-grievances',
     track: '/grievance-management/teacher/track',
     downloads: '/grievance-management/teacher/downloads',
+    notifications: '/grievance-management/teacher/downloads',
     details: '/grievance-management/teacher/complaint-details',
     communication: '/grievance-management/teacher/communication',
     appeal: '/grievance-management/teacher/appeal',
     history: '/grievance-management/teacher/history',
+    workflow: '/grievance-management/teacher/workflow',
   },
 
   department: {
@@ -59,10 +63,14 @@ export const grvUrls = {
     portal: '/grievance-management/grievance-cell',
     dashboard: '/grievance-management/grievance-cell/dashboard',
     management: '/grievance-management/grievance-cell/complaint-management',
+    complaints: '/grievance-management/grievance-cell/complaint-management',
     assignment: '/grievance-management/grievance-cell/assignment',
     sla: '/grievance-management/grievance-cell/sla-monitoring',
     committees: '/grievance-management/grievance-cell/committees',
     committee: '/grievance-management/grievance-cell/committee-review',
+    committeeManagement:
+      '/grievance-management/grievance-cell/committee-management',
+    workflow: '/grievance-management/grievance-cell/workflow',
     reports: '/grievance-management/grievance-cell/reports',
   },
 

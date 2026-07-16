@@ -4,8 +4,8 @@ import { grvUrls } from '../urls';
 export default function AdminPortalPage() {
   return (
     <PortalSelector
-      moduleTitle="Grievance Admin Hub — Central Console"
-      moduleDescription="DAVV Indore — Configuration desk. Set masters, route department mappings, assign roles, and audit system activities."
+      moduleTitle="Admin Login — System Configuration"
+      moduleDescription="DAVV Indore — System administration console. Configure masters, routing rules, user roles, committees, and audit logs."
       backPath={grvUrls.portal}
       backLabel="Grievance Management System"
       portals={[

@@ -4,8 +4,8 @@ import { grvUrls } from '../urls';
 export default function DepartmentOfficerPortalPage() {
   return (
     <PortalSelector
-      moduleTitle="Department Officer Portal — Grievance Management"
-      moduleDescription="DAVV Indore — Under Process & New Grievance File Monitoring desk. Initiate and forward digital green notesheets."
+      moduleTitle="Department Login — Grievance Management"
+      moduleDescription="DAVV Indore — Complaint intake and notesheet processing desk for Department Officers."
       backPath={grvUrls.portal}
       backLabel="Grievance Management System"
       portals={[

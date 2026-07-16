@@ -36,13 +36,13 @@ export default function StudentMyGrievances() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Grievance Management', to: grvUrls.portal },
-        { label: 'Student Portal', to: grvUrls.student.portal },
+        { label: 'Student Login', to: grvUrls.student.portal },
         { label: 'My Grievances' },
       ]}
     >
       <div className="mb-4">
         <Button
-          label="← Back to Portal"
+          label="← Back to Dashboard"
           variant="outlined"
           onClick={() => navigate(grvUrls.student.portal)}
         />

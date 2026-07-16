@@ -28,7 +28,7 @@ export default function StudentComplaintDetails() {
         breadcrumbs={[
           { label: 'Home', to: '/home' },
           { label: 'Grievance Management', to: grvUrls.portal },
-          { label: 'Student Portal', to: grvUrls.student.portal },
+          { label: 'Student Login', to: grvUrls.student.portal },
           { label: 'Details' },
         ]}
       >
@@ -48,7 +48,7 @@ export default function StudentComplaintDetails() {
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Grievance Management', to: grvUrls.portal },
-        { label: 'Student Portal', to: grvUrls.student.portal },
+        { label: 'Student Login', to: grvUrls.student.portal },
         { label: 'My Grievances', to: grvUrls.student.myGrievances },
         { label: 'Details' },
       ]}

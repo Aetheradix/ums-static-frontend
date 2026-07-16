@@ -120,7 +120,7 @@ export default function StudentCommunicationCenter() {
         { label: 'Home', to: '/home' },
         { label: 'Grievance Management', to: grvUrls.portal },
         {
-          label: isTeacher ? 'Teacher Portal' : 'Student Portal',
+          label: isTeacher ? 'Employee Login' : 'Student Login',
           to: portalUrls.portal,
         },
         { label: 'Communication' },
@@ -128,7 +128,7 @@ export default function StudentCommunicationCenter() {
     >
       <div className="mb-4">
         <Button
-          label={`← Back to ${isTeacher ? 'Teacher' : 'Student'} Portal`}
+          label="← Back to Dashboard"
           variant="outlined"
           onClick={() => navigate(portalUrls.portal)}
         />

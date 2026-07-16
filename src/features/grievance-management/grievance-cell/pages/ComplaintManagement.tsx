@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FormCard, FormPage } from 'shared/new-components';
+import { FormCard, FormPage, StatCard } from 'shared/new-components';
 import { Button } from 'shared/components/buttons';
 import { complaints } from '../../mocks';
 import { grvUrls } from '../../urls';
@@ -58,34 +58,43 @@ export default function GrievanceCellComplaintManagement() {
         />
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
-        {[
-          { label: 'Total', value: stats.total, color: 'text-slate-700' },
-          {
-            label: 'Submitted',
-            value: stats.pending,
-            color: 'text-orange-600',
-          },
-          {
-            label: 'In Process',
-            value: stats.inProcess,
-            color: 'text-blue-600',
-          },
-          {
-            label: 'Registrar',
-            value: stats.decided,
-            color: 'text-purple-600',
-          },
-          { label: 'Closed', value: stats.closed, color: 'text-green-600' },
-        ].map(s => (
-          <div
-            key={s.label}
-            className="bg-white rounded-lg border p-3 text-center"
-          >
-            <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
-            <p className="text-xs text-slate-400 mt-1">{s.label}</p>
-          </div>
-        ))}
+      {/* KPI Cards Row */}
+      <div className="grv-stats-grid">
+        <StatCard
+          title="Total"
+          value={stats.total}
+          icon="folder_open"
+          colorScheme="blue"
+          subtitle="All complaints"
+        />
+        <StatCard
+          title="Submitted"
+          value={stats.pending}
+          icon="pending_actions"
+          colorScheme="orange"
+          subtitle="Pending review"
+        />
+        <StatCard
+          title="In Process"
+          value={stats.inProcess}
+          icon="cached"
+          colorScheme="purple"
+          subtitle="Under review"
+        />
+        <StatCard
+          title="Registrar"
+          value={stats.decided}
+          icon="gavel"
+          colorScheme="indigo"
+          subtitle="Awaiting decision"
+        />
+        <StatCard
+          title="Closed"
+          value={stats.closed}
+          icon="check_circle"
+          colorScheme="green"
+          subtitle="Resolved cases"
+        />
       </div>
 
       <FormCard title="All Complaints">
@@ -111,64 +120,77 @@ export default function GrievanceCellComplaintManagement() {
           </select>
         </div>
 
-        <table className="grv-table w-full text-xs">
-          <thead>
-            <tr>
-              <th>Ticket No</th>
-              <th>Complainant</th>
-              <th>Type</th>
-              <th>Category</th>
-              <th>Subject</th>
-              <th>Submitted</th>
-              <th>Status</th>
-              <th className="text-center">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length === 0 && (
+        {/* Responsive, Bordered Table Container */}
+        <div className="overflow-x-auto rounded-xl border border-slate-200">
+          <table className="grv-table w-full text-xs">
+            <thead>
               <tr>
-                <td colSpan={8} className="text-center py-8 text-slate-400">
-                  No complaints found.
-                </td>
+                <th>Ticket No</th>
+                <th>Complainant</th>
+                <th>Type</th>
+                <th>Category</th>
+                <th>Subject</th>
+                <th>Submitted</th>
+                <th>Hearing Date</th>
+                <th>Status</th>
+                <th className="text-center">Action</th>
               </tr>
-            )}
-            {filtered.map(c => (
-              <tr key={c.id}>
-                <td className="font-mono font-bold text-blue-700">
-                  {c.ticketNo}
-                </td>
-                <td>
-                  <p className="font-semibold">{c.studentName}</p>
-                  <p className="text-slate-400">{c.enrollmentNo}</p>
-                </td>
-                <td>
-                  <span
-                    className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${c.complaintType === 'Student' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}`}
-                  >
-                    {c.complaintType}
-                  </span>
-                </td>
-                <td>{c.category}</td>
-                <td className="max-w-xs truncate">{c.subject}</td>
-                <td>{c.submittedDate}</td>
-                <td>
-                  <span className={statusColors[c.status] || 'grv-status-pill'}>
-                    {c.status}
-                  </span>
-                </td>
-                <td className="text-center">
-                  <Button
-                    label="Review →"
-                    variant="primary"
-                    onClick={() =>
-                      navigate(`${grvUrls.cell.committee}?id=${c.id}`)
-                    }
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filtered.length === 0 && (
+                <tr>
+                  <td colSpan={9} className="text-center py-8 text-slate-400">
+                    No complaints found.
+                  </td>
+                </tr>
+              )}
+              {filtered.map(c => (
+                <tr key={c.id}>
+                  <td className="font-mono font-bold text-blue-700">
+                    {c.ticketNo}
+                  </td>
+                  <td>
+                    <p className="font-semibold">{c.studentName}</p>
+                    <p className="text-slate-400">{c.enrollmentNo}</p>
+                  </td>
+                  <td>
+                    <span
+                      className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${c.complaintType === 'Student' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}`}
+                    >
+                      {c.complaintType}
+                    </span>
+                  </td>
+                  <td>{c.category}</td>
+                  <td className="max-w-xs truncate">{c.subject}</td>
+                  <td>{c.submittedDate}</td>
+                  <td>
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${c.hearingDate && c.hearingDate !== '—' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-500'}`}
+                    >
+                      {c.hearingDate ?? '—'}
+                    </span>
+                  </td>
+                  <td>
+                    <span
+                      className={statusColors[c.status] || 'grv-status-pill'}
+                    >
+                      {c.status}
+                    </span>
+                  </td>
+                  <td className="text-center">
+                    <Button
+                      label="Review →"
+                      variant="primary"
+                      onClick={() =>
+                        navigate(`${grvUrls.cell.committee}?id=${c.id}`)
+                      }
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </FormCard>
     </FormPage>
   );

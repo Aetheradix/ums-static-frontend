@@ -4,7 +4,7 @@ import { grvUrls } from '../urls';
 export default function TeacherPortalPage() {
   return (
     <PortalSelector
-      moduleTitle="Teacher / Employee Portal — Grievance Redressal"
+      moduleTitle="Employee Login — Grievance Redressal"
       moduleDescription="DAVV Indore — Institutional desk for faculty and staff members to lodge and track employment-related grievances."
       backPath={grvUrls.portal}
       backLabel="Grievance Management System"
