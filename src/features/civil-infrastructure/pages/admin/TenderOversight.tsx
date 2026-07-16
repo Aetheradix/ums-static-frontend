@@ -385,232 +385,6 @@ export default function TenderOversight() {
       <Tabs
         tabs={[
           {
-            title: `All Tenders (${tenders.length})`,
-            content: (
-              <FormCard>
-                <GridPanel
-                  data={tenders}
-                  columns={[
-                    {
-                      cell: (_, o) => <span>{o.rowIndex + 1}</span>,
-                      width: '50px',
-                    },
-                    {
-                      field: 'tenderNo',
-                      header: 'NIT No',
-                      cell: (t: CivilTender) => (
-                        <span
-                          style={{ fontFamily: 'monospace', fontWeight: 700 }}
-                        >
-                          {t.tenderNo}
-                        </span>
-                      ),
-                    },
-                    { field: 'workName', header: 'Work Name' },
-                    {
-                      field: 'tenderType',
-                      header: 'Type',
-                      cell: (t: CivilTender) => (
-                        <span style={{ fontSize: '0.75rem' }}>
-                          {t.tenderType}
-                        </span>
-                      ),
-                    },
-                    { field: 'closingDate', header: 'Closing Date' },
-                    {
-                      field: 'estimatedValue',
-                      header: 'Est. Value',
-                      cell: (t: CivilTender) => (
-                        <span>₹{(t.estimatedValue / 100000).toFixed(1)}L</span>
-                      ),
-                    },
-                    {
-                      field: 'totalBidsReceived',
-                      header: 'Bids',
-                      cell: (t: CivilTender) => (
-                        <span style={{ fontWeight: 700 }}>
-                          {t.totalBidsReceived ?? '—'}
-                        </span>
-                      ),
-                    },
-                    {
-                      field: 'l1ContractorName',
-                      header: 'L1 Bidder',
-                      cell: (t: CivilTender) =>
-                        t.l1ContractorName ? (
-                          <span style={{ fontWeight: 600, color: '#16a34a' }}>
-                            {t.l1ContractorName}
-                          </span>
-                        ) : (
-                          <span className="civil-pill gray">Pending</span>
-                        ),
-                    },
-                    {
-                      field: 'l1BidAmount',
-                      header: 'L1 Bid',
-                      cell: (t: CivilTender) =>
-                        t.l1BidAmount ? (
-                          <span>₹{(t.l1BidAmount / 100000).toFixed(1)}L</span>
-                        ) : (
-                          <span>—</span>
-                        ),
-                    },
-                    {
-                      field: 'status',
-                      header: 'Status',
-                      cell: (t: CivilTender) => (
-                        <StatusBadge
-                          label={t.status}
-                          variant={statusVariant(t.status)}
-                        />
-                      ),
-                    },
-                    {
-                      field: 'id',
-                      header: 'Action',
-                      sortable: false,
-                      cell: (item: CivilTender) => (
-                        <div style={{ display: 'flex', gap: '0.375rem' }}>
-                          <Button
-                            size="small"
-                            label=""
-                            icon="eye"
-                            variant="outlined"
-                            onClick={() => setPopup({ mode: 'view', item })}
-                          />
-                          {(item.status === 'Bids Received' ||
-                            item.status === 'Under Evaluation') && (
-                            <Button
-                              size="small"
-                              label="Evaluate L1"
-                              icon="chart-bar"
-                              variant="primary"
-                              onClick={() => {
-                                setL1Name(item.l1ContractorName ?? '');
-                                setL1Amt(String(item.l1BidAmount ?? ''));
-                                setRemarks('');
-                                setPopup({ mode: 'evaluate', item });
-                              }}
-                            />
-                          )}
-                        </div>
-                      ),
-                    },
-                  ]}
-                  searchBox
-                  searchPlaceholder="Search tenders..."
-                />
-              </FormCard>
-            ),
-          },
-          {
-            title: `Pending Evaluation (${publishedBids.length})`,
-            content: (
-              <FormCard subtitle="These tenders have received bids and are awaiting L1 evaluation.">
-                {publishedBids.length === 0 ? (
-                  <div
-                    style={{
-                      padding: '2rem',
-                      textAlign: 'center',
-                      color: '#9ca3af',
-                    }}
-                  >
-                    No tenders pending evaluation.
-                  </div>
-                ) : (
-                  <GridPanel
-                    data={publishedBids}
-                    columns={[
-                      {
-                        field: 'tenderNo',
-                        header: 'NIT No',
-                        cell: (t: any) => (
-                          <span
-                            style={{ fontFamily: 'monospace', fontWeight: 700 }}
-                          >
-                            {t.tenderNo}
-                          </span>
-                        ),
-                      },
-                      { field: 'workName', header: 'Work' },
-                      {
-                        field: 'totalBidsReceived',
-                        header: 'Bids',
-                        cell: (t: any) => (
-                          <span style={{ fontWeight: 700, color: '#2563eb' }}>
-                            {t.totalBidsReceived}
-                          </span>
-                        ),
-                      },
-                      { field: 'closingDate', header: 'Closing Date' },
-                      {
-                        field: 'status',
-                        header: 'Status',
-                        cell: (t: any) => (
-                          <StatusBadge label={t.status} variant="pending" />
-                        ),
-                      },
-                    ]}
-                  />
-                )}
-              </FormCard>
-            ),
-          },
-          {
-            title: `Awarded (${awardedTenders.length})`,
-            content: (
-              <FormCard>
-                <GridPanel
-                  data={awardedTenders}
-                  columns={[
-                    {
-                      field: 'tenderNo',
-                      header: 'NIT No',
-                      cell: (t: any) => (
-                        <span
-                          style={{ fontFamily: 'monospace', fontWeight: 700 }}
-                        >
-                          {t.tenderNo}
-                        </span>
-                      ),
-                    },
-                    { field: 'workName', header: 'Work' },
-                    {
-                      field: 'l1ContractorName',
-                      header: 'L1 (Awarded To)',
-                      cell: (t: any) => (
-                        <span style={{ fontWeight: 700, color: '#16a34a' }}>
-                          {t.l1ContractorName}
-                        </span>
-                      ),
-                    },
-                    {
-                      field: 'l1BidAmount',
-                      header: 'Contract Value',
-                      cell: (t: any) => (
-                        <span>₹{(t.l1BidAmount / 100000).toFixed(1)}L</span>
-                      ),
-                    },
-                    {
-                      field: 'l1Percentage',
-                      header: '% vs Estimate',
-                      cell: (t: any) => (
-                        <span
-                          style={{
-                            color: t.l1Percentage < 0 ? '#16a34a' : '#dc2626',
-                            fontWeight: 700,
-                          }}
-                        >
-                          {t.l1Percentage?.toFixed(2)}%
-                        </span>
-                      ),
-                    },
-                  ]}
-                />
-              </FormCard>
-            ),
-          },
-          {
             title: 'Agency-Work Mapping',
             content: (
               <div
@@ -856,6 +630,232 @@ export default function TenderOversight() {
                   </table>
                 </FormCard>
               </div>
+            ),
+          },
+          {
+            title: `All Tenders (${tenders.length})`,
+            content: (
+              <FormCard>
+                <GridPanel
+                  data={tenders}
+                  columns={[
+                    {
+                      cell: (_, o) => <span>{o.rowIndex + 1}</span>,
+                      width: '50px',
+                    },
+                    {
+                      field: 'tenderNo',
+                      header: 'NIT No',
+                      cell: (t: CivilTender) => (
+                        <span
+                          style={{ fontFamily: 'monospace', fontWeight: 700 }}
+                        >
+                          {t.tenderNo}
+                        </span>
+                      ),
+                    },
+                    { field: 'workName', header: 'Work Name' },
+                    {
+                      field: 'tenderType',
+                      header: 'Type',
+                      cell: (t: CivilTender) => (
+                        <span style={{ fontSize: '0.75rem' }}>
+                          {t.tenderType}
+                        </span>
+                      ),
+                    },
+                    { field: 'closingDate', header: 'Closing Date' },
+                    {
+                      field: 'estimatedValue',
+                      header: 'Est. Value',
+                      cell: (t: CivilTender) => (
+                        <span>₹{(t.estimatedValue / 100000).toFixed(1)}L</span>
+                      ),
+                    },
+                    {
+                      field: 'totalBidsReceived',
+                      header: 'Bids',
+                      cell: (t: CivilTender) => (
+                        <span style={{ fontWeight: 700 }}>
+                          {t.totalBidsReceived ?? '—'}
+                        </span>
+                      ),
+                    },
+                    {
+                      field: 'l1ContractorName',
+                      header: 'L1 Bidder',
+                      cell: (t: CivilTender) =>
+                        t.l1ContractorName ? (
+                          <span style={{ fontWeight: 600, color: '#16a34a' }}>
+                            {t.l1ContractorName}
+                          </span>
+                        ) : (
+                          <span className="civil-pill gray">Pending</span>
+                        ),
+                    },
+                    {
+                      field: 'l1BidAmount',
+                      header: 'L1 Bid',
+                      cell: (t: CivilTender) =>
+                        t.l1BidAmount ? (
+                          <span>₹{(t.l1BidAmount / 100000).toFixed(1)}L</span>
+                        ) : (
+                          <span>—</span>
+                        ),
+                    },
+                    {
+                      field: 'status',
+                      header: 'Status',
+                      cell: (t: CivilTender) => (
+                        <StatusBadge
+                          label={t.status}
+                          variant={statusVariant(t.status)}
+                        />
+                      ),
+                    },
+                    {
+                      field: 'id',
+                      header: 'Action',
+                      sortable: false,
+                      cell: (item: CivilTender) => (
+                        <div style={{ display: 'flex', gap: '0.375rem' }}>
+                          <Button
+                            size="small"
+                            label=""
+                            icon="eye"
+                            variant="outlined"
+                            onClick={() => setPopup({ mode: 'view', item })}
+                          />
+                          {(item.status === 'Bids Received' ||
+                            item.status === 'Under Evaluation') && (
+                            <Button
+                              size="small"
+                              label="Evaluate L1"
+                              icon="chart-bar"
+                              variant="primary"
+                              onClick={() => {
+                                setL1Name(item.l1ContractorName ?? '');
+                                setL1Amt(String(item.l1BidAmount ?? ''));
+                                setRemarks('');
+                                setPopup({ mode: 'evaluate', item });
+                              }}
+                            />
+                          )}
+                        </div>
+                      ),
+                    },
+                  ]}
+                  searchBox
+                  searchPlaceholder="Search tenders..."
+                />
+              </FormCard>
+            ),
+          },
+          {
+            title: `Awarded (${awardedTenders.length})`,
+            content: (
+              <FormCard>
+                <GridPanel
+                  data={awardedTenders}
+                  columns={[
+                    {
+                      field: 'tenderNo',
+                      header: 'NIT No',
+                      cell: (t: any) => (
+                        <span
+                          style={{ fontFamily: 'monospace', fontWeight: 700 }}
+                        >
+                          {t.tenderNo}
+                        </span>
+                      ),
+                    },
+                    { field: 'workName', header: 'Work' },
+                    {
+                      field: 'l1ContractorName',
+                      header: 'L1 (Awarded To)',
+                      cell: (t: any) => (
+                        <span style={{ fontWeight: 700, color: '#16a34a' }}>
+                          {t.l1ContractorName}
+                        </span>
+                      ),
+                    },
+                    {
+                      field: 'l1BidAmount',
+                      header: 'Contract Value',
+                      cell: (t: any) => (
+                        <span>₹{(t.l1BidAmount / 100000).toFixed(1)}L</span>
+                      ),
+                    },
+                    {
+                      field: 'l1Percentage',
+                      header: '% vs Estimate',
+                      cell: (t: any) => (
+                        <span
+                          style={{
+                            color: t.l1Percentage < 0 ? '#16a34a' : '#dc2626',
+                            fontWeight: 700,
+                          }}
+                        >
+                          {t.l1Percentage?.toFixed(2)}%
+                        </span>
+                      ),
+                    },
+                  ]}
+                />
+              </FormCard>
+            ),
+          },
+          {
+            title: `Pending Evaluation (${publishedBids.length})`,
+            content: (
+              <FormCard subtitle="These tenders have received bids and are awaiting L1 evaluation.">
+                {publishedBids.length === 0 ? (
+                  <div
+                    style={{
+                      padding: '2rem',
+                      textAlign: 'center',
+                      color: '#9ca3af',
+                    }}
+                  >
+                    No tenders pending evaluation.
+                  </div>
+                ) : (
+                  <GridPanel
+                     data={publishedBids}
+                     columns={[
+                       {
+                         field: 'tenderNo',
+                         header: 'NIT No',
+                         cell: (t: any) => (
+                           <span
+                             style={{ fontFamily: 'monospace', fontWeight: 700 }}
+                           >
+                             {t.tenderNo}
+                           </span>
+                         ),
+                       },
+                       { field: 'workName', header: 'Work' },
+                       {
+                         field: 'totalBidsReceived',
+                         header: 'Bids',
+                         cell: (t: any) => (
+                           <span style={{ fontWeight: 700, color: '#2563eb' }}>
+                             {t.totalBidsReceived}
+                           </span>
+                         ),
+                       },
+                       { field: 'closingDate', header: 'Closing Date' },
+                       {
+                         field: 'status',
+                         header: 'Status',
+                         cell: (t: any) => (
+                           <StatusBadge label={t.status} variant="pending" />
+                         ),
+                       },
+                     ]}
+                  />
+                )}
+              </FormCard>
             ),
           },
         ]}
