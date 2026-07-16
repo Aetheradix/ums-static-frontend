@@ -117,11 +117,7 @@ const MANDATE_DOC_MASTER = [
   { id: 'construction_agreement', name: 'Construction Agreement Document', accept: '.pdf,.doc,.docx' },
   { id: 'scope_of_work',         name: 'Scope of Work (SOW) Document',    accept: '.pdf,.doc,.docx' },
   { id: 'layout_drawing',        name: 'Layout / Drawing Document',        accept: '.pdf,.doc,.docx,.png,.jpg,.jpeg,.dwg' },
-  { id: 'land_ownership_proof',  name: 'Land Ownership Proof',             accept: '.pdf,.doc,.docx,.jpg,.jpeg,.png' },
   { id: 'env_clearance',         name: 'Environmental Clearance Certificate', accept: '.pdf,.doc,.docx' },
-  { id: 'admin_approval',        name: 'Administrative Approval Order',    accept: '.pdf,.doc,.docx' },
-  { id: 'technical_sanction',    name: 'Technical Sanction Order',         accept: '.pdf,.doc,.docx' },
-  { id: 'budget_allocation',     name: 'Budget Allocation Letter',         accept: '.pdf,.doc,.docx' },
 ];
 
 const EMPTY: Partial<CivilWork> = {

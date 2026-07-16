@@ -17,10 +17,59 @@ type PopupState =
   | { mode: 'review_milestone'; requestItem: any }
   | { mode: 'view_milestone'; requestItem: any };
 
+const INITIAL_PAYMENT_REQUESTS = [
+  {
+    id: 'req_1',
+    workId: '1',
+    workName: 'New Academic Block – Science Wing',
+    milestoneId: 'ms_1_1',
+    milestoneName: 'Excavation & Foundation',
+    sequenceNo: 1,
+    contractorName: 'BuildCorp India',
+    weightage: 15,
+    amountToRelease: 3930000,
+    requestDate: '2026-06-20',
+    status: 'Pending Admin Approval',
+    engineerRemarks: 'Foundation work completed. Soil bearing and RCC test logs verified and passed.',
+    approvalRemarks: '',
+  },
+  {
+    id: 'req_2',
+    workId: '2',
+    workName: 'Bays Hostel Block D – 200 Beds',
+    milestoneId: 'ms_2_1',
+    milestoneName: 'Excavation & Foundation',
+    sequenceNo: 1,
+    contractorName: 'Apex Infra Projects',
+    weightage: 15,
+    amountToRelease: 2700000,
+    requestDate: '2026-05-12',
+    status: 'Approved by Admin',
+    engineerRemarks: 'Foundation and footings finished. Steel reinforcement inspected.',
+    approvalRemarks: 'Looks good. Quality lab certificate submitted.',
+    approvalDate: '2026-05-14',
+  },
+  {
+    id: 'req_3',
+    workId: '3',
+    workName: 'Internal Campus Road Resurfacing',
+    milestoneId: 'ms_3_1',
+    milestoneName: 'Surface Excavation & Prep',
+    sequenceNo: 1,
+    contractorName: 'RoadTech Solutions',
+    weightage: 20,
+    amountToRelease: 1600000,
+    requestDate: '2026-07-10',
+    status: 'Pending Admin Approval',
+    engineerRemarks: 'Road surface excavation and sub-grade grading done. Quality report uploaded.',
+    approvalRemarks: '',
+  },
+];
+
 export default function MilestoneApprovals() {
   const [paymentRequests, setPaymentRequests] = useState<any[]>(() => {
     const saved = localStorage.getItem('civil_milestone_payment_requests');
-    return saved ? JSON.parse(saved) : [];
+    return saved ? JSON.parse(saved) : INITIAL_PAYMENT_REQUESTS;
   });
 
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });

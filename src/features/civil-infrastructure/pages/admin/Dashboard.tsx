@@ -1,19 +1,19 @@
 import { useNavigate } from 'react-router-dom';
 import {
-  AreaChart,
   Area,
-  PieChart,
-  Pie,
+  AreaChart,
+  CartesianGrid,
   Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-  Legend,
 } from 'recharts';
 import { FormCard, FormPage, StatCard } from 'shared/new-components';
-import { civilWorks, raBills, tenders, milestones } from '../../mocks';
+import { civilWorks, milestones, raBills, tenders } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
@@ -108,6 +108,38 @@ export default function AdminDashboard() {
         { label: 'Admin Dashboard' },
       ]}
     >
+      {/* KPI Stats */}
+      <div className="civil-stats-grid">
+        <StatCard
+          title="Total Civil Works"
+          value={String(totalWorks)}
+          icon="construction"
+          colorScheme="blue"
+          subtitle="All campuses"
+        />
+        <StatCard
+          title="Works In Progress"
+          value={String(inProgress)}
+          icon="engineering"
+          colorScheme="orange"
+          trend={{ value: 2, direction: 'up', label: 'this quarter' }}
+        />
+        <StatCard
+          title="AA Sanctioned Value"
+          value={`₹${(totalAAAmount / 10000000).toFixed(1)} Cr`}
+          icon="account_balance"
+          colorScheme="teal"
+          subtitle="Administrative Approvals"
+        />
+        <StatCard
+          title="Contract Value"
+          value={`₹${(totalContractAmt / 10000000).toFixed(1)} Cr`}
+          icon="handshake"
+          colorScheme="green"
+          subtitle="Awarded contracts"
+        />
+      </div>
+
       {/* Action Center */}
       <div className="civil-action-center">
         <div className="civil-action-header">
@@ -174,38 +206,6 @@ export default function AdminDashboard() {
             </div>
           ))}
         </div>
-      </div>
-
-      {/* KPI Stats */}
-      <div className="civil-stats-grid">
-        <StatCard
-          title="Total Civil Works"
-          value={String(totalWorks)}
-          icon="construction"
-          colorScheme="blue"
-          subtitle="All campuses"
-        />
-        <StatCard
-          title="Works In Progress"
-          value={String(inProgress)}
-          icon="engineering"
-          colorScheme="orange"
-          trend={{ value: 2, direction: 'up', label: 'this quarter' }}
-        />
-        <StatCard
-          title="AA Sanctioned Value"
-          value={`₹${(totalAAAmount / 10000000).toFixed(1)} Cr`}
-          icon="account_balance"
-          colorScheme="teal"
-          subtitle="Administrative Approvals"
-        />
-        <StatCard
-          title="Contract Value"
-          value={`₹${(totalContractAmt / 10000000).toFixed(1)} Cr`}
-          icon="handshake"
-          colorScheme="green"
-          subtitle="Awarded contracts"
-        />
       </div>
 
       {/* Charts Row */}
