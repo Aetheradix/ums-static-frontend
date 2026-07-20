@@ -191,14 +191,14 @@ export default function Navbar() {
             </button>
             {/* Access Portal Button */}
             <Link
-              to="/davv/access-portal"
+              to="/davv-login"
               className="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-[#002147] text-white font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-blue hover:scale-105 transition-all shadow-sm cursor-pointer"
             >
               <LogIn className="w-4 h-4" />
               <span>{t('Access Portal')}</span>
             </Link>
             <Link
-              to="/davv/access-portal"
+              to="/davv-login"
               className="sm:hidden w-8 h-8 rounded-lg bg-[#002147] text-white flex items-center justify-center hover:bg-blue hover:scale-105 transition-all shadow-sm cursor-pointer"
             >
               <LogIn className="w-3.5 h-3.5" />
@@ -330,13 +330,13 @@ export default function Navbar() {
             >
               {t('Contact Us')}
             </a>
-            <a
-              href="#"
+            <Link
+              to="/davv-login"
               className="flex items-center justify-center gap-2 mt-4 px-4 py-2.5 bg-[#002147] text-white font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-blue transition-all"
             >
               <LogIn className="w-4 h-4" />
               <span>{t('Access Portal')}</span>
-            </a>
+            </Link>
           </div>
         </>
       )}

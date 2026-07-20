@@ -147,6 +147,20 @@ export default function Features() {
       <Route path="public/*" element={<div>Public Page Placeholder</div>} />
       <Route path="login" element={<LoginPage />} />
       <Route
+        path="davv-login"
+        element={
+          <React.Suspense fallback={<UniversityLoader text="Loading..." />}>
+            {React.createElement(
+              React.lazy(() =>
+                import('./davv-cms/pages/DavvLogin').then(m => ({
+                  default: m.DavvLogin,
+                }))
+              )
+            )}
+          </React.Suspense>
+        }
+      />
+      <Route
         path="callback"
         element={<UniversityLoader text="Completing sign-in..." />}
       />
