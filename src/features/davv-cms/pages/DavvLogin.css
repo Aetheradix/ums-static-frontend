@@ -1,0 +1,1216 @@
+/* 
+   Shared styles for University ERP Auth Pages.
+   Ported from ASP.NET Core backend to React frontend.
+*/
+
+.davv-login-page-wrapper {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  background: var(--white, #ffffff);
+  color: var(--text-dark, #0f172a);
+  min-height: 100vh;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  overflow-x: hidden;
+  --brand-blue: #1e7a46;
+  --brand-blue-hover: #155e35;
+  --brand-blue-light: #eef7f1;
+  --brand-blue-glow: rgba(30, 122, 70, 0.22);
+  --brand-saffron: #ef6c00;
+  --brand-saffron-ink: #b34700;
+  --brand-navy: #0c2a1a;
+  --bg-light: #f4faf6;
+  --brand-navy-light: #1b2f6b;
+  --brand-navy-hover: #263e80;
+  --white: #ffffff;
+  --border-color: #e2e8f0;
+  --text-dark: #0f172a;
+  --text-muted: #64748b;
+  --text-light: #94a3b8;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.davv-login-container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── LEFT PANEL (BRAND & GRAPHICS) ── */
+.davv-login-left {
+  position: relative;
+  flex: 1.25;
+  background: radial-gradient(
+    circle at 10% 20%,
+    #e7f7ec 0%,
+    #f1f7f2 30%,
+    #eaf6ee 60%,
+    #fff5e6 100%
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px;
+  overflow: hidden;
+  color: #0c183a;
+}
+
+.davv-davv-login-left-waves {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Center Orb Design */
+.davv-orbit-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 550px;
+  z-index: 2;
+}
+
+.davv-orbit-container {
+  position: relative;
+  width: 600px;
+  height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transform-origin: center center;
+  transition: transform 0.3s ease;
+}
+
+/* Responsive scaling for different screen sizes and 100% full-screen mode */
+@media (min-width: 1600px) {
+  .davv-orbit-container {
+    transform: scale(1.15);
+  }
+}
+
+@media (min-width: 1401px) and (max-width: 1599px) {
+  .davv-orbit-container {
+    transform: scale(1.05);
+  }
+}
+
+@media (max-width: 1400px) {
+  .davv-orbit-container {
+    transform: scale(0.85);
+  }
+}
+
+@media (max-width: 1200px) {
+  .davv-orbit-container {
+    transform: scale(0.72);
+  }
+}
+
+@media (max-width: 1024px) {
+  .davv-orbit-container {
+    transform: scale(0.62);
+  }
+}
+
+.davv-orbit-lines-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.davv-orbit-center {
+  position: relative;
+  z-index: 5;
+  width: 140px;
+  height: 140px;
+  background: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 10px 30px rgba(99, 102, 241, 0.12),
+    inset 0 2px 4px rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.davv-orbit-center img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Orbit Rotator Wrapper */
+.davv-orbit-rotator {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  transform: rotate(var(--rotation-angle, 0deg));
+  transform-origin: center center;
+  z-index: 2;
+}
+
+/* SVG Rotating Elements Group */
+.davv-orbit-rotating-group {
+  transform: rotate(calc(-1 * var(--rotation-angle, 0deg)));
+  transform-origin: 300px 300px;
+}
+
+/* Orbit Card Styling */
+.davv-orbit-card {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: 16px;
+  padding: 24px 12px 12px 12px;
+  width: 160px;
+  height: 100px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.davv-davv-orbit-card-icon {
+  position: absolute;
+  top: -16px;
+  left: calc(50% - 16px);
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  background: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  z-index: 4;
+}
+
+.davv-orbit-card:hover .davv-davv-orbit-card-icon {
+  transform: scale(1.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.davv-davv-orbit-card-icon svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+}
+
+.davv-finance-rupee-icon span {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ff5219;
+}
+
+.davv-davv-orbit-card-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 3px;
+  min-width: 0;
+  width: 100%;
+}
+
+.davv-davv-orbit-card-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  text-align: center;
+}
+
+.davv-davv-orbit-card-desc {
+  font-size: 9.5px;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.3;
+  text-align: center;
+  width: 100%;
+}
+
+/* Left Side Heading */
+.davv-left-content {
+  z-index: 2;
+  margin-bottom: 20px;
+}
+
+.davv-davv-left-content-title {
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+  line-height: 1.2;
+  margin-bottom: 12px;
+  color: #0c183a;
+}
+
+.davv-davv-left-content-title span {
+  color: #1e7a46;
+  display: block;
+  margin-top: 4px;
+}
+
+.davv-davv-left-content-desc {
+  font-size: 15px;
+  color: #475569;
+  max-width: 440px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.davv-davv-left-content-motto {
+  margin-top: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  color: var(--brand-saffron-ink, #b34700);
+}
+
+/* Testimonial & Stats Section */
+.davv-left-footer {
+  display: none;
+}
+.davv-login-right {
+  flex: 1;
+  background: url('/images/Login_Form_BG.jpg') no-repeat center center
+    rgba(0, 0, 0, 0.5);
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px;
+  overflow-y: auto;
+  min-height: 100vh;
+}
+
+.davv-right-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 30px;
+}
+
+.davv-language-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-light);
+  border: 1px solid var(--border-color);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.davv-language-dropdown:hover {
+  background: var(--border-color);
+}
+
+.davv-login-form-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.davv-login-form-wrapper {
+  width: 100%;
+  max-width: 470px;
+  background: var(--white);
+  border-radius: 22px;
+  padding: 38px 40px;
+  box-shadow:
+    0 24px 60px rgba(15, 42, 26, 0.1),
+    0 2px 8px rgba(15, 42, 26, 0.04);
+  border: 1px solid rgba(30, 122, 70, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Slim tricolor brand ribbon along the top of the card */
+.davv-login-form-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--brand-saffron) 0%,
+    #f4a340 35%,
+    #2a9d5c 65%,
+    var(--brand-blue) 100%
+  );
+}
+
+.davv-right-logo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.davv-right-logo-emblem {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+  border-radius: 50%;
+  background: #ffffff;
+  padding: 4px;
+  box-shadow:
+    0 0 0 1px rgba(30, 122, 70, 0.15),
+    0 0 0 6px rgba(30, 122, 70, 0.06),
+    0 8px 20px rgba(30, 122, 70, 0.12);
+}
+
+.davv-right-logo-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.davv-right-logo-name {
+  font-size: 17.5px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  color: var(--text-dark);
+  line-height: 1.25;
+}
+
+.davv-right-logo-campus {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--brand-blue);
+}
+
+.davv-form-heading {
+  font-size: 25px;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+  text-align: center;
+}
+
+.davv-form-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* Inputs */
+.davv-input-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.davv-input-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.davv-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.davv-input-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.davv-custom-input {
+  width: 100%;
+  padding: 12px 14px 12px 42px;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text-dark);
+  outline: none;
+  background: var(--white);
+  transition: var(--transition);
+}
+
+.davv-custom-input:focus {
+  border-color: var(--brand-blue);
+  box-shadow: 0 0 0 4px var(--brand-blue-glow);
+}
+
+.davv-password-toggle {
+  position: absolute;
+  right: 14px;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  transition: var(--transition);
+  z-index: 2;
+}
+
+.davv-password-toggle:hover {
+  color: var(--text-dark);
+}
+
+.davv-form-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  font-size: 13px;
+}
+
+.davv-remember-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.davv-remember-wrap label {
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.davv-forgot-password {
+  color: var(--brand-blue);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.davv-forgot-password:hover {
+  color: var(--brand-blue-hover);
+  text-decoration: underline;
+}
+
+/* Buttons */
+.davv-signin-btn {
+  width: 100%;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, var(--brand-blue) 0%, #155e35 100%);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: var(--transition);
+  box-shadow: 0 6px 16px rgba(30, 122, 70, 0.25);
+}
+
+.davv-signin-btn:hover {
+  background: linear-gradient(135deg, var(--brand-blue-hover) 0%, #114a2a 100%);
+  box-shadow: 0 8px 22px rgba(30, 122, 70, 0.35);
+  transform: translateY(-1px);
+}
+
+/* ── Orbital Cards Coordinate Positions & Gradients ── */
+.davv-orbit-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: center center;
+}
+
+.davv-card-academics {
+  background: linear-gradient(135deg, #b066fe 0%, #8c3df5 100%);
+  transform: translate(-50%, -50%) rotate(0deg) translate(0, -225px)
+    rotate(calc(-1 * var(--rotation-angle, 0deg)));
+}
+.davv-card-academics .davv-davv-orbit-card-icon {
+  color: #8c3df5;
+  border: 1.5px solid #b066fe;
+}
+.davv-card-academics:hover {
+  transform: translate(-50%, -50%) rotate(0deg) translate(0, -225px)
+    rotate(calc(-1 * var(--rotation-angle, 0deg))) translateY(-4px) scale(1.02);
+}
+
+.davv-card-student {
+  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+  transform: translate(-50%, -50%) rotate(45deg) translate(0, -225px)
+    rotate(calc(-1 * (45deg + var(--rotation-angle, 0deg))));
+}
+.davv-card-student .davv-davv-orbit-card-icon {
+  color: #0891b2;
+  border: 1.5px solid #06b6d4;
+}
+.davv-card-student:hover {
+  transform: translate(-50%, -50%) rotate(45deg) translate(0, -225px)
+    rotate(calc(-1 * (45deg + var(--rotation-angle, 0deg)))) translateY(-4px)
+    scale(1.02);
+}
+
+.davv-card-admissions {
+  background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+  transform: translate(-50%, -50%) rotate(90deg) translate(0, -225px)
+    rotate(calc(-1 * (90deg + var(--rotation-angle, 0deg))));
+}
+.davv-card-admissions .davv-davv-orbit-card-icon {
+  color: #65a30d;
+  border: 1.5px solid #84cc16;
+}
+.davv-card-admissions:hover {
+  transform: translate(-50%, -50%) rotate(90deg) translate(0, -225px)
+    rotate(calc(-1 * (90deg + var(--rotation-angle, 0deg)))) translateY(-4px)
+    scale(1.02);
+}
+
+.davv-card-examinations {
+  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+  transform: translate(-50%, -50%) rotate(135deg) translate(0, -225px)
+    rotate(calc(-1 * (135deg + var(--rotation-angle, 0deg))));
+}
+.davv-card-examinations .davv-davv-orbit-card-icon {
+  color: #ea580c;
+  border: 1.5px solid #f59e0b;
+}
+.davv-card-examinations:hover {
+  transform: translate(-50%, -50%) rotate(135deg) translate(0, -225px)
+    rotate(calc(-1 * (135deg + var(--rotation-angle, 0deg)))) translateY(-4px)
+    scale(1.02);
+}
+
+.davv-card-finance {
+  background: linear-gradient(135deg, #ff7e40 0%, #ff5219 100%);
+  transform: translate(-50%, -50%) rotate(180deg) translate(0, -225px)
+    rotate(calc(-1 * (180deg + var(--rotation-angle, 0deg))));
+}
+.davv-card-finance .davv-davv-orbit-card-icon {
+  border: 1.5px solid #ff7e40;
+}
+.davv-card-finance:hover {
+  transform: translate(-50%, -50%) rotate(180deg) translate(0, -225px)
+    rotate(calc(-1 * (180deg + var(--rotation-angle, 0deg)))) translateY(-4px)
+    scale(1.02);
+}
+
+.davv-card-analytics {
+  background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+  transform: translate(-50%, -50%) rotate(225deg) translate(0, -225px)
+    rotate(calc(-1 * (225deg + var(--rotation-angle, 0deg))));
+}
+.davv-card-analytics .davv-davv-orbit-card-icon {
+  color: #be185d;
+  border: 1.5px solid #ec4899;
+}
+.davv-card-analytics:hover {
+  transform: translate(-50%, -50%) rotate(225deg) translate(0, -225px)
+    rotate(calc(-1 * (225deg + var(--rotation-angle, 0deg)))) translateY(-4px)
+    scale(1.02);
+}
+
+.davv-card-hr {
+  background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+  transform: translate(-50%, -50%) rotate(270deg) translate(0, -225px)
+    rotate(calc(-1 * (270deg + var(--rotation-angle, 0deg))));
+}
+.davv-card-hr .davv-davv-orbit-card-icon {
+  color: #e11d48;
+  border: 1.5px solid #f43f5e;
+}
+.davv-card-hr:hover {
+  transform: translate(-50%, -50%) rotate(270deg) translate(0, -225px)
+    rotate(calc(-1 * (270deg + var(--rotation-angle, 0deg)))) translateY(-4px)
+    scale(1.02);
+}
+
+.davv-card-attendance {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  transform: translate(-50%, -50%) rotate(315deg) translate(0, -225px)
+    rotate(calc(-1 * (315deg + var(--rotation-angle, 0deg))));
+}
+.davv-card-attendance .davv-davv-orbit-card-icon {
+  color: #1d4ed8;
+  border: 1.5px solid #3b82f6;
+}
+.davv-card-attendance:hover {
+  transform: translate(-50%, -50%) rotate(315deg) translate(0, -225px)
+    rotate(calc(-1 * (315deg + var(--rotation-angle, 0deg)))) translateY(-4px)
+    scale(1.02);
+}
+
+.davv-custom-input:focus {
+  border-color: var(--brand-blue);
+  box-shadow: 0 0 0 4px var(--brand-blue-glow);
+}
+
+.davv-custom-input::placeholder {
+  color: var(--text-light);
+}
+
+.davv-password-toggle {
+  position: absolute;
+  right: 14px;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  transition: var(--transition);
+  z-index: 2;
+}
+
+.davv-password-toggle:hover {
+  color: var(--text-dark);
+}
+
+.davv-password-toggle svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.davv-form-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  font-size: 13px;
+}
+
+.davv-remember-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.davv-remember-wrap input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--brand-blue);
+  cursor: pointer;
+}
+
+.davv-remember-wrap label {
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.davv-forgot-password {
+  color: var(--brand-blue);
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.davv-forgot-password:hover {
+  color: var(--brand-blue-hover);
+  text-decoration: underline;
+}
+
+/* Buttons */
+.davv-signin-btn {
+  width: 100%;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, var(--brand-blue) 0%, #155e35 100%);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: var(--transition);
+  box-shadow: 0 6px 16px rgba(30, 122, 70, 0.25);
+}
+
+.davv-signin-btn:hover {
+  background: linear-gradient(135deg, var(--brand-blue-hover) 0%, #114a2a 100%);
+  box-shadow: 0 8px 22px rgba(30, 122, 70, 0.35);
+  transform: translateY(-1px);
+}
+
+.davv-signin-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  transition: transform 0.2s;
+}
+
+.davv-signin-btn:hover svg {
+  transform: translateX(3px);
+}
+
+/* Info Alert Box */
+.secure-notice-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--bg-light);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-top: 24px;
+}
+
+.secure-notice-box svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--brand-blue);
+  stroke-width: 2;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.secure-notice-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.secure-notice-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.secure-notice-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Page footer under the card */
+.davv-login-page-footer {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding-top: 18px;
+}
+
+/* Footer Help Section */
+.right-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.davv-help-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.davv-help-link:hover {
+  color: var(--brand-blue);
+}
+
+.davv-help-link svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+/* Validation Summary Styling */
+.validation-summary {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: #be123c;
+}
+
+.validation-summary ul {
+  padding-left: 18px;
+}
+
+.field-validation-error {
+  display: block;
+  font-size: 12px;
+  color: #be123c;
+  margin-top: 5px;
+  font-weight: 500;
+}
+
+/* Responsive Layout styles */
+@media (max-width: 1024px) {
+  .davv-login-left {
+    display: none;
+  }
+  .davv-login-right {
+    flex: 1;
+    padding: 40px 24px;
+  }
+}
+
+/* Responsive height adjustments for Laptop viewports and Zoom states (110% / 125% / 150%) */
+@media (max-height: 880px) {
+  .davv-login-left {
+    padding: 32px 40px;
+  }
+  .davv-davv-left-content-title {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .davv-davv-left-content-desc {
+    font-size: 13px;
+  }
+  .davv-orbit-section {
+    min-height: 480px;
+  }
+  .davv-orbit-container {
+    transform: scale(0.92);
+    margin: -21px auto;
+  }
+  .davv-stats-grid {
+    padding: 10px 14px;
+    gap: 12px;
+  }
+  .davv-stat-icon-wrapper {
+    width: 28px;
+    height: 28px;
+  }
+  .davv-stat-icon-wrapper svg {
+    width: 16px;
+    height: 16px;
+  }
+  .davv-stat-value {
+    font-size: 14px;
+  }
+  .davv-stat-label {
+    font-size: 8.5px;
+  }
+
+  /* Right form panel adjustments */
+  .davv-login-right {
+    padding: 24px 32px;
+  }
+  .davv-right-header {
+    margin-bottom: 15px;
+  }
+  .davv-right-logo-section {
+    margin-bottom: 14px;
+    gap: 10px;
+  }
+  .davv-right-logo-emblem {
+    width: 64px;
+    height: 64px;
+  }
+  .davv-right-logo-name {
+    font-size: 15.5px;
+  }
+  .davv-form-heading {
+    font-size: 23px;
+  }
+  .davv-form-subtitle {
+    margin-bottom: 16px;
+  }
+  .davv-input-group {
+    margin-bottom: 14px;
+  }
+  .davv-form-options {
+    margin-bottom: 16px;
+  }
+  .right-footer {
+    margin-top: 15px;
+  }
+  .davv-login-form-wrapper {
+    padding: 26px;
+  }
+}
+
+@media (max-height: 750px) {
+  .davv-login-left {
+    padding: 24px 30px;
+  }
+  .davv-davv-left-content-title {
+    font-size: 24px;
+    margin-bottom: 6px;
+  }
+  .davv-orbit-section {
+    min-height: 430px;
+  }
+  .davv-orbit-container {
+    transform: scale(0.8);
+    margin: -54px auto;
+  }
+  .davv-stats-grid {
+    padding: 8px 12px;
+    gap: 10px;
+  }
+  .davv-stat-icon-wrapper {
+    width: 24px;
+    height: 24px;
+  }
+  .davv-stat-icon-wrapper svg {
+    width: 14px;
+    height: 14px;
+  }
+  .davv-stat-value {
+    font-size: 12px;
+  }
+  .davv-stat-label {
+    font-size: 7.5px;
+  }
+
+  /* Right form panel adjustments for very small heights */
+  .davv-login-right {
+    padding: 16px 24px;
+  }
+  .davv-right-header {
+    margin-bottom: 10px;
+  }
+  .davv-right-logo-section {
+    margin-bottom: 8px;
+    gap: 8px;
+  }
+  .davv-right-logo-emblem {
+    width: 52px;
+    height: 52px;
+  }
+  .davv-right-logo-name {
+    font-size: 14px;
+  }
+  .davv-form-heading {
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+  .davv-form-subtitle {
+    margin-bottom: 12px;
+  }
+  .davv-input-group {
+    margin-bottom: 10px;
+    gap: 4px;
+  }
+  .davv-custom-input {
+    padding: 10px 14px 10px 42px;
+  }
+  .davv-form-options {
+    margin-bottom: 12px;
+  }
+  .davv-signin-btn {
+    padding: 10px 20px;
+  }
+  .right-footer {
+    margin-top: 10px;
+  }
+  .davv-login-form-wrapper {
+    padding: 18px;
+  }
+}
+
+/* Unified Page Preloader */
+.page-loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--white);
+  z-index: 999999;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  transition:
+    opacity 0.3s ease-out,
+    visibility 0.3s ease-out;
+  opacity: 1;
+  visibility: visible;
+}
+
+.page-loader-wrapper {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-loader-ring {
+  width: 100%;
+  height: 100%;
+  animation: page-spin 2s linear infinite;
+  transform-origin: center;
+}
+
+.page-loader-cap {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.page-loader-text {
+  margin-top: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--brand-navy);
+  letter-spacing: 0.5px;
+}
+
+@keyframes page-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* â”€â”€ Common Button & Helper Overrides â”€â”€ */
+.auth-submit-btn {
+  margin-top: 20px !important;
+}
+
+.auth-davv-signup-footer {
+  margin-top: 40px !important;
+  text-align: center !important;
+}
+
+.auth-back-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+}
+
+/* â”€â”€ Success States (ForgotPassword / ResetPassword) â”€â”€ */
+.davv-success-state-container {
+  text-align: center;
+  margin-top: 20px;
+  padding: 20px 0;
+}
+
+.davv-success-icon-badge {
+  margin-bottom: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  padding: 16px;
+  background: #ecfdf5;
+  border-radius: 50%;
+}
+
+.davv-success-state-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.davv-success-state-desc {
+  color: #64748b;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* â”€â”€ Development Reset Link Box (Only visible in development environment) â”€â”€ */
+.dev-reset-link-container {
+  background-color: var(--bg-light);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: left;
+  margin-top: 24px;
+  word-break: break-all;
+}
+
+.dev-reset-link-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.dev-reset-link-anchor {
+  font-size: 0.85rem;
+  color: var(--brand-blue);
+  font-family: monospace;
+  text-decoration: underline;
+  font-weight: 600;
+}

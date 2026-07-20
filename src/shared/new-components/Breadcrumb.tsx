@@ -65,7 +65,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
       } else if (path.toLowerCase() === 'user-assignments') {
         label = 'User Role Assignment';
       } else if (path.toLowerCase() === 'role-permissions') {
-        label = 'Access Control';
+        label = 'Role Permissions';
       }
 
       let toPath = currentPath;
@@ -83,6 +83,8 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
         toPath = '/home/sub-menu/other';
       } else if (path.toLowerCase() === 'college') {
         toPath = '/home/sub-menu/college';
+      } else if (path.toLowerCase() === 'user-management') {
+        toPath = '/home/sub-menu/user-management';
       } else if (path.toLowerCase() === 'employee') {
         toPath = '/home/sub-menu/employee-management-system';
       } else if (path.toLowerCase() === 'settings') {
