@@ -1,5 +1,5 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { DAVV } from '../constants/davvData';
 import { davvUrls } from '../constants/davvUrls';
 
@@ -57,7 +57,7 @@ export default function DavvHeader() {
           </Link>
 
           <button
-            onClick={() => navigate(davvUrls.directory)}
+            onClick={() => navigate('/davv-login')}
             className="inline-flex items-center bg-davv hover:bg-davv-dark text-white font-bold text-sm rounded-xl px-4 md:px-5 py-2.5 transition-colors shadow-sm"
           >
             Access Portal
