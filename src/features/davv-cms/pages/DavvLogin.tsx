@@ -8,7 +8,6 @@ import {
   EyeOff,
   FileText,
   Globe,
-  Home,
   Lock,
   Mail,
   Monitor,
@@ -18,11 +17,10 @@ import {
   Users,
 } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useLanguage } from 'shared/context/useLanguage';
-import '../../../auth/LoginPage.css';
+import './DavvLogin.css';
 import { useAuth } from '../../../auth/useAuth';
-import { davvUrls } from '../constants/davvUrls';
 
 export const DavvLogin: React.FC = () => {
   const { login } = useAuth();
@@ -73,17 +71,17 @@ export const DavvLogin: React.FC = () => {
     // Fallback: generic admin login (accepts any credentials)
     await login();
     setIsLoggingIn(false);
-    navigate('/home/menu');
+    navigate('/home');
   };
 
   return (
-    <div className="login-page-wrapper">
-      <div className="login-container">
+    <div className="davv-login-page-wrapper">
+      <div className="davv-login-container">
         {/* LEFT PANEL */}
-        <div className="login-left">
+        <div className="davv-login-left">
           {/* Decorative Waves */}
           <svg
-            className="login-left-waves"
+            className="davv-davv-login-left-waves"
             viewBox="0 0 800 800"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -108,28 +106,23 @@ export const DavvLogin: React.FC = () => {
             />
           </svg>
 
-          <Link
-            to={davvUrls.landing}
-            className="home-icon-btn"
-            title="Back to Website"
-          >
-            <Home size={18} />
-          </Link>
-
-          <div className="left-content">
-            <h1 className="left-content-title">
-              Intelligent Operations.
-              <span>Stronger Institutions.</span>
+          <div className="davv-left-content">
+            <h1 className="davv-davv-left-content-title">
+              Welcome to DAVV, Indore.
+              <span>Centralized Portal.</span>
             </h1>
-            <p className="left-content-desc">
-              Unify every function of your university. Empower every
-              stakeholder.
+            <p className="davv-davv-left-content-desc">
+              Devi Ahilya Vishwavidyalaya — one unified portal for college
+              affiliation, legal cases, and access across the university.
+            </p>
+            <p className="davv-davv-left-content-motto">
+              Dhiyo Yonah Prachodayat — May He inspire our intellect
             </p>
           </div>
 
-          <div className="orbit-section">
+          <div className="davv-orbit-section">
             <div
-              className="orbit-container"
+              className="davv-orbit-container"
               ref={containerRef}
               onMouseEnter={() => {
                 isHoveredRef.current = true;
@@ -140,7 +133,7 @@ export const DavvLogin: React.FC = () => {
             >
               {/* SVG connection lines and glowing dots */}
               <svg
-                className="orbit-lines-svg"
+                className="davv-orbit-lines-svg"
                 viewBox="0 0 600 600"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -247,7 +240,7 @@ export const DavvLogin: React.FC = () => {
                 />
 
                 {/* Rotating group for dots only (rotates left/anticlockwise) */}
-                <g className="orbit-rotating-group">
+                <g className="davv-orbit-rotating-group">
                   {/* Dots along lines - aligned exactly on the 110px circle border */}
                   <circle cx="300" cy="190" r="5" fill="#a855f7" />
                   <circle cx="378" cy="222" r="5" fill="#06b6d4" />
@@ -260,123 +253,131 @@ export const DavvLogin: React.FC = () => {
                 </g>
               </svg>
 
-              <div className="orbit-center">
-                <img
-                  src="/DAVV_Logo.png"
-                  alt="DAVV logo"
-                  className="w-16 h-16 object-contain"
-                />
+              <div className="davv-orbit-center">
+                <img src="/images/davv-logo.png" alt="DAVV logo" />
               </div>
 
-              <div className="orbit-rotator">
-                <div className="orbit-card card-academics">
-                  <div className="orbit-card-icon">
+              <div className="davv-orbit-rotator">
+                <div className="davv-orbit-card davv-card-academics">
+                  <div className="davv-davv-orbit-card-icon">
                     <BookOpen size={16} />
                   </div>
-                  <div className="orbit-card-info">
-                    <span className="orbit-card-title">Academic Center</span>
-                    <span className="orbit-card-desc">
-                      Core syllabus and
+                  <div className="davv-davv-orbit-card-info">
+                    <span className="davv-davv-orbit-card-title">
+                      College Affiliation
+                    </span>
+                    <span className="davv-davv-orbit-card-desc">
+                      Registration
                       <br />
-                      programs
+                      and renewals
                     </span>
                   </div>
                 </div>
 
-                <div className="orbit-card card-student">
-                  <div className="orbit-card-icon">
+                <div className="davv-orbit-card davv-card-student">
+                  <div className="davv-davv-orbit-card-icon">
                     <Monitor size={16} />
                   </div>
-                  <div className="orbit-card-info">
-                    <span className="orbit-card-title">Student Services</span>
-                    <span className="orbit-card-desc">
-                      Student portal and
+                  <div className="davv-davv-orbit-card-info">
+                    <span className="davv-davv-orbit-card-title">
+                      Legal Cases
+                    </span>
+                    <span className="davv-davv-orbit-card-desc">
+                      Hearings and
                       <br />
-                      services
+                      judgments
                     </span>
                   </div>
                 </div>
 
-                <div className="orbit-card card-admissions">
-                  <div className="orbit-card-icon">
+                <div className="davv-orbit-card davv-card-admissions">
+                  <div className="davv-davv-orbit-card-icon">
                     <Shield size={16} />
                   </div>
-                  <div className="orbit-card-info">
-                    <span className="orbit-card-title">Governance</span>
-                    <span className="orbit-card-desc">
-                      Policies, rules and
+                  <div className="davv-davv-orbit-card-info">
+                    <span className="davv-davv-orbit-card-title">
+                      User Access
+                    </span>
+                    <span className="davv-davv-orbit-card-desc">
+                      Roles and
                       <br />
-                      compliance
+                      permissions
                     </span>
                   </div>
                 </div>
 
-                <div className="orbit-card card-examinations">
-                  <div className="orbit-card-icon">
+                <div className="davv-orbit-card davv-card-examinations">
+                  <div className="davv-davv-orbit-card-icon">
                     <FileText size={16} />
                   </div>
-                  <div className="orbit-card-info">
-                    <span className="orbit-card-title">Examination Hub</span>
-                    <span className="orbit-card-desc">
-                      Scheduling, grading
+                  <div className="davv-davv-orbit-card-info">
+                    <span className="davv-davv-orbit-card-title">
+                      Examinations
+                    </span>
+                    <span className="davv-davv-orbit-card-desc">
+                      Grading
                       <br />
                       and results
                     </span>
                   </div>
                 </div>
 
-                <div className="orbit-card card-finance">
-                  <div className="orbit-card-icon finance-rupee-icon">
+                <div className="davv-orbit-card davv-card-finance">
+                  <div className="davv-davv-orbit-card-icon davv-finance-rupee-icon">
                     <span>₹</span>
                   </div>
-                  <div className="orbit-card-info">
-                    <span className="orbit-card-title">Finance</span>
-                    <span className="orbit-card-desc">
-                      Fees, billing and
+                  <div className="davv-davv-orbit-card-info">
+                    <span className="davv-davv-orbit-card-title">Finance</span>
+                    <span className="davv-davv-orbit-card-desc">
+                      Fees and
                       <br />
                       accounts
                     </span>
                   </div>
                 </div>
 
-                <div className="orbit-card card-analytics">
-                  <div className="orbit-card-icon">
+                <div className="davv-orbit-card davv-card-analytics">
+                  <div className="davv-davv-orbit-card-icon">
                     <Globe size={16} />
                   </div>
-                  <div className="orbit-card-info">
-                    <span className="orbit-card-title">Auxiliary Services</span>
-                    <span className="orbit-card-desc">
-                      Hostels, transport
+                  <div className="davv-davv-orbit-card-info">
+                    <span className="davv-davv-orbit-card-title">Research</span>
+                    <span className="davv-davv-orbit-card-desc">
+                      Projects
                       <br />
-                      and library
+                      and grants
                     </span>
                   </div>
                 </div>
 
-                <div className="orbit-card card-hr">
-                  <div className="orbit-card-icon">
+                <div className="davv-orbit-card davv-card-hr">
+                  <div className="davv-davv-orbit-card-icon">
                     <Users size={16} />
                   </div>
-                  <div className="orbit-card-info">
-                    <span className="orbit-card-title">HRMS</span>
-                    <span className="orbit-card-desc">
-                      Staff directory and
+                  <div className="davv-davv-orbit-card-info">
+                    <span className="davv-davv-orbit-card-title">
+                      Employees
+                    </span>
+                    <span className="davv-davv-orbit-card-desc">
+                      Staff and
                       <br />
                       payroll
                     </span>
                   </div>
                 </div>
 
-                <div className="orbit-card card-attendance">
-                  <div className="orbit-card-icon">
+                <div className="davv-orbit-card davv-card-attendance">
+                  <div className="davv-davv-orbit-card-icon">
                     <Building size={16} />
                   </div>
-                  <div className="orbit-card-info">
-                    <span className="orbit-card-title">Campus Facilities</span>
-                    <span className="orbit-card-desc">
-                      Classrooms, labs and
+                  <div className="davv-davv-orbit-card-info">
+                    <span className="davv-davv-orbit-card-title">
+                      Academics
+                    </span>
+                    <span className="davv-davv-orbit-card-desc">
+                      Programmes
                       <br />
-                      facilities
+                      and subjects
                     </span>
                   </div>
                 </div>
@@ -384,42 +385,42 @@ export const DavvLogin: React.FC = () => {
             </div>
           </div>
 
-          <div className="left-footer">
-            <div className="stats-grid">
-              <div className="stat-item">
-                <div className="stat-icon-wrapper">
+          <div className="davv-left-footer">
+            <div className="davv-stats-grid">
+              <div className="davv-stat-item">
+                <div className="davv-stat-icon-wrapper">
                   <Building size={16} />
                 </div>
-                <div className="stat-info-wrapper">
-                  <span className="stat-value">25+</span>
-                  <span className="stat-label">Universities</span>
+                <div className="davv-stat-info-wrapper">
+                  <span className="davv-stat-value">25+</span>
+                  <span className="davv-stat-label">Universities</span>
                 </div>
               </div>
-              <div className="stat-item">
-                <div className="stat-icon-wrapper">
+              <div className="davv-stat-item">
+                <div className="davv-stat-icon-wrapper">
                   <Users size={16} />
                 </div>
-                <div className="stat-info-wrapper">
-                  <span className="stat-value">5 Lakh+</span>
-                  <span className="stat-label">Users</span>
+                <div className="davv-stat-info-wrapper">
+                  <span className="davv-stat-value">5 Lakh+</span>
+                  <span className="davv-stat-label">Users</span>
                 </div>
               </div>
-              <div className="stat-item">
-                <div className="stat-icon-wrapper">
+              <div className="davv-stat-item">
+                <div className="davv-stat-icon-wrapper">
                   <Activity size={16} />
                 </div>
-                <div className="stat-info-wrapper">
-                  <span className="stat-value">1 Crore+</span>
-                  <span className="stat-label">Transactions</span>
+                <div className="davv-stat-info-wrapper">
+                  <span className="davv-stat-value">1 Crore+</span>
+                  <span className="davv-stat-label">Transactions</span>
                 </div>
               </div>
-              <div className="stat-item">
-                <div className="stat-icon-wrapper">
+              <div className="davv-stat-item">
+                <div className="davv-stat-icon-wrapper">
                   <ShieldCheck size={16} />
                 </div>
-                <div className="stat-info-wrapper">
-                  <span className="stat-value">99.9%</span>
-                  <span className="stat-label">Uptime</span>
+                <div className="davv-stat-info-wrapper">
+                  <span className="davv-stat-value">99.9%</span>
+                  <span className="davv-stat-label">Uptime</span>
                 </div>
               </div>
             </div>
@@ -427,13 +428,9 @@ export const DavvLogin: React.FC = () => {
         </div>
 
         {/* RIGHT PANEL */}
-        <div className="login-right">
-          <div className="right-header">
-            <div
-              className="language-dropdown"
-              onClick={toggleLanguage}
-              style={{ cursor: 'pointer' }}
-            >
+        <div className="davv-login-right">
+          <div className="davv-right-header">
+            <div className="davv-language-dropdown" onClick={toggleLanguage}>
               <Globe size={14} />
               <span>
                 {language === 'en' ? 'English (US)' : 'हिन्दी (Hindi)'}
@@ -441,20 +438,28 @@ export const DavvLogin: React.FC = () => {
             </div>
           </div>
 
-          <div className="login-form-container">
-            <div className="login-form-wrapper">
-              <div className="right-logo-section flex justify-center items-center">
+          <div className="davv-login-form-container">
+            <div className="davv-login-form-wrapper">
+              <div className="davv-right-logo-section">
                 <img
                   src="/DAVV_Logo.png"
-                  alt="DAVV Logo"
-                  className="h-20 object-contain"
+                  alt="DAVV emblem"
+                  className="davv-right-logo-emblem"
                 />
+                <div className="davv-right-logo-text">
+                  <span className="davv-right-logo-name">
+                    Devi Ahilya Vishwavidyalaya
+                  </span>
+                  <span className="davv-right-logo-campus">Indore</span>
+                </div>
               </div>
 
               {isForgotPassword ? (
                 <>
-                  <h2 className="form-heading">Forgot Password</h2>
-                  <p className="form-subtitle">Recover Your Account Access</p>
+                  <h2 className="davv-form-heading">Forgot Password</h2>
+                  <p className="davv-form-subtitle">
+                    Recover Your Account Access
+                  </p>
 
                   {!emailSent ? (
                     <form
@@ -463,16 +468,16 @@ export const DavvLogin: React.FC = () => {
                         setEmailSent(true);
                       }}
                     >
-                      <div className="input-group">
+                      <div className="davv-input-group">
                         <label htmlFor="email">Registered Email Address</label>
-                        <div className="input-wrapper">
-                          <span className="input-icon">
+                        <div className="davv-input-wrapper">
+                          <span className="davv-input-icon">
                             <Mail size={16} />
                           </span>
                           <input
                             id="email"
                             type="email"
-                            className="custom-input"
+                            className="davv-custom-input"
                             placeholder="Enter your registered email"
                             value={email}
                             onChange={e => setEmail(e.target.value)}
@@ -482,47 +487,20 @@ export const DavvLogin: React.FC = () => {
                         </div>
                       </div>
 
-                      <button type="submit" className="signin-btn">
+                      <button type="submit" className="davv-signin-btn">
                         <span>Send Reset Link</span>
                         <ArrowRight size={16} />
                       </button>
                     </form>
                   ) : (
-                    <div
-                      className="success-state-container"
-                      style={{ textAlign: 'center', padding: '20px 0' }}
-                    >
-                      <div
-                        className="success-icon-badge"
-                        style={{
-                          display: 'inline-flex',
-                          padding: '16px',
-                          background: '#ecfdf5',
-                          borderRadius: '50%',
-                          marginBottom: '16px',
-                        }}
-                      >
+                    <div className="davv-success-state-container">
+                      <div className="davv-success-icon-badge">
                         <ShieldCheck size={32} color="#10b981" />
                       </div>
-                      <h3
-                        className="success-state-title"
-                        style={{
-                          fontSize: '1.25rem',
-                          fontWeight: 700,
-                          color: '#1e293b',
-                          marginBottom: '8px',
-                        }}
-                      >
+                      <h3 className="davv-success-state-title">
                         Check Your Email
                       </h3>
-                      <p
-                        className="success-state-desc"
-                        style={{
-                          fontSize: '0.875rem',
-                          color: '#64748b',
-                          lineHeight: 1.6,
-                        }}
-                      >
+                      <p className="davv-success-state-desc">
                         If the email <strong>{email}</strong> exists in our
                         system, we have sent a secure link to reset your
                         password.
@@ -530,27 +508,17 @@ export const DavvLogin: React.FC = () => {
                     </div>
                   )}
 
-                  <div
-                    className="signup-footer"
-                    style={{ marginTop: '24px', textAlign: 'center' }}
-                  >
+                  <div className="davv-signup-footer mt-6 text-center">
                     <a
                       href="#"
-                      className="help-link"
+                      className="davv-help-link"
                       onClick={e => {
                         e.preventDefault();
                         setIsForgotPassword(false);
                         setEmailSent(false);
                       }}
                     >
-                      <span
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '8px',
-                        }}
-                      >
+                      <span className="flex items-center justify-center gap-2">
                         <ArrowLeft size={16} />
                         Back to Login
                       </span>
@@ -559,21 +527,21 @@ export const DavvLogin: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <h2 className="form-heading">Sign in</h2>
-                  <p className="form-subtitle">
-                    Sign in to access your DAVV ERP account
+                  <h2 className="davv-form-heading">Sign in to DAVV</h2>
+                  <p className="davv-form-subtitle">
+                    Access the university management portal
                   </p>
 
                   <form onSubmit={handleLogin}>
-                    <div className="input-group">
+                    <div className="davv-input-group">
                       <label htmlFor="username">Username</label>
-                      <div className="input-wrapper">
-                        <span className="input-icon">
+                      <div className="davv-input-wrapper">
+                        <span className="davv-input-icon">
                           <User size={16} />
                         </span>
                         <input
                           id="username"
-                          className="custom-input"
+                          className="davv-custom-input"
                           value={username}
                           onChange={e => setUsername(e.target.value)}
                           required
@@ -581,23 +549,23 @@ export const DavvLogin: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="input-group">
+                    <div className="davv-input-group">
                       <label htmlFor="password">Password</label>
-                      <div className="input-wrapper">
-                        <span className="input-icon">
+                      <div className="davv-input-wrapper">
+                        <span className="davv-input-icon">
                           <Lock size={16} />
                         </span>
                         <input
                           id="password"
                           type={showPassword ? 'text' : 'password'}
-                          className="custom-input"
+                          className="davv-custom-input"
                           value={password}
                           onChange={e => setPassword(e.target.value)}
                           required
                         />
                         <button
                           type="button"
-                          className="password-toggle"
+                          className="davv-password-toggle"
                           onClick={() => setShowPassword(!showPassword)}
                         >
                           {showPassword ? (
@@ -609,14 +577,14 @@ export const DavvLogin: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="form-options">
-                      <div className="remember-wrap">
+                    <div className="davv-form-options">
+                      <div className="davv-remember-wrap">
                         <input type="checkbox" id="RememberMe" defaultChecked />
                         <label htmlFor="RememberMe">Remember me</label>
                       </div>
                       <a
                         href="#"
-                        className="forgot-password"
+                        className="davv-forgot-password"
                         onClick={e => {
                           e.preventDefault();
                           setIsForgotPassword(true);
@@ -628,25 +596,20 @@ export const DavvLogin: React.FC = () => {
 
                     <button
                       type="submit"
-                      className="signin-btn"
+                      className="davv-signin-btn"
                       disabled={isLoggingIn}
                     >
                       <span>{isLoggingIn ? 'Signing in...' : 'Sign in'}</span>
                       {!isLoggingIn && <ArrowRight size={16} />}
                     </button>
                   </form>
-
-                  <div className="divider">OR</div>
-
-                  <a href="#" className="sso-btn">
-                    <Shield size={16} />
-                    <span>Sign in with University SSO</span>
-                  </a>
                 </>
               )}
             </div>
           </div>
-          <div></div>
+          <div className="davv-login-page-footer">
+            © 2026 Devi Ahilya Vishwavidyalaya, Indore · NAAC A+ Accredited
+          </div>
         </div>
       </div>
     </div>

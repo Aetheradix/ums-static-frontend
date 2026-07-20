@@ -134,8 +134,8 @@ export default function List() {
 
   return (
     <FormPage
-      title="Access Control"
-      description="Define which features and actions each role is allowed to perform."
+      title="Role Permissions"
+      description="Configure which features and actions each role is permitted to perform across the application."
     >
       <FormCard>
         <div className="role-split-layout">

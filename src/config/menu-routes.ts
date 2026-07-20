@@ -8353,7 +8353,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 action: 'read',
               },
               {
-                label: 'Access Control',
+                label: 'Role Permissions',
                 description:
                   'Configure which features and actions each role is permitted to perform across the application.',
                 path: '/master/user-management/role-permissions',
