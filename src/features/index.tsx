@@ -21,6 +21,7 @@ import GrievanceManagement from './grievance-management';
 import PolicyComplianceManagement from './policy-compliance-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
+import HostelServices from './hostel-services';
 import InfrastructureProjectManagement from './infrastructure-project-management';
 import CivilInfrastructure from './civil-infrastructure';
 import ItServiceDesk from './it-service-desk';
@@ -240,6 +241,10 @@ export default function Features() {
                       <Route
                         path="hostel-management/*"
                         element={<HostelManagement />}
+                      />
+                      <Route
+                        path="hostel-services/*"
+                        element={<HostelServices />}
                       />
                       <Route
                         path="it-service-desk/*"
