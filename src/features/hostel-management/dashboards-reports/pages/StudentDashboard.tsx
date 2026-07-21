@@ -1,6 +1,6 @@
-import { FormCard, FormPage } from 'shared/new-components';
+import { FormCard, FormPage, StatCard } from 'shared/new-components';
 import { useHostel } from '../../context';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Button } from 'shared/components/buttons';
 
 export default function StudentDashboard() {
@@ -31,126 +31,62 @@ export default function StudentDashboard() {
       {/* ─── Quick Stats Row ────────────────────────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {/* Room Info Card */}
-        <div
-          className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/20 rounded-xl p-4 border border-blue-200 dark:border-blue-700 cursor-pointer hover:shadow-md transition-shadow"
-          onClick={() =>
-            navigate('/hostel-management/reports/student-dashboard')
-          }
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <span className="material-symbols-rounded text-blue-600 text-2xl">
-              hotel
-            </span>
-            <span className="text-sm font-semibold text-blue-800 dark:text-blue-300">
-              My Room
-            </span>
-          </div>
-          {roomInfo ? (
-            <div className="text-sm text-slate-700 dark:text-slate-300 space-y-1">
-              <p className="font-bold text-lg text-blue-900 dark:text-blue-200">
-                {roomInfo.roomNumber}
-              </p>
-              <p>{roomInfo.hostelName}</p>
-              <p>
-                {roomInfo.blockName} • {roomInfo.roomType}
-              </p>
-              <p>Bed: {roomInfo.bedNumber}</p>
-            </div>
-          ) : (
-            <div>
-              <p className="text-sm text-slate-500">No room allocated yet</p>
-              <Button
-                label="Apply for Hostel"
-                variant="primary"
-                icon="add"
-                onClick={() =>
-                  navigate('/hostel-management/student-application/apply')
-                }
-              />
-            </div>
-          )}
-        </div>
+        {roomInfo ? (
+          <Link to="/hostel-management/reports/student-dashboard">
+            <StatCard
+              title="My Room"
+              value={roomInfo.roomNumber}
+              icon="hotel"
+              colorScheme="blue"
+              subtitle={`${roomInfo.hostelName} • ${roomInfo.blockName}`}
+            />
+          </Link>
+        ) : (
+          <Link to="/hostel-management/student-application/apply">
+            <StatCard
+              title="My Room"
+              value="N/A"
+              icon="hotel"
+              colorScheme="blue"
+              subtitle="Apply for Hostel →"
+            />
+          </Link>
+        )}
 
         {/* Roommate Card */}
-        <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/20 rounded-xl p-4 border border-green-200 dark:border-green-700">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="material-symbols-rounded text-green-600 text-2xl">
-              group
-            </span>
-            <span className="text-sm font-semibold text-green-800 dark:text-green-300">
-              Roommate
-            </span>
-          </div>
-          {roommate ? (
-            <div className="text-sm text-slate-700 dark:text-slate-300 space-y-1">
-              <p className="font-bold text-lg text-green-900 dark:text-green-200">
-                {roommate.name}
-              </p>
-              <p>{roommate.program}</p>
-              <p>{roommate.department}</p>
-            </div>
-          ) : (
-            <p className="text-sm text-slate-500">No roommate assigned</p>
-          )}
-        </div>
+        <StatCard
+          title="Roommate"
+          value={roommate ? roommate.name : 'None'}
+          icon="group"
+          colorScheme="green"
+          subtitle={roommate ? roommate.program : 'No roommate assigned'}
+        />
 
         {/* Active Gate Pass Card */}
-        <div
-          className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/30 dark:to-orange-800/20 rounded-xl p-4 border border-orange-200 dark:border-orange-700 cursor-pointer hover:shadow-md transition-shadow"
-          onClick={() =>
-            navigate('/hostel-management/student-operations/gate-pass-request')
-          }
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <span className="material-symbols-rounded text-orange-600 text-2xl">
-              exit_to_app
-            </span>
-            <span className="text-sm font-semibold text-orange-800 dark:text-orange-300">
-              Active Gate Pass
-            </span>
-          </div>
-          {activeGatePass ? (
-            <div className="text-sm text-slate-700 dark:text-slate-300 space-y-1">
-              <p className="font-bold text-lg text-orange-900 dark:text-orange-200">
-                {activeGatePass.type}
-              </p>
-              <span
-                className={`inline-block px-2 py-0.5 rounded text-xs font-semibold ${activeGatePass.status === 'WARDEN_APPROVED' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}
-              >
-                {activeGatePass.status.replace(/_/g, ' ')}
-              </span>
-              <p>
-                Return by:{' '}
-                {new Date(activeGatePass.returnDateTime).toLocaleString()}
-              </p>
-            </div>
-          ) : (
-            <p className="text-sm text-slate-500 mt-2">No active gate pass</p>
-          )}
-        </div>
+        <Link to="/hostel-management/student-operations/gate-pass-request">
+          <StatCard
+            title="Active Gate Pass"
+            value={activeGatePass ? activeGatePass.type : 'None'}
+            icon="exit_to_app"
+            colorScheme="orange"
+            subtitle={
+              activeGatePass
+                ? `Return by: ${new Date(activeGatePass.returnDateTime).toLocaleDateString()}`
+                : 'No active pass'
+            }
+          />
+        </Link>
 
         {/* Pending Complaints Card */}
-        <div
-          className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/30 dark:to-red-800/20 rounded-xl p-4 border border-red-200 dark:border-red-700 cursor-pointer hover:shadow-md transition-shadow"
-          onClick={() => navigate('/hostel-management/maintenance/requests')}
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <span className="material-symbols-rounded text-red-600 text-2xl">
-              build
-            </span>
-            <span className="text-sm font-semibold text-red-800 dark:text-red-300">
-              Pending Complaints
-            </span>
-          </div>
-          <p
-            className={`font-bold text-3xl ${pendingComplaints > 0 ? 'text-red-700 dark:text-red-400' : 'text-green-700 dark:text-green-400'}`}
-          >
-            {pendingComplaints}
-          </p>
-          <p className="text-sm text-slate-500">
-            {pendingComplaints > 0 ? 'Open ticket(s)' : 'All clear!'}
-          </p>
-        </div>
+        <Link to="/hostel-management/maintenance/requests">
+          <StatCard
+            title="Pending Complaints"
+            value={pendingComplaints}
+            icon="build"
+            colorScheme="red"
+            subtitle={pendingComplaints > 0 ? 'Open ticket(s)' : 'All clear!'}
+          />
+        </Link>
       </div>
 
       {/* ─── Today's Mess Menu ──────────────────────────────────────── */}

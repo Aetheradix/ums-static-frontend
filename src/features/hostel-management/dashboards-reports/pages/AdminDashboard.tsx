@@ -1,7 +1,98 @@
 import { useMemo } from 'react';
-import { FormPage } from 'shared/new-components';
+import { FormPage, StatCard, FormCard } from 'shared/new-components';
 import { useHostel } from '../../context';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { Chart } from 'primereact/chart';
+
+// ─── Mock Data & Chart Configs ───────────────────────────────────────────────
+
+const REVENUE_TREND = {
+  months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+  fees: [120000, 150000, 110000, 180000, 210000, 190000],
+  fines: [5000, 3000, 7000, 2000, 4000, 6000],
+};
+
+const MAINTENANCE_STATUS = {
+  labels: ['Plumbing', 'Electrical', 'Carpentry', 'IT/Network'],
+  open: [12, 8, 5, 15],
+  resolved: [45, 30, 25, 60],
+};
+
+const revenueChartData = {
+  labels: REVENUE_TREND.months,
+  datasets: [
+    {
+      label: 'Fee Collection',
+      data: REVENUE_TREND.fees,
+      borderColor: '#10b981',
+      backgroundColor: 'rgba(16,185,129,0.15)',
+      fill: true,
+      tension: 0.4,
+    },
+    {
+      label: 'Fines Collected',
+      data: REVENUE_TREND.fines,
+      borderColor: '#ef4444',
+      backgroundColor: 'rgba(239,68,68,0.1)',
+      fill: true,
+      tension: 0.4,
+    },
+  ],
+};
+
+const maintenanceChartData = {
+  labels: MAINTENANCE_STATUS.labels,
+  datasets: [
+    {
+      label: 'Open',
+      data: MAINTENANCE_STATUS.open,
+      backgroundColor: 'rgba(245, 158, 11, 0.85)',
+      borderRadius: 4,
+    },
+    {
+      label: 'Resolved',
+      data: MAINTENANCE_STATUS.resolved,
+      backgroundColor: 'rgba(59, 130, 246, 0.85)',
+      borderRadius: 4,
+    },
+  ],
+};
+
+const commonOptions = {
+  plugins: {
+    legend: {
+      position: 'top' as const,
+      labels: { color: '#94a3b8', padding: 16, font: { size: 12 } },
+    },
+    tooltip: { mode: 'index', intersect: false },
+  },
+  scales: {
+    x: { grid: { display: false }, ticks: { color: '#94a3b8' } },
+    y: {
+      beginAtZero: true,
+      grid: { color: 'rgba(148,163,184,0.1)' },
+      ticks: { color: '#94a3b8' },
+    },
+  },
+  maintainAspectRatio: false,
+};
+
+const doughnutOptions = {
+  plugins: {
+    legend: {
+      position: 'right' as const,
+      labels: {
+        color: '#94a3b8',
+        padding: 16,
+        font: { size: 12 },
+        boxWidth: 12,
+        borderRadius: 4,
+      },
+    },
+  },
+  cutout: '65%',
+  maintainAspectRatio: false,
+};
 
 export default function AdminDashboard() {
   const {
@@ -12,8 +103,6 @@ export default function AdminDashboard() {
     disciplinaryActions,
     items,
   } = useHostel();
-  const navigate = useNavigate();
-
   // Metrics calculation
   const metrics = useMemo(() => {
     const totalCapacity = hostels.reduce((sum, h) => sum + h.totalCapacity, 0);
@@ -63,11 +152,22 @@ export default function AdminDashboard() {
     items,
   ]);
 
-  // SVG Gauge calculations
-  const radius = 22;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset =
-    circumference - (metrics.occupancyRate / 100) * circumference;
+  const occupancyChartData = useMemo(() => {
+    const vacant = Math.max(0, metrics.totalCapacity - metrics.occupiedBeds);
+    return {
+      labels: ['Occupied', 'Vacant'],
+      datasets: [
+        {
+          data: [metrics.occupiedBeds, vacant],
+          backgroundColor: ['#3b82f6', '#e2e8f0'],
+          hoverOffset: 4,
+          borderWidth: 0,
+        },
+      ],
+    };
+  }, [metrics]);
+
+  // SVG Gauge calculations removed as they are no longer used with StatCard
 
   return (
     <FormPage
@@ -84,249 +184,174 @@ export default function AdminDashboard() {
       ]}
     >
       {/* ─── Top Level KPIs Row ─── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {/* KPI 1: Occupancy with Radial SVG Chart */}
-        <div
-          onClick={() => navigate('/hostel-management/reports/occupancy')}
-          className="group relative overflow-hidden bg-gradient-to-br from-indigo-50/50 to-white dark:from-indigo-950/20 dark:to-slate-900 border border-indigo-100/50 dark:border-indigo-900/30 hover:border-indigo-300 dark:hover:border-indigo-800 rounded-2xl shadow-sm hover:shadow-indigo-100 dark:hover:shadow-none p-6 flex items-center justify-between cursor-pointer transition-all duration-300 hover:-translate-y-1"
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <Link to="/hostel-management/reports/occupancy">
+          <StatCard
+            title="Total Occupancy"
+            value={`${metrics.occupancyRate}%`}
+            icon="apartment"
+            colorScheme="blue"
+            subtitle={`${metrics.occupiedBeds} / ${metrics.totalCapacity} Beds occupied`}
+          />
+        </Link>
+        <Link to="/hostel-management/maintenance/assignment">
+          <StatCard
+            title="Pending Maintenance"
+            value={metrics.pendingMaintenance}
+            icon="build"
+            colorScheme="orange"
+            subtitle="Assign Tasks →"
+          />
+        </Link>
+        <Link to="/hostel-management/student/gate-pass">
+          <StatCard
+            title="Students Out"
+            value={metrics.activeGatePasses}
+            icon="directions_run"
+            colorScheme="green"
+            subtitle="View Active Passes →"
+          />
+        </Link>
+        <StatCard
+          title="Critical Alerts"
+          value={metrics.lowStockItems + metrics.openDisciplinary}
+          icon="warning"
+          colorScheme="red"
+          subtitle={
+            metrics.lowStockItems === 0 && metrics.openDisciplinary === 0
+              ? 'All systems normal'
+              : 'Action required'
+          }
+        />
+      </div>
+
+      {/* ─── Analytics Charts Row ─── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <FormCard
+          title="Revenue & Fines Trend"
+          icon="payments"
+          className="lg:col-span-2"
         >
-          <div className="space-y-1.5">
-            <span className="text-xs font-semibold uppercase tracking-wider text-indigo-500 dark:text-indigo-400">
-              Total Occupancy
-            </span>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-extrabold text-slate-800 dark:text-slate-100">
-                {metrics.occupancyRate}%
-              </span>
-            </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-              {metrics.occupiedBeds} / {metrics.totalCapacity} Beds occupied
-            </p>
+          <div className="h-[250px] w-full">
+            <Chart
+              type="line"
+              data={revenueChartData}
+              options={commonOptions}
+              className="h-full w-full"
+            />
           </div>
-          <div className="relative flex items-center justify-center h-16 w-16">
-            <svg className="w-full h-full transform -rotate-90">
-              {/* Background Circle */}
-              <circle
-                cx="32"
-                cy="32"
-                r={radius}
-                className="text-indigo-100 dark:text-indigo-950"
-                strokeWidth="5"
-                stroke="currentColor"
-                fill="transparent"
-              />
-              {/* Foreground Progress */}
-              <circle
-                cx="32"
-                cy="32"
-                r={radius}
-                className="text-indigo-600 dark:text-indigo-400 transition-all duration-500 ease-out"
-                strokeWidth="5"
-                strokeDasharray={circumference}
-                strokeDashoffset={strokeDashoffset}
-                strokeLinecap="round"
-                stroke="currentColor"
-                fill="transparent"
-              />
-            </svg>
-            <span className="absolute text-[10px] font-bold text-indigo-700 dark:text-indigo-300">
-              {metrics.occupancyRate}%
-            </span>
+        </FormCard>
+        <FormCard title="Occupancy Distribution" icon="donut_large">
+          <div className="h-[250px] w-full flex items-center justify-center">
+            <Chart
+              type="doughnut"
+              data={occupancyChartData}
+              options={doughnutOptions}
+              className="h-full w-full"
+            />
           </div>
-        </div>
-
-        {/* KPI 2: Pending Maintenance */}
-        <div
-          onClick={() => navigate('/hostel-management/maintenance/assignment')}
-          className="group bg-gradient-to-br from-amber-50/50 to-white dark:from-amber-950/20 dark:to-slate-900 border border-amber-100/50 dark:border-amber-900/30 hover:border-amber-300 dark:hover:border-amber-800 rounded-2xl shadow-sm hover:shadow-amber-100 dark:hover:shadow-none p-6 flex items-center justify-between cursor-pointer transition-all duration-300 hover:-translate-y-1"
-        >
-          <div className="space-y-1">
-            <span className="text-xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400">
-              Pending Maintenance
-            </span>
-            <h2 className="text-4xl font-extrabold text-slate-800 dark:text-slate-100">
-              {metrics.pendingMaintenance}
-            </h2>
-            <span className="inline-flex items-center gap-1 text-xs text-amber-700 dark:text-amber-400 font-semibold group-hover:underline">
-              Assign Tasks
-              <span className="material-symbols-rounded text-sm transform transition-transform group-hover:translate-x-1">
-                arrow_forward
-              </span>
-            </span>
-          </div>
-          <div className="h-12 w-12 rounded-xl bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-inner group-hover:scale-110 transition-transform duration-300">
-            <span className="material-symbols-rounded text-2xl">build</span>
-          </div>
-        </div>
-
-        {/* KPI 3: Students Out */}
-        <div
-          onClick={() => navigate('/hostel-management/student/gate-pass')}
-          className="group bg-gradient-to-br from-emerald-50/50 to-white dark:from-emerald-950/20 dark:to-slate-900 border border-emerald-100/50 dark:border-emerald-900/30 hover:border-emerald-300 dark:hover:border-emerald-800 rounded-2xl shadow-sm hover:shadow-emerald-100 dark:hover:shadow-none p-6 flex items-center justify-between cursor-pointer transition-all duration-300 hover:-translate-y-1"
-        >
-          <div className="space-y-1">
-            <span className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-              Students Out
-            </span>
-            <h2 className="text-4xl font-extrabold text-slate-800 dark:text-slate-100">
-              {metrics.activeGatePasses}
-            </h2>
-            <span className="inline-flex items-center gap-1 text-xs text-emerald-700 dark:text-emerald-400 font-semibold group-hover:underline">
-              View Active Passes
-              <span className="material-symbols-rounded text-sm transform transition-transform group-hover:translate-x-1">
-                arrow_forward
-              </span>
-            </span>
-          </div>
-          <div className="h-12 w-12 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-inner group-hover:scale-110 transition-transform duration-300">
-            <span className="material-symbols-rounded text-2xl">
-              directions_run
-            </span>
-          </div>
-        </div>
-
-        {/* KPI 4: Critical Alerts with Flashing Dot */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-rose-50/50 to-white dark:from-rose-950/20 dark:to-slate-900 border border-rose-100/50 dark:border-rose-900/30 rounded-2xl shadow-sm p-6 flex flex-col justify-center transition-all duration-300 hover:border-rose-300 dark:hover:border-rose-800 hover:-translate-y-1">
-          {/* Glowing Pulse Dot */}
-          {(metrics.lowStockItems > 0 || metrics.openDisciplinary > 0) && (
-            <span className="absolute top-4 right-4 flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
-            </span>
-          )}
-
-          <span className="text-xs font-semibold uppercase tracking-wider text-rose-600 dark:text-rose-400 mb-2">
-            Critical Alerts
-          </span>
-          <div className="flex flex-col gap-2">
-            {metrics.lowStockItems > 0 && (
-              <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400 text-xs font-semibold bg-rose-500/5 dark:bg-rose-500/10 px-2.5 py-1.5 rounded-lg border border-rose-200/50 dark:border-rose-800/30">
-                <span className="material-symbols-rounded text-base">
-                  inventory_2
-                </span>
-                <span>{metrics.lowStockItems} Items low on stock</span>
-              </div>
-            )}
-            {metrics.openDisciplinary > 0 && (
-              <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 text-xs font-semibold bg-amber-500/5 dark:bg-amber-500/10 px-2.5 py-1.5 rounded-lg border border-amber-200/50 dark:border-amber-800/30">
-                <span className="material-symbols-rounded text-base">
-                  warning
-                </span>
-                <span>{metrics.openDisciplinary} Open disciplinary case</span>
-              </div>
-            )}
-            {metrics.lowStockItems === 0 && metrics.openDisciplinary === 0 && (
-              <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-xs font-semibold bg-emerald-500/5 dark:bg-emerald-500/10 px-2.5 py-1.5 rounded-lg">
-                <span className="material-symbols-rounded text-base">
-                  check_circle
-                </span>
-                <span>All systems normal</span>
-              </div>
-            )}
-          </div>
-        </div>
+        </FormCard>
       </div>
 
       {/* ─── Main Breakdown & Quick Actions Grid ─── */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        {/* Hostel Breakdown (Left 3 columns) */}
-        <div className="lg:col-span-3 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200/60 dark:border-slate-700/50 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-              <span className="material-symbols-rounded text-primary-600">
-                apartment
-              </span>
-              Hostel Occupancy status
-            </h3>
-            <span className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 px-2.5 py-1 rounded-full font-medium border border-slate-200 dark:border-slate-650">
-              Live updates
-            </span>
-          </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column (Spans 2) */}
+        <div className="lg:col-span-2 flex flex-col gap-6">
+          <FormCard title="Maintenance Status" icon="build">
+            <div className="h-[250px] w-full">
+              <Chart
+                type="bar"
+                data={maintenanceChartData}
+                options={commonOptions}
+                className="h-full w-full"
+              />
+            </div>
+          </FormCard>
 
-          <div className="space-y-6">
-            {hostels.map(hostel => {
-              const allocated = roomAllotments.filter(
-                a =>
-                  a.hostelId === hostel.id &&
-                  (a.status === 'PENDING_CHECKIN' || a.status === 'CHECKED_IN')
-              ).length;
-              const pct = hostel.totalCapacity
-                ? Math.round((allocated / hostel.totalCapacity) * 100)
-                : 0;
-              const isGirls =
-                hostel.isGirlsHostel || hostel.hostelType === 'GIRLS';
+          <FormCard title="Hostel Occupancy status" icon="apartment">
+            <div className="space-y-6">
+              {hostels.map(hostel => {
+                const allocated = roomAllotments.filter(
+                  a =>
+                    a.hostelId === hostel.id &&
+                    (a.status === 'PENDING_CHECKIN' ||
+                      a.status === 'CHECKED_IN')
+                ).length;
+                const pct = hostel.totalCapacity
+                  ? Math.round((allocated / hostel.totalCapacity) * 100)
+                  : 0;
+                const isGirls =
+                  hostel.isGirlsHostel || hostel.hostelType === 'GIRLS';
 
-              return (
-                <div
-                  key={hostel.id}
-                  className="p-4 rounded-xl border border-slate-100 dark:border-slate-700/30 bg-slate-50/50 dark:bg-slate-900/10 hover:shadow-xs transition-shadow"
-                >
-                  {/* Title & Stats */}
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-slate-700 dark:text-slate-200 text-sm">
-                          {hostel.hostelName}
-                        </span>
-                        <span
-                          className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                            isGirls
-                              ? 'bg-pink-50 text-pink-700 dark:bg-pink-950/20 dark:text-pink-400 border border-pink-100 dark:border-pink-900/30'
-                              : 'bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-400 border border-blue-100 dark:border-blue-900/30'
-                          }`}
-                        >
-                          <span className="material-symbols-rounded text-xs">
-                            {isGirls ? 'female' : 'male'}
+                return (
+                  <div
+                    key={hostel.id}
+                    className="p-4 rounded-xl border border-slate-100 dark:border-slate-700/30 bg-slate-50/50 dark:bg-slate-900/10 hover:shadow-xs transition-shadow"
+                  >
+                    {/* Title & Stats */}
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-slate-700 dark:text-slate-200 text-sm">
+                            {hostel.hostelName}
                           </span>
-                          {hostel.hostelType}
+                          <span
+                            className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                              isGirls
+                                ? 'bg-pink-50 text-pink-700 dark:bg-pink-950/20 dark:text-pink-400 border border-pink-100 dark:border-pink-900/30'
+                                : 'bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-400 border border-blue-100 dark:border-blue-900/30'
+                            }`}
+                          >
+                            <span className="material-symbols-rounded text-xs">
+                              {isGirls ? 'female' : 'male'}
+                            </span>
+                            {hostel.hostelType}
+                          </span>
+                        </div>
+                        <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">
+                          Code: {hostel.hostelCode} • Rooms: {hostel.totalRooms}
                         </span>
                       </div>
-                      <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">
-                        Code: {hostel.hostelCode} • Rooms: {hostel.totalRooms}
-                      </span>
+                      <div className="text-right">
+                        <span className="font-extrabold text-slate-800 dark:text-slate-100 text-sm">
+                          {allocated} / {hostel.totalCapacity}
+                        </span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400 ml-1">
+                          ({pct}%)
+                        </span>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <span className="font-extrabold text-slate-800 dark:text-slate-100 text-sm">
-                        {allocated} / {hostel.totalCapacity}
-                      </span>
-                      <span className="text-xs text-slate-500 dark:text-slate-400 ml-1">
-                        ({pct}%)
-                      </span>
-                    </div>
-                  </div>
 
-                  {/* Premium Progress Bar */}
-                  <div className="w-full bg-slate-200 dark:bg-slate-700/70 rounded-full h-3.5 relative overflow-hidden p-0.5 shadow-inner">
-                    <div
-                      className={`h-2.5 rounded-full transition-all duration-1000 ease-out shadow-sm ${
-                        pct > 90
-                          ? 'bg-gradient-to-r from-rose-500 to-red-600'
-                          : pct > 75
-                            ? 'bg-gradient-to-r from-amber-400 to-orange-500'
-                            : 'bg-gradient-to-r from-emerald-400 to-teal-500'
-                      }`}
-                      style={{ width: `${pct}%` }}
-                    >
-                      {/* Highlight reflection stripe inside the progress bar */}
-                      <div className="w-full h-full bg-white/20 rounded-full animate-pulse"></div>
+                    {/* Premium Progress Bar */}
+                    <div className="w-full bg-slate-200 dark:bg-slate-700/70 rounded-full h-3.5 relative overflow-hidden p-0.5 shadow-inner">
+                      <div
+                        className={`h-2.5 rounded-full transition-all duration-1000 ease-out shadow-sm ${
+                          pct > 90
+                            ? 'bg-gradient-to-r from-rose-500 to-red-600'
+                            : pct > 75
+                              ? 'bg-gradient-to-r from-amber-400 to-orange-500'
+                              : 'bg-gradient-to-r from-emerald-400 to-teal-500'
+                        }`}
+                        style={{ width: `${pct}%` }}
+                      >
+                        {/* Highlight reflection stripe inside the progress bar */}
+                        <div className="w-full h-full bg-white/20 rounded-full animate-pulse"></div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          </FormCard>
         </div>
 
-        {/* Quick Actions (Right 2 columns) */}
-        <div className="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200/60 dark:border-slate-700/50 p-6 flex flex-col justify-between">
-          <div>
-            <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-6 flex items-center gap-2">
-              <span className="material-symbols-rounded text-primary-600">
-                bolt
-              </span>
-              Quick Actions
-            </h3>
-
+        {/* Quick Actions (Right 1 column) */}
+        <div className="flex flex-col">
+          <FormCard
+            title="Quick Actions"
+            icon="bolt"
+            className="flex-1 flex flex-col justify-between"
+          >
             <div className="grid grid-cols-1 gap-4">
               {/* Action 1: New Application */}
               <Link
@@ -428,17 +453,17 @@ export default function AdminDashboard() {
                 </span>
               </Link>
             </div>
-          </div>
 
-          <div className="mt-6 pt-4 border-t border-slate-150 dark:border-slate-700/50 flex justify-between items-center text-xs text-slate-500 dark:text-slate-400">
-            <span>Need more tools?</span>
-            <Link
-              to="/hostel-management/masters/basic-facility"
-              className="font-semibold text-primary-600 hover:underline"
-            >
-              Go to Master Configs
-            </Link>
-          </div>
+            <div className="mt-6 pt-4 border-t border-slate-150 dark:border-slate-700/50 flex justify-between items-center text-xs text-slate-500 dark:text-slate-400">
+              <span>Need more tools?</span>
+              <Link
+                to="/hostel-management/masters/basic-facility"
+                className="font-semibold text-primary-600 hover:underline"
+              >
+                Go to Master Configs
+              </Link>
+            </div>
+          </FormCard>
         </div>
       </div>
     </FormPage>
