@@ -85,6 +85,7 @@ const PORTAL_PATHS: string[] = [
 ];
 
 function isPortalPath(pathname: string): boolean {
+  if (pathname.startsWith('/hostel-services')) return true;
   return PORTAL_PATHS.some(p => pathname === p || pathname === p + '/');
 }
 

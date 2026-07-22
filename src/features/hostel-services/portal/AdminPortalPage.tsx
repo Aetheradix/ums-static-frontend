@@ -10,13 +10,13 @@ export default function AdminPortalPage() {
   return (
     <PortalSelector
       moduleTitle="Admin Portal — Hostel Services"
-      moduleDescription="Configure hostel masters, manage room allocations, fee structures, warden assignments, and generate system-wide reports."
+      moduleDescription="University Executive Portal — Configure hostel masters, policy rules, fee structures, warden staff appointments, central allocations, billing, and system reports."
       breadcrumbs={breadcrumbs}
       portals={[
         {
           title: 'Dashboard',
           description:
-            'Hostel occupancy rates, fee collection stats, and key performance indicators',
+            'Executive hostel occupancy rates, fee collection stats, and key performance indicators',
           icon: 'dashboard',
           colorScheme: 'teal',
           path: '/hostel-services/admin/dashboard',
@@ -24,7 +24,7 @@ export default function AdminPortalPage() {
         {
           title: 'Hostel Master',
           description:
-            'Create and manage hostel entities, campus mapping, and safety details',
+            'Create and manage university hostel entities, campus mapping, and safety details',
           icon: 'apartment',
           colorScheme: 'blue',
           path: '/hostel-services/admin/masters/hostel',
@@ -39,8 +39,7 @@ export default function AdminPortalPage() {
         },
         {
           title: 'Room Type Master',
-          description:
-            'Define room categories — single, double, triple, dormitory',
+          description: 'Define room categories — single, double, triple, suite',
           icon: 'category',
           colorScheme: 'purple',
           path: '/hostel-services/admin/masters/room-type',
@@ -55,7 +54,8 @@ export default function AdminPortalPage() {
         },
         {
           title: 'Warden/Staff Master',
-          description: 'Assign wardens, deputy wardens, caretakers to hostels',
+          description:
+            'Assign chief wardens, deputy wardens, caretakers to hostels',
           icon: 'badge',
           colorScheme: 'orange',
           path: '/hostel-services/admin/masters/warden-staff',
@@ -63,15 +63,14 @@ export default function AdminPortalPage() {
         {
           title: 'Facility Master',
           description:
-            'Define available facilities — gym, laundry, library, etc.',
+            'Define available facilities — gym, laundry, library, wi-fi',
           icon: 'local_convenience_store',
           colorScheme: 'teal',
           path: '/hostel-services/admin/masters/facility',
         },
         {
           title: 'Hostel-Facility Mapping',
-          description:
-            'Map facilities to specific hostels with fee applicability',
+          description: 'Map facilities to specific hostels with fee rules',
           icon: 'map',
           colorScheme: 'green',
           path: '/hostel-services/admin/masters/hostel-facility-mapping',
@@ -79,7 +78,7 @@ export default function AdminPortalPage() {
         {
           title: 'Mess/Menu Master',
           description:
-            'Configure weekly mess menus for breakfast, lunch, snacks, dinner',
+            'Configure standard weekly mess menu templates and meal schedules',
           icon: 'restaurant_menu',
           colorScheme: 'red',
           path: '/hostel-services/admin/masters/mess-menu',
@@ -103,111 +102,55 @@ export default function AdminPortalPage() {
         {
           title: 'Rule/Policy Master',
           description:
-            'Define hostel rules, curfew timings, and disciplinary policies',
+            'Define hostel code of conduct rules, curfew timings, and policies',
           icon: 'gavel',
           colorScheme: 'gray',
           path: '/hostel-services/admin/masters/rule-policy',
         },
         {
-          title: 'Hostel Application',
+          title: 'Hostel Application Approval',
           description:
-            'Review and process student hostel admission applications',
+            'Review and approve student hostel admission applications',
           icon: 'assignment',
           colorScheme: 'blue',
           path: '/hostel-services/admin/transactions/application',
         },
         {
           title: 'Room & Bed Allocation',
-          description: 'Allocate rooms and beds to approved students',
+          description:
+            'Official central allocation of rooms and beds to approved students',
           icon: 'how_to_reg',
           colorScheme: 'green',
           path: '/hostel-services/admin/transactions/allocation',
         },
         {
-          title: 'Student Fee Component',
-          description: 'Generate and assign fee components to students',
+          title: 'Student Fee Billing',
+          description:
+            'Generate and assign hostel fee components to student accounts',
           icon: 'receipt',
           colorScheme: 'amber',
           path: '/hostel-services/admin/transactions/fee-generation',
         },
         {
           title: 'Fee Collection & Receipt',
-          description: 'Record fee payments and generate receipts',
+          description:
+            'Record student fee payments and generate official receipts',
           icon: 'price_check',
           colorScheme: 'teal',
           path: '/hostel-services/admin/transactions/fee-collection',
         },
         {
-          title: 'Attendance Register',
-          description:
-            'Mark and review daily in/out attendance for all hostels',
-          icon: 'event_available',
-          colorScheme: 'indigo',
-          path: '/hostel-services/admin/transactions/attendance',
-        },
-        {
-          title: 'Leave & Outpass',
-          description:
-            'Process student leave applications and outpass requests',
-          icon: 'directions_walk',
-          colorScheme: 'purple',
-          path: '/hostel-services/admin/transactions/leave-outpass',
-        },
-        {
-          title: 'Visitor Entry/Exit Log',
-          description: 'Track visitor entries and exits across all hostels',
-          icon: 'badge',
-          colorScheme: 'pink',
-          path: '/hostel-services/admin/transactions/visitor-log',
-        },
-        {
-          title: 'Hostel Request / Complaint',
-          description:
-            'Manage and resolve student complaints and maintenance requests',
-          icon: 'feedback',
-          colorScheme: 'red',
-          path: '/hostel-services/admin/transactions/request',
-        },
-        {
-          title: 'Incident Reporting',
-          description:
-            'Log and investigate hostel incidents and security issues',
-          icon: 'report',
-          colorScheme: 'orange',
-          path: '/hostel-services/admin/transactions/incident-reporting',
-        },
-        {
-          title: 'Disciplinary Action',
-          description: 'Record disciplinary actions, fines, and warnings',
-          icon: 'gavel',
-          colorScheme: 'gray',
-          path: '/hostel-services/admin/transactions/disciplinary-action',
-        },
-        {
-          title: 'Room Change Request',
-          description: 'Review and approve student room change requests',
-          icon: 'swap_calls',
-          colorScheme: 'teal',
-          path: '/hostel-services/admin/transactions/room-change-request',
-        },
-        {
-          title: 'Student-Facility Mapping',
-          description: 'Map facilities to individual students',
-          icon: 'link',
-          colorScheme: 'green',
-          path: '/hostel-services/admin/transactions/student-facility-mapping',
-        },
-        {
           title: 'Vacate/Checkout & Refund',
-          description: 'Process student checkout and deposit refunds',
+          description:
+            'Process student checkout clearances and caution deposit refunds',
           icon: 'exit_to_app',
           colorScheme: 'orange',
           path: '/hostel-services/admin/transactions/checkout-refund',
         },
         {
-          title: 'Reports',
+          title: 'Reports & Analytics',
           description:
-            'Occupancy, attendance, and fee collection reports and analytics',
+            'University-wide occupancy, fee collection, and hostel analytics',
           icon: 'bar_chart',
           colorScheme: 'purple',
           path: '/hostel-services/admin/reports',

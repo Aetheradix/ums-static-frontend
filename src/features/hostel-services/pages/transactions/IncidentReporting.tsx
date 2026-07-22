@@ -1,18 +1,46 @@
 import { useState } from 'react';
-import { useHostelContext } from '../../context/HostelContext';
+import { useHostelContext, useHostelRole } from '../../context/HostelContext';
 import { FormPage, FormCard, FormGrid, GridPanel } from 'shared/new-components';
 import { TextBox, DropDownList } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
 
 export default function IncidentReporting() {
-  const { data } = useHostelContext();
-  const [form, setForm] = useState({
+  const { data, addRecord, updateRecord } = useHostelContext();
+  const { activePortal } = useHostelRole();
+
+  const initialForm = {
     studentName: '',
     incidentDescription: '',
-    reportedBy: '',
-    date: '',
-    status: 'Under Investigation',
-  });
+    reportedBy: activePortal === 'warden' ? 'Warden' : 'Admin',
+    date: new Date().toISOString().split('T')[0],
+    status: 'Under Investigation' as 'Under Investigation' | 'Closed',
+  };
+
+  const [form, setForm] = useState(initialForm);
+
+  const handleSubmit = () => {
+    if (!form.incidentDescription || !form.reportedBy) {
+      alert(
+        'Please fill in required fields (Reported By and Incident Description).'
+      );
+      return;
+    }
+
+    addRecord('incidents', {
+      id: `INC${Date.now()}`,
+      studentName: form.studentName || 'N/A',
+      incidentDescription: form.incidentDescription,
+      reportedBy: form.reportedBy,
+      date: form.date,
+      status: form.status,
+    });
+
+    setForm(initialForm);
+  };
+
+  const portalLabel =
+    activePortal === 'warden' ? 'Warden Portal' : 'Admin Portal';
+  const portalPath = `/hostel-services/${activePortal}`;
 
   return (
     <FormPage
@@ -20,11 +48,8 @@ export default function IncidentReporting() {
       description="Report and track major incidents or violations within the hostel premises."
       breadcrumbs={[
         { label: 'Home', to: '/home' },
-        { label: 'Hostel Services', to: '/hostel-services' },
-        {
-          label: 'Transactions',
-          to: '/hostel-services/transactions/incident-reporting',
-        },
+        { label: 'Hostel Services', to: '/home/sub-menu/hostel-services' },
+        { label: portalLabel, to: portalPath },
         { label: 'Incident Reporting' },
       ]}
     >
@@ -63,16 +88,20 @@ export default function IncidentReporting() {
             textField="text"
             valueField="id"
             value={form.status}
-            onChange={v => setForm({ ...form, status: v as string })}
+            onChange={v => setForm({ ...form, status: v as any })}
           />
         </FormGrid>
         <div className="mt-4 flex gap-3">
           <Button
             label="Report Incident"
             variant="primary"
-            onClick={() => {}}
+            onClick={handleSubmit}
           />
-          <Button label="Clear" variant="outlined" onClick={() => {}} />
+          <Button
+            label="Clear"
+            variant="outlined"
+            onClick={() => setForm(initialForm)}
+          />
         </div>
       </FormCard>
 
@@ -97,6 +126,28 @@ export default function IncidentReporting() {
                 >
                   {item.status}
                 </span>
+              ),
+            },
+            {
+              header: 'Action',
+              sortable: false,
+              cell: (item: any) => (
+                <div className="flex gap-2">
+                  {item.status === 'Under Investigation' && (
+                    <Button
+                      label="Close"
+                      variant="outlined"
+                      size="small"
+                      icon="check_circle"
+                      onClick={() =>
+                        updateRecord('incidents', item.id, {
+                          ...item,
+                          status: 'Closed',
+                        })
+                      }
+                    />
+                  )}
+                </div>
               ),
             },
           ]}

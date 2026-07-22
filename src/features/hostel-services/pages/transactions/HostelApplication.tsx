@@ -1,89 +1,125 @@
 import { useState } from 'react';
-import { useHostelContext } from '../../context/HostelContext';
+import {
+  useHostelContext,
+  useHostelRole,
+  MOCK_STUDENT_ID,
+  MOCK_STUDENT_NAME,
+} from '../../context/HostelContext';
 import { FormPage, FormCard, FormGrid, GridPanel } from 'shared/new-components';
 import { TextBox, DropDownList } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
 
 export default function HostelApplication() {
-  const { data } = useHostelContext();
-  const [form, setForm] = useState({
-    studentId: '',
-    studentName: '',
+  const { data, addRecord, updateRecord } = useHostelContext();
+  const { isStudent, isAdmin, isWarden, activePortal } = useHostelRole();
+
+  const initialForm = {
     hostelId: '',
-    applicationDate: '',
-    status: 'Pending',
-  });
+    applicationDate: new Date().toISOString().split('T')[0],
+  };
+
+  const [form, setForm] = useState(initialForm);
+
+  const handleSubmit = () => {
+    if (!form.hostelId) {
+      alert('Please select an Applied Hostel.');
+      return;
+    }
+
+    addRecord('applications', {
+      id: `APP${Date.now()}`,
+      studentId: MOCK_STUDENT_ID,
+      studentName: MOCK_STUDENT_NAME,
+      hostelId: form.hostelId,
+      applicationDate:
+        form.applicationDate || new Date().toISOString().split('T')[0],
+      status: 'Pending',
+    });
+
+    setForm(initialForm);
+  };
+
+  // Filter data based on role
+  const filteredApplications = isStudent
+    ? data.applications.filter(app => app.studentId === MOCK_STUDENT_ID)
+    : data.applications;
+
+  // Build breadcrumbs based on portal
+  const portalLabel =
+    activePortal === 'student'
+      ? 'Student Portal'
+      : activePortal === 'warden'
+        ? 'Warden Portal'
+        : 'Admin Portal';
+  const portalPath = `/hostel-services/${activePortal}`;
 
   return (
     <FormPage
-      title="Hostel Application"
-      description="Manage student applications for hostel accommodation."
+      title={isStudent ? 'My Hostel Application' : 'Hostel Application'}
+      description={
+        isStudent
+          ? 'Apply for hostel accommodation and track your application status.'
+          : 'Review and process student hostel accommodation applications.'
+      }
       breadcrumbs={[
         { label: 'Home', to: '/home' },
-        { label: 'Hostel Services', to: '/hostel-services' },
-        {
-          label: 'Transactions',
-          to: '/hostel-services/transactions/application',
-        },
+        { label: 'Hostel Services', to: '/home/sub-menu/hostel-services' },
+        { label: portalLabel, to: portalPath },
         { label: 'Hostel Application' },
       ]}
     >
-      <FormCard title="New Application" icon="add_circle">
-        <FormGrid columns={3}>
-          <TextBox
-            label="Student ID *"
-            value={form.studentId}
-            onChange={v => setForm({ ...form, studentId: v })}
-          />
-          <TextBox
-            label="Student Name *"
-            value={form.studentName}
-            onChange={v => setForm({ ...form, studentName: v })}
-          />
-          <DropDownList
-            label="Applied Hostel *"
-            data={data.hostels.map(h => ({ id: h.id, text: h.name }))}
-            textField="text"
-            valueField="id"
-            value={form.hostelId}
-            onChange={v => setForm({ ...form, hostelId: v as string })}
-          />
-          <TextBox
-            label="Application Date"
-            type="date"
-            value={form.applicationDate}
-            onChange={v => setForm({ ...form, applicationDate: v })}
-          />
-          <DropDownList
-            label="Status"
-            data={[
-              { id: 'Pending', text: 'Pending' },
-              { id: 'Approved', text: 'Approved' },
-              { id: 'Rejected', text: 'Rejected' },
-            ]}
-            textField="text"
-            valueField="id"
-            value={form.status}
-            onChange={v => setForm({ ...form, status: v as string })}
-          />
-        </FormGrid>
-        <div className="mt-4 flex gap-3">
-          <Button label="Submit" variant="primary" onClick={() => {}} />
-          <Button label="Clear" variant="outlined" onClick={() => {}} />
-        </div>
-      </FormCard>
+      {/* Form is only shown to Students to apply for hostel */}
+      {isStudent && (
+        <FormCard title="Apply for Hostel" icon="add_circle">
+          <FormGrid columns={2}>
+            <DropDownList
+              label="Applied Hostel *"
+              data={data.hostels.map(h => ({ id: h.id, text: h.name }))}
+              textField="text"
+              valueField="id"
+              value={form.hostelId}
+              onChange={v => setForm({ ...form, hostelId: v as string })}
+            />
+            <TextBox
+              label="Application Date"
+              type="date"
+              value={form.applicationDate}
+              onChange={v => setForm({ ...form, applicationDate: v })}
+            />
+          </FormGrid>
+          <div className="mt-4 flex gap-3">
+            <Button label="Apply" variant="primary" onClick={handleSubmit} />
+            <Button
+              label="Clear"
+              variant="outlined"
+              onClick={() => setForm(initialForm)}
+            />
+          </div>
+        </FormCard>
+      )}
 
-      <FormCard title="Applications List" icon="list">
+      {/* Admin / Warden sees only the applications list with Approve/Reject actions */}
+      <FormCard
+        title={isStudent ? 'My Applications' : 'Applications List'}
+        icon="list"
+      >
         <GridPanel
-          data={data.applications}
+          data={filteredApplications}
           columns={[
-            { field: 'studentId', header: 'Student ID' },
-            { field: 'studentName', header: 'Student Name' },
+            ...(!isStudent
+              ? [{ field: 'studentId', header: 'Student ID' }]
+              : []),
+            ...(!isStudent
+              ? [{ field: 'studentName', header: 'Student Name' }]
+              : []),
             {
               field: 'hostelId',
               header: 'Applied Hostel',
               cell: (item: any) => (
-                <>{data.hostels.find(h => h.id === item.hostelId)?.name}</>
+                <>
+                  {data.hostels.find(h => h.id === item.hostelId)?.name ||
+                    item.hostelId}
+                </>
               ),
             },
             { field: 'applicationDate', header: 'Date' },
@@ -104,6 +140,47 @@ export default function HostelApplication() {
                 </span>
               ),
             },
+            // Admin / Warden can take action
+            ...(isAdmin || isWarden
+              ? [
+                  {
+                    header: 'Action',
+                    sortable: false,
+                    cell: (item: any) => (
+                      <div className="flex gap-2">
+                        {item.status === 'Pending' && (
+                          <>
+                            <Button
+                              label="Approve"
+                              variant="primary"
+                              size="small"
+                              icon="check"
+                              onClick={() =>
+                                updateRecord('applications', item.id, {
+                                  ...item,
+                                  status: 'Approved',
+                                })
+                              }
+                            />
+                            <Button
+                              label="Reject"
+                              variant="danger"
+                              size="small"
+                              icon="close"
+                              onClick={() =>
+                                updateRecord('applications', item.id, {
+                                  ...item,
+                                  status: 'Rejected',
+                                })
+                              }
+                            />
+                          </>
+                        )}
+                      </div>
+                    ),
+                  },
+                ]
+              : []),
           ]}
         />
       </FormCard>

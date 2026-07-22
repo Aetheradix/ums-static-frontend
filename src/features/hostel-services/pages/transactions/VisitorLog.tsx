@@ -1,20 +1,50 @@
 import { useState } from 'react';
-import { useHostelContext } from '../../context/HostelContext';
+import { useHostelContext, useHostelRole } from '../../context/HostelContext';
 import { FormPage, FormCard, FormGrid, GridPanel } from 'shared/new-components';
 import { TextBox } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
 
 export default function VisitorLog() {
-  const { data } = useHostelContext();
-  const [form, setForm] = useState({
+  const { data, addRecord } = useHostelContext();
+  const { activePortal } = useHostelRole();
+
+  const initialForm = {
     visitorName: '',
     studentVisited: '',
     relation: '',
     purpose: '',
-    timeIn: '',
-    timeOut: '',
-    idProofType: '',
-  });
+    timeIn: '10:00',
+    timeOut: '12:00',
+    idProofType: 'Aadhar',
+  };
+
+  const [form, setForm] = useState(initialForm);
+
+  const handleSubmit = () => {
+    if (!form.visitorName || !form.studentVisited) {
+      alert(
+        'Please fill in required fields (Visitor Name and Student Visited).'
+      );
+      return;
+    }
+
+    addRecord('visitorLogs', {
+      id: `VL${Date.now()}`,
+      visitorName: form.visitorName,
+      studentVisited: form.studentVisited,
+      relation: form.relation || 'Relative',
+      purpose: form.purpose || 'Visit',
+      timeIn: form.timeIn,
+      timeOut: form.timeOut,
+      idProofType: form.idProofType || 'Govt ID',
+    });
+
+    setForm(initialForm);
+  };
+
+  const portalLabel =
+    activePortal === 'warden' ? 'Warden Portal' : 'Admin Portal';
+  const portalPath = `/hostel-services/${activePortal}`;
 
   return (
     <FormPage
@@ -22,11 +52,8 @@ export default function VisitorLog() {
       description="Register visitors for students in the hostel."
       breadcrumbs={[
         { label: 'Home', to: '/home' },
-        { label: 'Hostel Services', to: '/hostel-services' },
-        {
-          label: 'Transactions',
-          to: '/hostel-services/transactions/visitor-log',
-        },
+        { label: 'Hostel Services', to: '/home/sub-menu/hostel-services' },
+        { label: portalLabel, to: portalPath },
         { label: 'Visitor Log' },
       ]}
     >
@@ -74,8 +101,12 @@ export default function VisitorLog() {
           />
         </FormGrid>
         <div className="mt-4 flex gap-3">
-          <Button label="Save Entry" variant="primary" onClick={() => {}} />
-          <Button label="Clear" variant="outlined" onClick={() => {}} />
+          <Button label="Save Entry" variant="primary" onClick={handleSubmit} />
+          <Button
+            label="Clear"
+            variant="outlined"
+            onClick={() => setForm(initialForm)}
+          />
         </div>
       </FormCard>
 

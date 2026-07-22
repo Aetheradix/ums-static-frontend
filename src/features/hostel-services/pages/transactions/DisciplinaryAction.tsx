@@ -1,19 +1,46 @@
 import { useState } from 'react';
-import { useHostelContext } from '../../context/HostelContext';
+import { useHostelContext, useHostelRole } from '../../context/HostelContext';
 import { FormPage, FormCard, FormGrid, GridPanel } from 'shared/new-components';
 import { TextBox, DropDownList } from 'shared/components/forms';
 import { Button } from 'shared/components/buttons';
 
 export default function DisciplinaryAction() {
-  const { data } = useHostelContext();
-  const [form, setForm] = useState({
+  const { data, addRecord, updateRecord } = useHostelContext();
+  const { activePortal } = useHostelRole();
+
+  const initialForm = {
     studentName: '',
     reason: '',
     fineAmount: '',
-    actionTaken: '',
-    date: '',
-    status: 'Pending',
-  });
+    actionTaken: 'Warning and Fine',
+    date: new Date().toISOString().split('T')[0],
+    status: 'Pending' as 'Pending' | 'Actioned',
+  };
+
+  const [form, setForm] = useState(initialForm);
+
+  const handleSubmit = () => {
+    if (!form.studentName || !form.reason) {
+      alert('Please fill in required fields (Student Name and Reason).');
+      return;
+    }
+
+    addRecord('disciplinaryActions', {
+      id: `DA${Date.now()}`,
+      studentName: form.studentName,
+      reason: form.reason,
+      fineAmount: parseFloat(form.fineAmount) || 0,
+      actionTaken: form.actionTaken || 'Warning',
+      date: form.date,
+      status: form.status,
+    });
+
+    setForm(initialForm);
+  };
+
+  const portalLabel =
+    activePortal === 'warden' ? 'Warden Portal' : 'Admin Portal';
+  const portalPath = `/hostel-services/${activePortal}`;
 
   return (
     <FormPage
@@ -21,11 +48,8 @@ export default function DisciplinaryAction() {
       description="Record disciplinary actions and fines issued to students."
       breadcrumbs={[
         { label: 'Home', to: '/home' },
-        { label: 'Hostel Services', to: '/hostel-services' },
-        {
-          label: 'Transactions',
-          to: '/hostel-services/transactions/disciplinary-action',
-        },
+        { label: 'Hostel Services', to: '/home/sub-menu/hostel-services' },
+        { label: portalLabel, to: portalPath },
         { label: 'Disciplinary Action' },
       ]}
     >
@@ -67,12 +91,20 @@ export default function DisciplinaryAction() {
             textField="text"
             valueField="id"
             value={form.status}
-            onChange={v => setForm({ ...form, status: v as string })}
+            onChange={v => setForm({ ...form, status: v as any })}
           />
         </FormGrid>
         <div className="mt-4 flex gap-3">
-          <Button label="Record Entry" variant="primary" onClick={() => {}} />
-          <Button label="Clear" variant="outlined" onClick={() => {}} />
+          <Button
+            label="Record Entry"
+            variant="primary"
+            onClick={handleSubmit}
+          />
+          <Button
+            label="Clear"
+            variant="outlined"
+            onClick={() => setForm(initialForm)}
+          />
         </div>
       </FormCard>
 
@@ -98,6 +130,28 @@ export default function DisciplinaryAction() {
                 >
                   {item.status}
                 </span>
+              ),
+            },
+            {
+              header: 'Action',
+              sortable: false,
+              cell: (item: any) => (
+                <div className="flex gap-2">
+                  {item.status === 'Pending' && (
+                    <Button
+                      label="Actioned"
+                      variant="primary"
+                      size="small"
+                      icon="check"
+                      onClick={() =>
+                        updateRecord('disciplinaryActions', item.id, {
+                          ...item,
+                          status: 'Actioned',
+                        })
+                      }
+                    />
+                  )}
+                </div>
               ),
             },
           ]}

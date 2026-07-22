@@ -45,11 +45,27 @@ export default function StudentPortalPage() {
           path: '/hostel-services/student/mess-menu',
         },
         {
+          title: 'Inventory & Mess Quality',
+          description:
+            'View mess raw ingredients, quality certifications, stock levels, and submit meal quality ratings',
+          icon: 'inventory_2',
+          colorScheme: 'blue',
+          path: '/hostel-services/student/inventory-stock',
+        },
+        {
           title: 'Leave & Outpass',
           description: 'Apply for leave or outpass and track approval status',
           icon: 'directions_walk',
           colorScheme: 'purple',
           path: '/hostel-services/student/leave-outpass',
+        },
+        {
+          title: 'Maintenance Tickets',
+          description:
+            'Log maintenance tickets, track repairs, and digitally sign-off completion',
+          icon: 'build',
+          colorScheme: 'indigo',
+          path: '/hostel-services/student/maintenance-tickets',
         },
         {
           title: 'Request / Complaint',
