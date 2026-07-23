@@ -4,25 +4,38 @@ import { useAppForm } from 'shared/hooks/form';
 import validation from 'shared/utils/validation';
 
 export interface ProfileDetailsNoc {
+  status: string;
   nocType: string;
   referenceNo: string;
   issueDate: Date | null;
+  document: any;
+}
+
+export interface AcademicProgramme {
+  mode: string;
+  courseLevel: string;
+  facultyDept: string;
+  programmeName: string;
+  duration: string;
+  appliedYear: string;
 }
 
 export interface ProfileDetailsFormData {
+  applicationNumber: string;
+  nameOfCollege: string;
   nocs: ProfileDetailsNoc[];
-
-  builtUpArea: string;
-  numberOfClassrooms: string;
-  classroomSize: string;
-  numberOfLaboratories: string;
-  libraryBooksAvailable: string;
 
   totalLandArea: string;
   totalNumberOfBuildings: string;
   physicalEducationFacility: string;
   hostelFacility: string;
-  staffQuarterDetails: string;
+
+  boysHostelsCount: string;
+  girlsHostelsCount: string;
+  totalCapacity: string;
+
+  existingProgrammes: AcademicProgramme[];
+  proposedProgrammes: AcademicProgramme[];
 
   teachingFacultyDetails: string;
   nonTeachingStaffDetails: string;
@@ -30,6 +43,9 @@ export interface ProfileDetailsFormData {
 }
 
 const nocSchema = Joi.object({
+  status: Joi.string()
+    .required()
+    .messages({ 'string.empty': 'Status required' }),
   nocType: Joi.string()
     .required()
     .messages({ 'string.empty': 'Type required' }),
@@ -41,32 +57,35 @@ const nocSchema = Joi.object({
     .messages({ 'any.required': 'Date required' }),
 });
 
-const schema = validation.create<ProfileDetailsFormData>(o => ({
-  nocs: Joi.array()
-    .items(nocSchema)
-    .min(1)
-    .messages({ 'array.min': 'At least one NOC is required' }),
+const programmeSchema = Joi.object({
+  mode: Joi.string().required().messages({ 'string.empty': 'Mode required' }),
+  courseLevel: Joi.string()
+    .required()
+    .messages({ 'string.empty': 'Course Level required' }),
+  facultyDept: Joi.string()
+    .required()
+    .messages({ 'string.empty': 'Faculty/Dept required' }),
+  programmeName: Joi.string()
+    .required()
+    .messages({ 'string.empty': 'Programme Name required' }),
+  duration: Joi.string()
+    .required()
+    .messages({ 'string.empty': 'Duration required' }),
+  appliedYear: Joi.string()
+    .required()
+    .messages({ 'string.empty': 'Applied Year required' }),
+});
 
-  builtUpArea: o
+const schema = validation.create<ProfileDetailsFormData>(o => ({
+  applicationNumber: o
     .string()
     .required()
-    .messages({ 'string.empty': 'Built-up area is required' }),
-  numberOfClassrooms: o
+    .messages({ 'string.empty': 'Application Number required' }),
+  nameOfCollege: o
     .string()
     .required()
-    .messages({ 'string.empty': 'Number of classrooms is required' }),
-  classroomSize: o
-    .string()
-    .required()
-    .messages({ 'string.empty': 'Classroom size is required' }),
-  numberOfLaboratories: o
-    .string()
-    .required()
-    .messages({ 'string.empty': 'Number of laboratories is required' }),
-  libraryBooksAvailable: o
-    .string()
-    .required()
-    .messages({ 'string.empty': 'Library books count is required' }),
+    .messages({ 'string.empty': 'Name of College required' }),
+  nocs: Joi.array().items(nocSchema),
 
   totalLandArea: o
     .string()
@@ -84,10 +103,13 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
     .string()
     .required()
     .messages({ 'string.empty': 'Hostel facility is required' }),
-  staffQuarterDetails: o
-    .string()
-    .required()
-    .messages({ 'string.empty': 'Staff quarter details is required' }),
+
+  boysHostelsCount: o.string().allow('', null),
+  girlsHostelsCount: o.string().allow('', null),
+  totalCapacity: o.string().allow('', null),
+
+  existingProgrammes: Joi.array().items(programmeSchema),
+  proposedProgrammes: Joi.array().items(programmeSchema),
 
   teachingFacultyDetails: o
     .string()
@@ -116,26 +138,49 @@ export function useProfileDetailsForm() {
     resolver: validation.resolver(schema),
     mode: 'onChange',
     defaultValues: {
-      nocs: [{ nocType: '', referenceNo: '', issueDate: null }],
-      builtUpArea: '',
-      numberOfClassrooms: '',
-      classroomSize: '',
-      numberOfLaboratories: '',
-      libraryBooksAvailable: '',
+      applicationNumber: 'APP-2026-9021',
+      nameOfCollege: 'Global Institute of Technology',
+      nocs: [
+        {
+          status: 'yes',
+          nocType: '',
+          referenceNo: '',
+          issueDate: null,
+          document: null,
+        },
+      ],
       totalLandArea: '',
       totalNumberOfBuildings: '',
       physicalEducationFacility: '',
       hostelFacility: '',
-      staffQuarterDetails: '',
+      boysHostelsCount: '',
+      girlsHostelsCount: '',
+      totalCapacity: '',
+      existingProgrammes: [
+        {
+          mode: '',
+          courseLevel: '',
+          facultyDept: '',
+          programmeName: '',
+          duration: '',
+          appliedYear: '',
+        },
+      ],
+      proposedProgrammes: [],
       teachingFacultyDetails: '',
       nonTeachingStaffDetails: '',
       coreFacilities: '',
     },
   });
 
-  const fieldArray = useFieldArray({
+  const nocsArray = useFieldArray({ control, name: 'nocs' });
+  const existingProgrammesArray = useFieldArray({
     control,
-    name: 'nocs',
+    name: 'existingProgrammes',
+  });
+  const proposedProgrammesArray = useFieldArray({
+    control,
+    name: 'proposedProgrammes',
   });
 
   return {
@@ -146,6 +191,8 @@ export function useProfileDetailsForm() {
     trigger,
     setValue,
     formState,
-    fieldArray,
+    nocsArray,
+    existingProgrammesArray,
+    proposedProgrammesArray,
   };
 }

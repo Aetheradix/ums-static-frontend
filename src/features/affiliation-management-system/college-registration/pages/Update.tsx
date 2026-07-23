@@ -6,7 +6,7 @@ import { FormWizard } from 'shared/components/forms';
 import type { WizardStep } from 'shared/components/forms/FormWizard';
 import { FormPage, PaymentDialog, ReceiptDialog } from 'shared/new-components';
 import AffiliationOtherDetailsStep from '../components/AffiliationOtherDetailsStep';
-import CollegeCourseDetailStep from '../components/CollegeCourseDetailStep';
+
 import CollegeEnclosureStep from '../components/CollegeEnclosureStep';
 import CollegeRegistrationStep from '../components/CollegeRegistrationStep';
 import DraftSuccessDialog from '../components/DraftSuccessDialog';
@@ -206,11 +206,7 @@ export default function Update() {
       icon: 'user',
       content: <AffiliationOtherDetailsStep register={register} />,
     },
-    {
-      label: 'Course Details',
-      icon: 'book',
-      content: <CollegeCourseDetailStep control={control} />,
-    },
+
     {
       label: 'Enclosures',
       icon: 'folder-open',

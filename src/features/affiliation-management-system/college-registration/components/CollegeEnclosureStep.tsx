@@ -87,16 +87,6 @@ export default function CollegeEnclosureStep({
         <FormGrid columns={1}>
           <div className="enclosure-upload-list">
             <FileUpload
-              label="Attach scanned copy of NOC of MP Government in .pdf format"
-              name="nocFile"
-              control={control}
-              accept=".pdf"
-              mode="file"
-              uploadNote="PDF format only, maximum size 250 KB"
-              required
-            />
-
-            <FileUpload
               label="Attach scanned copy of Affidavit in .pdf format"
               name="affidavitFile"
               control={control}
