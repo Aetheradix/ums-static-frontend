@@ -3,6 +3,8 @@ import { FormWizard } from 'shared/components/forms';
 import type { WizardStep } from 'shared/components/forms/FormWizard';
 import { FormPage } from 'shared/new-components';
 import { useProfileDetailsForm } from '../components/form.hook';
+import ProfileCertificationStep from '../components/ProfileCertificationStep';
+import ProfileComplianceStep from '../components/ProfileComplianceStep';
 import ProfileEcosystemStep from '../components/ProfileEcosystemStep';
 import ProfileInfrastructureStep from '../components/ProfileInfrastructureStep';
 import ProfileInstitutionalStep from '../components/ProfileInstitutionalStep';
@@ -15,9 +17,11 @@ export default function Create() {
     reset,
     trigger,
     formState,
+    governingBodyMembersArray,
     nocsArray,
-    existingProgrammesArray,
-    proposedProgrammesArray,
+    existingCoursesArray,
+    teachingStaffArray,
+    additionalInstitutionsArray,
   } = useProfileDetailsForm();
 
   const onFormSubmit = handleSubmit(
@@ -52,19 +56,34 @@ export default function Create() {
 
   const wizardSteps: WizardStep[] = [
     {
-      label: 'Institutional & NOC Details',
-      icon: 'building',
+      label: 'General Info',
+      icon: 'info-circle',
       content: (
         <ProfileInstitutionalStep
           register={register}
           control={control}
           formState={formState}
           nocsArray={nocsArray}
+          governingBodyMembersArray={governingBodyMembersArray}
         />
       ),
     },
     {
-      label: 'Infrastructure',
+      label: 'Academics & Inst.',
+      icon: 'book',
+      content: (
+        <ProfileEcosystemStep
+          register={register}
+          control={control}
+          formState={formState}
+          existingCoursesArray={existingCoursesArray}
+          teachingStaffArray={teachingStaffArray}
+          additionalInstitutionsArray={additionalInstitutionsArray}
+        />
+      ),
+    },
+    {
+      label: 'Infra & Facilities',
       icon: 'map',
       content: (
         <ProfileInfrastructureStep
@@ -75,15 +94,24 @@ export default function Create() {
       ),
     },
     {
-      label: 'Ecosystem & Courses',
-      icon: 'book',
+      label: 'Compliance & Eq...',
+      icon: 'check-circle',
       content: (
-        <ProfileEcosystemStep
+        <ProfileComplianceStep
           register={register}
           control={control}
           formState={formState}
-          existingProgrammesArray={existingProgrammesArray}
-          proposedProgrammesArray={proposedProgrammesArray}
+        />
+      ),
+    },
+    {
+      label: 'Signature & Certification',
+      icon: 'check-circle',
+      content: (
+        <ProfileCertificationStep
+          register={register}
+          control={control}
+          formState={formState}
         />
       ),
     },

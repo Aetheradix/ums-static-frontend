@@ -1,7 +1,7 @@
 import { Controller, type Control, type Path } from 'react-hook-form';
 import {
   DatePicker,
-  DropDownList,
+  MultiSelectList,
   TextArea,
   TextBox,
 } from 'shared/components/forms';
@@ -45,9 +45,9 @@ export default function InspectionDetailsStep({
             )}
           />
           <div className="col-span-2">
-            <DropDownList
+            <MultiSelectList
               label="Name of the Course"
-              placeholder="Select Course"
+              placeholder="Select Course(s)"
               name="course_name"
               control={control}
               data={[
