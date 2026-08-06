@@ -18,7 +18,7 @@ export default function List() {
               <tr className="border-b text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50">
                 <th className="p-4 font-semibold">Approval Type</th>
                 <th className="p-4 font-semibold">Authority</th>
-                <th className="p-4 font-semibold">Status</th>
+                <th className="p-4 font-semibold">Status S</th>
                 <th className="p-4 font-semibold">Date</th>
                 <th className="p-4 font-semibold">Remarks</th>
               </tr>
