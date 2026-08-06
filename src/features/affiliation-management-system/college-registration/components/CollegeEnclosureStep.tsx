@@ -16,17 +16,21 @@ interface CollegeEnclosureStepProps {
   };
   control: Control<AffiliationManagementSystem.CollegeApplicationFormData>;
   setValue: UseFormSetValue<AffiliationManagementSystem.CollegeApplicationFormData>;
+  isEdit?: boolean;
 }
 
 export default function CollegeEnclosureStep({
   register,
   control,
   setValue,
+  isEdit = false,
 }: CollegeEnclosureStepProps) {
   const collegeCode = useWatch({ control, name: 'collegeCode' }) || '';
   const applicationNumber = useWatch({ control, name: 'applicationNumber' });
 
   useEffect(() => {
+    if (isEdit) return;
+
     const codePrefix = collegeCode.slice(-3).toUpperCase();
     const shouldRegenerate =
       !applicationNumber ||
@@ -97,7 +101,7 @@ export default function CollegeEnclosureStep({
             />
 
             <FileUpload
-              label="Attach scanned copy of relevant regular authority letter for professional course in .pdf format"
+              label="Other documents"
               name="regularAuthorityFile"
               control={control}
               accept=".pdf"

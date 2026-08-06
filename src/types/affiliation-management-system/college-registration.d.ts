@@ -1,10 +1,12 @@
 declare namespace AffiliationManagementSystem {
   export interface CollegeRegistrationForm {
+    affiliationTypeId: number | null;
     collegeCode: string;
     establishmentYear: number;
     collegeName: string;
     collegeAddress: string;
-    districtId: number;
+    stateId?: number | null;
+    districtId: number | null;
     telephoneNo: string;
     collegeEmail: string;
     collegeCategoryId: number;
@@ -15,7 +17,7 @@ declare namespace AffiliationManagementSystem {
     otherFacilities?: { facilityName: string }[];
     applicationNumber?: string;
     isSubmitted?: boolean;
-    transactionId?: string;
+    transactionId?: number;
     transactionDate?: string | null;
     totalFees?: number;
     feeStructure?: string;
@@ -71,8 +73,6 @@ declare namespace AffiliationManagementSystem {
     applicationNumber?: string;
   }
 
-  /** Combined form data for the multi-step application */
-
   export type CollegeApplicationFormData = CollegeRegistrationForm &
     AffiliationOtherDetailsForm & {
       courses: CollegeCourseDetailForm[];
@@ -95,9 +95,10 @@ declare namespace AffiliationManagementSystem {
 
   export interface CollegeRegistrationPreview {
     registrationId: number;
-    establishmentYearId: number;
+    establishmentYear: number;
     collegeName: string;
     collegeAddress: string;
+    stateId?: number;
     districtId: number;
     telephoneNo: string;
     collegeEmail: string;
@@ -108,13 +109,14 @@ declare namespace AffiliationManagementSystem {
     districtName: string;
     collegeArea: string;
     numberOfClassRooms: number;
-    deficiencyEarlierRaisedByCommittee: boolean;
-    availableFacilities: string[];
-    transactionId?: string;
+    availableFacilities: number[];
+    availableFacilitiesOther?: string;
+    transactionId?: number;
     transactionDate?: string;
     totalFees?: number;
     feeStructure?: string;
     isFeePaid?: boolean;
+    applicationNumber?: string;
     otherDetail?: {
       principalDirectorName: string;
       principalMobileNo: string;
@@ -136,5 +138,34 @@ declare namespace AffiliationManagementSystem {
       documentId: string;
       documentType: string;
     }[];
+  }
+
+  export interface MyCollegeRegistration {
+    registrationId: number;
+    establishmentYear: number;
+    collegeName: string;
+    collegeAddress: string;
+    stateId?: number;
+    districtId: number;
+    telephoneNo: string;
+    collegeEmail: string;
+    collegeCategoryId: number;
+    collegeTypeId: number;
+    accommodationType: string;
+    collegeCode: string;
+    collegeArea: string;
+    applicationNumber?: string;
+    otherDetail?: {
+      principalDirectorName: string;
+      principalMobileNo: string;
+      principalEmail?: string;
+      societyName: string;
+      secretaryName: string;
+      societyRegistrationNo: string;
+      societyRegistrationDate: string;
+      isOtherInstitutionRunning: boolean;
+    };
+    availableFacilities?: number[];
+    availableFacilitiesOther?: string;
   }
 }

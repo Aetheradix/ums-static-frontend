@@ -1,48 +1,56 @@
-import { DropDownList } from 'shared/components/forms';
-import { useAvailableFacilitiesQuery } from 'features/master/college/college-facility/queries';
-
-const dummyDistricts = [
-  { id: 1, name: 'Bhopal', isActive: true },
-  { id: 2, name: 'Indore', isActive: true },
-  { id: 3, name: 'Gwalior', isActive: true },
-  { id: 4, name: 'Jabalpur', isActive: true },
-];
-
-const dummyCategories = [
-  { id: 1, name: 'Government', isActive: true },
-  { id: 2, name: 'Private', isActive: true },
-  { id: 3, name: 'Autonomous', isActive: true },
-];
-
-const dummyTypes = [
-  { id: 1, name: 'Engineering', isActive: true },
-  { id: 2, name: 'Medical', isActive: true },
-  { id: 3, name: 'Management', isActive: true },
-  { id: 4, name: 'Arts & Science', isActive: true },
-];
-
-const dummyAreas = [
-  { id: 'Urban', name: 'Urban', isActive: true },
-  { id: 'Rural', name: 'Rural', isActive: true },
-  { id: 'Semi-Urban', name: 'Semi-Urban', isActive: true },
-];
-
-const dummyAccommodations = [
-  { id: 'Boys & Girls (Co-ed)', name: 'Boys & Girls (Co-ed)', isActive: true },
-  { id: 'Boys Only', name: 'Boys Only', isActive: true },
-  { id: 'Girls Only', name: 'Girls Only', isActive: true },
-];
 import { useEffect, useRef } from 'react';
 import type { Control, Path, UseFormSetValue } from 'react-hook-form';
-import { Controller, useFieldArray, useWatch } from 'react-hook-form';
-import { Button } from 'shared/components/buttons';
+import { Controller, useWatch } from 'react-hook-form';
 import {
-  CheckboxList,
   DatePicker,
+  DropDownList,
   TextArea,
   TextBox,
 } from 'shared/components/forms';
 import { FormCard, FormGrid } from 'shared/new-components';
+import '../pages/Create.css';
+
+const dummyAffiliationTypes = [
+  { id: 1, name: 'Permanent' },
+  { id: 2, name: 'Temporary' },
+];
+
+const dummyStates = [
+  { id: 1, name: 'Madhya Pradesh' },
+  { id: 2, name: 'Maharashtra' },
+  { id: 3, name: 'Gujarat' },
+];
+
+const dummyDistricts = [
+  { id: 1, name: 'Indore', stateId: 1 },
+  { id: 2, name: 'Bhopal', stateId: 1 },
+  { id: 3, name: 'Mumbai', stateId: 2 },
+  { id: 4, name: 'Pune', stateId: 2 },
+];
+
+const dummyCategories = [
+  { id: 1, name: 'General' },
+  { id: 2, name: 'OBC' },
+  { id: 3, name: 'SC' },
+  { id: 4, name: 'ST' },
+];
+
+const dummyTypes = [
+  { id: 1, name: 'Government' },
+  { id: 2, name: 'Private' },
+  { id: 3, name: 'Aided' },
+];
+
+const dummyAreas = [
+  { id: 1, name: 'Urban' },
+  { id: 2, name: 'Rural' },
+  { id: 3, name: 'Semi-Urban' },
+];
+
+const dummyAccommodations = [
+  { id: '1', name: 'Rented' },
+  { id: '2', name: 'Owned' },
+];
 
 interface CollegeRegistrationStepProps {
   register: (
@@ -56,82 +64,31 @@ interface CollegeRegistrationStepProps {
   isEdit?: boolean;
 }
 
-const getFacilityIcon = (facilityName: string) => {
-  const name = facilityName.toLowerCase();
-
-  if (name.includes('play')) return 'pi pi-map';
-  if (name.includes('library')) return 'pi pi-book';
-  if (name.includes('laboratory')) return 'pi pi-cog';
-  if (name.includes('boys')) return 'pi pi-home';
-  if (name.includes('girls')) return 'pi pi-user';
-  if (name.includes('medical')) return 'pi pi-briefcase';
-  if (name.includes('canteen')) return 'pi pi-shopping-bag';
-  if (name.includes('transport')) return 'pi pi-car';
-
-  return 'pi pi-ellipsis-h';
-};
-
 export default function CollegeRegistrationStep({
   register,
   control,
   setValue,
   isEdit = false,
 }: CollegeRegistrationStepProps) {
-  const { data: facilityData } = useAvailableFacilitiesQuery();
-
-  const facilityOptions = [
-    ...(facilityData?.filter(f => f.isActive) || []),
-    { id: -1, facilityName: 'Other' },
-  ].map(item => ({
-    ...item,
-    icon: getFacilityIcon(item.facilityName),
-  }));
-
-  const watchedFacilities = useWatch({ control, name: 'availableFacilities' });
-  const isOtherSelected = watchedFacilities && watchedFacilities[-1] === true;
-  const wasOtherSelectedRef = useRef(false);
-
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'otherFacilities',
-  });
+  const stateId = useWatch({ control, name: 'stateId' });
+  const isFeePaid = useWatch({ control, name: 'isFeePaid' });
+  const previousStateIdRef = useRef(stateId);
 
   useEffect(() => {
     if (
-      isOtherSelected &&
-      !wasOtherSelectedRef.current &&
-      fields.length === 0
+      previousStateIdRef.current !== undefined &&
+      stateId !== previousStateIdRef.current
     ) {
-      append({ facilityName: '' });
-    }
-
-    wasOtherSelectedRef.current = !!isOtherSelected;
-  }, [isOtherSelected, fields.length, append]);
-
-  const handleRemoveOtherFacility = (index: number) => {
-    remove(index);
-
-    if (fields.length === 1) {
-      setValue(
-        'availableFacilities',
-        {
-          ...(watchedFacilities || {}),
-          [-1]: false,
-        },
-        {
-          shouldDirty: true,
-          shouldValidate: true,
-        }
-      );
-
-      setValue('otherFacilities', [], {
-        shouldDirty: true,
+      setValue('districtId', null, {
         shouldValidate: true,
+        shouldDirty: true,
       });
-
-      wasOtherSelectedRef.current = false;
     }
-  };
+    previousStateIdRef.current = stateId;
+  }, [stateId, setValue]);
+
+  const filteredDistricts = dummyDistricts.filter(d => d.stateId === stateId);
+
   return (
     <FormCard
       title="College Details"
@@ -147,9 +104,20 @@ export default function CollegeRegistrationStep({
             readOnly
           />
         )}
+        <DropDownList
+          label="Affiliation Type"
+          defaultOptionText="Select Affiliation Type"
+          placeholder="Select Affiliation Type"
+          data={dummyAffiliationTypes}
+          textField="name"
+          valueField="id"
+          {...register('affiliationTypeId')}
+          disabled={isFeePaid}
+          required
+        />
         <TextBox
           label="College Code"
-          placeholder="College code"
+          placeholder="Enter college code"
           {...register('collegeCode')}
           maxLength={15}
           required
@@ -178,8 +146,16 @@ export default function CollegeRegistrationStep({
 
         <TextBox
           label="College Name"
-          placeholder="College name"
+          placeholder="Enter college name"
           {...register('collegeName')}
+          onChange={val => {
+            if (!val) return;
+            const formatted = val
+              .split(' ')
+              .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ');
+            setValue('collegeName', formatted);
+          }}
           maxLength={200}
           required
         />
@@ -187,27 +163,39 @@ export default function CollegeRegistrationStep({
         <div className="affiliation-grid-full">
           <TextArea
             label="College Address"
-            placeholder="College address"
+            placeholder="Enter college address"
             {...register('collegeAddress')}
             required
           />
         </div>
 
         <DropDownList
+          label="State"
+          defaultOptionText="Select State"
+          placeholder="Select State"
+          data={dummyStates}
+          textField="name"
+          valueField="id"
+          {...register('stateId')}
+          required
+        />
+
+        <DropDownList
           label="District"
-          defaultOptionText="Select district"
-          placeholder="Select district"
-          data={dummyDistricts}
+          defaultOptionText="Select District"
+          placeholder="Select District"
+          data={filteredDistricts}
           textField="name"
           valueField="id"
           {...register('districtId')}
+          disabled={!stateId}
           required
         />
 
         <TextBox
           label="Telephone No."
           subLabel="(Please write telephone number including STD code.)"
-          placeholder="Telephone No."
+          placeholder="Enter telephone no."
           {...register('telephoneNo')}
           maxLength={20}
           required
@@ -215,7 +203,7 @@ export default function CollegeRegistrationStep({
 
         <TextBox
           label="College Email"
-          placeholder="College email"
+          placeholder="Enter college email"
           {...register('collegeEmail')}
           maxLength={255}
           required
@@ -223,8 +211,8 @@ export default function CollegeRegistrationStep({
 
         <DropDownList
           label="College Category"
-          defaultOptionText="Select college category"
-          placeholder="Select college category"
+          defaultOptionText="Select College Category"
+          placeholder="Select College Category"
           data={dummyCategories}
           textField="name"
           valueField="id"
@@ -234,8 +222,8 @@ export default function CollegeRegistrationStep({
 
         <DropDownList
           label="College Type"
-          defaultOptionText="Select college type"
-          placeholder="Select college type"
+          defaultOptionText="Select College Type"
+          placeholder="Select College Type"
           data={dummyTypes}
           textField="name"
           valueField="id"
@@ -245,8 +233,8 @@ export default function CollegeRegistrationStep({
 
         <DropDownList
           label="College Area"
-          defaultOptionText="Select college area"
-          placeholder="Select college area"
+          defaultOptionText="Select College Area"
+          placeholder="Select College Area"
           data={dummyAreas}
           textField="name"
           valueField="id"
@@ -256,102 +244,14 @@ export default function CollegeRegistrationStep({
 
         <DropDownList
           label="Accommodation Type"
-          defaultOptionText="Select Accommodation type"
-          placeholder="Select Accommodation type"
+          defaultOptionText="Select Accommodation Type"
+          placeholder="Select Accommodation Type"
           data={dummyAccommodations}
           textField="name"
           valueField="id"
           {...register('accommodationType')}
           required
         />
-
-        <div className="affiliation-grid-full affiliation-facility-section">
-          <div className="affiliation-facility-header-row">
-            <h4>Available Facilities</h4>
-
-            <p className="affiliation-facility-note">
-              <i className="pi pi-info-circle" />
-              <span>
-                <strong>Note:</strong> If any of your available facilities are
-                not listed, please select the “Other” option and add them.
-              </span>
-            </p>
-          </div>
-
-          <CheckboxList
-            name="availableFacilities"
-            control={control}
-            options={facilityOptions}
-            getLabel={opt => opt.facilityName}
-            getValue={opt => opt.id}
-            columns={4}
-            className="affiliation-facility-list"
-            itemClassName="affiliation-facility-item"
-            renderOption={opt => (
-              <div className="affiliation-facility-content">
-                <div className="affiliation-facility-left">
-                  <span className="affiliation-facility-icon-box">
-                    <i className={opt.icon} />
-                  </span>
-
-                  <span className="affiliation-facility-text">
-                    {opt.facilityName}
-                  </span>
-                </div>
-              </div>
-            )}
-          />
-        </div>
-
-        {isOtherSelected && (
-          <div className="affiliation-grid-full">
-            <div className="affiliation-other-facility-panel">
-              <div className="affiliation-other-facility-header">
-                <h4>Add Other Facilities</h4>
-
-                <Button
-                  type="button"
-                  variant="outlined"
-                  icon="plus"
-                  label="Add More"
-                  onClick={() => append({ facilityName: '' })}
-                />
-              </div>
-
-              <div className="affiliation-other-facility-body">
-                {fields.map((field, index) => (
-                  <div
-                    key={field.id}
-                    className="affiliation-other-facility-row"
-                  >
-                    <label className="affiliation-other-facility-label">
-                      Other Facility {index + 1}
-                      <span>*</span>
-                    </label>
-
-                    <div className="affiliation-other-facility-input-wrap">
-                      <TextBox
-                        placeholder="Enter facility name"
-                        {...register(
-                          `otherFacilities.${index}.facilityName` as const
-                        )}
-                        required
-                      />
-
-                      <Button
-                        type="button"
-                        variant="text"
-                        className="affiliation-other-facility-delete"
-                        icon="trash"
-                        onClick={() => handleRemoveOtherFacility(index)}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
       </FormGrid>
     </FormCard>
   );

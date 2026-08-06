@@ -1,6 +1,12 @@
 import type { Control, FormState, Path } from 'react-hook-form';
 import { Button } from 'shared/components/buttons';
-import { DropDownList, TextBox } from 'shared/components/forms';
+import {
+  DatePicker,
+  DropDownList,
+  FileUpload,
+  RadioButtonList,
+  TextBox,
+} from 'shared/components/forms';
 import { FormCard, FormGrid } from 'shared/new-components';
 import type { ProfileDetailsFormData } from './form.hook';
 
@@ -11,6 +17,7 @@ interface ProfileInstitutionalStepProps {
   };
   control: Control<ProfileDetailsFormData>;
   formState: FormState<ProfileDetailsFormData>;
+  nocsArray: any;
   governingBodyMembersArray: any;
 }
 
@@ -28,9 +35,19 @@ export default function ProfileInstitutionalStep({
   register,
   control,
   formState,
+  nocsArray,
   governingBodyMembersArray,
 }: ProfileInstitutionalStepProps) {
-  const { fields, append, remove } = governingBodyMembersArray;
+  const {
+    fields: nocsFields,
+    append: appendNoc,
+    remove: removeNoc,
+  } = nocsArray;
+  const {
+    fields: govFields,
+    append: appendGov,
+    remove: removeGov,
+  } = governingBodyMembersArray;
 
   return (
     <>
@@ -117,6 +134,111 @@ export default function ProfileInstitutionalStep({
             }
             required
           />
+        </div>
+        <div className="overflow-x-auto w-full mb-4">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="p-3 font-semibold">STATUS</th>
+                <th className="p-3 font-semibold">NOC TYPE</th>
+                <th className="p-3 font-semibold">NOC REFERENCE NO.</th>
+                <th className="p-3 font-semibold">ISSUE DATE</th>
+                <th className="p-3 font-semibold">DOCUMENT</th>
+                <th className="p-3 font-semibold text-center">ACTION</th>
+              </tr>
+            </thead>
+            <tbody>
+              {nocsFields.map((field: any, index: number) => (
+                <tr key={field.id} className="border-b">
+                  <td className="p-3 align-top min-w-[120px]">
+                    <RadioButtonList
+                      name={`nocs.${index}.status`}
+                      control={control}
+                      options={[
+                        { label: 'Yes', value: 'yes' },
+                        { label: 'No', value: 'no' },
+                      ]}
+                      variant="horizontal"
+                    />
+                  </td>
+                  <td className="p-3 align-top min-w-[200px]">
+                    <DropDownList
+                      name={`nocs.${index}.nocType`}
+                      control={control}
+                      placeholder="Select NOC Type"
+                      appendTo={document.body}
+                      data={[
+                        { id: 'type1', name: 'Type 1' },
+                        { id: 'type2', name: 'Type 2' },
+                      ]}
+                      textField="name"
+                      valueField="id"
+                      errorMessage={
+                        formState.errors.nocs?.[index]?.nocType?.message
+                      }
+                    />
+                  </td>
+                  <td className="p-3 align-top min-w-[200px]">
+                    <TextBox
+                      {...register(`nocs.${index}.referenceNo`)}
+                      placeholder="e.g. NOC-2026/88"
+                      errorMessage={
+                        formState.errors.nocs?.[index]?.referenceNo?.message
+                      }
+                    />
+                  </td>
+                  <td className="p-3 align-top min-w-[200px]">
+                    <DatePicker
+                      name={`nocs.${index}.issueDate`}
+                      control={control}
+                      placeholder="Select issue date"
+                      appendTo={document.body}
+                      errorMessage={
+                        formState.errors.nocs?.[index]?.issueDate?.message
+                      }
+                    />
+                  </td>
+                  <td className="p-3 align-top min-w-[200px]">
+                    <FileUpload
+                      name={`nocs.${index}.document`}
+                      control={control}
+                      accept=".pdf"
+                      mode="file"
+                    />
+                  </td>
+                  <td className="p-3 align-top text-center">
+                    <Button
+                      icon="trash"
+                      variant="outlined"
+                      onClick={() => removeNoc(index)}
+                      disabled={nocsFields.length === 1}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {formState.errors.nocs?.root?.message && (
+            <div className="p-error text-sm mt-2">
+              {formState.errors.nocs.root.message}
+            </div>
+          )}
+          <div className="mt-4">
+            <Button
+              label="Add NOC"
+              icon="plus"
+              variant="outlined"
+              onClick={() =>
+                appendNoc({
+                  status: '',
+                  nocType: '',
+                  referenceNo: '',
+                  issueDate: null,
+                  document: null,
+                })
+              }
+            />
+          </div>
         </div>
 
         <div className="border border-gray-200 rounded-lg p-4 mb-4">
@@ -240,7 +362,7 @@ export default function ProfileInstitutionalStep({
           Fill one row per member, attach separate sheet if required.
         </p>
         <div className="flex flex-col gap-4">
-          {fields.map((field: any, index: number) => (
+          {govFields.map((field: any, index: number) => (
             <div
               key={field.id}
               className="border border-gray-200 rounded-lg p-4 relative"
@@ -252,8 +374,8 @@ export default function ProfileInstitutionalStep({
                 <Button
                   icon="trash"
                   variant="outlined"
-                  onClick={() => remove(index)}
-                  disabled={fields.length === 1}
+                  onClick={() => removeGov(index)}
+                  disabled={govFields.length === 1}
                 />
               </div>
               <FormGrid columns={3}>
@@ -327,7 +449,7 @@ export default function ProfileInstitutionalStep({
               icon="plus"
               variant="outlined"
               onClick={() =>
-                append({
+                appendGov({
                   memberName: '',
                   fathersName: '',
                   age: '',

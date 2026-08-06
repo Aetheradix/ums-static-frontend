@@ -8,10 +8,12 @@ export const STEP_FIELDS: Record<
   (keyof AffiliationManagementSystem.CollegeApplicationFormData)[]
 > = {
   0: [
+    'affiliationTypeId',
     'collegeCode',
     'establishmentYear',
     'collegeName',
     'collegeAddress',
+    'stateId',
     'districtId',
     'telephoneNo',
     'collegeEmail',
@@ -19,13 +21,6 @@ export const STEP_FIELDS: Record<
     'collegeTypeId',
     'accommodationType',
     'collegeArea',
-    'availableFacilities',
-    'otherFacilities',
-    'transactionId',
-    'transactionDate',
-    'totalFees',
-    'feeStructure',
-    'isFeePaid',
   ],
   1: [
     'principalDirectorName',
@@ -37,9 +32,7 @@ export const STEP_FIELDS: Record<
     'societyRegistrationDate',
     'isOtherInstitutionRunning',
   ],
-  2: ['courses'],
-  3: [
-    'nocFile',
+  2: [
     'affidavitFile',
     'regularAuthorityFile',
     'applicationNumber',
@@ -71,6 +64,10 @@ const schema =
   validation.create<AffiliationManagementSystem.CollegeApplicationFormData>(
     o => ({
       // Step 1 — College Registration
+      affiliationTypeId: o
+        .number()
+        .required()
+        .messages({ 'number.base': 'Required' }),
       collegeCode: o.string().required().max(15),
       establishmentYear: o
         .number()
@@ -87,6 +84,7 @@ const schema =
           [keys.string.pattern]: errors.englishOnly,
         }),
       collegeAddress: o.string().required().max(500),
+      stateId: o.number().required().messages({ 'number.base': 'Required' }),
       districtId: o.number().required().messages({ 'number.base': 'Required' }),
       telephoneNo: o
         .string()
@@ -122,22 +120,8 @@ const schema =
         .required()
         .max(500)
         .messages({ 'string.base': 'Required' }),
-      availableFacilities: o.object().required(),
-      otherFacilities: o
-        .array()
-        .items(
-          o.object().keys({
-            facilityName: o.string().required().max(200),
-          })
-        )
-        .optional(),
       applicationNumber: o.string().optional(),
       isSubmitted: o.boolean().optional(),
-      transactionId: o.string().optional(),
-      transactionDate: o.string().allow('', null).optional(),
-      totalFees: o.number().optional(),
-      feeStructure: o.string().optional(),
-      isFeePaid: o.boolean().optional(),
 
       // Step 2 — College Affiliation
       affiliationId: o.number().optional(),
@@ -151,7 +135,14 @@ const schema =
         .messages({
           [keys.string.pattern]: 'Principal mobile number must be 10 digits',
         }),
-      principalEmail: o.string().required().max(70),
+      principalEmail: o
+        .string()
+        .required()
+        .max(255)
+        .email({ tlds: { allow: false } })
+        .messages({
+          'string.email': 'Please enter a valid email address',
+        }),
       societyName: o.string().required().max(200),
       societyRegistrationNo: o.string().required().max(100),
       secretaryName: o.string().required().max(100),
@@ -161,40 +152,14 @@ const schema =
         .required()
         .messages({ 'boolean.base': 'Required' }),
 
-      // Step 3 — Course Details
-      courses: o
-        .array()
-        .items(
-          o.object().keys({
-            collegeCourseDetailId: o.number().optional(),
-            registrationId: o.number().optional(),
-            id: o.any().optional(),
-            courseId: o
-              .number()
-              .required()
-              .messages({ 'number.base': 'Required' }),
-            subjectIds: o.array().items(o.number()).min(1).required(),
-            totalAmount: o.number().optional(),
-            isFeePaid: o.boolean().optional(),
-            paymentDate: o.string().allow('', null).optional(),
-          })
-        )
-        .min(1)
-        .required()
-        .messages({
-          'array.min': 'Please add at least one course to proceed.',
-          'any.required': 'Please add at least one course to proceed.',
-        }),
-
       // Step 4 — Enclosures
-      nocFile: pdfFileValidator(o).required(),
       affidavitFile: pdfFileValidator(o).required(),
       regularAuthorityFile: pdfFileValidator(o).optional().allow(null),
     })
   );
 
 export function useCollegeApplicationForm() {
-  const { register, control, handleSubmit, reset, trigger, setValue } =
+  const methods =
     useAppForm<AffiliationManagementSystem.CollegeApplicationFormData>({
       resolver: validation.resolver(schema),
       mode: 'onChange',
@@ -202,11 +167,13 @@ export function useCollegeApplicationForm() {
     });
 
   return {
-    register,
-    control,
-    handleSubmit,
-    reset,
-    trigger,
-    setValue,
+    methods,
+    register: methods.register,
+    control: methods.control,
+    handleSubmit: methods.handleSubmit,
+    reset: methods.reset,
+    trigger: methods.trigger,
+    setValue: methods.setValue,
+    resetField: methods.resetField,
   };
 }

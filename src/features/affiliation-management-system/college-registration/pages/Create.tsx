@@ -1,36 +1,35 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
+import { FormProvider, type Path, type UseFormReturn } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import { FormWizard } from 'shared/components/forms';
-import type { WizardStep } from 'shared/components/forms/FormWizard';
-import { FormPage, PaymentDialog, ReceiptDialog } from 'shared/new-components';
+import { FormPage, Stepper } from 'shared/new-components';
 import AffiliationOtherDetailsStep from '../components/AffiliationOtherDetailsStep';
-
 import CollegeEnclosureStep from '../components/CollegeEnclosureStep';
 import CollegeRegistrationStep from '../components/CollegeRegistrationStep';
 import DraftSuccessDialog from '../components/DraftSuccessDialog';
-import { useCollegeApplicationForm } from '../components/form.hook';
-import { useCreateCollegeRegistrationMutation } from '../queries';
-
+import {
+  STEP_FIELDS,
+  useCollegeApplicationForm,
+} from '../components/form.hook';
 import './Create.css';
 
+const STEPS = [
+  { label: 'College Details' },
+  { label: 'Management Details' },
+  { label: 'Enclosures' },
+];
+
 export default function Create() {
+  const [activeStep, setActiveStep] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [showDraftDialog, setShowDraftDialog] = useState(false);
   const [draftAppNumber, setDraftAppNumber] = useState('');
-
-  // Payment states
-  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
-  const [showReceiptDialog, setShowReceiptDialog] = useState(false);
-  const [paymentAmount, setPaymentAmount] = useState(0);
-  const [transactionId, setTransactionId] = useState('');
-  const [validatedData, setValidatedData] = useState<any>(null);
+  const submitTypeRef = useRef<'DRAFT' | 'FINAL'>('DRAFT');
 
   const navigate = useNavigate();
-  const { isPending } = useCreateCollegeRegistrationMutation();
 
-  const { register, control, handleSubmit, reset, trigger, setValue } =
+  const { methods, register, control, handleSubmit, reset, trigger, setValue } =
     useCollegeApplicationForm();
 
   const executeSubmission = async (data: any) => {
@@ -59,25 +58,12 @@ export default function Create() {
 
   const onFormSubmit = handleSubmit(
     async data => {
-      // Direct save for draft
-      if (data.isSubmitted === false) {
-        await executeSubmission(data);
-        return;
-      }
-
-      // For final submission, initiate payment flow
-      let total = 0;
-      data.courses?.forEach((c: any) => {
-        total += c.totalAmount || 0;
-      });
-
-      setValidatedData(data);
-      setPaymentAmount(total);
-      setShowPaymentDialog(true);
+      const isFinalSubmit = submitTypeRef.current === 'FINAL';
+      data.isSubmitted = isFinalSubmit;
+      await executeSubmission(data);
     },
     errors => {
       console.log('Validation Errors on Save:', errors);
-
       const getFirstError = (obj: any): string | null => {
         if (!obj || typeof obj !== 'object') return null;
         for (const key in obj) {
@@ -89,7 +75,6 @@ export default function Create() {
         }
         return null;
       };
-
       const errorMsg = getFirstError(errors);
       ToastService.error(
         errorMsg
@@ -100,60 +85,31 @@ export default function Create() {
   );
 
   const handleFinalSubmit = async () => {
+    submitTypeRef.current = 'FINAL';
     setValue('isSubmitted', true);
     await onFormSubmit();
   };
 
-  const handlePaymentSuccess = (txId: string) => {
-    setShowPaymentDialog(false);
-    setTransactionId(txId);
-    setShowReceiptDialog(true);
-  };
+  const handleNext = useCallback(async () => {
+    const fields = STEP_FIELDS[activeStep];
+    const isValid = await trigger(
+      fields as Path<AffiliationManagementSystem.CollegeApplicationFormData>[]
+    );
+    if (isValid) setActiveStep(prev => prev + 1);
+  }, [activeStep, trigger]);
 
-  const handleReceiptClose = async () => {
-    setShowReceiptDialog(false);
-    if (validatedData) {
-      // Append transaction details to the payload
-      const finalData = {
-        ...validatedData,
-        transactionId: transactionId,
-        transactionDate: new Date().toISOString(),
-        isFeePaid: true,
-      };
-      await executeSubmission(finalData);
-    }
-  };
+  const handleBack = useCallback(() => {
+    setActiveStep(prev => Math.max(0, prev - 1));
+  }, []);
 
-  const wizardSteps: WizardStep[] = [
-    {
-      label: 'College Details',
-      icon: 'building',
-      content: (
-        <CollegeRegistrationStep
-          register={register}
-          control={control}
-          setValue={setValue}
-        />
-      ),
+  const handleStepClick = useCallback(
+    (index: number) => {
+      if (index < activeStep) setActiveStep(index);
     },
-    {
-      label: 'Management Details',
-      icon: 'user',
-      content: <AffiliationOtherDetailsStep register={register} />,
-    },
+    [activeStep]
+  );
 
-    {
-      label: 'Enclosures',
-      icon: 'folder-open',
-      content: (
-        <CollegeEnclosureStep
-          register={register}
-          control={control}
-          setValue={setValue}
-        />
-      ),
-    },
-  ];
+  const isLastStep = activeStep === STEPS.length - 1;
 
   const handleCloseDraftDialog = () => {
     setShowDraftDialog(false);
@@ -167,55 +123,91 @@ export default function Create() {
       description="Fill in all the required details to submit the affiliation application."
       className="affiliation-page-no-scroll"
     >
-      <FormWizard
-        steps={wizardSteps}
-        onComplete={handleFinalSubmit}
-        isSaving={isPending || isUploading}
-        triggerValidation={trigger as (fields: string[]) => Promise<boolean>}
-        onReset={reset}
-        hideReset={true}
-        customActions={(_activeIndex, isLastStep) =>
-          isLastStep ? (
-            <Button
-              type="button"
-              label="Save as Draft"
-              variant="outlined"
-              onClick={async () => {
-                setValue('isSubmitted', false);
-                await onFormSubmit();
-              }}
-              disabled={isUploading || isPending}
-              icon="save"
-            />
-          ) : null
-        }
+      <Stepper
+        steps={STEPS}
+        activeStep={activeStep}
+        onStepClick={handleStepClick}
       />
+
+      <FormProvider
+        {...(methods as unknown as UseFormReturn<AffiliationManagementSystem.CollegeApplicationFormData>)}
+      >
+        <form onSubmit={onFormSubmit}>
+          <div className="flex flex-col gap-6 mb-6 mt-6">
+            {activeStep === 0 && (
+              <CollegeRegistrationStep
+                register={register}
+                control={control}
+                setValue={setValue}
+              />
+            )}
+            {activeStep === 1 && (
+              <AffiliationOtherDetailsStep
+                register={register}
+                setValue={setValue}
+              />
+            )}
+            {activeStep === 2 && (
+              <CollegeEnclosureStep
+                register={register}
+                control={control}
+                setValue={setValue}
+              />
+            )}
+          </div>
+
+          <div className="form-actions-container form-actions-right">
+            {activeStep > 0 && (
+              <Button
+                key="back-button"
+                label="Back"
+                type="button"
+                onClick={handleBack}
+                icon="arrow-left"
+                variant="outlined"
+              />
+            )}
+            {!isLastStep ? (
+              <Button
+                key="next-button"
+                label="Next"
+                type="button"
+                onClick={handleNext}
+                icon="arrow-right"
+              />
+            ) : (
+              <>
+                <Button
+                  key="draft-button"
+                  label="Save as Draft"
+                  type="button"
+                  variant="outlined"
+                  onClick={async () => {
+                    submitTypeRef.current = 'DRAFT';
+                    setValue('isSubmitted', false);
+                    await onFormSubmit();
+                  }}
+                  disabled={isUploading}
+                  icon="save"
+                />
+                <Button
+                  key="save-button"
+                  label="Save"
+                  type="button"
+                  icon="save"
+                  onClick={handleFinalSubmit}
+                  isLoading={isUploading}
+                />
+              </>
+            )}
+          </div>
+        </form>
+      </FormProvider>
 
       <DraftSuccessDialog
         visible={showDraftDialog}
         draftAppNumber={draftAppNumber}
         onClose={handleCloseDraftDialog}
-      />
-
-      <PaymentDialog
-        visible={showPaymentDialog}
-        onClose={() => setShowPaymentDialog(false)}
-        onSuccess={handlePaymentSuccess}
-        amount={paymentAmount}
-      />
-
-      <ReceiptDialog
-        visible={showReceiptDialog}
-        onClose={handleReceiptClose}
-        transactionId={transactionId}
-        amount={paymentAmount}
-        date={new Date().toLocaleDateString('en-IN', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-        })}
       />
     </FormPage>
   );

@@ -18,6 +18,7 @@ export default function Create() {
     trigger,
     formState,
     governingBodyMembersArray,
+    nocsArray,
     existingCoursesArray,
     teachingStaffArray,
     additionalInstitutionsArray,
@@ -62,6 +63,7 @@ export default function Create() {
           register={register}
           control={control}
           formState={formState}
+          nocsArray={nocsArray}
           governingBodyMembersArray={governingBodyMembersArray}
         />
       ),

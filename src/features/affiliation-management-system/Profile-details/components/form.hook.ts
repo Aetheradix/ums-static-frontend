@@ -3,6 +3,14 @@ import { useFieldArray } from 'react-hook-form';
 import { useAppForm } from 'shared/hooks/form';
 import validation from 'shared/utils/validation';
 
+export interface ProfileDetailsNoc {
+  status: string;
+  nocType: string;
+  referenceNo: string;
+  issueDate: Date | null;
+  document: File | null;
+}
+
 export interface GoverningBodyMember {
   memberName: string;
   fathersName: string;
@@ -47,6 +55,7 @@ export interface AdditionalInstitution {
 
 export interface ProfileDetailsFormData {
   // Step 1: General Info
+  nocs: ProfileDetailsNoc[];
   applicationNumber: string;
   collegeName: string;
   societyName: string;
@@ -72,7 +81,6 @@ export interface ProfileDetailsFormData {
   executiveOccupationAddress: string;
 
   governingBodyMembers: GoverningBodyMember[];
-
   // Step 2: Academics & Inst
   existingCourses: ExistingCourse[];
   teachingStaff: TeachingStaff[];
@@ -208,6 +216,16 @@ const governingBodyMemberSchema = Joi.object({
   occupationAddress: Joi.string().allow('', null),
 });
 
+const nocSchema = Joi.object({
+  status: Joi.string()
+    .required()
+    .messages({ 'string.empty': 'Status required' }),
+  nocType: Joi.string().allow('', null),
+  referenceNo: Joi.string().allow('', null),
+  issueDate: Joi.date().allow(null),
+  document: Joi.any().allow(null),
+});
+
 const existingCourseSchema = Joi.object({
   courseName: Joi.string()
     .required()
@@ -246,6 +264,9 @@ const additionalInstitutionSchema = Joi.object({
 });
 
 const schema = validation.create<ProfileDetailsFormData>(o => ({
+  nocs: o.array().items(nocSchema).min(1).messages({
+    'array.min': 'At least one NOC is required',
+  }),
   applicationNumber: o
     .string()
     .required()
@@ -616,6 +637,10 @@ export function useProfileDetailsForm() {
     control,
     name: 'governingBodyMembers',
   });
+  const nocsArray = useFieldArray({
+    control,
+    name: 'nocs',
+  });
   const existingCoursesArray = useFieldArray({
     control,
     name: 'existingCourses',
@@ -635,6 +660,7 @@ export function useProfileDetailsForm() {
     setValue,
     formState,
     governingBodyMembersArray,
+    nocsArray,
     existingCoursesArray,
     teachingStaffArray,
     additionalInstitutionsArray,
