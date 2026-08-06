@@ -8,7 +8,7 @@ export interface ProfileDetailsNoc {
   nocType: string;
   referenceNo: string;
   issueDate: Date | null;
-  document: any;
+  document: File | null;
 }
 
 export interface AcademicProgramme {

@@ -1,4 +1,4 @@
-import type { Control, Path } from 'react-hook-form';
+import type { Control, Path, UseFormSetValue } from 'react-hook-form';
 import { DatePicker, TextBox } from 'shared/components/forms';
 import { FormCard, FormGrid } from 'shared/new-components';
 
@@ -6,16 +6,21 @@ import { SelectYesNo } from 'features/components';
 
 interface AffiliationOtherDetailsStepProps {
   register: (
-    key: Path<AffiliationManagementSystem.CollegeApplicationFormData>
+    name: Path<AffiliationManagementSystem.CollegeApplicationFormData>
   ) => {
     control: Control<AffiliationManagementSystem.CollegeApplicationFormData>;
     name: Path<AffiliationManagementSystem.CollegeApplicationFormData>;
   };
+  setValue: UseFormSetValue<AffiliationManagementSystem.CollegeApplicationFormData>;
 }
 
 export default function AffiliationOtherDetailsStep({
   register,
+  setValue,
 }: AffiliationOtherDetailsStepProps) {
+  const capitalizeFirst = (value: string) =>
+    value ? value.charAt(0).toUpperCase() + value.slice(1) : value;
+
   return (
     <>
       <FormCard
@@ -26,8 +31,11 @@ export default function AffiliationOtherDetailsStep({
         <FormGrid columns={3}>
           <TextBox
             label="Principal/Director Name"
-            placeholder="Enter principal/director Name"
+            placeholder="Enter principal/director name"
             {...register('principalDirectorName')}
+            onChange={val =>
+              setValue('principalDirectorName', capitalizeFirst(val))
+            }
             maxLength={100}
             required
           />
@@ -59,6 +67,7 @@ export default function AffiliationOtherDetailsStep({
             label="Society Name"
             placeholder="Enter society name"
             {...register('societyName')}
+            onChange={val => setValue('societyName', capitalizeFirst(val))}
             maxLength={200}
             required
           />
@@ -67,6 +76,7 @@ export default function AffiliationOtherDetailsStep({
             label="Secretary Name"
             placeholder="Enter secretary name"
             {...register('secretaryName')}
+            onChange={val => setValue('secretaryName', capitalizeFirst(val))}
             maxLength={100}
             required
           />
@@ -84,6 +94,7 @@ export default function AffiliationOtherDetailsStep({
             placeholder="Select society registration date"
             {...register('societyRegistrationDate')}
             required
+            maxDate={new Date()}
           />
 
           <div className="affiliation-grid-span-2">

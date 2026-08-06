@@ -22,5 +22,9 @@ declare namespace AffiliationManagementSystem {
     availableFacilities: number[];
     affiliation?: AffiliationOtherDetailsDto;
     courses: CollegeCourseDetailDto[];
+    stateId?: number | null;
+    affiliationTypeId?: number | null;
+    approvalStatus?: number;
+    rejectionReason?: string;
   }
 }

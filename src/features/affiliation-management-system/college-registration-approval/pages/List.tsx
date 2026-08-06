@@ -286,7 +286,7 @@ export default function List() {
                 />
                 <PreviewField
                   label="Establishment Year"
-                  value={previewData.establishmentYearId}
+                  value={previewData.establishmentYear}
                 />
                 <PreviewField
                   label="College Name"
@@ -330,14 +330,7 @@ export default function List() {
                   label="Number of Classrooms"
                   value={previewData.numberOfClassRooms}
                 />
-                <PreviewField
-                  label="Any Deficiency"
-                  value={
-                    previewData.deficiencyEarlierRaisedByCommittee
-                      ? 'Yes'
-                      : 'No'
-                  }
-                />
+
                 <PreviewField
                   label="Available Facilities"
                   value={

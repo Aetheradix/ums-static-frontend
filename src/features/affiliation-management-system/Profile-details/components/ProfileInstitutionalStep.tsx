@@ -1,4 +1,9 @@
-import type { Control, FormState, Path } from 'react-hook-form';
+import type {
+  Control,
+  FormState,
+  Path,
+  UseFieldArrayReturn,
+} from 'react-hook-form';
 import { Button } from 'shared/components/buttons';
 import {
   DatePicker,
@@ -17,7 +22,7 @@ interface ProfileInstitutionalStepProps {
   };
   control: Control<ProfileDetailsFormData>;
   formState: FormState<ProfileDetailsFormData>;
-  nocsArray: any;
+  nocsArray: UseFieldArrayReturn<ProfileDetailsFormData, 'nocs', 'id'>;
 }
 
 export default function ProfileInstitutionalStep({
@@ -89,7 +94,7 @@ export default function ProfileInstitutionalStep({
               </tr>
             </thead>
             <tbody>
-              {fields.map((field: any, index: number) => (
+              {fields.map((field, index) => (
                 <tr key={field.id} className="border-b">
                   <td className="p-3 align-top min-w-[120px]">
                     <RadioButtonList
