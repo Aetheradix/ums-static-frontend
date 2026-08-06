@@ -9,7 +9,7 @@ import tsConfigPaths from 'vite-tsconfig-paths';
 export default defineConfig(() => {
   return {
     server: {
-      https: true,
+      https: true as any,
       port: 5200,
     },
     plugins: [
