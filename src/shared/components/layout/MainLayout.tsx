@@ -11,9 +11,13 @@ import './MainLayout.css';
  */
 const PORTAL_PATHS: string[] = [
   '/home/sub-menu/student-lifecycle',
+  '/home/sub-menu/hostel-services',
   '/student-lifecycle/student',
   '/student-lifecycle/faculty',
   '/student-lifecycle/admin',
+  '/hostel-services/admin',
+  '/hostel-services/warden',
+  '/hostel-services/student',
   '/employee-management',
   '/employee-management/admin-portal',
   '/employee-management/dashboard',
@@ -81,6 +85,7 @@ const PORTAL_PATHS: string[] = [
 ];
 
 function isPortalPath(pathname: string): boolean {
+  if (pathname.startsWith('/hostel-services')) return true;
   return PORTAL_PATHS.some(p => pathname === p || pathname === p + '/');
 }
 
