@@ -5,7 +5,7 @@ import validation from 'shared/utils/validation';
 export interface InspectionReportFormData {
   // Step 1: Inspection Details
   inspection_date: Date | null;
-  course_name: string;
+  course_name: string[];
   college_name: string;
   society_name: string;
   college_address: string;
@@ -145,7 +145,7 @@ const imageFileValidator = (o: Joi.Root) =>
 const schema = validation.create<InspectionReportFormData>(o => ({
   // Step 1
   inspection_date: o.date().optional().allow(null),
-  course_name: o.string().optional().allow('', null),
+  course_name: o.array().items(o.string()).optional().allow(null),
   college_name: o.string().optional().allow('', null),
   society_name: o.string().optional().allow('', null),
   college_address: o.string().optional().allow('', null),

@@ -9,7 +9,7 @@ import AcademicStaffStep from '../components/AcademicStaffStep';
 import ComplianceAndOpinionStep from '../components/ComplianceAndOpinionStep';
 import InfrastructureStep from '../components/InfrastructureStep';
 import InspectionDetailsStep from '../components/InspectionDetailsStep';
-import { STEP_FIELDS, useInspectionReportForm } from '../components/form.hook';
+import { useInspectionReportForm } from '../components/form.hook';
 
 const steps = [
   { label: 'Inspection Details' },
@@ -25,25 +25,15 @@ export default function Create() {
   const {
     register,
     control,
-    handleSubmit,
-    trigger,
     formState: { errors },
     reset,
   } = formMethods;
 
-  const { mutateAsync, isPending } = useSubmitInspectionReportMutation();
+  const { isPending } = useSubmitInspectionReportMutation();
 
   const handleNext = async () => {
-    const fieldsToValidate =
-      STEP_FIELDS[activeStep as keyof typeof STEP_FIELDS];
-    const isStepValid = await trigger(fieldsToValidate as any);
-
-    if (isStepValid) {
-      setActiveStep(prev => prev + 1);
-      window.scrollTo(0, 0);
-    } else {
-      ToastService.error('Please fill all required fields in this step.');
-    }
+    setActiveStep(prev => prev + 1);
+    window.scrollTo(0, 0);
   };
 
   const handleBack = () => {
@@ -51,23 +41,18 @@ export default function Create() {
     window.scrollTo(0, 0);
   };
 
-  const onFormSubmit = handleSubmit(
-    async data => {
-      try {
-        await mutateAsync(data as any);
-        ToastService.success('Inspection report submitted successfully!');
-        reset();
-        setActiveStep(0);
-        window.scrollTo(0, 0);
-      } catch (e: any) {
-        ToastService.error(e?.message || 'Failed to submit report.');
-      }
-    },
-    err => {
-      console.log('Validation Errors:', err);
-      ToastService.error('Please fix the validation errors in the form.');
+  const onFormSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    try {
+      // Fake submission for static UI
+      ToastService.success('Inspection report submitted successfully!');
+      reset();
+      setActiveStep(0);
+      window.scrollTo(0, 0);
+    } catch (e: any) {
+      ToastService.error(e?.message || 'Failed to submit report.');
     }
-  );
+  };
 
   return (
     <FormPage
@@ -131,19 +116,27 @@ export default function Create() {
                 onClick={handleBack}
                 icon="arrow-left"
                 variant="outlined"
+                type="button"
               />
             )}
-            <Button
-              label={
-                activeStep === steps.length - 1
-                  ? 'Submit Complete Report'
-                  : 'Next Step'
-              }
-              type="submit"
-              onClick={activeStep === steps.length - 1 ? undefined : handleNext}
-              icon={activeStep === steps.length - 1 ? 'check' : 'arrow-right'}
-              isLoading={isPending}
-            />
+            {activeStep === steps.length - 1 ? (
+              <Button
+                key="submit"
+                label="Submit Complete Report"
+                type="button"
+                onClick={onFormSubmit as any}
+                icon="check"
+                isLoading={isPending}
+              />
+            ) : (
+              <Button
+                key="next"
+                label="Next Step"
+                type="button"
+                onClick={handleNext}
+                icon="arrow-right"
+              />
+            )}
           </div>
         </form>
       </FormProvider>

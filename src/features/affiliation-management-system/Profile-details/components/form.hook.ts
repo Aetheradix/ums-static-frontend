@@ -81,7 +81,6 @@ export interface ProfileDetailsFormData {
   executiveOccupationAddress: string;
 
   governingBodyMembers: GoverningBodyMember[];
-
   // Step 2: Academics & Inst
   existingCourses: ExistingCourse[];
   teachingStaff: TeachingStaff[];
