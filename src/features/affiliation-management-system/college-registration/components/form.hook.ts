@@ -68,7 +68,11 @@ const schema =
         .number()
         .required()
         .messages({ 'number.base': 'Required' }),
-      collegeCode: o.string().required().max(15),
+      collegeCode: o.string().when('affiliationTypeId', {
+        is: 1,
+        then: o.string().optional().allow('', null),
+        otherwise: o.string().required().max(15),
+      }),
       establishmentYear: o
         .number()
         .integer()
@@ -163,7 +167,9 @@ export function useCollegeApplicationForm() {
     useAppForm<AffiliationManagementSystem.CollegeApplicationFormData>({
       resolver: validation.resolver(schema),
       mode: 'onChange',
-      defaultValues: {},
+      defaultValues: {
+        stateId: 1,
+      },
     });
 
   return {

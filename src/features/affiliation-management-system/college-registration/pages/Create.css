@@ -508,3 +508,9 @@
 .dark .draft-success-actions {
   @apply border-white/[0.08];
 }
+
+/* Hide disabled years in year picker */
+.p-yearpicker .p-yearpicker-year.p-disabled,
+.p-yearpicker .p-disabled {
+  display: none !important;
+}

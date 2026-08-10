@@ -16,7 +16,7 @@ export async function getDraftRegistration(
     collegeCategoryId: 1,
     collegeTypeId: 1,
     accommodationType: '1',
-    collegeArea: 1,
+    collegeArea: 'Urban',
     availableFacilities: [1, 2],
     isSubmitted: false,
     affiliation: {

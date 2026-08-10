@@ -1,27 +1,18 @@
-import { useCallback, useRef, useState } from 'react';
-import { FormProvider, type Path, type UseFormReturn } from 'react-hook-form';
+import { useRef, useState } from 'react';
+import { FormProvider, type UseFormReturn } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import { FormPage, Stepper } from 'shared/new-components';
+import { FormPage } from 'shared/new-components';
 import AffiliationOtherDetailsStep from '../components/AffiliationOtherDetailsStep';
+import CollegeApplicationDetailsCard from '../components/CollegeApplicationDetailsCard';
 import CollegeEnclosureStep from '../components/CollegeEnclosureStep';
 import CollegeRegistrationStep from '../components/CollegeRegistrationStep';
 import DraftSuccessDialog from '../components/DraftSuccessDialog';
-import {
-  STEP_FIELDS,
-  useCollegeApplicationForm,
-} from '../components/form.hook';
+import { useCollegeApplicationForm } from '../components/form.hook';
 import './Create.css';
 
-const STEPS = [
-  { label: 'College Details' },
-  { label: 'Management Details' },
-  { label: 'Enclosures' },
-];
-
 export default function Create() {
-  const [activeStep, setActiveStep] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [showDraftDialog, setShowDraftDialog] = useState(false);
   const [draftAppNumber, setDraftAppNumber] = useState('');
@@ -29,7 +20,7 @@ export default function Create() {
 
   const navigate = useNavigate();
 
-  const { methods, register, control, handleSubmit, reset, trigger, setValue } =
+  const { methods, register, control, handleSubmit, reset, setValue } =
     useCollegeApplicationForm();
 
   const executeSubmission = async (data: any) => {
@@ -90,27 +81,6 @@ export default function Create() {
     await onFormSubmit();
   };
 
-  const handleNext = useCallback(async () => {
-    const fields = STEP_FIELDS[activeStep];
-    const isValid = await trigger(
-      fields as Path<AffiliationManagementSystem.CollegeApplicationFormData>[]
-    );
-    if (isValid) setActiveStep(prev => prev + 1);
-  }, [activeStep, trigger]);
-
-  const handleBack = useCallback(() => {
-    setActiveStep(prev => Math.max(0, prev - 1));
-  }, []);
-
-  const handleStepClick = useCallback(
-    (index: number) => {
-      if (index < activeStep) setActiveStep(index);
-    },
-    [activeStep]
-  );
-
-  const isLastStep = activeStep === STEPS.length - 1;
-
   const handleCloseDraftDialog = () => {
     setShowDraftDialog(false);
     reset();
@@ -121,85 +91,58 @@ export default function Create() {
     <FormPage
       title="Application for Affiliation"
       description="Fill in all the required details to submit the affiliation application."
-      className="affiliation-page-no-scroll"
     >
-      <Stepper
-        steps={STEPS}
-        activeStep={activeStep}
-        onStepClick={handleStepClick}
-      />
-
       <FormProvider
         {...(methods as unknown as UseFormReturn<AffiliationManagementSystem.CollegeApplicationFormData>)}
       >
         <form onSubmit={onFormSubmit}>
           <div className="flex flex-col gap-6 mb-6 mt-6">
-            {activeStep === 0 && (
-              <CollegeRegistrationStep
-                register={register}
-                control={control}
-                setValue={setValue}
-              />
-            )}
-            {activeStep === 1 && (
-              <AffiliationOtherDetailsStep
-                register={register}
-                setValue={setValue}
-              />
-            )}
-            {activeStep === 2 && (
-              <CollegeEnclosureStep
-                register={register}
-                control={control}
-                setValue={setValue}
-              />
-            )}
+            <CollegeApplicationDetailsCard
+              register={register}
+              control={control}
+              setValue={setValue}
+            />
+            <CollegeRegistrationStep
+              register={register}
+              control={control}
+              setValue={setValue}
+            />
+            <AffiliationOtherDetailsStep
+              register={register}
+              setValue={setValue}
+            />
+            <CollegeEnclosureStep control={control} />
           </div>
 
           <div className="form-actions-container form-actions-right">
-            {activeStep > 0 && (
-              <Button
-                key="back-button"
-                label="Back"
-                type="button"
-                onClick={handleBack}
-                icon="arrow-left"
-                variant="outlined"
-              />
-            )}
-            {!isLastStep ? (
-              <Button
-                key="next-button"
-                label="Next"
-                type="button"
-                onClick={handleNext}
-                icon="arrow-right"
-              />
-            ) : (
-              <>
-                <Button
-                  key="draft-button"
-                  label="Save as Draft"
-                  type="button"
-                  variant="outlined"
-                  onClick={async () => {
-                    submitTypeRef.current = 'DRAFT';
-                    setValue('isSubmitted', false);
-                    await onFormSubmit();
-                  }}
-                  disabled={isUploading}
-                  icon="save"
-                />
-                <Button
-                  key="save-button"
-                  label="Save"
-                  type="button"
-                  icon="save"
-                  onClick={handleFinalSubmit}
-                  isLoading={isUploading}
-                />
-              </>
-            )}
+            <Button
+              key="cancel-button"
+              label="Cancel"
+              type="button"
+              onClick={() => navigate(-1)}
+              variant="outlined"
+            />
+            <Button
+              key="draft-button"
+              label="Save as Draft"
+              type="button"
+              variant="outlined"
+              onClick={async () => {
+                submitTypeRef.current = 'DRAFT';
+                setValue('isSubmitted', false);
+                await onFormSubmit();
+              }}
+              disabled={isUploading}
+              icon="save"
+            />
+            <Button
+              key="save-button"
+              label="Save"
+              type="button"
+              icon="save"
+              onClick={handleFinalSubmit}
+              isLoading={isUploading}
+            />
           </div>
         </form>
       </FormProvider>
