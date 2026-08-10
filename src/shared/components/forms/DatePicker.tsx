@@ -25,6 +25,7 @@ interface DatePickerProps<TForm extends FieldValues>
   hourFormat?: '12' | '24';
   view?: 'date' | 'month' | 'year';
   dateFormat?: string;
+  yearRange?: string;
   defaultValue?: any;
 }
 

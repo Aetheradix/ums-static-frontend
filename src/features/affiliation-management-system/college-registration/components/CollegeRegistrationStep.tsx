@@ -11,15 +11,11 @@ import { FormCard, FormGrid } from 'shared/new-components';
 import '../pages/Create.css';
 
 const dummyAffiliationTypes = [
-  { id: 1, name: 'Permanent' },
-  { id: 2, name: 'Temporary' },
+  { id: 1, name: 'New Affiliation' },
+  { id: 2, name: 'Renewal Affiliation' },
 ];
 
-const dummyStates = [
-  { id: 1, name: 'Madhya Pradesh' },
-  { id: 2, name: 'Maharashtra' },
-  { id: 3, name: 'Gujarat' },
-];
+const dummyStates = [{ id: 1, name: 'Madhya Pradesh' }];
 
 const dummyDistricts = [
   { id: 1, name: 'Indore', stateId: 1 },
@@ -29,10 +25,13 @@ const dummyDistricts = [
 ];
 
 const dummyCategories = [
-  { id: 1, name: 'General' },
-  { id: 2, name: 'OBC' },
-  { id: 3, name: 'SC' },
-  { id: 4, name: 'ST' },
+  { id: 1, name: 'Engineering College' },
+  { id: 2, name: 'Medical College' },
+  { id: 3, name: 'Arts & Science College' },
+  { id: 4, name: 'Management College' },
+  { id: 5, name: 'Education College' },
+  { id: 6, name: 'Law College' },
+  { id: 7, name: 'Pharmacy College' },
 ];
 
 const dummyTypes = [
@@ -42,9 +41,9 @@ const dummyTypes = [
 ];
 
 const dummyAreas = [
-  { id: 1, name: 'Urban' },
-  { id: 2, name: 'Rural' },
-  { id: 3, name: 'Semi-Urban' },
+  { id: 'Urban', name: 'Urban' },
+  { id: 'Rural', name: 'Rural' },
+  { id: 'Semi-Urban', name: 'Semi-Urban' },
 ];
 
 const dummyAccommodations = [
@@ -72,6 +71,7 @@ export default function CollegeRegistrationStep({
 }: CollegeRegistrationStepProps) {
   const stateId = useWatch({ control, name: 'stateId' });
   const isFeePaid = useWatch({ control, name: 'isFeePaid' });
+  const affiliationTypeId = useWatch({ control, name: 'affiliationTypeId' });
   const previousStateIdRef = useRef(stateId);
 
   useEffect(() => {
@@ -86,6 +86,15 @@ export default function CollegeRegistrationStep({
     }
     previousStateIdRef.current = stateId;
   }, [stateId, setValue]);
+
+  useEffect(() => {
+    if (affiliationTypeId === 1) {
+      setValue('collegeCode', '', {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
+  }, [affiliationTypeId, setValue]);
 
   const filteredDistricts = dummyDistricts.filter(d => d.stateId === stateId);
 
@@ -115,14 +124,16 @@ export default function CollegeRegistrationStep({
           disabled={isFeePaid}
           required
         />
-        <TextBox
-          label="College Code"
-          placeholder="Enter college code"
-          {...register('collegeCode')}
-          maxLength={15}
-          required
-          readOnly={isEdit}
-        />
+        {affiliationTypeId !== 1 && (
+          <TextBox
+            label="College Code"
+            placeholder="Enter college code"
+            {...register('collegeCode')}
+            maxLength={15}
+            required
+            readOnly={isEdit}
+          />
+        )}
         <Controller
           control={control}
           name="establishmentYear"
@@ -140,6 +151,7 @@ export default function CollegeRegistrationStep({
               errorMessage={fieldState.error?.message}
               required
               maxDate={new Date()}
+              yearRange={`1800:${new Date().getFullYear()}`}
             />
           )}
         />
