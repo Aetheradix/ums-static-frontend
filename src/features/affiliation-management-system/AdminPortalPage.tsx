@@ -63,6 +63,21 @@ export default function AdminPortalPage() {
           colorScheme: 'blue',
           path: '/affiliation-management-system/inspection-status-report',
         },
+        {
+          title: 'Inspection Committee Upload',
+          description: 'Upload inspection reports and details.',
+          icon: 'upload_file',
+          colorScheme: 'blue',
+          path: '/affiliation-management-system/inspection-committee',
+        },
+        {
+          title: 'Standing Committee Meeting',
+          description:
+            'Schedule, draft, and manage standing committee meetings.',
+          icon: 'event',
+          colorScheme: 'purple',
+          path: '/affiliation-management-system/standing-committee-meeting',
+        },
       ]}
     />
   );

@@ -8399,6 +8399,22 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'policy',
                 colorScheme: 'orange',
               },
+              {
+                label: 'Inspection Committee Upload',
+                slug: 'inspection-committee-upload',
+                description: 'Upload inspection reports and details.',
+                path: '/affiliation-management-system/inspection-committee',
+                icon: 'upload_file',
+                colorScheme: 'blue',
+              },
+              {
+                label: 'Standing Committee Meeting',
+                slug: 'standing-committee-meeting',
+                description: 'Manage standing committee meetings.',
+                path: '/affiliation-management-system/standing-committee-meeting',
+                icon: 'event',
+                colorScheme: 'purple',
+              },
             ],
           },
           {
