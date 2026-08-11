@@ -1,5 +1,11 @@
 import { useWatch } from 'react-hook-form';
-import type { Control, FormState, Path } from 'react-hook-form';
+import type {
+  Control,
+  FormState,
+  Path,
+  UseFormSetValue,
+} from 'react-hook-form';
+import { Button } from 'shared/components/buttons';
 import { DropDownList, TextBox, FileUpload } from 'shared/components/forms';
 import { FormCard, FormGrid } from 'shared/new-components';
 import type { ProfileDetailsFormData } from './form.hook';
@@ -11,13 +17,33 @@ interface ProfileInfrastructureStepProps {
   };
   control: Control<ProfileDetailsFormData>;
   formState: FormState<ProfileDetailsFormData>;
+  setValue: UseFormSetValue<ProfileDetailsFormData>;
 }
 
 export default function ProfileInfrastructureStep({
   register,
   control,
   formState,
+  setValue,
 }: ProfileInfrastructureStepProps) {
+  const handleGetLocation = () => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          setValue('latitude', lat.toString(), { shouldValidate: true });
+          setValue('longitude', lng.toString(), { shouldValidate: true });
+        },
+        error => {
+          console.error(error);
+          alert('Location access denied or an error occurred!');
+        }
+      );
+    } else {
+      alert('Your browser does not support Geolocation!');
+    }
+  };
   const yesNoOptions = [
     { id: 'yes', name: 'Yes' },
     { id: 'no', name: 'No' },
@@ -154,6 +180,34 @@ export default function ProfileInfrastructureStep({
                 formState.errors.accommodationDetails?.message as string
               }
             />
+          </div>
+          <div className="mt-8 border-t pt-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-sm font-semibold text-gray-700">
+                College Location Coordinates
+              </h3>
+              <Button
+                type="button"
+                variant="outlined"
+                icon="map-marker"
+                label="Get Current Location"
+                onClick={handleGetLocation}
+              />
+            </div>
+            <FormGrid columns={2}>
+              <TextBox
+                label="Latitude"
+                placeholder="e.g., 22.7196"
+                {...register('latitude')}
+                errorMessage={formState.errors.latitude?.message as string}
+              />
+              <TextBox
+                label="Longitude"
+                placeholder="e.g., 75.8577"
+                {...register('longitude')}
+                errorMessage={formState.errors.longitude?.message as string}
+              />
+            </FormGrid>
           </div>
         </div>
       </FormCard>
@@ -657,75 +711,67 @@ export default function ProfileInfrastructureStep({
               errorMessage={formState.errors.hostelAvailable?.message as string}
             />
             {isHostelAvailable === 'yes' && (
-              <DropDownList
-                label="Type of Hostel"
-                name="typeOfHostel"
-                control={control}
-                placeholder="Select Type"
-                data={[
-                  { id: 'boys', name: 'Boys' },
-                  { id: 'girls', name: 'Girls' },
-                  { id: 'coed', name: 'Co-ed' },
-                ]}
-                textField="name"
-                valueField="id"
-                errorMessage={formState.errors.typeOfHostel?.message as string}
-              />
-            )}
-          </FormGrid>
-
-          {isHostelAvailable === 'yes' && (
-            <div className="mt-4 flex flex-col gap-4">
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <h4 className="text-sm font-semibold text-blue-700 mb-3 flex items-center gap-2">
-                  <i className="fa-solid fa-house"></i>
-                  Hostel Capacity Details
-                </h4>
-                <FormGrid columns={3}>
-                  {(typeOfHostel === 'boys' || typeOfHostel === 'coed') && (
-                    <TextBox
-                      label="Boys Hostels Count"
-                      placeholder="e.g. 1"
-                      {...register('boysHostelsCount')}
-                      errorMessage={
-                        formState.errors.boysHostelsCount?.message as string
-                      }
-                    />
-                  )}
-                  {(typeOfHostel === 'girls' || typeOfHostel === 'coed') && (
-                    <TextBox
-                      label="Girls Hostels Count"
-                      placeholder="e.g. 1"
-                      {...register('girlsHostelsCount')}
-                      errorMessage={
-                        formState.errors.girlsHostelsCount?.message as string
-                      }
-                    />
-                  )}
+              <>
+                <DropDownList
+                  label="Type of Hostel"
+                  name="typeOfHostel"
+                  control={control}
+                  placeholder="Select Type"
+                  data={[
+                    { id: 'boys', name: 'Boys' },
+                    { id: 'girls', name: 'Girls' },
+                    { id: 'coed', name: 'Co-ed' },
+                  ]}
+                  textField="name"
+                  valueField="id"
+                  errorMessage={
+                    formState.errors.typeOfHostel?.message as string
+                  }
+                />
+                {(typeOfHostel === 'boys' || typeOfHostel === 'coed') && (
                   <TextBox
-                    label="Total Capacity (Students)"
-                    placeholder="e.g. 150"
-                    {...register('totalHostelCapacity')}
+                    label="Boys Hostels Count"
+                    placeholder="e.g. 1"
+                    {...register('boysHostelsCount')}
                     errorMessage={
-                      formState.errors.totalHostelCapacity?.message as string
+                      formState.errors.boysHostelsCount?.message as string
                     }
                   />
-                </FormGrid>
-              </div>
-              <DropDownList
-                label="Accommodation Availability (if hostel)"
-                name="accommodationAvailability"
-                control={control}
-                placeholder="Select"
-                data={yesNoOptions}
-                textField="name"
-                valueField="id"
-                errorMessage={
-                  formState.errors.accommodationAvailability?.message as string
-                }
-              />
-            </div>
-          )}
+                )}
+                {(typeOfHostel === 'girls' || typeOfHostel === 'coed') && (
+                  <TextBox
+                    label="Girls Hostels Count"
+                    placeholder="e.g. 1"
+                    {...register('girlsHostelsCount')}
+                    errorMessage={
+                      formState.errors.girlsHostelsCount?.message as string
+                    }
+                  />
+                )}
+                <TextBox
+                  label="Total Capacity (Students)"
+                  placeholder="e.g. 150"
+                  {...register('totalHostelCapacity')}
+                  errorMessage={
+                    formState.errors.totalHostelCapacity?.message as string
+                  }
+                />
+                <DropDownList
+                  label="Accommodation Availability (if hostel)"
+                  name="accommodationAvailability"
+                  control={control}
+                  placeholder="Select"
+                  data={yesNoOptions}
+                  textField="name"
+                  valueField="id"
+                  errorMessage={
+                    formState.errors.accommodationAvailability
+                      ?.message as string
+                  }
+                />
+              </>
+            )}
+          </FormGrid>
         </div>
       </FormCard>
     </>

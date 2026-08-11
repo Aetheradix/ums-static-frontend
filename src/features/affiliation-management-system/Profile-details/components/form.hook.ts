@@ -86,6 +86,8 @@ export interface ProfileDetailsFormData {
   provisionToConstruct: string;
   accommodationDetails: string;
   qualityOfBuilding: string;
+  latitude: string;
+  longitude: string;
 
   // Additional Step 3
   requiredClassrooms: string;
@@ -335,6 +337,8 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
   provisionToConstruct: o.string().allow('', null),
   accommodationDetails: o.string().allow('', null),
   qualityOfBuilding: o.string().allow('', null),
+  latitude: o.string().allow('', null),
+  longitude: o.string().allow('', null),
 
   requiredClassrooms: o.string().allow('', null),
   accessibleToPublic: o.string().allow('', null),
@@ -442,7 +446,7 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
   dateOfCertification: o.any().allow(null),
   principalSignature: o.any().allow(null),
   managementSignature: o.any().allow(null),
-  isDeclared: o.boolean().valid(true).required(),
+  isDeclared: o.boolean().allow(null, false),
 }));
 
 export function useProfileDetailsForm() {
@@ -490,6 +494,8 @@ export function useProfileDetailsForm() {
       provisionToConstruct: '',
       accommodationDetails: '',
       qualityOfBuilding: '',
+      latitude: '',
+      longitude: '',
 
       requiredClassrooms: '',
       accessibleToPublic: '',
@@ -577,7 +583,9 @@ export function useProfileDetailsForm() {
       landDocumentsDocument: null,
       buildingPlanAndSafetyDocument: null,
       amenitiesProofDocument: null,
-      principalName: '',
+      photoOfCollegeBuilding: null,
+      buildingMap: null,
+      principalName: 'Dr. Aryan Patel',
       dateOfCertification: null,
       principalSignature: null,
       managementSignature: null,

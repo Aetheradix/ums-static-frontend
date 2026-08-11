@@ -9,6 +9,7 @@ import ProfileComplianceStep from '../components/ProfileComplianceStep';
 import ProfileEcosystemStep from '../components/ProfileEcosystemStep';
 import ProfileInfrastructureStep from '../components/ProfileInfrastructureStep';
 import ProfileInstitutionalStep from '../components/ProfileInstitutionalStep';
+import ProfileCoursesStep from '../components/ProfileCoursesStep';
 
 export default function Create() {
   const {
@@ -17,6 +18,7 @@ export default function Create() {
     handleSubmit,
     reset,
     trigger,
+    setValue,
     formState,
     governingBodyMembersArray,
     existingCoursesArray,
@@ -25,14 +27,11 @@ export default function Create() {
   } = useProfileDetailsForm();
 
   const onFormSubmit = handleSubmit(
-    data => {
-      console.log('Form Submitted', data);
+    _data => {
       ToastService.success('College Affiliation Form saved successfully!');
       reset();
     },
     errors => {
-      console.log('Validation Errors:', errors);
-
       const getFirstError = (obj: any): string | null => {
         if (!obj || typeof obj !== 'object') return null;
         for (const key in obj) {
@@ -76,7 +75,6 @@ export default function Create() {
           register={register}
           control={control}
           formState={formState}
-          existingCoursesArray={existingCoursesArray}
           teachingStaffArray={teachingStaffArray}
           additionalInstitutionsArray={additionalInstitutionsArray}
           trigger={trigger as any}
@@ -91,6 +89,7 @@ export default function Create() {
           register={register}
           control={control}
           formState={formState}
+          setValue={setValue}
         />
       ),
     },
@@ -102,6 +101,19 @@ export default function Create() {
           register={register}
           control={control}
           formState={formState}
+        />
+      ),
+    },
+    {
+      label: 'Existing Courses',
+      icon: 'book',
+      content: (
+        <ProfileCoursesStep
+          register={register}
+          control={control}
+          formState={formState}
+          existingCoursesArray={existingCoursesArray}
+          trigger={trigger as any}
         />
       ),
     },
