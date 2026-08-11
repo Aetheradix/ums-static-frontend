@@ -15,7 +15,7 @@ export default function AffiliationPortalPage() {
         },
         {
           title: 'College Login',
-          description: 'Manage college profile and inspections.',
+          description: 'Manage college affiliation form and inspections.',
           icon: 'domain',
           colorScheme: 'blue',
           path: '/affiliation-management-system/college-login',

@@ -1,12 +1,10 @@
+import { useState } from 'react';
+import { useWatch } from 'react-hook-form';
 import type { Control, FormState, Path } from 'react-hook-form';
 import { Button } from 'shared/components/buttons';
-import {
-  DatePicker,
-  DropDownList,
-  FileUpload,
-  RadioButtonList,
-  TextBox,
-} from 'shared/components/forms';
+import { DropDownList, TextBox } from 'shared/components/forms';
+import { Modal } from 'shared/components/popups';
+import { Grid } from 'shared/components/grid';
 import { FormCard, FormGrid } from 'shared/new-components';
 import type { ProfileDetailsFormData } from './form.hook';
 
@@ -17,8 +15,8 @@ interface ProfileInstitutionalStepProps {
   };
   control: Control<ProfileDetailsFormData>;
   formState: FormState<ProfileDetailsFormData>;
-  nocsArray: any;
   governingBodyMembersArray: any;
+  trigger?: any;
 }
 
 const qualificationOptions = [
@@ -35,30 +33,38 @@ export default function ProfileInstitutionalStep({
   register,
   control,
   formState,
-  nocsArray,
   governingBodyMembersArray,
+  trigger,
 }: ProfileInstitutionalStepProps) {
-  const {
-    fields: nocsFields,
-    append: appendNoc,
-    remove: removeNoc,
-  } = nocsArray;
   const {
     fields: govFields,
     append: appendGov,
     remove: removeGov,
   } = governingBodyMembersArray;
 
+  const [isGovModalOpen, setIsGovModalOpen] = useState(false);
+  const [editingGovIndex, setEditingGovIndex] = useState<number | null>(null);
+
+  const governingBodyMembersWatch = useWatch({
+    control,
+    name: 'governingBodyMembers',
+  });
+
   return (
     <>
       <FormCard title="Section 1: Basic College Information" icon="building">
         <FormGrid columns={2}>
-          <TextBox
-            label="Application Number"
-            placeholder="Enter Application Number"
-            {...register('applicationNumber')}
-            errorMessage={formState.errors.applicationNumber?.message as string}
-            readOnly
+          <DropDownList
+            label="Affiliation Type"
+            placeholder="Select Affiliation Type"
+            data={[
+              { value: 1, text: 'New Affiliation' },
+              { value: 2, text: 'Renewal' },
+              { value: 3, text: 'Subject Increment' },
+              { value: 4, text: 'College Name Change' },
+            ]}
+            {...register('affiliationType')}
+            errorMessage={formState.errors.affiliationType?.message as string}
             required
           />
           <TextBox
@@ -94,8 +100,6 @@ export default function ProfileInstitutionalStep({
             }
             readOnly
           />
-        </FormGrid>
-        <div className="mt-4 flex flex-col gap-4">
           <TextBox
             label="Corporate / Society Office Address"
             placeholder="Enter Address"
@@ -106,6 +110,8 @@ export default function ProfileInstitutionalStep({
             readOnly
             required
           />
+        </FormGrid>
+        <div className="mt-4 flex flex-col gap-4">
           <TextBox
             label="College (Teaching Place) Address"
             placeholder="Enter Address"
@@ -134,111 +140,6 @@ export default function ProfileInstitutionalStep({
             }
             required
           />
-        </div>
-        <div className="overflow-x-auto w-full mb-4">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                <th className="p-3 font-semibold">STATUS</th>
-                <th className="p-3 font-semibold">NOC TYPE</th>
-                <th className="p-3 font-semibold">NOC REFERENCE NO.</th>
-                <th className="p-3 font-semibold">ISSUE DATE</th>
-                <th className="p-3 font-semibold">DOCUMENT</th>
-                <th className="p-3 font-semibold text-center">ACTION</th>
-              </tr>
-            </thead>
-            <tbody>
-              {nocsFields.map((field: any, index: number) => (
-                <tr key={field.id} className="border-b">
-                  <td className="p-3 align-top min-w-[120px]">
-                    <RadioButtonList
-                      name={`nocs.${index}.status`}
-                      control={control}
-                      options={[
-                        { label: 'Yes', value: 'yes' },
-                        { label: 'No', value: 'no' },
-                      ]}
-                      variant="horizontal"
-                    />
-                  </td>
-                  <td className="p-3 align-top min-w-[200px]">
-                    <DropDownList
-                      name={`nocs.${index}.nocType`}
-                      control={control}
-                      placeholder="Select NOC Type"
-                      appendTo={document.body}
-                      data={[
-                        { id: 'type1', name: 'Type 1' },
-                        { id: 'type2', name: 'Type 2' },
-                      ]}
-                      textField="name"
-                      valueField="id"
-                      errorMessage={
-                        formState.errors.nocs?.[index]?.nocType?.message
-                      }
-                    />
-                  </td>
-                  <td className="p-3 align-top min-w-[200px]">
-                    <TextBox
-                      {...register(`nocs.${index}.referenceNo`)}
-                      placeholder="e.g. NOC-2026/88"
-                      errorMessage={
-                        formState.errors.nocs?.[index]?.referenceNo?.message
-                      }
-                    />
-                  </td>
-                  <td className="p-3 align-top min-w-[200px]">
-                    <DatePicker
-                      name={`nocs.${index}.issueDate`}
-                      control={control}
-                      placeholder="Select issue date"
-                      appendTo={document.body}
-                      errorMessage={
-                        formState.errors.nocs?.[index]?.issueDate?.message
-                      }
-                    />
-                  </td>
-                  <td className="p-3 align-top min-w-[200px]">
-                    <FileUpload
-                      name={`nocs.${index}.document`}
-                      control={control}
-                      accept=".pdf"
-                      mode="file"
-                    />
-                  </td>
-                  <td className="p-3 align-top text-center">
-                    <Button
-                      icon="trash"
-                      variant="outlined"
-                      onClick={() => removeNoc(index)}
-                      disabled={nocsFields.length === 1}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {formState.errors.nocs?.root?.message && (
-            <div className="p-error text-sm mt-2">
-              {formState.errors.nocs.root.message}
-            </div>
-          )}
-          <div className="mt-4">
-            <Button
-              label="Add NOC"
-              icon="plus"
-              variant="outlined"
-              onClick={() =>
-                appendNoc({
-                  status: '',
-                  nocType: '',
-                  referenceNo: '',
-                  issueDate: null,
-                  document: null,
-                })
-              }
-            />
-          </div>
         </div>
 
         <div className="border border-gray-200 rounded-lg p-4 mb-4">
@@ -305,7 +206,7 @@ export default function ProfileInstitutionalStep({
 
         <div className="border border-gray-200 rounded-lg p-4">
           <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
-            ADDITIONAL EXECUTIVE DETAILS
+            CHAIRMAN JANBHAGIDARI SAMITI DETAILS
           </h4>
           <FormGrid columns={3}>
             <TextBox
@@ -361,94 +262,57 @@ export default function ProfileInstitutionalStep({
         <p className="text-sm text-gray-500 mb-4">
           Fill one row per member, attach separate sheet if required.
         </p>
-        <div className="flex flex-col gap-4">
-          {govFields.map((field: any, index: number) => (
-            <div
-              key={field.id}
-              className="border border-gray-200 rounded-lg p-4 relative"
-            >
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-sm font-medium text-gray-600">
-                  Member {index + 1}
-                </span>
-                <Button
-                  icon="trash"
-                  variant="outlined"
-                  onClick={() => removeGov(index)}
-                  disabled={govFields.length === 1}
-                />
-              </div>
-              <FormGrid columns={3}>
-                <TextBox
-                  label="Member Name"
-                  placeholder="Enter Name"
-                  {...register(`governingBodyMembers.${index}.memberName`)}
-                  errorMessage={
-                    formState.errors.governingBodyMembers?.[index]?.memberName
-                      ?.message as string
-                  }
-                  required
-                />
-                <TextBox
-                  label="Father's Name"
-                  placeholder="Enter Father's Name"
-                  {...register(`governingBodyMembers.${index}.fathersName`)}
-                  errorMessage={
-                    formState.errors.governingBodyMembers?.[index]?.fathersName
-                      ?.message as string
-                  }
-                />
-                <TextBox
-                  label="Age"
-                  placeholder="Enter Age"
-                  {...register(`governingBodyMembers.${index}.age`)}
-                  errorMessage={
-                    formState.errors.governingBodyMembers?.[index]?.age
-                      ?.message as string
-                  }
-                />
-                <DropDownList
-                  label="Qualification"
-                  name={`governingBodyMembers.${index}.qualification`}
-                  control={control}
-                  placeholder="Select Qualification"
-                  data={qualificationOptions}
-                  textField="name"
-                  valueField="id"
-                  errorMessage={
-                    formState.errors.governingBodyMembers?.[index]
-                      ?.qualification?.message as string
-                  }
-                />
-                <TextBox
-                  label="Mobile Number"
-                  placeholder="Enter Mobile Number"
-                  {...register(`governingBodyMembers.${index}.mobileNumber`)}
-                  errorMessage={
-                    formState.errors.governingBodyMembers?.[index]?.mobileNumber
-                      ?.message as string
-                  }
-                />
-                <TextBox
-                  label="Occupation Address"
-                  placeholder="Enter Address"
-                  {...register(
-                    `governingBodyMembers.${index}.occupationAddress`
-                  )}
-                  errorMessage={
-                    formState.errors.governingBodyMembers?.[index]
-                      ?.occupationAddress?.message as string
-                  }
-                />
-              </FormGrid>
+        <div className="mb-4">
+          <Grid
+            data={govFields.map((field: any, index: number) => {
+              const member = governingBodyMembersWatch?.[index] || field;
+              return { ...member, originalIndex: index };
+            })}
+            columns={[
+              {
+                header: 'MEMBER NAME',
+                cell: (item: any) => item.memberName || '',
+              },
+              {
+                header: "FATHER'S NAME",
+                cell: (item: any) => item.fathersName || '',
+              },
+              { header: 'AGE', cell: (item: any) => item.age || '' },
+              {
+                header: 'QUALIFICATION',
+                cell: (item: any) =>
+                  qualificationOptions.find(q => q.id === item.qualification)
+                    ?.name ||
+                  item.qualification ||
+                  '',
+              },
+              {
+                header: 'MOBILE NO.',
+                cell: (item: any) => item.mobileNumber || '',
+              },
+              {
+                header: 'OCCUPATION ADDRESS',
+                cell: (item: any) => item.occupationAddress || '',
+              },
+            ]}
+            pagination={false}
+            onEdit={(item: any) => {
+              setEditingGovIndex(item.originalIndex);
+              setIsGovModalOpen(true);
+            }}
+            onRemove={(item: any) => removeGov(item.originalIndex)}
+          />
+          {formState.errors.governingBodyMembers?.root?.message && (
+            <div className="p-error text-sm mt-2">
+              {formState.errors.governingBodyMembers.root.message}
             </div>
-          ))}
-          <div>
+          )}
+          <div className="mt-4">
             <Button
               label="Add Member"
               icon="plus"
               variant="outlined"
-              onClick={() =>
+              onClick={() => {
                 appendGov({
                   memberName: '',
                   fathersName: '',
@@ -456,11 +320,119 @@ export default function ProfileInstitutionalStep({
                   qualification: '',
                   mobileNumber: '',
                   occupationAddress: '',
-                })
-              }
+                });
+                setEditingGovIndex(govFields.length);
+                setIsGovModalOpen(true);
+              }}
             />
           </div>
         </div>
+
+        <Modal
+          header="Governing Body Member Details"
+          visible={isGovModalOpen}
+          onHide={() => {
+            if (editingGovIndex !== null) {
+              const currentMember =
+                governingBodyMembersWatch?.[editingGovIndex];
+              if (!currentMember?.memberName) {
+                removeGov(editingGovIndex);
+              }
+            }
+            setIsGovModalOpen(false);
+            setEditingGovIndex(null);
+          }}
+          size="large"
+        >
+          {editingGovIndex !== null && (
+            <div className="p-4">
+              <FormGrid columns={2}>
+                <TextBox
+                  label="Member Name"
+                  placeholder="Enter Name"
+                  {...register(
+                    `governingBodyMembers.${editingGovIndex}.memberName`
+                  )}
+                  errorMessage={
+                    formState.errors.governingBodyMembers?.[editingGovIndex]
+                      ?.memberName?.message as string
+                  }
+                  required
+                />
+                <TextBox
+                  label="Father's Name"
+                  placeholder="Enter Father's Name"
+                  {...register(
+                    `governingBodyMembers.${editingGovIndex}.fathersName`
+                  )}
+                  errorMessage={
+                    formState.errors.governingBodyMembers?.[editingGovIndex]
+                      ?.fathersName?.message as string
+                  }
+                />
+                <TextBox
+                  label="Age"
+                  placeholder="Enter Age"
+                  {...register(`governingBodyMembers.${editingGovIndex}.age`)}
+                  errorMessage={
+                    formState.errors.governingBodyMembers?.[editingGovIndex]
+                      ?.age?.message as string
+                  }
+                />
+                <DropDownList
+                  label="Qualification"
+                  name={`governingBodyMembers.${editingGovIndex}.qualification`}
+                  control={control}
+                  placeholder="Select Qualification"
+                  data={qualificationOptions}
+                  textField="name"
+                  valueField="id"
+                  errorMessage={
+                    formState.errors.governingBodyMembers?.[editingGovIndex]
+                      ?.qualification?.message as string
+                  }
+                />
+                <TextBox
+                  label="Mobile Number"
+                  placeholder="Enter Mobile Number"
+                  {...register(
+                    `governingBodyMembers.${editingGovIndex}.mobileNumber`
+                  )}
+                  errorMessage={
+                    formState.errors.governingBodyMembers?.[editingGovIndex]
+                      ?.mobileNumber?.message as string
+                  }
+                />
+                <TextBox
+                  label="Occupation Address"
+                  placeholder="Enter Address"
+                  {...register(
+                    `governingBodyMembers.${editingGovIndex}.occupationAddress`
+                  )}
+                  errorMessage={
+                    formState.errors.governingBodyMembers?.[editingGovIndex]
+                      ?.occupationAddress?.message as string
+                  }
+                />
+              </FormGrid>
+              <div className="mt-6 flex justify-end">
+                <Button
+                  label="Save"
+                  onClick={async () => {
+                    if (trigger) {
+                      const isValid = await trigger(
+                        `governingBodyMembers.${editingGovIndex}`
+                      );
+                      if (!isValid) return;
+                    }
+                    setIsGovModalOpen(false);
+                    setEditingGovIndex(null);
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        </Modal>
       </FormCard>
     </>
   );

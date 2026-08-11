@@ -198,7 +198,7 @@ export default function InspectionAssignmentList() {
       <FormPopup
         visible={previewId !== null}
         onHide={handleClosePreview}
-        title="College Profile Details"
+        title="College Affiliation Form"
         subtitle="Review the detailed profile submitted by the college."
         size="xl"
         footer={

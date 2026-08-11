@@ -2099,8 +2099,8 @@ export const translations: Record<string, Record<string, string>> = {
     'e.g. 10th Marksheet, Degree Certificate': 'जैसे ',
     'B.Tech Computer Science and Engineering':
       'बी.टेक कंप्यूटर साइंस एंड इंजीनियरिंग',
-    'Manage college profile and inspections.':
-      'कॉलेज प्रोफ़ाइल और निरीक्षण प्रबंधित करें।',
+    'Manage college affiliation form and inspections.':
+      'कॉलेज संबद्धता फॉर्म और निरीक्षण प्रबंधित करें।',
     'University-wide official announcements.':
       'विश्वविद्यालय-व्यापी आधिकारिक घोषणाएँ।',
     'End Term Theory Exam Time Table Revised':
@@ -2904,7 +2904,7 @@ export const translations: Record<string, Record<string, string>> = {
     'Entrance Exam Schedule Released': 'प्रवेश परीक्षा कार्यक्रम जारी',
     'Fee Concession for EWS Category':
       'ईडब्ल्यूएस श्रेणी के लिए शुल्क में रियायत',
-    'Manage college profile details.': 'कॉलेज प्रोफ़ाइल विवरण प्रबंधित करें.',
+    'Manage college affiliation form.': 'कॉलेज संबद्धता फॉर्म प्रबंधित करें.',
     'OU-CIVIL mapped to new OU Admin':
       'OU-CIVIL को नए OU एडमिन में मैप किया गया',
     'Registration by Year of Passing':
@@ -4306,7 +4306,7 @@ export const translations: Record<string, Record<string, string>> = {
     'Approval Status History': 'अनुमोदन स्थिति इतिहास',
     'Copy application number': 'आवेदन क्रमांक कॉपी करें',
     'Select college category': 'कॉलेज श्रेणी का चयन करें',
-    'College Profile Details': 'कॉलेज प्रोफ़ाइल विवरण',
+    'College Affiliation Form': 'कॉलेज संबद्धता फॉर्म',
     'Department Registration': 'विभाग पंजीकरण',
     '4. GEO-TAGGED EVIDENCES': '4. भू-टैग किए गए साक्ष्य',
     '5. FINAL RECOMMENDATION': '5. अंतिम अनुशंसा',
@@ -5221,7 +5221,6 @@ export const translations: Record<string, Record<string, string>> = {
     'Number of Classrooms': 'कक्षाओं की संख्या',
     'Registration Preview': 'पंजीकरण पूर्वावलोकन',
     'Library & Reading Rm': 'लाइब्रेरी एवं रीडिंग आरएम',
-    'College Profile Form': 'कॉलेज प्रोफाइल फॉर्म',
     'College Registration': 'कॉलेज पंजीकरण',
     'Enter Inspection Fee': 'निरीक्षण शुल्क दर्ज करें',
     'Notification History': 'अधिसूचना इतिहास',

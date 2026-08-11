@@ -8255,7 +8255,7 @@ export const menuConfig: Menu.MenuItem[] = [
           {
             label: 'College Login',
             slug: 'college-login',
-            description: 'Manage college profile and inspections.',
+            description: 'Manage college affiliation form and inspections.',
             path: '/home/sub-menu/college-login',
             icon: 'domain',
             colorScheme: 'purple',
@@ -8269,9 +8269,9 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'blue',
               },
               {
-                label: 'College Profile Details',
+                label: 'College Affiliation Form',
                 slug: 'profile-details',
-                description: 'Manage college profile details.',
+                description: 'Manage college affiliation form.',
                 path: '/affiliation-management-system/profile-details',
                 icon: 'corporate_fare',
                 colorScheme: 'blue',
@@ -8353,7 +8353,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 label: 'Profile Scrutiny & Verification',
                 slug: 'profile-scrutiny',
                 description:
-                  'Verify detailed college profiles before assignment.',
+                  'Verify detailed college affiliation forms before assignment.',
                 path: '/affiliation-management-system/profile-scrutiny',
                 icon: 'fact_check',
                 colorScheme: 'blue',
