@@ -4,7 +4,7 @@ export default function CollegePortalPage() {
   return (
     <PortalSelector
       moduleTitle="College Login"
-      moduleDescription="Manage college profile and inspections."
+      moduleDescription="Manage college affiliation form and inspections."
       backPath="/home/sub-menu/affiliation-management-system"
       portals={[
         {
@@ -15,8 +15,8 @@ export default function CollegePortalPage() {
           path: '/affiliation-management-system/basic-registration-details/view',
         },
         {
-          title: 'College Profile Details',
-          description: 'Manage college profile details.',
+          title: 'College Affiliation Form',
+          description: 'Manage college affiliation form.',
           icon: 'corporate_fare',
           colorScheme: 'purple',
           path: '/affiliation-management-system/profile-details',

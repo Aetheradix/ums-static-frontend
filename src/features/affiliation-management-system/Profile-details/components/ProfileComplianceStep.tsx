@@ -1,3 +1,4 @@
+import { useWatch } from 'react-hook-form';
 import type { Control, FormState, Path } from 'react-hook-form';
 import { DropDownList, TextBox } from 'shared/components/forms';
 import { FormCard, FormGrid } from 'shared/new-components';
@@ -21,6 +22,26 @@ export default function ProfileComplianceStep({
     { id: 'yes', name: 'Yes' },
     { id: 'no', name: 'No' },
   ];
+
+  const isInternetAvailable = useWatch({
+    control,
+    name: 'internetAvailable',
+  });
+
+  const isStatutoryNormsAdhered = useWatch({
+    control,
+    name: 'statutoryNormsAdhered',
+  });
+
+  const isLabAvailableAsPerNorms = useWatch({
+    control,
+    name: 'labAvailableAsPerNorms',
+  });
+
+  const isResidentialQuartersAvailable = useWatch({
+    control,
+    name: 'residentialQuartersAvailable',
+  });
 
   return (
     <>
@@ -113,11 +134,11 @@ export default function ProfileComplianceStep({
       </FormCard>
 
       <FormCard
-        title="SECTION 10: UNIVERSITY REQUIREMENTS & FEE COMPLIANCE"
+        title="SECTION 10: UNIVERSITY REQUIREMENTS & COMPLIANCE"
         icon="building"
       >
         <div className="flex flex-col gap-4">
-          <FormGrid columns={2}>
+          <FormGrid columns={1}>
             <DropDownList
               label="Statute 28 fulfilled?"
               name="statute28Fulfilled"
@@ -130,23 +151,7 @@ export default function ProfileComplianceStep({
                 formState.errors.statute28Fulfilled?.message as string
               }
             />
-            <DropDownList
-              label="Affiliation / Exam Fees Deposited?"
-              name="feesDeposited"
-              control={control}
-              placeholder="Select"
-              data={yesNoOptions}
-              textField="name"
-              valueField="id"
-              errorMessage={formState.errors.feesDeposited?.message as string}
-            />
           </FormGrid>
-          <TextBox
-            label="Fee Deposit Details"
-            placeholder="Enter Details"
-            {...register('feeDepositDetails')}
-            errorMessage={formState.errors.feeDepositDetails?.message as string}
-          />
           <TextBox
             label="Endowment fund deposit details"
             placeholder="Enter Details"
@@ -155,7 +160,7 @@ export default function ProfileComplianceStep({
               formState.errors.endowmentFundDetails?.message as string
             }
           />
-          <FormGrid columns={3}>
+          <FormGrid columns={2}>
             <DropDownList
               label="Statutory norms adhered?"
               name="statutoryNormsAdhered"
@@ -166,18 +171,6 @@ export default function ProfileComplianceStep({
               valueField="id"
               errorMessage={
                 formState.errors.statutoryNormsAdhered?.message as string
-              }
-            />
-            <DropDownList
-              label="Approved fee structure adhered?"
-              name="approvedFeeStructureAdhered"
-              control={control}
-              placeholder="Select"
-              data={yesNoOptions}
-              textField="name"
-              valueField="id"
-              errorMessage={
-                formState.errors.approvedFeeStructureAdhered?.message as string
               }
             />
             <DropDownList
@@ -193,14 +186,16 @@ export default function ProfileComplianceStep({
               }
             />
           </FormGrid>
-          <TextBox
-            label="Statutory Norms Remarks (If Defaults Exist)"
-            placeholder="Enter Details"
-            {...register('statutoryNormsRemarks')}
-            errorMessage={
-              formState.errors.statutoryNormsRemarks?.message as string
-            }
-          />
+          {isStatutoryNormsAdhered === 'yes' && (
+            <TextBox
+              label="Statutory Norms Remarks"
+              placeholder="Enter Details"
+              {...register('statutoryNormsRemarks')}
+              errorMessage={
+                formState.errors.statutoryNormsRemarks?.message as string
+              }
+            />
+          )}
         </div>
       </FormCard>
       <div className="mb-4 mt-6 text-blue-700 font-semibold border-l-2 border-blue-500 pl-2">
@@ -235,7 +230,7 @@ export default function ProfileComplianceStep({
               errorMessage={formState.errors.scanners?.message as string}
             />
           </FormGrid>
-          <FormGrid columns={2}>
+          <FormGrid columns={isInternetAvailable === 'yes' ? 2 : 1}>
             <DropDownList
               label="Internet Available?"
               name="internetAvailable"
@@ -248,14 +243,16 @@ export default function ProfileComplianceStep({
                 formState.errors.internetAvailable?.message as string
               }
             />
-            <TextBox
-              label="Internet Connection Type"
-              placeholder="Details"
-              {...register('internetConnectionType')}
-              errorMessage={
-                formState.errors.internetConnectionType?.message as string
-              }
-            />
+            {isInternetAvailable === 'yes' && (
+              <TextBox
+                label="Internet Connection Type"
+                placeholder="Details"
+                {...register('internetConnectionType')}
+                errorMessage={
+                  formState.errors.internetConnectionType?.message as string
+                }
+              />
+            )}
           </FormGrid>
           <FormGrid columns={4}>
             <TextBox
@@ -318,7 +315,7 @@ export default function ProfileComplianceStep({
 
       <FormCard title="SECTION 12: EQUIPMENT & LAB (AS PER NORMS)" icon="cog">
         <div className="flex flex-col gap-4">
-          <FormGrid columns={2}>
+          <FormGrid columns={isLabAvailableAsPerNorms === 'yes' ? 2 : 1}>
             <DropDownList
               label="Lab Available as per Norms?"
               name="labAvailableAsPerNorms"
@@ -331,36 +328,67 @@ export default function ProfileComplianceStep({
                 formState.errors.labAvailableAsPerNorms?.message as string
               }
             />
-            <TextBox
-              label="Lab Floor Space"
-              placeholder="Details"
-              {...register('equipmentLabFloorSpace')}
-              errorMessage={
-                formState.errors.equipmentLabFloorSpace?.message as string
-              }
-            />
+            {isLabAvailableAsPerNorms === 'yes' && (
+              <TextBox
+                label="Lab Floor Space"
+                placeholder="Details"
+                {...register('equipmentLabFloorSpace')}
+                errorMessage={
+                  formState.errors.equipmentLabFloorSpace?.message as string
+                }
+              />
+            )}
           </FormGrid>
-          <TextBox
-            label="Number & Description of Equipment"
-            placeholder="Details"
-            {...register('equipmentDescription')}
-            errorMessage={
-              formState.errors.equipmentDescription?.message as string
-            }
-          />
-          <TextBox
-            label="Workshop Details"
-            placeholder="Details"
-            {...register('equipmentWorkshopDetails')}
-            errorMessage={
-              formState.errors.equipmentWorkshopDetails?.message as string
-            }
-          />
+          {isLabAvailableAsPerNorms === 'yes' && (
+            <>
+              <TextBox
+                label="Number & Description of Equipment"
+                placeholder="Details"
+                {...register('equipmentDescription')}
+                errorMessage={
+                  formState.errors.equipmentDescription?.message as string
+                }
+              />
+              <TextBox
+                label="Workshop Details"
+                placeholder="Details"
+                {...register('equipmentWorkshopDetails')}
+                errorMessage={
+                  formState.errors.equipmentWorkshopDetails?.message as string
+                }
+              />
+              <DropDownList
+                label="Other Major Instruments Available?"
+                name="otherMajorInstrumentsAvailable"
+                control={control}
+                placeholder="Select"
+                data={yesNoOptions}
+                textField="name"
+                valueField="id"
+                errorMessage={
+                  formState.errors.otherMajorInstrumentsAvailable
+                    ?.message as string
+                }
+              />
+              <TextBox
+                label="Major Instruments Details"
+                placeholder="Details"
+                {...register('majorInstrumentsDetails')}
+                errorMessage={
+                  formState.errors.majorInstrumentsDetails?.message as string
+                }
+              />
+            </>
+          )}
           <FormGrid columns={4}>
-            <TextBox
-              label="Hospital Availability"
-              placeholder="Details"
-              {...register('equipmentHospitalAvailability')}
+            <DropDownList
+              label="Hospital Availability?"
+              name="equipmentHospitalAvailability"
+              control={control}
+              placeholder="Select"
+              data={yesNoOptions}
+              textField="name"
+              valueField="id"
               errorMessage={
                 formState.errors.equipmentHospitalAvailability
                   ?.message as string
@@ -392,26 +420,6 @@ export default function ProfileComplianceStep({
             />
             <div />
           </FormGrid>
-          <DropDownList
-            label="Other Major Instruments Available?"
-            name="otherMajorInstrumentsAvailable"
-            control={control}
-            placeholder="Select"
-            data={yesNoOptions}
-            textField="name"
-            valueField="id"
-            errorMessage={
-              formState.errors.otherMajorInstrumentsAvailable?.message as string
-            }
-          />
-          <TextBox
-            label="Major Instruments Details"
-            placeholder="Details"
-            {...register('majorInstrumentsDetails')}
-            errorMessage={
-              formState.errors.majorInstrumentsDetails?.message as string
-            }
-          />
         </div>
       </FormCard>
 
@@ -429,14 +437,16 @@ export default function ProfileComplianceStep({
               formState.errors.residentialQuartersAvailable?.message as string
             }
           />
-          <TextBox
-            label="Residential Quarters Details"
-            placeholder="Details"
-            {...register('residentialQuartersDetails')}
-            errorMessage={
-              formState.errors.residentialQuartersDetails?.message as string
-            }
-          />
+          {isResidentialQuartersAvailable === 'yes' && (
+            <TextBox
+              label="Residential Quarters Details"
+              placeholder="Details"
+              {...register('residentialQuartersDetails')}
+              errorMessage={
+                formState.errors.residentialQuartersDetails?.message as string
+              }
+            />
+          )}
           <DropDownList
             label="Any Objection to Making Submitted Info Public?"
             name="objectionToInfoPublic"

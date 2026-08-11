@@ -3,14 +3,6 @@ import { useFieldArray } from 'react-hook-form';
 import { useAppForm } from 'shared/hooks/form';
 import validation from 'shared/utils/validation';
 
-export interface ProfileDetailsNoc {
-  status: string;
-  nocType: string;
-  referenceNo: string;
-  issueDate: Date | null;
-  document: File | null;
-}
-
 export interface GoverningBodyMember {
   memberName: string;
   fathersName: string;
@@ -32,12 +24,13 @@ export interface ExistingCourse {
 
 export interface TeachingStaff {
   name: string;
-  role: string;
-  status: string;
-  qualification: string;
+  role: string | number;
+  status: string | number;
+  qualification: string | number;
   experience: string;
   joiningDate: Date | null;
   dateOfBirth: Date | null;
+  course: string;
   subject: string;
 }
 
@@ -48,15 +41,14 @@ export interface AdditionalInstitution {
   seats: string;
   class: string;
   year: string;
-  type: string;
+  type: string | number;
   conditions: string;
   statusOfCompliance: string;
 }
 
 export interface ProfileDetailsFormData {
   // Step 1: General Info
-  nocs: ProfileDetailsNoc[];
-  applicationNumber: string;
+  affiliationType: number | string;
   collegeName: string;
   societyName: string;
   yearOfFoundationCollege: string;
@@ -90,12 +82,10 @@ export interface ProfileDetailsFormData {
   totalArea: string;
   isRentedBuilding: string;
   rentAgreementDocument: any;
+  registryDocument: any;
   provisionToConstruct: string;
   accommodationDetails: string;
   qualityOfBuilding: string;
-
-  photoOfCollegeBuilding: any;
-  buildingMap: any;
 
   // Additional Step 3
   requiredClassrooms: string;
@@ -106,10 +96,6 @@ export interface ProfileDetailsFormData {
   neighbourComplaints: string;
   neighbourComplaintsRemarks: string;
   sharedCampus: string;
-
-  teachingStaffRecruited: string;
-  nonTeachingStaffRecruited: string;
-  teachingAids: string;
 
   libraryBooksCount: string;
   bookStudentRatio: string;
@@ -123,8 +109,6 @@ export interface ProfileDetailsFormData {
   journalsCount: string;
   latestJournalIssues: string;
 
-  studentPassFailRecord: string;
-
   laboratoryRequired: string;
   labFloorSpace: string;
   labExclusive: string;
@@ -134,6 +118,7 @@ export interface ProfileDetailsFormData {
   hospitalAvailability: string;
 
   sportsFacilityAvailable: string;
+  studentPassFailRecord?: string;
   adequateForStudents: string;
   outdoorGamesFacility: string;
   outdoorFacilitiesInUse: string;
@@ -142,7 +127,11 @@ export interface ProfileDetailsFormData {
   emergencyMedicineStock: string;
   firstAidFacility: string;
   hostelAvailable: string;
+  typeOfHostel: string;
   accommodationAvailability: string;
+  boysHostelsCount: string;
+  girlsHostelsCount: string;
+  totalHostelCapacity: string;
 
   // Step 4: Compliance
   sourceOfFunding: string;
@@ -156,11 +145,8 @@ export interface ProfileDetailsFormData {
   mpGovtConditions: string;
 
   statute28Fulfilled: string;
-  feesDeposited: string;
-  feeDepositDetails: string;
   endowmentFundDetails: string;
   statutoryNormsAdhered: string;
-  approvedFeeStructureAdhered: string;
   reservationNormsFollowed: string;
   statutoryNormsRemarks: string;
 
@@ -193,16 +179,28 @@ export interface ProfileDetailsFormData {
   // Section 13: Miscellaneous
   residentialQuartersAvailable: string;
   residentialQuartersDetails: string;
+  quarterDetails: string;
+  guestHouseAvailable: string;
+  seminarHallAvailable: string;
   objectionToInfoPublic: string;
   transparencyRemarks: string;
+
+  // Document Uploads
+  nocDocument: any;
+  councilApprovalsDocument: any;
+  societyRegistrationDocument: any;
+  landDocumentsDocument: any;
+  buildingPlanAndSafetyDocument: any;
+  amenitiesProofDocument: any;
+  photoOfCollegeBuilding: any;
+  buildingMap: any;
 
   // Section 14: Certification & Signatures
   principalName: string;
   dateOfCertification: Date | null;
-  managementMemberName: string;
-  managementDesignation: string;
   principalSignature: any;
   managementSignature: any;
+  isDeclared: boolean;
 }
 
 const governingBodyMemberSchema = Joi.object({
@@ -214,16 +212,6 @@ const governingBodyMemberSchema = Joi.object({
   qualification: Joi.string().allow('', null),
   mobileNumber: Joi.string().allow('', null),
   occupationAddress: Joi.string().allow('', null),
-});
-
-const nocSchema = Joi.object({
-  status: Joi.string()
-    .required()
-    .messages({ 'string.empty': 'Status required' }),
-  nocType: Joi.string().allow('', null),
-  referenceNo: Joi.string().allow('', null),
-  issueDate: Joi.date().allow(null),
-  document: Joi.any().allow(null),
 });
 
 const existingCourseSchema = Joi.object({
@@ -240,12 +228,13 @@ const existingCourseSchema = Joi.object({
 
 const teachingStaffSchema = Joi.object({
   name: Joi.string().required().messages({ 'string.empty': 'Name required' }),
-  role: Joi.string().allow('', null),
-  status: Joi.string().allow('', null),
-  qualification: Joi.string().allow('', null),
+  role: Joi.any().allow('', null),
+  status: Joi.any().allow('', null),
+  qualification: Joi.any().allow('', null),
   experience: Joi.string().allow('', null),
   joiningDate: Joi.date().allow(null),
   dateOfBirth: Joi.date().allow(null),
+  course: Joi.string().allow('', null),
   subject: Joi.string().allow('', null),
 });
 
@@ -258,19 +247,16 @@ const additionalInstitutionSchema = Joi.object({
   seats: Joi.string().allow('', null),
   class: Joi.string().allow('', null),
   year: Joi.string().allow('', null),
-  type: Joi.string().allow('', null),
+  type: Joi.any().allow('', null),
   conditions: Joi.string().allow('', null),
   statusOfCompliance: Joi.string().allow('', null),
 });
 
 const schema = validation.create<ProfileDetailsFormData>(o => ({
-  nocs: o.array().items(nocSchema).min(1).messages({
-    'array.min': 'At least one NOC is required',
-  }),
-  applicationNumber: o
-    .string()
+  affiliationType: o
+    .any()
     .required()
-    .messages({ 'string.empty': 'Application Number required' }),
+    .messages({ 'string.empty': 'Affiliation Type is required' }),
   collegeName: o
     .string()
     .required()
@@ -345,12 +331,10 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
   totalArea: o.string().allow('', null),
   isRentedBuilding: o.string().allow('', null),
   rentAgreementDocument: o.any().allow(null),
+  registryDocument: o.any().allow(null),
   provisionToConstruct: o.string().allow('', null),
   accommodationDetails: o.string().allow('', null),
   qualityOfBuilding: o.string().allow('', null),
-
-  photoOfCollegeBuilding: o.any().allow(null),
-  buildingMap: o.any().allow(null),
 
   requiredClassrooms: o.string().allow('', null),
   accessibleToPublic: o.string().allow('', null),
@@ -360,10 +344,6 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
   neighbourComplaints: o.string().allow('', null),
   neighbourComplaintsRemarks: o.string().allow('', null),
   sharedCampus: o.string().allow('', null),
-
-  teachingStaffRecruited: o.string().allow('', null),
-  nonTeachingStaffRecruited: o.string().allow('', null),
-  teachingAids: o.string().allow('', null),
 
   libraryBooksCount: o.string().allow('', null),
   bookStudentRatio: o.string().allow('', null),
@@ -377,8 +357,6 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
   journalsCount: o.string().allow('', null),
   latestJournalIssues: o.string().allow('', null),
 
-  studentPassFailRecord: o.string().allow('', null),
-
   laboratoryRequired: o.string().allow('', null),
   labFloorSpace: o.string().allow('', null),
   labExclusive: o.string().allow('', null),
@@ -388,6 +366,7 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
   hospitalAvailability: o.string().allow('', null),
 
   sportsFacilityAvailable: o.string().allow('', null),
+  studentPassFailRecord: o.string().allow('', null),
   adequateForStudents: o.string().allow('', null),
   outdoorGamesFacility: o.string().allow('', null),
   outdoorFacilitiesInUse: o.string().allow('', null),
@@ -396,7 +375,11 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
   emergencyMedicineStock: o.string().allow('', null),
   firstAidFacility: o.string().allow('', null),
   hostelAvailable: o.string().allow('', null),
+  typeOfHostel: o.string().allow('', null),
   accommodationAvailability: o.string().allow('', null),
+  boysHostelsCount: o.string().allow('', null),
+  girlsHostelsCount: o.string().allow('', null),
+  totalHostelCapacity: o.string().allow('', null),
 
   sourceOfFunding: o.string().allow('', null),
   annualProjectedIncome: o.string().allow('', null),
@@ -409,11 +392,8 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
   mpGovtConditions: o.string().allow('', null),
 
   statute28Fulfilled: o.string().allow('', null),
-  feesDeposited: o.string().allow('', null),
-  feeDepositDetails: o.string().allow('', null),
   endowmentFundDetails: o.string().allow('', null),
   statutoryNormsAdhered: o.string().allow('', null),
-  approvedFeeStructureAdhered: o.string().allow('', null),
   reservationNormsFollowed: o.string().allow('', null),
   statutoryNormsRemarks: o.string().allow('', null),
 
@@ -443,15 +423,26 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
 
   residentialQuartersAvailable: o.string().allow('', null),
   residentialQuartersDetails: o.string().allow('', null),
+  quarterDetails: o.string().allow('', null),
+  guestHouseAvailable: o.string().allow('', null),
+  seminarHallAvailable: o.string().allow('', null),
   objectionToInfoPublic: o.string().allow('', null),
   transparencyRemarks: o.string().allow('', null),
 
+  nocDocument: o.any().allow(null),
+  councilApprovalsDocument: o.any().allow(null),
+  societyRegistrationDocument: o.any().allow(null),
+  landDocumentsDocument: o.any().allow(null),
+  buildingPlanAndSafetyDocument: o.any().allow(null),
+  amenitiesProofDocument: o.any().allow(null),
+  photoOfCollegeBuilding: o.any().allow(null),
+  buildingMap: o.any().allow(null),
+
   principalName: o.string().allow('', null),
   dateOfCertification: o.any().allow(null),
-  managementMemberName: o.string().allow('', null),
-  managementDesignation: o.string().allow('', null),
   principalSignature: o.any().allow(null),
   managementSignature: o.any().allow(null),
+  isDeclared: o.boolean().valid(true).required(),
 }));
 
 export function useProfileDetailsForm() {
@@ -467,7 +458,7 @@ export function useProfileDetailsForm() {
     resolver: validation.resolver(schema),
     mode: 'onChange',
     defaultValues: {
-      applicationNumber: 'APP-2026-9021',
+      affiliationType: '',
       collegeName: 'Global Institute of Technology',
       societyName: 'Global Education Society',
       yearOfFoundationCollege: '2010',
@@ -488,60 +479,18 @@ export function useProfileDetailsForm() {
       executiveQualification: '',
       executiveMobileNumber: '',
       executiveOccupationAddress: '',
-      governingBodyMembers: [
-        {
-          memberName: '',
-          fathersName: '',
-          age: '',
-          qualification: '',
-          mobileNumber: '',
-          occupationAddress: '',
-        },
-      ],
-      existingCourses: [
-        {
-          courseName: '',
-          seats: '',
-          class: '',
-          year: '',
-          type: '',
-          conditions: '',
-          statusOfCompliance: '',
-        },
-      ],
-      teachingStaff: [
-        {
-          name: '',
-          role: '',
-          status: '',
-          qualification: '',
-          experience: '',
-          joiningDate: null,
-          dateOfBirth: null,
-          subject: '',
-        },
-      ],
-      additionalInstitutions: [
-        {
-          institutionName: '',
-          address: '',
-          course: '',
-          seats: '',
-          class: '',
-          year: '',
-          type: '',
-          conditions: '',
-          statusOfCompliance: '',
-        },
-      ],
+      governingBodyMembers: [],
+      existingCourses: [],
+      teachingStaff: [],
+      additionalInstitutions: [],
       totalArea: '',
       isRentedBuilding: '',
       rentAgreementDocument: null,
+      registryDocument: null,
       provisionToConstruct: '',
       accommodationDetails: '',
       qualityOfBuilding: '',
-      photoOfCollegeBuilding: null,
-      buildingMap: null,
+
       requiredClassrooms: '',
       accessibleToPublic: '',
       classroomDetails: '',
@@ -550,9 +499,6 @@ export function useProfileDetailsForm() {
       neighbourComplaints: '',
       neighbourComplaintsRemarks: '',
       sharedCampus: '',
-      teachingStaffRecruited: '',
-      nonTeachingStaffRecruited: '',
-      teachingAids: '',
       libraryBooksCount: '',
       bookStudentRatio: '',
       libraryBuildingAvailable: '',
@@ -564,7 +510,6 @@ export function useProfileDetailsForm() {
       journalsSubscribed: '',
       journalsCount: '',
       latestJournalIssues: '',
-      studentPassFailRecord: '',
       laboratoryRequired: '',
       labFloorSpace: '',
       labExclusive: '',
@@ -573,6 +518,7 @@ export function useProfileDetailsForm() {
       workshopDetails: '',
       hospitalAvailability: '',
       sportsFacilityAvailable: '',
+      studentPassFailRecord: '',
       adequateForStudents: '',
       outdoorGamesFacility: '',
       outdoorFacilitiesInUse: '',
@@ -582,6 +528,9 @@ export function useProfileDetailsForm() {
       firstAidFacility: '',
       hostelAvailable: '',
       accommodationAvailability: '',
+      boysHostelsCount: '',
+      girlsHostelsCount: '',
+      totalHostelCapacity: '',
       sourceOfFunding: '',
       annualProjectedIncome: '',
       regularBooksMaintained: '',
@@ -591,11 +540,8 @@ export function useProfileDetailsForm() {
       mpGovtPermission: '',
       mpGovtConditions: '',
       statute28Fulfilled: '',
-      feesDeposited: '',
-      feeDepositDetails: '',
       endowmentFundDetails: '',
       statutoryNormsAdhered: '',
-      approvedFeeStructureAdhered: '',
       reservationNormsFollowed: '',
       statutoryNormsRemarks: '',
       latestComputers: '',
@@ -624,22 +570,24 @@ export function useProfileDetailsForm() {
       residentialQuartersDetails: '',
       objectionToInfoPublic: '',
       transparencyRemarks: '',
+
+      nocDocument: null,
+      councilApprovalsDocument: null,
+      societyRegistrationDocument: null,
+      landDocumentsDocument: null,
+      buildingPlanAndSafetyDocument: null,
+      amenitiesProofDocument: null,
       principalName: '',
       dateOfCertification: null,
-      managementMemberName: '',
-      managementDesignation: '',
       principalSignature: null,
       managementSignature: null,
+      isDeclared: false,
     },
   });
 
   const governingBodyMembersArray = useFieldArray({
     control,
     name: 'governingBodyMembers',
-  });
-  const nocsArray = useFieldArray({
-    control,
-    name: 'nocs',
   });
   const existingCoursesArray = useFieldArray({
     control,
@@ -660,7 +608,6 @@ export function useProfileDetailsForm() {
     setValue,
     formState,
     governingBodyMembersArray,
-    nocsArray,
     existingCoursesArray,
     teachingStaffArray,
     additionalInstitutionsArray,

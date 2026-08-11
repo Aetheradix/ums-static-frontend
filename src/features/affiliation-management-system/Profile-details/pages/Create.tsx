@@ -4,6 +4,7 @@ import type { WizardStep } from 'shared/components/forms/FormWizard';
 import { FormPage } from 'shared/new-components';
 import { useProfileDetailsForm } from '../components/form.hook';
 import ProfileCertificationStep from '../components/ProfileCertificationStep';
+import ProfileDocumentUploadStep from '../components/ProfileDocumentUploadStep';
 import ProfileComplianceStep from '../components/ProfileComplianceStep';
 import ProfileEcosystemStep from '../components/ProfileEcosystemStep';
 import ProfileInfrastructureStep from '../components/ProfileInfrastructureStep';
@@ -18,7 +19,6 @@ export default function Create() {
     trigger,
     formState,
     governingBodyMembersArray,
-    nocsArray,
     existingCoursesArray,
     teachingStaffArray,
     additionalInstitutionsArray,
@@ -27,7 +27,7 @@ export default function Create() {
   const onFormSubmit = handleSubmit(
     data => {
       console.log('Form Submitted', data);
-      ToastService.success('College Profile details saved successfully!');
+      ToastService.success('College Affiliation Form saved successfully!');
       reset();
     },
     errors => {
@@ -63,8 +63,8 @@ export default function Create() {
           register={register}
           control={control}
           formState={formState}
-          nocsArray={nocsArray}
           governingBodyMembersArray={governingBodyMembersArray}
+          trigger={trigger as any}
         />
       ),
     },
@@ -79,6 +79,7 @@ export default function Create() {
           existingCoursesArray={existingCoursesArray}
           teachingStaffArray={teachingStaffArray}
           additionalInstitutionsArray={additionalInstitutionsArray}
+          trigger={trigger as any}
         />
       ),
     },
@@ -105,7 +106,18 @@ export default function Create() {
       ),
     },
     {
-      label: 'Signature & Certification',
+      label: 'Document Uploads',
+      icon: 'upload',
+      content: (
+        <ProfileDocumentUploadStep
+          register={register}
+          control={control}
+          formState={formState}
+        />
+      ),
+    },
+    {
+      label: 'Signature & Declaration',
       icon: 'check-circle',
       content: (
         <ProfileCertificationStep
@@ -119,12 +131,12 @@ export default function Create() {
 
   return (
     <FormPage
-      title="College Profile Form"
-      description="Configure and save college profile details, infrastructure, and courses."
+      title="College Affiliation Form"
+      description="Configure and save college affiliation form, infrastructure, and courses."
       breadcrumbs={[
         { label: 'Home', to: '/' },
         { label: 'Affiliation Management System' },
-        { label: 'College Profile' },
+        { label: 'College Affiliation Form' },
       ]}
       className="affiliation-page-no-scroll"
     >

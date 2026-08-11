@@ -56,7 +56,7 @@ export default function ProfileScrutinyList() {
   return (
     <FormPage
       title="Profile Scrutiny & Verification"
-      description="Verify detailed college profiles before forwarding them for inspection assignment."
+      description="Verify detailed college affiliation forms before forwarding them for inspection assignment."
     >
       <FormCard>
         <GridPanel
