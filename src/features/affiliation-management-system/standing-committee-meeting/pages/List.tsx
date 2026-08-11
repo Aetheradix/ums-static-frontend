@@ -35,29 +35,23 @@ const statusVariants: Record<
 const INITIAL_MEETINGS = [
   {
     id: 1,
-    meetingNo: 'SCM-2026-0001',
-    meetingDate: new Date('2026-08-15'),
-    meetingTime: '11:00 AM',
-    meetingVenue: 'VC Chamber Conference Room, DAVV',
-    meetingType: 'Regular',
-    meetingStatus: 'Scheduled',
     collegeId: 1,
     collegeName: 'Global Institute of Technology',
     applicationNo: 'APP-74921',
+    meetingDate: new Date('2026-08-15'),
+    membersAvailable: 'Dr. R. K. Sen, Dr. A. Sharma, Prof. K. Singh',
+    meetingStatus: 'Scheduled',
     remarks:
       'Committee will verify classroom counts, building security parameters, and hostel capacity certificates.',
   },
   {
     id: 2,
-    meetingNo: 'SCM-2026-0002',
-    meetingDate: new Date('2026-08-10'),
-    meetingTime: '02:30 PM',
-    meetingVenue: 'Meeting Room 2, Administrative Block',
-    meetingType: 'Special',
-    meetingStatus: 'Draft',
     collegeId: 2,
     collegeName: 'National Science College',
     applicationNo: 'APP-18239',
+    meetingDate: new Date('2026-08-10'),
+    membersAvailable: 'Dr. R. K. Sen, Prof. L. Verma',
+    meetingStatus: 'Completed',
     remarks:
       'Discussed land ownership titles. Resolved to seek clarified affidavit documents in next hearing.',
   },
@@ -66,37 +60,24 @@ const INITIAL_MEETINGS = [
 export default function StandingCommitteeMeetingList() {
   const [data, setData] = useState(INITIAL_MEETINGS);
   const [showPopup, setShowPopup] = useState(false);
-  const [sequenceCounter, setSequenceCounter] = useState(3);
   const [editingId, setEditingId] = useState<number | null>(null);
 
   // Form fields state
-  const [meetingNo, setMeetingNo] = useState('');
   const [selectedCollegeId, setSelectedCollegeId] = useState<number | null>(
     null
   );
   const [applicationNumber, setApplicationNumber] = useState('');
   const [meetingDate, setMeetingDate] = useState<Date | undefined>(undefined);
-  const [meetingTime, setMeetingTime] = useState('');
-  const [meetingVenue, setMeetingVenue] = useState('');
-  const [meetingType, setMeetingType] = useState('Regular');
+  const [membersAvailable, setMembersAvailable] = useState('');
   const [meetingStatus, setMeetingStatus] = useState('Draft');
   const [remarks, setRemarks] = useState('');
 
-  const generateMeetingNo = (index: number) => {
-    const year = new Date().getFullYear();
-    const sequence = String(index).padStart(4, '0');
-    return `SCM-${year}-${sequence}`;
-  };
-
   const handleOpenPopupForNew = () => {
     setEditingId(null);
-    setMeetingNo(generateMeetingNo(sequenceCounter));
     setSelectedCollegeId(null);
     setApplicationNumber('');
     setMeetingDate(undefined);
-    setMeetingTime('');
-    setMeetingVenue('');
-    setMeetingType('Regular');
+    setMembersAvailable('');
     setMeetingStatus('Scheduled');
     setRemarks('');
     setShowPopup(true);
@@ -104,13 +85,10 @@ export default function StandingCommitteeMeetingList() {
 
   const handleOpenPopupForEdit = (item: (typeof INITIAL_MEETINGS)[0]) => {
     setEditingId(item.id);
-    setMeetingNo(item.meetingNo);
     setSelectedCollegeId(item.collegeId);
     setApplicationNumber(item.applicationNo);
     setMeetingDate(item.meetingDate);
-    setMeetingTime(item.meetingTime);
-    setMeetingVenue(item.meetingVenue);
-    setMeetingType(item.meetingType);
+    setMembersAvailable(item.membersAvailable || '');
     setMeetingStatus(item.meetingStatus);
     setRemarks(item.remarks || '');
     setShowPopup(true);
@@ -118,15 +96,10 @@ export default function StandingCommitteeMeetingList() {
 
   const handleScheduleAgain = (item: (typeof INITIAL_MEETINGS)[0]) => {
     setEditingId(null);
-    // Auto-generate new meeting number
-    setMeetingNo(generateMeetingNo(sequenceCounter));
     setSelectedCollegeId(item.collegeId);
     setApplicationNumber(item.applicationNo);
-    // Reset date/time/venue/remarks so user can reschedule
     setMeetingDate(undefined);
-    setMeetingTime('');
-    setMeetingVenue('');
-    setMeetingType('Regular');
+    setMembersAvailable('');
     setMeetingStatus('Scheduled');
     setRemarks('');
     setShowPopup(true);
@@ -150,16 +123,12 @@ export default function StandingCommitteeMeetingList() {
       ToastService.error('Please select meeting date.');
       return;
     }
-    if (!meetingTime.trim()) {
-      ToastService.error('Please enter meeting time.');
-      return;
-    }
-    if (!meetingVenue.trim()) {
-      ToastService.error('Please enter meeting venue.');
+    if (!membersAvailable.trim()) {
+      ToastService.error('Please enter members available.');
       return;
     }
     if (!remarks.trim()) {
-      ToastService.error('Please enter committee discussion / remarks.');
+      ToastService.error('Please enter committee discussion & remarks.');
       return;
     }
 
@@ -174,9 +143,7 @@ export default function StandingCommitteeMeetingList() {
             ? {
                 ...item,
                 meetingDate,
-                meetingTime,
-                meetingVenue,
-                meetingType,
+                membersAvailable,
                 meetingStatus,
                 remarks,
                 collegeId: college.id,
@@ -191,11 +158,8 @@ export default function StandingCommitteeMeetingList() {
       // Add mode
       const newMeeting = {
         id: Date.now(),
-        meetingNo,
         meetingDate,
-        meetingTime,
-        meetingVenue,
-        meetingType,
+        membersAvailable,
         meetingStatus,
         remarks,
         collegeId: college.id,
@@ -203,7 +167,6 @@ export default function StandingCommitteeMeetingList() {
         applicationNo: college.applicationNo,
       };
       setData(prev => [newMeeting, ...prev]);
-      setSequenceCounter(prev => prev + 1);
       ToastService.success('Meeting scheduled successfully.');
     }
 
@@ -229,13 +192,12 @@ export default function StandingCommitteeMeetingList() {
         <GridPanel
           data={data}
           searchBox
-          searchPlaceholder="Search meetings by no, venue, or college..."
+          searchPlaceholder="Search meetings by venue, or college..."
           searchFields={[
-            'meetingNo',
-            'meetingVenue',
             'collegeName',
             'applicationNo',
             'remarks',
+            'membersAvailable',
           ]}
           emptyMessage="No standing committee meetings scheduled."
           columns={[
@@ -245,19 +207,14 @@ export default function StandingCommitteeMeetingList() {
               sortable: false,
             },
             {
-              field: 'meetingNo',
-              header: 'Meeting No.',
-              sortable: true,
-            },
-            {
               field: 'collegeName',
-              header: 'College & Application No.',
+              header: 'College Name',
               cell: item => (
                 <div className="flex flex-col">
                   <span className="font-semibold text-gray-700">
                     {item.collegeName}
                   </span>
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-gray-400 font-mono">
                     {item.applicationNo}
                   </span>
                 </div>
@@ -266,34 +223,24 @@ export default function StandingCommitteeMeetingList() {
             },
             {
               field: 'meetingDate',
-              header: 'Meeting Date & Time',
+              header: 'Meeting Date',
               cell: item => (
-                <div className="flex flex-col">
-                  <span>
-                    {item.meetingDate
-                      ? new Date(item.meetingDate).toLocaleDateString()
-                      : '-'}
-                  </span>
-                  <span className="text-xs text-gray-400 font-medium">
-                    {item.meetingTime}
-                  </span>
-                </div>
+                <span>
+                  {item.meetingDate
+                    ? new Date(item.meetingDate).toLocaleDateString()
+                    : '-'}
+                </span>
               ),
               sortable: true,
             },
             {
-              field: 'meetingVenue',
-              header: 'Venue',
-              sortable: true,
-            },
-            {
-              field: 'meetingType',
-              header: 'Type',
+              field: 'membersAvailable',
+              header: 'Members Available',
               sortable: true,
             },
             {
               field: 'remarks',
-              header: 'Committee Discussion / Remarks',
+              header: 'Committee Discussion & Remark',
               sortable: true,
               cell: item => (
                 <span
@@ -306,7 +253,7 @@ export default function StandingCommitteeMeetingList() {
             },
             {
               field: 'meetingStatus',
-              header: 'Status',
+              header: 'Meeting Status',
               sortable: true,
               cell: item => (
                 <StatusBadge
@@ -377,17 +324,10 @@ export default function StandingCommitteeMeetingList() {
       >
         <div className="p-4 flex flex-col gap-5">
           <FormGrid columns={2}>
-            <TextBox
-              label="Standing Committee Meeting No."
-              value={meetingNo}
-              readOnly
-              placeholder="Auto-Generated"
-            />
-
             <DropDownList
-              label="Select College Application"
-              defaultOptionText="Select College Application"
-              placeholder="Select College Application"
+              label="Select College Name"
+              defaultOptionText="Select College"
+              placeholder="Select College"
               data={dummyColleges}
               textField="name"
               valueField="id"
@@ -404,54 +344,21 @@ export default function StandingCommitteeMeetingList() {
               }}
               required
             />
-          </FormGrid>
 
-          <FormGrid columns={2}>
             <TextBox
               label="Application Number"
               value={applicationNumber}
               readOnly
               placeholder="Application number will auto-fill"
             />
+          </FormGrid>
 
+          <FormGrid columns={2}>
             <DatePicker
               label="Meeting Date"
               placeholder="DD/MM/YYYY"
               value={meetingDate}
               onChange={val => setMeetingDate(val || undefined)}
-              required
-            />
-          </FormGrid>
-
-          <FormGrid columns={2}>
-            <TextBox
-              label="Meeting Time"
-              placeholder="e.g. 11:30 AM"
-              value={meetingTime}
-              onChange={val => setMeetingTime(val)}
-              required
-            />
-
-            <TextBox
-              label="Meeting Venue"
-              placeholder="Enter meeting location/venue"
-              value={meetingVenue}
-              onChange={val => setMeetingVenue(val)}
-              required
-            />
-          </FormGrid>
-
-          <FormGrid columns={2}>
-            <DropDownList
-              label="Meeting Type"
-              data={[
-                { value: 'Regular', text: 'Regular' },
-                { value: 'Special', text: 'Special' },
-              ]}
-              textField="text"
-              valueField="value"
-              value={meetingType}
-              onChange={val => setMeetingType(val as string)}
               required
             />
 
@@ -472,7 +379,15 @@ export default function StandingCommitteeMeetingList() {
           </FormGrid>
 
           <TextBox
-            label="Committee Discussion & Remarks"
+            label="Members Available"
+            placeholder="Enter names of committee members present..."
+            value={membersAvailable}
+            onChange={val => setMembersAvailable(val)}
+            required
+          />
+
+          <TextBox
+            label="Committee Discussion & Remark"
             placeholder="Describe offline committee discussions, observations, and recommendations..."
             value={remarks}
             onChange={val => setRemarks(val)}
