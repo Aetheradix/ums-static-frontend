@@ -110,19 +110,6 @@ export default function Create() {
               variant="outlined"
             />
             <Button
-              key="draft-button"
-              label="Save as Draft"
-              type="button"
-              variant="outlined"
-              onClick={async () => {
-                submitTypeRef.current = 'DRAFT';
-                setValue('isSubmitted', false);
-                await onFormSubmit();
-              }}
-              disabled={isUploading}
-              icon="save"
-            />
-            <Button
               key="save-button"
               label="Save"
               type="button"

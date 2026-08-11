@@ -50,12 +50,22 @@ export interface ProfileDetailsFormData {
   // Step 1: General Info
   affiliationType: number | string;
   collegeName: string;
-  societyName: string;
-  yearOfFoundationCollege: string;
-  yearOfFoundationSociety: string;
-  corporateOfficeAddress: string;
+  societyName?: string;
+  yearOfFoundationCollege?: string;
+  yearOfFoundationSociety?: string;
+  corporateOfficeAddress?: string;
   collegeAddress: string;
-  anyOtherAddress: string;
+  anyOtherAddress?: string;
+
+  collegeType?: string;
+  collegeEmail?: string;
+  principalDirectorName?: string;
+  principalMobileNo?: string;
+  principalEmail?: string;
+  stateName?: string;
+  districtName?: string;
+  blockTehsil?: string;
+  pinCode?: string;
 
   ownershipEntityName: string;
 
@@ -266,12 +276,19 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
   societyName: o.string().allow('', null),
   yearOfFoundationCollege: o.string().allow('', null),
   yearOfFoundationSociety: o.string().allow('', null),
-  corporateOfficeAddress: o
-    .string()
-    .required()
-    .messages({ 'string.empty': 'Address required' }),
+  corporateOfficeAddress: o.string().allow('', null),
   collegeAddress: o.string().allow('', null),
   anyOtherAddress: o.string().allow('', null),
+
+  collegeType: o.string().allow('', null),
+  collegeEmail: o.string().allow('', null),
+  principalDirectorName: o.string().allow('', null),
+  principalMobileNo: o.string().allow('', null),
+  principalEmail: o.string().allow('', null),
+  stateName: o.string().allow('', null),
+  districtName: o.string().allow('', null),
+  blockTehsil: o.string().allow('', null),
+  pinCode: o.string().allow('', null),
 
   ownershipEntityName: o
     .string()
@@ -464,12 +481,21 @@ export function useProfileDetailsForm() {
     defaultValues: {
       affiliationType: '',
       collegeName: 'Global Institute of Technology',
+      collegeType: 'Private',
+      collegeEmail: 'admin@globalinstitute.edu',
+      principalDirectorName: 'Dr. Rajesh Sharma',
+      principalMobileNo: '9876543210',
+      principalEmail: 'rajesh.sharma@globalinstitute.edu',
+      stateName: 'Madhya Pradesh',
+      districtName: 'Indore',
+      blockTehsil: 'Indore',
+      pinCode: '452001',
+      collegeAddress: '123 Education Lane, Knowledge Park, Phase 1',
       societyName: 'Global Education Society',
       yearOfFoundationCollege: '2010',
       yearOfFoundationSociety: '2005',
       corporateOfficeAddress:
         '123, Tech Park Avenue, Scheme No. 78, Indore, MP 452010',
-      collegeAddress: 'Knowledge Village, Airport Road, Indore, MP 452005',
       anyOtherAddress: 'N/A',
       ownershipEntityName: '',
       chairmanName: '',

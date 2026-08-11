@@ -53,80 +53,54 @@ export default function ProfileInstitutionalStep({
   return (
     <>
       <FormCard title="Section 1: Basic College Information" icon="building">
-        <FormGrid columns={2}>
-          <DropDownList
-            label="Affiliation Type"
-            placeholder="Select Affiliation Type"
-            data={[
-              { value: 1, text: 'New Affiliation' },
-              { value: 2, text: 'Renewal' },
-              { value: 3, text: 'Subject Increment' },
-              { value: 4, text: 'College Name Change' },
-            ]}
-            {...register('affiliationType')}
-            errorMessage={formState.errors.affiliationType?.message as string}
-            required
-          />
+        <FormGrid columns={3}>
           <TextBox
             label="College Name"
-            placeholder="Enter College Name"
             {...register('collegeName')}
-            errorMessage={formState.errors.collegeName?.message as string}
             readOnly
             required
           />
+          <TextBox label="College Type" {...register('collegeType')} readOnly />
           <TextBox
-            label="Society Name"
-            placeholder="Enter Society Name"
-            {...register('societyName')}
-            errorMessage={formState.errors.societyName?.message as string}
+            label="College Official Email"
+            {...register('collegeEmail')}
+            readOnly
+          />
+
+          <TextBox
+            label="Principal Name"
+            {...register('principalDirectorName')}
             readOnly
           />
           <TextBox
-            label="Year of Foundation — College"
-            placeholder="YYYY"
-            {...register('yearOfFoundationCollege')}
-            errorMessage={
-              formState.errors.yearOfFoundationCollege?.message as string
-            }
+            label="Principal Mobile Number"
+            {...register('principalMobileNo')}
             readOnly
           />
           <TextBox
-            label="Year of Foundation — Society / Trust / Company"
-            placeholder="YYYY"
-            {...register('yearOfFoundationSociety')}
-            errorMessage={
-              formState.errors.yearOfFoundationSociety?.message as string
-            }
+            label="Principal Email ID"
+            {...register('principalEmail')}
             readOnly
           />
+
+          <TextBox label="State" {...register('stateName')} readOnly />
+          <TextBox label="District" {...register('districtName')} readOnly />
           <TextBox
-            label="Corporate / Society Office Address"
-            placeholder="Enter Address"
-            {...register('corporateOfficeAddress')}
-            errorMessage={
-              formState.errors.corporateOfficeAddress?.message as string
-            }
+            label="Block / Tehsil"
+            {...register('blockTehsil')}
             readOnly
-            required
           />
+
+          <TextBox label="PIN Code" {...register('pinCode')} readOnly />
+
+          <div className="affiliation-grid-full">
+            <TextBox
+              label="College Address"
+              {...register('collegeAddress')}
+              readOnly
+            />
+          </div>
         </FormGrid>
-        <div className="mt-4 flex flex-col gap-4">
-          <TextBox
-            label="College (Teaching Place) Address"
-            placeholder="Enter Address"
-            {...register('collegeAddress')}
-            errorMessage={formState.errors.collegeAddress?.message as string}
-            readOnly
-          />
-          <TextBox
-            label="Any Other Address"
-            placeholder="Enter Address"
-            {...register('anyOtherAddress')}
-            errorMessage={formState.errors.anyOtherAddress?.message as string}
-            readOnly
-          />
-        </div>
       </FormCard>
 
       <FormCard title="Section 2: Ownership & Management" icon="users">
