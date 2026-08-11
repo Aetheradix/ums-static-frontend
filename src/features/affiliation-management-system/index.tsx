@@ -18,6 +18,8 @@ import InspectionAssignment from './inspection-assignment';
 import FinalRegistrationApproval from './final-registration-approval';
 import BasicRegistrationDetails from './basic-registration-details';
 import ProfileScrutiny from './profile-scrutiny';
+import InspectionCommittee from './inspection-committee';
+import StandingCommitteeMeeting from './standing-committee-meeting';
 
 export default function AffiliationManagementSystem() {
   return (
@@ -78,6 +80,11 @@ export default function AffiliationManagementSystem() {
       <Route
         path="inspection-status-report/*"
         element={<InspectionStatusReport />}
+      />
+      <Route path="inspection-committee/*" element={<InspectionCommittee />} />
+      <Route
+        path="standing-committee-meeting/*"
+        element={<StandingCommitteeMeeting />}
       />
       <Route path="affiliation-settings/*">
         <Route path="available-facility/*" element={<AvailableFacility />} />
