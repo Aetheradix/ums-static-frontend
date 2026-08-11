@@ -14,6 +14,7 @@ import {
   StatusBadge,
 } from 'shared/new-components';
 import { formatDate } from 'shared/utils/dateUtils';
+import { ToastService } from 'services';
 import { useRegistrationApprovalForm } from '../components/form.hook';
 import { RegistrationApprovalForm } from '../components/RegistrationApprovalForm';
 import {
@@ -105,6 +106,7 @@ export default function List() {
     3: 'neutral',
     4: 'neutral',
     5: 'neutral',
+    6: 'neutral',
   });
 
   const [sectionRemarks, setSectionRemarks] = useState<Record<number, string>>({
@@ -113,6 +115,7 @@ export default function List() {
     3: '',
     4: '',
     5: '',
+    6: '',
   });
 
   const [rejectingSectionId, setRejectingSectionId] = useState<number | null>(
@@ -129,8 +132,9 @@ export default function List() {
         3: 'neutral',
         4: 'neutral',
         5: 'neutral',
+        6: 'neutral',
       });
-      setSectionRemarks({ 1: '', 2: '', 3: '', 4: '', 5: '' });
+      setSectionRemarks({ 1: '', 2: '', 3: '', 4: '', 5: '', 6: '' });
       return;
     }
 
@@ -142,6 +146,7 @@ export default function List() {
           3: 'neutral',
           4: 'neutral',
           5: 'neutral',
+          6: 'neutral',
         });
         setSectionRemarks({
           1: selectedApproval.rejectionReason || 'Deficiency identified.',
@@ -149,6 +154,7 @@ export default function List() {
           3: '',
           4: '',
           5: '',
+          6: '',
         });
       } else {
         setSectionStatuses({
@@ -157,8 +163,9 @@ export default function List() {
           3: 'neutral',
           4: 'neutral',
           5: 'neutral',
+          6: 'neutral',
         });
-        setSectionRemarks({ 1: '', 2: '', 3: '', 4: '', 5: '' });
+        setSectionRemarks({ 1: '', 2: '', 3: '', 4: '', 5: '', 6: '' });
       }
     }
   }, [previewId, selectedApproval]);
@@ -182,7 +189,9 @@ export default function List() {
                 ? 'Ecosystem & Academics'
                 : stepNum === 4
                   ? 'Infrastructure & Facilities'
-                  : 'Compliance & Funding';
+                  : stepNum === 5
+                    ? 'Compliance & Funding'
+                    : 'Uploaded Documents';
         return `• ${sectionName}: ${sectionRemarks[stepNum] || 'No reason'}`;
       })
       .join('\n');
@@ -733,7 +742,7 @@ export default function List() {
                 </FormGrid>
               </div>
 
-              <div className="border-t border-gray-100 pt-4">
+              <div className="border-t border-gray-100 pt-4 mb-4">
                 <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
                   Laboratory & Facilities
                 </h4>
@@ -746,10 +755,6 @@ export default function List() {
                     label="Exclusive Labs"
                     value={preview.labExclusive}
                   />
-                  <PreviewField
-                    label="Hostel Capacity"
-                    value={preview.totalHostelCapacity}
-                  />
                 </FormGrid>
                 <div className="mt-2">
                   <PreviewField
@@ -758,6 +763,38 @@ export default function List() {
                     fullWidth
                   />
                 </div>
+              </div>
+
+              <div className="border-t border-gray-100 pt-4">
+                <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                  Hostel & Accommodation Details
+                </h4>
+                <FormGrid columns={3}>
+                  <PreviewField
+                    label="Hostel Available?"
+                    value={preview.hostelAvailable}
+                  />
+                  <PreviewField
+                    label="Type of Hostel"
+                    value={preview.typeOfHostel}
+                  />
+                  <PreviewField
+                    label="Boys Hostels Count"
+                    value={preview.boysHostelsCount}
+                  />
+                  <PreviewField
+                    label="Girls Hostels Count"
+                    value={preview.girlsHostelsCount}
+                  />
+                  <PreviewField
+                    label="Total Hostel Capacity"
+                    value={preview.totalHostelCapacity}
+                  />
+                  <PreviewField
+                    label="Accommodation Availability"
+                    value={preview.accommodationAvailability}
+                  />
+                </FormGrid>
               </div>
               {sectionStatuses[4] === 'rejected' && (
                 <div className="affiliation-grid-full bg-red-50 border border-red-200 rounded-lg p-3 mt-4 flex items-start gap-2">
@@ -818,6 +855,65 @@ export default function List() {
                     </h5>
                     <p className="text-sm text-red-700 mt-1">
                       {sectionRemarks[5] || 'No reason entered yet.'}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </PreviewSection>
+
+            <PreviewSection
+              step={6}
+              title="Uploaded Documents"
+              subtitle="Scanned copies of enclosures submitted by the college."
+              headerAction={renderSectionAction(6)}
+            >
+              <FormGrid columns={2}>
+                <PreviewField
+                  label="Scanned copy of Affidavit"
+                  value={
+                    <a
+                      href="#"
+                      onClick={e => {
+                        e.preventDefault();
+                        ToastService.success(
+                          'Downloading Affidavit_Draft.pdf...'
+                        );
+                      }}
+                      className="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center gap-1.5"
+                    >
+                      <i className="pi pi-file-pdf text-red-500 text-base" />
+                      <span>Affidavit_Draft.pdf</span>
+                    </a>
+                  }
+                />
+                <PreviewField
+                  label="Other Documents"
+                  value={
+                    <a
+                      href="#"
+                      onClick={e => {
+                        e.preventDefault();
+                        ToastService.success(
+                          'Downloading Regular_Authority_NOC.pdf...'
+                        );
+                      }}
+                      className="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center gap-1.5"
+                    >
+                      <i className="pi pi-file-pdf text-red-500 text-base" />
+                      <span>Regular_Authority_NOC.pdf</span>
+                    </a>
+                  }
+                />
+              </FormGrid>
+              {sectionStatuses[6] === 'rejected' && (
+                <div className="affiliation-grid-full bg-red-50 border border-red-200 rounded-lg p-3 mt-4 flex items-start gap-2">
+                  <i className="pi pi-info-circle text-red-500 mt-0.5" />
+                  <div>
+                    <h5 className="text-sm font-semibold text-red-800">
+                      Deficiency / Rejection Reason:
+                    </h5>
+                    <p className="text-sm text-red-700 mt-1">
+                      {sectionRemarks[6] || 'No reason entered yet.'}
                     </p>
                   </div>
                 </div>
