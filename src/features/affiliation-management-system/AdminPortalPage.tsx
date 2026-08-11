@@ -36,6 +36,21 @@ export default function AdminPortalPage() {
           path: '/affiliation-management-system/inspection-report',
         },
         {
+          title: 'Inspection Committee Upload',
+          description: 'Upload inspection reports and details.',
+          icon: 'upload_file',
+          colorScheme: 'blue',
+          path: '/affiliation-management-system/inspection-committee',
+        },
+        {
+          title: 'Standing Committee Meeting',
+          description:
+            'Schedule, draft, and manage standing committee meetings.',
+          icon: 'event',
+          colorScheme: 'purple',
+          path: '/affiliation-management-system/standing-committee-meeting',
+        },
+        {
           title: 'Final Registration Approval',
           description: 'Review inspection reports and grant final affiliation.',
           icon: 'verified',
@@ -62,21 +77,6 @@ export default function AdminPortalPage() {
           icon: 'policy',
           colorScheme: 'blue',
           path: '/affiliation-management-system/inspection-status-report',
-        },
-        {
-          title: 'Inspection Committee Upload',
-          description: 'Upload inspection reports and details.',
-          icon: 'upload_file',
-          colorScheme: 'blue',
-          path: '/affiliation-management-system/inspection-committee',
-        },
-        {
-          title: 'Standing Committee Meeting',
-          description:
-            'Schedule, draft, and manage standing committee meetings.',
-          icon: 'event',
-          colorScheme: 'purple',
-          path: '/affiliation-management-system/standing-committee-meeting',
         },
       ]}
     />

@@ -14,13 +14,6 @@ export default function PublicPortalPage() {
           colorScheme: 'orange',
           path: '/affiliation-management-system/college-registration',
         },
-        {
-          title: 'Draft College Registration',
-          description: 'Manage draft college registration processes.',
-          icon: 'assignment',
-          colorScheme: 'orange',
-          path: '/affiliation-management-system/draft-registration-request',
-        },
       ]}
     />
   );

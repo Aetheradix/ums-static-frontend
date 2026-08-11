@@ -68,67 +68,191 @@ export async function getCollegeRegistrationById(id: number) {
 
   const approvalItem = mockApprovals.find(a => a.collegeRegistrationId === id);
 
-  // Return a rich preview object containing data from the mock list + dummy detailed fields
   return {
     data: {
       registrationId: Number(id) || 0,
       collegeName: approvalItem?.collegeName || 'Unknown College',
       applicationNumber: approvalItem?.applicationNumber || 'APP-000',
       status: approvalItem?.approvalStatus || 1,
-      collegeCode: 'COL' + id,
-      establishmentYearId: '2005',
-      districtName: 'Bhopal',
-      collegeAddress: '123 University Road, Bhopal, MP',
-      telephoneNo: '0755-2123456',
+      collegeTypeId: approvalItem?.collegeTypeId || 2, // Default to Private
       collegeEmail:
         'admin@' +
         (approvalItem?.collegeName.toLowerCase().replace(/\s/g, '') ||
           'college') +
         '.edu.in',
-      collegeCategoryId: approvalItem?.collegeCategoryId || 1,
-      collegeTypeId: 'Co-Ed',
-      collegeArea: 'Urban',
-      accommodationType: 'Boys & Girls',
-      numberOfClassRooms: 24,
-      deficiencyEarlierRaisedByCommittee: false,
-      availableFacilities: ['Library', 'Cafeteria', 'Computer Lab'],
-      otherDetail: {
-        principalDirectorName: 'Dr. Ramesh Kumar',
-        principalMobileNo: '9876543210',
-        principalEmail: 'principal@college.edu.in',
-        societyName: 'Education Foundation Society',
-        secretaryName: 'Mr. Arvind Singh',
-        societyRegistrationNo: 'SOC/4521/1998',
-        societyRegistrationDate: '1998-05-15T00:00:00Z',
-        isOtherInstitutionRunning: true,
-      },
-      courseDetails: [
+      collegeAddress: '123 University Road, Bhopal, MP',
+      districtName: 'Bhopal',
+      blockTehsil: 'Huzur',
+      pinCode: '462001',
+
+      // Principal / Affiliation Details
+      principalDirectorName: 'Dr. Ramesh Kumar',
+      principalMobileNo: '9876543210',
+      principalEmail: 'principal@college.edu.in',
+
+      // Ownership & Management
+      ownershipEntityName: 'Education Foundation Trust',
+      chairmanName: 'Mr. Arvind Singh',
+      chairmanFathersName: 'Late Sh. Ram Singh',
+      chairmanAge: '52',
+      chairmanQualification: 'Post Graduate',
+      chairmanMobileNumber: '9826012345',
+      chairmanOccupationAddress: 'Tech Tower, Scheme 54, Indore, MP',
+
+      executiveName: 'Mrs. Neha Singh',
+      executiveAge: '48',
+      executiveQualification: 'Graduate',
+      executiveMobileNumber: '9826054321',
+      executiveOccupationAddress: 'Tech Tower, Scheme 54, Indore, MP',
+
+      governingBodyMembers: [
         {
-          collegeCourseDetailId: 1,
-          programmeFeesMappingId: 101,
-          totalAmount: 25000,
-          isFeePaid: true,
+          memberName: 'Dr. S. K. Gupta',
+          fathersName: 'Mr. R. C. Gupta',
+          age: '58',
+          qualification: 'Ph.D.',
+          mobileNumber: '9425011223',
+          occupationAddress: 'Indore',
         },
         {
-          collegeCourseDetailId: 2,
-          programmeFeesMappingId: 102,
-          totalAmount: 18000,
-          isFeePaid: true,
+          memberName: 'Prof. Anil Sharma',
+          fathersName: 'Mr. M. P. Sharma',
+          age: '45',
+          qualification: 'Post Graduate',
+          mobileNumber: '9893012345',
+          occupationAddress: 'Bhopal',
         },
       ],
-      documents: [
+
+      // Academics & Ecosystem
+      existingCourses: [
         {
-          collegeAffiliationDocumentId: 1,
-          documentType: 'NOC Document',
-          documentId: 'DOC-NOC-123',
+          courseName: 'Bachelor of Computer Applications (BCA)',
+          seats: '60',
+          class: '1st Year',
+          year: '2025',
+          type: 'Regular',
+          conditions: 'NIL',
+          statusOfCompliance: 'Complied',
         },
         {
-          collegeAffiliationDocumentId: 2,
-          documentType: 'Affidavit',
-          documentId: 'DOC-AFF-456',
+          courseName: 'Bachelor of Business Administration (BBA)',
+          seats: '60',
+          class: '1st Year',
+          year: '2025',
+          type: 'Regular',
+          conditions: 'NIL',
+          statusOfCompliance: 'Complied',
         },
       ],
-    } as unknown as AffiliationManagementSystem.CollegeRegistrationPreview,
+
+      teachingStaff: [
+        {
+          name: 'Mr. Rajesh Joshi',
+          role: 'Assistant Professor',
+          status: 'Full Time',
+          qualification: 'MCA, M.Tech',
+          experience: '8 Years',
+        },
+        {
+          name: 'Dr. Preeti Mishra',
+          role: 'Associate Professor',
+          status: 'Full Time',
+          qualification: 'Ph.D. in Computer Science',
+          experience: '12 Years',
+        },
+      ],
+
+      additionalInstitutions: [
+        {
+          institutionName: 'Pioneer International School',
+          address: 'Airport Road, Indore',
+          course: 'Primary/Secondary Education',
+          seats: '500',
+          class: 'N/A',
+          year: '2015',
+          type: 'Regular',
+          conditions: 'N/A',
+          statusOfCompliance: 'Complied',
+        },
+      ],
+
+      // Infrastructure & Facilities
+      totalArea: '5.2 Acres',
+      isRentedBuilding: 'Owned',
+      provisionToConstruct: 'Yes',
+      qualityOfBuilding: 'Excellent (CC Construction)',
+      requiredClassrooms: '12 Classrooms',
+      accessibleToPublic: 'Yes',
+      classroomDetails:
+        'All classrooms are ventilated, equipped with smart projectors and green boards.',
+      parkingSpace: 'Available (capacity of 50 cars, 150 two-wheelers)',
+      neighbourComplaints: 'No',
+      neighbourComplaintsRemarks: 'No complaints received from surroundings.',
+      sharedCampus: 'No',
+
+      libraryBooksCount: '5200 Books',
+      bookStudentRatio: '1:10',
+      libraryBuildingAvailable: 'Yes',
+      readingRoomAvailable: 'Yes',
+      readingRoomDimensions: '1200 Sq. Ft.',
+      libraryStaffAvailable: 'Yes',
+      booksIssuedRegularly: 'Yes',
+      booksRelevant: 'Yes',
+      journalsSubscribed: 'Yes',
+      journalsCount: '15 Journals',
+      latestJournalIssues: 'Yes',
+
+      laboratoryRequired: 'Yes',
+      labFloorSpace: '2400 Sq. Ft.',
+      labExclusive: 'Yes',
+      lightAirConditions: 'Good',
+      labEquipmentDetails:
+        'Equipped with 60 high-end computers, LAN connectivity, and server setup.',
+      workshopDetails: 'N/A',
+      hospitalAvailability: 'Tie-up with local hospital for emergency',
+
+      sportsFacilityAvailable: 'Yes',
+      adequateForStudents: 'Yes',
+      outdoorGamesFacility: 'Cricket, Volleyball, Basketball',
+      outdoorFacilitiesInUse: 'Yes',
+      sportsConsumablesProvided: 'Yes',
+      medicalAttendantAvailable: 'Yes',
+      emergencyMedicineStock: 'Yes',
+      firstAidFacility: 'Yes',
+
+      hostelAvailable: 'Yes',
+      typeOfHostel: 'Separate Boys & Girls Hostels',
+      accommodationAvailability: 'Yes',
+      boysHostelsCount: '1',
+      girlsHostelsCount: '1',
+      totalHostelCapacity: '150 Seats',
+
+      // Compliance
+      sourceOfFunding: 'Trust Corpus Funds & Tuition Fees',
+      annualProjectedIncome: '₹ 1.2 Crores',
+      regularBooksMaintained: 'Yes (Audited annually)',
+      accountsAudited: 'Yes',
+      statutoryConditions: 'Met all statutory guidelines',
+      sessionPermissionGranted: 'Yes',
+      mpGovtPermission: 'Granted via Order No. MP-4829-EDU',
+      mpGovtConditions: 'NIL',
+      statute28Fulfilled: 'Yes (Governing body constituted)',
+      endowmentFundDetails: '₹ 15 Lakhs deposited in Joint Account',
+      statutoryNormsAdhered: 'Yes',
+      reservationNormsFollowed: 'Yes',
+      statutoryNormsRemarks: 'Fully compliant.',
+
+      // Documents List (indicators)
+      nocDocument: 'NOC-Approved-2026.pdf',
+      councilApprovalsDocument: 'AICTE-Approval-2026.pdf',
+      societyRegistrationDocument: 'Trust-Reg-Certificate.pdf',
+      landDocumentsDocument: 'Registry-Khasra.pdf',
+      buildingPlanAndSafetyDocument: 'Building-Safety-Cert.pdf',
+      amenitiesProofDocument: 'Fire-Safety-Water-Cert.pdf',
+      photoOfCollegeBuilding: 'Building-Front-View.jpg',
+      buildingMap: 'Approved-Architect-Map.pdf',
+    } as any,
   };
 }
 

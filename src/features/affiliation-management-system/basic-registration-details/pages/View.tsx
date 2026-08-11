@@ -13,46 +13,40 @@ export default function BasicRegistrationDetailsView() {
         icon="building"
       >
         <FormGrid columns={3}>
-          <TextBox label="Application Number" value="APP-2026-8991" readOnly />
-          <TextBox label="College Code" value="COL-1002" readOnly />
-          <TextBox label="Establishment Year" value="1995" readOnly />
-
           <TextBox
             label="College Name"
             value="Global Institute of Technology"
             readOnly
           />
+          <TextBox label="College Type" value="Private" readOnly />
+          <TextBox
+            label="College Official Email"
+            value="admin@globalinstitute.edu"
+            readOnly
+          />
+
+          <TextBox label="Principal Name" value="Dr. Rajesh Sharma" readOnly />
+          <TextBox
+            label="Principal Mobile Number"
+            value="9876543210"
+            readOnly
+          />
+          <TextBox
+            label="Principal Email ID"
+            value="rajesh.sharma@globalinstitute.edu"
+            readOnly
+          />
+
+          <TextBox label="State" value="Madhya Pradesh" readOnly />
+          <TextBox label="District" value="Indore" readOnly />
+          <TextBox label="Block / Tehsil" value="Indore" readOnly />
+
+          <TextBox label="PIN Code" value="452001" readOnly />
 
           <div className="affiliation-grid-full">
             <TextArea
               label="College Address"
               value="123 Education Lane, Knowledge Park, Phase 1"
-              readOnly
-            />
-          </div>
-
-          <TextBox label="District" value="Indore" readOnly />
-          <TextBox label="Telephone No." value="+91-9876543210" readOnly />
-          <TextBox
-            label="College Email"
-            value="admin@globalinstitute.edu"
-            readOnly
-          />
-
-          <TextBox label="College Category" value="Private" readOnly />
-          <TextBox label="College Type" value="Engineering" readOnly />
-          <TextBox label="College Area" value="Urban" readOnly />
-
-          <TextBox
-            label="Accommodation Type"
-            value="Boys & Girls (Co-ed)"
-            readOnly
-          />
-
-          <div className="affiliation-grid-full">
-            <TextArea
-              label="Available Facilities"
-              value="Library, Computer Laboratory, Sports Ground, Boys Hostel, Girls Hostel, Medical Facility, Canteen"
               readOnly
             />
           </div>
