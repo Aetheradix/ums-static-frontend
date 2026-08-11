@@ -26,5 +26,7 @@ declare namespace AffiliationManagementSystem {
     affiliationTypeId?: number | null;
     approvalStatus?: number;
     rejectionReason?: string;
+    blockTehsil?: string;
+    pinCode?: string;
   }
 }

@@ -4,9 +4,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { FormPage } from 'shared/new-components';
-import AffiliationOtherDetailsStep from '../components/AffiliationOtherDetailsStep';
-import CollegeApplicationDetailsCard from '../components/CollegeApplicationDetailsCard';
-import CollegeEnclosureStep from '../components/CollegeEnclosureStep';
 import CollegeRegistrationStep from '../components/CollegeRegistrationStep';
 import DraftSuccessDialog from '../components/DraftSuccessDialog';
 import { useCollegeApplicationForm } from '../components/form.hook';
@@ -32,31 +29,18 @@ export default function Update() {
       reset({
         applicationNumber: draftData.applicationNumber,
         collegeName: draftData.collegeName,
-        collegeCode: draftData.collegeCode,
-        establishmentYear: draftData.establishmentYear,
-        collegeAddress: draftData.collegeAddress,
-        stateId: draftData.stateId || 1,
-        districtId: draftData.districtId || null,
-        affiliationTypeId: draftData.affiliationTypeId || null,
-        telephoneNo: draftData.telephoneNo,
-        collegeEmail: draftData.collegeEmail,
-        collegeCategoryId: draftData.collegeCategoryId,
-        collegeTypeId: draftData.collegeTypeId,
-        accommodationType: draftData.accommodationType,
-        collegeArea: draftData.collegeArea,
+        collegeTypeId: draftData.collegeTypeId || 1,
         principalDirectorName:
           draftData.affiliation?.principalDirectorName || '',
         principalMobileNo: draftData.affiliation?.principalMobileNo || '',
         principalEmail: draftData.affiliation?.principalEmail || '',
-        societyName: draftData.affiliation?.societyName || '',
-        secretaryName: draftData.affiliation?.secretaryName || '',
-        societyRegistrationNo:
-          draftData.affiliation?.societyRegistrationNo || '',
-        societyRegistrationDate: draftData.affiliation?.societyRegistrationDate
-          ? new Date(draftData.affiliation.societyRegistrationDate)
-          : undefined,
-        isOtherInstitutionRunning:
-          draftData.affiliation?.isOtherInstitutionRunning || false,
+        collegeEmail: draftData.collegeEmail,
+        collegeAddress: draftData.collegeAddress,
+        districtId: draftData.districtId || 1,
+        blockTehsil: draftData.blockTehsil || 'Indore',
+        pinCode: draftData.pinCode || '452001',
+        captcha: '7A9x2',
+        declaration: true,
       });
     } else {
       ToastService.error('No draft data found. Redirecting to search.');
@@ -136,8 +120,8 @@ export default function Update() {
 
   return (
     <FormPage
-      title="Update Application for Affiliation"
-      description="Fill in all the required details to submit the affiliation application."
+      title="Update College Registration"
+      description="Fill in all the required details to update the registration form."
     >
       {draftData.approvalStatus === 3 && draftData.rejectionReason && (
         <div className="mb-6 p-4 rounded-lg bg-red-50 border border-red-200">
@@ -161,23 +145,11 @@ export default function Update() {
       >
         <form onSubmit={onFormSubmit}>
           <div className="flex flex-col gap-6 mb-6 mt-6">
-            <CollegeApplicationDetailsCard
-              register={register}
-              control={control}
-              setValue={setValue}
-              isEdit={true}
-            />
             <CollegeRegistrationStep
               register={register}
               control={control}
               setValue={setValue}
-              isEdit={true}
             />
-            <AffiliationOtherDetailsStep
-              register={register}
-              setValue={setValue}
-            />
-            <CollegeEnclosureStep control={control} />
           </div>
 
           <div className="form-actions-container form-actions-right">

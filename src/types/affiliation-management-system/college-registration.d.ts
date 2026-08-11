@@ -22,6 +22,10 @@ declare namespace AffiliationManagementSystem {
     totalFees?: number;
     feeStructure?: string;
     isFeePaid?: boolean;
+    blockTehsil?: string;
+    pinCode?: string;
+    captcha?: string;
+    declaration?: boolean;
   }
 
   export interface AffiliationOtherDetailsForm {
