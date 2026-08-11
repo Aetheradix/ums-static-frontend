@@ -511,7 +511,7 @@ export default function InspectionAssignmentList() {
                 </FormGrid>
               </div>
 
-              <div className="border-t border-gray-100 pt-4">
+              <div className="border-t border-gray-100 pt-4 mb-4">
                 <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
                   Laboratory & Facilities
                 </h4>
@@ -524,10 +524,6 @@ export default function InspectionAssignmentList() {
                     label="Exclusive Labs"
                     value={preview.labExclusive}
                   />
-                  <PreviewField
-                    label="Hostel Capacity"
-                    value={preview.totalHostelCapacity}
-                  />
                 </FormGrid>
                 <div className="mt-2">
                   <PreviewField
@@ -536,6 +532,38 @@ export default function InspectionAssignmentList() {
                     fullWidth
                   />
                 </div>
+              </div>
+
+              <div className="border-t border-gray-100 pt-4">
+                <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                  Hostel & Accommodation Details
+                </h4>
+                <FormGrid columns={3}>
+                  <PreviewField
+                    label="Hostel Available?"
+                    value={preview.hostelAvailable}
+                  />
+                  <PreviewField
+                    label="Type of Hostel"
+                    value={preview.typeOfHostel}
+                  />
+                  <PreviewField
+                    label="Boys Hostels Count"
+                    value={preview.boysHostelsCount}
+                  />
+                  <PreviewField
+                    label="Girls Hostels Count"
+                    value={preview.girlsHostelsCount}
+                  />
+                  <PreviewField
+                    label="Total Hostel Capacity"
+                    value={preview.totalHostelCapacity}
+                  />
+                  <PreviewField
+                    label="Accommodation Availability"
+                    value={preview.accommodationAvailability}
+                  />
+                </FormGrid>
               </div>
             </PreviewSection>
 
