@@ -37,17 +37,16 @@ export function buildApiPayload(
   documentIds: { documentId: string; documentType: string }[]
 ) {
   return {
-    establishmentYear: form.establishmentYear,
-    collegeCode: form.collegeCode,
     collegeName: form.collegeName,
     collegeAddress: form.collegeAddress,
+    stateId: form.stateId,
     districtId: form.districtId,
-    telephoneNo: form.telephoneNo,
     collegeEmail: form.collegeEmail,
-    collegeCategoryId: form.collegeCategoryId,
     collegeTypeId: form.collegeTypeId,
-    accommodationType: form.accommodationType,
-    collegeArea: form.collegeArea,
+    blockTehsil: form.blockTehsil,
+    pinCode: form.pinCode,
+    captcha: form.captcha,
+    declaration: form.declaration,
     applicationNumber: form.applicationNumber,
     isSubmitted: form.isSubmitted ?? false,
 
@@ -55,20 +54,7 @@ export function buildApiPayload(
       principalDirectorName: form.principalDirectorName,
       principalMobileNo: form.principalMobileNo,
       principalEmail: form.principalEmail,
-      societyName: form.societyName,
-      secretaryName: form.secretaryName,
-      societyRegistrationNo: form.societyRegistrationNo,
-      societyRegistrationDate: form.societyRegistrationDate,
-      isOtherInstitutionRunning: form.isOtherInstitutionRunning ?? false,
     },
-
-    courses: (form.courses ?? []).map(course => ({
-      courseId: course.courseId,
-      subjectIds: course.subjectIds,
-      totalAmount: course.totalAmount ?? 0,
-      isFeePaid: course.isFeePaid ?? false,
-      paymentDate: course.paymentDate || null,
-    })),
 
     documents: documentIds,
   };

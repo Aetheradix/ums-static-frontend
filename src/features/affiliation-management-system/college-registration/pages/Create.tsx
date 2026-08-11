@@ -4,9 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { FormPage } from 'shared/new-components';
-import AffiliationOtherDetailsStep from '../components/AffiliationOtherDetailsStep';
-import CollegeApplicationDetailsCard from '../components/CollegeApplicationDetailsCard';
-import CollegeEnclosureStep from '../components/CollegeEnclosureStep';
 import CollegeRegistrationStep from '../components/CollegeRegistrationStep';
 import DraftSuccessDialog from '../components/DraftSuccessDialog';
 import { useCollegeApplicationForm } from '../components/form.hook';
@@ -89,29 +86,19 @@ export default function Create() {
 
   return (
     <FormPage
-      title="Application for Affiliation"
-      description="Fill in all the required details to submit the affiliation application."
+      title="College Registration"
+      description="Fill in all the required details to submit the registration form."
     >
       <FormProvider
         {...(methods as unknown as UseFormReturn<AffiliationManagementSystem.CollegeApplicationFormData>)}
       >
         <form onSubmit={onFormSubmit}>
           <div className="flex flex-col gap-6 mb-6 mt-6">
-            <CollegeApplicationDetailsCard
-              register={register}
-              control={control}
-              setValue={setValue}
-            />
             <CollegeRegistrationStep
               register={register}
               control={control}
               setValue={setValue}
             />
-            <AffiliationOtherDetailsStep
-              register={register}
-              setValue={setValue}
-            />
-            <CollegeEnclosureStep control={control} />
           </div>
 
           <div className="form-actions-container form-actions-right">

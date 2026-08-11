@@ -1,54 +1,32 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import type { Control, Path, UseFormSetValue } from 'react-hook-form';
-import { Controller, useWatch } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import {
-  DatePicker,
   DropDownList,
-  TextArea,
   TextBox,
+  TextArea,
+  Checkbox,
 } from 'shared/components/forms';
 import { FormCard, FormGrid } from 'shared/new-components';
+import { Button } from 'shared/components/buttons';
 import '../pages/Create.css';
-
-const dummyAffiliationTypes = [
-  { id: 1, name: 'New Affiliation' },
-  { id: 2, name: 'Renewal Affiliation' },
-];
 
 const dummyStates = [{ id: 1, name: 'Madhya Pradesh' }];
 
 const dummyDistricts = [
-  { id: 1, name: 'Indore', stateId: 1 },
-  { id: 2, name: 'Bhopal', stateId: 1 },
-  { id: 3, name: 'Mumbai', stateId: 2 },
-  { id: 4, name: 'Pune', stateId: 2 },
-];
-
-const dummyCategories = [
-  { id: 1, name: 'Engineering College' },
-  { id: 2, name: 'Medical College' },
-  { id: 3, name: 'Arts & Science College' },
-  { id: 4, name: 'Management College' },
-  { id: 5, name: 'Education College' },
-  { id: 6, name: 'Law College' },
-  { id: 7, name: 'Pharmacy College' },
+  { id: 1, name: 'Indore' },
+  { id: 2, name: 'Bhopal' },
+  { id: 3, name: 'Jabalpur' },
+  { id: 4, name: 'Gwalior' },
+  { id: 5, name: 'Ujjain' },
 ];
 
 const dummyTypes = [
   { id: 1, name: 'Government' },
   { id: 2, name: 'Private' },
   { id: 3, name: 'Aided' },
-];
-
-const dummyAreas = [
-  { id: 'Urban', name: 'Urban' },
-  { id: 'Rural', name: 'Rural' },
-  { id: 'Semi-Urban', name: 'Semi-Urban' },
-];
-
-const dummyAccommodations = [
-  { id: '1', name: 'Rented' },
-  { id: '2', name: 'Owned' },
+  { id: 4, name: 'Unaided' },
+  { id: 5, name: 'Other' },
 ];
 
 interface CollegeRegistrationStepProps {
@@ -60,102 +38,36 @@ interface CollegeRegistrationStepProps {
   };
   control: Control<AffiliationManagementSystem.CollegeApplicationFormData>;
   setValue: UseFormSetValue<AffiliationManagementSystem.CollegeApplicationFormData>;
-  isEdit?: boolean;
 }
 
 export default function CollegeRegistrationStep({
   register,
   control,
   setValue,
-  isEdit = false,
 }: CollegeRegistrationStepProps) {
-  const stateId = useWatch({ control, name: 'stateId' });
-  const isFeePaid = useWatch({ control, name: 'isFeePaid' });
-  const affiliationTypeId = useWatch({ control, name: 'affiliationTypeId' });
-  const previousStateIdRef = useRef(stateId);
+  const [captchaText, setCaptchaText] = useState('7A9x2');
+
+  const regenerateCaptcha = () => {
+    const chars =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz';
+    let result = '';
+    for (let i = 0; i < 5; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setCaptchaText(result);
+  };
 
   useEffect(() => {
-    if (
-      previousStateIdRef.current !== undefined &&
-      stateId !== previousStateIdRef.current
-    ) {
-      setValue('districtId', null, {
-        shouldValidate: true,
-        shouldDirty: true,
-      });
-    }
-    previousStateIdRef.current = stateId;
-  }, [stateId, setValue]);
-
-  useEffect(() => {
-    if (affiliationTypeId === 1) {
-      setValue('collegeCode', '', {
-        shouldValidate: true,
-        shouldDirty: true,
-      });
-    }
-  }, [affiliationTypeId, setValue]);
-
-  const filteredDistricts = dummyDistricts.filter(d => d.stateId === stateId);
+    regenerateCaptcha();
+  }, []);
 
   return (
     <FormCard
-      title="College Details"
-      subtitle="Enter the basic college information required for affiliation."
+      title="College Registration"
+      subtitle="Provide the required details to register the college."
       icon="building"
     >
       <FormGrid columns={3}>
-        {isEdit && (
-          <TextBox
-            label="Application Number"
-            placeholder="Application number"
-            {...register('applicationNumber')}
-            readOnly
-          />
-        )}
-        <DropDownList
-          label="Affiliation Type"
-          defaultOptionText="Select Affiliation Type"
-          placeholder="Select Affiliation Type"
-          data={dummyAffiliationTypes}
-          textField="name"
-          valueField="id"
-          {...register('affiliationTypeId')}
-          disabled={isFeePaid}
-          required
-        />
-        {affiliationTypeId !== 1 && (
-          <TextBox
-            label="College Code"
-            placeholder="Enter college code"
-            {...register('collegeCode')}
-            maxLength={15}
-            required
-            readOnly={isEdit}
-          />
-        )}
-        <Controller
-          control={control}
-          name="establishmentYear"
-          render={({ field, fieldState }) => (
-            <DatePicker
-              label="Establishment Year"
-              placeholder="Select establishment year"
-              name={field.name}
-              value={
-                field.value ? new Date(field.value as number, 0, 1) : undefined
-              }
-              onChange={val => field.onChange(val ? val.getFullYear() : null)}
-              view="year"
-              dateFormat="yy"
-              errorMessage={fieldState.error?.message}
-              required
-              maxDate={new Date()}
-              yearRange={`1800:${new Date().getFullYear()}`}
-            />
-          )}
-        />
-
         <TextBox
           label="College Name"
           placeholder="Enter college name"
@@ -172,14 +84,48 @@ export default function CollegeRegistrationStep({
           required
         />
 
-        <div className="affiliation-grid-full">
-          <TextArea
-            label="College Address"
-            placeholder="Enter college address"
-            {...register('collegeAddress')}
-            required
-          />
-        </div>
+        <DropDownList
+          label="College Type"
+          defaultOptionText="Select College Type"
+          placeholder="Select College Type"
+          data={dummyTypes}
+          textField="name"
+          valueField="id"
+          {...register('collegeTypeId')}
+          required
+        />
+
+        <TextBox
+          label="College Official Email"
+          placeholder="Enter college email"
+          {...register('collegeEmail')}
+          maxLength={255}
+          required
+        />
+
+        <TextBox
+          label="Principal Name"
+          placeholder="Enter principal director name"
+          {...register('principalDirectorName')}
+          maxLength={100}
+          required
+        />
+
+        <TextBox
+          label="Principal Mobile Number"
+          placeholder="Enter 10-digit mobile number"
+          {...register('principalMobileNo')}
+          maxLength={10}
+          required
+        />
+
+        <TextBox
+          label="Principal Email ID"
+          placeholder="Enter principal email"
+          {...register('principalEmail')}
+          maxLength={255}
+          required
+        />
 
         <DropDownList
           label="State"
@@ -196,75 +142,87 @@ export default function CollegeRegistrationStep({
           label="District"
           defaultOptionText="Select District"
           placeholder="Select District"
-          data={filteredDistricts}
+          data={dummyDistricts}
           textField="name"
           valueField="id"
           {...register('districtId')}
-          disabled={!stateId}
           required
         />
 
         <TextBox
-          label="Telephone No."
-          subLabel="(Please write telephone number including STD code.)"
-          placeholder="Enter telephone no."
-          {...register('telephoneNo')}
-          maxLength={20}
+          label="Block / Tehsil"
+          placeholder="Enter Block or Tehsil"
+          {...register('blockTehsil')}
+          maxLength={100}
           required
         />
 
         <TextBox
-          label="College Email"
-          placeholder="Enter college email"
-          {...register('collegeEmail')}
-          maxLength={255}
+          label="PIN Code"
+          placeholder="Enter 6-digit PIN Code"
+          {...register('pinCode')}
+          maxLength={6}
           required
         />
 
-        <DropDownList
-          label="College Category"
-          defaultOptionText="Select College Category"
-          placeholder="Select College Category"
-          data={dummyCategories}
-          textField="name"
-          valueField="id"
-          {...register('collegeCategoryId')}
-          required
-        />
+        <div className="affiliation-grid-full">
+          <TextArea
+            label="College Address"
+            placeholder="Enter college address"
+            {...register('collegeAddress')}
+            required
+          />
+        </div>
 
-        <DropDownList
-          label="College Type"
-          defaultOptionText="Select College Type"
-          placeholder="Select College Type"
-          data={dummyTypes}
-          textField="name"
-          valueField="id"
-          {...register('collegeTypeId')}
-          required
-        />
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-semibold text-gray-700">
+            Captcha <span className="text-red-500">*</span>
+          </label>
+          <div className="flex items-center gap-2">
+            <div
+              className="px-4 py-2 bg-gray-200 text-gray-800 rounded font-bold tracking-widest text-lg select-none pointer-events-none line-through decoration-double border border-gray-300"
+              style={{
+                fontFamily: 'monospace',
+                textShadow: '1px 1px 2px rgba(0,0,0,0.2)',
+              }}
+            >
+              {captchaText}
+            </div>
+            <Button
+              variant="outlined"
+              icon="pi pi-refresh"
+              onClick={regenerateCaptcha}
+              className="p-2"
+              tooltip="Refresh Captcha"
+            />
+          </div>
+        </div>
 
-        <DropDownList
-          label="College Area"
-          defaultOptionText="Select College Area"
-          placeholder="Select College Area"
-          data={dummyAreas}
-          textField="name"
-          valueField="id"
-          {...register('collegeArea')}
-          required
-        />
-
-        <DropDownList
-          label="Accommodation Type"
-          defaultOptionText="Select Accommodation Type"
-          placeholder="Select Accommodation Type"
-          data={dummyAccommodations}
-          textField="name"
-          valueField="id"
-          {...register('accommodationType')}
+        <TextBox
+          label="Enter Captcha"
+          placeholder="Enter the captcha code above"
+          {...register('captcha')}
           required
         />
       </FormGrid>
+
+      <div className="mt-6 border-t border-gray-200 pt-6">
+        <Controller
+          control={control}
+          name="declaration"
+          render={({ field, fieldState }) => (
+            <Checkbox
+              id="declaration"
+              name={field.name}
+              checked={field.value}
+              onChange={field.onChange}
+              errorMessage={fieldState.error?.message}
+              label="Declaration: I hereby declare that all the information provided above is true and correct to the best of my knowledge."
+              required
+            />
+          )}
+        />
+      </div>
     </FormCard>
   );
 }
