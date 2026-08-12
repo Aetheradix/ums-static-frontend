@@ -85,6 +85,14 @@ export async function getCollegeRegistrationById(id: number) {
       blockTehsil: 'Huzur',
       pinCode: '462001',
 
+      affiliationTypeName: 'New Affiliation',
+      societyName: 'Education Foundation Trust Society',
+      yearOfFoundationSociety: '2005',
+      yearOfFoundationCollege: '2010',
+      corporateOfficeAddress:
+        '123, Tech Park Avenue, Scheme No. 78, Indore, MP 452010',
+      anyOtherAddress: 'N/A',
+
       // Principal / Affiliation Details
       principalDirectorName: 'Dr. Ramesh Kumar',
       principalMobileNo: '9876543210',
@@ -134,6 +142,8 @@ export async function getCollegeRegistrationById(id: number) {
           type: 'Regular',
           conditions: 'NIL',
           statusOfCompliance: 'Complied',
+          fee: '₹ 50,000',
+          paymentStatus: 'Paid',
         },
         {
           courseName: 'Bachelor of Business Administration (BBA)',
@@ -143,8 +153,15 @@ export async function getCollegeRegistrationById(id: number) {
           type: 'Regular',
           conditions: 'NIL',
           statusOfCompliance: 'Complied',
+          fee: '₹ 50,000',
+          paymentStatus: 'Paid',
         },
       ],
+      totalCourseFee: '₹ 1,00,000',
+      feePaymentStatus: 'Paid',
+      feePaymentReference: 'TXN-2026-088412',
+      feePaymentDate: '20-06-2026',
+      feePaymentMode: 'Online (UPI)',
 
       teachingStaff: [
         {
@@ -153,6 +170,9 @@ export async function getCollegeRegistrationById(id: number) {
           status: 'Full Time',
           qualification: 'MCA, M.Tech',
           experience: '8 Years',
+          course: 'BCA',
+          subject: 'Computer Science',
+          joiningDate: '2019-07-01',
         },
         {
           name: 'Dr. Preeti Mishra',
@@ -160,6 +180,9 @@ export async function getCollegeRegistrationById(id: number) {
           status: 'Full Time',
           qualification: 'Ph.D. in Computer Science',
           experience: '12 Years',
+          course: 'BCA',
+          subject: 'Mathematics',
+          joiningDate: '2015-08-10',
         },
       ],
 
@@ -174,28 +197,37 @@ export async function getCollegeRegistrationById(id: number) {
           type: 'Regular',
           conditions: 'N/A',
           statusOfCompliance: 'Complied',
+          institutionPhoto: '/images/davv-campus.jpg',
         },
       ],
 
       // Infrastructure & Facilities
       totalArea: '5.2 Acres',
       isRentedBuilding: 'Owned',
+      registryDocument: 'Registry-Document.pdf',
       provisionToConstruct: 'Yes',
       qualityOfBuilding: 'Excellent (CC Construction)',
+      accommodationDetails:
+        '24 classrooms, 2 verandahs, admin block, staff rooms and seminar hall.',
+      accommodationPhoto: '/Davv_Gate.jpg',
       requiredClassrooms: '12 Classrooms',
       accessibleToPublic: 'Yes',
       classroomDetails:
         'All classrooms are ventilated, equipped with smart projectors and green boards.',
+      securityProblems: 'No',
       parkingSpace: 'Available (capacity of 50 cars, 150 two-wheelers)',
       neighbourComplaints: 'No',
       neighbourComplaintsRemarks: 'No complaints received from surroundings.',
       sharedCampus: 'No',
+      sharedCampusArea: '',
 
       libraryBooksCount: '5200 Books',
       bookStudentRatio: '1:10',
       libraryBuildingAvailable: 'Yes',
+      libraryBuildingPhoto: '/images/davv-campus.jpg',
       readingRoomAvailable: 'Yes',
       readingRoomDimensions: '1200 Sq. Ft.',
+      readingRoomPhoto: '/DAVV_Uni.jpg',
       libraryStaffAvailable: 'Yes',
       booksIssuedRegularly: 'Yes',
       booksRelevant: 'Yes',
@@ -211,9 +243,29 @@ export async function getCollegeRegistrationById(id: number) {
         'Equipped with 60 high-end computers, LAN connectivity, and server setup.',
       workshopDetails: 'N/A',
       hospitalAvailability: 'Tie-up with local hospital for emergency',
+      labs: [
+        {
+          labType: 'Computer Lab',
+          labFloorSpace: '1200 Sq. Ft.',
+          labExclusive: 'Yes',
+          lightAirConditions: 'Good ventilation and natural light',
+          labEquipmentDetails: '60 computers, LAN connectivity, server setup',
+          labPhoto: '/images/davv-campus.jpg',
+        },
+        {
+          labType: 'Physics Lab',
+          labFloorSpace: '800 Sq. Ft.',
+          labExclusive: 'Yes',
+          lightAirConditions: 'Good',
+          labEquipmentDetails: 'Optics benches, measurement instruments',
+          labPhoto: '/Davv_Gate.jpg',
+        },
+      ],
 
       sportsFacilityAvailable: 'Yes',
       adequateForStudents: 'Yes',
+      playgroundAvailable: 'Yes',
+      playgroundPhoto: '/DAVV_Uni.jpg',
       outdoorGamesFacility: 'Cricket, Volleyball, Basketball',
       outdoorFacilitiesInUse: 'Yes',
       sportsConsumablesProvided: 'Yes',
@@ -239,9 +291,50 @@ export async function getCollegeRegistrationById(id: number) {
       mpGovtConditions: 'NIL',
       statute28Fulfilled: 'Yes (Governing body constituted)',
       endowmentFundDetails: '₹ 15 Lakhs deposited in Joint Account',
+      endowmentFundDeposit: '₹ 5 Lakhs deposited in Endowment Fund',
       statutoryNormsAdhered: 'Yes',
+      feeStructureAdhered: 'Yes',
       reservationNormsFollowed: 'Yes',
       statutoryNormsRemarks: 'Fully compliant.',
+
+      // Computers
+      latestComputers: '40',
+      oldComputers: '20',
+      printers: '8',
+      scanners: '4',
+      internetAvailable: 'Yes',
+      internetConnectionType: 'Leased Line 100 Mbps',
+      computerTrainedStaff: '5',
+      computerStudentRatio: '1:6',
+      workingComputers: '58',
+      downTime: 'Minimal (< 2%)',
+      licensedSoftwareAvailable: 'Windows 11, MS Office, Tally',
+      packagesInUse: 'ERP, LMS',
+      futurePlansComputers: 'Add 20 more systems next session',
+
+      // Equipment
+      labAvailableAsPerNorms: 'Yes',
+      equipmentLabFloorSpace: '2400 Sq. Ft.',
+      equipmentDescription:
+        'Projectors, lab benches, servers and networking equipment as per norms.',
+      equipmentWorkshopDetails: 'N/A',
+      otherMajorInstrumentsAvailable: 'Yes',
+      majorInstrumentsDetails: 'Smart boards, biometric systems, UPS backup',
+      equipmentHospitalAvailability: 'Yes',
+      equipmentFirstAidFacility: 'Yes',
+      fireFightingFacility: 'Yes',
+
+      // Miscellaneous
+      residentialQuartersAvailable: 'Yes',
+      residentialQuartersDetails: '4 staff quarters within campus',
+      objectionToInfoPublic: 'No',
+      transparencyRemarks: '',
+
+      // Certification
+      principalName: 'Dr. Ramesh Kumar',
+      dateOfCertification: '2026-06-20',
+      principalSignature: 'Principal-Signature.png',
+      managementSignature: 'Chairman-Signature.png',
 
       // Documents List (indicators)
       nocDocument: 'NOC-Approved-2026.pdf',
@@ -250,7 +343,7 @@ export async function getCollegeRegistrationById(id: number) {
       landDocumentsDocument: 'Registry-Khasra.pdf',
       buildingPlanAndSafetyDocument: 'Building-Safety-Cert.pdf',
       amenitiesProofDocument: 'Fire-Safety-Water-Cert.pdf',
-      photoOfCollegeBuilding: 'Building-Front-View.jpg',
+      photoOfCollegeBuilding: '/DAVV_Uni.jpg',
       buildingMap: 'Approved-Architect-Map.pdf',
     } as any,
   };

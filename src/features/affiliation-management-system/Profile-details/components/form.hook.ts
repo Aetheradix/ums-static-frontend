@@ -44,6 +44,16 @@ export interface AdditionalInstitution {
   type: string | number;
   conditions: string;
   statusOfCompliance: string;
+  institutionPhoto?: any;
+}
+
+export interface LabDetail {
+  labType: string;
+  labFloorSpace: string;
+  labExclusive: string;
+  lightAirConditions: string;
+  labEquipmentDetails: string;
+  labPhoto: any;
 }
 
 export interface ProfileDetailsFormData {
@@ -95,6 +105,7 @@ export interface ProfileDetailsFormData {
   registryDocument: any;
   provisionToConstruct: string;
   accommodationDetails: string;
+  accommodationPhoto: any;
   qualityOfBuilding: string;
   latitude: string;
   longitude: string;
@@ -108,12 +119,15 @@ export interface ProfileDetailsFormData {
   neighbourComplaints: string;
   neighbourComplaintsRemarks: string;
   sharedCampus: string;
+  sharedCampusArea: string;
 
   libraryBooksCount: string;
   bookStudentRatio: string;
   libraryBuildingAvailable: string;
+  libraryBuildingPhoto: any;
   readingRoomAvailable: string;
   readingRoomDimensions: string;
+  readingRoomPhoto: any;
   libraryStaffAvailable: string;
   booksIssuedRegularly: string;
   booksRelevant: string;
@@ -122,16 +136,14 @@ export interface ProfileDetailsFormData {
   latestJournalIssues: string;
 
   laboratoryRequired: string;
-  labFloorSpace: string;
-  labExclusive: string;
-  lightAirConditions: string;
-  labEquipmentDetails: string;
-  workshopDetails: string;
+  labs: LabDetail[];
   hospitalAvailability: string;
 
   sportsFacilityAvailable: string;
   studentPassFailRecord?: string;
   adequateForStudents: string;
+  playgroundAvailable: string;
+  playgroundPhoto: any;
   outdoorGamesFacility: string;
   outdoorFacilitiesInUse: string;
   sportsConsumablesProvided: string;
@@ -140,7 +152,6 @@ export interface ProfileDetailsFormData {
   firstAidFacility: string;
   hostelAvailable: string;
   typeOfHostel: string;
-  accommodationAvailability: string;
   boysHostelsCount: string;
   girlsHostelsCount: string;
   totalHostelCapacity: string;
@@ -158,7 +169,9 @@ export interface ProfileDetailsFormData {
 
   statute28Fulfilled: string;
   endowmentFundDetails: string;
+  endowmentFundDeposit: string;
   statutoryNormsAdhered: string;
+  feeStructureAdhered: string;
   reservationNormsFollowed: string;
   statutoryNormsRemarks: string;
 
@@ -262,6 +275,18 @@ const additionalInstitutionSchema = Joi.object({
   type: Joi.any().allow('', null),
   conditions: Joi.string().allow('', null),
   statusOfCompliance: Joi.string().allow('', null),
+  institutionPhoto: Joi.any().allow(null),
+});
+
+const labSchema = Joi.object({
+  labType: Joi.string()
+    .required()
+    .messages({ 'string.empty': 'Lab Type required' }),
+  labFloorSpace: Joi.string().allow('', null),
+  labExclusive: Joi.string().allow('', null),
+  lightAirConditions: Joi.string().allow('', null),
+  labEquipmentDetails: Joi.string().allow('', null),
+  labPhoto: Joi.any().allow(null),
 });
 
 const schema = validation.create<ProfileDetailsFormData>(o => ({
@@ -338,6 +363,7 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
   registryDocument: o.any().allow(null),
   provisionToConstruct: o.string().allow('', null),
   accommodationDetails: o.string().allow('', null),
+  accommodationPhoto: o.any().allow(null),
   qualityOfBuilding: o.string().allow('', null),
   latitude: o.string().allow('', null),
   longitude: o.string().allow('', null),
@@ -350,12 +376,15 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
   neighbourComplaints: o.string().allow('', null),
   neighbourComplaintsRemarks: o.string().allow('', null),
   sharedCampus: o.string().allow('', null),
+  sharedCampusArea: o.string().allow('', null),
 
   libraryBooksCount: o.string().allow('', null),
   bookStudentRatio: o.string().allow('', null),
   libraryBuildingAvailable: o.string().allow('', null),
+  libraryBuildingPhoto: o.any().allow(null),
   readingRoomAvailable: o.string().allow('', null),
   readingRoomDimensions: o.string().allow('', null),
+  readingRoomPhoto: o.any().allow(null),
   libraryStaffAvailable: o.string().allow('', null),
   booksIssuedRegularly: o.string().allow('', null),
   booksRelevant: o.string().allow('', null),
@@ -364,16 +393,14 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
   latestJournalIssues: o.string().allow('', null),
 
   laboratoryRequired: o.string().allow('', null),
-  labFloorSpace: o.string().allow('', null),
-  labExclusive: o.string().allow('', null),
-  lightAirConditions: o.string().allow('', null),
-  labEquipmentDetails: o.string().allow('', null),
-  workshopDetails: o.string().allow('', null),
+  labs: Joi.array().items(labSchema),
   hospitalAvailability: o.string().allow('', null),
 
   sportsFacilityAvailable: o.string().allow('', null),
   studentPassFailRecord: o.string().allow('', null),
   adequateForStudents: o.string().allow('', null),
+  playgroundAvailable: o.string().allow('', null),
+  playgroundPhoto: o.any().allow(null),
   outdoorGamesFacility: o.string().allow('', null),
   outdoorFacilitiesInUse: o.string().allow('', null),
   sportsConsumablesProvided: o.string().allow('', null),
@@ -382,7 +409,6 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
   firstAidFacility: o.string().allow('', null),
   hostelAvailable: o.string().allow('', null),
   typeOfHostel: o.string().allow('', null),
-  accommodationAvailability: o.string().allow('', null),
   boysHostelsCount: o.string().allow('', null),
   girlsHostelsCount: o.string().allow('', null),
   totalHostelCapacity: o.string().allow('', null),
@@ -399,7 +425,9 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
 
   statute28Fulfilled: o.string().allow('', null),
   endowmentFundDetails: o.string().allow('', null),
+  endowmentFundDeposit: o.string().allow('', null),
   statutoryNormsAdhered: o.string().allow('', null),
+  feeStructureAdhered: o.string().allow('', null),
   reservationNormsFollowed: o.string().allow('', null),
   statutoryNormsRemarks: o.string().allow('', null),
 
@@ -504,6 +532,7 @@ export function useProfileDetailsForm() {
       registryDocument: null,
       provisionToConstruct: '',
       accommodationDetails: '',
+      accommodationPhoto: null,
       qualityOfBuilding: '',
       latitude: '',
       longitude: '',
@@ -516,11 +545,14 @@ export function useProfileDetailsForm() {
       neighbourComplaints: '',
       neighbourComplaintsRemarks: '',
       sharedCampus: '',
+      sharedCampusArea: '',
       libraryBooksCount: '',
       bookStudentRatio: '',
       libraryBuildingAvailable: '',
+      libraryBuildingPhoto: null,
       readingRoomAvailable: '',
       readingRoomDimensions: '',
+      readingRoomPhoto: null,
       libraryStaffAvailable: '',
       booksIssuedRegularly: '',
       booksRelevant: '',
@@ -528,15 +560,13 @@ export function useProfileDetailsForm() {
       journalsCount: '',
       latestJournalIssues: '',
       laboratoryRequired: '',
-      labFloorSpace: '',
-      labExclusive: '',
-      lightAirConditions: '',
-      labEquipmentDetails: '',
-      workshopDetails: '',
+      labs: [],
       hospitalAvailability: '',
       sportsFacilityAvailable: '',
       studentPassFailRecord: '',
       adequateForStudents: '',
+      playgroundAvailable: '',
+      playgroundPhoto: null,
       outdoorGamesFacility: '',
       outdoorFacilitiesInUse: '',
       sportsConsumablesProvided: '',
@@ -544,7 +574,6 @@ export function useProfileDetailsForm() {
       emergencyMedicineStock: '',
       firstAidFacility: '',
       hostelAvailable: '',
-      accommodationAvailability: '',
       boysHostelsCount: '',
       girlsHostelsCount: '',
       totalHostelCapacity: '',
@@ -558,7 +587,9 @@ export function useProfileDetailsForm() {
       mpGovtConditions: '',
       statute28Fulfilled: '',
       endowmentFundDetails: '',
+      endowmentFundDeposit: '',
       statutoryNormsAdhered: '',
+      feeStructureAdhered: '',
       reservationNormsFollowed: '',
       statutoryNormsRemarks: '',
       latestComputers: '',
@@ -617,6 +648,7 @@ export function useProfileDetailsForm() {
     control,
     name: 'additionalInstitutions',
   });
+  const labsArray = useFieldArray({ control, name: 'labs' });
 
   return {
     register,
@@ -630,5 +662,6 @@ export function useProfileDetailsForm() {
     existingCoursesArray,
     teachingStaffArray,
     additionalInstitutionsArray,
+    labsArray,
   };
 }

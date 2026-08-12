@@ -238,7 +238,7 @@ export default function AcademicFacilitiesStep({
             />
           </div>
           <TextBox
-            label="Hospital Availability (Paramedical / Medical)"
+            label="Hospital Availability (In case of Paramedical / Medical)"
             {...register('hospital_availability')}
             errorMessage={errors.hospital_availability?.message}
           />

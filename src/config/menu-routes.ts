@@ -8269,11 +8269,11 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'blue',
               },
               {
-                label: 'Department Registration',
-                slug: 'department-registration',
-                description: 'Register departments',
-                path: '/affiliation-management-system/department-registration/list',
-                icon: 'account_tree',
+                label: 'Application Status',
+                slug: 'application-status',
+                description: 'Track your affiliation application status',
+                path: '/affiliation-management-system/application-status',
+                icon: 'timeline',
                 colorScheme: 'green',
               },
               {
@@ -8341,6 +8341,14 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'edit_location',
                 colorScheme: 'purple',
               },
+              {
+                label: 'Standing Committee Meeting',
+                slug: 'standing-committee-meeting',
+                description: 'Manage standing committee meetings.',
+                path: '/affiliation-management-system/standing-committee-meeting',
+                icon: 'event',
+                colorScheme: 'purple',
+              },
               // {
               //   label: 'Profile Scrutiny & Verification',
               //   slug: 'profile-scrutiny',
@@ -8365,14 +8373,6 @@ export const menuConfig: Menu.MenuItem[] = [
                 path: '/affiliation-management-system/inspection-committee',
                 icon: 'upload_file',
                 colorScheme: 'blue',
-              },
-              {
-                label: 'Standing Committee Meeting',
-                slug: 'standing-committee-meeting',
-                description: 'Manage standing committee meetings.',
-                path: '/affiliation-management-system/standing-committee-meeting',
-                icon: 'event',
-                colorScheme: 'purple',
               },
               {
                 label: 'Final Registration Approval',

@@ -2,7 +2,12 @@ import { useState } from 'react';
 import { useWatch } from 'react-hook-form';
 import type { Control, FormState, Path } from 'react-hook-form';
 import { Button } from 'shared/components/buttons';
-import { DatePicker, DropDownList, TextBox } from 'shared/components/forms';
+import {
+  DatePicker,
+  DropDownList,
+  FileUpload,
+  TextBox,
+} from 'shared/components/forms';
 import { Grid } from 'shared/components/grid';
 import { Modal } from 'shared/components/popups';
 import { FormCard, FormGrid } from 'shared/new-components';
@@ -503,6 +508,7 @@ export default function ProfileEcosystemStep({
                   type: '',
                   conditions: '',
                   statusOfCompliance: '',
+                  institutionPhoto: null,
                 });
                 setEditingInstIndex(instFields.length);
                 setIsInstModalOpen(true);
@@ -643,6 +649,19 @@ export default function ProfileEcosystemStep({
                   }
                 />
               </FormGrid>
+              <div className="mt-4">
+                <FileUpload
+                  label="Institution Photograph"
+                  name={`additionalInstitutions.${editingInstIndex}.institutionPhoto`}
+                  control={control}
+                  mode="photo"
+                  accept="image/*"
+                  errorMessage={
+                    formState.errors.additionalInstitutions?.[editingInstIndex]
+                      ?.institutionPhoto?.message as string
+                  }
+                />
+              </div>
               <div className="mt-6 flex justify-end">
                 <Button
                   label="Save"

@@ -1,6 +1,6 @@
 import { useWatch } from 'react-hook-form';
 import type { Control, FormState, Path } from 'react-hook-form';
-import { DropDownList, TextBox } from 'shared/components/forms';
+import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
 import { FormCard, FormGrid } from 'shared/new-components';
 import type { ProfileDetailsFormData } from './form.hook';
 
@@ -41,6 +41,21 @@ export default function ProfileComplianceStep({
   const isResidentialQuartersAvailable = useWatch({
     control,
     name: 'residentialQuartersAvailable',
+  });
+
+  const isMpGovtPermission = useWatch({
+    control,
+    name: 'mpGovtPermission',
+  });
+
+  const isOtherMajorInstrumentsAvailable = useWatch({
+    control,
+    name: 'otherMajorInstrumentsAvailable',
+  });
+
+  const isObjectionToInfoPublic = useWatch({
+    control,
+    name: 'objectionToInfoPublic',
   });
 
   return (
@@ -112,7 +127,7 @@ export default function ProfileComplianceStep({
               }
             />
             <DropDownList
-              label="MP Govt. permission Issued?"
+              label="MP Govt. Permission Issued? (Dept. Higher/Technical/Medical Education)"
               name="mpGovtPermission"
               control={control}
               placeholder="Select"
@@ -124,12 +139,17 @@ export default function ProfileComplianceStep({
               }
             />
           </FormGrid>
-          <TextBox
-            label="Conditions imposed by MP Govt. & compliance status"
-            placeholder="Enter Details"
-            {...register('mpGovtConditions')}
-            errorMessage={formState.errors.mpGovtConditions?.message as string}
-          />
+          {isMpGovtPermission === 'yes' && (
+            <TextArea
+              label="Conditions imposed by MP Govt. & compliance status"
+              placeholder="Enter Details"
+              rows={3}
+              {...register('mpGovtConditions')}
+              errorMessage={
+                formState.errors.mpGovtConditions?.message as string
+              }
+            />
+          )}
         </div>
       </FormCard>
 
@@ -153,14 +173,22 @@ export default function ProfileComplianceStep({
             />
           </FormGrid>
           <TextBox
-            label="Endowment fund deposit details"
+            label="Fee Deposits to University (Affiliation, Renewal, Sports, Cultural, Exam & Other Fees)"
             placeholder="Enter Details"
             {...register('endowmentFundDetails')}
             errorMessage={
               formState.errors.endowmentFundDetails?.message as string
             }
           />
-          <FormGrid columns={2}>
+          <TextBox
+            label="Deposit in the Endowment Found?"
+            placeholder="Enter Details"
+            {...register('endowmentFundDeposit')}
+            errorMessage={
+              formState.errors.endowmentFundDeposit?.message as string
+            }
+          />
+          <FormGrid columns={3}>
             <DropDownList
               label="Statutory norms adhered?"
               name="statutoryNormsAdhered"
@@ -171,6 +199,18 @@ export default function ProfileComplianceStep({
               valueField="id"
               errorMessage={
                 formState.errors.statutoryNormsAdhered?.message as string
+              }
+            />
+            <DropDownList
+              label="Whether College has Adhered to Fee Structure?"
+              name="feeStructureAdhered"
+              control={control}
+              placeholder="Select"
+              data={yesNoOptions}
+              textField="name"
+              valueField="id"
+              errorMessage={
+                formState.errors.feeStructureAdhered?.message as string
               }
             />
             <DropDownList
@@ -313,7 +353,7 @@ export default function ProfileComplianceStep({
         </div>
       </FormCard>
 
-      <FormCard title="SECTION 12: EQUIPMENT & LAB (AS PER NORMS)" icon="cog">
+      <FormCard title="SECTION 12: EQUIPMENT" icon="cog">
         <div className="flex flex-col gap-4">
           <FormGrid columns={isLabAvailableAsPerNorms === 'yes' ? 2 : 1}>
             <DropDownList
@@ -370,14 +410,16 @@ export default function ProfileComplianceStep({
                     ?.message as string
                 }
               />
-              <TextBox
-                label="Major Instruments Details"
-                placeholder="Details"
-                {...register('majorInstrumentsDetails')}
-                errorMessage={
-                  formState.errors.majorInstrumentsDetails?.message as string
-                }
-              />
+              {isOtherMajorInstrumentsAvailable === 'yes' && (
+                <TextBox
+                  label="Major Instrument Details"
+                  placeholder="Details"
+                  {...register('majorInstrumentsDetails')}
+                  errorMessage={
+                    formState.errors.majorInstrumentsDetails?.message as string
+                  }
+                />
+              )}
             </>
           )}
           <FormGrid columns={4}>
@@ -459,14 +501,16 @@ export default function ProfileComplianceStep({
               formState.errors.objectionToInfoPublic?.message as string
             }
           />
-          <TextBox
-            label="Transparency Remarks"
-            placeholder="Remarks"
-            {...register('transparencyRemarks')}
-            errorMessage={
-              formState.errors.transparencyRemarks?.message as string
-            }
-          />
+          {isObjectionToInfoPublic === 'yes' && (
+            <TextBox
+              label="Transparency Remark"
+              placeholder="Remarks"
+              {...register('transparencyRemarks')}
+              errorMessage={
+                formState.errors.transparencyRemarks?.message as string
+              }
+            />
+          )}
         </div>
       </FormCard>
     </>

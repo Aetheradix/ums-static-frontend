@@ -6,7 +6,7 @@ import CollegeRegistration from './college-registration';
 import CollegeRegistrationApproval from './college-registration-approval';
 import CollegeRenewal from './college-renewal';
 import CollegeRenewalAdmin from './college-renewal-admin';
-import DepartmentRegistration from './department-registration';
+import ApplicationStatus from './application-status';
 import ProgrammeFee from './settings/programme-fee';
 
 import ApprovalStatusReport from './approval-status-report';
@@ -48,10 +48,7 @@ export default function AffiliationManagementSystem() {
         element={<CollegeRegistrationApproval />}
       />
       <Route path="college-registration/*" element={<CollegeRegistration />} />
-      <Route
-        path="department-registration/*"
-        element={<DepartmentRegistration />}
-      />
+      <Route path="application-status/*" element={<ApplicationStatus />} />
       <Route path="college-renewal/*" element={<CollegeRenewal />} />
       <Route path="college-renewal-admin/*" element={<CollegeRenewalAdmin />} />
       <Route
