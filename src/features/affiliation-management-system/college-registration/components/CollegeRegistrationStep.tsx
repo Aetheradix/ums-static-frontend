@@ -174,36 +174,43 @@ export default function CollegeRegistrationStep({
           />
         </div>
 
-        <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-semibold text-gray-700">
-            Captcha <span className="text-red-500">*</span>
-          </label>
-          <div className="flex items-center gap-2">
-            <div
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded font-bold tracking-widest text-lg select-none pointer-events-none line-through decoration-double border border-gray-300"
-              style={{
-                fontFamily: 'monospace',
-                textShadow: '1px 1px 2px rgba(0,0,0,0.2)',
-              }}
-            >
-              {captchaText}
+        <div className="lg:col-span-2 flex flex-row gap-6 items-start">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-semibold text-gray-700">
+              Captcha <span className="text-red-500">*</span>
+            </label>
+            <div className="flex items-center gap-3 h-[46px]">
+              <div
+                className="px-6 py-2 h-full bg-[#f0f4f8] text-[#1e293b] rounded-md font-extrabold tracking-[0.5em] text-2xl select-none pointer-events-none border border-gray-300 shadow-inner flex items-center justify-center min-w-[150px] relative overflow-hidden"
+                style={{
+                  fontFamily: '"Courier New", Courier, monospace',
+                  backgroundImage:
+                    'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.03) 10px, rgba(0,0,0,0.03) 20px)',
+                }}
+              >
+                <span className="relative z-10 drop-shadow-sm">
+                  {captchaText}
+                </span>
+              </div>
+              <Button
+                variant="outlined"
+                icon="pi pi-refresh"
+                onClick={regenerateCaptcha}
+                className="h-full px-4 rounded-md flex items-center justify-center border-gray-400 text-gray-700 hover:bg-gray-100 transition-colors"
+                tooltip="Refresh Captcha"
+              />
             </div>
-            <Button
-              variant="outlined"
-              icon="pi pi-refresh"
-              onClick={regenerateCaptcha}
-              className="p-2"
-              tooltip="Refresh Captcha"
+          </div>
+
+          <div className="w-64">
+            <TextBox
+              label="Enter Captcha"
+              placeholder="Enter the captcha code"
+              {...register('captcha')}
+              required
             />
           </div>
         </div>
-
-        <TextBox
-          label="Enter Captcha"
-          placeholder="Enter the captcha code above"
-          {...register('captcha')}
-          required
-        />
       </FormGrid>
 
       <div className="mt-6 border-t border-gray-200 pt-6">

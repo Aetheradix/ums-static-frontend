@@ -320,26 +320,11 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
     .required()
     .messages({ 'string.empty': 'Address required' }),
 
-  executiveName: o
-    .string()
-    .required()
-    .messages({ 'string.empty': 'Executive Name required' }),
-  executiveAge: o
-    .string()
-    .required()
-    .messages({ 'string.empty': 'Age required' }),
-  executiveQualification: o
-    .string()
-    .required()
-    .messages({ 'string.empty': 'Qualification required' }),
-  executiveMobileNumber: o
-    .string()
-    .required()
-    .messages({ 'string.empty': 'Mobile Number required' }),
-  executiveOccupationAddress: o
-    .string()
-    .required()
-    .messages({ 'string.empty': 'Address required' }),
+  executiveName: o.string().allow('', null),
+  executiveAge: o.string().allow('', null),
+  executiveQualification: o.string().allow('', null),
+  executiveMobileNumber: o.string().allow('', null),
+  executiveOccupationAddress: o.string().allow('', null),
 
   governingBodyMembers: Joi.array().items(governingBodyMemberSchema),
 

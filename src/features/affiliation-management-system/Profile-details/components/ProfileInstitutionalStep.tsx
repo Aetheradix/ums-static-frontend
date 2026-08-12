@@ -50,17 +50,51 @@ export default function ProfileInstitutionalStep({
     name: 'governingBodyMembers',
   });
 
+  const collegeTypeWatch = useWatch({
+    control,
+    name: 'collegeType',
+  });
+
   return (
     <>
       <FormCard title="Section 1: Basic College Information" icon="building">
         <FormGrid columns={3}>
+          <DropDownList
+            label="Affiliation Type"
+            name="affiliationType"
+            control={control}
+            data={[
+              { id: '1', name: 'New Affiliation' },
+              { id: '2', name: 'Renewal' },
+              { id: '3', name: 'Subject Increment' },
+              { id: '4', name: 'College Name Change' },
+            ]}
+            textField="name"
+            valueField="id"
+            placeholder="Select Affiliation Type"
+            required
+          />
           <TextBox
             label="College Name"
             {...register('collegeName')}
             readOnly
             required
           />
-          <TextBox label="College Type" {...register('collegeType')} readOnly />
+          <DropDownList
+            label="College Type"
+            name="collegeType"
+            control={control}
+            data={[
+              { id: 'Government', name: 'Government' },
+              { id: 'Private', name: 'Private' },
+              { id: 'Aided', name: 'Aided' },
+              { id: 'Unaided', name: 'Unaided' },
+              { id: 'Other', name: 'Other' },
+            ]}
+            textField="name"
+            valueField="id"
+            placeholder="Select College Type"
+          />
           <TextBox
             label="College Official Email"
             {...register('collegeEmail')}
@@ -178,58 +212,55 @@ export default function ProfileInstitutionalStep({
           </FormGrid>
         </div>
 
-        <div className="border border-gray-200 rounded-lg p-4">
-          <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
-            CHAIRMAN JANBHAGIDARI SAMITI DETAILS
-          </h4>
-          <FormGrid columns={3}>
-            <TextBox
-              label="Name"
-              placeholder="Enter Name"
-              {...register('executiveName')}
-              errorMessage={formState.errors.executiveName?.message as string}
-              required
-            />
-            <TextBox
-              label="Age"
-              placeholder="Enter Age"
-              {...register('executiveAge')}
-              errorMessage={formState.errors.executiveAge?.message as string}
-              required
-            />
-            <DropDownList
-              label="Educational Qualification"
-              name="executiveQualification"
-              control={control}
-              placeholder="Select Qualification"
-              data={qualificationOptions}
-              textField="name"
-              valueField="id"
-              errorMessage={
-                formState.errors.executiveQualification?.message as string
-              }
-              required
-            />
-            <TextBox
-              label="Mobile Number"
-              placeholder="Enter Mobile Number"
-              {...register('executiveMobileNumber')}
-              errorMessage={
-                formState.errors.executiveMobileNumber?.message as string
-              }
-              required
-            />
-            <TextBox
-              label="Occupation Address"
-              placeholder="Enter Address"
-              {...register('executiveOccupationAddress')}
-              errorMessage={
-                formState.errors.executiveOccupationAddress?.message as string
-              }
-              required
-            />
-          </FormGrid>
-        </div>
+        {collegeTypeWatch?.toLowerCase() === 'government' && (
+          <div className="border border-gray-200 rounded-lg p-4">
+            <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
+              CHAIRMAN JANBHAGIDARI SAMITI DETAILS
+            </h4>
+            <FormGrid columns={3}>
+              <TextBox
+                label="Name"
+                placeholder="Enter Name"
+                {...register('executiveName')}
+                errorMessage={formState.errors.executiveName?.message as string}
+              />
+              <TextBox
+                label="Age"
+                placeholder="Enter Age"
+                {...register('executiveAge')}
+                errorMessage={formState.errors.executiveAge?.message as string}
+              />
+              <DropDownList
+                label="Educational Qualification"
+                name="executiveQualification"
+                control={control}
+                placeholder="Select Qualification"
+                data={qualificationOptions}
+                textField="name"
+                valueField="id"
+                errorMessage={
+                  formState.errors.executiveQualification?.message as string
+                }
+              />
+              <TextBox
+                label="Mobile Number"
+                placeholder="Enter Mobile Number"
+                {...register('executiveMobileNumber')}
+                errorMessage={
+                  formState.errors.executiveMobileNumber?.message as string
+                }
+              />
+              <TextBox
+                label="Occupation Address"
+                placeholder="Enter Address"
+                {...register('executiveOccupationAddress')}
+                errorMessage={
+                  formState.errors.executiveOccupationAddress?.message as string
+                }
+              />
+            </FormGrid>
+          </div>
+        )}
       </FormCard>
 
       <FormCard title="Section 3: Governing Body Members" icon="users">
