@@ -1,11 +1,5 @@
 import { useWatch } from 'react-hook-form';
-import type {
-  Control,
-  FormState,
-  Path,
-  UseFormSetValue,
-} from 'react-hook-form';
-import { Button } from 'shared/components/buttons';
+import type { Control, FormState, Path } from 'react-hook-form';
 import { DropDownList, TextBox, FileUpload } from 'shared/components/forms';
 import { FormCard, FormGrid } from 'shared/new-components';
 import type { ProfileDetailsFormData } from './form.hook';
@@ -17,33 +11,13 @@ interface ProfileInfrastructureStepProps {
   };
   control: Control<ProfileDetailsFormData>;
   formState: FormState<ProfileDetailsFormData>;
-  setValue: UseFormSetValue<ProfileDetailsFormData>;
 }
 
 export default function ProfileInfrastructureStep({
   register,
   control,
   formState,
-  setValue,
 }: ProfileInfrastructureStepProps) {
-  const handleGetLocation = () => {
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          setValue('latitude', lat.toString(), { shouldValidate: true });
-          setValue('longitude', lng.toString(), { shouldValidate: true });
-        },
-        error => {
-          console.error(error);
-          alert('Location access denied or an error occurred!');
-        }
-      );
-    } else {
-      alert('Your browser does not support Geolocation!');
-    }
-  };
   const yesNoOptions = [
     { id: 'yes', name: 'Yes' },
     { id: 'no', name: 'No' },
@@ -180,34 +154,6 @@ export default function ProfileInfrastructureStep({
                 formState.errors.accommodationDetails?.message as string
               }
             />
-          </div>
-          <div className="mt-8 border-t pt-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-sm font-semibold text-gray-700">
-                College Location Coordinates
-              </h3>
-              <Button
-                type="button"
-                variant="outlined"
-                icon="map-marker"
-                label="Get Current Location"
-                onClick={handleGetLocation}
-              />
-            </div>
-            <FormGrid columns={2}>
-              <TextBox
-                label="Latitude"
-                placeholder="e.g., 22.7196"
-                {...register('latitude')}
-                errorMessage={formState.errors.latitude?.message as string}
-              />
-              <TextBox
-                label="Longitude"
-                placeholder="e.g., 75.8577"
-                {...register('longitude')}
-                errorMessage={formState.errors.longitude?.message as string}
-              />
-            </FormGrid>
           </div>
         </div>
       </FormCard>
@@ -560,7 +506,7 @@ export default function ProfileInfrastructureStep({
         )}
       </FormCard>
 
-      {String(affiliationType) !== '1' && (
+      {['2', '3', '4'].includes(String(affiliationType)) && (
         <FormCard title="7C — STUDENT PASS / FAIL RECORD" icon="chart-bar">
           <div className="mb-6">
             <TextBox
@@ -720,7 +666,6 @@ export default function ProfileInfrastructureStep({
                   data={[
                     { id: 'boys', name: 'Boys' },
                     { id: 'girls', name: 'Girls' },
-                    { id: 'coed', name: 'Co-ed' },
                   ]}
                   textField="name"
                   valueField="id"
@@ -728,7 +673,7 @@ export default function ProfileInfrastructureStep({
                     formState.errors.typeOfHostel?.message as string
                   }
                 />
-                {(typeOfHostel === 'boys' || typeOfHostel === 'coed') && (
+                {typeOfHostel === 'boys' && (
                   <TextBox
                     label="Boys Hostels Count"
                     placeholder="e.g. 1"
@@ -738,7 +683,7 @@ export default function ProfileInfrastructureStep({
                     }
                   />
                 )}
-                {(typeOfHostel === 'girls' || typeOfHostel === 'coed') && (
+                {typeOfHostel === 'girls' && (
                   <TextBox
                     label="Girls Hostels Count"
                     placeholder="e.g. 1"

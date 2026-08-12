@@ -1,12 +1,13 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
   Controller,
   type Control,
   type FormState,
   type Path,
+  type UseFormSetValue,
 } from 'react-hook-form';
 import { Button } from 'shared/components/buttons';
-import { InputBlock, FileUpload } from 'shared/components/forms';
+import { InputBlock, FileUpload, TextBox } from 'shared/components/forms';
 import { FormCard, FormGrid } from 'shared/new-components';
 import type { ProfileDetailsFormData } from './form.hook';
 
@@ -17,12 +18,30 @@ interface ProfileDocumentUploadStepProps {
   };
   control: Control<ProfileDetailsFormData>;
   formState: FormState<ProfileDetailsFormData>;
+  setValue: UseFormSetValue<ProfileDetailsFormData>;
 }
 
 export default function ProfileDocumentUploadStep({
   control,
   formState,
+  setValue,
+  register,
 }: ProfileDocumentUploadStepProps) {
+  useEffect(() => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          setValue('latitude', lat.toString(), { shouldValidate: true });
+          setValue('longitude', lng.toString(), { shouldValidate: true });
+        },
+        error => {
+          console.error(error);
+        }
+      );
+    }
+  }, [setValue]);
   return (
     <>
       <div className="mb-4 text-blue-700 font-semibold border-l-2 border-blue-500 pl-2">
@@ -186,6 +205,28 @@ export default function ProfileDocumentUploadStep({
             errorMessage={formState.errors.buildingMap?.message as string}
           />
         </FormGrid>
+
+        <div className="mt-8 border-t pt-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-sm font-semibold text-gray-700">
+              College Location Coordinates
+            </h3>
+          </div>
+          <FormGrid columns={2}>
+            <TextBox
+              label="Latitude"
+              placeholder="e.g., 22.7196"
+              {...register('latitude')}
+              errorMessage={formState.errors.latitude?.message as string}
+            />
+            <TextBox
+              label="Longitude"
+              placeholder="e.g., 75.8577"
+              {...register('longitude')}
+              errorMessage={formState.errors.longitude?.message as string}
+            />
+          </FormGrid>
+        </div>
       </FormCard>
     </>
   );

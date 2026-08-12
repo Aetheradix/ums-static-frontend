@@ -89,7 +89,6 @@ export default function Create() {
           register={register}
           control={control}
           formState={formState}
-          setValue={setValue}
         />
       ),
     },
@@ -125,6 +124,7 @@ export default function Create() {
           register={register}
           control={control}
           formState={formState}
+          setValue={setValue}
         />
       ),
     },
