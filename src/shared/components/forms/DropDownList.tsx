@@ -39,6 +39,7 @@ function InnerDropDownList<TData = Data.DataItem<number>>({
   name,
   errorMessage,
   label,
+  subLabel,
   data,
   textField = 'text' as keyof TData,
   valueField = 'value' as keyof TData,
@@ -72,6 +73,7 @@ function InnerDropDownList<TData = Data.DataItem<number>>({
     <InputBlock
       id={id}
       label={label}
+      subLabel={subLabel}
       errorMessage={errorMessage}
       required={required}
     >

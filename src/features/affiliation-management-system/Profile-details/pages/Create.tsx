@@ -24,6 +24,7 @@ export default function Create() {
     existingCoursesArray,
     teachingStaffArray,
     additionalInstitutionsArray,
+    labsArray,
   } = useProfileDetailsForm();
 
   const onFormSubmit = handleSubmit(
@@ -89,6 +90,8 @@ export default function Create() {
           register={register}
           control={control}
           formState={formState}
+          labsArray={labsArray}
+          trigger={trigger as any}
         />
       ),
     },

@@ -23,11 +23,11 @@ export default function CollegePortalPage() {
         },
 
         {
-          title: 'Department Registration',
-          description: 'Register and manage college departments.',
-          icon: 'domain_add',
+          title: 'Application Status',
+          description: 'Track your affiliation application status.',
+          icon: 'timeline',
           colorScheme: 'orange',
-          path: '/affiliation-management-system/department-registration/list',
+          path: '/affiliation-management-system/application-status',
         },
         {
           title: 'Renewal Application',

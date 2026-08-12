@@ -17,13 +17,22 @@ import { useCollegeRegistrationByIdQuery } from '../../college-registration-appr
 import { formatDate } from 'shared/utils/dateUtils';
 
 // Mock Data matching the main college approvals mock list
-const MOCK_DATA = [
+const MOCK_DATA: {
+  id: number;
+  collegeName: string;
+  submissionDate: string;
+  status: string;
+  inspectionTeam: string | null;
+  inspectionDate: string | null;
+  applicationNumber: string;
+}[] = [
   {
     id: 101,
     collegeName: 'Global Institute of Technology',
     submissionDate: '2026-07-01T10:30:00Z',
     status: 'Pending Assignment',
     inspectionTeam: null,
+    inspectionDate: null,
     applicationNumber: 'APP-92837',
   },
   {
@@ -32,6 +41,7 @@ const MOCK_DATA = [
     submissionDate: '2026-06-28T14:15:00Z',
     status: 'Assigned',
     inspectionTeam: 'Dr. A. Sharma, Prof. K. Singh',
+    inspectionDate: '2026-07-15',
     applicationNumber: 'APP-54129',
   },
   {
@@ -40,6 +50,7 @@ const MOCK_DATA = [
     submissionDate: '2026-07-05T09:00:00Z',
     status: 'Pending Assignment',
     inspectionTeam: null,
+    inspectionDate: null,
     applicationNumber: 'APP-76342',
   },
 ];
@@ -48,6 +59,7 @@ export default function InspectionAssignmentList() {
   const [data, setData] = useState(MOCK_DATA);
   const [assigningId, setAssigningId] = useState<number | null>(null);
   const [teamMembers, setTeamMembers] = useState('');
+  const [inspectionDate, setInspectionDate] = useState('');
   const [previewId, setPreviewId] = useState<number | null>(null);
 
   const { data: previewData, isLoading: isPreviewLoading } =
@@ -69,6 +81,7 @@ export default function InspectionAssignmentList() {
     setAssigningId(id);
     const existing = data.find(item => item.id === id);
     setTeamMembers(existing?.inspectionTeam || '');
+    setInspectionDate(existing?.inspectionDate || '');
   };
 
   const handleCloseAssign = () => {
@@ -76,12 +89,17 @@ export default function InspectionAssignmentList() {
   };
 
   const handleSubmitAssign = () => {
-    if (!teamMembers.trim()) return;
+    if (!teamMembers.trim() || !inspectionDate) return;
 
     setData(prev =>
       prev.map(item =>
         item.id === assigningId
-          ? { ...item, status: 'Assigned', inspectionTeam: teamMembers }
+          ? {
+              ...item,
+              status: 'Assigned',
+              inspectionTeam: teamMembers,
+              inspectionDate,
+            }
           : item
       )
     );
@@ -135,6 +153,15 @@ export default function InspectionAssignmentList() {
               cell: item => <span>{item.inspectionTeam || '-'}</span>,
             },
             {
+              field: 'inspectionDate',
+              header: 'Inspection Date',
+              cell: item => (
+                <span>
+                  {item.inspectionDate ? formatDate(item.inspectionDate) : '-'}
+                </span>
+              ),
+            },
+            {
               header: 'Actions',
               sortable: false,
               width: '140px',
@@ -183,7 +210,7 @@ export default function InspectionAssignmentList() {
             <Button
               variant="primary"
               onClick={handleSubmitAssign}
-              disabled={!teamMembers.trim()}
+              disabled={!teamMembers.trim() || !inspectionDate}
               label="Assign"
             />
           </div>
@@ -191,8 +218,8 @@ export default function InspectionAssignmentList() {
       >
         <div className="p-4 flex flex-col gap-4">
           <p className="text-gray-600">
-            Please enter the names of the inspection committee members for the
-            selected college.
+            Enter the inspection committee members and the date on which the
+            physical inspection is scheduled for the selected college.
           </p>
           <div className="flex flex-col gap-1">
             <label className="text-sm font-semibold text-gray-700">
@@ -204,6 +231,17 @@ export default function InspectionAssignmentList() {
               placeholder="e.g. Dr. John Doe, Prof. Jane Smith"
               value={teamMembers}
               onChange={e => setTeamMembers(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-semibold text-gray-700">
+              Inspection Scheduled Date
+            </label>
+            <input
+              type="date"
+              className="p-2 border border-gray-300 rounded focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+              value={inspectionDate}
+              onChange={e => setInspectionDate(e.target.value)}
             />
           </div>
         </div>

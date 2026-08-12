@@ -615,7 +615,7 @@ export default function List() {
               {preview.existingCourses?.length > 0 && (
                 <div className="mb-4">
                   <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                    Proposed / Existing Courses
+                    Proposed / Existing Courses & Fees
                   </h4>
                   <GridPanel
                     data={preview.existingCourses}
@@ -626,8 +626,50 @@ export default function List() {
                       { field: 'class', header: 'Class' },
                       { field: 'type', header: 'Type' },
                       { field: 'statusOfCompliance', header: 'Status' },
+                      {
+                        field: 'fee',
+                        header: 'Fee',
+                        cell: (item: any) => <span>{item.fee || '-'}</span>,
+                      },
+                      {
+                        field: 'paymentStatus',
+                        header: 'Payment Status',
+                        cell: (item: any) => (
+                          <StatusBadge
+                            label={item.paymentStatus || 'Pending'}
+                            variant={
+                              item.paymentStatus === 'Paid'
+                                ? 'approved'
+                                : 'pending'
+                            }
+                          />
+                        ),
+                      },
                     ]}
                   />
+                  {preview.feePaymentStatus === 'Paid' && (
+                    <div className="mt-3 p-4 bg-green-50 border border-green-200 rounded-lg flex flex-wrap items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                          <i className="pi pi-check text-green-600 text-lg" />
+                        </div>
+                        <div>
+                          <h5 className="text-sm font-semibold text-green-800">
+                            Affiliation Fee Paid — {preview.totalCourseFee}
+                          </h5>
+                          <p className="text-xs text-green-700 mt-0.5">
+                            Transaction ID:{' '}
+                            <span className="font-mono font-semibold">
+                              {preview.feePaymentReference}
+                            </span>{' '}
+                            · Paid on {preview.feePaymentDate} ·{' '}
+                            {preview.feePaymentMode}
+                          </p>
+                        </div>
+                      </div>
+                      <StatusBadge label="Payment Done" variant="approved" />
+                    </div>
+                  )}
                 </div>
               )}
 

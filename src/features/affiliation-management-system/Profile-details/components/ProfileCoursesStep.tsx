@@ -5,7 +5,13 @@ import { Button } from 'shared/components/buttons';
 import { DropDownList, TextBox } from 'shared/components/forms';
 import { Grid } from 'shared/components/grid';
 import { Modal } from 'shared/components/popups';
-import { FormCard, FormGrid } from 'shared/new-components';
+import {
+  FormCard,
+  FormGrid,
+  PaymentDialog,
+  ReceiptDialog,
+  StatusBadge,
+} from 'shared/new-components';
 import type { ProfileDetailsFormData } from './form.hook';
 
 interface ProfileCoursesStepProps {
@@ -70,6 +76,14 @@ export default function ProfileCoursesStep({
   const [editingCourseIndex, setEditingCourseIndex] = useState<number | null>(
     null
   );
+
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+  const [isReceiptOpen, setIsReceiptOpen] = useState(false);
+  const [paymentInfo, setPaymentInfo] = useState<{
+    transactionId: string;
+    date: string;
+  } | null>(null);
+  const isPaid = paymentInfo !== null;
 
   const existingCoursesWatch = useWatch({
     control,
@@ -334,6 +348,15 @@ export default function ProfileCoursesStep({
                 cell: (item: any) =>
                   new Intl.NumberFormat('en-IN').format(item.fee),
               },
+              {
+                header: 'PAYMENT STATUS',
+                cell: () => (
+                  <StatusBadge
+                    label={isPaid ? 'Paid' : 'Pending'}
+                    variant={isPaid ? 'approved' : 'pending'}
+                  />
+                ),
+              },
             ]}
             pagination={false}
           />
@@ -343,8 +366,75 @@ export default function ProfileCoursesStep({
               ₹ {new Intl.NumberFormat('en-IN').format(totalFee)}
             </span>
           </div>
+
+          {isPaid ? (
+            <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                  <i className="pi pi-check text-green-600 text-lg" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-green-800">
+                    Affiliation Fee Paid Successfully
+                  </h4>
+                  <p className="text-xs text-green-700 mt-0.5">
+                    Transaction ID:{' '}
+                    <span className="font-mono font-semibold">
+                      {paymentInfo?.transactionId}
+                    </span>{' '}
+                    · Paid on {paymentInfo?.date}
+                  </p>
+                </div>
+              </div>
+              <Button
+                label="View Receipt"
+                icon="file"
+                variant="outlined"
+                onClick={() => setIsReceiptOpen(true)}
+              />
+            </div>
+          ) : (
+            <div className="mt-4 flex justify-end">
+              <Button
+                label="Proceed to Payment"
+                icon="credit-card"
+                variant="primary"
+                disabled={totalFee === 0}
+                onClick={() => setIsPaymentOpen(true)}
+              />
+            </div>
+          )}
         </div>
       </FormCard>
+
+      <PaymentDialog
+        visible={isPaymentOpen}
+        onClose={() => setIsPaymentOpen(false)}
+        amount={totalFee}
+        title="Affiliation Fee Payment"
+        description="Pay the subject-wise affiliation fee to submit your application."
+        onSuccess={transactionId => {
+          setPaymentInfo({
+            transactionId,
+            date: new Date().toLocaleDateString('en-IN', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+            }),
+          });
+          setIsPaymentOpen(false);
+          setIsReceiptOpen(true);
+        }}
+      />
+
+      <ReceiptDialog
+        visible={isReceiptOpen}
+        onClose={() => setIsReceiptOpen(false)}
+        transactionId={paymentInfo?.transactionId || ''}
+        amount={totalFee}
+        date={paymentInfo?.date || ''}
+        title="Payment Successful"
+      />
     </>
   );
 }
