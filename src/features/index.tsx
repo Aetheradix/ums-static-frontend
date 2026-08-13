@@ -63,6 +63,7 @@ import TransportManagement from './transport-management';
 import HealthManagement from './health-management';
 import EvaluationGrading from './evaluation-grading';
 import DavvCMS from './davv-cms';
+import ProcurementStoreInventoryFeature from './procurement-store-inventory';
 const PublicHome = React.lazy(() => import('./public-portal/pages/Home'));
 const PublicSolutions = React.lazy(
   () => import('./public-portal/pages/Solutions')
@@ -378,6 +379,10 @@ export default function Features() {
                       <Route
                         path="evaluation-grading/*"
                         element={<EvaluationGrading />}
+                      />
+                      <Route
+                        path="procurement-store-inventory/*"
+                        element={<ProcurementStoreInventoryFeature />}
                       />
                     </Routes>
                   </MainLayout>
