@@ -6087,6 +6087,15 @@ export const menuConfig: Menu.MenuItem[] = [
             colorScheme: 'red',
             children: [
               {
+                label: 'Department Procurement, Store & Inventory',
+                slug: 'procurement-store-inventory-sub',
+                description:
+                  'Department Procurement Request · Store Demand & Issue · Department Receiving · Stock Register · Invoice · Payment · Closure.',
+                path: '/procurement-store-inventory',
+                icon: 'inventory_2',
+                colorScheme: 'teal',
+              },
+              {
                 label: 'Vendor Master',
                 slug: 'vendor-master',
                 description: 'Manage vendor details.',
@@ -6349,6 +6358,16 @@ export const menuConfig: Menu.MenuItem[] = [
             ],
           },
         ],
+      },
+      {
+        label: 'Procurement, Store & Inventory Management',
+        slug: 'procurement-store-inventory',
+        category: 'Finance',
+        icon: 'inventory_2',
+        colorScheme: 'teal',
+        description:
+          'Department Procurement Request · Store Demand & Issue · Department Receiving · Store & Department Stock Register · Invoice · Payment · Closure.',
+        path: '/procurement-store-inventory',
       },
       {
         label: 'Bill Management & Tracking',
