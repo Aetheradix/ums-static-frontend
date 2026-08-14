@@ -2,6 +2,7 @@ import Joi from 'joi';
 import { useFieldArray } from 'react-hook-form';
 import { useAppForm } from 'shared/hooks/form';
 import validation from 'shared/utils/validation';
+import { getCollegeRegistration } from '../../registrationStore';
 
 export interface GoverningBodyMember {
   memberName: string;
@@ -480,6 +481,9 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
 }));
 
 export function useProfileDetailsForm() {
+  // Pre-fill from the submitted College Registration form (static prototype).
+  const saved = getCollegeRegistration();
+
   const {
     register,
     control,
@@ -493,17 +497,20 @@ export function useProfileDetailsForm() {
     mode: 'onChange',
     defaultValues: {
       affiliationType: '',
-      collegeName: 'Global Institute of Technology',
-      collegeType: 'Private',
-      collegeEmail: 'admin@globalinstitute.edu',
-      principalDirectorName: 'Dr. Rajesh Sharma',
-      principalMobileNo: '9876543210',
-      principalEmail: 'rajesh.sharma@globalinstitute.edu',
-      stateName: 'Madhya Pradesh',
-      districtName: 'Indore',
-      blockTehsil: 'Indore',
-      pinCode: '452001',
-      collegeAddress: '123 Education Lane, Knowledge Park, Phase 1',
+      collegeName: saved?.collegeName || 'Global Institute of Technology',
+      collegeType: saved?.collegeType || 'Private',
+      collegeEmail: saved?.collegeEmail || 'admin@globalinstitute.edu',
+      principalDirectorName:
+        saved?.principalDirectorName || 'Dr. Rajesh Sharma',
+      principalMobileNo: saved?.principalMobileNo || '9876543210',
+      principalEmail:
+        saved?.principalEmail || 'rajesh.sharma@globalinstitute.edu',
+      stateName: saved?.stateName || 'Madhya Pradesh',
+      districtName: saved?.districtName || 'Indore',
+      blockTehsil: saved?.blockTehsil || 'Indore',
+      pinCode: saved?.pinCode || '452001',
+      collegeAddress:
+        saved?.collegeAddress || '123 Education Lane, Knowledge Park, Phase 1',
       societyName: 'Global Education Society',
       yearOfFoundationCollege: '2010',
       yearOfFoundationSociety: '2005',

@@ -108,6 +108,17 @@ const schema =
       isSubmitted: o.boolean().optional(),
       affidavitFile: o.any().optional().allow(null),
       regularAuthorityFile: o.any().optional().allow(null),
+
+      educationTypeId: o
+        .number()
+        .required()
+        .messages({ 'number.base': 'Education Type is required' }),
+      authorityNocFile: o.any().required().messages({
+        'any.required': 'Please upload the approval authority document',
+      }),
+      applicationFeePaid: o.boolean().optional(),
+      feeTransactionRef: o.string().optional().allow('', null),
+      feePaidDate: o.string().optional().allow('', null),
     })
   );
 

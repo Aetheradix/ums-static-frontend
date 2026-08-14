@@ -4,7 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { FormPage } from 'shared/new-components';
-import CollegeRegistrationStep from '../components/CollegeRegistrationStep';
+import { APPROVAL_AUTHORITY_DATA } from '../../settings/approval-authority/data';
+import { saveCollegeRegistration } from '../../registrationStore';
+import CollegeRegistrationStep, {
+  dummyDistricts,
+  dummyStates,
+  dummyTypes,
+} from '../components/CollegeRegistrationStep';
 import DraftSuccessDialog from '../components/DraftSuccessDialog';
 import { useCollegeApplicationForm } from '../components/form.hook';
 import './Create.css';
@@ -34,6 +40,34 @@ export default function Create() {
         );
         setShowDraftDialog(true);
       } else {
+        const authority = APPROVAL_AUTHORITY_DATA.find(
+          item => item.approvalAuthorityId === data.educationTypeId
+        );
+        saveCollegeRegistration({
+          collegeName: data.collegeName,
+          collegeType:
+            dummyTypes.find(t => t.id === data.collegeTypeId)?.name || '',
+          collegeEmail: data.collegeEmail,
+          principalDirectorName: data.principalDirectorName,
+          principalMobileNo: data.principalMobileNo,
+          principalEmail: data.principalEmail,
+          stateName:
+            dummyStates.find(s => s.id === data.stateId)?.name ||
+            'Madhya Pradesh',
+          districtName:
+            dummyDistricts.find(d => d.id === data.districtId)?.name || '',
+          blockTehsil: data.blockTehsil || '',
+          pinCode: data.pinCode || '',
+          collegeAddress: data.collegeAddress,
+          educationType: authority?.educationType,
+          approvalAuthority: authority?.authorityName,
+          applicationFeePaid: data.applicationFeePaid,
+          feeTransactionRef: data.feeTransactionRef,
+          feePaidDate: data.feePaidDate,
+          applicationNumber:
+            data.applicationNumber ||
+            'APP-' + Math.floor(10000 + Math.random() * 90000),
+        });
         ToastService.success('College Registration submitted successfully.');
         reset();
         navigate(-1);
@@ -73,6 +107,12 @@ export default function Create() {
   );
 
   const handleFinalSubmit = async () => {
+    if (!methods.getValues('applicationFeePaid')) {
+      ToastService.error(
+        'Please pay the application fees before saving the form.'
+      );
+      return;
+    }
     submitTypeRef.current = 'FINAL';
     setValue('isSubmitted', true);
     await onFormSubmit();
