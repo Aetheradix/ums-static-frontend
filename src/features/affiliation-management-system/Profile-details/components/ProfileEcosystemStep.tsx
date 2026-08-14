@@ -22,6 +22,7 @@ interface ProfileEcosystemStepProps {
   formState: FormState<ProfileDetailsFormData>;
   teachingStaffArray: any;
   additionalInstitutionsArray: any;
+  nonTeachingStaffArray: any;
   trigger?: any;
 }
 
@@ -105,6 +106,7 @@ export default function ProfileEcosystemStep({
   formState,
   teachingStaffArray,
   additionalInstitutionsArray,
+  nonTeachingStaffArray,
   trigger,
 }: ProfileEcosystemStepProps) {
   const {
@@ -117,6 +119,11 @@ export default function ProfileEcosystemStep({
     append: appendInst,
     remove: removeInst,
   } = additionalInstitutionsArray;
+  const {
+    fields: nonTeachingFields,
+    append: appendNonTeaching,
+    remove: removeNonTeaching,
+  } = nonTeachingStaffArray;
 
   const teachingStaffWatch = useWatch({
     control,
@@ -128,6 +135,11 @@ export default function ProfileEcosystemStep({
     name: 'additionalInstitutions',
   });
 
+  const nonTeachingStaffWatch = useWatch({
+    control,
+    name: 'nonTeachingStaff',
+  });
+
   const [isStaffModalOpen, setIsStaffModalOpen] = useState(false);
   const [editingStaffIndex, setEditingStaffIndex] = useState<number | null>(
     null
@@ -136,16 +148,14 @@ export default function ProfileEcosystemStep({
   const [isInstModalOpen, setIsInstModalOpen] = useState(false);
   const [editingInstIndex, setEditingInstIndex] = useState<number | null>(null);
 
+  const [isNonTeachingModalOpen, setIsNonTeachingModalOpen] = useState(false);
+  const [editingNonTeachingIndex, setEditingNonTeachingIndex] = useState<
+    number | null
+  >(null);
+
   return (
     <>
-      <div className="mb-4 text-blue-700 font-semibold border-l-2 border-blue-500 pl-2">
-        Section 4: Teaching Staff
-      </div>
-
-      <FormCard
-        title="SECTION 4: TEACHING STAFF FOR EXISTING COURSES"
-        icon="users"
-      >
+      <FormCard title="TEACHING STAFF" icon="users">
         <div className="mb-4">
           <Grid
             data={staffFields.map((field: any, index: number) => {
@@ -420,10 +430,171 @@ export default function ProfileEcosystemStep({
         </Modal>
       </FormCard>
 
-      <div className="mb-4 mt-6 text-blue-700 font-semibold border-l-2 border-blue-500 pl-2">
-        Section 5: Additional Institutions Run by Society
-      </div>
-      <FormCard title="INSTITUTIONS DETAILS" icon="building">
+      <FormCard title="NON-TEACHING STAFF" icon="id-card">
+        <div className="mb-4">
+          <Grid
+            data={nonTeachingFields.map((field: any, index: number) => {
+              const staff = nonTeachingStaffWatch?.[index] || field;
+              return { ...staff, originalIndex: index };
+            })}
+            columns={[
+              { header: 'NAME', cell: (item: any) => item.name || '' },
+              {
+                header: 'DESIGNATION',
+                cell: (item: any) => item.designation || '',
+              },
+              {
+                header: 'STATUS',
+                cell: (item: any) => {
+                  const statusOpts = [
+                    { id: 'permanent', name: 'Permanent' },
+                    { id: 'temporary', name: 'Temporary' },
+                  ];
+                  return (
+                    statusOpts.find(o => o.id === item.status)?.name ||
+                    item.status ||
+                    ''
+                  );
+                },
+              },
+              {
+                header: 'JOINING DATE',
+                cell: (item: any) =>
+                  item.joiningDate
+                    ? new Date(item.joiningDate).toLocaleDateString('en-IN')
+                    : '',
+              },
+            ]}
+            pagination={false}
+            onEdit={(item: any) => {
+              setEditingNonTeachingIndex(item.originalIndex);
+              setIsNonTeachingModalOpen(true);
+            }}
+            onRemove={(item: any) => removeNonTeaching(item.originalIndex)}
+          />
+          {formState.errors.nonTeachingStaff?.root?.message && (
+            <div className="p-error text-sm mt-2">
+              {formState.errors.nonTeachingStaff.root.message}
+            </div>
+          )}
+          <div className="mt-4">
+            <Button
+              label="Add Non-Teaching Staff"
+              icon="plus"
+              variant="outlined"
+              onClick={() => {
+                appendNonTeaching({
+                  name: '',
+                  designation: '',
+                  status: '',
+                  joiningDate: null,
+                });
+                setEditingNonTeachingIndex(nonTeachingFields.length);
+                setIsNonTeachingModalOpen(true);
+              }}
+            />
+          </div>
+        </div>
+
+        <Modal
+          header="Non-Teaching Staff Details"
+          visible={isNonTeachingModalOpen}
+          onHide={() => {
+            if (editingNonTeachingIndex !== null) {
+              const currentStaff =
+                nonTeachingStaffWatch?.[editingNonTeachingIndex];
+              if (!currentStaff?.name) {
+                removeNonTeaching(editingNonTeachingIndex);
+              }
+            }
+            setIsNonTeachingModalOpen(false);
+            setEditingNonTeachingIndex(null);
+          }}
+          size="large"
+        >
+          {editingNonTeachingIndex !== null && (
+            <div className="p-4">
+              <FormGrid columns={2}>
+                <TextBox
+                  label="Name"
+                  placeholder="Enter Name"
+                  {...register(
+                    `nonTeachingStaff.${editingNonTeachingIndex}.name`
+                  )}
+                  errorMessage={
+                    formState.errors.nonTeachingStaff?.[editingNonTeachingIndex]
+                      ?.name?.message as string
+                  }
+                  required
+                />
+                <TextBox
+                  label="Designation"
+                  placeholder="e.g. Lab Assistant, Clerk, Peon"
+                  {...register(
+                    `nonTeachingStaff.${editingNonTeachingIndex}.designation`
+                  )}
+                  errorMessage={
+                    formState.errors.nonTeachingStaff?.[editingNonTeachingIndex]
+                      ?.designation?.message as string
+                  }
+                />
+                <DropDownList
+                  label="Status"
+                  name={`nonTeachingStaff.${editingNonTeachingIndex}.status`}
+                  control={control}
+                  placeholder="Select Status"
+                  data={[
+                    { id: 'permanent', name: 'Permanent' },
+                    { id: 'temporary', name: 'Temporary' },
+                  ]}
+                  textField="name"
+                  valueField="id"
+                  errorMessage={
+                    formState.errors.nonTeachingStaff?.[editingNonTeachingIndex]
+                      ?.status?.message as string
+                  }
+                />
+                <DatePicker
+                  label="Joining Date"
+                  name={`nonTeachingStaff.${editingNonTeachingIndex}.joiningDate`}
+                  control={control}
+                  placeholder="Select Date"
+                  errorMessage={
+                    formState.errors.nonTeachingStaff?.[editingNonTeachingIndex]
+                      ?.joiningDate?.message as string
+                  }
+                />
+              </FormGrid>
+              <div className="mt-6 flex justify-end">
+                <Button
+                  label="Save"
+                  onClick={async () => {
+                    const currentStaff =
+                      nonTeachingStaffWatch?.[editingNonTeachingIndex];
+                    if (!currentStaff?.name) {
+                      if (trigger)
+                        await trigger(
+                          `nonTeachingStaff.${editingNonTeachingIndex}.name`
+                        );
+                      return;
+                    }
+                    if (trigger) {
+                      const isValid = await trigger(
+                        `nonTeachingStaff.${editingNonTeachingIndex}`
+                      );
+                      if (!isValid) return;
+                    }
+                    setIsNonTeachingModalOpen(false);
+                    setEditingNonTeachingIndex(null);
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        </Modal>
+      </FormCard>
+
+      <FormCard title="ADDITIONAL INSTITUTIONS RUN BY SOCIETY" icon="building">
         <div className="mb-4">
           <Grid
             data={instFields.map((field: any, index: number) => {
