@@ -7,8 +7,12 @@ import ProfileCertificationStep from '../components/ProfileCertificationStep';
 import ProfileDocumentUploadStep from '../components/ProfileDocumentUploadStep';
 import ProfileComplianceStep from '../components/ProfileComplianceStep';
 import ProfileEcosystemStep from '../components/ProfileEcosystemStep';
-import ProfileInfrastructureStep from '../components/ProfileInfrastructureStep';
+import ProfileFacilitiesStep from '../components/ProfileFacilitiesStep';
+import ProfileFeePaymentStep from '../components/ProfileFeePaymentStep';
+import ProfileInfraDetailsStep from '../components/ProfileInfraDetailsStep';
 import ProfileInstitutionalStep from '../components/ProfileInstitutionalStep';
+import ProfileLandBuildingStep from '../components/ProfileLandBuildingStep';
+import ProfileOthersStep from '../components/ProfileOthersStep';
 import ProfileCoursesStep from '../components/ProfileCoursesStep';
 
 export default function Create() {
@@ -25,6 +29,8 @@ export default function Create() {
     teachingStaffArray,
     additionalInstitutionsArray,
     labsArray,
+    hostelsArray,
+    nonTeachingStaffArray,
   } = useProfileDetailsForm();
 
   const onFormSubmit = handleSubmit(
@@ -69,8 +75,57 @@ export default function Create() {
       ),
     },
     {
-      label: 'Academics & Inst.',
+      label: 'Course Registration',
       icon: 'book',
+      content: (
+        <ProfileCoursesStep
+          register={register}
+          control={control}
+          formState={formState}
+          existingCoursesArray={existingCoursesArray}
+          trigger={trigger as any}
+        />
+      ),
+    },
+    {
+      label: 'Land & Building',
+      icon: 'map',
+      content: (
+        <ProfileLandBuildingStep
+          register={register}
+          control={control}
+          formState={formState}
+        />
+      ),
+    },
+    {
+      label: 'Facilities',
+      icon: 'building',
+      content: (
+        <ProfileFacilitiesStep
+          register={register}
+          control={control}
+          formState={formState}
+          labsArray={labsArray}
+          hostelsArray={hostelsArray}
+          trigger={trigger as any}
+        />
+      ),
+    },
+    {
+      label: 'Infrastructure',
+      icon: 'desktop',
+      content: (
+        <ProfileInfraDetailsStep
+          register={register}
+          control={control}
+          formState={formState}
+        />
+      ),
+    },
+    {
+      label: 'Teachers & Institutions',
+      icon: 'users',
       content: (
         <ProfileEcosystemStep
           register={register}
@@ -78,25 +133,13 @@ export default function Create() {
           formState={formState}
           teachingStaffArray={teachingStaffArray}
           additionalInstitutionsArray={additionalInstitutionsArray}
+          nonTeachingStaffArray={nonTeachingStaffArray}
           trigger={trigger as any}
         />
       ),
     },
     {
-      label: 'Infra & Facilities',
-      icon: 'map',
-      content: (
-        <ProfileInfrastructureStep
-          register={register}
-          control={control}
-          formState={formState}
-          labsArray={labsArray}
-          trigger={trigger as any}
-        />
-      ),
-    },
-    {
-      label: 'Compliance & Eq...',
+      label: 'Compliance',
       icon: 'check-circle',
       content: (
         <ProfileComplianceStep
@@ -107,15 +150,24 @@ export default function Create() {
       ),
     },
     {
-      label: 'Existing Courses',
-      icon: 'book',
+      label: 'Others',
+      icon: 'list',
       content: (
-        <ProfileCoursesStep
+        <ProfileOthersStep
           register={register}
           control={control}
           formState={formState}
-          existingCoursesArray={existingCoursesArray}
-          trigger={trigger as any}
+        />
+      ),
+    },
+    {
+      label: 'Course Fees & Payment',
+      icon: 'credit-card',
+      content: (
+        <ProfileFeePaymentStep
+          register={register}
+          control={control}
+          formState={formState}
         />
       ),
     },

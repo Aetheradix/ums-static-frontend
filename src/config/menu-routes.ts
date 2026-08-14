@@ -8367,6 +8367,14 @@ export const menuConfig: Menu.MenuItem[] = [
                     icon: 'payments',
                     colorScheme: 'orange',
                   },
+                  {
+                    label: 'Lab Types',
+                    slug: 'lab-type',
+                    description: 'Manage laboratory types for affiliation form',
+                    path: '/affiliation-management-system/affiliation-settings/lab-type',
+                    icon: 'science',
+                    colorScheme: 'teal',
+                  },
                 ],
               },
               {

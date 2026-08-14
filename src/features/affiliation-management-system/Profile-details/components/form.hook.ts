@@ -57,6 +57,21 @@ export interface LabDetail {
   labPhoto: any;
 }
 
+export interface HostelDetail {
+  hostelType: string;
+  hostelName: string;
+  capacity: string;
+  roomsCount: string;
+  wardenName: string;
+}
+
+export interface NonTeachingStaff {
+  name: string;
+  designation: string;
+  status: string | number;
+  joiningDate: Date | null;
+}
+
 export interface ProfileDetailsFormData {
   // Step 1: General Info
   affiliationType: number | string;
@@ -99,7 +114,16 @@ export interface ProfileDetailsFormData {
   teachingStaff: TeachingStaff[];
   additionalInstitutions: AdditionalInstitution[];
 
-  // Step 3: Infra & Facilities
+  // Step 3: Land & Building
+  landNormsFulfilled: string;
+  landType: string;
+  landRegistryDocument: any;
+  landRentAgreement: any;
+  landLeaseDocument: any;
+  landTotalArea: string;
+  builtUpArea: string;
+  buildingPhotos: any[];
+
   totalArea: string;
   isRentedBuilding: string;
   rentAgreementDocument: any;
@@ -111,7 +135,8 @@ export interface ProfileDetailsFormData {
   latitude: string;
   longitude: string;
 
-  // Additional Step 3
+  // Step 4: Facilities
+  classroomCount: string;
   requiredClassrooms: string;
   accessibleToPublic: string;
   classroomDetails: string;
@@ -156,6 +181,37 @@ export interface ProfileDetailsFormData {
   boysHostelsCount: string;
   girlsHostelsCount: string;
   totalHostelCapacity: string;
+  hostels: HostelDetail[];
+
+  // Step 5: Infrastructure (Furniture)
+  tablesCount: string;
+  chairsCount: string;
+  studentDesksCount: string;
+  studentBenchesCount: string;
+  boardAvailable: string;
+  boardQty: string;
+  almirahsCount: string;
+
+  // Step 6: Teachers & Institutions
+  nonTeachingStaff: NonTeachingStaff[];
+
+  // Step 8: Others
+  parkingPhoto: any;
+  drinkingWaterAvailable: string;
+  waterPurifierAvailable: string;
+  waterPurifierPhoto: any;
+  cctvAvailable: string;
+  transportAvailable: string;
+  transportCount: string;
+  transportPhotos: any[];
+  safetyGuardsAvailable: string;
+  fireExtinguishers: string;
+  fireAlarmSystem: string;
+  rampAvailable: string;
+  liftAvailable: string;
+  liftPhoto: any;
+  accessibleToilet: string;
+  accessibleClassroom: string;
 
   // Step 4: Compliance
   sourceOfFunding: string;
@@ -290,6 +346,23 @@ const labSchema = Joi.object({
   labPhoto: Joi.any().allow(null),
 });
 
+const hostelSchema = Joi.object({
+  hostelType: Joi.string()
+    .required()
+    .messages({ 'string.empty': 'Hostel Type required' }),
+  hostelName: Joi.string().allow('', null),
+  capacity: Joi.string().allow('', null),
+  roomsCount: Joi.string().allow('', null),
+  wardenName: Joi.string().allow('', null),
+});
+
+const nonTeachingStaffSchema = Joi.object({
+  name: Joi.string().required().messages({ 'string.empty': 'Name required' }),
+  designation: Joi.string().allow('', null),
+  status: Joi.any().allow('', null),
+  joiningDate: Joi.date().allow(null),
+});
+
 const schema = validation.create<ProfileDetailsFormData>(o => ({
   affiliationType: o
     .any()
@@ -358,6 +431,15 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
   teachingStaff: Joi.array().items(teachingStaffSchema),
   additionalInstitutions: Joi.array().items(additionalInstitutionSchema),
 
+  landNormsFulfilled: o.string().allow('', null),
+  landType: o.string().allow('', null),
+  landRegistryDocument: o.any().allow(null),
+  landRentAgreement: o.any().allow(null),
+  landLeaseDocument: o.any().allow(null),
+  landTotalArea: o.string().allow('', null),
+  builtUpArea: o.string().allow('', null),
+  buildingPhotos: o.any().allow(null),
+
   totalArea: o.string().allow('', null),
   isRentedBuilding: o.string().allow('', null),
   rentAgreementDocument: o.any().allow(null),
@@ -369,6 +451,7 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
   latitude: o.string().allow('', null),
   longitude: o.string().allow('', null),
 
+  classroomCount: o.string().allow('', null),
   requiredClassrooms: o.string().allow('', null),
   accessibleToPublic: o.string().allow('', null),
   classroomDetails: o.string().allow('', null),
@@ -413,6 +496,34 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
   boysHostelsCount: o.string().allow('', null),
   girlsHostelsCount: o.string().allow('', null),
   totalHostelCapacity: o.string().allow('', null),
+  hostels: Joi.array().items(hostelSchema),
+
+  tablesCount: o.string().allow('', null),
+  chairsCount: o.string().allow('', null),
+  studentDesksCount: o.string().allow('', null),
+  studentBenchesCount: o.string().allow('', null),
+  boardAvailable: o.string().allow('', null),
+  boardQty: o.string().allow('', null),
+  almirahsCount: o.string().allow('', null),
+
+  nonTeachingStaff: Joi.array().items(nonTeachingStaffSchema),
+
+  parkingPhoto: o.any().allow(null),
+  drinkingWaterAvailable: o.string().allow('', null),
+  waterPurifierAvailable: o.string().allow('', null),
+  waterPurifierPhoto: o.any().allow(null),
+  cctvAvailable: o.string().allow('', null),
+  transportAvailable: o.string().allow('', null),
+  transportCount: o.string().allow('', null),
+  transportPhotos: o.any().allow(null),
+  safetyGuardsAvailable: o.string().allow('', null),
+  fireExtinguishers: o.string().allow('', null),
+  fireAlarmSystem: o.string().allow('', null),
+  rampAvailable: o.string().allow('', null),
+  liftAvailable: o.string().allow('', null),
+  liftPhoto: o.any().allow(null),
+  accessibleToilet: o.string().allow('', null),
+  accessibleClassroom: o.string().allow('', null),
 
   sourceOfFunding: o.string().allow('', null),
   annualProjectedIncome: o.string().allow('', null),
@@ -533,6 +644,15 @@ export function useProfileDetailsForm() {
       existingCourses: [],
       teachingStaff: [],
       additionalInstitutions: [],
+      landNormsFulfilled: '',
+      landType: '',
+      landRegistryDocument: null,
+      landRentAgreement: null,
+      landLeaseDocument: null,
+      landTotalArea: '',
+      builtUpArea: '',
+      buildingPhotos: [],
+
       totalArea: '',
       isRentedBuilding: '',
       rentAgreementDocument: null,
@@ -544,6 +664,7 @@ export function useProfileDetailsForm() {
       latitude: '',
       longitude: '',
 
+      classroomCount: '',
       requiredClassrooms: '',
       accessibleToPublic: '',
       classroomDetails: '',
@@ -584,6 +705,31 @@ export function useProfileDetailsForm() {
       boysHostelsCount: '',
       girlsHostelsCount: '',
       totalHostelCapacity: '',
+      hostels: [],
+      tablesCount: '',
+      chairsCount: '',
+      studentDesksCount: '',
+      studentBenchesCount: '',
+      boardAvailable: '',
+      boardQty: '',
+      almirahsCount: '',
+      nonTeachingStaff: [],
+      parkingPhoto: null,
+      drinkingWaterAvailable: '',
+      waterPurifierAvailable: '',
+      waterPurifierPhoto: null,
+      cctvAvailable: '',
+      transportAvailable: '',
+      transportCount: '',
+      transportPhotos: [],
+      safetyGuardsAvailable: '',
+      fireExtinguishers: '',
+      fireAlarmSystem: '',
+      rampAvailable: '',
+      liftAvailable: '',
+      liftPhoto: null,
+      accessibleToilet: '',
+      accessibleClassroom: '',
       sourceOfFunding: '',
       annualProjectedIncome: '',
       regularBooksMaintained: '',
@@ -656,6 +802,11 @@ export function useProfileDetailsForm() {
     name: 'additionalInstitutions',
   });
   const labsArray = useFieldArray({ control, name: 'labs' });
+  const hostelsArray = useFieldArray({ control, name: 'hostels' });
+  const nonTeachingStaffArray = useFieldArray({
+    control,
+    name: 'nonTeachingStaff',
+  });
 
   return {
     register,
@@ -670,5 +821,7 @@ export function useProfileDetailsForm() {
     teachingStaffArray,
     additionalInstitutionsArray,
     labsArray,
+    hostelsArray,
+    nonTeachingStaffArray,
   };
 }
