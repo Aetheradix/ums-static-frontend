@@ -8,6 +8,8 @@ import CollegeRenewal from './college-renewal';
 import CollegeRenewalAdmin from './college-renewal-admin';
 import ApplicationStatus from './application-status';
 import ProgrammeFee from './settings/programme-fee';
+import ApprovalAuthority from './settings/approval-authority';
+import ApplicationFee from './settings/application-fee';
 
 import ApprovalStatusReport from './approval-status-report';
 import DraftRegistrationRequest from './draft-registration-request';
@@ -87,6 +89,8 @@ export default function AffiliationManagementSystem() {
         <Route path="available-facility/*" element={<AvailableFacility />} />
         <Route path="establishment-year/*" element={<EstablishmentYear />} />
         <Route path="programme-fee/*" element={<ProgrammeFee />} />
+        <Route path="approval-authority/*" element={<ApprovalAuthority />} />
+        <Route path="application-fee/*" element={<ApplicationFee />} />
       </Route>
     </Routes>
   );

@@ -26,6 +26,11 @@ declare namespace AffiliationManagementSystem {
     pinCode?: string;
     captcha?: string;
     declaration?: boolean;
+    educationTypeId?: number | null;
+    authorityNocFile?: File | null;
+    applicationFeePaid?: boolean;
+    feeTransactionRef?: string;
+    feePaidDate?: string;
   }
 
   export interface AffiliationOtherDetailsForm {

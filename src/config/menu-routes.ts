@@ -8350,6 +8350,23 @@ export const menuConfig: Menu.MenuItem[] = [
                     feature: '@master/Affiliation/ProgrammeFee',
                     action: 'read',
                   },
+                  {
+                    label: 'Approval Authority',
+                    slug: 'approval-authority',
+                    description:
+                      'Map education types to approval authorities and document labels',
+                    path: '/affiliation-management-system/affiliation-settings/approval-authority',
+                    icon: 'verified',
+                    colorScheme: 'blue',
+                  },
+                  {
+                    label: 'Application Fees',
+                    slug: 'application-fee',
+                    description: 'Manage application fee types and amounts',
+                    path: '/affiliation-management-system/affiliation-settings/application-fee',
+                    icon: 'payments',
+                    colorScheme: 'orange',
+                  },
                 ],
               },
               {
