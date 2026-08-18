@@ -207,7 +207,9 @@ export interface ProfileDetailsFormData {
   safetyGuardsAvailable: string;
   fireExtinguishers: string;
   fireAlarmSystem: string;
+  fireNocDocument: any;
   rampAvailable: string;
+  rampPhoto: any;
   liftAvailable: string;
   liftPhoto: any;
   accessibleToilet: string;
@@ -519,7 +521,9 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
   safetyGuardsAvailable: o.string().allow('', null),
   fireExtinguishers: o.string().allow('', null),
   fireAlarmSystem: o.string().allow('', null),
+  fireNocDocument: o.any().allow(null),
   rampAvailable: o.string().allow('', null),
+  rampPhoto: o.any().allow(null),
   liftAvailable: o.string().allow('', null),
   liftPhoto: o.any().allow(null),
   accessibleToilet: o.string().allow('', null),
@@ -622,18 +626,18 @@ export function useProfileDetailsForm() {
       pinCode: saved?.pinCode || '452001',
       collegeAddress:
         saved?.collegeAddress || '123 Education Lane, Knowledge Park, Phase 1',
-      societyName: 'Global Education Society',
+      societyName: saved?.societyName || 'Global Education Society',
       yearOfFoundationCollege: '2010',
       yearOfFoundationSociety: '2005',
       corporateOfficeAddress:
         '123, Tech Park Avenue, Scheme No. 78, Indore, MP 452010',
       anyOtherAddress: 'N/A',
-      ownershipEntityName: '',
-      chairmanName: '',
+      ownershipEntityName: saved?.societyName || '',
+      chairmanName: saved?.secretaryName || '',
       chairmanFathersName: '',
       chairmanAge: '',
       chairmanQualification: '',
-      chairmanMobileNumber: '',
+      chairmanMobileNumber: saved?.secretaryMobileNo || '',
       chairmanOccupationAddress: '',
       executiveName: '',
       executiveAge: '',
@@ -725,7 +729,9 @@ export function useProfileDetailsForm() {
       safetyGuardsAvailable: '',
       fireExtinguishers: '',
       fireAlarmSystem: '',
+      fireNocDocument: null,
       rampAvailable: '',
+      rampPhoto: null,
       liftAvailable: '',
       liftPhoto: null,
       accessibleToilet: '',

@@ -40,9 +40,16 @@ export default function Create() {
         );
         setShowDraftDialog(true);
       } else {
-        const authority = APPROVAL_AUTHORITY_DATA.find(
-          item => item.approvalAuthorityId === data.educationTypeId
-        );
+        const authorityDocs: any[] =
+          data.authorityNocDocs && data.authorityNocDocs.length > 0
+            ? data.authorityNocDocs
+            : data.educationTypeId
+              ? [
+                  APPROVAL_AUTHORITY_DATA.find(
+                    item => item.approvalAuthorityId === data.educationTypeId
+                  ),
+                ].filter(Boolean)
+              : [];
         saveCollegeRegistration({
           collegeName: data.collegeName,
           collegeType:
@@ -59,8 +66,16 @@ export default function Create() {
           blockTehsil: data.blockTehsil || '',
           pinCode: data.pinCode || '',
           collegeAddress: data.collegeAddress,
-          educationType: authority?.educationType,
-          approvalAuthority: authority?.authorityName,
+          societyName: data.societyName,
+          secretaryName: data.secretaryName,
+          secretaryMobileNo: data.secretaryMobileNo,
+          secretaryEmail: data.secretaryEmail,
+          educationType: authorityDocs
+            .map((doc: any) => doc.educationType)
+            .join(', '),
+          approvalAuthority: authorityDocs
+            .map((doc: any) => doc.authorityName)
+            .join(' / '),
           applicationFeePaid: data.applicationFeePaid,
           feeTransactionRef: data.feeTransactionRef,
           feePaidDate: data.feePaidDate,

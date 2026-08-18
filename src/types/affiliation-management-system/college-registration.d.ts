@@ -28,6 +28,15 @@ declare namespace AffiliationManagementSystem {
     declaration?: boolean;
     educationTypeId?: number | null;
     authorityNocFile?: File | null;
+    authorityNocDocs?: {
+      educationTypeId: number;
+      educationType: string;
+      authorityName: string;
+      fileName: string;
+      file?: File | null;
+    }[];
+    secretaryMobileNo?: string;
+    secretaryEmail?: string;
     applicationFeePaid?: boolean;
     feeTransactionRef?: string;
     feePaidDate?: string;

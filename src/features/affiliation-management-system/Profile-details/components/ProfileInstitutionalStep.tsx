@@ -100,6 +100,11 @@ export default function ProfileInstitutionalStep({
             {...register('collegeEmail')}
             readOnly
           />
+          <TextBox
+            label="Name of Society"
+            {...register('societyName')}
+            readOnly
+          />
 
           <TextBox
             label="Principal Name"
