@@ -54,10 +54,40 @@ const schema =
         .number()
         .required()
         .messages({ 'number.base': 'Required' }),
-      principalDirectorName: o.string().required().max(100),
-      principalMobileNo: o
+      societyName: o
         .string()
         .required()
+        .max(200)
+        .messages({ 'string.empty': 'Society Name is required' }),
+      secretaryName: o
+        .string()
+        .required()
+        .max(100)
+        .messages({ 'string.empty': 'Secretary Name is required' }),
+      secretaryMobileNo: o
+        .string()
+        .required()
+        .max(10)
+        .pattern(/^[0-9]{10}$/)
+        .messages({
+          'string.empty': 'Secretary Mobile Number is required',
+          [keys.string.pattern]: 'Secretary mobile number must be 10 digits',
+        }),
+      secretaryEmail: o
+        .string()
+        .required()
+        .max(255)
+        .email({ tlds: { allow: false } })
+        .messages({
+          'string.empty': 'Secretary Email ID is required',
+          'string.email': 'Please enter a valid email address',
+        }),
+
+      principalDirectorName: o.string().optional().allow('', null).max(100),
+      principalMobileNo: o
+        .string()
+        .optional()
+        .allow('', null)
         .max(10)
         .pattern(/^[0-9]{10}$/)
         .messages({
@@ -65,7 +95,8 @@ const schema =
         }),
       principalEmail: o
         .string()
-        .required()
+        .optional()
+        .allow('', null)
         .max(255)
         .email({ tlds: { allow: false } })
         .messages({
@@ -109,12 +140,12 @@ const schema =
       affidavitFile: o.any().optional().allow(null),
       regularAuthorityFile: o.any().optional().allow(null),
 
-      educationTypeId: o
-        .number()
-        .required()
-        .messages({ 'number.base': 'Education Type is required' }),
-      authorityNocFile: o.any().required().messages({
-        'any.required': 'Please upload the approval authority document',
+      educationTypeId: o.number().optional().allow(null),
+      authorityNocFile: o.any().optional().allow(null),
+      authorityNocDocs: o.array().min(1).required().messages({
+        'array.min': 'Please add at least one approval authority NOC document',
+        'any.required':
+          'Please add at least one approval authority NOC document',
       }),
       applicationFeePaid: o.boolean().optional(),
       feeTransactionRef: o.string().optional().allow('', null),
@@ -129,6 +160,7 @@ export function useCollegeApplicationForm() {
       mode: 'onChange',
       defaultValues: {
         stateId: 1,
+        authorityNocDocs: [],
       },
     });
 

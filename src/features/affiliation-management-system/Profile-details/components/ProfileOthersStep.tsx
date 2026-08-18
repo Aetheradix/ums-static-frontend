@@ -42,6 +42,7 @@ export default function ProfileOthersStep({
     name: 'transportAvailable',
   });
   const isLiftAvailable = useWatch({ control, name: 'liftAvailable' });
+  const isRampAvailable = useWatch({ control, name: 'rampAvailable' });
 
   return (
     <>
@@ -206,7 +207,7 @@ export default function ProfileOthersStep({
             />
           )}
           <DropDownList
-            label="Any Objection to Making Submitted Info Public?"
+            label="Does the society's office bearers or college management object to the submitted information being made public for transparency?"
             name="objectionToInfoPublic"
             control={control}
             placeholder="Select"
@@ -286,6 +287,17 @@ export default function ProfileOthersStep({
               errorMessage={formState.errors.fireAlarmSystem?.message as string}
             />
           </FormGrid>
+          <div className="mt-4">
+            <FileUpload
+              label="Fire NOC Document"
+              name="fireNocDocument"
+              control={control}
+              mode="file"
+              accept=".pdf,image/*"
+              uploadNote="Upload the Fire NOC issued by the fire department"
+              errorMessage={formState.errors.fireNocDocument?.message as string}
+            />
+          </div>
         </div>
 
         <div className="mt-6">
@@ -378,6 +390,18 @@ export default function ProfileOthersStep({
             }
           />
         </FormGrid>
+        {isRampAvailable === 'yes' && (
+          <div className="mt-4">
+            <FileUpload
+              label="Ramp Photo"
+              name="rampPhoto"
+              control={control}
+              mode="photo"
+              accept="image/*"
+              errorMessage={formState.errors.rampPhoto?.message as string}
+            />
+          </div>
+        )}
         {isLiftAvailable === 'yes' && (
           <div className="mt-4">
             <FileUpload

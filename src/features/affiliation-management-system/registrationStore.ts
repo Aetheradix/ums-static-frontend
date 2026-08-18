@@ -16,6 +16,10 @@ export interface SavedCollegeRegistration {
   blockTehsil: string;
   pinCode: string;
   collegeAddress: string;
+  societyName?: string;
+  secretaryName?: string;
+  secretaryMobileNo?: string;
+  secretaryEmail?: string;
   educationType?: string;
   approvalAuthority?: string;
   applicationFeePaid?: boolean;

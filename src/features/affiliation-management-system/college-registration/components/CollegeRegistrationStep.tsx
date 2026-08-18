@@ -83,10 +83,36 @@ export default function CollegeRegistrationStep({
   const isPaid = paymentInfo !== null;
 
   const educationTypeId = useWatch({ control, name: 'educationTypeId' });
+  const authorityNocFile = useWatch({ control, name: 'authorityNocFile' });
+  const authorityNocDocs =
+    useWatch({ control, name: 'authorityNocDocs' }) || [];
 
   const selectedAuthority = APPROVAL_AUTHORITY_DATA.find(
     item => item.approvalAuthorityId === educationTypeId
   );
+
+  const handleAddAuthorityDoc = () => {
+    if (!selectedAuthority || !authorityNocFile) return;
+    setValue('authorityNocDocs', [
+      ...authorityNocDocs,
+      {
+        educationTypeId: selectedAuthority.approvalAuthorityId,
+        educationType: selectedAuthority.educationType,
+        authorityName: selectedAuthority.authorityName,
+        fileName: (authorityNocFile as File).name || 'Approval-Document.pdf',
+        file: authorityNocFile as File,
+      },
+    ]);
+    setValue('educationTypeId', null);
+    setValue('authorityNocFile', null);
+  };
+
+  const handleRemoveAuthorityDoc = (index: number) => {
+    setValue(
+      'authorityNocDocs',
+      authorityNocDocs.filter((_: any, i: number) => i !== index)
+    );
+  };
 
   const regenerateCaptcha = () => {
     const chars =
@@ -203,8 +229,48 @@ export default function CollegeRegistrationStep({
       </FormCard>
 
       <FormCard
+        title="Society Details"
+        subtitle="Details of the society / trust running the college."
+        icon="users"
+      >
+        <FormGrid columns={2}>
+          <TextBox
+            label="Society Name"
+            placeholder="Enter society name"
+            {...register('societyName')}
+            maxLength={200}
+            required
+          />
+
+          <TextBox
+            label="Secretary Name"
+            placeholder="Enter secretary name"
+            {...register('secretaryName')}
+            maxLength={100}
+            required
+          />
+
+          <TextBox
+            label="Secretary Mobile Number"
+            placeholder="Enter 10-digit mobile number"
+            {...register('secretaryMobileNo')}
+            maxLength={10}
+            required
+          />
+
+          <TextBox
+            label="Secretary Email ID"
+            placeholder="Enter secretary email"
+            {...register('secretaryEmail')}
+            maxLength={255}
+            required
+          />
+        </FormGrid>
+      </FormCard>
+
+      <FormCard
         title="Principal Details"
-        subtitle="Contact details of the principal / director."
+        subtitle="Contact details of the principal / director (optional)."
         icon="user"
       >
         <FormGrid columns={3}>
@@ -213,7 +279,6 @@ export default function CollegeRegistrationStep({
             placeholder="Enter principal director name"
             {...register('principalDirectorName')}
             maxLength={100}
-            required
           />
 
           <TextBox
@@ -221,7 +286,6 @@ export default function CollegeRegistrationStep({
             placeholder="Enter 10-digit mobile number"
             {...register('principalMobileNo')}
             maxLength={10}
-            required
           />
 
           <TextBox
@@ -229,14 +293,13 @@ export default function CollegeRegistrationStep({
             placeholder="Enter principal email"
             {...register('principalEmail')}
             maxLength={255}
-            required
           />
         </FormGrid>
       </FormCard>
 
       <FormCard
         title="Approval / Regulatory Authority"
-        subtitle="Education type of the college and the approval document of its regulatory authority."
+        subtitle="A college running multiple types of courses can add an approval NOC document for each education type."
         icon="check-circle"
       >
         <FormGrid columns={2}>
@@ -248,7 +311,7 @@ export default function CollegeRegistrationStep({
             textField="name"
             valueField="id"
             {...register('educationTypeId')}
-            required
+            required={authorityNocDocs.length === 0}
           />
           <FileUpload
             label={
@@ -265,9 +328,68 @@ export default function CollegeRegistrationStep({
                 ? `Approval authority: ${selectedAuthority.authorityName}`
                 : 'Select an education type to see the required document'
             }
-            required
+            required={authorityNocDocs.length === 0}
           />
         </FormGrid>
+        <div className="mt-4 flex justify-end">
+          <Button
+            label="Add Document"
+            icon="plus"
+            variant="outlined"
+            disabled={!selectedAuthority || !authorityNocFile}
+            onClick={handleAddAuthorityDoc}
+          />
+        </div>
+
+        {authorityNocDocs.length > 0 && (
+          <div className="mt-4">
+            <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
+              Added Approval Documents
+            </h4>
+            <Grid
+              data={authorityNocDocs.map((doc: any, index: number) => ({
+                ...doc,
+                originalIndex: index,
+              }))}
+              columns={[
+                {
+                  header: 'EDUCATION TYPE',
+                  cell: (item: any) => item.educationType,
+                },
+                {
+                  header: 'APPROVAL AUTHORITY',
+                  cell: (item: any) => item.authorityName,
+                },
+                {
+                  header: 'NOC DOCUMENT',
+                  cell: (item: any) => (
+                    <span className="inline-flex items-center gap-1.5">
+                      <i className="pi pi-file-pdf text-red-500" />
+                      {item.fileName}
+                    </span>
+                  ),
+                },
+              ]}
+              pagination={false}
+              onRemove={(item: any) =>
+                handleRemoveAuthorityDoc(item.originalIndex)
+              }
+            />
+          </div>
+        )}
+        <Controller
+          control={control}
+          name="authorityNocDocs"
+          render={({ fieldState }) =>
+            fieldState.error ? (
+              <div className="p-error text-sm mt-2">
+                {fieldState.error.message}
+              </div>
+            ) : (
+              <></>
+            )
+          }
+        />
       </FormCard>
 
       <FormCard
