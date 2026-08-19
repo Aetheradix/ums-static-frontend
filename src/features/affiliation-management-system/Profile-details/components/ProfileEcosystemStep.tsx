@@ -2,12 +2,7 @@ import { useState } from 'react';
 import { useWatch } from 'react-hook-form';
 import type { Control, FormState, Path } from 'react-hook-form';
 import { Button } from 'shared/components/buttons';
-import {
-  DatePicker,
-  DropDownList,
-  FileUpload,
-  TextBox,
-} from 'shared/components/forms';
+import { DatePicker, DropDownList, TextBox } from 'shared/components/forms';
 import { Grid } from 'shared/components/grid';
 import { Modal } from 'shared/components/popups';
 import { FormCard, FormGrid } from 'shared/new-components';
@@ -21,7 +16,6 @@ interface ProfileEcosystemStepProps {
   control: Control<ProfileDetailsFormData>;
   formState: FormState<ProfileDetailsFormData>;
   teachingStaffArray: any;
-  additionalInstitutionsArray: any;
   nonTeachingStaffArray: any;
   trigger?: any;
 }
@@ -105,7 +99,6 @@ export default function ProfileEcosystemStep({
   control,
   formState,
   teachingStaffArray,
-  additionalInstitutionsArray,
   nonTeachingStaffArray,
   trigger,
 }: ProfileEcosystemStepProps) {
@@ -114,11 +107,6 @@ export default function ProfileEcosystemStep({
     append: appendStaff,
     remove: removeStaff,
   } = teachingStaffArray;
-  const {
-    fields: instFields,
-    append: appendInst,
-    remove: removeInst,
-  } = additionalInstitutionsArray;
   const {
     fields: nonTeachingFields,
     append: appendNonTeaching,
@@ -130,11 +118,6 @@ export default function ProfileEcosystemStep({
     name: 'teachingStaff',
   });
 
-  const additionalInstitutionsWatch = useWatch({
-    control,
-    name: 'additionalInstitutions',
-  });
-
   const nonTeachingStaffWatch = useWatch({
     control,
     name: 'nonTeachingStaff',
@@ -144,9 +127,6 @@ export default function ProfileEcosystemStep({
   const [editingStaffIndex, setEditingStaffIndex] = useState<number | null>(
     null
   );
-
-  const [isInstModalOpen, setIsInstModalOpen] = useState(false);
-  const [editingInstIndex, setEditingInstIndex] = useState<number | null>(null);
 
   const [isNonTeachingModalOpen, setIsNonTeachingModalOpen] = useState(false);
   const [editingNonTeachingIndex, setEditingNonTeachingIndex] = useState<
@@ -215,6 +195,15 @@ export default function ProfileEcosystemStep({
                 header: 'EXPERIENCE',
                 cell: (item: any) => item.experience || '',
               },
+              {
+                header: 'CODE 28',
+                cell: (item: any) =>
+                  item.collegeCode28 === 'yes'
+                    ? 'Yes'
+                    : item.collegeCode28 === 'no'
+                      ? 'No'
+                      : '',
+              },
             ]}
             pagination={false}
             onEdit={(item: any) => {
@@ -244,6 +233,7 @@ export default function ProfileEcosystemStep({
                   dateOfBirth: null,
                   course: '',
                   subject: '',
+                  collegeCode28: '',
                 });
                 setEditingStaffIndex(staffFields.length);
                 setIsStaffModalOpen(true);
@@ -399,6 +389,22 @@ export default function ProfileEcosystemStep({
                       ?.message as string
                   }
                   disabled={!teachingStaffWatch?.[editingStaffIndex]?.course}
+                />
+                <DropDownList
+                  label="College Code 28?"
+                  name={`teachingStaff.${editingStaffIndex}.collegeCode28`}
+                  control={control}
+                  placeholder="Select"
+                  data={[
+                    { id: 'yes', name: 'Yes' },
+                    { id: 'no', name: 'No' },
+                  ]}
+                  textField="name"
+                  valueField="id"
+                  errorMessage={
+                    formState.errors.teachingStaff?.[editingStaffIndex]
+                      ?.collegeCode28?.message as string
+                  }
                 />
               </FormGrid>
               <div className="mt-6 flex justify-end">
@@ -586,274 +592,6 @@ export default function ProfileEcosystemStep({
                     }
                     setIsNonTeachingModalOpen(false);
                     setEditingNonTeachingIndex(null);
-                  }}
-                />
-              </div>
-            </div>
-          )}
-        </Modal>
-      </FormCard>
-
-      <FormCard title="ADDITIONAL INSTITUTIONS RUN BY SOCIETY" icon="building">
-        <div className="mb-4">
-          <Grid
-            data={instFields.map((field: any, index: number) => {
-              const inst = additionalInstitutionsWatch?.[index] || field;
-              return { ...inst, originalIndex: index };
-            })}
-            columns={[
-              {
-                header: 'INSTITUTION NAME',
-                cell: (item: any) => item.institutionName || '',
-              },
-              { header: 'ADDRESS', cell: (item: any) => item.address || '' },
-              {
-                header: 'COURSE',
-                cell: (item: any) =>
-                  courseOptions.find(o => o.id === item.course)?.name ||
-                  item.course ||
-                  '',
-              },
-              { header: 'SEATS', cell: (item: any) => item.seats || '' },
-              { header: 'CLASS', cell: (item: any) => item.class || '' },
-              { header: 'YEAR', cell: (item: any) => item.year || '' },
-              {
-                header: 'TYPE',
-                cell: (item: any) => {
-                  const typeOpts = [
-                    { id: 'permanent', name: 'Permanent' },
-                    { id: 'temporary', name: 'Temporary' },
-                  ];
-                  return (
-                    typeOpts.find(o => o.id === item.type)?.name ||
-                    item.type ||
-                    ''
-                  );
-                },
-              },
-              {
-                header: 'CONDITIONS',
-                cell: (item: any) => item.conditions || '',
-              },
-              {
-                header: 'STATUS OF COMPLIANCE',
-                cell: (item: any) => {
-                  const statusOpts = [
-                    { id: 'pending', name: 'Pending' },
-                    { id: 'completed', name: 'Completed' },
-                  ];
-                  return (
-                    statusOpts.find(o => o.id === item.statusOfCompliance)
-                      ?.name ||
-                    item.statusOfCompliance ||
-                    ''
-                  );
-                },
-              },
-            ]}
-            pagination={false}
-            onEdit={(item: any) => {
-              setEditingInstIndex(item.originalIndex);
-              setIsInstModalOpen(true);
-            }}
-            onRemove={(item: any) => removeInst(item.originalIndex)}
-          />
-          {formState.errors.additionalInstitutions?.root?.message && (
-            <div className="p-error text-sm mt-2">
-              {formState.errors.additionalInstitutions.root.message}
-            </div>
-          )}
-          <div className="mt-4">
-            <Button
-              label="Add Institution"
-              icon="plus"
-              variant="outlined"
-              onClick={() => {
-                appendInst({
-                  institutionName: '',
-                  address: '',
-                  course: '',
-                  seats: '',
-                  class: '',
-                  year: '',
-                  type: '',
-                  conditions: '',
-                  statusOfCompliance: '',
-                  institutionPhoto: null,
-                });
-                setEditingInstIndex(instFields.length);
-                setIsInstModalOpen(true);
-              }}
-            />
-          </div>
-        </div>
-
-        <Modal
-          header="Additional Institution Details"
-          visible={isInstModalOpen}
-          onHide={() => {
-            if (editingInstIndex !== null) {
-              const currentInst =
-                additionalInstitutionsWatch?.[editingInstIndex];
-              if (!currentInst?.institutionName) {
-                removeInst(editingInstIndex);
-              }
-            }
-            setIsInstModalOpen(false);
-            setEditingInstIndex(null);
-          }}
-          size="large"
-        >
-          {editingInstIndex !== null && (
-            <div className="p-4">
-              <FormGrid columns={4}>
-                <TextBox
-                  label="Institution Name"
-                  placeholder="Institution Name"
-                  {...register(
-                    `additionalInstitutions.${editingInstIndex}.institutionName`
-                  )}
-                  errorMessage={
-                    formState.errors.additionalInstitutions?.[editingInstIndex]
-                      ?.institutionName?.message as string
-                  }
-                  required
-                />
-                <TextBox
-                  label="Address"
-                  placeholder="Address"
-                  {...register(
-                    `additionalInstitutions.${editingInstIndex}.address`
-                  )}
-                  errorMessage={
-                    formState.errors.additionalInstitutions?.[editingInstIndex]
-                      ?.address?.message as string
-                  }
-                />
-                <DropDownList
-                  label="Course"
-                  name={`additionalInstitutions.${editingInstIndex}.course`}
-                  control={control}
-                  placeholder="Select Course"
-                  data={courseOptions}
-                  textField="name"
-                  valueField="id"
-                  errorMessage={
-                    formState.errors.additionalInstitutions?.[editingInstIndex]
-                      ?.course?.message as string
-                  }
-                />
-                <TextBox
-                  label="Seats"
-                  placeholder="Seats"
-                  {...register(
-                    `additionalInstitutions.${editingInstIndex}.seats`
-                  )}
-                  errorMessage={
-                    formState.errors.additionalInstitutions?.[editingInstIndex]
-                      ?.seats?.message as string
-                  }
-                />
-                <TextBox
-                  label="Class"
-                  placeholder="Class"
-                  {...register(
-                    `additionalInstitutions.${editingInstIndex}.class`
-                  )}
-                  errorMessage={
-                    formState.errors.additionalInstitutions?.[editingInstIndex]
-                      ?.class?.message as string
-                  }
-                />
-                <TextBox
-                  label="Year"
-                  placeholder="YYYY"
-                  {...register(
-                    `additionalInstitutions.${editingInstIndex}.year`
-                  )}
-                  errorMessage={
-                    formState.errors.additionalInstitutions?.[editingInstIndex]
-                      ?.year?.message as string
-                  }
-                />
-                <DropDownList
-                  label="Type"
-                  name={`additionalInstitutions.${editingInstIndex}.type`}
-                  control={control}
-                  placeholder="Select Type"
-                  data={[
-                    { id: 1, name: 'Permanent' },
-                    { id: 2, name: 'Temporary' },
-                  ]}
-                  textField="name"
-                  valueField="id"
-                  errorMessage={
-                    formState.errors.additionalInstitutions?.[editingInstIndex]
-                      ?.type?.message as string
-                  }
-                />
-                <TextBox
-                  label="Conditions (If Temporary)"
-                  placeholder="Conditions"
-                  {...register(
-                    `additionalInstitutions.${editingInstIndex}.conditions`
-                  )}
-                  errorMessage={
-                    formState.errors.additionalInstitutions?.[editingInstIndex]
-                      ?.conditions?.message as string
-                  }
-                />
-                <DropDownList
-                  label="Status of Compliance"
-                  name={`additionalInstitutions.${editingInstIndex}.statusOfCompliance`}
-                  control={control}
-                  placeholder="Select Status"
-                  data={[
-                    { id: 'pending', name: 'Pending' },
-                    { id: 'completed', name: 'Completed' },
-                  ]}
-                  textField="name"
-                  valueField="id"
-                  errorMessage={
-                    formState.errors.additionalInstitutions?.[editingInstIndex]
-                      ?.statusOfCompliance?.message as string
-                  }
-                />
-              </FormGrid>
-              <div className="mt-4">
-                <FileUpload
-                  label="Institution Photograph"
-                  name={`additionalInstitutions.${editingInstIndex}.institutionPhoto`}
-                  control={control}
-                  mode="photo"
-                  accept="image/*"
-                  errorMessage={
-                    formState.errors.additionalInstitutions?.[editingInstIndex]
-                      ?.institutionPhoto?.message as string
-                  }
-                />
-              </div>
-              <div className="mt-6 flex justify-end">
-                <Button
-                  label="Save"
-                  onClick={async () => {
-                    const currentInst =
-                      additionalInstitutionsWatch?.[editingInstIndex];
-                    if (!currentInst?.institutionName) {
-                      if (trigger)
-                        await trigger(
-                          `additionalInstitutions.${editingInstIndex}.institutionName`
-                        );
-                      return;
-                    }
-                    if (trigger) {
-                      const isValid = await trigger(
-                        `additionalInstitutions.${editingInstIndex}`
-                      );
-                      if (!isValid) return;
-                    }
-                    setIsInstModalOpen(false);
-                    setEditingInstIndex(null);
                   }}
                 />
               </div>

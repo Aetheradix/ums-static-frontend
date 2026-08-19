@@ -33,6 +33,7 @@ export interface TeachingStaff {
   dateOfBirth: Date | null;
   course: string;
   subject: string;
+  collegeCode28: string;
 }
 
 export interface AdditionalInstitution {
@@ -320,6 +321,7 @@ const teachingStaffSchema = Joi.object({
   dateOfBirth: Joi.date().allow(null),
   course: Joi.string().allow('', null),
   subject: Joi.string().allow('', null),
+  collegeCode28: Joi.string().allow('', null),
 });
 
 const additionalInstitutionSchema = Joi.object({

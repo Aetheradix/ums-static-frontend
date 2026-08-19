@@ -13,7 +13,7 @@ export const APPROVAL_AUTHORITY_DATA: ApprovalAuthorityItem[] = [
     approvalAuthorityId: 1,
     educationType: 'General Higher Education',
     authorityName: 'UGC',
-    documentLabel: 'Upload UGC Approval / Recognition Document',
+    documentLabel: 'Upload Higher Education Approval NOC Document',
     isActive: true,
   },
   {

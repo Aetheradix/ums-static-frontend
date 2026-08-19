@@ -4,7 +4,6 @@ import type { WizardStep } from 'shared/components/forms/FormWizard';
 import { FormPage } from 'shared/new-components';
 import { useProfileDetailsForm } from '../components/form.hook';
 import ProfileCertificationStep from '../components/ProfileCertificationStep';
-import ProfileDocumentUploadStep from '../components/ProfileDocumentUploadStep';
 import ProfileComplianceStep from '../components/ProfileComplianceStep';
 import ProfileEcosystemStep from '../components/ProfileEcosystemStep';
 import ProfileFacilitiesStep from '../components/ProfileFacilitiesStep';
@@ -70,6 +69,7 @@ export default function Create() {
           control={control}
           formState={formState}
           governingBodyMembersArray={governingBodyMembersArray}
+          additionalInstitutionsArray={additionalInstitutionsArray}
           trigger={trigger as any}
         />
       ),
@@ -95,6 +95,7 @@ export default function Create() {
           register={register}
           control={control}
           formState={formState}
+          setValue={setValue}
         />
       ),
     },
@@ -124,7 +125,7 @@ export default function Create() {
       ),
     },
     {
-      label: 'Teachers & Institutions',
+      label: 'Teacher Details',
       icon: 'users',
       content: (
         <ProfileEcosystemStep
@@ -132,7 +133,6 @@ export default function Create() {
           control={control}
           formState={formState}
           teachingStaffArray={teachingStaffArray}
-          additionalInstitutionsArray={additionalInstitutionsArray}
           nonTeachingStaffArray={nonTeachingStaffArray}
           trigger={trigger as any}
         />
@@ -168,18 +168,6 @@ export default function Create() {
           register={register}
           control={control}
           formState={formState}
-        />
-      ),
-    },
-    {
-      label: 'Document Uploads',
-      icon: 'upload',
-      content: (
-        <ProfileDocumentUploadStep
-          register={register}
-          control={control}
-          formState={formState}
-          setValue={setValue}
         />
       ),
     },
