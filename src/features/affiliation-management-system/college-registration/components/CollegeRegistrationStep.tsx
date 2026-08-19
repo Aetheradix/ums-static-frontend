@@ -229,8 +229,8 @@ export default function CollegeRegistrationStep({
       </FormCard>
 
       <FormCard
-        title="Society Details"
-        subtitle="Details of the society / trust running the college."
+        title="Society/Trust/Company Detail"
+        subtitle="Details of the society, trust or company running the college."
         icon="users"
       >
         <FormGrid columns={2}>

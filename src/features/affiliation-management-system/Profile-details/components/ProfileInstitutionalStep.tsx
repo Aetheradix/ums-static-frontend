@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useWatch } from 'react-hook-form';
 import type { Control, FormState, Path } from 'react-hook-form';
 import { Button } from 'shared/components/buttons';
-import { DropDownList, TextBox } from 'shared/components/forms';
+import { DropDownList, FileUpload, TextBox } from 'shared/components/forms';
 import { Modal } from 'shared/components/popups';
 import { Grid } from 'shared/components/grid';
 import { FormCard, FormGrid } from 'shared/new-components';
+import { courseOptions } from './courseFees';
 import type { ProfileDetailsFormData } from './form.hook';
 
 interface ProfileInstitutionalStepProps {
@@ -16,6 +17,7 @@ interface ProfileInstitutionalStepProps {
   control: Control<ProfileDetailsFormData>;
   formState: FormState<ProfileDetailsFormData>;
   governingBodyMembersArray: any;
+  additionalInstitutionsArray: any;
   trigger?: any;
 }
 
@@ -34,6 +36,7 @@ export default function ProfileInstitutionalStep({
   control,
   formState,
   governingBodyMembersArray,
+  additionalInstitutionsArray,
   trigger,
 }: ProfileInstitutionalStepProps) {
   const {
@@ -41,13 +44,26 @@ export default function ProfileInstitutionalStep({
     append: appendGov,
     remove: removeGov,
   } = governingBodyMembersArray;
+  const {
+    fields: instFields,
+    append: appendInst,
+    remove: removeInst,
+  } = additionalInstitutionsArray;
 
   const [isGovModalOpen, setIsGovModalOpen] = useState(false);
   const [editingGovIndex, setEditingGovIndex] = useState<number | null>(null);
 
+  const [isInstModalOpen, setIsInstModalOpen] = useState(false);
+  const [editingInstIndex, setEditingInstIndex] = useState<number | null>(null);
+
   const governingBodyMembersWatch = useWatch({
     control,
     name: 'governingBodyMembers',
+  });
+
+  const additionalInstitutionsWatch = useWatch({
+    control,
+    name: 'additionalInstitutions',
   });
 
   const collegeTypeWatch = useWatch({
@@ -57,7 +73,7 @@ export default function ProfileInstitutionalStep({
 
   return (
     <>
-      <FormCard title="Section 1: Basic College Information" icon="building">
+      <FormCard title="Basic College Information" icon="building">
         <FormGrid columns={3}>
           <DropDownList
             label="Affiliation Type"
@@ -142,17 +158,30 @@ export default function ProfileInstitutionalStep({
         </FormGrid>
       </FormCard>
 
-      <FormCard title="Section 2: Ownership & Management" icon="users">
+      <FormCard title="Management Details" icon="users">
         <div className="mb-4">
-          <TextBox
-            label="Name of Ownership Entity (Society / Trust / Company / Individual)"
-            placeholder="Enter Entity Name"
-            {...register('ownershipEntityName')}
-            errorMessage={
-              formState.errors.ownershipEntityName?.message as string
-            }
-            required
-          />
+          <FormGrid columns={2}>
+            <TextBox
+              label="Name of Ownership Entity (Society / Trust / Company / Individual)"
+              placeholder="Enter Entity Name"
+              {...register('ownershipEntityName')}
+              errorMessage={
+                formState.errors.ownershipEntityName?.message as string
+              }
+              required
+            />
+            <FileUpload
+              label="Society/Trust/Company Registration Document Upload"
+              name="societyRegistrationDocument"
+              control={control}
+              mode="file"
+              accept=".pdf,image/*"
+              uploadNote="Upload the registration certificate of the society / trust / company"
+              errorMessage={
+                formState.errors.societyRegistrationDocument?.message as string
+              }
+            />
+          </FormGrid>
         </div>
 
         <div className="border border-gray-200 rounded-lg p-4 mb-4">
@@ -268,7 +297,250 @@ export default function ProfileInstitutionalStep({
         )}
       </FormCard>
 
-      <FormCard title="Section 3: Governing Body Members" icon="users">
+      <FormCard title="Additional Institutions Run by Society" icon="building">
+        <p className="text-sm text-gray-500 mb-4">
+          Other colleges / institutions run by the society or its members — add
+          one record per institution.
+        </p>
+        <div className="mb-4">
+          <Grid
+            data={instFields.map((field: any, index: number) => {
+              const inst = additionalInstitutionsWatch?.[index] || field;
+              return { ...inst, originalIndex: index };
+            })}
+            columns={[
+              {
+                header: 'INSTITUTION NAME',
+                cell: (item: any) => item.institutionName || '',
+              },
+              { header: 'ADDRESS', cell: (item: any) => item.address || '' },
+              {
+                header: 'COURSE',
+                cell: (item: any) =>
+                  courseOptions.find(o => o.id === item.course)?.name ||
+                  item.course ||
+                  '',
+              },
+              { header: 'SEATS', cell: (item: any) => item.seats || '' },
+              { header: 'YEAR', cell: (item: any) => item.year || '' },
+              {
+                header: 'PHOTO',
+                cell: (item: any) =>
+                  item.institutionPhoto
+                    ? item.institutionPhoto.name || 'Uploaded'
+                    : '—',
+              },
+            ]}
+            pagination={false}
+            onEdit={(item: any) => {
+              setEditingInstIndex(item.originalIndex);
+              setIsInstModalOpen(true);
+            }}
+            onRemove={(item: any) => removeInst(item.originalIndex)}
+          />
+          {formState.errors.additionalInstitutions?.root?.message && (
+            <div className="p-error text-sm mt-2">
+              {formState.errors.additionalInstitutions.root.message}
+            </div>
+          )}
+          <div className="mt-4">
+            <Button
+              label="Add Institution"
+              icon="plus"
+              variant="outlined"
+              onClick={() => {
+                appendInst({
+                  institutionName: '',
+                  address: '',
+                  course: '',
+                  seats: '',
+                  class: '',
+                  year: '',
+                  type: '',
+                  conditions: '',
+                  statusOfCompliance: '',
+                  institutionPhoto: null,
+                });
+                setEditingInstIndex(instFields.length);
+                setIsInstModalOpen(true);
+              }}
+            />
+          </div>
+        </div>
+
+        <Modal
+          header="Additional Institution Details"
+          visible={isInstModalOpen}
+          onHide={() => {
+            if (editingInstIndex !== null) {
+              const currentInst =
+                additionalInstitutionsWatch?.[editingInstIndex];
+              if (!currentInst?.institutionName) {
+                removeInst(editingInstIndex);
+              }
+            }
+            setIsInstModalOpen(false);
+            setEditingInstIndex(null);
+          }}
+          size="large"
+        >
+          {editingInstIndex !== null && (
+            <div className="p-4">
+              <FormGrid columns={3}>
+                <TextBox
+                  label="Institution Name"
+                  placeholder="Institution Name"
+                  {...register(
+                    `additionalInstitutions.${editingInstIndex}.institutionName`
+                  )}
+                  errorMessage={
+                    formState.errors.additionalInstitutions?.[editingInstIndex]
+                      ?.institutionName?.message as string
+                  }
+                  required
+                />
+                <TextBox
+                  label="Address"
+                  placeholder="Address"
+                  {...register(
+                    `additionalInstitutions.${editingInstIndex}.address`
+                  )}
+                  errorMessage={
+                    formState.errors.additionalInstitutions?.[editingInstIndex]
+                      ?.address?.message as string
+                  }
+                />
+                <DropDownList
+                  label="Course"
+                  name={`additionalInstitutions.${editingInstIndex}.course`}
+                  control={control}
+                  placeholder="Select Course"
+                  data={courseOptions}
+                  textField="name"
+                  valueField="id"
+                  errorMessage={
+                    formState.errors.additionalInstitutions?.[editingInstIndex]
+                      ?.course?.message as string
+                  }
+                />
+                <TextBox
+                  label="Seats"
+                  placeholder="Seats"
+                  {...register(
+                    `additionalInstitutions.${editingInstIndex}.seats`
+                  )}
+                  errorMessage={
+                    formState.errors.additionalInstitutions?.[editingInstIndex]
+                      ?.seats?.message as string
+                  }
+                />
+                <TextBox
+                  label="Class"
+                  placeholder="Class"
+                  {...register(
+                    `additionalInstitutions.${editingInstIndex}.class`
+                  )}
+                  errorMessage={
+                    formState.errors.additionalInstitutions?.[editingInstIndex]
+                      ?.class?.message as string
+                  }
+                />
+                <TextBox
+                  label="Year"
+                  placeholder="YYYY"
+                  {...register(
+                    `additionalInstitutions.${editingInstIndex}.year`
+                  )}
+                  errorMessage={
+                    formState.errors.additionalInstitutions?.[editingInstIndex]
+                      ?.year?.message as string
+                  }
+                />
+                <DropDownList
+                  label="Type"
+                  name={`additionalInstitutions.${editingInstIndex}.type`}
+                  control={control}
+                  placeholder="Select Type"
+                  data={[
+                    { id: 1, name: 'Permanent' },
+                    { id: 2, name: 'Temporary' },
+                  ]}
+                  textField="name"
+                  valueField="id"
+                  errorMessage={
+                    formState.errors.additionalInstitutions?.[editingInstIndex]
+                      ?.type?.message as string
+                  }
+                />
+                <TextBox
+                  label="Conditions (If Temporary)"
+                  placeholder="Conditions"
+                  {...register(
+                    `additionalInstitutions.${editingInstIndex}.conditions`
+                  )}
+                  errorMessage={
+                    formState.errors.additionalInstitutions?.[editingInstIndex]
+                      ?.conditions?.message as string
+                  }
+                />
+                <DropDownList
+                  label="Status of Compliance"
+                  name={`additionalInstitutions.${editingInstIndex}.statusOfCompliance`}
+                  control={control}
+                  placeholder="Select Status"
+                  data={[
+                    { id: 'pending', name: 'Pending' },
+                    { id: 'completed', name: 'Completed' },
+                  ]}
+                  textField="name"
+                  valueField="id"
+                  errorMessage={
+                    formState.errors.additionalInstitutions?.[editingInstIndex]
+                      ?.statusOfCompliance?.message as string
+                  }
+                />
+                <FileUpload
+                  label="Institution Photograph"
+                  name={`additionalInstitutions.${editingInstIndex}.institutionPhoto`}
+                  control={control}
+                  mode="photo"
+                  accept="image/*"
+                  errorMessage={
+                    formState.errors.additionalInstitutions?.[editingInstIndex]
+                      ?.institutionPhoto?.message as string
+                  }
+                />
+              </FormGrid>
+              <div className="mt-6 flex justify-end">
+                <Button
+                  label="Save"
+                  onClick={async () => {
+                    const currentInst =
+                      additionalInstitutionsWatch?.[editingInstIndex];
+                    if (!currentInst?.institutionName) {
+                      if (trigger)
+                        await trigger(
+                          `additionalInstitutions.${editingInstIndex}.institutionName`
+                        );
+                      return;
+                    }
+                    if (trigger) {
+                      const isValid = await trigger(
+                        `additionalInstitutions.${editingInstIndex}`
+                      );
+                      if (!isValid) return;
+                    }
+                    setIsInstModalOpen(false);
+                    setEditingInstIndex(null);
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        </Modal>
+      </FormCard>
+
+      <FormCard title="Governing Body Members" icon="users">
         <p className="text-sm text-gray-500 mb-4">
           Fill one row per member, attach separate sheet if required.
         </p>

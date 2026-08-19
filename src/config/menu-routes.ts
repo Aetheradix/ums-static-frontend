@@ -8385,14 +8385,7 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'edit_location',
                 colorScheme: 'purple',
               },
-              {
-                label: 'Standing Committee Meeting',
-                slug: 'standing-committee-meeting',
-                description: 'Manage standing committee meetings.',
-                path: '/affiliation-management-system/standing-committee-meeting',
-                icon: 'event',
-                colorScheme: 'purple',
-              },
+
               // {
               //   label: 'Profile Scrutiny & Verification',
               //   slug: 'profile-scrutiny',
@@ -8417,6 +8410,14 @@ export const menuConfig: Menu.MenuItem[] = [
                 path: '/affiliation-management-system/inspection-committee',
                 icon: 'upload_file',
                 colorScheme: 'blue',
+              },
+              {
+                label: 'Standing Committee Meeting',
+                slug: 'standing-committee-meeting',
+                description: 'Manage standing committee meetings.',
+                path: '/affiliation-management-system/standing-committee-meeting',
+                icon: 'event',
+                colorScheme: 'purple',
               },
               {
                 label: 'Final Registration Approval',

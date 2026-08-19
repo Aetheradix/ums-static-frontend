@@ -14,16 +14,10 @@ const applicationSteps = [
     icon: 'pi pi-send',
   },
   {
-    label: 'Admin Approval',
+    label: 'Affiliation Admin Approval',
     description:
-      'Application verified and approved by university admin on 08 Aug 2026.',
+      'Application verified and approved by the affiliation admin on 08 Aug 2026.',
     icon: 'pi pi-verified',
-  },
-  {
-    label: 'Standing Committee Decision',
-    description:
-      'Committee decision uploaded to the portal by admin on 10 Aug 2026.',
-    icon: 'pi pi-users',
   },
   {
     label: 'Inspection Team Assigned',
@@ -38,15 +32,27 @@ const applicationSteps = [
     icon: 'pi pi-search',
   },
   {
-    label: 'Inspection Report Uploaded',
+    label: 'Inspection Report Upload',
     description:
       'Inspection outcome will be uploaded by admin on behalf of the inspection team.',
     icon: 'pi pi-file',
   },
   {
+    label: 'Standing Committee Decision',
+    description:
+      'The standing committee will review the inspection report and record its decision.',
+    icon: 'pi pi-users',
+  },
+  {
     label: 'Final Approval',
     description: 'Final affiliation decision will be issued to the college.',
     icon: 'pi pi-check-circle',
+  },
+  {
+    label: 'Affiliation Certificate Generated',
+    description:
+      'The affiliation certificate will be generated and shared with the college.',
+    icon: 'pi pi-file-check',
   },
 ];
 
@@ -100,7 +106,7 @@ export default function ApplicationStatusView() {
       >
         <Stepper
           steps={applicationSteps}
-          activeStep={4}
+          activeStep={3}
           orientation="vertical"
         />
       </FormCard>

@@ -1,4 +1,10 @@
-import type { Control, FormState, Path } from 'react-hook-form';
+import { useEffect } from 'react';
+import type {
+  Control,
+  FormState,
+  Path,
+  UseFormSetValue,
+} from 'react-hook-form';
 import { useWatch } from 'react-hook-form';
 import {
   DropDownList,
@@ -18,6 +24,7 @@ interface ProfileLandBuildingStepProps {
   };
   control: Control<ProfileDetailsFormData>;
   formState: FormState<ProfileDetailsFormData>;
+  setValue: UseFormSetValue<ProfileDetailsFormData>;
 }
 
 const landTypeOptions = [
@@ -31,6 +38,7 @@ export default function ProfileLandBuildingStep({
   register,
   control,
   formState,
+  setValue,
 }: ProfileLandBuildingStepProps) {
   const yesNoOptions = [
     { id: 'yes', name: 'Yes' },
@@ -42,6 +50,27 @@ export default function ProfileLandBuildingStep({
 
   const landType = useWatch({ control, name: 'landType' });
   const isSharedCampus = useWatch({ control, name: 'sharedCampus' });
+  const latitude = useWatch({ control, name: 'latitude' });
+  const longitude = useWatch({ control, name: 'longitude' });
+
+  // Auto-capture the building's latitude/longitude for geolocation tagging.
+  useEffect(() => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          setValue('latitude', position.coords.latitude.toFixed(6), {
+            shouldValidate: true,
+          });
+          setValue('longitude', position.coords.longitude.toFixed(6), {
+            shouldValidate: true,
+          });
+        },
+        error => {
+          console.error(error);
+        }
+      );
+    }
+  }, [setValue]);
 
   return (
     <>
@@ -129,6 +158,19 @@ export default function ProfileLandBuildingStep({
             />
           </div>
         )}
+        <div className="mt-4">
+          <FileUpload
+            label="Upload Khasra Document"
+            name="landDocumentsDocument"
+            control={control}
+            mode="file"
+            accept=".pdf,image/*"
+            uploadNote="Upload the Khasra / land record document"
+            errorMessage={
+              formState.errors.landDocumentsDocument?.message as string
+            }
+          />
+        </div>
       </FormCard>
 
       <FormCard title="BUILDING DETAILS" icon="building">
@@ -166,13 +208,87 @@ export default function ProfileLandBuildingStep({
             }
           />
         </div>
-        <div className="mt-4">
+        <div className="mt-6 border-t border-gray-100 pt-4">
+          <h3 className="text-sm font-semibold text-gray-700 border-b pb-2 mb-4">
+            Building Documents
+          </h3>
+          <FormGrid columns={2}>
+            <FileUpload
+              label="Building Map"
+              name="buildingMap"
+              control={control}
+              mode="file"
+              accept=".pdf,image/*"
+              errorMessage={formState.errors.buildingMap?.message as string}
+            />
+            <FileUpload
+              label="Building Plan & Safety Certificate"
+              name="buildingPlanAndSafetyDocument"
+              control={control}
+              mode="file"
+              accept=".pdf,image/*"
+              errorMessage={
+                formState.errors.buildingPlanAndSafetyDocument
+                  ?.message as string
+              }
+            />
+            <FileUpload
+              label="Amenities Proof"
+              name="amenitiesProofDocument"
+              control={control}
+              mode="file"
+              accept=".pdf,image/*"
+              errorMessage={
+                formState.errors.amenitiesProofDocument?.message as string
+              }
+            />
+            <FileUpload
+              label="Council Approval Document"
+              name="councilApprovalsDocument"
+              control={control}
+              mode="file"
+              accept=".pdf,image/*"
+              errorMessage={
+                formState.errors.councilApprovalsDocument?.message as string
+              }
+            />
+          </FormGrid>
+        </div>
+
+        <div className="mt-6 border-t border-gray-100 pt-4">
+          <h3 className="text-sm font-semibold text-gray-700 border-b pb-2 mb-4">
+            Building Photos & Geolocation
+          </h3>
+          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-2">
+            <i className="pi pi-map-marker text-blue-500 mt-0.5" />
+            <p className="text-sm text-blue-800">
+              Upload the building photos from the college building location —
+              the latitude and longitude of the building are captured
+              automatically for geolocation verification.
+            </p>
+          </div>
           <MultiPhotoUpload
             control={control}
             name="buildingPhotos"
             label="Building Photos"
             subLabel="Upload one or more photos of the college building"
           />
+          <div className="mt-4">
+            <FormGrid columns={2}>
+              <TextBox
+                label="Latitude (auto-captured)"
+                placeholder="Capturing current location…"
+                value={latitude || ''}
+                readOnly
+              />
+              <TextBox
+                label="Longitude (auto-captured)"
+                placeholder="Capturing current location…"
+                value={longitude || ''}
+                readOnly
+              />
+            </FormGrid>
+          </div>
         </div>
 
         <div className="mt-6 border-t border-gray-100 pt-4">
