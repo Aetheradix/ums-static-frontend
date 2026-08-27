@@ -8375,6 +8375,15 @@ export const menuConfig: Menu.MenuItem[] = [
                     icon: 'science',
                     colorScheme: 'teal',
                   },
+                  {
+                    label: 'Affiliation Fee Master',
+                    slug: 'affiliation-fee-master',
+                    description:
+                      'Manage dynamic fee rules for affiliation and renewals.',
+                    path: '/affiliation-management-system/affiliation-fee-master',
+                    icon: 'payments',
+                    colorScheme: 'orange',
+                  },
                 ],
               },
               {

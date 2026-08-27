@@ -23,6 +23,7 @@ import BasicRegistrationDetails from './basic-registration-details';
 import ProfileScrutiny from './profile-scrutiny';
 import InspectionCommittee from './inspection-committee';
 import StandingCommitteeMeeting from './standing-committee-meeting';
+import AffiliationFeeMasterRoutes from './affiliation-fee-master';
 
 export default function AffiliationManagementSystem() {
   return (
@@ -94,6 +95,10 @@ export default function AffiliationManagementSystem() {
         <Route path="application-fee/*" element={<ApplicationFee />} />
         <Route path="lab-type/*" element={<LabType />} />
       </Route>
+      <Route
+        path="affiliation-fee-master/*"
+        element={<AffiliationFeeMasterRoutes />}
+      />
     </Routes>
   );
 }
