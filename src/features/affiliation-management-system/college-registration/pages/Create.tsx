@@ -165,6 +165,18 @@ export default function Create() {
               variant="outlined"
             />
             <Button
+              key="fee-summary-button"
+              label="View Fee Calculation Mockup"
+              type="button"
+              icon="payments"
+              variant="outlined"
+              onClick={() =>
+                navigate(
+                  '/affiliation-management-system/college-registration/fee-summary-mockup'
+                )
+              }
+            />
+            <Button
               key="save-button"
               label="Save"
               type="button"
