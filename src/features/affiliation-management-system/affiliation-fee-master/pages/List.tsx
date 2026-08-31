@@ -94,11 +94,17 @@ export default function List() {
       description="Manage dynamic fee rules for affiliation applications and renewals based on PDF rules."
     >
       <div className="card">
-        <div className="flex justify-content-end mb-3">
+        <div className="flex justify-content-end mb-3 gap-2">
           <Button
-            label="Create New Rule"
+            label="Add Course Fee"
             icon="pi pi-plus"
-            onClick={() => navigate(AffiliationFeeMasterUrls.create())}
+            onClick={() => navigate(AffiliationFeeMasterUrls.createCourse())}
+          />
+          <Button
+            label="Add Special Fee"
+            severity="secondary"
+            icon="pi pi-plus"
+            onClick={() => navigate(AffiliationFeeMasterUrls.createSpecial())}
           />
         </div>
         <DataTable value={mockData} responsiveLayout="scroll">
