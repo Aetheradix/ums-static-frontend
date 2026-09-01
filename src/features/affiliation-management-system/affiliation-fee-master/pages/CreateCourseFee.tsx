@@ -14,6 +14,8 @@ export default function CreateCourseFee() {
   const [degreeLevel, setDegreeLevel] = useState<string>('');
   const [courseGroup, setCourseGroup] = useState<string>('');
   const [appType, setAppType] = useState<string>('');
+  const [collegeType, setCollegeType] = useState<string>('All');
+  const [gstApplicable, setGstApplicable] = useState<number | null>(18);
 
   return (
     <FormPage
@@ -52,14 +54,8 @@ export default function CreateCourseFee() {
               value={courseGroup}
               onChange={e => setCourseGroup(e.value)}
               options={[
-                {
-                  label: 'General (B.A., B.Com, B.Sc, M.A., etc.)',
-                  value: 'Gen',
-                },
-                {
-                  label: 'Professional (B.B.A, M.B.A, L.L.B, etc.)',
-                  value: 'Prof',
-                },
+                { label: 'General', value: 'Gen' },
+                { label: 'Professional', value: 'Prof' },
               ]}
               className="w-full"
               placeholder="Select Course Group"
@@ -68,21 +64,47 @@ export default function CreateCourseFee() {
 
           <div className="col-12 md:col-6 lg:col-4 mb-3">
             <label className="block mb-2 font-medium">
-              Application Year <span className="text-red-500">*</span>
+              Application Type <span className="text-red-500">*</span>
             </label>
             <Dropdown
               value={appType}
-              onChange={e => setAppType(e.value)}
+              onChange={e => {
+                setAppType(e.value);
+              }}
+              options={
+                degreeLevel === 'DIP'
+                  ? [
+                      { label: 'Affiliation Fee', value: 'Affiliation' },
+                      { label: 'Annual Continuity Fee', value: 'Cont' },
+                    ]
+                  : [
+                      { label: '1st Year (New Affiliation)', value: '1' },
+                      { label: '2nd Year (Renewal)', value: '2' },
+                      { label: '3rd Year (Renewal)', value: '3' },
+                      { label: '4th Year (Renewal)', value: '4' },
+                      { label: '5th Year (Renewal)', value: '5' },
+                      { label: 'Annual Continuity Fee', value: 'Cont' },
+                    ]
+              }
+              className="w-full"
+              placeholder="Select Application Type"
+            />
+          </div>
+
+          <div className="col-12 md:col-6 lg:col-4 mb-3">
+            <label className="block mb-2 font-medium">
+              College Type <span className="text-red-500">*</span>
+            </label>
+            <Dropdown
+              value={collegeType}
+              onChange={e => setCollegeType(e.value)}
               options={[
-                { label: '1st Year (New Affiliation)', value: '1' },
-                { label: '2nd Year (Renewal)', value: '2' },
-                { label: '3rd Year (Renewal)', value: '3' },
-                { label: '4th Year (Renewal)', value: '4' },
-                { label: '5th Year (Renewal)', value: '5' },
-                { label: 'Annual Continuity Fee', value: 'Cont' },
+                { label: 'All (Govt & Private)', value: 'All' },
+                { label: 'Govt. College Only', value: 'Govt' },
+                { label: 'Private College Only', value: 'Private' },
               ]}
               className="w-full"
-              placeholder="Select Year"
+              placeholder="Select College Type"
             />
           </div>
 
@@ -101,6 +123,17 @@ export default function CreateCourseFee() {
               mode="currency"
               currency="INR"
               locale="en-IN"
+            />
+          </div>
+
+          <div className="col-12 md:col-6 lg:col-4 mb-3">
+            <label className="block mb-2 font-medium">GST Applicable (%)</label>
+            <InputNumber
+              className="w-full"
+              placeholder="e.g. 18"
+              suffix=" %"
+              value={gstApplicable}
+              onValueChange={e => setGstApplicable(e.value ?? null)}
             />
           </div>
 
