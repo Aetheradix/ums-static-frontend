@@ -15,6 +15,8 @@ export default function Edit() {
   const [degreeLevel, setDegreeLevel] = useState<string>('UG');
   const [courseGroup, setCourseGroup] = useState<string>('Gen');
   const [appType, setAppType] = useState<string>('1');
+  const [collegeType, setCollegeType] = useState<string>('All');
+  const [gstApplicable, setGstApplicable] = useState<number | null>(18);
 
   return (
     <FormPage
@@ -62,7 +64,9 @@ export default function Edit() {
             />
           </div>
 
-          {!['Special Services', 'Research Center'].includes(category) && (
+          {!['Special Services', 'Permanent Affiliation'].includes(
+            category
+          ) && (
             <div className="col-12 md:col-6 lg:col-4 mb-3">
               <label className="block mb-2 font-medium">
                 Degree Level <span className="text-red-500">*</span>
@@ -81,7 +85,13 @@ export default function Edit() {
             </div>
           )}
 
-          {['General Course', 'Professional Course'].includes(category) && (
+          {[
+            'General Course',
+            'Professional Course',
+            'Permanent Affiliation',
+            'Research Center',
+            'Diploma',
+          ].includes(category) && (
             <div className="col-12 md:col-6 lg:col-4 mb-3">
               <label className="block mb-2 font-medium">
                 Course Group <span className="text-red-500">*</span>
@@ -90,14 +100,8 @@ export default function Edit() {
                 value={courseGroup}
                 onChange={e => setCourseGroup(e.value)}
                 options={[
-                  {
-                    label: 'General (B.A., B.Com, B.Sc, M.A., etc.)',
-                    value: 'Gen',
-                  },
-                  {
-                    label: 'Professional (B.B.A, M.B.A, L.L.B, etc.)',
-                    value: 'Prof',
-                  },
+                  { label: 'General', value: 'Gen' },
+                  { label: 'Professional', value: 'Prof' },
                   { label: 'All / Not Applicable', value: 'All' },
                 ]}
                 className="w-full"
@@ -152,6 +156,23 @@ export default function Edit() {
             />
           </div>
 
+          <div className="col-12 md:col-6 lg:col-4 mb-3">
+            <label className="block mb-2 font-medium">
+              College Type <span className="text-red-500">*</span>
+            </label>
+            <Dropdown
+              value={collegeType}
+              onChange={e => setCollegeType(e.value)}
+              options={[
+                { label: 'All (Govt & Private)', value: 'All' },
+                { label: 'Govt. College Only', value: 'Govt' },
+                { label: 'Private College Only', value: 'Private' },
+              ]}
+              className="w-full"
+              placeholder="Select College Type"
+            />
+          </div>
+
           {/* Section 2: Fee Structure */}
           <div className="col-12 mt-4 mb-4">
             <h5 className="border-bottom-1 pb-2">Fee Configuration</h5>
@@ -176,6 +197,45 @@ export default function Edit() {
               locale="en-IN"
             />
           </div>
+
+          <div className="col-12 md:col-6 lg:col-4 mb-3">
+            <label className="block mb-2 font-medium">GST Applicable (%)</label>
+            <InputNumber
+              className="w-full"
+              placeholder="e.g. 18"
+              suffix=" %"
+              value={gstApplicable}
+              onValueChange={e => setGstApplicable(e.value ?? null)}
+            />
+          </div>
+
+          {![
+            'Special Services',
+            'Permanent Affiliation',
+            'Research Center',
+          ].includes(category) && (
+            <>
+              <div className="col-12 md:col-6 lg:col-4 mb-3">
+                <label className="block mb-2 font-medium">
+                  Late Fee Amount (₹)
+                </label>
+                <InputNumber
+                  className="w-full"
+                  placeholder="e.g. 2000"
+                  mode="currency"
+                  currency="INR"
+                  locale="en-IN"
+                />
+              </div>
+
+              <div className="col-12 md:col-6 lg:col-4 mb-3">
+                <label className="block mb-2 font-medium">
+                  Late Fee Applies After (Days)
+                </label>
+                <InputNumber className="w-full" placeholder="e.g. 15" />
+              </div>
+            </>
+          )}
 
           {['General Course', 'Professional Course'].includes(category) && (
             <>

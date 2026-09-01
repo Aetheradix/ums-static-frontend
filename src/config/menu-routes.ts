@@ -8376,7 +8376,7 @@ export const menuConfig: Menu.MenuItem[] = [
                     colorScheme: 'teal',
                   },
                   {
-                    label: 'Affiliation Fee Master',
+                    label: 'Affiliation Fee Rule Engine',
                     slug: 'affiliation-fee-master',
                     description:
                       'Manage dynamic fee rules for affiliation and renewals.',
