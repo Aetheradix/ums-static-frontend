@@ -22,13 +22,13 @@ export default function CreateSpecialFee() {
       description="Configure a new fixed fee for special administrative actions (e.g. Name Change)."
     >
       <div className="card">
-        <div className="grid">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Section 1: Criteria */}
-          <div className="col-12 mb-4">
-            <h5 className="border-bottom-1 pb-2">Step 1: Fee Category</h5>
+          <div className="col-span-full mb-2 mt-4 first:mt-0">
+            <h5 className="border-b pb-2">Step 1: Fee Category</h5>
           </div>
 
-          <div className="col-12 md:col-6 lg:col-4 mb-3">
+          <div className="">
             <label className="block mb-2 font-medium">
               Fee Category <span className="text-red-500">*</span>
             </label>
@@ -57,7 +57,7 @@ export default function CreateSpecialFee() {
             />
           </div>
 
-          <div className="col-12 md:col-6 lg:col-4 mb-3">
+          <div className="">
             <label className="block mb-2 font-medium">
               Service / Application Type <span className="text-red-500">*</span>
             </label>
@@ -95,7 +95,7 @@ export default function CreateSpecialFee() {
           </div>
 
           {category === 'Research Center' && (
-            <div className="col-12 md:col-6 lg:col-4 mb-3">
+            <div className="">
               <label className="block mb-2 font-medium">
                 Degree Level <span className="text-red-500">*</span>
               </label>
@@ -113,7 +113,7 @@ export default function CreateSpecialFee() {
             </div>
           )}
           {category !== 'Special Services' && (
-            <div className="col-12 md:col-6 lg:col-4 mb-3">
+            <div className="">
               <label className="block mb-2 font-medium">
                 Course Group <span className="text-red-500">*</span>
               </label>
@@ -131,7 +131,7 @@ export default function CreateSpecialFee() {
             </div>
           )}
 
-          <div className="col-12 md:col-6 lg:col-4 mb-3">
+          <div className="">
             <label className="block mb-2 font-medium">
               College Type <span className="text-red-500">*</span>
             </label>
@@ -149,11 +149,11 @@ export default function CreateSpecialFee() {
           </div>
 
           {/* Section 2: Fee Structure */}
-          <div className="col-12 mt-4 mb-4">
-            <h5 className="border-bottom-1 pb-2">Step 2: Fee Configuration</h5>
+          <div className="col-span-full mb-2 mt-4">
+            <h5 className="border-b pb-2">Step 2: Fee Configuration</h5>
           </div>
 
-          <div className="col-12 md:col-6 lg:col-4 mb-3">
+          <div className="">
             <label className="block mb-2 font-medium">
               Fixed Fee Amount (₹) <span className="text-red-500">*</span>
             </label>
@@ -166,7 +166,7 @@ export default function CreateSpecialFee() {
             />
           </div>
 
-          <div className="col-12 md:col-6 lg:col-4 mb-3">
+          <div className="">
             <label className="block mb-2 font-medium">GST Applicable (%)</label>
             <InputNumber
               className="w-full"
@@ -178,7 +178,7 @@ export default function CreateSpecialFee() {
           </div>
         </div>
 
-        <div className="flex justify-content-end gap-2 mt-4 pt-4 border-top-1 border-gray-200">
+        <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-gray-200">
           <Button
             label="Cancel"
             severity="secondary"
