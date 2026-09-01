@@ -177,6 +177,34 @@ export default function Edit() {
             />
           </div>
 
+          {![
+            'Special Services',
+            'Permanent Affiliation',
+            'Research Center',
+          ].includes(category) && (
+            <>
+              <div className="col-12 md:col-6 lg:col-4 mb-3">
+                <label className="block mb-2 font-medium">
+                  Late Fee Amount (₹)
+                </label>
+                <InputNumber
+                  className="w-full"
+                  placeholder="e.g. 2000"
+                  mode="currency"
+                  currency="INR"
+                  locale="en-IN"
+                />
+              </div>
+
+              <div className="col-12 md:col-6 lg:col-4 mb-3">
+                <label className="block mb-2 font-medium">
+                  Late Fee Applies After (Days)
+                </label>
+                <InputNumber className="w-full" placeholder="e.g. 15" />
+              </div>
+            </>
+          )}
+
           {['General Course', 'Professional Course'].includes(category) && (
             <>
               <div className="col-12 md:col-6 lg:col-4 mb-3">

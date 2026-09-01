@@ -16,6 +16,8 @@ export default function List() {
       courseType: 'General (B.A., B.Com)',
       affiliationType: '1st Year (New)',
       baseFee: 40000,
+      lateFee: 2000,
+      lateFeeDays: 15,
       baseSeats: 60,
       extraSeatRule: 'Yes (50% per 60 seats)',
       status: true,
@@ -27,6 +29,8 @@ export default function List() {
       courseType: 'Professional (B.B.A)',
       affiliationType: '2nd Year (Renewal)',
       baseFee: 112000,
+      lateFee: 5000,
+      lateFeeDays: 30,
       baseSeats: 60,
       extraSeatRule: 'Yes (50% per 60 seats)',
       status: true,
@@ -38,6 +42,8 @@ export default function List() {
       courseType: 'All',
       affiliationType: 'Affiliation Fee',
       baseFee: 40000,
+      lateFee: 2000,
+      lateFeeDays: 15,
       baseSeats: '-',
       extraSeatRule: 'No',
       status: true,
@@ -47,41 +53,23 @@ export default function List() {
       category: 'Special Services',
       degreeLevel: 'All',
       courseType: 'All',
-      affiliationType: 'Location Change',
-      baseFee: 150000,
+      affiliationType: 'College Name Change',
+      baseFee: 50000,
+      lateFee: '-',
+      lateFeeDays: '-',
       baseSeats: '-',
       extraSeatRule: 'No',
       status: true,
     },
     {
       id: 5,
-      category: 'Special Services',
-      degreeLevel: 'All',
-      courseType: 'All',
-      affiliationType: 'College Name Change',
-      baseFee: 50000,
-      baseSeats: '-',
-      extraSeatRule: 'No',
-      status: true,
-    },
-    {
-      id: 6,
-      category: 'Special Services',
-      degreeLevel: 'All',
-      courseType: 'All',
-      affiliationType: 'Trust Change',
-      baseFee: 300000,
-      baseSeats: '-',
-      extraSeatRule: 'No',
-      status: true,
-    },
-    {
-      id: 7,
       category: 'Permanent Affiliation',
-      degreeLevel: 'Graduate (UG)',
-      courseType: 'General',
+      degreeLevel: 'All',
+      courseType: 'All',
       affiliationType: 'Affiliation Fee',
       baseFee: 75000,
+      lateFee: '-',
+      lateFeeDays: '-',
       baseSeats: '-',
       extraSeatRule: 'No',
       status: true,
@@ -117,6 +105,16 @@ export default function List() {
             header="Base Fee (₹)"
             body={(row: any) => `₹ ${row.baseFee.toLocaleString()}`}
           />
+          <Column
+            field="lateFee"
+            header="Late Fee (₹)"
+            body={(row: any) =>
+              typeof row.lateFee === 'number'
+                ? `₹ ${row.lateFee.toLocaleString()}`
+                : row.lateFee
+            }
+          />
+          <Column field="lateFeeDays" header="Late Fee Days" />
           <Column field="baseSeats" header="Base Seats Unit" />
           <Column field="extraSeatRule" header="Extra Seats Rule" />
           <Column
