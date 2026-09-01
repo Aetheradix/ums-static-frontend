@@ -78,7 +78,7 @@ export default function List() {
 
   return (
     <FormPage
-      title="Affiliation Fee Master"
+      title="Affiliation Fee Rule Engine"
       description="Manage dynamic fee rules for affiliation applications and renewals based on PDF rules."
     >
       <div className="card">
