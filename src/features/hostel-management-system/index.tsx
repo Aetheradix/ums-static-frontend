@@ -11,6 +11,7 @@ import StudentPortalPage from './portal/StudentPortalPage';
 // Hostel Admin
 import AdminDashboard from './admin/AdminDashboard';
 import HostelRegistration from './admin/HostelRegistration';
+import HostelRegistrationForm from './admin/HostelRegistrationForm';
 import SeatMonitoring from './admin/SeatMonitoring';
 import AdminReports from './admin/AdminReports';
 
@@ -54,6 +55,14 @@ export default function HostelManagementSystem() {
           <Route index element={<AdminPortalPage />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="hostel-registration" element={<HostelRegistration />} />
+          <Route
+            path="hostel-registration/new"
+            element={<HostelRegistrationForm />}
+          />
+          <Route
+            path="hostel-registration/:hostelId"
+            element={<HostelRegistrationForm />}
+          />
           <Route path="monitoring" element={<SeatMonitoring />} />
           <Route path="reports" element={<AdminReports />} />
         </Route>

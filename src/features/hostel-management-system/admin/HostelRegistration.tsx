@@ -1,15 +1,7 @@
 import { useMemo, useState } from 'react';
-import { ToastService } from 'services';
+import { useNavigate } from 'react-router-dom';
 import { Button } from 'shared/components/buttons';
 import {
-  DatePicker,
-  DropDownList,
-  NumberBox,
-  TextArea,
-  TextBox,
-} from 'shared/components/forms';
-import {
-  FormActions,
   FormCard,
   FormGrid,
   FormPage,
@@ -19,257 +11,21 @@ import {
   StatusBadge,
 } from 'shared/new-components';
 import { KeyValueTile, SectionNote } from '../components/ui';
-import {
-  buildHostelCredentials,
-  hostelOccupancy,
-  today,
-  useHms,
-  useHmsRole,
-} from '../context/HmsContext';
+import { hostelOccupancy, useHms, useHmsRole } from '../context/HmsContext';
 import type { Hostel } from '../context/HmsContext';
 import { hmsBreadcrumbs } from '../utils/breadcrumbs';
+import { hmsUrls } from '../urls';
 
-interface FormState {
-  nameEn: string;
-  nameHi: string;
-  type: 'Boys' | 'Girls';
-  districtId: string;
-  blockId: string;
-  address: string;
-  capacity: number;
-  occupancy: number;
-  code: string;
-  wardenName: string;
-  wardenMobile: string;
-  wardenEmail: string;
-  wardenDesignationId: string;
-  wardenJoiningDate: string;
-}
-
-const blank = (): FormState => ({
-  nameEn: '',
-  nameHi: '',
-  type: 'Boys',
-  districtId: '',
-  blockId: '',
-  address: '',
-  capacity: 0,
-  occupancy: 0,
-  code: '',
-  wardenName: '',
-  wardenMobile: '',
-  wardenEmail: '',
-  wardenDesignationId: '',
-  wardenJoiningDate: '',
-});
-
-const toForm = (h: Hostel): FormState => ({
-  nameEn: h.nameEn,
-  nameHi: h.nameHi,
-  type: h.type,
-  districtId: h.districtId,
-  blockId: h.blockId,
-  address: h.address,
-  capacity: h.capacity,
-  occupancy: h.occupancy,
-  code: h.code,
-  wardenName: h.wardenName,
-  wardenMobile: h.wardenMobile,
-  wardenEmail: h.wardenEmail,
-  wardenDesignationId: h.wardenDesignationId,
-  wardenJoiningDate: h.wardenJoiningDate,
-});
-
-/** Derive a hostel code from the name when the admin leaves it blank. */
-const deriveCode = (name: string) =>
-  (name || 'HOSTEL')
-    .split(/\s+/)
-    .map(w => w.replace(/[^A-Za-z]/g, '').charAt(0))
-    .join('')
-    .toUpperCase()
-    .slice(0, 4) || 'HST';
-
-function HostelFields({
-  values,
-  onChange,
-}: {
-  values: FormState;
-  onChange: (v: FormState) => void;
-}) {
-  const { data } = useHms();
-  const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
-    onChange({ ...values, [key]: value });
-
-  const blockOptions = useMemo(
-    () =>
-      data.blocks
-        .filter(b => !values.districtId || b.districtId === values.districtId)
-        .map(b => ({ id: b.id, text: b.name })),
-    [data.blocks, values.districtId]
-  );
-
-  return (
-    <>
-      <FormCard
-        title="Hostel Details"
-        subtitle="Identity, type and where the hostel is located."
-        icon="building"
-      >
-        <FormGrid columns={3}>
-          <TextBox
-            label="Hostel Name (English)"
-            placeholder="e.g. Boys Hostel - Block A"
-            value={values.nameEn}
-            onChange={v => set('nameEn', v)}
-          />
-          <TextBox
-            label="Hostel Name (Hindi)"
-            placeholder="जैसे बालक छात्रावास - ब्लॉक ए"
-            value={values.nameHi}
-            onChange={v => set('nameHi', v)}
-          />
-          <DropDownList
-            label="Hostel Type"
-            data={[
-              { id: 'Boys', text: 'Boys' },
-              { id: 'Girls', text: 'Girls' },
-            ]}
-            textField="text"
-            valueField="id"
-            value={values.type}
-            onChange={v => set('type', (v as 'Boys' | 'Girls') ?? 'Boys')}
-          />
-
-          <DropDownList
-            label="District"
-            data={data.districts.map(d => ({ id: d.id, text: d.name }))}
-            textField="text"
-            valueField="id"
-            value={values.districtId}
-            onChange={v =>
-              onChange({
-                ...values,
-                districtId: (v as string) ?? '',
-                blockId: '',
-              })
-            }
-          />
-          <DropDownList
-            label="Block"
-            data={blockOptions}
-            textField="text"
-            valueField="id"
-            value={values.blockId}
-            onChange={v => set('blockId', (v as string) ?? '')}
-          />
-          <TextBox
-            label="Hostel Code"
-            placeholder="Auto-generated if left blank"
-            value={values.code}
-            onChange={v => set('code', v.toUpperCase())}
-          />
-
-          <div className="md:col-span-3">
-            <TextArea
-              label="Address"
-              rows={2}
-              placeholder="e.g. Takshashila Campus, Khandwa Road, Indore - 452001"
-              value={values.address}
-              onChange={v => set('address', v)}
-            />
-          </div>
-        </FormGrid>
-      </FormCard>
-
-      <FormCard
-        title="Capacity"
-        subtitle="Sanctioned seats and the occupancy already recorded for this hostel."
-        icon="th-large"
-      >
-        <FormGrid columns={3}>
-          <NumberBox
-            label="Hostel Capacity (seats)"
-            min={0}
-            value={values.capacity}
-            onChange={v => set('capacity', v ?? 0)}
-          />
-          <NumberBox
-            label="Current Occupancy"
-            min={0}
-            value={values.occupancy}
-            onChange={v => set('occupancy', v ?? 0)}
-          />
-          <div className="flex items-end pb-4">
-            <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">
-              {Math.max(values.capacity - values.occupancy, 0)} seats free at
-              registration
-            </p>
-          </div>
-        </FormGrid>
-        <SectionNote tone="neutral">
-          The warden configures the actual rooms after signing in — bed counts
-          on the monitoring screens come from those rooms, not from this figure.
-        </SectionNote>
-      </FormCard>
-
-      <FormCard
-        title="Warden Details"
-        subtitle="The warden who will sign in to this hostel's portal."
-        icon="user"
-      >
-        <FormGrid columns={3}>
-          <TextBox
-            label="Warden Name"
-            placeholder="e.g. Rajesh Kumar"
-            value={values.wardenName}
-            onChange={v => set('wardenName', v)}
-          />
-          <TextBox
-            label="Warden Mobile Number"
-            maxLength={10}
-            placeholder="10-digit mobile number"
-            value={values.wardenMobile}
-            onChange={v => set('wardenMobile', v.replace(/\D/g, ''))}
-          />
-          <TextBox
-            label="Warden Email ID"
-            placeholder="warden@davv.ac.in"
-            value={values.wardenEmail}
-            onChange={v => set('wardenEmail', v)}
-          />
-
-          <DropDownList
-            label="Warden Designation"
-            data={data.designations.map(d => ({ id: d.id, text: d.name }))}
-            textField="text"
-            valueField="id"
-            value={values.wardenDesignationId}
-            onChange={v => set('wardenDesignationId', (v as string) ?? '')}
-          />
-          <DatePicker
-            label="Joining Date"
-            value={
-              values.wardenJoiningDate
-                ? new Date(values.wardenJoiningDate)
-                : undefined
-            }
-            onChange={v =>
-              set('wardenJoiningDate', v ? v.toISOString().split('T')[0] : '')
-            }
-          />
-        </FormGrid>
-      </FormCard>
-    </>
-  );
-}
-
+/**
+ * The hostel register — every hostel on the system at a glance. Registering a
+ * new one, or editing an existing one, opens the registration form on its own
+ * page rather than burying it above the grid.
+ */
 export default function HostelRegistration() {
-  const { data, add, update } = useHms();
+  const { data } = useHms();
   const { activePortal } = useHmsRole();
+  const navigate = useNavigate();
 
-  const [form, setForm] = useState<FormState>(blank);
-  const [editing, setEditing] = useState<Hostel | null>(null);
-  const [editForm, setEditForm] = useState<FormState>(blank);
   const [credentialsFor, setCredentialsFor] = useState<Hostel | null>(null);
 
   const districtName = (id: string) =>
@@ -292,41 +48,19 @@ export default function HostelRegistration() {
     };
   }, [data.hostels, data.rooms, data.allocations]);
 
-  const handleRegister = () => {
-    const code = form.code || deriveCode(form.nameEn);
-    const credentials = buildHostelCredentials(code, data.hostels.length + 1);
-    const hostel: Hostel = {
-      ...form,
-      code,
-      nameEn: form.nameEn || 'Untitled Hostel',
-      id: `H${Date.now()}`,
-      facilityIds: [],
-      registeredOn: today(),
-      status: 'Active',
-      ...credentials,
-    };
-    add('hostels', hostel);
-    setForm(blank());
-    setCredentialsFor(hostel);
-    ToastService.success(`${hostel.nameEn} registered successfully.`);
-  };
-
-  const handleUpdate = () => {
-    if (!editing) return;
-    update('hostels', editing.id, {
-      ...editing,
-      ...editForm,
-      code: editForm.code || editing.code,
-    });
-    setEditing(null);
-    ToastService.success('Hostel details updated.');
-  };
-
   return (
     <FormPage
       title="Hostel Registration"
-      description="Register a hostel with its name, type, location, capacity and warden. Login credentials for the Warden Portal are issued the moment it is saved."
+      description="Every hostel registered with the university, with the credentials issued to its warden."
       breadcrumbs={hmsBreadcrumbs(activePortal, 'Hostel Registration')}
+      headerAction={
+        <Button
+          label="Register Hostel"
+          icon="plus"
+          variant="primary"
+          onClick={() => navigate(hmsUrls.admin.hostelRegistrationNew)}
+        />
+      }
     >
       <FormGrid columns={3}>
         <StatCard
@@ -351,28 +85,19 @@ export default function HostelRegistration() {
         />
       </FormGrid>
 
-      <HostelFields values={form} onChange={setForm} />
-
-      <FormCard>
-        <FormActions
-          saveLabel="Register Hostel"
-          onSave={handleRegister}
-          onReset={() => setForm(blank())}
-        />
-      </FormCard>
-
       <FormCard
         title="Registered Hostels"
-        subtitle="Every hostel on the system, with the credentials issued to its warden."
+        subtitle="Use Register Hostel to add one, or edit a row to change its details."
         icon="list"
       >
         <GridPanel<Hostel>
           data={data.hostels}
+          cellMemo={false}
           searchBox
           searchPlaceholder="Search by hostel name, code or warden..."
           searchFields={['nameEn', 'code', 'wardenName']}
           pagination
-          emptyMessage="No hostels registered yet."
+          emptyMessage="No hostels registered yet — use Register Hostel to add the first one."
           columns={[
             { field: 'code', header: 'Code', width: 90 },
             {
@@ -470,32 +195,11 @@ export default function HostelRegistration() {
               ),
             },
           ]}
-          onEdit={hostel => {
-            setEditing(hostel);
-            setEditForm(toForm(hostel));
-          }}
+          onEdit={hostel =>
+            navigate(hmsUrls.admin.hostelRegistrationEdit(hostel.id))
+          }
         />
       </FormCard>
-
-      <FormPopup
-        visible={Boolean(editing)}
-        onHide={() => setEditing(null)}
-        title="Edit Hostel"
-        subtitle={editing?.nameEn}
-        size="xl"
-        footer={
-          <div className="flex justify-end gap-3">
-            <Button
-              label="Cancel"
-              variant="outlined"
-              onClick={() => setEditing(null)}
-            />
-            <Button label="Update" variant="primary" onClick={handleUpdate} />
-          </div>
-        }
-      >
-        <HostelFields values={editForm} onChange={setEditForm} />
-      </FormPopup>
 
       <FormPopup
         visible={Boolean(credentialsFor)}

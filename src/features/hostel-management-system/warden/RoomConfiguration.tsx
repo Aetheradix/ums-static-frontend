@@ -70,6 +70,15 @@ export default function RoomConfiguration() {
   const [activeType, setActiveType] = useState<RoomType>('Single Seater');
   const [count, setCount] = useState(0);
 
+  /**
+   * Single/double/triple rooms have a fixed bed count, but a dormitory's size
+   * varies from hostel to hostel — so the warden declares it here and every
+   * dormitory captured in this batch is saved with that many beds.
+   */
+  const [dormBeds, setDormBeds] = useState(ROOM_TYPE_BEDS.Dormitory);
+  const isDormitory = activeType === 'Dormitory';
+  const bedsPerRoom = isDormitory ? dormBeds : ROOM_TYPE_BEDS[activeType];
+
   // ── Step 2: the room numbers being captured for `activeType` ─────────────
   const [drafts, setDrafts] = useState<DraftRoom[]>([]);
 
@@ -91,7 +100,7 @@ export default function RoomConfiguration() {
   const [pendingDelete, setPendingDelete] = useState<Room | null>(null);
 
   const declaredRooms = count;
-  const declaredBeds = count * ROOM_TYPE_BEDS[activeType];
+  const declaredBeds = count * bedsPerRoom;
 
   /** Rooms already saved per type, so the warden can see what is left to do. */
   const savedByType = ROOM_TYPES.reduce<Record<RoomType, number>>(
@@ -176,7 +185,8 @@ export default function RoomConfiguration() {
         roomType: d.roomType,
         floor: d.floor || 'Ground Floor',
         wing: d.wing || 'Main Block',
-        beds: ROOM_TYPE_BEDS[d.roomType],
+        beds:
+          d.roomType === 'Dormitory' ? dormBeds : ROOM_TYPE_BEDS[d.roomType],
         status: 'Available',
       });
     });
@@ -210,7 +220,12 @@ export default function RoomConfiguration() {
       (s, r) => s + roomOccupancy(r, data.allocations).allotted,
       0
     );
-    return { type, rooms: typeRooms.length, beds, allotted };
+    // Dormitories can differ room to room, so report the real average rather
+    // than the constant.
+    const bedsPerRoom = typeRooms.length
+      ? Math.round(beds / typeRooms.length)
+      : ROOM_TYPE_BEDS[type];
+    return { type, rooms: typeRooms.length, beds, allotted, bedsPerRoom };
   });
 
   return (
@@ -289,9 +304,12 @@ export default function RoomConfiguration() {
                   )}
                 </span>
                 <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-                  {ROOM_TYPE_BEDS[type]}{' '}
-                  {ROOM_TYPE_BEDS[type] === 1 ? 'bed' : 'beds'} per room ·{' '}
-                  {saved} configured
+                  {type === 'Dormitory'
+                    ? 'beds per room vary'
+                    : `${ROOM_TYPE_BEDS[type]} ${
+                        ROOM_TYPE_BEDS[type] === 1 ? 'bed' : 'beds'
+                      } per room`}{' '}
+                  · {saved} configured
                 </span>
               </button>
             );
@@ -307,6 +325,16 @@ export default function RoomConfiguration() {
               value={count}
               onChange={v => setCount(v ?? 0)}
             />
+            {isDormitory && (
+              <NumberBox
+                label="Beds in each dormitory room"
+                subLabel="Varies by hostel"
+                min={1}
+                max={50}
+                value={dormBeds}
+                onChange={v => setDormBeds(v && v > 0 ? v : 1)}
+              />
+            )}
           </FormGrid>
         </div>
 
@@ -424,7 +452,8 @@ export default function RoomConfiguration() {
                     <StatusBadge label={type} variant={ROOM_TYPE_TONE[type]} />
                     <span className="text-xs text-slate-500 dark:text-slate-400">
                       {drafts.filter(d => d.roomType === type).length} rooms ·{' '}
-                      {ROOM_TYPE_BEDS[type]} beds each
+                      {type === 'Dormitory' ? dormBeds : ROOM_TYPE_BEDS[type]}{' '}
+                      beds each
                     </span>
                   </div>
                 </div>
@@ -504,7 +533,7 @@ export default function RoomConfiguration() {
                 />
               </div>
               <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                {ROOM_TYPE_BEDS[s.type]} beds per room
+                {s.bedsPerRoom} beds per room
               </p>
               <div className="mt-3">
                 <OccupancyBar allotted={s.allotted} total={s.beds} />
