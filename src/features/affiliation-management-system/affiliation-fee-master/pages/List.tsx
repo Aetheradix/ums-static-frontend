@@ -17,7 +17,8 @@ export default function List() {
       affiliationType: '1st Year (New)',
       baseFee: 40000,
       lateFee: 2000,
-      lateFeeDays: 15,
+      academicYear: '2024-25',
+      isLateFeeApplied: true,
       baseSeats: 60,
       extraSeatRule: 'Yes (50% per 60 seats)',
       status: true,
@@ -30,7 +31,8 @@ export default function List() {
       affiliationType: '2nd Year (Renewal)',
       baseFee: 112000,
       lateFee: 5000,
-      lateFeeDays: 30,
+      academicYear: '2024-25',
+      isLateFeeApplied: false,
       baseSeats: 60,
       extraSeatRule: 'Yes (50% per 60 seats)',
       status: true,
@@ -43,7 +45,8 @@ export default function List() {
       affiliationType: 'Affiliation Fee',
       baseFee: 40000,
       lateFee: 2000,
-      lateFeeDays: 15,
+      academicYear: '2024-25',
+      isLateFeeApplied: true,
       baseSeats: '-',
       extraSeatRule: 'No',
       status: true,
@@ -56,7 +59,8 @@ export default function List() {
       affiliationType: 'College Name Change',
       baseFee: 50000,
       lateFee: '-',
-      lateFeeDays: '-',
+      academicYear: '2024-25',
+      isLateFeeApplied: false,
       baseSeats: '-',
       extraSeatRule: 'No',
       status: true,
@@ -69,7 +73,8 @@ export default function List() {
       affiliationType: 'Affiliation Fee',
       baseFee: 75000,
       lateFee: '-',
-      lateFeeDays: '-',
+      academicYear: '2024-25',
+      isLateFeeApplied: false,
       baseSeats: '-',
       extraSeatRule: 'No',
       status: true,
@@ -114,7 +119,18 @@ export default function List() {
                 : row.lateFee
             }
           />
-          <Column field="lateFeeDays" header="Late Fee Days" />
+          <Column field="academicYear" header="Academic Year" />
+          <Column
+            field="isLateFeeApplied"
+            header="Apply Late Fee"
+            body={(row: any) => (
+              <span
+                className={`px-2 py-1 rounded text-sm ${row.isLateFeeApplied ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+              >
+                {row.isLateFeeApplied ? 'Yes' : 'No'}
+              </span>
+            )}
+          />
           <Column field="baseSeats" header="Base Seats Unit" />
           <Column field="extraSeatRule" header="Extra Seats Rule" />
           <Column
