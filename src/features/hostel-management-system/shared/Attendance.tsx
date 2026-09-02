@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { ToastService } from 'services';
-import { Button } from 'shared/components/buttons';
-import { DropDownList, TextBox } from 'shared/components/forms';
+import { TextBox } from 'shared/components/forms';
 import {
+  BulkSelectTable,
   FormCard,
   FormGrid,
   FormPage,
@@ -10,7 +10,8 @@ import {
   StatCard,
   StatusBadge,
 } from 'shared/new-components';
-import { SectionNote } from '../components/ui';
+import type { BulkAction } from 'shared/new-components';
+import { EmptyState, SectionNote } from '../components/ui';
 import {
   MOCK_STUDENT_ID,
   MOCK_WARDEN_HOSTEL_ID,
@@ -20,35 +21,34 @@ import {
   useHms,
   useHmsRole,
 } from '../context/HmsContext';
-import type { Attendance as AttendanceRecord } from '../context/HmsContext';
+import type { Attendance as Row } from '../context/HmsContext';
 import { hmsBreadcrumbs } from '../utils/breadcrumbs';
 
-const STATUS_VARIANT = {
+const VARIANT = {
   Present: 'success',
   Absent: 'danger',
   'On Leave': 'info',
   'Night Out': 'warning',
 } as const;
 
-const STATUS_OPTIONS = [
-  { id: 'Present', text: 'Present' },
-  { id: 'Absent', text: 'Absent' },
-  { id: 'On Leave', text: 'On Leave' },
-  { id: 'Night Out', text: 'Night Out' },
-];
+/** One resident on the roster the warden marks against. */
+interface Resident {
+  id: string;
+  studentName: string;
+  roomNumber: string;
+  roomType: string;
+}
 
 export default function Attendance() {
-  const { data, add } = useHms();
+  const { data, add, update } = useHms();
   const { isStudent, activePortal } = useHmsRole();
 
-  const [form, setForm] = useState({
-    studentId: '',
-    date: today(),
-    status: 'Present' as AttendanceRecord['status'],
-    remarks: '',
-  });
+  const [markDate, setMarkDate] = useState(today());
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [search, setSearch] = useState('');
 
-  const residents = useMemo(
+  /** Every active resident of this hostel, with the room they hold. */
+  const residents = useMemo<Resident[]>(
     () =>
       data.allocations
         .filter(
@@ -56,10 +56,34 @@ export default function Attendance() {
         )
         .map(a => ({
           id: a.studentId,
-          text: `${a.studentName} (${a.studentId})`,
-        })),
-    [data.allocations]
+          studentName: a.studentName,
+          roomNumber:
+            data.rooms.find(r => r.id === a.roomId)?.roomNumber ?? '—',
+          roomType: a.roomType,
+        }))
+        .sort((x, y) => x.studentName.localeCompare(y.studentName)),
+    [data.allocations, data.rooms]
   );
+
+  const filteredResidents = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return residents;
+    return residents.filter(
+      r =>
+        r.studentName.toLowerCase().includes(q) ||
+        r.id.toLowerCase().includes(q) ||
+        r.roomNumber.toLowerCase().includes(q)
+    );
+  }, [residents, search]);
+
+  /** What each resident is already marked as on the chosen date. */
+  const markedOn = useMemo(() => {
+    const map = new Map<string, Row>();
+    data.attendance
+      .filter(a => a.hostelId === MOCK_WARDEN_HOSTEL_ID && a.date === markDate)
+      .forEach(a => map.set(a.studentId, a));
+    return map;
+  }, [data.attendance, markDate]);
 
   const rows = useMemo(
     () =>
@@ -72,159 +96,232 @@ export default function Attendance() {
   const stats = useMemo(() => {
     const present = rows.filter(a => a.status === 'Present').length;
     return {
-      marked: rows.length,
       present,
       absent: rows.filter(a => a.status === 'Absent').length,
-      rate: rows.length ? Math.round((present / rows.length) * 100) : 0,
+      rate: rows.length ? `${Math.round((present / rows.length) * 100)}%` : '—',
+      pendingToday: residents.filter(r => !markedOn.has(r.id)).length,
     };
-  }, [rows]);
+  }, [rows, residents, markedOn]);
 
-  const handleMark = () => {
-    const name =
-      residents.find(r => r.id === form.studentId)?.text.split(' (')[0] ??
-      'Unnamed Student';
-    add('attendance', {
-      id: uid('ATT'),
-      studentId: form.studentId,
-      studentName: name,
-      hostelId: MOCK_WARDEN_HOSTEL_ID,
-      date: form.date,
-      status: form.status,
-      markedBy: MOCK_WARDEN_NAME,
-      remarks: form.remarks,
+  const toggleOne = (id: string) =>
+    setSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
     });
-    setForm({ ...form, studentId: '', remarks: '' });
-    ToastService.success('Attendance marked — the student can see it now.');
+
+  const toggleAll = () =>
+    setSelected(prev =>
+      prev.size === filteredResidents.length
+        ? new Set()
+        : new Set(filteredResidents.map(r => r.id))
+    );
+
+  /**
+   * Mark every checked resident at once. Re-marking someone already recorded
+   * for the date updates that entry rather than adding a second one.
+   */
+  const markSelected = (status: Row['status']) => {
+    if (selected.size === 0) {
+      ToastService.success('Tick the students you want to mark first.');
+      return;
+    }
+
+    selected.forEach(studentId => {
+      const resident = residents.find(r => r.id === studentId);
+      const existing = markedOn.get(studentId);
+
+      if (existing) {
+        update('attendance', existing.id, {
+          ...existing,
+          status,
+          markedBy: MOCK_WARDEN_NAME,
+        });
+      } else {
+        add('attendance', {
+          id: uid('AT'),
+          studentId,
+          studentName: resident?.studentName ?? studentId,
+          hostelId: MOCK_WARDEN_HOSTEL_ID,
+          date: markDate,
+          status,
+          markedBy: MOCK_WARDEN_NAME,
+          remarks: '',
+        });
+      }
+    });
+
+    ToastService.success(
+      `${selected.size} student${selected.size === 1 ? '' : 's'} marked ${status.toLowerCase()} for ${markDate}.`
+    );
+    setSelected(new Set());
   };
 
-  const markAllPresent = () => {
-    const entries = residents.map(r => ({
-      id: uid(`ATT${r.id}`),
-      studentId: r.id,
-      studentName: r.text.split(' (')[0],
-      hostelId: MOCK_WARDEN_HOSTEL_ID,
-      date: form.date,
-      status: 'Present' as const,
-      markedBy: MOCK_WARDEN_NAME,
-      remarks: 'Marked in bulk roll call',
-    }));
-    entries.forEach(e => add('attendance', e));
-    ToastService.success(
-      `${entries.length} resident${entries.length === 1 ? '' : 's'} marked present for ${form.date}.`
-    );
-  };
+  const bulkActions: BulkAction[] = [
+    {
+      label: 'Present',
+      icon: 'check',
+      variant: 'success',
+      onClick: () => markSelected('Present'),
+    },
+    {
+      label: 'Absent',
+      icon: 'times',
+      variant: 'danger',
+      onClick: () => markSelected('Absent'),
+    },
+    {
+      label: 'On Leave',
+      icon: 'calendar',
+      variant: 'outlined',
+      onClick: () => markSelected('On Leave'),
+    },
+    {
+      label: 'Night Out',
+      icon: 'moon',
+      variant: 'outlined',
+      onClick: () => markSelected('Night Out'),
+    },
+  ];
 
   return (
     <FormPage
       title={isStudent ? 'My Attendance' : 'Daily Attendance'}
       description={
         isStudent
-          ? 'Your daily hostel attendance as marked by the warden, with your present percentage.'
-          : 'Mark daily attendance for your residents. Every entry appears on the student portal immediately.'
+          ? 'Your daily hostel attendance as marked by the warden.'
+          : 'Tick the residents on the roster and mark them all in one go. Marking again for the same date updates the entry.'
       }
-      breadcrumbs={hmsBreadcrumbs(activePortal, 'Attendance')}
+      breadcrumbs={hmsBreadcrumbs(activePortal, 'Daily Attendance')}
     >
-      <FormGrid columns={4}>
+      <FormGrid columns={isStudent ? 3 : 4}>
         <StatCard
-          title="Entries"
-          value={stats.marked}
-          icon="fact_check"
-          colorScheme="blue"
-        />
-        <StatCard
-          title="Present"
+          title="Days Present"
           value={stats.present}
           icon="check_circle"
           colorScheme="green"
         />
         <StatCard
-          title="Absent"
+          title="Days Absent"
           value={stats.absent}
           icon="cancel"
           colorScheme="red"
         />
         <StatCard
-          title="Present %"
-          value={`${stats.rate}%`}
+          title="Attendance Rate"
+          value={stats.rate}
           icon="bar_chart"
-          colorScheme="teal"
+          colorScheme="blue"
         />
+        {!isStudent && (
+          <StatCard
+            title="Unmarked Today"
+            value={stats.pendingToday}
+            icon="hourglass_top"
+            colorScheme="amber"
+            subtitle={`Roster of ${residents.length}`}
+          />
+        )}
       </FormGrid>
-
-      {isStudent && stats.rate < 75 && stats.marked > 0 && (
-        <SectionNote tone="warning" title="Attendance below 75%">
-          Hostel rules require 75% presence at night roll call. Speak to your
-          warden if any of these entries look wrong.
-        </SectionNote>
-      )}
 
       {!isStudent && (
         <FormCard
           title="Mark Attendance"
-          subtitle="Mark one resident, or take the whole roll call in one go."
+          subtitle="Pick the date, tick the students, then choose a status — the whole selection is marked at once."
           icon="calendar-plus"
         >
           <FormGrid columns={4}>
-            <DropDownList
-              label="Student"
-              data={residents}
-              textField="text"
-              valueField="id"
-              filter
-              value={form.studentId}
-              onChange={v =>
-                setForm({ ...form, studentId: (v as string) ?? '' })
-              }
-            />
             <TextBox
-              label="Date"
+              label="Attendance Date"
               type="date"
-              value={form.date}
-              onChange={v => setForm({ ...form, date: v })}
-            />
-            <DropDownList
-              label="Status"
-              data={STATUS_OPTIONS}
-              textField="text"
-              valueField="id"
-              value={form.status}
-              onChange={v =>
-                setForm({
-                  ...form,
-                  status: (v as AttendanceRecord['status']) ?? 'Present',
-                })
-              }
-            />
-            <TextBox
-              label="Remarks"
-              placeholder="Optional note"
-              value={form.remarks}
-              onChange={v => setForm({ ...form, remarks: v })}
+              value={markDate}
+              onChange={v => {
+                setMarkDate(v);
+                setSelected(new Set());
+              }}
             />
           </FormGrid>
-          <div className="mt-4 flex flex-wrap gap-3">
-            <Button
-              label="Mark Attendance"
-              icon="check"
-              variant="primary"
-              onClick={handleMark}
+
+          {residents.length === 0 ? (
+            <EmptyState
+              icon="groups"
+              title="No residents yet"
+              hint="Allot rooms to approved students and they appear on this roster."
             />
-            <Button
-              label={`Mark All ${residents.length} Present`}
-              icon="users"
-              variant="outlined"
-              onClick={markAllPresent}
-            />
-          </div>
+          ) : (
+            <div className="mt-2">
+              <BulkSelectTable<Resident>
+                data={filteredResidents}
+                selected={selected}
+                onToggleOne={toggleOne}
+                onToggleAll={toggleAll}
+                onClearSelection={() => setSelected(new Set())}
+                bulkActions={bulkActions}
+                searchValue={search}
+                onSearchChange={setSearch}
+                searchPlaceholder="Search by name, enrollment or room..."
+                selectionNoun="student"
+                emptyMessage="No residents match that search."
+                totalCount={residents.length}
+                columns={[
+                  {
+                    header: 'Student',
+                    cell: r => (
+                      <div className="flex flex-col">
+                        <span className="font-semibold">{r.studentName}</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">
+                          {r.id}
+                        </span>
+                      </div>
+                    ),
+                  },
+                  {
+                    header: 'Room',
+                    cell: r => (
+                      <div className="flex flex-col">
+                        <span>{r.roomNumber}</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">
+                          {r.roomType}
+                        </span>
+                      </div>
+                    ),
+                  },
+                  {
+                    header: `Marked on ${markDate}`,
+                    cell: r => {
+                      const entry = markedOn.get(r.id);
+                      return entry ? (
+                        <StatusBadge
+                          label={entry.status}
+                          variant={VARIANT[entry.status]}
+                        />
+                      ) : (
+                        <StatusBadge label="Not marked" variant="muted" />
+                      );
+                    },
+                  },
+                ]}
+              />
+            </div>
+          )}
         </FormCard>
+      )}
+
+      {isStudent && (
+        <SectionNote tone="info">
+          Attendance is marked by your warden. If something looks wrong, raise
+          it under Grievances.
+        </SectionNote>
       )}
 
       <FormCard
         title={isStudent ? 'My Attendance History' : 'Attendance Register'}
         icon="list"
       >
-        <GridPanel<AttendanceRecord>
+        <GridPanel<Row>
           data={rows}
+          cellMemo={false}
           searchBox
           searchPlaceholder="Search by student..."
           searchFields={['studentName', 'studentId']}
@@ -237,14 +334,11 @@ export default function Attendance() {
                   {
                     field: 'studentName' as const,
                     header: 'Student',
-                    width: 180,
-                    cell: (item: AttendanceRecord) => (
+                    cell: (r: Row) => (
                       <div className="flex flex-col">
-                        <span className="font-semibold">
-                          {item.studentName}
-                        </span>
+                        <span className="font-semibold">{r.studentName}</span>
                         <span className="text-xs text-slate-500 dark:text-slate-400">
-                          {item.studentId}
+                          {r.studentId}
                         </span>
                       </div>
                     ),
@@ -254,20 +348,16 @@ export default function Attendance() {
             {
               field: 'status',
               header: 'Status',
-              width: 130,
-              cell: item => (
-                <StatusBadge
-                  label={item.status}
-                  variant={STATUS_VARIANT[item.status]}
-                />
+              width: 140,
+              cell: r => (
+                <StatusBadge label={r.status} variant={VARIANT[r.status]} />
               ),
             },
-            { field: 'markedBy', header: 'Marked By', width: 165 },
+            { field: 'markedBy', header: 'Marked By' },
             {
               field: 'remarks',
               header: 'Remarks',
-              width: 260,
-              cell: item => <>{item.remarks || '—'}</>,
+              cell: r => <>{r.remarks || '—'}</>,
             },
           ]}
         />

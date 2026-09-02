@@ -62,20 +62,19 @@ export default function RoomConfiguration() {
     [data.rooms, hostelId]
   );
 
-  // ── Step 1: how many rooms of each type ──────────────────────────────────
-  const [counts, setCounts] = useState<Record<RoomType, number>>({
-    'Single Seater': 0,
-    'Double Seater': 0,
-    'Triple Seater': 0,
-    Dormitory: 0,
-  });
+  /**
+   * Step 1 captures one room type at a time — the warden picks a type, fills
+   * that type's room numbers, saves, then moves to the next. Opening every
+   * type at once produced a page-long grid.
+   */
+  const [activeType, setActiveType] = useState<RoomType>('Single Seater');
+  const [count, setCount] = useState(0);
 
-  // ── Step 2: the room numbers being captured ──────────────────────────────
+  // ── Step 2: the room numbers being captured for `activeType` ─────────────
   const [drafts, setDrafts] = useState<DraftRoom[]>([]);
 
-  // Auto-fill helper
+  // Auto-fill helper — always scoped to the type being captured.
   const [autoFill, setAutoFill] = useState({
-    roomType: 'Single Seater' as RoomType,
     prefix: 'A-',
     startNumber: 101,
     floor: 'Ground Floor',
@@ -91,11 +90,22 @@ export default function RoomConfiguration() {
   });
   const [pendingDelete, setPendingDelete] = useState<Room | null>(null);
 
-  const declaredBeds = ROOM_TYPES.reduce(
-    (sum, t) => sum + counts[t] * ROOM_TYPE_BEDS[t],
-    0
+  const declaredRooms = count;
+  const declaredBeds = count * ROOM_TYPE_BEDS[activeType];
+
+  /** Rooms already saved per type, so the warden can see what is left to do. */
+  const savedByType = ROOM_TYPES.reduce<Record<RoomType, number>>(
+    (acc, t) => {
+      acc[t] = rooms.filter(r => r.roomType === t).length;
+      return acc;
+    },
+    {
+      'Single Seater': 0,
+      'Double Seater': 0,
+      'Triple Seater': 0,
+      Dormitory: 0,
+    }
   );
-  const declaredRooms = ROOM_TYPES.reduce((sum, t) => sum + counts[t], 0);
 
   const configuredBeds = rooms.reduce((s, r) => s + r.beds, 0);
   const allottedBeds = rooms.reduce(
@@ -104,29 +114,24 @@ export default function RoomConfiguration() {
   );
 
   const generateDrafts = () => {
-    const next: DraftRoom[] = [];
-    ROOM_TYPES.forEach(type => {
-      for (let i = 0; i < counts[type]; i += 1) {
-        next.push({
-          key: `${type}-${i}-${Date.now()}`,
-          roomType: type,
-          roomNumber: '',
-          floor: '',
-          wing: '',
-        });
-      }
-    });
-
-    if (next.length === 0) {
+    if (count <= 0) {
       ToastService.success(
-        'Set a count against at least one room type to capture room numbers.'
+        `Set how many ${activeType} rooms this hostel has, then generate the entries.`
       );
       return;
     }
 
+    const next: DraftRoom[] = Array.from({ length: count }, (_, i) => ({
+      key: `${activeType}-${i}-${Date.now()}`,
+      roomType: activeType,
+      roomNumber: '',
+      floor: '',
+      wing: '',
+    }));
+
     setDrafts(next);
     ToastService.success(
-      `${next.length} room ${next.length === 1 ? 'entry' : 'entries'} ready — fill in the room numbers.`
+      `${next.length} ${activeType} ${next.length === 1 ? 'entry' : 'entries'} ready — fill in the room numbers.`
     );
   };
 
@@ -137,7 +142,6 @@ export default function RoomConfiguration() {
     let seq = autoFill.startNumber;
     setDrafts(prev =>
       prev.map(d => {
-        if (d.roomType !== autoFill.roomType) return d;
         const filled = {
           ...d,
           roomNumber: `${autoFill.prefix}${seq}`,
@@ -148,7 +152,7 @@ export default function RoomConfiguration() {
         return filled;
       })
     );
-    ToastService.success(`Room numbers filled for ${autoFill.roomType}.`);
+    ToastService.success(`Room numbers filled for all ${activeType} entries.`);
   };
 
   const saveDrafts = () => {
@@ -179,12 +183,7 @@ export default function RoomConfiguration() {
 
     if (toSave.length > 0) addMany('rooms', toSave);
     setDrafts([]);
-    setCounts({
-      'Single Seater': 0,
-      'Double Seater': 0,
-      'Triple Seater': 0,
-      Dormitory: 0,
-    });
+    setCount(0);
     ToastService.success(
       `${toSave.length} room${toSave.length === 1 ? '' : 's'} added to ${hostel?.nameEn ?? 'the hostel'}` +
         (skipped ? ` · ${skipped} skipped as duplicate room numbers` : '')
@@ -249,22 +248,67 @@ export default function RoomConfiguration() {
 
       {/* ── Step 1 ── */}
       <FormCard
-        title="Step 1 · Declare Room Counts"
-        subtitle="How many rooms of each type does this hostel have? Beds are fixed per type."
+        title="Step 1 · Pick a Room Type"
+        subtitle="Configure one room type at a time — set the count, capture those room numbers, save, then move to the next type."
         icon="calculator"
       >
-        <FormGrid columns={4}>
-          {ROOM_TYPES.map(type => (
+        {/* Type selector doubling as a progress strip */}
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {ROOM_TYPES.map(type => {
+            const isActive = type === activeType;
+            const saved = savedByType[type];
+            return (
+              <button
+                key={type}
+                type="button"
+                onClick={() => {
+                  setActiveType(type);
+                  setCount(0);
+                  setDrafts([]);
+                }}
+                className={`flex flex-col gap-1 rounded-xl border px-4 py-3 text-left transition-all ${
+                  isActive
+                    ? 'border-blue-500 bg-blue-50 shadow-sm dark:border-blue-400 dark:bg-blue-950/40'
+                    : 'border-slate-200 bg-white hover:border-blue-300 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-blue-700'
+                }`}
+              >
+                <span className="flex items-center justify-between gap-2">
+                  <span
+                    className={`text-sm font-bold ${
+                      isActive
+                        ? 'text-blue-700 dark:text-blue-200'
+                        : 'text-slate-700 dark:text-slate-200'
+                    }`}
+                  >
+                    {type}
+                  </span>
+                  {saved > 0 && (
+                    <span className="material-symbols-outlined text-[18px] text-green-600 dark:text-green-400">
+                      check_circle
+                    </span>
+                  )}
+                </span>
+                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                  {ROOM_TYPE_BEDS[type]}{' '}
+                  {ROOM_TYPE_BEDS[type] === 1 ? 'bed' : 'beds'} per room ·{' '}
+                  {saved} configured
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mt-4">
+          <FormGrid columns={4}>
             <NumberBox
-              key={type}
-              label={`${type} (${ROOM_TYPE_BEDS[type]} ${ROOM_TYPE_BEDS[type] === 1 ? 'bed' : 'beds'})`}
+              label={`How many ${activeType} rooms?`}
               min={0}
               max={200}
-              value={counts[type]}
-              onChange={v => setCounts({ ...counts, [type]: v ?? 0 })}
+              value={count}
+              onChange={v => setCount(v ?? 0)}
             />
-          ))}
-        </FormGrid>
+          </FormGrid>
+        </div>
 
         <div className="mt-2 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50 px-5 py-4 dark:border-slate-700 dark:bg-slate-800/60">
           <div className="flex flex-wrap gap-6">
@@ -286,7 +330,7 @@ export default function RoomConfiguration() {
             </div>
           </div>
           <Button
-            label="Generate Room Entries"
+            label={`Generate ${activeType} Entries`}
             icon="arrow-right"
             variant="primary"
             onClick={generateDrafts}
@@ -297,7 +341,7 @@ export default function RoomConfiguration() {
       {/* ── Step 2 ── */}
       {drafts.length > 0 && (
         <FormCard
-          title={`Step 2 · Room Numbers (${drafts.length})`}
+          title={`Step 2 · ${activeType} Room Numbers (${drafts.length})`}
           subtitle="Give every room its number, floor and wing. Anything left blank is auto-numbered on save."
           icon="pencil"
           headerAction={
@@ -319,26 +363,16 @@ export default function RoomConfiguration() {
             </div>
           }
         >
-          <SectionNote tone="info" title="Fill a whole room type at once">
-            Pick a room type, a number prefix and a starting number — every room
-            of that type gets numbered in sequence with the same floor and wing.
-            You can still edit any row afterwards.
+          <SectionNote
+            tone="info"
+            title={`Fill all ${drafts.length} entries at once`}
+          >
+            Set a number prefix and a starting number — every {activeType} entry
+            below gets numbered in sequence with the same floor and wing. You
+            can still edit any row afterwards.
           </SectionNote>
 
           <FormGrid columns={3}>
-            <DropDownList
-              label="Room Type"
-              data={ROOM_TYPES.map(t => ({ id: t, text: t }))}
-              textField="text"
-              valueField="id"
-              value={autoFill.roomType}
-              onChange={v =>
-                setAutoFill({
-                  ...autoFill,
-                  roomType: (v as RoomType) ?? 'Single Seater',
-                })
-              }
-            />
             <TextBox
               label="Number Prefix"
               placeholder="e.g. A-"

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import { DropDownList, TextArea } from 'shared/components/forms';
+import { DropDownList, FileUpload, TextArea } from 'shared/components/forms';
 import {
   FormCard,
   FormGrid,
@@ -45,7 +45,9 @@ export default function MessFeedback() {
     meal: MEALS[1] as string,
     quality: 'Good' as Feedback['quality'],
     comments: '',
+    photo: '',
   });
+  const [viewingPhoto, setViewingPhoto] = useState<Feedback | null>(null);
   const [responding, setResponding] = useState<Feedback | null>(null);
   const [response, setResponse] = useState('');
 
@@ -72,10 +74,11 @@ export default function MessFeedback() {
       rating: RATING[form.quality] ?? 3,
       quality: form.quality,
       comments: form.comments,
+      photo: form.photo,
       wardenResponse: '',
       status: 'New',
     });
-    setForm({ ...form, comments: '' });
+    setForm({ ...form, comments: '', photo: '' });
     ToastService.success('Thank you — your feedback has reached the warden.');
   };
 
@@ -149,7 +152,7 @@ export default function MessFeedback() {
               }
             />
             <div />
-            <div className="md:col-span-3">
+            <div className="md:col-span-2">
               <TextArea
                 label="Your Comments"
                 rows={3}
@@ -158,6 +161,17 @@ export default function MessFeedback() {
                 onChange={v => setForm({ ...form, comments: v })}
               />
             </div>
+            <FileUpload
+              label="Photo of the Meal"
+              mode="photo"
+              accept="image/*"
+              uploadNote="JPG or PNG, up to 2 MB — the warden sees this"
+              maxSizeKB={2048}
+              previewWidth={120}
+              previewHeight={90}
+              value={form.photo}
+              onChange={f => setForm({ ...form, photo: f ? f.name : '' })}
+            />
           </FormGrid>
           <div className="mt-4 flex gap-3">
             <Button
@@ -169,7 +183,7 @@ export default function MessFeedback() {
             <Button
               label="Clear"
               variant="outlined"
-              onClick={() => setForm({ ...form, comments: '' })}
+              onClick={() => setForm({ ...form, comments: '', photo: '' })}
             />
           </div>
         </FormCard>
@@ -213,6 +227,27 @@ export default function MessFeedback() {
               cell: f => <>{f.rating} / 5</>,
             },
             { field: 'comments', header: 'Comments' },
+            {
+              field: 'photo',
+              header: 'Photo',
+              width: 110,
+              sortable: false,
+              cell: f =>
+                f.photo ? (
+                  <button
+                    type="button"
+                    onClick={() => setViewingPhoto(f)}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-2 py-1 text-xs font-semibold text-blue-600 transition-colors hover:bg-blue-50 dark:border-slate-700 dark:text-blue-300 dark:hover:bg-blue-950/40"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">
+                      image
+                    </span>
+                    View
+                  </button>
+                ) : (
+                  <span className="text-xs text-slate-400">—</span>
+                ),
+            },
             {
               field: 'wardenResponse',
               header: 'Action Taken',
@@ -291,6 +326,44 @@ export default function MessFeedback() {
               value={response}
               onChange={setResponse}
             />
+          </div>
+        )}
+      </FormPopup>
+      <FormPopup
+        visible={Boolean(viewingPhoto)}
+        onHide={() => setViewingPhoto(null)}
+        title="Meal Photo"
+        subtitle={
+          viewingPhoto
+            ? `${viewingPhoto.studentName} · ${viewingPhoto.meal} on ${viewingPhoto.feedbackDate}`
+            : ''
+        }
+        footer={
+          <div className="flex justify-end">
+            <Button
+              label="Close"
+              variant="primary"
+              onClick={() => setViewingPhoto(null)}
+            />
+          </div>
+        }
+      >
+        {viewingPhoto && (
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-6 py-10 dark:border-slate-600 dark:bg-slate-800/60">
+              <span className="material-symbols-outlined text-[44px] text-slate-400 dark:text-slate-500">
+                image
+              </span>
+              <p className="font-mono text-sm font-semibold text-slate-700 dark:text-slate-200">
+                {viewingPhoto.photo}
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Uploaded with the feedback — the file is held by the ERP.
+              </p>
+            </div>
+            <div className="rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-700 dark:border-slate-700 dark:text-slate-200">
+              {viewingPhoto.comments}
+            </div>
           </div>
         )}
       </FormPopup>

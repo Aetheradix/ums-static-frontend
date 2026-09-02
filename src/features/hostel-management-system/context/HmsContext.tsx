@@ -20,7 +20,7 @@ export const MOCK_STUDENT_NAME = 'Rahul Verma';
  * Bump when `HmsData` changes shape — a snapshot stored under an older
  * version is dropped rather than half-merged.
  */
-const DATA_VERSION = '1';
+const DATA_VERSION = '4';
 const DATA_KEY = 'hmsData';
 const VERSION_KEY = 'hmsDataVersion';
 
@@ -44,9 +44,26 @@ export const ROOM_TYPE_BEDS: Record<RoomType, number> = {
 
 export const ROOM_TYPES = Object.keys(ROOM_TYPE_BEDS) as RoomType[];
 
+/** Annual hostel fee per room type — fewer beds to a room costs more. */
+export const ROOM_TYPE_FEE: Record<RoomType, number> = {
+  'Single Seater': 48000,
+  'Double Seater': 36000,
+  'Triple Seater': 28000,
+  Dormitory: 18000,
+};
+
+export const formatFee = (amount: number) =>
+  `₹${amount.toLocaleString('en-IN')}`;
+
+/** `Triple Seater (3 beds · ₹28,000/year)` — the label every room-type picker shows. */
+export const roomTypeLabel = (t: RoomType) =>
+  `${t} (${ROOM_TYPE_BEDS[t]} ${ROOM_TYPE_BEDS[t] === 1 ? 'bed' : 'beds'} · ${formatFee(
+    ROOM_TYPE_FEE[t]
+  )}/year)`;
+
 export const ROOM_TYPE_OPTIONS = ROOM_TYPES.map(t => ({
   id: t,
-  text: `${t} (${ROOM_TYPE_BEDS[t]} ${ROOM_TYPE_BEDS[t] === 1 ? 'bed' : 'beds'})`,
+  text: roomTypeLabel(t),
 }));
 
 // ───────────────────────────────────────────────────────────────────────────
@@ -298,6 +315,8 @@ export interface MessFeedback {
   rating: number;
   quality: 'Excellent' | 'Good' | 'Average' | 'Poor';
   comments: string;
+  /** Photo of the meal attached by the student; shown in the warden's grid. */
+  photo: string;
   wardenResponse: string;
   status: 'New' | 'Reviewed' | 'Actioned';
 }
@@ -367,6 +386,8 @@ export interface RoomChangeRequest {
   hostelId: string;
   currentRoomId: string;
   requestedRoomType: string;
+  /** Room number the student asked for, when they picked one. */
+  requestedRoomId?: string;
   reason: string;
   requestedOn: string;
   status: 'Pending' | 'Approved' | 'Rejected';
@@ -486,6 +507,480 @@ export const MEALS = ['Breakfast', 'Lunch', 'Snacks', 'Dinner'] as const;
 // ───────────────────────────────────────────────────────────────────────────
 // Seed data
 // ───────────────────────────────────────────────────────────────────────────
+
+/**
+ * A compact roster the seed expands into directory entries, applications and
+ * allotments. Keeping it as tuples means every grid has realistic volume
+ * without thousands of lines of literal objects.
+ *
+ * [roll, name, gender, programme, branch, category, blood, father, mother, city]
+ */
+const ROSTER: [
+  string,
+  string,
+  'Male' | 'Female',
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+][] = [
+  [
+    'JEE2026001',
+    'Rahul Verma',
+    'Male',
+    'B.Tech',
+    'Computer Science & Engineering',
+    'General',
+    'B+',
+    'Mahesh Verma',
+    'Sunita Verma',
+    'Indore',
+  ],
+  [
+    'JEE2026002',
+    'Priya Sharma',
+    'Female',
+    'B.Tech',
+    'Electronics & Communication',
+    'OBC',
+    'O+',
+    'Ramesh Sharma',
+    'Kavita Sharma',
+    'Ujjain',
+  ],
+  [
+    'JEE2026003',
+    'Amit Patel',
+    'Male',
+    'B.Tech',
+    'Mechanical Engineering',
+    'SC',
+    'A+',
+    'Dinesh Patel',
+    'Rekha Patel',
+    'Dhar',
+  ],
+  [
+    'DAVV2026004',
+    'Neha Joshi',
+    'Female',
+    'MBA',
+    'Marketing',
+    'General',
+    'AB+',
+    'Prakash Joshi',
+    'Anita Joshi',
+    'Indore',
+  ],
+  [
+    'DAVV2026005',
+    'Sandeep Yadav',
+    'Male',
+    'MCA',
+    'Computer Applications',
+    'OBC',
+    'B-',
+    'Rajendra Yadav',
+    'Sushma Yadav',
+    'Khargone',
+  ],
+  [
+    'JEE2026006',
+    'Karan Mehta',
+    'Male',
+    'B.Tech',
+    'Civil Engineering',
+    'General',
+    'O-',
+    'Suresh Mehta',
+    'Nisha Mehta',
+    'Indore',
+  ],
+  [
+    'JEE2026007',
+    'Vikas Nair',
+    'Male',
+    'B.Tech',
+    'Information Technology',
+    'General',
+    'A-',
+    'Mohan Nair',
+    'Lata Nair',
+    'Dewas',
+  ],
+  [
+    'JEE2026008',
+    'Rohit Chouhan',
+    'Male',
+    'B.Tech',
+    'Electrical Engineering',
+    'ST',
+    'B+',
+    'Devi Singh Chouhan',
+    'Meera Chouhan',
+    'Jhabua',
+  ],
+  [
+    'JEE2026009',
+    'Ankit Gupta',
+    'Male',
+    'B.Sc',
+    'Physics',
+    'General',
+    'AB-',
+    'Naresh Gupta',
+    'Shobha Gupta',
+    'Ratlam',
+  ],
+  [
+    'JEE2026010',
+    'Deepak Solanki',
+    'Male',
+    'B.Tech',
+    'Computer Science & Engineering',
+    'OBC',
+    'O+',
+    'Kishor Solanki',
+    'Manju Solanki',
+    'Mhow',
+  ],
+  [
+    'JEE2026011',
+    'Sahil Khan',
+    'Male',
+    'BCA',
+    'Computer Applications',
+    'General',
+    'B+',
+    'Imran Khan',
+    'Farah Khan',
+    'Burhanpur',
+  ],
+  [
+    'JEE2026012',
+    'Manish Rathore',
+    'Male',
+    'B.Com',
+    'Accounting & Finance',
+    'OBC',
+    'A+',
+    'Bhanwar Rathore',
+    'Kamla Rathore',
+    'Sanawad',
+  ],
+  [
+    'JEE2026013',
+    'Sneha Agrawal',
+    'Female',
+    'B.Tech',
+    'Computer Science & Engineering',
+    'General',
+    'O+',
+    'Vinod Agrawal',
+    'Poonam Agrawal',
+    'Indore',
+  ],
+  [
+    'JEE2026014',
+    'Ritu Pawar',
+    'Female',
+    'B.Sc',
+    'Biotechnology',
+    'OBC',
+    'A+',
+    'Ashok Pawar',
+    'Sarita Pawar',
+    'Dewas',
+  ],
+  [
+    'JEE2026015',
+    'Divya Rane',
+    'Female',
+    'BBA',
+    'Business Administration',
+    'SC',
+    'B+',
+    'Sunil Rane',
+    'Vaishali Rane',
+    'Khandwa',
+  ],
+  [
+    'JEE2026016',
+    'Pooja Bhargava',
+    'Female',
+    'MBA',
+    'Human Resources',
+    'General',
+    'AB+',
+    'Rakesh Bhargava',
+    'Seema Bhargava',
+    'Ujjain',
+  ],
+  [
+    'JEE2026017',
+    'Anjali Tiwari',
+    'Female',
+    'B.Tech',
+    'Electronics & Communication',
+    'General',
+    'O-',
+    'Girish Tiwari',
+    'Renu Tiwari',
+    'Indore',
+  ],
+  [
+    'JEE2026018',
+    'Kavya Deshmukh',
+    'Female',
+    'M.Sc',
+    'Chemistry',
+    'OBC',
+    'A-',
+    'Prakash Deshmukh',
+    'Sunanda Deshmukh',
+    'Mhow',
+  ],
+  [
+    'JEE2026019',
+    'Tarun Malviya',
+    'Male',
+    'B.Tech',
+    'Mechanical Engineering',
+    'OBC',
+    'B+',
+    'Hariom Malviya',
+    'Geeta Malviya',
+    'Barwani',
+  ],
+  [
+    'JEE2026020',
+    'Imran Sheikh',
+    'Male',
+    'B.Tech',
+    'Civil Engineering',
+    'General',
+    'O+',
+    'Yusuf Sheikh',
+    'Nasreen Sheikh',
+    'Indore',
+  ],
+  [
+    'JEE2026021',
+    'Meena Chauhan',
+    'Female',
+    'B.Ed',
+    'Education',
+    'ST',
+    'A+',
+    'Ram Singh Chauhan',
+    'Pushpa Chauhan',
+    'Alirajpur',
+  ],
+  [
+    'JEE2026022',
+    'Nikhil Jain',
+    'Male',
+    'MCA',
+    'Computer Applications',
+    'General',
+    'AB+',
+    'Sanjay Jain',
+    'Rachna Jain',
+    'Ratlam',
+  ],
+];
+
+const BRANCH_CODE: Record<string, string> = {
+  'Computer Science & Engineering': 'CS',
+  'Electronics & Communication': 'EC',
+  'Mechanical Engineering': 'ME',
+  'Civil Engineering': 'CE',
+  'Electrical Engineering': 'EE',
+  'Information Technology': 'IT',
+  'Computer Applications': 'CA',
+  Marketing: 'MKT',
+  'Human Resources': 'HR',
+  'Business Administration': 'BBA',
+  'Accounting & Finance': 'COM',
+  Physics: 'PHY',
+  Chemistry: 'CHM',
+  Biotechnology: 'BT',
+  Education: 'EDU',
+};
+
+const slug = (name: string) => name.toLowerCase().replace(/\s+/g, '.');
+
+const seedDirectory = (): StudentDirectoryEntry[] =>
+  ROSTER.map(
+    (
+      [roll, name, gender, programme, branch, category, , father, mother, city],
+      i
+    ) => ({
+      rollNumber: roll,
+      enrollmentNumber: `DAVV/${BRANCH_CODE[branch] ?? 'GEN'}/2026/${String(i + 1).padStart(3, '0')}`,
+      mobileNumber: `98260001${String(i + 1).padStart(2, '0')}`,
+      studentName: name,
+      photo: '',
+      programme,
+      branch,
+      gender,
+      category,
+      email: `${slug(name)}@student.davv.ac.in`,
+      dateOfBirth: `200${4 + (i % 3)}-0${(i % 9) + 1}-1${i % 9}`,
+      fatherName: father,
+      motherName: mother,
+      parentMobile: `98260009${String(i + 1).padStart(2, '0')}`,
+      parentEmail: `${slug(father)}@gmail.com`,
+      permanentAddress: `${10 + i}, ${city} Ward, ${city}, Madhya Pradesh`,
+    })
+  );
+
+/** Girls go to H2, everyone else to H1 — matching the two seeded hostels. */
+const hostelFor = (gender: string) => (gender === 'Female' ? 'H2' : 'H1');
+
+const PREFERENCES: RoomType[] = [
+  'Triple Seater',
+  'Double Seater',
+  'Single Seater',
+  'Triple Seater',
+  'Dormitory',
+  'Double Seater',
+];
+
+/**
+ * The first `approvedCount` of the roster are approved residents, the next few
+ * sit in the warden's pending queue, and two are rejected — so every bucket on
+ * the Admission Requests screen has rows.
+ */
+const APPROVED_COUNT = 6;
+const PENDING_COUNT = 4;
+
+const seedApplications = (): Application[] => {
+  const directory = seedDirectory();
+  // Statuses are assigned within each hostel's own queue, so both the boys'
+  // and the girls' warden see approved, pending and rejected rows.
+  const seenPerHostel = new Map<string, number>();
+
+  return directory.map((d, i) => {
+    const hostelId = hostelFor(d.gender);
+    const rank = seenPerHostel.get(hostelId) ?? 0;
+    seenPerHostel.set(hostelId, rank + 1);
+
+    const approved = rank < APPROVED_COUNT;
+    const pending = !approved && rank < APPROVED_COUNT + PENDING_COUNT;
+    const status: ApplicationStatus = approved
+      ? 'Approved'
+      : pending
+        ? 'Pending'
+        : 'Rejected';
+    const day = String((i % 27) + 1).padStart(2, '0');
+    const roster = ROSTER[i];
+
+    return {
+      id: `AP${i + 1}`,
+      applicationNo: `HMS/2026/${String(i + 1).padStart(4, '0')}`,
+      submittedOn: `2026-06-${day}`,
+      rollNumber: d.rollNumber,
+      enrollmentNumber: d.enrollmentNumber,
+      studentName: d.studentName,
+      photo: '',
+      programme: d.programme,
+      branch: d.branch,
+      gender: d.gender,
+      category: d.category,
+      email: d.email,
+      mobileNumber: d.mobileNumber,
+      dateOfBirth: d.dateOfBirth,
+      fatherName: d.fatherName,
+      motherName: d.motherName,
+      parentMobile: d.parentMobile,
+      parentEmail: d.parentEmail,
+      permanentAddress: d.permanentAddress,
+      guardianName: i % 3 === 0 ? d.fatherName : `${d.motherName}`,
+      guardianRelation: i % 3 === 0 ? 'Father' : 'Mother',
+      guardianContact: d.parentMobile,
+      guardianAddress: d.permanentAddress,
+      preferredHostelId: hostelId,
+      preferredRoomType: PREFERENCES[i % PREFERENCES.length],
+      emergencyName: d.fatherName,
+      emergencyRelation: 'Father',
+      emergencyContact: d.parentMobile,
+      bloodGroup: roster[6],
+      medicalConditions: i % 5 === 0 ? 'Asthma (mild)' : 'None',
+      allergies: i % 4 === 0 ? 'Dust' : i % 7 === 0 ? 'Penicillin' : 'None',
+      medication: i % 5 === 0 ? 'Inhaler as needed' : 'None',
+      healthCertificate: `health-${slug(d.studentName)}.pdf`,
+      guardianConsent: true,
+      declaration: true,
+      status,
+      remarks: approved
+        ? 'Documents verified. Room allotted.'
+        : status === 'Rejected'
+          ? 'Permanent address is within 15 km of the campus — day scholar.'
+          : '',
+      decisionDate: approved
+        ? `2026-06-${day}`
+        : status === 'Rejected'
+          ? '2026-06-28'
+          : '',
+      decidedBy: status === 'Pending' ? '' : 'Rajesh Kumar',
+      erpLoginId: approved ? `S${101 + i}` : '',
+      erpPassword: approved ? `${d.studentName.split(' ')[0]}@${101 + i}` : '',
+    };
+  });
+};
+
+/**
+ * Approved applicants are packed into rooms of their preferred type. The last
+ * few are deliberately left unallotted so the Room Allotment screen always has
+ * students waiting in its queue.
+ */
+const AWAITING_ALLOTMENT = 3;
+
+const seedAllocations = (rooms: Room[]): Allocation[] => {
+  const approvedAll = seedApplications().filter(a => a.status === 'Approved');
+  const approved = approvedAll.slice(
+    0,
+    Math.max(approvedAll.length - AWAITING_ALLOTMENT, 0)
+  );
+  const usedBeds = new Map<string, number>();
+  const allocations: Allocation[] = [];
+
+  approved.forEach((application, i) => {
+    const hostelRooms = rooms.filter(
+      r =>
+        r.hostelId === application.preferredHostelId &&
+        r.roomType === application.preferredRoomType
+    );
+    const room =
+      hostelRooms.find(r => (usedBeds.get(r.id) ?? 0) < r.beds) ??
+      rooms.find(
+        r =>
+          r.hostelId === application.preferredHostelId &&
+          (usedBeds.get(r.id) ?? 0) < r.beds
+      );
+    if (!room) return;
+
+    usedBeds.set(room.id, (usedBeds.get(room.id) ?? 0) + 1);
+    allocations.push({
+      id: `AL${i + 1}`,
+      applicationId: application.id,
+      studentId: application.erpLoginId,
+      studentName: application.studentName,
+      hostelId: room.hostelId,
+      roomId: room.id,
+      roomType: room.roomType,
+      allottedOn: application.decisionDate || '2026-06-20',
+      allottedBy: 'Rajesh Kumar',
+      status: 'Active',
+    });
+  });
+
+  return allocations;
+};
 
 const seedRooms = (): Room[] => {
   const rooms: Room[] = [];
@@ -679,269 +1174,11 @@ const seed = (): HmsData => ({
 
   rooms: seedRooms(),
 
-  studentDirectory: [
-    {
-      rollNumber: 'JEE2026001',
-      enrollmentNumber: 'DAVV/CS/2026/001',
-      mobileNumber: '9826000101',
-      studentName: 'Rahul Verma',
-      photo: '',
-      programme: 'B.Tech',
-      branch: 'Computer Science & Engineering',
-      gender: 'Male',
-      category: 'General',
-      email: 'rahul.verma@student.davv.ac.in',
-      dateOfBirth: '2006-03-14',
-      fatherName: 'Mahesh Verma',
-      motherName: 'Sunita Verma',
-      parentMobile: '9826000901',
-      parentEmail: 'mahesh.verma@gmail.com',
-      permanentAddress: '21, Vijay Nagar, Indore, Madhya Pradesh - 452010',
-    },
-    {
-      rollNumber: 'JEE2026002',
-      enrollmentNumber: 'DAVV/EC/2026/002',
-      mobileNumber: '9826000102',
-      studentName: 'Priya Sharma',
-      photo: '',
-      programme: 'B.Tech',
-      branch: 'Electronics & Communication',
-      gender: 'Female',
-      category: 'OBC',
-      email: 'priya.sharma@student.davv.ac.in',
-      dateOfBirth: '2006-08-02',
-      fatherName: 'Ramesh Sharma',
-      motherName: 'Kavita Sharma',
-      parentMobile: '9826000902',
-      parentEmail: 'ramesh.sharma@gmail.com',
-      permanentAddress: '5, Nanda Nagar, Ujjain, Madhya Pradesh - 456001',
-    },
-    {
-      rollNumber: 'JEE2026003',
-      enrollmentNumber: 'DAVV/ME/2026/003',
-      mobileNumber: '9826000103',
-      studentName: 'Amit Patel',
-      photo: '',
-      programme: 'B.Tech',
-      branch: 'Mechanical Engineering',
-      gender: 'Male',
-      category: 'SC',
-      email: 'amit.patel@student.davv.ac.in',
-      dateOfBirth: '2005-11-21',
-      fatherName: 'Dinesh Patel',
-      motherName: 'Rekha Patel',
-      parentMobile: '9826000903',
-      parentEmail: 'dinesh.patel@gmail.com',
-      permanentAddress: '112, Gandhi Ward, Dhar, Madhya Pradesh - 454001',
-    },
-    {
-      rollNumber: 'DAVV2026004',
-      enrollmentNumber: 'DAVV/MBA/2026/004',
-      mobileNumber: '9826000104',
-      studentName: 'Neha Joshi',
-      photo: '',
-      programme: 'MBA',
-      branch: 'Marketing',
-      gender: 'Female',
-      category: 'General',
-      email: 'neha.joshi@student.davv.ac.in',
-      dateOfBirth: '2003-05-30',
-      fatherName: 'Prakash Joshi',
-      motherName: 'Anita Joshi',
-      parentMobile: '9826000904',
-      parentEmail: 'prakash.joshi@gmail.com',
-      permanentAddress: '8, Scheme 78, Indore, Madhya Pradesh - 452010',
-    },
-    {
-      rollNumber: 'DAVV2026005',
-      enrollmentNumber: 'DAVV/MCA/2026/005',
-      mobileNumber: '9826000105',
-      studentName: 'Sandeep Yadav',
-      photo: '',
-      programme: 'MCA',
-      branch: 'Computer Applications',
-      gender: 'Male',
-      category: 'OBC',
-      email: 'sandeep.yadav@student.davv.ac.in',
-      dateOfBirth: '2004-01-18',
-      fatherName: 'Rajendra Yadav',
-      motherName: 'Sushma Yadav',
-      parentMobile: '9826000905',
-      parentEmail: 'rajendra.yadav@gmail.com',
-      permanentAddress: '44, Station Road, Khargone, Madhya Pradesh - 451001',
-    },
-  ],
+  studentDirectory: seedDirectory(),
 
-  applications: [
-    {
-      id: 'AP1',
-      applicationNo: 'HMS/2026/0001',
-      submittedOn: '2026-06-12',
-      rollNumber: 'JEE2026001',
-      enrollmentNumber: 'DAVV/CS/2026/001',
-      studentName: 'Rahul Verma',
-      photo: '',
-      programme: 'B.Tech',
-      branch: 'Computer Science & Engineering',
-      gender: 'Male',
-      category: 'General',
-      email: 'rahul.verma@student.davv.ac.in',
-      mobileNumber: '9826000101',
-      dateOfBirth: '2006-03-14',
-      fatherName: 'Mahesh Verma',
-      motherName: 'Sunita Verma',
-      parentMobile: '9826000901',
-      parentEmail: 'mahesh.verma@gmail.com',
-      permanentAddress: '21, Vijay Nagar, Indore, Madhya Pradesh - 452010',
-      guardianName: 'Suresh Verma',
-      guardianRelation: 'Uncle',
-      guardianContact: '9826000801',
-      guardianAddress: '19, Sudama Nagar, Indore',
-      preferredHostelId: 'H1',
-      preferredRoomType: 'Triple Seater',
-      emergencyName: 'Mahesh Verma',
-      emergencyRelation: 'Father',
-      emergencyContact: '9826000901',
-      bloodGroup: 'B+',
-      medicalConditions: 'None',
-      allergies: 'Dust',
-      medication: 'None',
-      healthCertificate: 'health-rahul-verma.pdf',
-      guardianConsent: true,
-      declaration: true,
-      status: 'Approved',
-      remarks: 'Documents verified. Bed allotted in B Wing.',
-      decisionDate: '2026-06-15',
-      decidedBy: 'Rajesh Kumar',
-      erpLoginId: 'S101',
-      erpPassword: 'Rahul@101',
-    },
-    {
-      id: 'AP2',
-      applicationNo: 'HMS/2026/0002',
-      submittedOn: '2026-06-14',
-      rollNumber: 'JEE2026003',
-      enrollmentNumber: 'DAVV/ME/2026/003',
-      studentName: 'Amit Patel',
-      photo: '',
-      programme: 'B.Tech',
-      branch: 'Mechanical Engineering',
-      gender: 'Male',
-      category: 'SC',
-      email: 'amit.patel@student.davv.ac.in',
-      mobileNumber: '9826000103',
-      dateOfBirth: '2005-11-21',
-      fatherName: 'Dinesh Patel',
-      motherName: 'Rekha Patel',
-      parentMobile: '9826000903',
-      parentEmail: 'dinesh.patel@gmail.com',
-      permanentAddress: '112, Gandhi Ward, Dhar, Madhya Pradesh - 454001',
-      guardianName: 'Dinesh Patel',
-      guardianRelation: 'Father',
-      guardianContact: '9826000903',
-      guardianAddress: '112, Gandhi Ward, Dhar',
-      preferredHostelId: 'H1',
-      preferredRoomType: 'Double Seater',
-      emergencyName: 'Rekha Patel',
-      emergencyRelation: 'Mother',
-      emergencyContact: '9826000903',
-      bloodGroup: 'A+',
-      medicalConditions: 'None',
-      allergies: 'Penicillin',
-      medication: 'None',
-      healthCertificate: '',
-      guardianConsent: true,
-      declaration: true,
-      status: 'Pending',
-      remarks: '',
-      decisionDate: '',
-      decidedBy: '',
-      erpLoginId: '',
-      erpPassword: '',
-    },
-    {
-      id: 'AP3',
-      applicationNo: 'HMS/2026/0003',
-      submittedOn: '2026-06-15',
-      rollNumber: 'JEE2026002',
-      enrollmentNumber: 'DAVV/EC/2026/002',
-      studentName: 'Priya Sharma',
-      photo: '',
-      programme: 'B.Tech',
-      branch: 'Electronics & Communication',
-      gender: 'Female',
-      category: 'OBC',
-      email: 'priya.sharma@student.davv.ac.in',
-      mobileNumber: '9826000102',
-      dateOfBirth: '2006-08-02',
-      fatherName: 'Ramesh Sharma',
-      motherName: 'Kavita Sharma',
-      parentMobile: '9826000902',
-      parentEmail: 'ramesh.sharma@gmail.com',
-      permanentAddress: '5, Nanda Nagar, Ujjain, Madhya Pradesh - 456001',
-      guardianName: 'Kavita Sharma',
-      guardianRelation: 'Mother',
-      guardianContact: '9826000902',
-      guardianAddress: '5, Nanda Nagar, Ujjain',
-      preferredHostelId: 'H2',
-      preferredRoomType: 'Double Seater',
-      emergencyName: 'Ramesh Sharma',
-      emergencyRelation: 'Father',
-      emergencyContact: '9826000902',
-      bloodGroup: 'O+',
-      medicalConditions: 'Mild asthma',
-      allergies: 'None',
-      medication: 'Inhaler as needed',
-      healthCertificate: 'health-priya-sharma.pdf',
-      guardianConsent: true,
-      declaration: true,
-      status: 'Pending',
-      remarks: '',
-      decisionDate: '',
-      decidedBy: '',
-      erpLoginId: '',
-      erpPassword: '',
-    },
-  ],
+  applications: seedApplications(),
 
-  allocations: [
-    {
-      id: 'AL1',
-      applicationId: 'AP1',
-      studentId: 'S101',
-      studentName: 'Rahul Verma',
-      hostelId: 'H1',
-      roomId: 'R-H1-B-301',
-      roomType: 'Triple Seater',
-      allottedOn: '2026-06-16',
-      allottedBy: 'Rajesh Kumar',
-      status: 'Active',
-    },
-    {
-      id: 'AL2',
-      applicationId: '',
-      studentId: 'S102',
-      studentName: 'Karan Mehta',
-      hostelId: 'H1',
-      roomId: 'R-H1-B-301',
-      roomType: 'Triple Seater',
-      allottedOn: '2026-06-18',
-      allottedBy: 'Rajesh Kumar',
-      status: 'Active',
-    },
-    {
-      id: 'AL3',
-      applicationId: '',
-      studentId: 'S103',
-      studentName: 'Vikas Nair',
-      hostelId: 'H1',
-      roomId: 'R-H1-A-201',
-      roomType: 'Double Seater',
-      allottedOn: '2026-06-20',
-      allottedBy: 'Rajesh Kumar',
-      status: 'Active',
-    },
-  ],
+  allocations: seedAllocations(seedRooms()),
 
   inOutEntries: [
     {
@@ -1158,6 +1395,7 @@ const seed = (): HmsData => ({
       rating: 2,
       quality: 'Poor',
       comments: 'Dal was watery and the chapatis were cold.',
+      photo: 'dinner-28-aug.jpg',
       wardenResponse: 'Raised with the mess contractor; supervisor briefed.',
       status: 'Actioned',
     },
@@ -1171,6 +1409,7 @@ const seed = (): HmsData => ({
       rating: 4,
       quality: 'Good',
       comments: 'Poha and tea were fresh. Please add fruit twice a week.',
+      photo: '',
       wardenResponse: '',
       status: 'New',
     },

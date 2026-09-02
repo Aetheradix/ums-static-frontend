@@ -19,7 +19,7 @@ import {
   Stepper,
 } from 'shared/new-components';
 import { KeyValueTile, SectionNote } from '../components/ui';
-import { ROOM_TYPES, today, uid, useHms } from '../context/HmsContext';
+import { ROOM_TYPE_OPTIONS, today, uid, useHms } from '../context/HmsContext';
 import type { Application, StudentDirectoryEntry } from '../context/HmsContext';
 import { hmsUrls } from '../urls';
 
@@ -455,7 +455,7 @@ export default function AdmissionForm() {
               />
               <DropDownList
                 label="Preferred Room Type"
-                data={ROOM_TYPES.map(t => ({ id: t, text: t }))}
+                data={ROOM_TYPE_OPTIONS}
                 textField="text"
                 valueField="id"
                 value={form.preferredRoomType}

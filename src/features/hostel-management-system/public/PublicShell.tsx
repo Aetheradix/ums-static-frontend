@@ -7,7 +7,7 @@ export default function PublicShell() {
   return (
     <div className="flex min-h-screen flex-col bg-[#f8faff] font-sans text-slate-900 dark:bg-slate-900 dark:text-slate-100">
       <WorkspaceTopBar />
-      <main className="flex-1">
+      <main className="mx-auto w-full max-w-[1280px] flex-1 px-4 py-6 sm:px-6 lg:px-8">
         <Outlet />
       </main>
       <WorkspaceFooterBar />

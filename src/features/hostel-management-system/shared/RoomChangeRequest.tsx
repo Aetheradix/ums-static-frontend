@@ -17,7 +17,7 @@ import {
   MOCK_STUDENT_NAME,
   MOCK_WARDEN_HOSTEL_ID,
   MOCK_WARDEN_NAME,
-  ROOM_TYPES,
+  ROOM_TYPE_OPTIONS,
   roomOccupancy,
   today,
   uid,
@@ -37,7 +37,11 @@ export default function RoomChangeRequest() {
   const { data, add, update } = useHms();
   const { isStudent, activePortal } = useHmsRole();
 
-  const [form, setForm] = useState({ requestedRoomType: '', reason: '' });
+  const [form, setForm] = useState({
+    requestedRoomType: '',
+    requestedRoomId: '',
+    reason: '',
+  });
   const [deciding, setDeciding] = useState<{
     request: ChangeRequest;
     status: 'Approved' | 'Rejected';
@@ -50,6 +54,34 @@ export default function RoomChangeRequest() {
     a => a.studentId === MOCK_STUDENT_ID && a.status === 'Active'
   );
   const myRoom = data.rooms.find(r => r.id === myAllocation?.roomId);
+
+  /**
+   * Rooms of the chosen type in the student's own hostel, each labelled with
+   * how many beds are free — the room they already hold is excluded.
+   */
+  const requestableRooms = useMemo(() => {
+    if (!form.requestedRoomType) return [];
+    const hostelId = myAllocation?.hostelId ?? MOCK_WARDEN_HOSTEL_ID;
+    return data.rooms
+      .filter(
+        r =>
+          r.hostelId === hostelId &&
+          r.roomType === form.requestedRoomType &&
+          r.status === 'Available' &&
+          r.id !== myAllocation?.roomId
+      )
+      .map(r => {
+        const { available } = roomOccupancy(r, data.allocations);
+        return {
+          id: r.id,
+          text: `${r.roomNumber} (${
+            available === 0
+              ? 'Full'
+              : `${available} of ${r.beds} bed${r.beds === 1 ? '' : 's'} vacant`
+          }) · ${r.floor}, ${r.wing}`,
+        };
+      });
+  }, [data.rooms, data.allocations, form.requestedRoomType, myAllocation]);
 
   const rows = useMemo(
     () =>
@@ -102,6 +134,7 @@ export default function RoomChangeRequest() {
       hostelId: myAllocation?.hostelId ?? MOCK_WARDEN_HOSTEL_ID,
       currentRoomId: myAllocation?.roomId ?? '',
       requestedRoomType: form.requestedRoomType,
+      requestedRoomId: form.requestedRoomId,
       reason: form.reason,
       requestedOn: today(),
       status: 'Pending',
@@ -109,7 +142,7 @@ export default function RoomChangeRequest() {
       actionDate: '',
       remarks: '',
     });
-    setForm({ requestedRoomType: '', reason: '' });
+    setForm({ requestedRoomType: '', requestedRoomId: '', reason: '' });
     ToastService.success('Room change request sent to the warden.');
   };
 
@@ -212,15 +245,35 @@ export default function RoomChangeRequest() {
           <FormGrid columns={2}>
             <DropDownList
               label="Requested Room Type"
-              data={ROOM_TYPES.map(t => ({ id: t, text: t }))}
+              data={ROOM_TYPE_OPTIONS}
               textField="text"
               valueField="id"
               value={form.requestedRoomType}
               onChange={v =>
-                setForm({ ...form, requestedRoomType: (v as string) ?? '' })
+                setForm({
+                  ...form,
+                  requestedRoomType: (v as string) ?? '',
+                  requestedRoomId: '',
+                })
               }
             />
-            <div />
+            <DropDownList
+              label="Preferred Room Number"
+              subLabel="Optional"
+              data={requestableRooms}
+              textField="text"
+              valueField="id"
+              filter
+              defaultOptionText={
+                form.requestedRoomType
+                  ? 'Select a room number'
+                  : 'Pick a room type first'
+              }
+              value={form.requestedRoomId}
+              onChange={v =>
+                setForm({ ...form, requestedRoomId: (v as string) ?? '' })
+              }
+            />
             <div className="md:col-span-2">
               <TextArea
                 label="Reason"
@@ -242,7 +295,13 @@ export default function RoomChangeRequest() {
             <Button
               label="Clear"
               variant="outlined"
-              onClick={() => setForm({ requestedRoomType: '', reason: '' })}
+              onClick={() =>
+                setForm({
+                  requestedRoomType: '',
+                  requestedRoomId: '',
+                  reason: '',
+                })
+              }
             />
           </div>
         </FormCard>
