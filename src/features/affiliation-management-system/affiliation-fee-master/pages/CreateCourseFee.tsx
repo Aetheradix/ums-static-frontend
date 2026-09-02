@@ -11,6 +11,8 @@ export default function CreateCourseFee() {
   const navigate = useNavigate();
 
   const [hasExtraSeats, setHasExtraSeats] = useState(false);
+  const [isLateFeeApplicable, setIsLateFeeApplicable] = useState(false);
+
   const [degreeLevel, setDegreeLevel] = useState<string>('');
   const [courseGroup, setCourseGroup] = useState<string>('');
   const [appType, setAppType] = useState<string>('');
@@ -169,11 +171,20 @@ export default function CreateCourseFee() {
             />
           </div>
 
-          <div className="">
-            <label className="block mb-2 font-medium">
-              Late Fee Applies After (Days)
-            </label>
-            <InputNumber className="w-full" placeholder="e.g. 15" />
+          <div className="flex flex-col justify-end">
+            <div className="flex items-center pb-1">
+              <InputSwitch
+                inputId="lateFeeToggle"
+                checked={isLateFeeApplicable}
+                onChange={e => setIsLateFeeApplicable(e.value ?? false)}
+              />
+              <label
+                htmlFor="lateFeeToggle"
+                className="ml-2 font-medium cursor-pointer"
+              >
+                Apply Late Fee Now?
+              </label>
+            </div>
           </div>
 
           <div className="">
