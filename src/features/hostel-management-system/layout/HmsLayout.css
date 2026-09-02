@@ -1,0 +1,45 @@
+@reference "tailwindcss";
+
+.hms-layout {
+  display: flex;
+  width: 100%;
+  min-height: calc(100vh - 120px);
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.hms-layout-sidebar {
+  flex-shrink: 0;
+}
+
+/*
+ * The shared Sidebar hangs its collapse chevron off its right edge, so the
+ * content column needs a gutter of its own — without it page titles sit flush
+ * against the sidebar and the chevron covers the first character.
+ */
+.hms-layout-content {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 8px 32px 12px;
+}
+
+/* Consistent rhythm between the cards every page stacks. */
+.hms-layout-content .form-page-container > * + * {
+  margin-top: 20px;
+}
+
+.hms-layout-content .form-page-header {
+  margin-bottom: 4px;
+}
+
+@media (max-width: 1023px) {
+  .hms-layout {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .hms-layout-content {
+    padding: 16px 4px 32px;
+    width: 100%;
+  }
+}

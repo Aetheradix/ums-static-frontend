@@ -15,9 +15,11 @@ interface BulkActionBarProps {
   count: number;
   actions: BulkAction[];
   onClear: () => void;
+  /** What the rows are called, e.g. "student" on an attendance roster. */
+  noun: string;
 }
 
-function BulkActionBar({ count, actions, onClear }: BulkActionBarProps) {
+function BulkActionBar({ count, actions, onClear, noun }: BulkActionBarProps) {
   return (
     <div className="bst-bulk-bar">
       <div className="bst-bulk-bar-left">
@@ -25,7 +27,8 @@ function BulkActionBar({ count, actions, onClear }: BulkActionBarProps) {
           checklist
         </span>
         <span className="bst-bulk-bar-text">
-          {count} candidate{count !== 1 ? 's' : ''} selected
+          {count} {noun}
+          {count !== 1 ? 's' : ''} selected
         </span>
       </div>
       <div className="bst-bulk-bar-actions">
@@ -74,6 +77,8 @@ export interface BulkSelectTableProps<T extends { id: string }> {
   searchPlaceholder?: string;
   emptyMessage?: string;
   totalCount?: number;
+  /** Noun used in the bulk bar — defaults to "candidate". */
+  selectionNoun?: string;
 }
 
 // ─── BulkSelectTable Component ────────────────────────────────────────────────
@@ -90,6 +95,7 @@ export default function BulkSelectTable<T extends { id: string }>({
   searchPlaceholder = 'Search...',
   emptyMessage = 'No records found.',
   totalCount,
+  selectionNoun = 'candidate',
 }: BulkSelectTableProps<T>) {
   const [internalSearch, setInternalSearch] = useState('');
   const isControlled = onSearchChange !== undefined;
@@ -130,6 +136,7 @@ export default function BulkSelectTable<T extends { id: string }>({
           count={selected.size}
           actions={bulkActions}
           onClear={onClearSelection}
+          noun={selectionNoun}
         />
       )}
 

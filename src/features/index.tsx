@@ -5,6 +5,8 @@ import MainLayout from 'shared/components/layout/MainLayout';
 import { UniversityLoader } from 'shared/components/progress';
 import Academics from './academics';
 import AdmissionPortal from './admission-portal';
+import HostelManagementSystem from './hostel-management-system';
+import HmsPublicForum from './hostel-management-system/public';
 import AdmissionsManagement from './admissions-management';
 import AffiliationManagementSystem from './affiliation-management-system';
 import AlumniManagement from './alumni-management';
@@ -21,7 +23,6 @@ import GrievanceManagement from './grievance-management';
 import PolicyComplianceManagement from './policy-compliance-management';
 import Home from './home';
 import HostelManagement from './hostel-management';
-import HostelServices from './hostel-services';
 import InfrastructureProjectManagement from './infrastructure-project-management';
 import CivilInfrastructure from './civil-infrastructure';
 import ItServiceDesk from './it-service-desk';
@@ -167,6 +168,7 @@ export default function Features() {
         element={<UniversityLoader text="Completing sign-in..." />}
       />
       <Route path="admission-portal/*" element={<AdmissionPortal />} />
+      <Route path="hostel-admission/*" element={<HmsPublicForum />} />
       <Route
         path="/*"
         element={
@@ -207,6 +209,10 @@ export default function Features() {
                         element={<EmployeeManagement />}
                       />
                       <Route
+                        path="hostel-management-system/*"
+                        element={<HostelManagementSystem />}
+                      />
+                      <Route
                         path="student-lifecycle/*"
                         element={<StudentLifecycle />}
                       />
@@ -242,10 +248,6 @@ export default function Features() {
                       <Route
                         path="hostel-management/*"
                         element={<HostelManagement />}
-                      />
-                      <Route
-                        path="hostel-services/*"
-                        element={<HostelServices />}
                       />
                       <Route
                         path="it-service-desk/*"
