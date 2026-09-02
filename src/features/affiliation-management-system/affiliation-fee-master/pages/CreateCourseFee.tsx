@@ -16,6 +16,7 @@ export default function CreateCourseFee() {
   const [appType, setAppType] = useState<string>('');
   const [collegeType, setCollegeType] = useState<string>('All');
   const [gstApplicable, setGstApplicable] = useState<number | null>(18);
+  const [academicYear, setAcademicYear] = useState<string>('2024-25');
 
   return (
     <FormPage
@@ -27,6 +28,24 @@ export default function CreateCourseFee() {
           {/* Section 1: Course Criteria */}
           <div className="col-span-full mb-2 mt-4 first:mt-0">
             <h5 className="border-b pb-2">Step 1: Course Details</h5>
+          </div>
+
+          <div className="">
+            <label className="block mb-2 font-medium">
+              Academic Year (Session) <span className="text-red-500">*</span>
+            </label>
+            <Dropdown
+              value={academicYear}
+              onChange={e => setAcademicYear(e.value)}
+              options={[
+                { label: '2023-24', value: '2023-24' },
+                { label: '2024-25', value: '2024-25' },
+                { label: '2025-26', value: '2025-26' },
+                { label: '2026-27', value: '2026-27' },
+              ]}
+              className="w-full"
+              placeholder="Select Academic Year"
+            />
           </div>
 
           <div className="">
