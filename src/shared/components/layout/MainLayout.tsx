@@ -10,14 +10,15 @@ import './MainLayout.css';
  * with NO sidebar. Add any new portal-selector routes here.
  */
 const PORTAL_PATHS: string[] = [
+  '/home/sub-menu/hostel-management-system',
+  '/hostel-management-system',
+  '/hostel-management-system/admin',
+  '/hostel-management-system/warden',
+  '/hostel-management-system/student',
   '/home/sub-menu/student-lifecycle',
-  '/home/sub-menu/hostel-services',
   '/student-lifecycle/student',
   '/student-lifecycle/faculty',
   '/student-lifecycle/admin',
-  '/hostel-services/admin',
-  '/hostel-services/warden',
-  '/hostel-services/student',
   '/employee-management',
   '/employee-management/admin-portal',
   '/employee-management/dashboard',
@@ -85,7 +86,10 @@ const PORTAL_PATHS: string[] = [
 ];
 
 function isPortalPath(pathname: string): boolean {
-  if (pathname.startsWith('/hostel-services')) return true;
+  // The Hostel Management System renders its own per-role sidebar, so the
+  // app sidebar stays hidden across every page of that module, not just its
+  // landing pages.
+  if (pathname.startsWith('/hostel-management-system')) return true;
   return PORTAL_PATHS.some(p => pathname === p || pathname === p + '/');
 }
 

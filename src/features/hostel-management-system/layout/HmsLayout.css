@@ -1,0 +1,21 @@
+.hms-layout {
+  display: flex;
+  width: 100%;
+  min-height: calc(100vh - 120px);
+}
+
+.hms-layout-sidebar {
+  flex-shrink: 0;
+}
+
+.hms-layout-content {
+  flex: 1;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+@media (max-width: 1023px) {
+  .hms-layout {
+    flex-direction: column;
+  }
+}
