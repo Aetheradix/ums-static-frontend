@@ -328,7 +328,6 @@ export default function RoomConfiguration() {
             {isDormitory && (
               <NumberBox
                 label="Beds in each dormitory room"
-                subLabel="Varies by hostel"
                 min={1}
                 max={50}
                 value={dormBeds}
