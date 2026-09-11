@@ -736,7 +736,7 @@ export default function List() {
                   value={preview.isRentedBuilding}
                 />
                 <PreviewField
-                  label="Quality of Building"
+                  label="Description of Building & Surroundings"
                   value={preview.qualityOfBuilding}
                 />
                 <PreviewField

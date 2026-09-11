@@ -102,7 +102,7 @@ export default function List() {
   return (
     <FormPage
       title="Approval / Regulatory Authority"
-      description="Map each education type to its approval authority and the document label shown on the college registration form."
+      description="Map each course type to its approval authority and the document label shown on the college registration form."
     >
       <FormCard>
         <GridPanel
@@ -114,7 +114,7 @@ export default function List() {
               width: '40px',
               sortable: false,
             },
-            { field: 'educationType', header: 'Education Type' },
+            { field: 'educationType', header: 'Course Type' },
             { field: 'authorityName', header: 'Approval Authority' },
             { field: 'documentLabel', header: 'Document Upload Label' },
             {
@@ -148,7 +148,7 @@ export default function List() {
               ? 'Add Authority Mapping'
               : 'Edit Authority Mapping'
           }
-          subtitle="Education type, approval authority and the upload label used on the registration form."
+          subtitle="Course type, approval authority and the upload label used on the registration form."
           footer={
             <>
               <Button label="Cancel" variant="outlined" onClick={closePopup} />
@@ -165,7 +165,7 @@ export default function List() {
           <div className="p-4">
             <FormGrid columns={1}>
               <TextBox
-                label="Education Type"
+                label="Course Type"
                 placeholder="e.g. Technical & Management Education"
                 value={form.educationType}
                 onChange={val =>

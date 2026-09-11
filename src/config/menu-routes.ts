@@ -8333,7 +8333,7 @@ export const menuConfig: Menu.MenuItem[] = [
                     label: 'Approval Authority',
                     slug: 'approval-authority',
                     description:
-                      'Map education types to approval authorities and document labels',
+                      'Map course types to approval authorities and document labels',
                     path: '/affiliation-management-system/affiliation-settings/approval-authority',
                     icon: 'verified',
                     colorScheme: 'blue',

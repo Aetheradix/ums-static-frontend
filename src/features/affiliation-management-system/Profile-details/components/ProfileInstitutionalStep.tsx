@@ -82,7 +82,7 @@ export default function ProfileInstitutionalStep({
             data={[
               { id: '1', name: 'New Affiliation' },
               { id: '2', name: 'Renewal' },
-              { id: '3', name: 'Subject Increment' },
+              { id: '3', name: 'Seat Increment' },
               { id: '4', name: 'College Name Change' },
             ]}
             textField="name"
@@ -104,8 +104,6 @@ export default function ProfileInstitutionalStep({
               { id: 'Government', name: 'Government' },
               { id: 'Private', name: 'Private' },
               { id: 'Aided', name: 'Aided' },
-              { id: 'Unaided', name: 'Unaided' },
-              { id: 'Other', name: 'Other' },
             ]}
             textField="name"
             valueField="id"
