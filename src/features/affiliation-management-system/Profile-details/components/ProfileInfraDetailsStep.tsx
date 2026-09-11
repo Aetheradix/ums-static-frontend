@@ -115,7 +115,7 @@ export default function ProfileInfraDetailsStep({
               errorMessage={formState.errors.scanners?.message as string}
             />
           </FormGrid>
-          <FormGrid columns={isInternetAvailable === 'yes' ? 2 : 1}>
+          <FormGrid columns={isInternetAvailable === 'yes' ? 4 : 1}>
             <DropDownList
               label="Internet Available?"
               name="internetAvailable"
@@ -129,14 +129,26 @@ export default function ProfileInfraDetailsStep({
               }
             />
             {isInternetAvailable === 'yes' && (
-              <TextBox
-                label="Internet Connection Type"
-                placeholder="Details"
-                {...register('internetConnectionType')}
-                errorMessage={
-                  formState.errors.internetConnectionType?.message as string
-                }
-              />
+              <>
+                <div className="col-span-2">
+                  <TextBox
+                    label="Internet Connection Type"
+                    placeholder="Details"
+                    {...register('internetConnectionType')}
+                    errorMessage={
+                      formState.errors.internetConnectionType?.message as string
+                    }
+                  />
+                </div>
+                <TextBox
+                  label="Minimum Internet Speed (Mbps)"
+                  placeholder="e.g. 100"
+                  {...register('minimumInternetSpeed')}
+                  errorMessage={
+                    formState.errors.minimumInternetSpeed?.message as string
+                  }
+                />
+              </>
             )}
           </FormGrid>
           <FormGrid columns={4}>

@@ -101,7 +101,7 @@ export default function BasicRegistrationDetailsView() {
             readOnly
           />
           <TextBox
-            label="Education Type"
+            label="Course Type"
             value={saved?.educationType || 'General Higher Education'}
             readOnly
           />

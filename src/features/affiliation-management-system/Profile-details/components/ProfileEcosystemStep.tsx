@@ -234,6 +234,7 @@ export default function ProfileEcosystemStep({
                   course: '',
                   subject: '',
                   collegeCode28: '',
+                  appointmentDateCode28: null,
                 });
                 setEditingStaffIndex(staffFields.length);
                 setIsStaffModalOpen(true);
@@ -406,6 +407,21 @@ export default function ProfileEcosystemStep({
                       ?.collegeCode28?.message as string
                   }
                 />
+                {(teachingStaffWatch?.[editingStaffIndex]?.collegeCode28 ===
+                  'yes' ||
+                  teachingStaffWatch?.[editingStaffIndex]?.collegeCode28 ===
+                    'Yes') && (
+                  <DatePicker
+                    label="Appointment Date (as per Code 28)"
+                    name={`teachingStaff.${editingStaffIndex}.appointmentDateCode28`}
+                    control={control}
+                    placeholder="Select Date"
+                    errorMessage={
+                      formState.errors.teachingStaff?.[editingStaffIndex]
+                        ?.appointmentDateCode28?.message as string
+                    }
+                  />
+                )}
               </FormGrid>
               <div className="mt-6 flex justify-end">
                 <Button

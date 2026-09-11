@@ -32,7 +32,7 @@ export const APPROVAL_AUTHORITY_DATA: ApprovalAuthorityItem[] = [
   },
   {
     approvalAuthorityId: 4,
-    educationType: 'Teacher Education',
+    educationType: 'Education',
     authorityName: 'NCTE',
     documentLabel: 'Upload NCTE Approval / Recognition Document',
     isActive: true,
@@ -56,6 +56,13 @@ export const APPROVAL_AUTHORITY_DATA: ApprovalAuthorityItem[] = [
     educationType: 'Law Education',
     authorityName: 'BCI',
     documentLabel: 'Upload BCI Approval / Recognition Document',
+    isActive: true,
+  },
+  {
+    approvalAuthorityId: 8,
+    educationType: 'Paramedical',
+    authorityName: 'Paramedical Council',
+    documentLabel: 'Upload Paramedical Council Approval / NOC Document',
     isActive: true,
   },
 ];

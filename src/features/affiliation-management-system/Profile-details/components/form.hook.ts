@@ -34,6 +34,7 @@ export interface TeachingStaff {
   course: string;
   subject: string;
   collegeCode28: string;
+  appointmentDateCode28?: Date | null;
 }
 
 export interface AdditionalInstitution {
@@ -125,10 +126,13 @@ export interface ProfileDetailsFormData {
   builtUpArea: string;
   buildingPhotos: any[];
 
+  buildingType: string;
   totalArea: string;
   isRentedBuilding: string;
   rentAgreementDocument: any;
   registryDocument: any;
+  buildingKhasraDocument: any;
+  leaseDeedDocument: any;
   provisionToConstruct: string;
   accommodationDetails: string;
   accommodationPhoto: any;
@@ -158,6 +162,7 @@ export interface ProfileDetailsFormData {
   libraryStaffAvailable: string;
   booksIssuedRegularly: string;
   booksRelevant: string;
+  latestPurchaseOrderDocument: any;
   journalsSubscribed: string;
   journalsCount: string;
   latestJournalIssues: string;
@@ -242,6 +247,7 @@ export interface ProfileDetailsFormData {
   scanners: string;
   internetAvailable: string;
   internetConnectionType: string;
+  minimumInternetSpeed: string;
   computerTrainedStaff: string;
   computerStudentRatio: string;
   workingComputers: string;
@@ -322,6 +328,7 @@ const teachingStaffSchema = Joi.object({
   course: Joi.string().allow('', null),
   subject: Joi.string().allow('', null),
   collegeCode28: Joi.string().allow('', null),
+  appointmentDateCode28: Joi.date().allow(null),
 });
 
 const additionalInstitutionSchema = Joi.object({
@@ -444,10 +451,13 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
   builtUpArea: o.string().allow('', null),
   buildingPhotos: o.any().allow(null),
 
+  buildingType: o.string().allow('', null),
   totalArea: o.string().allow('', null),
   isRentedBuilding: o.string().allow('', null),
   rentAgreementDocument: o.any().allow(null),
   registryDocument: o.any().allow(null),
+  buildingKhasraDocument: o.any().allow(null),
+  leaseDeedDocument: o.any().allow(null),
   provisionToConstruct: o.string().allow('', null),
   accommodationDetails: o.string().allow('', null),
   accommodationPhoto: o.any().allow(null),
@@ -476,6 +486,7 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
   libraryStaffAvailable: o.string().allow('', null),
   booksIssuedRegularly: o.string().allow('', null),
   booksRelevant: o.string().allow('', null),
+  latestPurchaseOrderDocument: o.any().allow(null),
   journalsSubscribed: o.string().allow('', null),
   journalsCount: o.string().allow('', null),
   latestJournalIssues: o.string().allow('', null),
@@ -555,6 +566,7 @@ const schema = validation.create<ProfileDetailsFormData>(o => ({
   scanners: o.string().allow('', null),
   internetAvailable: o.string().allow('', null),
   internetConnectionType: o.string().allow('', null),
+  minimumInternetSpeed: o.string().allow('', null),
   computerTrainedStaff: o.string().allow('', null),
   computerStudentRatio: o.string().allow('', null),
   workingComputers: o.string().allow('', null),
@@ -659,10 +671,13 @@ export function useProfileDetailsForm() {
       builtUpArea: '',
       buildingPhotos: [],
 
+      buildingType: '',
       totalArea: '',
       isRentedBuilding: '',
       rentAgreementDocument: null,
       registryDocument: null,
+      buildingKhasraDocument: null,
+      leaseDeedDocument: null,
       provisionToConstruct: '',
       accommodationDetails: '',
       accommodationPhoto: null,
@@ -690,6 +705,7 @@ export function useProfileDetailsForm() {
       libraryStaffAvailable: '',
       booksIssuedRegularly: '',
       booksRelevant: '',
+      latestPurchaseOrderDocument: null,
       journalsSubscribed: '',
       journalsCount: '',
       latestJournalIssues: '',
@@ -759,6 +775,7 @@ export function useProfileDetailsForm() {
       scanners: '',
       internetAvailable: '',
       internetConnectionType: '',
+      minimumInternetSpeed: '',
       computerTrainedStaff: '',
       computerStudentRatio: '',
       workingComputers: '',

@@ -35,8 +35,6 @@ export const dummyTypes = [
   { id: 1, name: 'Government' },
   { id: 2, name: 'Private' },
   { id: 3, name: 'Aided' },
-  { id: 4, name: 'Unaided' },
-  { id: 5, name: 'Other' },
 ];
 
 // Education types come from the Approval Authority master
@@ -299,14 +297,14 @@ export default function CollegeRegistrationStep({
 
       <FormCard
         title="Approval / Regulatory Authority"
-        subtitle="A college running multiple types of courses can add an approval NOC document for each education type."
+        subtitle="A college running multiple types of courses can add an approval NOC document for each course type."
         icon="check-circle"
       >
         <FormGrid columns={2}>
           <DropDownList
-            label="Education Type"
-            defaultOptionText="Select Education Type"
-            placeholder="Select Education Type"
+            label="Course Type"
+            defaultOptionText="Select Course Type"
+            placeholder="Select Course Type"
             data={educationTypeOptions}
             textField="name"
             valueField="id"
@@ -326,7 +324,7 @@ export default function CollegeRegistrationStep({
             uploadNote={
               selectedAuthority
                 ? `Approval authority: ${selectedAuthority.authorityName}`
-                : 'Select an education type to see the required document'
+                : 'Select a course type to see the required document'
             }
             required={authorityNocDocs.length === 0}
           />
@@ -353,7 +351,7 @@ export default function CollegeRegistrationStep({
               }))}
               columns={[
                 {
-                  header: 'EDUCATION TYPE',
+                  header: 'COURSE TYPE',
                   cell: (item: any) => item.educationType,
                 },
                 {

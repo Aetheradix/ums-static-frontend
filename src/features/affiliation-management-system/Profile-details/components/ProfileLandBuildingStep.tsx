@@ -34,6 +34,13 @@ const landTypeOptions = [
   { id: 'lease', name: 'Lease' },
 ];
 
+const buildingTypeOptions = [
+  { id: 'Self-Owned', name: 'Self-Owned' },
+  { id: 'Society-Owned', name: 'Society-Owned' },
+  { id: 'Rented', name: 'Rented' },
+  { id: 'Lease', name: 'Lease' },
+];
+
 export default function ProfileLandBuildingStep({
   register,
   control,
@@ -49,6 +56,7 @@ export default function ProfileLandBuildingStep({
   const regulatoryBody = getCollegeRegistration()?.approvalAuthority;
 
   const landType = useWatch({ control, name: 'landType' });
+  const buildingType = useWatch({ control, name: 'buildingType' });
   const isSharedCampus = useWatch({ control, name: 'sharedCampus' });
   const latitude = useWatch({ control, name: 'latitude' });
   const longitude = useWatch({ control, name: 'longitude' });
@@ -174,7 +182,17 @@ export default function ProfileLandBuildingStep({
       </FormCard>
 
       <FormCard title="BUILDING DETAILS" icon="building">
-        <FormGrid columns={2}>
+        <FormGrid columns={3}>
+          <DropDownList
+            label="Building Type"
+            name="buildingType"
+            control={control}
+            placeholder="Select Building Type"
+            data={buildingTypeOptions}
+            textField="name"
+            valueField="id"
+            errorMessage={formState.errors.buildingType?.message as string}
+          />
           <TextBox
             label="Total Area"
             placeholder="e.g. 80,000 Sq. Ft."
@@ -188,9 +206,70 @@ export default function ProfileLandBuildingStep({
             errorMessage={formState.errors.builtUpArea?.message as string}
           />
         </FormGrid>
+
+        {(buildingType?.toLowerCase() === 'self-owned' ||
+          buildingType?.toLowerCase() === 'society-owned') && (
+          <div className="mt-4">
+            <FormGrid columns={2}>
+              <FileUpload
+                label="Registry Document"
+                name="registryDocument"
+                control={control}
+                mode="file"
+                accept=".pdf,image/*"
+                uploadNote="Upload the building registry document"
+                errorMessage={
+                  formState.errors.registryDocument?.message as string
+                }
+              />
+              <FileUpload
+                label="Khasra Document"
+                name="buildingKhasraDocument"
+                control={control}
+                mode="file"
+                accept=".pdf,image/*"
+                uploadNote="Upload the Khasra document"
+                errorMessage={
+                  formState.errors.buildingKhasraDocument?.message as string
+                }
+              />
+            </FormGrid>
+          </div>
+        )}
+        {buildingType?.toLowerCase() === 'rented' && (
+          <div className="mt-4">
+            <FileUpload
+              label="Rent Agreement"
+              name="rentAgreementDocument"
+              control={control}
+              mode="file"
+              accept=".pdf,image/*"
+              uploadNote="Upload the registered rent agreement"
+              errorMessage={
+                formState.errors.rentAgreementDocument?.message as string
+              }
+            />
+          </div>
+        )}
+        {buildingType?.toLowerCase() === 'lease' && (
+          <div className="mt-4">
+            <FileUpload
+              label="Lease Deed Document"
+              name="leaseDeedDocument"
+              control={control}
+              mode="file"
+              accept=".pdf,image/*"
+              uploadNote="Upload the lease deed document"
+              errorMessage={
+                formState.errors.leaseDeedDocument?.message as string
+              }
+            />
+          </div>
+        )}
+
         <div className="mt-4">
           <TextArea
-            label="Quality of Building & Surroundings"
+            label="Description of Building & Surroundings"
             placeholder="Describe construction quality, open space, gardens, light & air, overall ambiance"
             rows={3}
             {...register('qualityOfBuilding')}
@@ -265,6 +344,15 @@ export default function ProfileLandBuildingStep({
               Upload the building photos from the college building location —
               the latitude and longitude of the building are captured
               automatically for geolocation verification.
+            </p>
+          </div>
+          <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-lg flex items-start gap-2">
+            <i className="pi pi-info-circle text-emerald-600 mt-0.5" />
+            <p className="text-sm text-emerald-900 leading-relaxed">
+              Upload clear photographs of the college building, taken at the
+              college location — the main entrance with the college name board,
+              the front view, the side and rear views, the campus and open area,
+              and an inside view of a corridor and a classroom.
             </p>
           </div>
           <MultiPhotoUpload

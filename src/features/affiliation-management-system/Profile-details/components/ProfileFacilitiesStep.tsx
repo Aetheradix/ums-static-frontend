@@ -88,6 +88,10 @@ export default function ProfileFacilitiesStep({
     control,
     name: 'journalsSubscribed',
   });
+  const booksRelevant = useWatch({
+    control,
+    name: 'booksRelevant',
+  });
   const isPlaygroundAvailable = useWatch({
     control,
     name: 'playgroundAvailable',
@@ -457,6 +461,22 @@ export default function ProfileFacilitiesStep({
                 errorMessage={formState.errors.booksRelevant?.message as string}
               />
             </FormGrid>
+            {(booksRelevant === 'yes' || booksRelevant === 'Yes') && (
+              <div className="mt-4">
+                <FileUpload
+                  label="Latest Purchase Order Document"
+                  name="latestPurchaseOrderDocument"
+                  control={control}
+                  mode="file"
+                  accept=".pdf,image/*"
+                  uploadNote="Upload the latest purchase order document"
+                  errorMessage={
+                    formState.errors.latestPurchaseOrderDocument
+                      ?.message as string
+                  }
+                />
+              </div>
+            )}
           </div>
         )}
 
