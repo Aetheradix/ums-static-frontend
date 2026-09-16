@@ -1,305 +1,556 @@
 import { useEffect, useState } from 'react';
 import { ToastService } from 'services';
-import { Button } from 'shared/components/buttons';
-import { TextArea, TextBox } from 'shared/components/forms';
+import { Button, ButtonPanel, StatusButton } from 'shared/components/buttons';
+import { NumberBox, TextArea } from 'shared/components/forms';
+import GridActionButtons from 'shared/components/grid/GridActionButtons';
+import { AlertPanel } from 'shared/components/panels';
 import {
   FormCard,
   FormGrid,
   FormPage,
   FormPopup,
   GridPanel,
+  PreviewGrid,
   StatusBadge,
 } from 'shared/new-components';
-import { civilWorks } from '../../mocks';
+import { formatCurrency } from 'shared/utils/currency';
+import { civilWorks as initialWorks } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
 type PopupState =
   | { mode: 'closed' }
-  | { mode: 'grant'; item: (typeof civilWorks)[0] }
-  | { mode: 'view'; item: (typeof civilWorks)[0] };
+  | { mode: 'view'; item: any }
+  | { mode: 'grant'; item: any };
 
 export default function TechnicalSanction() {
-  const [data, setData] = useState(() => {
+  const [data, setData] = useState<any[]>(() => {
     const saved = localStorage.getItem('civil_works');
-    const worksList = saved ? JSON.parse(saved) : civilWorks;
+    const worksList = saved ? JSON.parse(saved) : initialWorks;
     return worksList.map((w: any) => ({
-      tsRemarks: '',
-      tsGrantedBy: 'Superintending Engineer / PWD',
       ...w,
+      workRegistrationId: w.workRegistrationId || Number(w.id) || 0,
+      code: w.code || w.workId || `CW-2025-${String(w.id).padStart(3, '0')}`,
+      aaAmount: w.administrativeApprovalAmount || w.aaAmount || 0,
+      technicalSanctionAmount:
+        w.technicalSanctionAmount ?? (w.tsAmount > 0 ? w.tsAmount : undefined),
+      tsStatus:
+        w.tsStatus ||
+        (w.technicalSanctionAmount > 0 || (w.tsAmount && w.tsAmount > 0)
+          ? 'Approved'
+          : 'Pending'),
+      remark: w.remark || w.tsRemarks || '',
+      canGrantTs:
+        w.canGrantTs !== undefined
+          ? w.canGrantTs
+          : (w.aaStatus === 'AAApproved' || w.aaAmount > 0) &&
+            (!w.technicalSanctionAmount || w.technicalSanctionAmount <= 0) &&
+            w.tsStatus !== 'Approved',
+      isActive: w.isActive !== false,
     }));
   });
+
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
-  const [tsAmt, setTsAmt] = useState('');
-  const [tsRemarks, setTsRemarks] = useState('');
+  const [tsAmount, setTsAmount] = useState<number | null>(null);
+  const [remark, setRemark] = useState('');
 
   useEffect(() => {
-    // Strip temp properties before saving if necessary, but saving is fine directly
     localStorage.setItem('civil_works', JSON.stringify(data));
   }, [data]);
 
-  const handleGrantTS = () => {
-    if (!tsAmt || Number(tsAmt) <= 0) {
-      ToastService.error('TS Amount is required.');
+  const closePopup = () => {
+    setPopup({ mode: 'closed' });
+    setTsAmount(null);
+    setRemark('');
+  };
+
+  const isEligibleForSanction = (c: any) => {
+    if (c.canGrantTs !== undefined) {
+      return c.canGrantTs;
+    }
+    const hasActiveTs = Boolean(
+      c.technicalSanctionId ||
+      c.tsStatus === 'Approved' ||
+      (c.technicalSanctionAmount != null && c.technicalSanctionAmount > 0)
+    );
+    const hasAa = Boolean(
+      c.aaStatus === 'AAApproved' || (c.aaAmount && c.aaAmount > 0)
+    );
+    return hasAa && !hasActiveTs;
+  };
+
+  const openGrant = (item: any) => {
+    const defaultAmount =
+      item.technicalSanctionAmount && item.technicalSanctionAmount > 0
+        ? item.technicalSanctionAmount
+        : item.aaAmount && item.aaAmount > 0
+          ? item.aaAmount
+          : item.estimatedCost > 0
+            ? item.estimatedCost
+            : 0;
+    setTsAmount(defaultAmount);
+    setRemark(item.remark || '');
+    setPopup({ mode: 'grant', item });
+  };
+
+  const openView = (item: any) => {
+    setPopup({ mode: 'view', item });
+  };
+
+  const handleGrantSave = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (popup.mode !== 'grant' || !popup.item) return;
+
+    const enteredAmount = Number(tsAmount);
+    if (!enteredAmount || enteredAmount <= 0) {
+      ToastService.error('A valid Technical Sanction Amount is required.');
       return;
     }
-    if (popup.mode !== 'grant') return;
-    const aa = (popup as any).item.aaAmount;
-    if (Number(tsAmt) > aa) {
-      ToastService.error('Technical Sanction Amount cannot exceed AA Amount.');
+
+    const maxAllowedAmount = popup.item.aaAmount ?? popup.item.estimatedCost;
+    if (maxAllowedAmount > 0 && enteredAmount > maxAllowedAmount) {
+      ToastService.error(
+        `Technical Sanction Amount (${formatCurrency(enteredAmount)}) cannot exceed the Approved AA Amount (${formatCurrency(maxAllowedAmount)}).`
+      );
       return;
     }
-    setData((prev: any[]) =>
-      prev.map((d: any) =>
-        d.id === (popup as any).item.id
+
+    const targetItem = popup.item;
+
+    setData(prev =>
+      prev.map(d =>
+        d.workRegistrationId === targetItem.workRegistrationId ||
+        d.id === targetItem.id
           ? {
               ...d,
-              tsAmount: Number(tsAmt),
-              status: 'TS Granted' as any,
-              tsRemarks,
+              technicalSanctionAmount: enteredAmount,
+              tsAmount: enteredAmount,
+              technicalSanctionId: d.technicalSanctionId || Date.now(),
+              tsStatus: 'Approved',
+              canGrantTs: false,
+              remark: remark.trim() || undefined,
+              status:
+                d.status === 'AaApproved' || d.status === 'AA Approved'
+                  ? 'TsGranted'
+                  : d.status,
             }
           : d
       )
     );
+
     ToastService.success(
-      'Technical Sanction granted. Structural soundness certified.'
+      `Technical Sanction of ${formatCurrency(enteredAmount)} granted successfully.`
     );
-    setPopup({ mode: 'closed' });
-    setTsAmt('');
-    setTsRemarks('');
+    closePopup();
+  };
+
+  const handleToggleStatus = (item: any) => {
+    setData(prev =>
+      prev.map(d => {
+        if (
+          d.workRegistrationId === item.workRegistrationId ||
+          d.id === item.id
+        ) {
+          const next = d.isActive === false ? true : false;
+          ToastService.info(
+            `Technical Sanction record ${next ? 'Activated' : 'Deactivated'}.`
+          );
+          return { ...d, isActive: next };
+        }
+        return d;
+      })
+    );
   };
 
   return (
     <FormPage
-      title="Technical Sanction (TS)"
-      description="Engineering wing certifies structural soundness and issues the official TS Amount — independent of AA."
+      title="Technical Sanction Approvals"
+      description="Review structural design, verify engineering specifications, and issue official Technical Sanctions (TS Amount ≤ AA Amount)."
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
         { label: 'Technical Sanction' },
       ]}
     >
+      <div className="civil-chain" style={{ marginBottom: '1.25rem' }}>
+        <span className="civil-chain-item done">Work Registration</span>
+        <span className="civil-chain-arrow">→</span>
+        <span className="civil-chain-item done">BOQ Compilation</span>
+        <span className="civil-chain-arrow">→</span>
+        <span className="civil-chain-item done">
+          Administrative Sanction (AA)
+        </span>
+        <span className="civil-chain-arrow">→</span>
+        <span className="civil-chain-item active">
+          Technical Sanction (TS) ← Current
+        </span>
+        <span className="civil-chain-arrow">→</span>
+        <span className="civil-chain-item">Budget Lock & Tender</span>
+      </div>
+
       <FormCard>
         <GridPanel
           data={data}
           columns={[
-            { cell: (_, o) => <span>{o.rowIndex + 1}</span>, width: '50px' },
             {
-              field: 'workId',
+              field: 'workRegistrationId',
+              header: '#',
+              cell: (_, o) => <span>{o.rowIndex + 1}</span>,
+              width: '50px',
+            },
+            {
+              field: 'code',
               header: 'Work ID',
-              cell: (w: any) => (
-                <span
-                  style={{
-                    fontFamily: 'monospace',
-                    fontWeight: 700,
-                    color: '#1d4ed8',
-                  }}
-                >
-                  {w.workId}
+              cell: (c: any) => (
+                <span className="font-mono text-blue-600 font-semibold">
+                  {c.code || c.workId}
                 </span>
               ),
+              width: '130px',
             },
-            { field: 'name', header: 'Work Name' },
             {
-              field: 'category',
-              header: 'Work Type',
-              cell: (w: any) => (
-                <span style={{ fontSize: '0.75rem' }}>{w.category}</span>
+              field: 'name',
+              header: 'Work Name',
+              cell: (c: any) => (
+                <div>
+                  <div className="font-semibold text-gray-900">{c.name}</div>
+                  <div className="text-xs text-gray-500 mt-0.5">
+                    {c.projectDescription || c.campus}{' '}
+                    {c.location ? `• ${c.location}` : ''}
+                  </div>
+                </div>
               ),
             },
-            { field: 'department', header: 'Category' },
+            {
+              field: 'workCategoryName',
+              header: 'Work Type',
+              cell: (c: any) => (
+                <span>{c.workCategoryName || c.category || '—'}</span>
+              ),
+            },
+            {
+              field: 'subCategoryName',
+              header: 'Category',
+              cell: (c: any) => (
+                <span>{c.subCategoryName || c.department || '—'}</span>
+              ),
+            },
             {
               field: 'workBasis',
               header: 'Work Basis',
-              cell: (w: any) => (
-                <span
-                  className={`civil-pill ${w.workBasis === 'BOQ Based' ? 'purple' : 'blue'}`}
-                >
-                  {w.workBasis ?? 'SOR Based'}
-                </span>
+              cell: (c: any) => (
+                <StatusBadge label={c.workBasis || 'SOR'} variant="neutral" />
               ),
             },
             {
               field: 'aaAmount',
-              header: 'AA Amount',
-              cell: (w: any) => (
-                <span>₹{(w.aaAmount / 100000).toFixed(2)}L</span>
-              ),
-            },
-            {
-              field: 'tsAmount',
-              header: 'TS Amount (₹)',
-              cell: (w: any) =>
-                w.tsAmount > 0 ? (
-                  <span style={{ fontWeight: 700, color: '#16a34a' }}>
-                    ₹{(w.tsAmount / 100000).toFixed(2)}L
-                  </span>
+              header: 'AA Amount (₹)',
+              cell: (c: any) =>
+                c.aaAmount != null && c.aaAmount > 0 ? (
+                  <span>{formatCurrency(c.aaAmount)}</span>
                 ) : (
-                  <span className="civil-pill amber">Not Yet Granted</span>
+                  <span className="text-gray-400">—</span>
                 ),
             },
             {
-              field: 'status',
-              header: 'Status',
-              cell: (w: any) => (
-                <StatusBadge
-                  label={w.status}
-                  variant={w.status === 'TS Granted' ? 'approved' : 'neutral'}
-                />
-              ),
+              field: 'technicalSanctionAmount',
+              header: 'TS Amount (₹)',
+              cell: (c: any) =>
+                c.technicalSanctionAmount != null &&
+                c.technicalSanctionAmount > 0 ? (
+                  <span className="font-semibold text-emerald-700">
+                    {formatCurrency(c.technicalSanctionAmount)}
+                  </span>
+                ) : (
+                  <span className="text-gray-400">—</span>
+                ),
             },
             {
-              field: 'id',
-              header: 'Action',
-              sortable: false,
-              cell: (item: any) => (
-                <div style={{ display: 'flex', gap: '0.375rem' }}>
-                  <Button
-                    size="small"
-                    label=""
-                    icon="eye"
-                    variant="outlined"
-                    onClick={() => setPopup({ mode: 'view', item })}
+              field: 'tsStatus',
+              header: 'Status',
+              cell: (c: any) => {
+                const isTsApproved =
+                  c.tsStatus === 'Approved' ||
+                  String(c.status || '')
+                    .toLowerCase()
+                    .replace(/\s+/g, '') === 'tsgranted' ||
+                  (c.technicalSanctionAmount != null &&
+                    c.technicalSanctionAmount > 0);
+
+                return (
+                  <StatusBadge
+                    label={isTsApproved ? 'TS Granted' : 'Pending TS'}
+                    variant={isTsApproved ? 'approved' : 'pending'}
                   />
-                  {item.status === 'AA Approved' && (
-                    <Button
-                      size="small"
-                      label="Grant TS"
-                      icon="verified"
-                      variant="primary"
-                      onClick={() => {
-                        setTsAmt(String(item.aaAmount * 0.995));
-                        setTsRemarks('');
-                        setPopup({ mode: 'grant', item });
-                      }}
-                    />
-                  )}
-                </div>
-              ),
+                );
+              },
+              width: '140px',
+            },
+            {
+              field: 'isActive',
+              header: 'Active',
+              sortable: false,
+              cell: (c: any) => {
+                const isSanctioned =
+                  Boolean(c.technicalSanctionId) ||
+                  c.tsStatus === 'Approved' ||
+                  (c.technicalSanctionAmount != null &&
+                    c.technicalSanctionAmount > 0);
+
+                if (!isSanctioned) {
+                  return <span> — </span>;
+                }
+
+                return (
+                  <StatusButton
+                    value={c.isActive !== false}
+                    onClick={() => handleToggleStatus(c)}
+                  />
+                );
+              },
+              width: '90px',
+            },
+            {
+              field: 'workRegistrationId',
+              header: 'Actions',
+              sortable: false,
+              cell: (c: any) => {
+                const canGrant = isEligibleForSanction(c);
+
+                return (
+                  <GridActionButtons
+                    onView={() => openView(c)}
+                    onApprove={canGrant ? () => openGrant(c) : undefined}
+                    viewTooltip="View Work & Sanction Details"
+                    approveTooltip="Issue Technical Sanction (TS)"
+                  />
+                );
+              },
             },
           ]}
           searchBox
-          searchPlaceholder="Search works..."
+          searchPlaceholder="Search by Work ID, name, category, or status..."
         />
       </FormCard>
 
       <FormPopup
         visible={popup.mode !== 'closed'}
-        onHide={() => setPopup({ mode: 'closed' })}
+        onHide={closePopup}
         title={
-          popup.mode === 'grant'
-            ? `Grant Technical Sanction — ${(popup as any).item?.workId}`
-            : `View — ${(popup as any).item?.workId}`
+          popup.mode === 'view' && popup.item
+            ? `Work & Sanction Details — ${popup.item.code || popup.item.workId}`
+            : popup.mode === 'grant' && popup.item
+              ? `Issue Technical Sanction — ${popup.item.code || popup.item.workId}`
+              : ''
         }
-        subtitle="TS certifies architectural drawings and structural soundness. TS Amount ≤ AA Amount."
+        subtitle={
+          popup.mode === 'view'
+            ? 'Detailed civil engineering work, administrative approval, and technical sanction record.'
+            : popup.mode === 'grant'
+              ? 'Technical Sanction certifies structural design soundness and cost reasonableness (must be ≤ AA Amount).'
+              : ''
+        }
         size="lg"
       >
-        {popup.mode !== 'closed' && (
-          <>
-            <div className="civil-chain">
-              <span className="civil-chain-item done">AA Granted</span>
-              <span className="civil-chain-arrow">→</span>
-              <span className="civil-chain-item active">TS ← Current</span>
-              <span className="civil-chain-arrow">→</span>
-              <span className="civil-chain-item">Budget Lock</span>
-              <span className="civil-chain-arrow">→</span>
-              <span className="civil-chain-item">Tender</span>
-            </div>
+        {popup.mode === 'view' && popup.item && (
+          <div className="flex flex-col gap-4">
+            <FormCard title="Work & AA Summary">
+              <PreviewGrid
+                columns={3}
+                fields={[
+                  {
+                    label: 'Work ID',
+                    value: popup.item.code || popup.item.workId,
+                  },
+                  { label: 'Work Name', value: popup.item.name },
+                  {
+                    label: 'Category',
+                    value:
+                      popup.item.workCategoryName || popup.item.category || '—',
+                  },
+                  {
+                    label: 'Department',
+                    value:
+                      popup.item.subCategoryName ||
+                      popup.item.department ||
+                      '—',
+                  },
+                  {
+                    label: 'Campus / Area',
+                    value:
+                      popup.item.projectDescription || popup.item.campus || '—',
+                  },
+                  {
+                    label: 'Funding Source',
+                    value:
+                      popup.item.fundingSourceName ||
+                      popup.item.fundingSource ||
+                      '—',
+                  },
+                  {
+                    label: 'Estimated Cost',
+                    value: formatCurrency(popup.item.estimatedCost),
+                  },
+                  {
+                    label: 'Approved AA Amount',
+                    value: popup.item.aaAmount
+                      ? formatCurrency(popup.item.aaAmount)
+                      : '—',
+                  },
+                  {
+                    label: 'Execution Route',
+                    value: popup.item.executionRoute || '—',
+                  },
+                  { label: 'Work Basis', value: popup.item.workBasis || '—' },
+                  { label: 'Work Status', value: popup.item.status || '—' },
+                ]}
+              />
+            </FormCard>
 
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: '0.5rem 2rem',
-                fontSize: '0.8125rem',
-                marginBottom: '1rem',
-                padding: '1rem',
-                background: '#f9fafb',
-                borderRadius: '0.75rem',
-              }}
-            >
-              {[
-                ['Work ID', (popup as any).item.workId],
-                [
-                  'AA Amount',
-                  `₹${((popup as any).item.aaAmount / 100000).toFixed(2)}L`,
-                ],
-                ['Category', (popup as any).item.category],
-                ['Execution Route', (popup as any).item.executionRoute],
-              ].map(([k, v]) => (
-                <div key={k}>
-                  <div
-                    style={{
-                      color: '#9ca3af',
-                      fontSize: '0.6875rem',
-                      fontWeight: 600,
-                      textTransform: 'uppercase',
-                      marginBottom: 2,
-                    }}
-                  >
-                    {k}
-                  </div>
-                  <div style={{ fontWeight: 600 }}>{v}</div>
-                </div>
-              ))}
-            </div>
+            <FormCard title="Technical Sanction Record">
+              <PreviewGrid
+                columns={2}
+                fields={[
+                  {
+                    label: 'TS Status',
+                    value:
+                      popup.item.tsStatus === 'Approved'
+                        ? 'TS Granted'
+                        : 'Pending TS',
+                  },
+                  {
+                    label: 'Sanctioned TS Amount',
+                    value: popup.item.technicalSanctionAmount
+                      ? formatCurrency(popup.item.technicalSanctionAmount)
+                      : popup.item.tsAmount
+                        ? formatCurrency(popup.item.tsAmount)
+                        : 'Not Issued',
+                  },
+                  {
+                    label: 'Variance (AA − TS)',
+                    value: formatCurrency(
+                      (popup.item.aaAmount || 0) -
+                        (popup.item.technicalSanctionAmount ||
+                          popup.item.tsAmount ||
+                          0)
+                    ),
+                  },
+                  {
+                    label: 'TS Remarks / Engineering Notes',
+                    value:
+                      popup.item.remark ||
+                      popup.item.tsRemarks ||
+                      'None recorded',
+                  },
+                ]}
+              />
+            </FormCard>
 
-            {popup.mode === 'grant' && (
-              <>
-                <FormGrid columns={2}>
-                  <TextBox
-                    label="TS Amount (₹) — Must be ≤ AA Amount"
-                    placeholder="e.g. 27650000"
-                    value={tsAmt}
-                    onChange={setTsAmt}
-                    required
-                  />
-                  <TextBox
-                    label="TS Granted By (Authority)"
-                    value="Superintending Engineer / PWD"
-                    onChange={() => {}}
-                    disabled
-                  />
-                </FormGrid>
-                <TextArea
-                  label="TS Verification Remarks"
-                  placeholder="Structural certification remarks, drawing references..."
-                  value={tsRemarks}
-                  onChange={setTsRemarks}
-                  rows={3}
-                />
-                <div
-                  style={{
-                    background: '#e0f2fe',
-                    border: '1px solid #7dd3fc',
-                    borderRadius: '0.75rem',
-                    padding: '0.875rem 1rem',
-                    fontSize: '0.8125rem',
-                    color: '#0c4a6e',
-                    marginTop: '0.75rem',
-                  }}
-                >
-                  <strong>ℹ Note:</strong> Technical Sanction Amount cannot
-                  exceed the AA Amount (₹
-                  {((popup as any).item.aaAmount / 100000).toFixed(2)}L). Any
-                  cost overrun requires a Revised Estimate.
-                </div>
-                <div className="flex justify-end gap-3 mt-4">
-                  <Button
-                    label="Cancel"
-                    variant="outlined"
-                    onClick={() => setPopup({ mode: 'closed' })}
-                  />
-                  <Button
-                    label="Issue Technical Sanction"
-                    variant="primary"
-                    icon="verified"
-                    onClick={handleGrantTS}
-                  />
-                </div>
-              </>
-            )}
-          </>
+            <ButtonPanel>
+              <Button label="Close" variant="outlined" onClick={closePopup} />
+            </ButtonPanel>
+          </div>
+        )}
+
+        {popup.mode === 'grant' && popup.item && (
+          <form onSubmit={handleGrantSave} className="flex flex-col gap-4">
+            {/* Work & AA Summary */}
+            <FormCard title="Work & AA Context">
+              <PreviewGrid
+                columns={3}
+                fields={[
+                  {
+                    label: 'Work ID',
+                    value: popup.item.code || popup.item.workId,
+                  },
+                  { label: 'Work Name', value: popup.item.name },
+                  {
+                    label: 'Category',
+                    value:
+                      popup.item.workCategoryName || popup.item.category || '—',
+                  },
+                  {
+                    label: 'Department',
+                    value:
+                      popup.item.subCategoryName ||
+                      popup.item.department ||
+                      '—',
+                  },
+                  {
+                    label: 'Campus / Area',
+                    value:
+                      popup.item.projectDescription || popup.item.campus || '—',
+                  },
+                  {
+                    label: 'Funding Source',
+                    value:
+                      popup.item.fundingSourceName ||
+                      popup.item.fundingSource ||
+                      '—',
+                  },
+                  {
+                    label: 'Estimated Cost',
+                    value: formatCurrency(popup.item.estimatedCost),
+                  },
+                  {
+                    label: 'Approved AA Amount',
+                    value: popup.item.aaAmount
+                      ? formatCurrency(popup.item.aaAmount)
+                      : '—',
+                  },
+                  {
+                    label: 'Execution Route',
+                    value: popup.item.executionRoute || '—',
+                  },
+                ]}
+              />
+            </FormCard>
+
+            {/* Input Section */}
+            <FormGrid columns={1}>
+              <NumberBox
+                value={tsAmount ?? undefined}
+                onChange={val => setTsAmount(val ? Number(val) : null)}
+                label="TS Amount (₹) — Must be ≤ AA Amount"
+                placeholder="e.g. 450000.00"
+                mode="decimal"
+                required
+              />
+              <TextArea
+                value={remark}
+                onChange={val => setRemark(val)}
+                label="TS Verification Remarks / Structural Notes"
+                placeholder="Structural certification remarks, drawing references, engineering scope details..."
+                rows={3}
+                autoResize
+              />
+            </FormGrid>
+
+            {/* Warning Notice Banner */}
+            <AlertPanel severity="warn" title="Important:">
+              Technical Sanction certifies engineering feasibility and
+              establishes the technical expenditure limit. The TS Amount cannot
+              exceed the approved AA Amount (
+              {popup.item.aaAmount ? formatCurrency(popup.item.aaAmount) : '—'}
+              ). Any cost overrun requires a Revised Estimate.
+            </AlertPanel>
+
+            {/* Actions */}
+            <ButtonPanel>
+              <Button
+                label="Cancel"
+                variant="outlined"
+                onClick={closePopup}
+                type="button"
+              />
+              <Button
+                label="Issue Technical Sanction"
+                icon="check"
+                variant="primary"
+                type="submit"
+              />
+            </ButtonPanel>
+          </form>
         )}
       </FormPopup>
     </FormPage>

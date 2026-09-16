@@ -170,7 +170,10 @@ export default function QualityTesting() {
       );
     } else {
       ToastService.success(
-        'Quality test result recorded. Lab certificate & documents uploaded.'
+        popup.item.qualityTestStatus === 'Fail' ||
+          popup.item.qualityTestStatus === 'Re-test Required'
+          ? 'Rectification accepted and Re-Test PASSED! Milestone blocker lifted.'
+          : 'Quality test result recorded. Lab certificate & documents uploaded.'
       );
     }
     setPopup({ mode: 'closed' });
@@ -348,21 +351,36 @@ export default function QualityTesting() {
                   {(item.qualityTestStatus || 'Pending') !== 'Pass' && (
                     <Button
                       size="small"
-                      label="Update Result"
-                      icon="upload"
-                      variant="primary"
+                      label={
+                        item.qualityTestStatus === 'Fail' ||
+                        item.qualityTestStatus === 'Re-test Required'
+                          ? 'Rectify & Re-Test'
+                          : 'Update Result'
+                      }
+                      icon={
+                        item.qualityTestStatus === 'Fail' ||
+                        item.qualityTestStatus === 'Re-test Required'
+                          ? 'refresh'
+                          : 'upload'
+                      }
+                      variant={
+                        item.qualityTestStatus === 'Fail' ||
+                        item.qualityTestStatus === 'Re-test Required'
+                          ? 'warning'
+                          : 'primary'
+                      }
                       onClick={() => {
                         setCertNo(item.certNo || '');
                         setObservedValue(item.observedValue || '');
                         setDocName(item.uploadedDoc || '');
-                        setResult(
-                          item.qualityTestStatus === 'Fail' ? 'Fail' : 'Pass'
+                        setResult('Pass');
+                        setRemarks(
+                          item.qualityTestStatus === 'Fail' ||
+                            item.qualityTestStatus === 'Re-test Required'
+                            ? `[Rectification Action]: Corrective grouting and re-curing executed. Re-tested on site.`
+                            : item.testRemarks || ''
                         );
-                        setRemarks(item.testRemarks || '');
-                        setTestDate(
-                          item.testDate ||
-                            new Date().toISOString().split('T')[0]
-                        );
+                        setTestDate(new Date().toISOString().split('T')[0]);
                         setPopup({ mode: 'update', item });
                       }}
                     />
@@ -448,6 +466,29 @@ export default function QualityTesting() {
 
                 {popup.mode === 'update' && (
                   <>
+                    {(popup.item.qualityTestStatus === 'Fail' ||
+                      popup.item.qualityTestStatus === 'Re-test Required') && (
+                      <div
+                        style={{
+                          background: '#fef2f2',
+                          border: '1px solid #fecaca',
+                          borderRadius: '0.5rem',
+                          padding: '0.75rem 1rem',
+                          marginBottom: '1rem',
+                          fontSize: '0.8125rem',
+                          color: '#991b1b',
+                        }}
+                      >
+                        <strong>
+                          ⚠️ Non-Conformance Notice (NCR Triggered):
+                        </strong>{' '}
+                        Previous test failed (Observed:{' '}
+                        {popup.item.observedValue || 'Below standard'}). Enter
+                        the contractor's corrective rectification details below
+                        and upload the certified re-test report to clear this
+                        quality gate.
+                      </div>
+                    )}
                     <FormGrid columns={2}>
                       <TextBox
                         label="Observed Value *"

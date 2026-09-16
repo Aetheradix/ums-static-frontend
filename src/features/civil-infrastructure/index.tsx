@@ -1,51 +1,76 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 
-// ── Admin Pages ──────────────────────────────────────────────────
-import AdminDashboard from './pages/admin/Dashboard';
-import WorkRegistration from './pages/admin/WorkRegistration';
-import WorkCategorization from './pages/admin/WorkCategorization';
+// ── Admin Core Pages ──────────────────────────────────────────────
 import AdminApproval from './pages/admin/AdminApproval';
-import TechnicalSanction from './pages/admin/TechnicalSanction';
-import BudgetLock from './pages/admin/BudgetLock';
-import TenderOversight from './pages/admin/TenderOversight';
-import AgencyVerification from './pages/admin/AgencyVerification';
-import WorkOrderSign from './pages/admin/WorkOrderSign';
-import CompletionCertificate from './pages/admin/CompletionCertificate';
-import AdminReports from './pages/admin/Reports';
-import AdminSORMaster from './pages/admin/AdminSORMaster';
 import AdminBOQCompilation from './pages/admin/AdminBOQCompilation';
-import AdminMilestoneDefinition from './pages/admin/AdminMilestoneDefinition';
 import AdminEOTRequest from './pages/admin/AdminEOTRequest';
+import AdminMilestoneDefinition from './pages/admin/AdminMilestoneDefinition';
+import AdminSORMaster from './pages/admin/AdminSORMaster';
+import AgencyVerification from './pages/admin/AgencyVerification';
+import BudgetLock from './pages/admin/BudgetLock';
+import CompletionCertificate from './pages/admin/CompletionCertificate';
+import AdminDashboard from './pages/admin/Dashboard';
 import MilestoneApprovals from './pages/admin/MilestoneApprovals';
+import AdminReports from './pages/admin/Reports';
+import TechnicalSanction from './pages/admin/TechnicalSanction';
+import TenderOversight from './pages/admin/TenderOversight';
+import WorkCategorization from './pages/admin/WorkCategorization';
+import WorkManpowerMapping from './pages/admin/WorkManpowerMapping';
+import WorkOrderSign from './pages/admin/WorkOrderSign';
+import WorkRegistration from './pages/admin/WorkRegistration';
 
-// ── Engineer Pages ───────────────────────────────────────────────
-import EngineerDashboard from './pages/engineer/Dashboard';
-import TechnicalPlanning from './pages/engineer/TechnicalPlanning';
-import SORMaster from './pages/engineer/SORMaster';
+// ── Admin Gap-Fill & Indian Workflow Pages ─────────────────────────
+import StatutoryCompliance from './pages/admin/StatutoryCompliance';
+import TPIReports from './pages/admin/TPIReports';
+import AssetRegister from './pages/admin/AssetRegister';
+
+// ── Admin Masters ──────────────────────────────────────────────────
+import FundingSourceMaster from './pages/admin/masters/FundingSourceMaster';
+import MandateDocumentMaster from './pages/admin/masters/MandateDocumentMaster';
+import MBStatusMaster from './pages/admin/masters/MBStatusMaster';
+import ProjectMaster from './pages/admin/masters/ProjectMaster';
+import QualityLabMaster from './pages/admin/masters/QualityLabMaster';
+import SORChapter from './pages/admin/masters/SORChapter';
+import SORItemMaster from './pages/admin/masters/SORItemMaster';
+import SORSubject from './pages/admin/masters/SORSubject';
+import SORType from './pages/admin/masters/SORType';
+import StatusMaster from './pages/admin/masters/StatusMaster';
+import TPIAgencyMaster from './pages/admin/masters/TPIAgencyMaster';
+import WorkCategoryMaster from './pages/admin/masters/WorkCategoryMaster';
+import WorkDepartmentMaster from './pages/admin/masters/WorkDepartmentMaster';
+
+// ── Engineer Pages ─────────────────────────────────────────────────
 import BOQCompilation from './pages/engineer/BOQCompilation';
-import ExecutionRouter from './pages/engineer/ExecutionRouter';
-import QualityFramework from './pages/engineer/QualityFramework';
-import ProgressMonitoring from './pages/engineer/ProgressMonitoring';
-import QualityTesting from './pages/engineer/QualityTesting';
+import EngineerDashboard from './pages/engineer/Dashboard';
+import DeviationStatement from './pages/engineer/DeviationStatement';
 import EMeasurementBook from './pages/engineer/EMeasurementBook';
 import EOTRequest from './pages/engineer/EOTRequest';
-import MilestoneSignoff from './pages/engineer/MilestoneSignoff';
-import RequestCC from './pages/engineer/RequestCC';
+import ExecutionRouter from './pages/engineer/ExecutionRouter';
 import MBReport from './pages/engineer/MBReport';
+import MilestoneSignoff from './pages/engineer/MilestoneSignoff';
+import ProgressMonitoring from './pages/engineer/ProgressMonitoring';
+import QualityFramework from './pages/engineer/QualityFramework';
+import QualityTesting from './pages/engineer/QualityTesting';
+import RequestCC from './pages/engineer/RequestCC';
+import SiteHandover from './pages/engineer/SiteHandover';
+import SORMaster from './pages/engineer/SORMaster';
+import TechnicalPlanning from './pages/engineer/TechnicalPlanning';
 
-// ── Finance Pages ────────────────────────────────────────────────
-import FinanceDashboard from './pages/finance/Dashboard';
+// ── Finance Pages ──────────────────────────────────────────────────
 import BudgetAllocation from './pages/finance/BudgetAllocation';
-import RABillProcessing from './pages/finance/RABillProcessing';
+import FinanceDashboard from './pages/finance/Dashboard';
+import DLPMonitoring from './pages/finance/DLPMonitoring';
 import FinalBillSettlement from './pages/finance/FinalBillSettlement';
 import PaymentRelease from './pages/finance/PaymentRelease';
-import DLPMonitoring from './pages/finance/DLPMonitoring';
+import PVCCalculation from './pages/finance/PVCCalculation';
+import RABillProcessing from './pages/finance/RABillProcessing';
+import UtilizationCertificate from './pages/finance/UtilizationCertificate';
 
 /**
  * Civil Infrastructure Module Routes
  *
  * Mounted at path="civil-infrastructure/*" in the main features router.
- * Three role-based portals: admin, engineer, finance.
+ * Three role-based portals: admin, engineer, finance with comprehensive masters and Indian workflow routes.
  */
 export default function CivilInfrastructure() {
   return (
@@ -57,7 +82,12 @@ export default function CivilInfrastructure() {
       />
 
       {/* ── Admin Login ───────────────────────────────────────────── */}
-      <Route path="admin" element={<Navigate to="admin/dashboard" replace />} />
+      <Route
+        path="admin"
+        element={
+          <Navigate to="/civil-infrastructure/admin/dashboard" replace />
+        }
+      />
       <Route path="admin/dashboard" element={<AdminDashboard />} />
       <Route path="admin/work-registration" element={<WorkRegistration />} />
       <Route
@@ -74,6 +104,10 @@ export default function CivilInfrastructure() {
       />
       <Route path="admin/work-order-sign" element={<WorkOrderSign />} />
       <Route
+        path="admin/work-manpower-mapping"
+        element={<WorkManpowerMapping />}
+      />
+      <Route
         path="admin/milestone-approvals"
         element={<MilestoneApprovals />}
       />
@@ -87,10 +121,47 @@ export default function CivilInfrastructure() {
       <Route path="admin/boq-compilation" element={<AdminBOQCompilation />} />
       <Route path="admin/milestones" element={<AdminMilestoneDefinition />} />
 
+      {/* Admin Gap-Fill & Indian Workflow Pages */}
+      <Route
+        path="admin/statutory-compliance"
+        element={<StatutoryCompliance />}
+      />
+      <Route path="admin/tpi-reports" element={<TPIReports />} />
+      <Route path="admin/asset-register" element={<AssetRegister />} />
+
+      {/* Admin Masters */}
+      <Route path="admin/masters/sor-type" element={<SORType />} />
+      <Route path="admin/masters/sor-chapter" element={<SORChapter />} />
+      <Route path="admin/masters/sor-subject" element={<SORSubject />} />
+      <Route path="admin/masters/sor-items" element={<SORItemMaster />} />
+      <Route path="admin/masters/projects" element={<ProjectMaster />} />
+      <Route
+        path="admin/masters/work-categories"
+        element={<WorkCategoryMaster />}
+      />
+      <Route
+        path="admin/masters/work-departments"
+        element={<WorkDepartmentMaster />}
+      />
+      <Route
+        path="admin/masters/funding-sources"
+        element={<FundingSourceMaster />}
+      />
+      <Route
+        path="admin/masters/mandate-documents"
+        element={<MandateDocumentMaster />}
+      />
+      <Route path="admin/masters/quality-labs" element={<QualityLabMaster />} />
+      <Route path="admin/masters/tpi-agencies" element={<TPIAgencyMaster />} />
+      <Route path="admin/masters/mb-statuses" element={<MBStatusMaster />} />
+      <Route path="admin/masters/statuses" element={<StatusMaster />} />
+
       {/* ── Site Engineer Login ───────────────────────────────────── */}
       <Route
         path="engineer"
-        element={<Navigate to="engineer/dashboard" replace />}
+        element={
+          <Navigate to="/civil-infrastructure/engineer/dashboard" replace />
+        }
       />
       <Route path="engineer/dashboard" element={<EngineerDashboard />} />
       <Route
@@ -114,11 +185,18 @@ export default function CivilInfrastructure() {
       <Route path="engineer/milestone-signoff" element={<MilestoneSignoff />} />
       <Route path="engineer/request-cc" element={<RequestCC />} />
       <Route path="engineer/mb-report" element={<MBReport />} />
+      <Route path="engineer/site-handover" element={<SiteHandover />} />
+      <Route
+        path="engineer/deviation-statement"
+        element={<DeviationStatement />}
+      />
 
       {/* ── Finance Login ─────────────────────────────────────────── */}
       <Route
         path="finance"
-        element={<Navigate to="finance/dashboard" replace />}
+        element={
+          <Navigate to="/civil-infrastructure/finance/dashboard" replace />
+        }
       />
       <Route path="finance/dashboard" element={<FinanceDashboard />} />
       <Route path="finance/budget-allocation" element={<BudgetAllocation />} />
@@ -129,6 +207,11 @@ export default function CivilInfrastructure() {
       />
       <Route path="finance/payment-release" element={<PaymentRelease />} />
       <Route path="finance/dlp-monitoring" element={<DLPMonitoring />} />
+      <Route
+        path="finance/utilization-certificate"
+        element={<UtilizationCertificate />}
+      />
+      <Route path="finance/pvc-calculation" element={<PVCCalculation />} />
     </Routes>
   );
 }

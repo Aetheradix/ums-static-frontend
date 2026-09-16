@@ -1,19 +1,25 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextBox } from 'shared/components/forms';
+import GridActionButtons from 'shared/components/grid/GridActionButtons';
 import {
   FormCard,
   FormGrid,
   FormPage,
   FormPopup,
   GridPanel,
+  StatusBadge,
 } from 'shared/new-components';
 import {
   type BOQItem,
+  type CivilWork,
   boqItems as initialBOQ,
   civilWorks,
   sorItems,
+  initialSORTypes,
+  initialSORChapters,
 } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -24,13 +30,16 @@ type PopupState =
   | { mode: 'edit'; item: BOQItem };
 
 export default function AdminBOQCompilation() {
-  const [works, setWorks] = useState<any[]>(() => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const workIdParam = searchParams.get('workId') || '1';
+
+  const [works, setWorks] = useState<CivilWork[]>(() => {
     const saved = localStorage.getItem('civil_works');
     return saved ? JSON.parse(saved) : civilWorks;
   });
 
   const [data, setData] = useState<BOQItem[]>(initialBOQ);
-  const [selectedWorkId, setSelectedWorkId] = useState('1'); // Default to Academic Block
+  const [selectedWorkId, setSelectedWorkId] = useState<string>(workIdParam);
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
 
   // Add/Edit Form State
@@ -39,6 +48,24 @@ export default function AdminBOQCompilation() {
   const [nonSorDescription, setNonSorDescription] = useState('');
   const [nonSorRate, setNonSorRate] = useState('');
   const [nonSorUnit, setNonSorUnit] = useState('');
+
+  // SOR Hierarchy Masters State
+  const [sorTypes] = useState<CivilManagement.SORType[]>(() => {
+    const saved = localStorage.getItem('civil_sor_types');
+    return saved ? JSON.parse(saved) : initialSORTypes;
+  });
+  const [sorChapters] = useState<CivilManagement.SORChapter[]>(() => {
+    const saved = localStorage.getItem('civil_sor_chapters');
+    return saved ? JSON.parse(saved) : initialSORChapters;
+  });
+  const [sorTypeFilter, setSorTypeFilter] = useState('ALL');
+  const [sorChapterFilter, setSorChapterFilter] = useState('ALL');
+
+  useEffect(() => {
+    if (workIdParam && workIdParam !== selectedWorkId) {
+      setSelectedWorkId(workIdParam);
+    }
+  }, [workIdParam]);
 
   // Watch storage updates
   useEffect(() => {
@@ -52,8 +79,10 @@ export default function AdminBOQCompilation() {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  const currentWork = works.find(w => w.id === selectedWorkId);
-  const workBOQItems = data.filter(b => b.workId === selectedWorkId);
+  const currentWork = works.find(
+    w => String(w.workRegistrationId || w.id) === selectedWorkId
+  );
+  const workBOQItems = data.filter(b => String(b.workId) === selectedWorkId);
   const totalBOQAmount = workBOQItems.reduce((s, i) => s + i.amount, 0);
   const isLocked =
     workBOQItems.length > 0 && workBOQItems.every(i => i.isLocked);
@@ -62,11 +91,11 @@ export default function AdminBOQCompilation() {
   const selectedSor = getSorItem();
 
   // Non-SOR detection
-  const isNonSOR = currentWork?.workBasis === 'Non-SOR';
+  const isNonSOR =
+    currentWork?.workBasis === 'Non-SOR' || currentWork?.workBasis === 'NonSor';
 
   const calculatedAmt = (() => {
     if (isNonSOR) {
-      // For Non-SOR: use custom rate * qty
       const rate = Number(nonSorRate);
       const q = Number(qty);
       return rate > 0 && q > 0 ? rate * q : 0;
@@ -74,10 +103,19 @@ export default function AdminBOQCompilation() {
     return selectedSor && qty ? Number(qty) * selectedSor.govtRate : 0;
   })();
 
+  const handleWorkChange = (val: unknown) => {
+    const strVal = String(val || '');
+    setSelectedWorkId(strVal);
+    if (strVal) {
+      setSearchParams({ workId: strVal });
+    } else {
+      setSearchParams({});
+    }
+  };
+
   const handleSaveItem = () => {
     if (popup.mode === 'add') {
       if (isNonSOR) {
-        // Non-SOR flow: description + rate + qty required
         if (!nonSorDescription.trim()) {
           ToastService.error('Item description is required for Non-SOR work.');
           return;
@@ -90,7 +128,6 @@ export default function AdminBOQCompilation() {
           ToastService.error('Quantity must be greater than 0.');
           return;
         }
-        // Auto-select first SOR item as reference (as per Non-SOR flow spec)
         const refSor = sorItems[0];
         const newItem: BOQItem = {
           id: String(Date.now()),
@@ -108,7 +145,6 @@ export default function AdminBOQCompilation() {
         setData(prev => [...prev, newItem]);
         ToastService.success('Non-SOR item added to BOQ compiler.');
       } else {
-        // SOR flow (existing)
         if (!selectedSorId) {
           ToastService.error('SOR Item must be selected.');
           return;
@@ -165,8 +201,13 @@ export default function AdminBOQCompilation() {
     setNonSorUnit('');
   };
 
-  const handleDeleteItem = (itemId: string) => {
-    setData(prev => prev.filter(i => i.id !== itemId));
+  const handleDeleteItem = (item: BOQItem) => {
+    const isConfirmed = window.confirm(
+      `Are you sure you want to delete line item "${item.sorCode || item.description}"? This action cannot be undone.`
+    );
+    if (!isConfirmed) return;
+
+    setData(prev => prev.filter(i => i.id !== item.id));
     ToastService.success('Item removed from BOQ compiler.');
   };
 
@@ -175,15 +216,70 @@ export default function AdminBOQCompilation() {
       ToastService.error('Cannot lock an empty BOQ. Add items first.');
       return;
     }
+
+    const isConfirmed = window.confirm(
+      `Locking the baseline will freeze all ${workBOQItems.length} line items totalling ₹${totalBOQAmount.toLocaleString('en-IN')}. Once locked, items cannot be edited or deleted without administrative override.`
+    );
+    if (!isConfirmed) return;
+
     setData(prev =>
       prev.map(item =>
-        item.workId === selectedWorkId ? { ...item, isLocked: true } : item
+        String(item.workId) === selectedWorkId
+          ? { ...item, isLocked: true }
+          : item
       )
     );
     ToastService.success(
       'BOQ compiled baseline has been locked. AA/TS is now authorized.'
     );
   };
+
+  const handleApproveBOQ = () => {
+    if (workBOQItems.length === 0) {
+      ToastService.error('Cannot approve an empty BOQ. Add items first.');
+      return;
+    }
+
+    const isConfirmed = window.confirm(
+      `Approve BOQ for "${currentWork?.name || selectedWorkId}" with total valuation of ₹${totalBOQAmount.toLocaleString('en-IN')}? This will update the work status and lock the baseline.`
+    );
+    if (!isConfirmed) return;
+
+    setData(prev =>
+      prev.map(item =>
+        String(item.workId) === selectedWorkId
+          ? { ...item, isLocked: true }
+          : item
+      )
+    );
+    setWorks(prev => {
+      const updated = prev.map(w =>
+        String(w.workRegistrationId || w.id) === selectedWorkId
+          ? { ...w, status: 'AA Approved' }
+          : w
+      );
+      localStorage.setItem('civil_works', JSON.stringify(updated));
+      return updated;
+    });
+    ToastService.success(
+      'BOQ approved by Admin. Baseline is locked for Administrative Sanction.'
+    );
+  };
+
+  const workOptions = works.map(w => {
+    const basisBadge =
+      w.workBasis === 'Non-SOR' || w.workBasis === 'NonSor'
+        ? 'Non-SOR'
+        : w.workBasis === 'SOR' || w.workBasis === 'SOR Based'
+          ? 'SOR Based'
+          : 'BOQ Based';
+    const id = String(w.workRegistrationId || w.id);
+    const code = w.code || w.workId || `CW-${id.padStart(3, '0')}`;
+    return {
+      value: id,
+      text: `${code} — ${w.name} [${basisBadge}]`,
+    };
+  });
 
   return (
     <FormPage
@@ -225,14 +321,7 @@ export default function AdminBOQCompilation() {
       </div>
 
       {/* Select Project & Summary Card */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '2fr 1fr',
-          gap: '1.5rem',
-          marginBottom: '1.5rem',
-        }}
-      >
+      <FormGrid columns={2}>
         <FormCard
           title="Select Civil Work"
           subtitle="Compile or modify BOQ baseline for the selected project"
@@ -240,16 +329,12 @@ export default function AdminBOQCompilation() {
           <div style={{ marginTop: '0.5rem' }}>
             <DropDownList
               label="Work In-Progress / Registered *"
-              data={works.map(w => ({
-                name: `${w.workId} — ${w.name}${w.workBasis ? ` [${w.workBasis}]` : ''}`,
-                value: w.id,
-              }))}
-              textField="name"
+              data={workOptions}
+              textField="text"
               optionValue="value"
               value={selectedWorkId}
-              onChange={v => {
-                setSelectedWorkId(v as string);
-              }}
+              onChange={handleWorkChange}
+              placeholder="Search by work code or project name..."
             />
           </div>
         </FormCard>
@@ -299,39 +384,59 @@ export default function AdminBOQCompilation() {
                   color: '#16a34a',
                 }}
               >
-                ₹{totalBOQAmount.toLocaleString('en-IN')}
+                ₹
+                {totalBOQAmount.toLocaleString('en-IN', {
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 2,
+                })}
               </span>
             </div>
             <div
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
+                alignItems: 'center',
                 paddingBottom: '0.25rem',
               }}
             >
               <span style={{ fontSize: '0.8125rem', color: '#6b7280' }}>
                 Lock Status:
               </span>
-              <span className={`civil-pill ${isLocked ? 'green' : 'amber'}`}>
-                {isLocked ? '🔒 Locked Baseline' : '🔓 Draft Mode'}
-              </span>
+              <StatusBadge
+                label={isLocked ? 'Locked Baseline' : 'Draft Mode'}
+                variant={isLocked ? 'approved' : 'pending'}
+              />
             </div>
           </div>
         </FormCard>
-      </div>
+      </FormGrid>
 
       {/* BOQ Grid */}
       <FormCard
         title="BOQ Items Configuration"
-        subtitle={`Work ID: ${currentWork?.workId ?? ''} — ${currentWork?.name ?? ''}`}
+        subtitle={
+          currentWork
+            ? `Work ID: ${currentWork.code || currentWork.workId} — ${currentWork.name}`
+            : undefined
+        }
+        headerAction={
+          isLocked ? (
+            <StatusBadge label="Baseline Locked" variant="approved" />
+          ) : undefined
+        }
       >
         <GridPanel
           data={workBOQItems}
           columns={[
-            { cell: (_, o) => <span>{o.rowIndex + 1}</span>, width: '50px' },
+            {
+              field: 'id',
+              header: '#',
+              cell: (_, o) => <span>{o.rowIndex + 1}</span>,
+              width: '50px',
+            },
             {
               field: 'sorCode',
-              header: 'SOR Code',
+              header: 'Serial Number',
               cell: (item: BOQItem) => (
                 <span
                   style={{
@@ -341,9 +446,10 @@ export default function AdminBOQCompilation() {
                     fontSize: '0.75rem',
                   }}
                 >
-                  {item.sorCode}
+                  {item.sorCode || '—'}
                 </span>
               ),
+              width: '120px',
             },
             {
               field: 'description',
@@ -362,6 +468,7 @@ export default function AdminBOQCompilation() {
                   ₹{item.govtRate.toLocaleString('en-IN')} / {item.unit}
                 </span>
               ),
+              width: '130px',
             },
             {
               field: 'approvedQty',
@@ -371,94 +478,99 @@ export default function AdminBOQCompilation() {
                   {item.approvedQty.toLocaleString('en-IN')} {item.unit}
                 </span>
               ),
+              width: '130px',
             },
             {
               field: 'amount',
               header: 'Total Value (₹)',
               cell: (item: BOQItem) => (
                 <span style={{ fontWeight: 700, color: '#16a34a' }}>
-                  ₹{item.amount.toLocaleString('en-IN')}
+                  ₹{' '}
+                  {item.amount.toLocaleString('en-IN', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2,
+                  })}
                 </span>
               ),
+              width: '140px',
             },
             {
               field: 'id',
               header: 'Actions',
               sortable: false,
-              cell: (item: BOQItem) => (
-                <div style={{ display: 'flex', gap: '0.375rem' }}>
-                  {!isLocked && (
-                    <>
-                      <Button
-                        size="small"
-                        label=""
-                        icon="pencil"
-                        variant="outlined"
-                        onClick={() => {
-                          setQty(String(item.approvedQty));
-                          setPopup({ mode: 'edit', item });
-                        }}
-                      />
-                      <Button
-                        size="small"
-                        label=""
-                        icon="trash"
-                        variant="danger"
-                        onClick={() => handleDeleteItem(item.id)}
-                      />
-                    </>
-                  )}
-                  {isLocked && (
-                    <span style={{ fontSize: '0.72rem', color: '#6b7280' }}>
-                      🔒 baseline locked
-                    </span>
-                  )}
-                </div>
-              ),
+              cell: (item: BOQItem) =>
+                item.isLocked || isLocked ? (
+                  <StatusBadge label="Baseline Locked" variant="approved" />
+                ) : (
+                  <GridActionButtons
+                    onEdit={() => {
+                      setQty(String(item.approvedQty));
+                      setPopup({ mode: 'edit', item });
+                    }}
+                    onDelete={() => handleDeleteItem(item)}
+                    editTooltip="Edit Line Item"
+                    deleteTooltip="Delete Line Item"
+                  />
+                ),
+              width: '130px',
             },
           ]}
           toolbar={
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
-              {!isLocked && (
-                <>
-                  <Button
-                    label="Add Item to BOQ"
-                    icon="plus"
-                    variant="primary"
-                    onClick={() => {
-                      setSelectedSorId('');
-                      setQty('');
-                      setNonSorDescription('');
-                      setNonSorRate('');
-                      setNonSorUnit('');
-                      setPopup({ mode: 'add' });
-                    }}
-                  />
-                  <Button
-                    label="Lock & Save Baseline"
-                    icon="lock"
-                    variant="success"
-                    onClick={handleLockBOQ}
-                  />
-                </>
-              )}
-              {isLocked && (
-                <div
-                  style={{
-                    background: '#dcfce7',
-                    border: '1px solid #86efac',
-                    borderRadius: '0.5rem',
-                    padding: '0.375rem 0.75rem',
-                    fontSize: '0.8125rem',
-                    color: '#15803d',
-                    fontWeight: 600,
+            !isLocked ? (
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '0.75rem',
+                  alignItems: 'center',
+                }}
+              >
+                <Button
+                  label="Add Item to BOQ"
+                  icon="plus"
+                  variant="primary"
+                  onClick={() => {
+                    setSelectedSorId('');
+                    setQty('');
+                    setNonSorDescription('');
+                    setNonSorRate('');
+                    setNonSorUnit('');
+                    setPopup({ mode: 'add' });
                   }}
-                >
-                  ✓ BOQ Baseline is locked. Budget allocations can proceed.
-                </div>
-              )}
-            </div>
+                />
+                <Button
+                  label="Approve BOQ (Admin)"
+                  icon="check"
+                  variant="success"
+                  onClick={handleApproveBOQ}
+                  disabled={workBOQItems.length === 0}
+                />
+                <Button
+                  label="Lock Baseline"
+                  icon="lock"
+                  variant="outlined"
+                  onClick={handleLockBOQ}
+                  disabled={workBOQItems.length === 0}
+                />
+              </div>
+            ) : (
+              <div
+                style={{
+                  background: '#dcfce7',
+                  border: '1px solid #86efac',
+                  borderRadius: '0.5rem',
+                  padding: '0.375rem 0.75rem',
+                  fontSize: '0.8125rem',
+                  color: '#15803d',
+                  fontWeight: 600,
+                }}
+              >
+                ✓ BOQ Baseline is locked. Administrative and Technical Sanctions
+                can proceed.
+              </div>
+            )
           }
+          searchBox
+          searchPlaceholder="Search BOQ items..."
         />
       </FormCard>
 
@@ -477,7 +589,6 @@ export default function AdminBOQCompilation() {
         {popup.mode === 'add' && (
           <div>
             {isNonSOR ? (
-              // ── Non-SOR BOQ Item Entry ──────────────────────────────────────
               <div>
                 <div
                   style={{
@@ -490,9 +601,9 @@ export default function AdminBOQCompilation() {
                     color: '#166534',
                   }}
                 >
-                  <strong>ℹ️ Non-SOR Work:</strong> This work is classified as <strong>Non-SOR</strong>.
-                  Government SOR rates, approved quantities, and costs are pre-applied from the SOR Master automatically.
-                  Please provide a custom item description, unit, rate, and quantity for this item.
+                  <strong>ℹ️ Non-SOR Work:</strong> This work is classified as{' '}
+                  <strong>Non-SOR</strong>. Please provide a custom item
+                  description, unit, rate, and quantity for this item.
                 </div>
                 <FormGrid columns={2}>
                   <TextBox
@@ -541,8 +652,53 @@ export default function AdminBOQCompilation() {
                 )}
               </div>
             ) : (
-              // ── SOR-Based BOQ Item Entry (existing flow) ────────────────────
               <div style={{ marginBottom: '1rem' }}>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '0.75rem',
+                    marginBottom: '0.75rem',
+                  }}
+                >
+                  <DropDownList
+                    label="SOR Classification (Type)"
+                    data={[
+                      { label: 'All Classifications', value: 'ALL' },
+                      ...sorTypes.map(t => ({
+                        label: `${t.code} — ${t.name}`,
+                        value: t.id,
+                      })),
+                    ]}
+                    textField="label"
+                    optionValue="value"
+                    value={sorTypeFilter}
+                    onChange={v => {
+                      setSorTypeFilter(v as string);
+                      setSorChapterFilter('ALL');
+                    }}
+                  />
+                  <DropDownList
+                    label="SOR Chapter"
+                    data={[
+                      { label: 'All Chapters', value: 'ALL' },
+                      ...sorChapters
+                        .filter(
+                          c =>
+                            sorTypeFilter === 'ALL' ||
+                            c.sorTypeId === sorTypeFilter
+                        )
+                        .map(c => ({
+                          label: `Ch-${c.chapterNo}: ${c.name}`,
+                          value: c.id,
+                        })),
+                    ]}
+                    textField="label"
+                    optionValue="value"
+                    value={sorChapterFilter}
+                    onChange={v => setSorChapterFilter(v as string)}
+                  />
+                </div>
                 <DropDownList
                   label="Select Item from Government SOR Master *"
                   data={sorItems.map(s => ({

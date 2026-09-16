@@ -7766,13 +7766,128 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'dashboard',
                 colorScheme: 'blue',
               },
+              // {
+              //   label: 'Masters',
+              //   description:
+              //     'Manage SOR items, Third-Party Inspection (TPI) agencies, and Quality Lab registries.',
+              //   path: '/civil-infrastructure/admin/sor-master',
+              //   icon: 'list_alt',
+              //   colorScheme: 'teal',
+              // },
               {
-                label: 'Masters',
+                label: 'External Masters',
+                slug: 'civil-external-masters',
                 description:
-                  'Manage SOR items, Third-Party Inspection (TPI) agencies, and Quality Lab registries.',
-                path: '/civil-infrastructure/admin/sor-master',
-                icon: 'list_alt',
+                  'Manage SOR types, chapters, subjects, items, projects, funding sources, labs, and status masters.',
+                icon: 'settings_suggest',
                 colorScheme: 'teal',
+                path: '/home/sub-menu/civil-external-masters',
+                children: [
+                  {
+                    label: 'SOR Types',
+                    description:
+                      'Schedule of Rates major classifications and code definitions.',
+                    path: '/civil-infrastructure/admin/masters/sor-type',
+                    icon: 'category',
+                    colorScheme: 'blue',
+                  },
+                  {
+                    label: 'SOR Chapters',
+                    description:
+                      'Schedule of Rates chapter hierarchy under classifications.',
+                    path: '/civil-infrastructure/admin/masters/sor-chapter',
+                    icon: 'menu_book',
+                    colorScheme: 'teal',
+                  },
+                  {
+                    label: 'SOR Subjects',
+                    description:
+                      'SOR subject classifications and sub-chapters.',
+                    path: '/civil-infrastructure/admin/masters/sor-subject',
+                    icon: 'subject',
+                    colorScheme: 'indigo',
+                  },
+                  {
+                    label: 'SOR Item Master',
+                    description:
+                      'Manage government-notified Schedule of Rates line items, units, and rates.',
+                    path: '/civil-infrastructure/admin/masters/sor-items',
+                    icon: 'format_list_numbered',
+                    colorScheme: 'purple',
+                  },
+                  {
+                    label: 'Project Master',
+                    description:
+                      'Campus project definitions, locations, and structural categories.',
+                    path: '/civil-infrastructure/admin/masters/projects',
+                    icon: 'apartment',
+                    colorScheme: 'orange',
+                  },
+                  {
+                    label: 'Work Category Master',
+                    description:
+                      'Capital construction, maintenance, renovation, and deposit work types.',
+                    path: '/civil-infrastructure/admin/masters/work-categories',
+                    icon: 'class',
+                    colorScheme: 'green',
+                  },
+                  {
+                    label: 'Work Department Master',
+                    description:
+                      'University executing departments, wings, and sections.',
+                    path: '/civil-infrastructure/admin/masters/work-departments',
+                    icon: 'domain',
+                    colorScheme: 'blue',
+                  },
+                  {
+                    label: 'Funding Source Master',
+                    description:
+                      'UGC, State Government, RUSA, CSR, and internal fund sources.',
+                    path: '/civil-infrastructure/admin/masters/funding-sources',
+                    icon: 'account_balance',
+                    colorScheme: 'teal',
+                  },
+                  {
+                    label: 'Mandate Document Master',
+                    description:
+                      'Required compliance documents, sanctions, and upload checklist masters.',
+                    path: '/civil-infrastructure/admin/masters/mandate-documents',
+                    icon: 'description',
+                    colorScheme: 'amber',
+                  },
+                  {
+                    label: 'Quality Lab Master',
+                    description:
+                      'Empaneled material testing laboratories, NABL accreditation, and scopes.',
+                    path: '/civil-infrastructure/admin/masters/quality-labs',
+                    icon: 'science',
+                    colorScheme: 'red',
+                  },
+                  {
+                    label: 'TPI Agency Master',
+                    description:
+                      'Empaneled Third-Party Inspection QA agencies and contract periods.',
+                    path: '/civil-infrastructure/admin/masters/tpi-agencies',
+                    icon: 'fact_check',
+                    colorScheme: 'indigo',
+                  },
+                  {
+                    label: 'MB Status Master',
+                    description:
+                      'Measurement Book approval lifecycle and verification status codes.',
+                    path: '/civil-infrastructure/admin/masters/mb-statuses',
+                    icon: 'rule',
+                    colorScheme: 'teal',
+                  },
+                  {
+                    label: 'Work Status Master',
+                    description:
+                      'Civil work lifecycle execution status definitions and flags.',
+                    path: '/civil-infrastructure/admin/masters/statuses',
+                    icon: 'flag',
+                    colorScheme: 'purple',
+                  },
+                ],
               },
               {
                 label: 'Work Registration',
@@ -7840,6 +7955,14 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'purple',
               },
               {
+                label: 'Work to Manpower Mapping',
+                description:
+                  'Map engineering personnel, site supervisors, and responsibilities for registered civil works.',
+                path: '/civil-infrastructure/admin/work-manpower-mapping',
+                icon: 'people',
+                colorScheme: 'indigo',
+              },
+              {
                 label: 'Milestone Definition',
                 description:
                   'Set project execution milestones and link payments to completion.',
@@ -7872,6 +7995,30 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'green',
               },
               {
+                label: 'Asset Register & Handover',
+                description:
+                  'Capitalize completed civil works into institutional assets.',
+                path: '/civil-infrastructure/admin/asset-register',
+                icon: 'account_balance',
+                colorScheme: 'teal',
+              },
+              {
+                label: 'Statutory Compliance / NOCs',
+                description:
+                  'Track environmental, fire, municipal, and heritage NOCs.',
+                path: '/civil-infrastructure/admin/statutory-compliance',
+                icon: 'verified',
+                colorScheme: 'purple',
+              },
+              {
+                label: 'TPI Inspection Reports',
+                description:
+                  'Third-Party Inspection QA reports and NCR tracking.',
+                path: '/civil-infrastructure/admin/tpi-reports',
+                icon: 'fact_check',
+                colorScheme: 'indigo',
+              },
+              {
                 label: 'Reports',
                 description: 'Summary charts and work/contractor registries.',
                 path: '/civil-infrastructure/admin/reports',
@@ -7897,14 +8044,14 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'dashboard',
                 colorScheme: 'blue',
               },
-              // {
-              //   label: 'Planning Workbench',
-              //   description:
-              //     'Input site dimensions, soil data, and resource projections.',
-              //   path: '/civil-infrastructure/engineer/technical-planning',
-              //   icon: 'architecture',
-              //   colorScheme: 'purple',
-              // },
+              {
+                label: 'Technical Planning',
+                description:
+                  'Manage civil engineering technical plans, plot areas, concrete grades, and material estimations.',
+                path: '/civil-infrastructure/engineer/technical-planning',
+                icon: 'architecture',
+                colorScheme: 'purple',
+              },
               {
                 label: 'SOR Rate Master',
                 description:
@@ -7988,6 +8135,22 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'emoji_events',
                 colorScheme: 'indigo',
               },
+              {
+                label: 'Site Handover',
+                description:
+                  'Possession certificate, site encumbrance check, and geo-photos.',
+                path: '/civil-infrastructure/engineer/site-handover',
+                icon: 'key',
+                colorScheme: 'teal',
+              },
+              {
+                label: 'Deviation Statement',
+                description:
+                  'Clause 12 deviations, extra items, substitutions and justifications.',
+                path: '/civil-infrastructure/engineer/deviation-statement',
+                icon: 'difference',
+                colorScheme: 'amber',
+              },
             ],
           },
           {
@@ -8042,6 +8205,22 @@ export const menuConfig: Menu.MenuItem[] = [
                 path: '/civil-infrastructure/finance/dlp-monitoring',
                 icon: 'lock_open',
                 colorScheme: 'pink',
+              },
+              {
+                label: 'Utilization Certificates',
+                description:
+                  'Statutory GFR 12-A grant utilization tracking and submission.',
+                path: '/civil-infrastructure/finance/utilization-certificate',
+                icon: 'document_scanner',
+                colorScheme: 'indigo',
+              },
+              {
+                label: 'Price Variation (PVC)',
+                description:
+                  'CPWD Clause 10CC price escalation calculations based on WPI/CPI.',
+                path: '/civil-infrastructure/finance/pvc-calculation',
+                icon: 'trending_up',
+                colorScheme: 'orange',
               },
             ],
           },

@@ -1,310 +1,554 @@
 import { useEffect, useState } from 'react';
 import { ToastService } from 'services';
-import { Button } from 'shared/components/buttons';
-import { TextArea, TextBox } from 'shared/components/forms';
+import { Button, ButtonPanel, StatusButton } from 'shared/components/buttons';
+import { FileUpload, NumberBox, TextArea } from 'shared/components/forms';
+import GridActionButtons from 'shared/components/grid/GridActionButtons';
+import { AlertPanel } from 'shared/components/panels';
 import {
   FormCard,
   FormGrid,
   FormPage,
   FormPopup,
   GridPanel,
+  PreviewGrid,
   StatusBadge,
 } from 'shared/new-components';
-import { civilWorks } from '../../mocks';
+import { formatCurrency } from 'shared/utils/currency';
+import { civilWorks as initialWorks } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
 type PopupState =
   | { mode: 'closed' }
-  | { mode: 'approve'; item: (typeof civilWorks)[0] }
-  | { mode: 'view'; item: (typeof civilWorks)[0] };
-
-const AA_ELIGIBLE = ['Registered', 'Requirement Generated', 'AA Approved'];
+  | { mode: 'grant'; item: any }
+  | { mode: 'view'; item: any };
 
 export default function AdminApproval() {
-  const [data, setData] = useState(() => {
+  const [data, setData] = useState<any[]>(() => {
     const saved = localStorage.getItem('civil_works');
-    const worksList = saved ? JSON.parse(saved) : civilWorks;
+    const worksList = saved ? JSON.parse(saved) : initialWorks;
     return worksList.map((w: any) => ({
-      aaAmount: w.aaAmount || w.estimatedCost * 0.98,
-      aaRemarks: '',
-      aaGrantedBy: 'Hon. Vice Chancellor',
-      aaDate: '2025-01-15',
       ...w,
+      workRegistrationId: w.workRegistrationId || Number(w.id) || 0,
+      code: w.code || w.workId || `CW-2025-${String(w.id).padStart(3, '0')}`,
+      administrativeApprovalAmount:
+        w.administrativeApprovalAmount ??
+        (w.aaAmount > 0 ? w.aaAmount : undefined),
+      aaStatus:
+        w.aaStatus ||
+        (w.administrativeApprovalAmount > 0 || (w.aaAmount && w.aaAmount > 0)
+          ? 'AAApproved'
+          : 'Pending'),
+      remark: w.remark || w.aaRemarks || '',
+      documentName:
+        w.documentName ||
+        (w.aaAmount > 0
+          ? `Sanction_Order_${w.code || w.workId}.pdf`
+          : undefined),
+      isActive: w.isActive !== false,
     }));
   });
 
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
-  const [aaAmt, setAaAmt] = useState('');
-  const [aaRemarks, setAaRemarks] = useState('');
-
-  // Watch local storage for external updates (e.g. from tenders/TS)
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const savedWorks = localStorage.getItem('civil_works');
-      if (savedWorks) {
-        setData(JSON.parse(savedWorks));
-      }
-    };
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+  const [aaAmount, setAaAmount] = useState<number | null>(null);
+  const [remark, setRemark] = useState('');
+  const [documentFile, setDocumentFile] = useState<File | null>(null);
 
   useEffect(() => {
     localStorage.setItem('civil_works', JSON.stringify(data));
   }, [data]);
 
-  const handleApprove = () => {
-    if (!aaAmt || Number(aaAmt) <= 0) {
-      ToastService.error('AA Amount is required.');
+  const isSanctioned = (item?: any): boolean => {
+    if (!item) return false;
+    if (item.aaStatus === 'AAApproved') return true;
+    const s = String(item.status || '')
+      .toLowerCase()
+      .replace(/\s+/g, '');
+    if (s === 'aaapproved') return true;
+    return Boolean(
+      item.administrativeApprovalAmount != null &&
+      Number(item.administrativeApprovalAmount) > 0
+    );
+  };
+
+  const isEligibleForSanction = (item: any): boolean => {
+    if (isSanctioned(item)) return false;
+    const s = String(item.status || '')
+      .toLowerCase()
+      .replace(/\s+/g, '');
+    return s === 'registered' || s === 'requirementgenerated';
+  };
+
+  const openGrant = (item: any) => {
+    const defaultAmt =
+      item.administrativeApprovalAmount && item.administrativeApprovalAmount > 0
+        ? item.administrativeApprovalAmount
+        : item.estimatedCost > 0
+          ? item.estimatedCost
+          : 0;
+    setAaAmount(defaultAmt);
+    setRemark(item.remark || '');
+    setDocumentFile(null);
+    setPopup({ mode: 'grant', item });
+  };
+
+  const openView = (item: any) => {
+    setPopup({ mode: 'view', item });
+  };
+
+  const closePopup = () => {
+    setPopup({ mode: 'closed' });
+    setAaAmount(null);
+    setRemark('');
+    setDocumentFile(null);
+  };
+
+  const handleGrantSave = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (popup.mode !== 'grant' || !popup.item) return;
+
+    const amount = Number(aaAmount);
+    if (!amount || amount <= 0) {
+      ToastService.error('A valid Administrative Approval Amount is required.');
       return;
     }
-    if (popup.mode !== 'approve') return;
-    setData((prev: any[]) =>
-      prev.map((d: any) =>
-        d.id === popup.item.id
+
+    const estCost = popup.item.estimatedCost || 0;
+    if (estCost > 0 && amount > estCost) {
+      ToastService.error(
+        `Administrative Approval Amount cannot be greater than the Estimated Cost (${formatCurrency(estCost)}).`
+      );
+      return;
+    }
+
+    const targetItem = popup.item;
+    const docName = documentFile
+      ? documentFile.name
+      : targetItem.documentName || `Sanction_Order_${targetItem.code}.pdf`;
+
+    setData(prev =>
+      prev.map(d =>
+        d.workRegistrationId === targetItem.workRegistrationId ||
+        d.id === targetItem.id
           ? {
               ...d,
-              aaAmount: Number(aaAmt),
-              status: 'AA Approved' as any,
-              aaRemarks,
+              administrativeApprovalAmount: amount,
+              aaAmount: amount,
+              administrativeSanctionId:
+                d.administrativeSanctionId || Date.now(),
+              aaStatus: 'AAApproved',
+              remark: remark.trim() || undefined,
+              documentId: d.documentId || `doc-${Date.now()}`,
+              documentName: docName,
+              status:
+                d.status === 'Registered' ||
+                d.status === 'Requirement Generated'
+                  ? 'AaApproved'
+                  : d.status,
             }
           : d
       )
     );
+
     ToastService.success(
-      'Administrative Approval (AA) granted. Project budget legally binding.'
+      `Administrative Approval of ${formatCurrency(amount)} granted successfully.`
     );
-    setPopup({ mode: 'closed' });
-    setAaAmt('');
-    setAaRemarks('');
+    closePopup();
+  };
+
+  const handleToggleStatus = (item: any) => {
+    setData(prev =>
+      prev.map(d => {
+        if (
+          d.workRegistrationId === item.workRegistrationId ||
+          d.id === item.id
+        ) {
+          const next = d.isActive === false ? true : false;
+          ToastService.info(
+            `Administrative Sanction record ${next ? 'Activated' : 'Deactivated'}.`
+          );
+          return { ...d, isActive: next };
+        }
+        return d;
+      })
+    );
   };
 
   return (
     <FormPage
-      title="Administrative Sanction (AA) Approvals"
-      description="Administrative approvals dashboard for granting official project sanctions and cost limits."
+      title="Administrative Sanction Approvals"
+      description="Review project scopes, establish legally binding expenditure limits, and grant official administrative sanctions."
       breadcrumbs={[
         { label: 'Home', to: '/home' },
         { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
-        { label: 'Administrative Approvals' },
+        { label: 'Administrative Sanction' },
       ]}
     >
-      <FormCard subtitle="Only works with AA Amount not yet sanctioned or pending re-approval are shown below.">
+      <div className="civil-chain" style={{ marginBottom: '1.25rem' }}>
+        <span className="civil-chain-item done">Work Registration</span>
+        <span className="civil-chain-arrow">→</span>
+        <span className="civil-chain-item done">BOQ Compilation</span>
+        <span className="civil-chain-arrow">→</span>
+        <span className="civil-chain-item active">
+          Administrative Sanction (AA) ← Current
+        </span>
+        <span className="civil-chain-arrow">→</span>
+        <span className="civil-chain-item">Technical Sanction (TS)</span>
+        <span className="civil-chain-arrow">→</span>
+        <span className="civil-chain-item">Budget Lock & Tender</span>
+      </div>
+
+      <FormCard>
         <GridPanel
           data={data}
           columns={[
-            { cell: (_, o) => <span>{o.rowIndex + 1}</span>, width: '50px' },
             {
-              field: 'workId',
+              field: 'workRegistrationId',
+              header: '#',
+              cell: (_, o) => <span>{o.rowIndex + 1}</span>,
+              width: '50px',
+            },
+            {
+              field: 'code',
               header: 'Work ID',
-              cell: (w: any) => (
-                <span
-                  style={{
-                    fontFamily: 'monospace',
-                    fontWeight: 700,
-                    color: '#1d4ed8',
-                  }}
-                >
-                  {w.workId}
+              cell: (c: any) => (
+                <span className="font-mono text-blue-600 font-semibold">
+                  {c.code || c.workId}
                 </span>
               ),
+              width: '130px',
             },
-            { field: 'name', header: 'Work Name' },
             {
-              field: 'category',
-              header: 'Work Type',
-              cell: (w: any) => (
-                <span style={{ fontSize: '0.75rem' }}>{w.category}</span>
+              field: 'name',
+              header: 'Work Name',
+              cell: (c: any) => (
+                <div>
+                  <div className="font-semibold text-gray-900">{c.name}</div>
+                  <div className="text-xs text-gray-500 mt-0.5">
+                    {c.projectDescription || c.campus}{' '}
+                    {c.location ? `• ${c.location}` : ''}
+                  </div>
+                </div>
               ),
             },
-            { field: 'department', header: 'Category' },
+            {
+              field: 'workCategoryName',
+              header: 'Work Type',
+              cell: (c: any) => (
+                <span>{c.workCategoryName || c.category || '—'}</span>
+              ),
+            },
+            {
+              field: 'subCategoryName',
+              header: 'Category',
+              cell: (c: any) => (
+                <span>{c.subCategoryName || c.department || '—'}</span>
+              ),
+            },
             {
               field: 'workBasis',
               header: 'Work Basis',
-              cell: (w: any) => (
-                <span
-                  className={`civil-pill ${w.workBasis === 'BOQ Based' ? 'purple' : 'blue'}`}
-                >
-                  {w.workBasis ?? 'SOR Based'}
-                </span>
+              cell: (c: any) => (
+                <StatusBadge label={c.workBasis || 'SOR'} variant="neutral" />
               ),
             },
             {
               field: 'estimatedCost',
-              header: 'Estimated Cost',
-              cell: (w: any) => (
-                <span>₹{(w.estimatedCost / 100000).toFixed(2)}L</span>
-              ),
+              header: 'Estimated Cost (₹)',
+              cell: (c: any) => <span>{formatCurrency(c.estimatedCost)}</span>,
             },
             {
-              field: 'aaAmount',
+              field: 'administrativeApprovalAmount',
               header: 'AA Amount (₹)',
-              cell: (w: any) =>
-                w.status === 'AA Approved' || w.aaAmount > 0 ? (
-                  <span style={{ fontWeight: 700, color: '#16a34a' }}>
-                    ₹{(w.aaAmount / 100000).toFixed(2)}L
+              cell: (c: any) =>
+                c.administrativeApprovalAmount != null &&
+                Number(c.administrativeApprovalAmount) > 0 ? (
+                  <span className="font-semibold text-emerald-700">
+                    {formatCurrency(c.administrativeApprovalAmount)}
                   </span>
                 ) : (
-                  <span className="civil-pill amber">Pending</span>
+                  <span className="text-gray-400">—</span>
                 ),
             },
             {
-              field: 'status',
+              field: 'aaStatus',
               header: 'Status',
-              cell: (w: any) => (
-                <StatusBadge
-                  label={w.status}
-                  variant={w.status === 'AA Approved' ? 'approved' : 'neutral'}
-                />
-              ),
+              cell: (c: any) => {
+                const approved = isSanctioned(c);
+                return (
+                  <StatusBadge
+                    label={approved ? 'AA Approved' : 'Pending AA'}
+                    variant={approved ? 'approved' : 'pending'}
+                  />
+                );
+              },
+              width: '140px',
             },
             {
-              field: 'id',
-              header: 'Action',
+              field: 'isActive',
+              header: 'Active',
               sortable: false,
-              cell: (item: any) => (
-                <div style={{ display: 'flex', gap: '0.375rem' }}>
-                  <Button
-                    size="small"
-                    label=""
-                    icon="eye"
-                    variant="outlined"
-                    onClick={() => setPopup({ mode: 'view', item })}
+              cell: (c: any) => {
+                const hasSanction =
+                  Boolean(c.administrativeSanctionId) || isSanctioned(c);
+                if (!hasSanction) {
+                  return <span> — </span>;
+                }
+                return (
+                  <StatusButton
+                    value={c.isActive !== false}
+                    onClick={() => handleToggleStatus(c)}
                   />
-                  {AA_ELIGIBLE.includes(item.status) && (
-                    <Button
-                      size="small"
-                      label="Grant AA"
-                      icon="check"
-                      variant="primary"
-                      onClick={() => {
-                        setAaAmt(String(item.estimatedCost * 0.98));
-                        setAaRemarks('');
-                        setPopup({ mode: 'approve', item });
-                      }}
-                    />
-                  )}
-                </div>
-              ),
+                );
+              },
+              width: '90px',
+            },
+            {
+              field: 'workRegistrationId',
+              header: 'Actions',
+              sortable: false,
+              cell: (c: any) => {
+                const canGrant = isEligibleForSanction(c);
+                return (
+                  <GridActionButtons
+                    onView={() => openView(c)}
+                    onApprove={canGrant ? () => openGrant(c) : undefined}
+                    viewTooltip="View Work & Sanction Details"
+                    approveTooltip="Grant Administrative Sanction (AA)"
+                  />
+                );
+              },
             },
           ]}
           searchBox
-          searchPlaceholder="Search works..."
+          searchPlaceholder="Search by Work ID, name, category, or status..."
         />
       </FormCard>
 
+      {/* POPUP MODALS */}
       <FormPopup
         visible={popup.mode !== 'closed'}
-        onHide={() => setPopup({ mode: 'closed' })}
+        onHide={closePopup}
         title={
-          popup.mode === 'approve'
-            ? `Grant AA — ${(popup as any).item?.workId}`
-            : `View Work — ${(popup as any).item?.workId}`
+          popup.mode === 'grant' && popup.item
+            ? `Grant AA — ${popup.item.code || popup.item.workId}`
+            : popup.mode === 'view' && popup.item
+              ? `Administrative Sanction Details — ${popup.item.code || popup.item.workId}`
+              : ''
         }
-        subtitle="Administrative Approval fixes the project budget. This action is legally binding."
+        subtitle={
+          popup.mode === 'grant'
+            ? 'Administrative Approval fixes the project budget. This action is legally binding.'
+            : 'Detailed civil engineering work and administrative sanction record.'
+        }
         size="lg"
       >
-        {popup.mode !== 'closed' && (popup as any).item && (
-          <>
-            {/* Work Summary */}
-            <FormCard title="Work Details" subtitle="">
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(3, 1fr)',
-                  gap: '0.75rem 1.5rem',
-                  fontSize: '0.8125rem',
-                }}
-              >
-                {[
-                  ['Work ID', (popup as any).item.workId],
-                  ['Work Name', (popup as any).item.name],
-                  ['Category', (popup as any).item.category],
-                  ['Department', (popup as any).item.department],
-                  ['Campus', (popup as any).item.campus],
-                  ['Funding Source', (popup as any).item.fundingSource],
-                  [
-                    'Estimated Cost',
-                    `₹${((popup as any).item.estimatedCost / 100000).toFixed(2)}L`,
-                  ],
-                  ['Execution Route', (popup as any).item.executionRoute],
-                  ['Site Engineer', (popup as any).item.siteEngineer],
-                ].map(([k, v]) => (
-                  <div key={k}>
-                    <div
-                      style={{
-                        color: '#9ca3af',
-                        fontSize: '0.6875rem',
-                        fontWeight: 600,
-                        textTransform: 'uppercase',
-                        marginBottom: 2,
-                      }}
-                    >
-                      {k}
-                    </div>
-                    <div style={{ fontWeight: 600, color: '#111827' }}>{v}</div>
-                  </div>
-                ))}
-              </div>
+        {popup.mode === 'grant' && popup.item && (
+          <form onSubmit={handleGrantSave} className="flex flex-col gap-4">
+            {/* Work Context Summary */}
+            <FormCard title="Work Details">
+              <PreviewGrid
+                columns={3}
+                fields={[
+                  {
+                    label: 'Work ID',
+                    value: popup.item.code || popup.item.workId,
+                  },
+                  { label: 'Work Name', value: popup.item.name },
+                  {
+                    label: 'Category',
+                    value:
+                      popup.item.workCategoryName || popup.item.category || '—',
+                  },
+                  {
+                    label: 'Department',
+                    value:
+                      popup.item.subCategoryName ||
+                      popup.item.department ||
+                      '—',
+                  },
+                  {
+                    label: 'Project Description',
+                    value:
+                      popup.item.projectDescription || popup.item.campus || '—',
+                  },
+                  {
+                    label: 'Funding Source',
+                    value:
+                      popup.item.fundingSourceName ||
+                      popup.item.fundingSource ||
+                      '—',
+                  },
+                  {
+                    label: 'Estimated Cost',
+                    value: formatCurrency(popup.item.estimatedCost),
+                  },
+                  {
+                    label: 'Execution Route',
+                    value: popup.item.executionRoute || '—',
+                  },
+                  { label: 'Work Basis', value: popup.item.workBasis || '—' },
+                ]}
+              />
             </FormCard>
 
-            {popup.mode === 'approve' && (
-              <>
-                <FormGrid columns={2}>
-                  <TextBox
-                    label="AA Amount (₹) — Legally Binding Project Budget"
-                    placeholder="e.g. 27800000"
-                    value={aaAmt}
-                    onChange={setAaAmt}
-                    required
-                  />
-                  <TextBox
-                    label="AA Granted By"
-                    value="Hon. Vice Chancellor / Board of Management"
-                    onChange={() => {}}
-                    disabled
-                  />
-                </FormGrid>
-                <TextArea
-                  label="AA Justification / Remarks"
-                  placeholder="Economic justification for approval..."
-                  value={aaRemarks}
-                  onChange={setAaRemarks}
-                  rows={3}
-                />
-                <div
-                  style={{
-                    background: '#fef3c7',
-                    border: '1px solid #fcd34d',
-                    borderRadius: '0.75rem',
-                    padding: '0.875rem 1rem',
-                    fontSize: '0.8125rem',
-                    color: '#92400e',
-                    marginTop: '0.75rem',
-                  }}
-                >
-                  <strong>⚠ Important:</strong> Granting Administrative Approval
-                  legally commits the project budget. The AA Amount becomes the
-                  cost ceiling for subsequent Technical Sanction, tendering, and
-                  execution.
-                </div>
-                <div className="flex justify-end gap-3 mt-4">
+            {/* Input Section */}
+            <FormGrid columns={1}>
+              <NumberBox
+                value={aaAmount ?? undefined}
+                onChange={val => setAaAmount(val ? Number(val) : null)}
+                label="AA Amount (₹)"
+                placeholder="e.g. 500000.00"
+                mode="decimal"
+                required
+              />
+              <TextArea
+                value={remark}
+                onChange={val => setRemark(val)}
+                label="AA Justification / Remarks"
+                placeholder="Economic justification for approval..."
+                rows={3}
+                autoResize
+              />
+              <FileUpload
+                label="Sanction Order / Approval Document"
+                accept=".pdf,.png,.jpg,.jpeg,image/*"
+                mode="file"
+                uploadNote="Upload official sanction order document (.pdf, .png, .jpg, .jpeg)"
+                onChange={file => setDocumentFile(file)}
+              />
+            </FormGrid>
+
+            {/* Warning Notice Banner */}
+            <AlertPanel severity="warn" title="Important:">
+              Granting Administrative Approval legally commits the project
+              budget. The AA Amount becomes the cost ceiling for subsequent
+              Technical Sanction, tendering, and execution.
+            </AlertPanel>
+
+            {/* Actions */}
+            <ButtonPanel>
+              <Button
+                label="Cancel"
+                variant="outlined"
+                onClick={closePopup}
+                type="button"
+              />
+              <Button
+                label="Grant Administrative Approval"
+                icon="check"
+                variant="primary"
+                type="submit"
+              />
+            </ButtonPanel>
+          </form>
+        )}
+
+        {popup.mode === 'view' && popup.item && (
+          <div className="flex flex-col gap-4">
+            <FormCard title="Work Specification">
+              <PreviewGrid
+                columns={3}
+                fields={[
+                  {
+                    label: 'Work ID',
+                    value: popup.item.code || popup.item.workId,
+                  },
+                  { label: 'Work Name', value: popup.item.name },
+                  {
+                    label: 'Category',
+                    value:
+                      popup.item.workCategoryName || popup.item.category || '—',
+                  },
+                  {
+                    label: 'Department',
+                    value:
+                      popup.item.subCategoryName ||
+                      popup.item.department ||
+                      '—',
+                  },
+                  {
+                    label: 'Project Description',
+                    value:
+                      popup.item.projectDescription || popup.item.campus || '—',
+                  },
+                  { label: 'Location', value: popup.item.location || '—' },
+                  {
+                    label: 'Funding Source',
+                    value:
+                      popup.item.fundingSourceName ||
+                      popup.item.fundingSource ||
+                      '—',
+                  },
+                  {
+                    label: 'Estimated Cost',
+                    value: formatCurrency(popup.item.estimatedCost),
+                  },
+                  {
+                    label: 'Execution Route',
+                    value: popup.item.executionRoute || '—',
+                  },
+                  { label: 'Work Basis', value: popup.item.workBasis || '—' },
+                  { label: 'Work Status', value: popup.item.status || '—' },
+                ]}
+              />
+            </FormCard>
+
+            <FormCard title="Administrative Sanction Record">
+              <PreviewGrid
+                columns={2}
+                fields={[
+                  {
+                    label: 'AA Status',
+                    value: isSanctioned(popup.item)
+                      ? 'AA Approved'
+                      : 'Pending AA',
+                  },
+                  {
+                    label: 'Sanctioned AA Amount',
+                    value: popup.item.administrativeApprovalAmount
+                      ? formatCurrency(popup.item.administrativeApprovalAmount)
+                      : popup.item.aaAmount
+                        ? formatCurrency(popup.item.aaAmount)
+                        : 'Not Sanctioned',
+                  },
+                  {
+                    label: 'Justification / Remarks',
+                    value:
+                      popup.item.remark ||
+                      popup.item.aaRemarks ||
+                      'None recorded',
+                  },
+                  {
+                    label: 'Sanction Order Document',
+                    value: popup.item.documentName || 'No document attached',
+                  },
+                ]}
+              />
+              {popup.item.documentName && (
+                <div className="mt-3 flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <span className="text-blue-700 font-semibold text-sm">
+                    📄 {popup.item.documentName}
+                  </span>
                   <Button
-                    label="Cancel"
+                    size="small"
+                    label="Download Document"
+                    icon="download"
                     variant="outlined"
-                    onClick={() => setPopup({ mode: 'closed' })}
-                  />
-                  <Button
-                    label="Grant Administrative Approval"
-                    variant="primary"
-                    icon="check"
-                    onClick={handleApprove}
+                    onClick={() =>
+                      ToastService.info(
+                        `Downloading ${popup.item.documentName}...`
+                      )
+                    }
                   />
                 </div>
-              </>
-            )}
-          </>
+              )}
+            </FormCard>
+
+            <ButtonPanel>
+              <Button label="Close" variant="outlined" onClick={closePopup} />
+            </ButtonPanel>
+          </div>
         )}
       </FormPopup>
     </FormPage>

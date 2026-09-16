@@ -22,32 +22,123 @@ export type WorkStatus =
   | 'DLP Active'
   | 'Closed';
 
-export type ExecutionRoute = 'Internal' | 'External Agency';
+export type ExecutionRoute = 'Internal' | 'External Agency' | 'External';
+
+export interface MockWorkRegistration {
+  workRegistrationId: number;
+  code: string;
+  projectId: number;
+  projectDescription?: string;
+  name: string;
+  workCategoryId: number;
+  workCategoryName?: string;
+  subCategoryId: number;
+  subCategoryName?: string;
+  priorityLevel: 'Low' | 'Medium' | 'High' | 'Critical' | string;
+  fundingSourceId: number;
+  fundingSourceName?: string;
+  workBasis: 'SOR' | 'NonSor' | 'BOQBased' | string;
+  executionRoute: 'Internal' | 'External' | string;
+  siteEngineerSource: 'Internal' | 'External';
+  employeeIds?: number[];
+  externalEngineers?: { engineerName: string; mobileNumber: string }[];
+  status: string;
+  estimatedCost: number;
+  isActive: boolean;
+}
+
+export interface MockAdministrativeSanction extends MockWorkRegistration {
+  administrativeSanctionId?: number;
+  administrativeApprovalAmount?: number;
+  remark?: string;
+  aaStatus: 'Pending' | 'AAApproved' | string;
+  documentId?: string;
+  documentName?: string;
+}
+
+export interface MockTechnicalSanction extends MockAdministrativeSanction {
+  technicalSanctionId?: number;
+  technicalSanctionAmount?: number;
+  tsStatus: 'Pending' | 'Approved' | string;
+  canGrantTs?: boolean;
+}
+
+export interface MockBudgetAllocation extends MockTechnicalSanction {
+  budgetAllocationId?: number;
+  financialYearId?: number;
+  financialYear?: string;
+  budgetHeadId?: number;
+  budgetHeadName?: string;
+  budgetHeadCode?: string;
+  budgetAmount?: number;
+  isLocked?: boolean;
+  canAllocateBudget?: boolean;
+}
 
 export interface CivilWork {
   id: string;
+  workRegistrationId?: number;
   workId: string; // e.g. CW-2025-001
+  code?: string;
   name: string;
+  projectId?: number | string;
+  projectDescription?: string;
   category: WorkCategory;
+  workCategoryId?: number | string;
+  workCategoryName?: string;
   department: string;
+  subCategoryId?: number | string;
+  subCategoryName?: string;
   campus: string;
   location: string;
-  executionRoute: ExecutionRoute;
+  executionRoute: ExecutionRoute | string;
   estimatedCost: number;
   aaAmount: number; // Administrative Approval Amount
+  administrativeApprovalAmount?: number;
+  administrativeSanctionId?: number;
+  aaStatus?: 'Pending' | 'AAApproved' | string;
+  remark?: string;
+  documentId?: string;
+  documentName?: string;
   tsAmount: number; // Technical Sanction Amount
+  technicalSanctionAmount?: number;
+  technicalSanctionId?: number;
+  tsStatus?: 'Pending' | 'Approved' | string;
+  canGrantTs?: boolean;
   contractAmount: number;
   fundingSource: string;
+  fundingSourceId?: number | string;
+  fundingSourceName?: string;
+  financialYearId?: number;
+  financialYear?: string;
+  budgetHeadId?: number | string;
+  budgetHeadName?: string;
+  budgetHeadCode?: string;
+  budgetAmount?: number;
+  budgetAllocationId?: number;
+  isLocked?: boolean;
+  canAllocateBudget?: boolean;
   startDate: string;
   expectedEndDate: string;
   actualEndDate?: string;
   siteEngineer: string;
-  status: WorkStatus;
-  priority: 'High' | 'Medium' | 'Low';
+  siteEngineerSource?: 'Internal' | 'External';
+  employeeIds?: number[];
+  externalEngineers?: { engineerName: string; mobileNumber: string }[];
+  status: WorkStatus | string;
+  priority: 'High' | 'Medium' | 'Low' | string;
+  priorityLevel?: 'Low' | 'Medium' | 'High' | 'Critical' | string;
   physicalProgress: number; // 0–100
   financialProgress: number; // 0–100
   externalAgency?: string; // for Deposit Work
-  workBasis?: 'SOR' | 'Non-SOR' | 'SOR Based' | 'BOQ Based';
+  workBasis?:
+    | 'SOR'
+    | 'Non-SOR'
+    | 'SOR Based'
+    | 'BOQ Based'
+    | 'NonSor'
+    | 'BOQBased'
+    | string;
   constructionAgreementDoc?: string;
   scopeOfWorkDoc?: string;
   layoutDrawingDoc?: string;
@@ -60,28 +151,61 @@ export interface CivilWork {
   ownershipVerified?: string;
   // Dynamic documents uploaded via document master
   mandateDocs?: Record<string, string>; // { docTypeName: uploadedFileName }
+  isActive?: boolean;
 }
 
 export const civilWorks: CivilWork[] = [
   {
     id: '1',
+    workRegistrationId: 1,
     workId: 'CW-2025-001',
+    code: 'CW-2025-001',
     name: 'New Academic Block – Science Wing',
+    projectId: 1,
+    projectDescription: 'Main Campus Academic Complex Expansion (Main Campus)',
     category: 'New Capital Construction',
+    workCategoryId: 1,
+    workCategoryName: 'New Capital Construction',
     department: 'Civil Engineering Dept',
+    subCategoryId: 1,
+    subCategoryName: 'Civil Engineering Dept',
     campus: 'Main Campus',
     location: 'Zone A – Plot 12',
     executionRoute: 'Internal',
     estimatedCost: 28500000,
     aaAmount: 27800000,
+    administrativeApprovalAmount: 27800000,
+    administrativeSanctionId: 101,
+    aaStatus: 'AAApproved',
+    remark: 'Sanctioned under UGC Special Capital Development Scheme.',
+    documentId: 'doc-aa-001',
+    documentName: 'Sanction_Order_CW_2025_001.pdf',
     tsAmount: 27650000,
+    technicalSanctionAmount: 27650000,
+    technicalSanctionId: 201,
+    tsStatus: 'Approved',
+    canGrantTs: false,
+    financialYearId: 2,
+    financialYear: '2025-26',
+    budgetHeadId: 1,
+    budgetHeadName: 'Capital Outlay — University Buildings & Civil Works',
+    budgetHeadCode: '4202-01-203',
+    budgetAmount: 27650000,
+    budgetAllocationId: 301,
+    isLocked: false,
+    canAllocateBudget: false,
     contractAmount: 26200000,
     fundingSource: 'UGC Grant',
+    fundingSourceId: 1,
+    fundingSourceName: 'UGC Development Grant',
     startDate: '2024-11-01',
     expectedEndDate: '2026-04-30',
     siteEngineer: 'Er. Rajesh Verma',
+    siteEngineerSource: 'Internal',
+    employeeIds: [101],
     status: 'In Progress',
     priority: 'High',
+    priorityLevel: 'High',
     physicalProgress: 42,
     financialProgress: 38,
     workBasis: 'SOR Based',
@@ -89,26 +213,61 @@ export const civilWorks: CivilWork[] = [
     tpiAgencyName: 'RITES Limited',
     qualityLabId: 'LAB-01',
     qualityLabName: 'IIT Bhopal Civil Testing Lab',
+    isActive: true,
   },
   {
     id: '2',
+    workRegistrationId: 2,
     workId: 'CW-2025-002',
+    code: 'CW-2025-002',
     name: 'Boys Hostel Block D – 200 Beds',
+    projectId: 2,
+    projectDescription:
+      'Student Residential Infrastructure Phase II (Main Campus)',
     category: 'New Capital Construction',
+    workCategoryId: 1,
+    workCategoryName: 'New Capital Construction',
     department: 'Student Welfare',
+    subCategoryId: 3,
+    subCategoryName: 'Student Welfare & Hostels',
     campus: 'Main Campus',
     location: 'Zone C – Hostel Area',
     executionRoute: 'Internal',
     estimatedCost: 18700000,
     aaAmount: 18200000,
+    administrativeApprovalAmount: 18200000,
+    administrativeSanctionId: 102,
+    aaStatus: 'AAApproved',
+    remark:
+      'Approved per B&WC resolution 4.2 for student hostel capacity enhancement.',
+    documentId: 'doc-aa-002',
+    documentName: 'Sanction_Order_CW_2025_002.pdf',
     tsAmount: 18050000,
+    technicalSanctionAmount: 18050000,
+    technicalSanctionId: 202,
+    tsStatus: 'Approved',
+    canGrantTs: false,
+    financialYearId: 2,
+    financialYear: '2025-26',
+    budgetHeadId: 2,
+    budgetHeadName: 'Revenue Maintenance & Repairs of Hostels/Colleges',
+    budgetHeadCode: '2202-03-102',
+    budgetAmount: 18050000,
+    budgetAllocationId: 302,
+    isLocked: true,
+    canAllocateBudget: false,
     contractAmount: 17400000,
     fundingSource: 'University Fund',
+    fundingSourceId: 3,
+    fundingSourceName: 'Institute Development Fund (Internal)',
     startDate: '2025-01-15',
     expectedEndDate: '2026-08-31',
     siteEngineer: 'Er. Suresh Kumar',
+    siteEngineerSource: 'Internal',
+    employeeIds: [102],
     status: 'Tender Awarded',
     priority: 'High',
+    priorityLevel: 'High',
     physicalProgress: 8,
     financialProgress: 5,
     workBasis: 'BOQ Based',
@@ -116,26 +275,59 @@ export const civilWorks: CivilWork[] = [
     tpiAgencyName: 'SGS India Pvt Ltd',
     qualityLabId: 'LAB-02',
     qualityLabName: 'MANIT Material Testing Lab',
+    isActive: true,
   },
   {
     id: '3',
+    workRegistrationId: 3,
     workId: 'CW-2025-003',
+    code: 'CW-2025-003',
     name: 'Internal Campus Road Resurfacing',
+    projectId: 1,
+    projectDescription: 'Main Campus Academic Complex Expansion (Main Campus)',
     category: 'Maintenance/Overhaul',
+    workCategoryId: 2,
+    workCategoryName: 'Maintenance/Overhaul',
     department: 'Civil Engineering Dept',
+    subCategoryId: 1,
+    subCategoryName: 'Civil Engineering Dept',
     campus: 'Main Campus',
     location: 'Main Gate to Admin Block – 3.2 km',
     executionRoute: 'Internal',
     estimatedCost: 3200000,
     aaAmount: 3100000,
+    administrativeApprovalAmount: 3100000,
+    administrativeSanctionId: 103,
+    aaStatus: 'AAApproved',
+    remark: 'Annual maintenance budget allocation for arterial roads.',
+    documentId: 'doc-aa-003',
+    documentName: 'Sanction_Order_CW_2025_003.pdf',
     tsAmount: 3050000,
+    technicalSanctionAmount: 3050000,
+    technicalSanctionId: 203,
+    tsStatus: 'Approved',
+    canGrantTs: false,
+    financialYearId: 2,
+    financialYear: '2025-26',
+    budgetHeadId: 2,
+    budgetHeadName: 'Revenue Maintenance & Repairs of Hostels/Colleges',
+    budgetHeadCode: '2202-03-102',
+    budgetAmount: 3050000,
+    budgetAllocationId: 303,
+    isLocked: false,
+    canAllocateBudget: false,
     contractAmount: 2950000,
     fundingSource: 'University Fund',
+    fundingSourceId: 3,
+    fundingSourceName: 'Institute Development Fund (Internal)',
     startDate: '2025-03-01',
     expectedEndDate: '2025-09-30',
     siteEngineer: 'Er. Kavitha Menon',
+    siteEngineerSource: 'Internal',
+    employeeIds: [103],
     status: 'In Progress',
     priority: 'Medium',
+    priorityLevel: 'Medium',
     physicalProgress: 68,
     financialProgress: 61,
     workBasis: 'SOR Based',
@@ -143,26 +335,59 @@ export const civilWorks: CivilWork[] = [
     tpiAgencyName: 'WAPCOS Limited',
     qualityLabId: 'LAB-03',
     qualityLabName: 'MP PWD Central Laboratory',
+    isActive: true,
   },
   {
     id: '4',
+    workRegistrationId: 4,
     workId: 'CW-2025-004',
+    code: 'CW-2025-004',
     name: 'Examination Hall Structural Strengthening',
+    projectId: 1,
+    projectDescription: 'Main Campus Academic Complex Expansion (Main Campus)',
     category: 'Strengthening',
+    workCategoryId: 4,
+    workCategoryName: 'Strengthening',
     department: 'Academic Affairs',
+    subCategoryId: 1,
+    subCategoryName: 'Civil Engineering Dept',
     campus: 'Main Campus',
     location: 'Exam Block – Floor 2 & 3',
-    executionRoute: 'External Agency',
+    executionRoute: 'External',
     estimatedCost: 7800000,
     aaAmount: 7600000,
+    administrativeApprovalAmount: 7600000,
+    administrativeSanctionId: 104,
+    aaStatus: 'AAApproved',
+    remark: 'Seismic and load retrofitting authorized under state grant.',
     tsAmount: 7550000,
+    technicalSanctionAmount: 7550000,
+    technicalSanctionId: 204,
+    tsStatus: 'Approved',
+    canGrantTs: false,
+    financialYearId: 2,
+    financialYear: '2025-26',
+    budgetHeadId: 1,
+    budgetHeadName: 'Capital Outlay — University Buildings & Civil Works',
+    budgetHeadCode: '4202-01-203',
+    budgetAmount: 7550000,
+    budgetAllocationId: 304,
+    isLocked: false,
+    canAllocateBudget: false,
     contractAmount: 7800000,
     fundingSource: 'State Govt',
+    fundingSourceId: 2,
+    fundingSourceName: 'State Govt Capital Grant',
     startDate: '2025-06-01',
     expectedEndDate: '2026-01-31',
     siteEngineer: 'Er. Mohan Singh',
+    siteEngineerSource: 'External',
+    externalEngineers: [
+      { engineerName: 'Er. Mohan Singh', mobileNumber: '9826011990' },
+    ],
     status: 'Tender Awarded',
     priority: 'High',
+    priorityLevel: 'High',
     physicalProgress: 0,
     financialProgress: 0,
     externalAgency: 'Sharma Constructions Pvt Ltd',
@@ -171,49 +396,111 @@ export const civilWorks: CivilWork[] = [
     tpiAgencyName: 'RITES Limited',
     qualityLabId: 'LAB-01',
     qualityLabName: 'IIT Bhopal Civil Testing Lab',
+    isActive: true,
   },
   {
     id: '5',
+    workRegistrationId: 5,
     workId: 'CW-2025-005',
+    code: 'CW-2025-005',
     name: 'Central Library Extension – G+2',
+    projectId: 1,
+    projectDescription: 'Main Campus Academic Complex Expansion (Main Campus)',
     category: 'New Capital Construction',
+    workCategoryId: 1,
+    workCategoryName: 'New Capital Construction',
     department: 'Library',
+    subCategoryId: 1,
+    subCategoryName: 'Civil Engineering Dept',
     campus: 'Main Campus',
     location: 'Library Complex West Wing',
     executionRoute: 'Internal',
     estimatedCost: 12400000,
     aaAmount: 12000000,
+    administrativeApprovalAmount: 12000000,
+    administrativeSanctionId: 105,
+    aaStatus: 'AAApproved',
+    remark: 'UGC development grant approval for central library modernization.',
     tsAmount: 11900000,
+    technicalSanctionAmount: 11900000,
+    technicalSanctionId: 205,
+    tsStatus: 'Approved',
+    canGrantTs: false,
+    financialYearId: 1,
+    financialYear: '2024-25',
+    budgetHeadId: 3,
+    budgetHeadName: 'UGC Development Grant — Institutional Infrastructure',
+    budgetHeadCode: 'UGC-CAP-99',
+    budgetAmount: 11900000,
+    budgetAllocationId: 305,
+    isLocked: true,
+    canAllocateBudget: false,
     contractAmount: 11500000,
     fundingSource: 'UGC Grant',
+    fundingSourceId: 1,
+    fundingSourceName: 'UGC Development Grant',
     startDate: '2024-08-01',
     expectedEndDate: '2025-12-31',
     siteEngineer: 'Er. Anita Rao',
+    siteEngineerSource: 'Internal',
+    employeeIds: [104],
     status: 'Completed',
     priority: 'Medium',
+    priorityLevel: 'Medium',
     physicalProgress: 100,
     financialProgress: 96,
     workBasis: 'SOR Based',
+    isActive: true,
   },
   {
     id: '6',
+    workRegistrationId: 6,
     workId: 'CW-2025-006',
+    code: 'CW-2025-006',
     name: 'Sports Complex Boundary Wall',
+    projectId: 4,
+    projectDescription: 'University Sports Complex & Stadium (Main Campus)',
     category: 'New Capital Construction',
+    workCategoryId: 1,
+    workCategoryName: 'New Capital Construction',
     department: 'Physical Education',
+    subCategoryId: 5,
+    subCategoryName: 'Sports Council & Facilities',
     campus: 'South Campus',
     location: 'Sports Ground Perimeter',
     executionRoute: 'Internal',
     estimatedCost: 2100000,
     aaAmount: 2000000,
+    administrativeApprovalAmount: 2000000,
+    administrativeSanctionId: 106,
+    aaStatus: 'AAApproved',
+    remark: 'Campus perimeter security walling sanctioned.',
     tsAmount: 1980000,
+    technicalSanctionAmount: 1980000,
+    technicalSanctionId: 206,
+    tsStatus: 'Approved',
+    canGrantTs: false,
+    financialYearId: 2,
+    financialYear: '2025-26',
+    budgetHeadId: 4,
+    budgetHeadName: 'Institute Development Fund (Internal Corpus)',
+    budgetHeadCode: 'IDF-GEN-12',
+    budgetAmount: 1980000,
+    budgetAllocationId: 306,
+    isLocked: false,
+    canAllocateBudget: false,
     contractAmount: 1920000,
     fundingSource: 'University Fund',
+    fundingSourceId: 3,
+    fundingSourceName: 'Institute Development Fund (Internal)',
     startDate: '2025-02-01',
     expectedEndDate: '2025-07-31',
     siteEngineer: 'Er. Priya Joshi',
+    siteEngineerSource: 'Internal',
+    employeeIds: [105],
     status: 'In Progress',
     priority: 'Low',
+    priorityLevel: 'Low',
     physicalProgress: 78,
     financialProgress: 72,
     workBasis: 'SOR Based',
@@ -221,67 +508,655 @@ export const civilWorks: CivilWork[] = [
     tpiAgencyName: 'WAPCOS Limited',
     qualityLabId: 'LAB-02',
     qualityLabName: 'MANIT Material Testing Lab',
+    isActive: true,
   },
   {
     id: '7',
+    workRegistrationId: 7,
     workId: 'CW-2024-007',
+    code: 'CW-2024-007',
     name: 'Emergency Plumbing Repair – Admin Block',
+    projectId: 1,
+    projectDescription: 'Main Campus Academic Complex Expansion (Main Campus)',
     category: 'Emergency Work',
+    workCategoryId: 6,
+    workCategoryName: 'Emergency Work',
     department: 'Administration',
+    subCategoryId: 2,
+    subCategoryName: 'Estate & Campus Maintenance',
     campus: 'Main Campus',
     location: 'Admin Block – All Floors',
     executionRoute: 'Internal',
     estimatedCost: 480000,
     aaAmount: 480000,
+    administrativeApprovalAmount: 480000,
+    administrativeSanctionId: 107,
+    aaStatus: 'AAApproved',
+    remark:
+      'Emergency administrative sanction under Vice Chancellor discretionary emergency power.',
     tsAmount: 475000,
+    technicalSanctionAmount: 475000,
+    technicalSanctionId: 207,
+    tsStatus: 'Approved',
+    canGrantTs: false,
+    financialYearId: 1,
+    financialYear: '2024-25',
+    budgetHeadId: 2,
+    budgetHeadName: 'Revenue Maintenance & Repairs of Hostels/Colleges',
+    budgetHeadCode: '2202-03-102',
+    budgetAmount: 475000,
+    budgetAllocationId: 307,
+    isLocked: true,
+    canAllocateBudget: false,
     contractAmount: 470000,
     fundingSource: 'University Fund',
+    fundingSourceId: 3,
+    fundingSourceName: 'Institute Development Fund (Internal)',
     startDate: '2024-12-10',
     expectedEndDate: '2024-12-25',
     actualEndDate: '2024-12-22',
     siteEngineer: 'Er. Deepak Mishra',
+    siteEngineerSource: 'Internal',
+    employeeIds: [106],
     status: 'DLP Active',
     priority: 'High',
+    priorityLevel: 'High',
     physicalProgress: 100,
     financialProgress: 100,
     workBasis: 'SOR Based',
+    isActive: true,
   },
   {
     id: '8',
+    workRegistrationId: 8,
     workId: 'CW-2025-008',
+    code: 'CW-2025-008',
     name: 'Outdoor Amphitheatre – Deposit Work (UGC)',
+    projectId: 3,
+    projectDescription:
+      'Campus Green Infrastructure & Solar Transition (City Campus)',
     category: 'Deposit Work',
+    workCategoryId: 5,
+    workCategoryName: 'Deposit Work',
     department: 'Student Affairs',
+    subCategoryId: 3,
+    subCategoryName: 'Student Welfare & Hostels',
     campus: 'North Campus',
     location: 'Cultural Zone – Plot 5',
-    executionRoute: 'External Agency',
+    executionRoute: 'External',
     estimatedCost: 9500000,
     aaAmount: 9200000,
+    administrativeApprovalAmount: 9200000,
+    administrativeSanctionId: 108,
+    aaStatus: 'AAApproved',
+    remark: 'Sanctioned deposit work for MPSEDC execution.',
     tsAmount: 9100000,
+    technicalSanctionAmount: 9100000,
+    technicalSanctionId: 208,
+    tsStatus: 'Approved',
+    canGrantTs: false,
+    financialYearId: 2,
+    financialYear: '2025-26',
+    budgetHeadId: 3,
+    budgetHeadName: 'UGC Development Grant — Institutional Infrastructure',
+    budgetHeadCode: 'UGC-CAP-99',
+    budgetAmount: 9100000,
+    budgetAllocationId: 308,
+    isLocked: false,
+    canAllocateBudget: false,
     contractAmount: 0,
     fundingSource: 'UGC Special Grant',
+    fundingSourceId: 1,
+    fundingSourceName: 'UGC Development Grant',
     startDate: '2025-07-01',
     expectedEndDate: '2026-06-30',
     siteEngineer: 'Er. Neha Sharma',
-    status: 'AA Approved',
+    siteEngineerSource: 'External',
+    externalEngineers: [
+      { engineerName: 'Er. Neha Sharma', mobileNumber: '9425088112' },
+    ],
+    status: 'AaApproved',
     priority: 'Medium',
+    priorityLevel: 'Medium',
     physicalProgress: 0,
     financialProgress: 0,
     externalAgency: 'MPSEDC',
     workBasis: 'BOQ Based',
+    isActive: true,
+  },
+  {
+    id: '9',
+    workRegistrationId: 9,
+    workId: 'CW-2026-009',
+    code: 'CW-2026-009',
+    name: 'Advanced Computing & AI Research Center',
+    projectId: 1,
+    projectDescription: 'Main Campus Academic Complex Expansion (Main Campus)',
+    category: 'New Capital Construction',
+    workCategoryId: 1,
+    workCategoryName: 'New Capital Construction',
+    department: 'Civil Engineering Dept',
+    subCategoryId: 1,
+    subCategoryName: 'Civil Engineering Dept',
+    campus: 'Main Campus',
+    location: 'North Block – Sector 4',
+    executionRoute: 'Internal',
+    estimatedCost: 35000000,
+    aaAmount: 0,
+    administrativeApprovalAmount: undefined,
+    administrativeSanctionId: undefined,
+    aaStatus: 'Pending',
+    tsAmount: 0,
+    technicalSanctionAmount: undefined,
+    technicalSanctionId: undefined,
+    tsStatus: 'Pending',
+    canGrantTs: false,
+    contractAmount: 0,
+    fundingSource: 'RUSA Grant',
+    fundingSourceId: 4,
+    fundingSourceName: 'Rashtriya Uchchatar Shiksha Abhiyan (RUSA)',
+    startDate: '2026-04-01',
+    expectedEndDate: '2027-09-30',
+    siteEngineer: 'Er. Rajesh Verma',
+    siteEngineerSource: 'Internal',
+    employeeIds: [101],
+    status: 'Registered',
+    priority: 'Critical',
+    priorityLevel: 'Critical',
+    physicalProgress: 0,
+    financialProgress: 0,
+    workBasis: 'SOR Based',
+    isActive: true,
+  },
+  {
+    id: '10',
+    workRegistrationId: 10,
+    workId: 'CW-2026-010',
+    code: 'CW-2026-010',
+    name: 'Green Energy Rooftop Solar Facility 500kW',
+    projectId: 3,
+    projectDescription:
+      'Campus Green Infrastructure & Solar Transition (City Campus)',
+    category: 'Renewal',
+    workCategoryId: 3,
+    workCategoryName: 'Renewal',
+    department: 'Electrical Engineering Wing',
+    subCategoryId: 4,
+    subCategoryName: 'Electrical Engineering Wing',
+    campus: 'City Campus',
+    location: 'All Building Rooftops',
+    executionRoute: 'External',
+    estimatedCost: 15000000,
+    aaAmount: 14800000,
+    administrativeApprovalAmount: 14800000,
+    administrativeSanctionId: 110,
+    aaStatus: 'AAApproved',
+    remark: 'Approved by B&WC for solar net-metering project.',
+    documentId: 'doc-aa-010',
+    documentName: 'Sanction_Order_Solar_2026.pdf',
+    tsAmount: 0,
+    technicalSanctionAmount: undefined,
+    technicalSanctionId: undefined,
+    tsStatus: 'Pending',
+    canGrantTs: true,
+    financialYearId: 2,
+    financialYear: '2025-26',
+    budgetHeadId: 5,
+    budgetHeadName: 'RUSA Phase-II Modernization & Lab Complex',
+    budgetHeadCode: 'RUSA-INF-05',
+    budgetAmount: 0,
+    isLocked: false,
+    canAllocateBudget: false,
+    contractAmount: 0,
+    fundingSource: 'CSR Contribution',
+    fundingSourceId: 5,
+    fundingSourceName: 'Industry CSR Infrastructure Contribution',
+    startDate: '2026-05-01',
+    expectedEndDate: '2026-11-30',
+    siteEngineer: 'Er. Sandeep Singh',
+    siteEngineerSource: 'External',
+    externalEngineers: [
+      { engineerName: 'Er. Sandeep Singh', mobileNumber: '9893011445' },
+    ],
+    status: 'AaApproved',
+    priority: 'High',
+    priorityLevel: 'High',
+    physicalProgress: 0,
+    financialProgress: 0,
+    workBasis: 'NonSor',
+    isActive: true,
   },
 ];
 
 // ─── SOR Items (Schedule of Rates) ────────────────────────────────────────────
+export interface MockSORItem {
+  sorItemId: number;
+  sorCode: string;
+  itemDescription: string;
+  unit: string;
+  rate: number;
+  sorTypeId: number;
+  sorTypeName?: string;
+  sorChapterId: number;
+  sorChapterName?: string;
+  sorSubjectId?: number;
+  sorSubjectName?: string;
+  isActive: boolean;
+}
+
 export interface SORItem {
   id: string;
+  sorItemId?: number;
   code: string;
+  sorCode?: string;
   description: string;
+  itemDescription?: string;
   unit: string;
   govtRate: number; // ₹ per unit
+  rate?: number;
   category: string;
   year: string;
+  sorTypeId?: number | string;
+  sorTypeName?: string;
+  sorChapterId?: number | string;
+  sorChapterName?: string;
+  sorSubjectId?: number | string;
+  sorSubjectName?: string;
+  isActive?: boolean;
 }
+
+// ─── Technical Plans ────────────────────────────────────────────────────────
+export interface MockTechnicalPlan {
+  technicalPlanId: number;
+  workRegistrationId: number;
+  workRegistrationCode?: string;
+  workRegistrationName?: string;
+  plotArea: number;
+  builtUpArea?: number;
+  numberOfFloors?: string;
+  soilType: string;
+  bearingCapacity: number;
+  concreteGrade: 'M10' | 'M15' | 'M20' | 'M25' | 'M30' | 'M35' | 'M40' | string;
+  steelQuantity?: number;
+  brickworkQuantity?: number;
+  status: 'Submitted' | 'Under Review' | 'Approved' | 'Rejected' | string;
+  isActive: boolean;
+}
+
+export const initialTechnicalPlans: MockTechnicalPlan[] = [
+  {
+    technicalPlanId: 1,
+    workRegistrationId: 1,
+    workRegistrationCode: 'CW-2025-001',
+    workRegistrationName: 'New Academic Block – Science Wing',
+    plotArea: 2400,
+    builtUpArea: 8500,
+    numberOfFloors: 'G+3',
+    soilType: 'Black Cotton Soil',
+    bearingCapacity: 120,
+    concreteGrade: 'M25',
+    steelQuantity: 95,
+    brickworkQuantity: 480,
+    status: 'Approved',
+    isActive: true,
+  },
+  {
+    technicalPlanId: 2,
+    workRegistrationId: 2,
+    workRegistrationCode: 'CW-2025-002',
+    workRegistrationName: 'Boys Hostel Block D – 200 Beds',
+    plotArea: 3200,
+    builtUpArea: 11000,
+    numberOfFloors: 'G+4',
+    soilType: 'Clayey Silt',
+    bearingCapacity: 150,
+    concreteGrade: 'M25',
+    steelQuantity: 120,
+    brickworkQuantity: 620,
+    status: 'Approved',
+    isActive: true,
+  },
+  {
+    technicalPlanId: 3,
+    workRegistrationId: 3,
+    workRegistrationCode: 'CW-2025-003',
+    workRegistrationName: 'Internal Campus Road Resurfacing',
+    plotArea: 32000,
+    numberOfFloors: 'Single Level Road',
+    soilType: 'Alluvial Medium Gravel',
+    bearingCapacity: 180,
+    concreteGrade: 'M10',
+    status: 'Approved',
+    isActive: true,
+  },
+];
+
+// ─── Work to Manpower Mappings ───────────────────────────────────────────────
+export interface MockWorkManpowerMapping {
+  workManpowerMappingId: number;
+  workRegistrationId: number;
+  workRegistrationCode?: string;
+  workRegistrationName?: string;
+  isInternal: boolean;
+  employeeId?: number;
+  employeeName?: string;
+  employeeCode?: string;
+  designation?: string;
+  externalEngineerName?: string;
+  externalEngineerContactNumber?: string;
+  responsibility: string;
+  fromDate: string;
+  toDate?: string;
+  remarks?: string;
+  relievingDocument?: string;
+  relievingRemarks?: string;
+  isActive: boolean;
+}
+
+export const initialWorkManpowerMappings: MockWorkManpowerMapping[] = [
+  {
+    workManpowerMappingId: 1,
+    workRegistrationId: 1,
+    workRegistrationCode: 'CW-2025-001',
+    workRegistrationName: 'New Academic Block – Science Wing',
+    isInternal: true,
+    employeeId: 101,
+    employeeName: 'Er. Rajesh Verma',
+    employeeCode: 'EMP-CIV-001',
+    designation: 'Executive Engineer (Civil)',
+    responsibility: 'Lead Site Supervising Engineer — Structural Inspection',
+    fromDate: '2024-11-01',
+    toDate: '2026-04-30',
+    remarks: 'Full-time site in-charge',
+    isActive: true,
+  },
+  {
+    workManpowerMappingId: 2,
+    workRegistrationId: 2,
+    workRegistrationCode: 'CW-2025-002',
+    workRegistrationName: 'Boys Hostel Block D – 200 Beds',
+    isInternal: true,
+    employeeId: 102,
+    employeeName: 'Er. Suresh Kumar',
+    employeeCode: 'EMP-CIV-002',
+    designation: 'Assistant Engineer (Quality)',
+    responsibility: 'Assistant Engineer — Quality & Material Compliance',
+    fromDate: '2025-01-15',
+    toDate: '2026-08-31',
+    remarks: 'Hostel construction supervision',
+    isActive: true,
+  },
+  {
+    workManpowerMappingId: 3,
+    workRegistrationId: 4,
+    workRegistrationCode: 'CW-2025-004',
+    workRegistrationName: 'Examination Hall Structural Strengthening',
+    isInternal: false,
+    externalEngineerName: 'Er. Mohan Singh',
+    externalEngineerContactNumber: '+91 98260 11990',
+    responsibility:
+      'External Chartered Structural Consultant (Seismic Retrofit)',
+    fromDate: '2025-06-01',
+    toDate: '2026-01-31',
+    remarks: 'Engaged through State PWD empanelment',
+    isActive: true,
+  },
+];
+
+// ─── Vendor Agency Registrations ─────────────────────────────────────────────
+export interface MockVendorAgencyRegistration {
+  vendorAgencyRegistrationId: number;
+  registrationNumber: string;
+  companyName: string;
+  proprietorName: string;
+  contactPerson: string;
+  contactPhone: string;
+  contactEmail: string;
+  officeAddress: string;
+  gstNumber: string;
+  panNumber: string;
+  isGstPanValidated: boolean;
+  gstPanValidatedOn?: string;
+  bankName: string;
+  bankAccountNumber: string;
+  ifscCode: string;
+  isBankMandateVerified: boolean;
+  bankMandateVerifiedOn?: string;
+  licenseGrade: string;
+  securityDepositPaid: number;
+  performanceBondValue: number;
+  isRegisteredWithPwd: boolean;
+  pwdRegistrationNumber?: string;
+  pwdRegistrationDate?: string;
+  completedWorks?: number;
+  totalWorksDone?: number;
+  isActive: boolean;
+}
+
+export const initialVendorAgencies: MockVendorAgencyRegistration[] = [
+  {
+    vendorAgencyRegistrationId: 1,
+    registrationNumber: 'PWD/MP/CA/2019/0041',
+    companyName: 'Sharma Constructions Pvt Ltd',
+    proprietorName: 'Mr. Ramesh Sharma',
+    contactPerson: 'Mr. Ramesh Sharma',
+    contactPhone: '+91 94251 88001',
+    contactEmail: 'sharma.constructions@email.com',
+    officeAddress: '42, Industrial Area, Phase II, Bhopal – 462022',
+    gstNumber: '23AABCS4832Q1ZX',
+    panNumber: 'AABCS4832Q',
+    isGstPanValidated: true,
+    gstPanValidatedOn: '2024-01-15',
+    bankName: 'State Bank of India',
+    bankAccountNumber: '38491023450012',
+    ifscCode: 'SBIN0003412',
+    isBankMandateVerified: true,
+    bankMandateVerifiedOn: '2024-01-20',
+    licenseGrade: 'Class A',
+    securityDepositPaid: 1310000,
+    performanceBondValue: 2620000,
+    isRegisteredWithPwd: true,
+    pwdRegistrationNumber: 'PWD-MP-CA-2019-041',
+    pwdRegistrationDate: '2019-04-10',
+    completedWorks: 18,
+    totalWorksDone: 125000000,
+    isActive: true,
+  },
+  {
+    vendorAgencyRegistrationId: 2,
+    registrationNumber: 'PWD/MP/CB/2021/0088',
+    companyName: 'Nirmaan Infra Projects',
+    proprietorName: 'Mr. Anil Gupta',
+    contactPerson: 'Mr. Anil Gupta',
+    contactPhone: '+91 88020 44321',
+    contactEmail: 'nirmaan.infra@email.com',
+    officeAddress: '18, New Market, Kolar Road, Bhopal – 462042',
+    gstNumber: '23AACNI3212K1ZA',
+    panNumber: 'AACNI3212K',
+    isGstPanValidated: true,
+    gstPanValidatedOn: '2024-03-10',
+    bankName: 'Bank of Baroda',
+    bankAccountNumber: '70093820001200',
+    ifscCode: 'BARB0BHOPAL',
+    isBankMandateVerified: true,
+    bankMandateVerifiedOn: '2024-03-15',
+    licenseGrade: 'Class B',
+    securityDepositPaid: 870000,
+    performanceBondValue: 1740000,
+    isRegisteredWithPwd: true,
+    pwdRegistrationNumber: 'PWD-MP-CB-2021-088',
+    pwdRegistrationDate: '2021-06-22',
+    completedWorks: 11,
+    totalWorksDone: 58000000,
+    isActive: true,
+  },
+  {
+    vendorAgencyRegistrationId: 3,
+    registrationNumber: 'PWD/MP/CA/2020/0056',
+    companyName: 'Madhav Infratech',
+    proprietorName: 'Er. Suresh Patel',
+    contactPerson: 'Er. Suresh Patel',
+    contactPhone: '+91 98930 22210',
+    contactEmail: 'madhav.infratech@email.com',
+    officeAddress: '7, Maharana Pratap Nagar, Bhopal – 462011',
+    gstNumber: '23AAECM8820P1ZB',
+    panNumber: 'AAECM8820P',
+    isGstPanValidated: true,
+    gstPanValidatedOn: '2024-02-05',
+    bankName: 'HDFC Bank',
+    bankAccountNumber: '50100234500078',
+    ifscCode: 'HDFC0001234',
+    isBankMandateVerified: true,
+    bankMandateVerifiedOn: '2024-02-12',
+    licenseGrade: 'Class A',
+    securityDepositPaid: 147500,
+    performanceBondValue: 295000,
+    isRegisteredWithPwd: true,
+    pwdRegistrationNumber: 'PWD-MP-CA-2020-056',
+    pwdRegistrationDate: '2020-09-18',
+    completedWorks: 24,
+    totalWorksDone: 182000000,
+    isActive: true,
+  },
+];
+
+export const initialSORItemMasters: MockSORItem[] = [
+  {
+    sorItemId: 1,
+    sorTypeId: 1,
+    sorTypeName: 'Building Works (MP PWD SOR 2024)',
+    sorChapterId: 1,
+    sorChapterName: 'Earthwork & Excavation',
+    sorSubjectId: 1,
+    sorSubjectName: 'General Site Clearance & Excavation',
+    sorCode: 'SOR-2024-01-001',
+    itemDescription:
+      'Earth work in excavation by mechanical means (Hydraulic excavator) / manual means in foundation trenches or drains not exceeding 1.5 m in width or 10 sqm on plan, including dressing of sides and ramming of bottoms, lift up to 1.5 m, including getting out the excavated soil and disposal of surplus excavated soil as directed, within a lead of 50 m. All kinds of soil.',
+    unit: 'Cum',
+    rate: 285.5,
+    isActive: true,
+  },
+  {
+    sorItemId: 2,
+    sorTypeId: 1,
+    sorTypeName: 'Building Works (MP PWD SOR 2024)',
+    sorChapterId: 1,
+    sorChapterName: 'Earthwork & Excavation',
+    sorSubjectId: 1,
+    sorSubjectName: 'General Site Clearance & Excavation',
+    sorCode: 'SOR-2024-01-002',
+    itemDescription:
+      'Earth work in excavation in ordinary rock including dressing of sides, lift up to 1.5 m, stack measurement within lead of 50 m.',
+    unit: 'Cum',
+    rate: 495.0,
+    isActive: true,
+  },
+  {
+    sorItemId: 3,
+    sorTypeId: 1,
+    sorTypeName: 'Building Works (MP PWD SOR 2024)',
+    sorChapterId: 2,
+    sorChapterName: 'Plain & Reinforced Cement Concrete (PCC/RCC)',
+    sorSubjectId: 3,
+    sorSubjectName: 'Substructure Concrete',
+    sorCode: 'SOR-2024-02-001',
+    itemDescription:
+      'Providing and laying in position cement concrete of specified grade excluding the cost of centering and shuttering - All work up to plinth level: 1:2:4 (1 cement : 2 coarse sand (zone-III) derived from natural sources : 4 graded stone aggregate 20 mm nominal size derived from natural sources).',
+    unit: 'Cum',
+    rate: 5450.0,
+    isActive: true,
+  },
+  {
+    sorItemId: 4,
+    sorTypeId: 1,
+    sorTypeName: 'Building Works (MP PWD SOR 2024)',
+    sorChapterId: 2,
+    sorChapterName: 'Plain & Reinforced Cement Concrete (PCC/RCC)',
+    sorSubjectId: 4,
+    sorSubjectName: 'Superstructure RCC Beams & Columns',
+    sorCode: 'SOR-2024-02-002',
+    itemDescription:
+      'Reinforced cement concrete work in beams, suspended floors, roofs having slope up to 15 deg, landings, balconies, shelves, chajjas, lintels, bands, plain window sills, staircases and spiral stair cases up to floor five level, excluding the cost of centering, shuttering, finishing and reinforcement, with 1:1.5:3 (1 cement : 1.5 coarse sand : 3 graded stone aggregate 20 mm nominal size).',
+    unit: 'Cum',
+    rate: 7200.0,
+    isActive: true,
+  },
+  {
+    sorItemId: 5,
+    sorTypeId: 1,
+    sorTypeName: 'Building Works (MP PWD SOR 2024)',
+    sorChapterId: 2,
+    sorChapterName: 'Plain & Reinforced Cement Concrete (PCC/RCC)',
+    sorSubjectId: 4,
+    sorSubjectName: 'Superstructure RCC Beams & Columns',
+    sorCode: 'SOR-2024-02-003',
+    itemDescription:
+      'Steel reinforcement for R.C.C. work including straightening, cutting, bending, placing in position and binding all complete up to plinth level: Thermo-Mechanically Treated bars of grade Fe-500D or more.',
+    unit: 'Kg',
+    rate: 78.5,
+    isActive: true,
+  },
+  {
+    sorItemId: 6,
+    sorTypeId: 1,
+    sorTypeName: 'Building Works (MP PWD SOR 2024)',
+    sorChapterId: 3,
+    sorChapterName: 'Brickwork & Masonry',
+    sorSubjectId: 5,
+    sorSubjectName: 'Fly Ash Brick Masonry',
+    sorCode: 'SOR-2024-03-001',
+    itemDescription:
+      'Brick work with common burnt clay F.P.S. (non modular) bricks of class designation 7.5 in foundation and plinth in: Cement mortar 1:6 (1 cement : 6 coarse sand).',
+    unit: 'Cum',
+    rate: 4650.0,
+    isActive: true,
+  },
+  {
+    sorItemId: 7,
+    sorTypeId: 1,
+    sorTypeName: 'Building Works (MP PWD SOR 2024)',
+    sorChapterId: 3,
+    sorChapterName: 'Brickwork & Masonry',
+    sorSubjectId: 5,
+    sorSubjectName: 'Fly Ash Brick Masonry',
+    sorCode: 'SOR-2024-03-002',
+    itemDescription:
+      'Brick work with modular fly ash lime bricks (FALG Bricks) conforming to IS:12894-2002, in superstructure above plinth level up to floor V level in : Cement mortar 1:6 (1 cement : 6 coarse sand).',
+    unit: 'Cum',
+    rate: 4850.0,
+    isActive: true,
+  },
+  {
+    sorItemId: 8,
+    sorTypeId: 2,
+    sorTypeName: 'Roads & Bridges (MoRTH / MP PWD 2024)',
+    sorChapterId: 5,
+    sorChapterName: 'Sub-Base & Base Courses',
+    sorSubjectId: 8,
+    sorSubjectName: 'Granular Sub Base (GSB)',
+    sorCode: 'SOR-2024-RD-001',
+    itemDescription:
+      'Construction of Granular Sub-base by providing well graded material, spreading in uniform layers with motor grader on prepared surface, mixing by pug mill/motor grader at OMC, and compacting with smooth wheel roller to achieve the desired density, complete as per Technical Specification Clause 401. Plant Mix Method - Grading I Material.',
+    unit: 'Cum',
+    rate: 1450.0,
+    isActive: true,
+  },
+  {
+    sorItemId: 9,
+    sorTypeId: 2,
+    sorTypeName: 'Roads & Bridges (MoRTH / MP PWD 2024)',
+    sorChapterId: 6,
+    sorChapterName: 'Bituminous Courses',
+    sorSubjectId: 10,
+    sorSubjectName: 'Dense Bituminous Macadam (DBM)',
+    sorCode: 'SOR-2024-RD-002',
+    itemDescription:
+      'Providing and laying dense bituminous macadam with 100-120 TPH batch type HMP using crushed aggregates of specified grading, premixed with bituminous binder @ 4.0 to 4.5 per cent by weight of total mix and filler, transporting the hot mix to work site, laying with a hydrostatic paver finisher with sensor control to the required grade, level and alignment, rolling with smooth wheeled, vibratory and tandem rollers to achieve the desired density (50 mm thickness).',
+    unit: 'Cum',
+    rate: 8950.0,
+    isActive: true,
+  },
+];
 
 export const sorItems: SORItem[] = [
   {
@@ -785,6 +1660,16 @@ export interface RABill {
   paymentDate?: string;
   paymentRef?: string;
   remarks?: string;
+  // Statutory Taxation & Deductions (Task 4.1)
+  gstRate?: number; // 18, 12, 0
+  isRCM?: boolean; // Reverse Charge Mechanism
+  gstAmount?: number;
+  itTdsRate?: number; // 1% or 2% (Sec 194C)
+  itTdsAmount?: number;
+  gstTdsRate?: number; // 2% (Sec 51 CGST)
+  gstTdsAmount?: number;
+  labourCessRate?: number; // 1% (BOCW Act)
+  labourCessAmount?: number;
 }
 
 export const raBills: RABill[] = [
@@ -801,13 +1686,22 @@ export const raBills: RABill[] = [
     advanceRecovery: 10000,
     securityDeposit: 7350,
     otherDeductions: 0,
-    netPayable: 129650,
-    cumulativePaid: 129650,
+    netPayable: 125197,
+    cumulativePaid: 125197,
     status: 'Paid',
     linkedMBs: ['1'],
     paymentDate: '2025-03-28',
     paymentRef: 'NEFT/2025/03/0042',
     remarks: 'RA Bill 1 – Excavation Phase',
+    gstRate: 18,
+    isRCM: false,
+    gstAmount: 26460,
+    itTdsRate: 2,
+    itTdsAmount: 2940,
+    gstTdsRate: 2,
+    gstTdsAmount: 2940,
+    labourCessRate: 1,
+    labourCessAmount: 1470,
   },
   {
     id: '2',
@@ -822,11 +1716,20 @@ export const raBills: RABill[] = [
     advanceRecovery: 58000,
     securityDeposit: 73825,
     otherDeductions: 2000,
-    netPayable: 1342675,
-    cumulativePaid: 1472325,
+    netPayable: 1268850,
+    cumulativePaid: 1394047,
     status: 'EE Approved',
     linkedMBs: ['2', '3'],
     remarks: 'RA Bill 2 – Excavation balance + Foundation Concrete',
+    gstRate: 18,
+    isRCM: false,
+    gstAmount: 265770,
+    itTdsRate: 2,
+    itTdsAmount: 29530,
+    gstTdsRate: 2,
+    gstTdsAmount: 29530,
+    labourCessRate: 1,
+    labourCessAmount: 14765,
   },
   {
     id: '3',
@@ -1487,22 +2390,49 @@ export const eotRequests: EOTRequest[] = [
 ];
 
 // ─── DLP (Defect Liability Period) ─────────────────────────────────────────────
+export interface DLPDefectItem {
+  id: string;
+  defectCategory:
+    | 'Crack'
+    | 'Seepage'
+    | 'Plumbing'
+    | 'Electrical'
+    | 'Flooring / Tile'
+    | 'Structural'
+    | 'Other';
+  description: string;
+  location: string;
+  reportedDate: string;
+  contractorNotifiedDate: string;
+  rectificationDeadline: string;
+  rectifiedDate?: string;
+  isRectified: boolean;
+  verifiedByAE: boolean;
+  aeVerificationDate?: string;
+  aeRemarks?: string;
+}
+
 export interface DLPRecord {
   id: string;
   workId: string;
   workName: string;
+  contractorName?: string;
   completionDate: string;
   dlpStartDate: string;
   dlpEndDate: string; // typically 12 months
   retentionAmount: number;
   retentionReleased: boolean;
   retentionReleaseDate?: string;
+  releaseOrderNo?: string;
+  releaseRemarks?: string;
   defectsReported: number;
   defectsRectified: number;
+  defects?: DLPDefectItem[];
   status:
     | 'Active'
     | 'Defects Reported'
     | 'Rectification In Progress'
+    | 'Retention Released'
     | 'Closed';
   remarks?: string;
 }
@@ -1512,6 +2442,7 @@ export const dlpRecords: DLPRecord[] = [
     id: '1',
     workId: '5',
     workName: 'Central Library Extension – G+2',
+    contractorName: 'Sharma Constructions Pvt Ltd',
     completionDate: '2025-11-30',
     dlpStartDate: '2025-12-01',
     dlpEndDate: '2026-11-30',
@@ -1521,12 +2452,57 @@ export const dlpRecords: DLPRecord[] = [
     defectsRectified: 2,
     status: 'Defects Reported',
     remarks:
-      'Minor seepage reported in terrace. Contractor notified on 2026-02-10.',
+      'Terrace rainwater joint seepage reported. Contractor notified on 2026-02-10.',
+    defects: [
+      {
+        id: 'DF-01',
+        defectCategory: 'Seepage',
+        description:
+          'Terrace rainwater pipe outlet joint water seepage into 2nd floor reading hall',
+        location: 'Reading Hall 2B ceiling',
+        reportedDate: '2026-01-15',
+        contractorNotifiedDate: '2026-01-18',
+        rectificationDeadline: '2026-02-05',
+        rectifiedDate: '2026-02-02',
+        isRectified: true,
+        verifiedByAE: true,
+        aeVerificationDate: '2026-02-04',
+        aeRemarks:
+          'Elastomeric waterproofing coating re-applied and ponding test passed.',
+      },
+      {
+        id: 'DF-02',
+        defectCategory: 'Electrical',
+        description: 'LED panel flickering and driver failure in Stack Area 3',
+        location: 'Ground Floor Stack Room',
+        reportedDate: '2026-02-10',
+        contractorNotifiedDate: '2026-02-12',
+        rectificationDeadline: '2026-02-25',
+        rectifiedDate: '2026-02-20',
+        isRectified: true,
+        verifiedByAE: true,
+        aeVerificationDate: '2026-02-22',
+        aeRemarks:
+          'Drivers replaced under warranty by electrical subcontractor.',
+      },
+      {
+        id: 'DF-03',
+        defectCategory: 'Flooring / Tile',
+        description: 'Hollow sounding vitrified tiles near main entrance foyer',
+        location: 'Entrance Foyer Grid C-4',
+        reportedDate: '2026-03-01',
+        contractorNotifiedDate: '2026-03-03',
+        rectificationDeadline: '2026-03-25',
+        isRectified: false,
+        verifiedByAE: false,
+      },
+    ],
   },
   {
     id: '2',
     workId: '7',
     workName: 'Emergency Plumbing Repair – Admin Block',
+    contractorName: 'Apex Buildcon Engineers',
     completionDate: '2024-12-22',
     dlpStartDate: '2024-12-23',
     dlpEndDate: '2025-12-22',
@@ -1535,7 +2511,9 @@ export const dlpRecords: DLPRecord[] = [
     defectsReported: 0,
     defectsRectified: 0,
     status: 'Active',
-    remarks: 'No defects observed so far',
+    remarks:
+      'DLP expired with zero reported defects. Eligible for retention release.',
+    defects: [],
   },
 ];
 
@@ -1644,6 +2622,21 @@ export interface WorkOrder {
   tpiAgencyName?: string;
   qualityLabId?: string;
   qualityLabName?: string;
+  // Contract Agreement details (Task 4.2)
+  agreementNo?: string;
+  agreementDate?: string;
+  stampDutyAmount?: number;
+  stampDutyReceiptNo?: string;
+  registrationStatus?: 'Registered' | 'Notary Stamped' | 'Pending';
+  scannedAgreementDoc?: string;
+  bgNo?: string;
+  bgBank?: string;
+  bgAmount?: number;
+  bgExpiryDate?: string;
+  mobAdvanceBgNo?: string;
+  mobAdvanceBgBank?: string;
+  mobAdvanceBgAmount?: number;
+  mobAdvanceBgExpiry?: string;
 }
 
 export const workOrders: WorkOrder[] = [
@@ -1670,6 +2663,20 @@ export const workOrders: WorkOrder[] = [
     tpiAgencyName: 'RITES Limited',
     qualityLabId: 'LAB-01',
     qualityLabName: 'IIT Bhopal Civil Testing Lab',
+    agreementNo: 'AGR/CW/2024-25/001',
+    agreementDate: '2024-10-25',
+    stampDutyAmount: 129250,
+    stampDutyReceiptNo: 'STAMP/MP/2024/88921',
+    registrationStatus: 'Registered',
+    scannedAgreementDoc: 'Agreement_CW_2024_001_Signed.pdf',
+    bgNo: 'BG-SBI-2024-99120',
+    bgBank: 'State Bank of India, TT Nagar Branch',
+    bgAmount: 1292500,
+    bgExpiryDate: '2026-10-31',
+    mobAdvanceBgNo: 'BG-MOB-SBI-2024-441',
+    mobAdvanceBgBank: 'State Bank of India',
+    mobAdvanceBgAmount: 2585000,
+    mobAdvanceBgExpiry: '2025-11-01',
   },
   {
     id: '2',
@@ -1694,6 +2701,16 @@ export const workOrders: WorkOrder[] = [
     tpiAgencyName: 'SGS India Pvt Ltd',
     qualityLabId: 'LAB-02',
     qualityLabName: 'MANIT Material Testing Lab',
+    agreementNo: 'AGR/CW/2025-26/002',
+    agreementDate: '2025-01-14',
+    stampDutyAmount: 86000,
+    stampDutyReceiptNo: 'STAMP/MP/2025/11029',
+    registrationStatus: 'Registered',
+    scannedAgreementDoc: 'Agreement_CW_2025_002_Signed.pdf',
+    bgNo: 'BG-PNB-2025-3341',
+    bgBank: 'Punjab National Bank, MP Nagar',
+    bgAmount: 860000,
+    bgExpiryDate: '2026-11-30',
   },
   {
     id: '3',
@@ -1718,6 +2735,16 @@ export const workOrders: WorkOrder[] = [
     tpiAgencyName: 'WAPCOS Limited',
     qualityLabId: 'LAB-03',
     qualityLabName: 'MP PWD Central Laboratory',
+    agreementNo: 'AGR/CW/2025-26/003',
+    agreementDate: '2025-02-28',
+    stampDutyAmount: 15000,
+    stampDutyReceiptNo: 'STAMP/MP/2025/44910',
+    registrationStatus: 'Notary Stamped',
+    scannedAgreementDoc: 'Agreement_Road_2025.pdf',
+    bgNo: 'BG-BOI-2025-8812',
+    bgBank: 'Bank of India, Arera Colony',
+    bgAmount: 147500,
+    bgExpiryDate: '2026-03-31',
   },
   {
     id: '4',
@@ -1856,3 +2883,573 @@ export const initialLabAgencies: LabAgency[] = [
     status: 'Active',
   },
 ];
+
+// ─── Masters Data Collections ───────────────────────────────────────────────
+
+export const initialCivilProjects: CivilManagement.CivilProject[] = [
+  {
+    id: 'PROJ-01',
+    name: 'Main Campus Academic Complex Expansion',
+    description:
+      'Construction of multidisciplinary academic blocks, advanced research labs, and seminar halls',
+    campus: 'Main Campus',
+    location: 'North Sector – Academic Zone',
+    isActive: true,
+  },
+  {
+    id: 'PROJ-02',
+    name: 'Student Residential Infrastructure Phase II',
+    description:
+      'Modern 200-bed student hostels with integrated mess and recreation facilities',
+    campus: 'Main Campus',
+    location: 'South Sector – Hostel Zone',
+    isActive: true,
+  },
+  {
+    id: 'PROJ-03',
+    name: 'Campus Green Infrastructure & Solar Transition',
+    description:
+      'Rooftop solar installations, campus stormwater harvesting, and eco-paving',
+    campus: 'City Campus',
+    location: 'Zone B – Energy Center',
+    isActive: true,
+  },
+  {
+    id: 'PROJ-04',
+    name: 'University Sports Complex & Stadium',
+    description:
+      'Multi-purpose indoor sports complex, athletic track, and pavilion',
+    campus: 'Main Campus',
+    location: 'East Sector – Sports Ground',
+    isActive: true,
+  },
+];
+
+export const initialSORTypes: CivilManagement.SORType[] = [
+  {
+    id: 'ST-01',
+    code: 'SOR-BLD',
+    name: 'Building & Civil Works',
+    isActive: true,
+  },
+  {
+    id: 'ST-02',
+    code: 'SOR-ROD',
+    name: 'Roads, Pavements & Bridges',
+    isActive: true,
+  },
+  {
+    id: 'ST-03',
+    code: 'SOR-ELE',
+    name: 'Internal & External Electrical Works',
+    isActive: true,
+  },
+  {
+    id: 'ST-04',
+    code: 'SOR-PHE',
+    name: 'Public Health Engineering & Plumbing',
+    isActive: true,
+  },
+];
+
+export const initialSORChapters: CivilManagement.SORChapter[] = [
+  {
+    id: 'SCH-01',
+    sorTypeId: 'ST-01',
+    sorTypeName: 'Building & Civil Works',
+    chapterNo: '01',
+    name: 'Earth Work, Site Clearance & Excavation',
+    isActive: true,
+  },
+  {
+    id: 'SCH-02',
+    sorTypeId: 'ST-01',
+    sorTypeName: 'Building & Civil Works',
+    chapterNo: '02',
+    name: 'Plain & Reinforced Cement Concrete (PCC/RCC)',
+    isActive: true,
+  },
+  {
+    id: 'SCH-03',
+    sorTypeId: 'ST-01',
+    sorTypeName: 'Building & Civil Works',
+    chapterNo: '03',
+    name: 'Brick Masonry, AAC Blocks & Stone Work',
+    isActive: true,
+  },
+  {
+    id: 'SCH-04',
+    sorTypeId: 'ST-01',
+    sorTypeName: 'Building & Civil Works',
+    chapterNo: '04',
+    name: 'Structural Steel Framing & Metal Fabrications',
+    isActive: true,
+  },
+  {
+    id: 'SCH-05',
+    sorTypeId: 'ST-01',
+    sorTypeName: 'Building & Civil Works',
+    chapterNo: '05',
+    name: 'Finishing Works, Plastering, Painting & Waterproofing',
+    isActive: true,
+  },
+  {
+    id: 'SCH-06',
+    sorTypeId: 'ST-02',
+    sorTypeName: 'Roads, Pavements & Bridges',
+    chapterNo: '01',
+    name: 'Subgrade Preparation & Wet Mix Macadam (WMM)',
+    isActive: true,
+  },
+  {
+    id: 'SCH-07',
+    sorTypeId: 'ST-02',
+    sorTypeName: 'Roads, Pavements & Bridges',
+    chapterNo: '02',
+    name: 'Bituminous Concrete & Asphalt Paving',
+    isActive: true,
+  },
+];
+
+export const initialSORSubjects: CivilManagement.SORSubject[] = [
+  {
+    id: 'SSU-01',
+    sorChapterId: 'SCH-01',
+    sorChapterName: 'Earth Work, Site Clearance & Excavation',
+    sorTypeId: 'ST-01',
+    name: 'Excavation in ordinary soil up to 1.5m depth',
+    isActive: true,
+  },
+  {
+    id: 'SSU-02',
+    sorChapterId: 'SCH-02',
+    sorChapterName: 'Plain & Reinforced Cement Concrete (PCC/RCC)',
+    sorTypeId: 'ST-01',
+    name: 'M25 Grade RCC in Columns, Beams & Slabs',
+    isActive: true,
+  },
+  {
+    id: 'SSU-03',
+    sorChapterId: 'SCH-02',
+    sorChapterName: 'Plain & Reinforced Cement Concrete (PCC/RCC)',
+    sorTypeId: 'ST-01',
+    name: 'M20 Grade Plain Cement Concrete in Foundation',
+    isActive: true,
+  },
+  {
+    id: 'SSU-04',
+    sorChapterId: 'SCH-03',
+    sorChapterName: 'Brick Masonry, AAC Blocks & Stone Work',
+    sorTypeId: 'ST-01',
+    name: 'Fly Ash Brickwork in 1:6 cement mortar',
+    isActive: true,
+  },
+  {
+    id: 'SSU-05',
+    sorChapterId: 'SCH-05',
+    sorChapterName: 'Finishing Works, Plastering, Painting & Waterproofing',
+    sorTypeId: 'ST-01',
+    name: '15mm Cement Plaster in 1:4 mix with neat finish',
+    isActive: true,
+  },
+];
+
+export const initialWorkCategories: CivilManagement.WorkCategoryMaster[] = [
+  {
+    id: 'WC-01',
+    code: 'NCC',
+    name: 'New Capital Construction',
+    description:
+      'Original construction of new buildings and major infrastructure',
+    isActive: true,
+  },
+  {
+    id: 'WC-02',
+    code: 'MNT',
+    name: 'Maintenance/Overhaul',
+    description:
+      'Periodic repairs, renovation, and overhaul of existing buildings',
+    isActive: true,
+  },
+  {
+    id: 'WC-03',
+    code: 'REN',
+    name: 'Renewal',
+    description: 'Replacement and upgrade of degraded building components',
+    isActive: true,
+  },
+  {
+    id: 'WC-04',
+    code: 'STR',
+    name: 'Strengthening',
+    description:
+      'Structural retrofitting, seismic strengthening, and load capacity enhancement',
+    isActive: true,
+  },
+  {
+    id: 'WC-05',
+    code: 'DEP',
+    name: 'Deposit Work',
+    description:
+      'Works executed through external government agencies like PWD/PIU',
+    isActive: true,
+  },
+  {
+    id: 'WC-06',
+    code: 'EMG',
+    name: 'Emergency Work',
+    description:
+      'Immediate safety, monsoon damage or disaster restoration work',
+    isActive: true,
+  },
+];
+
+export const initialWorkDepartments: CivilManagement.WorkDepartmentMaster[] = [
+  {
+    id: 'WD-01',
+    code: 'CIV',
+    name: 'Civil Engineering Dept',
+    parentCategoryId: 'WC-01',
+    isActive: true,
+  },
+  {
+    id: 'WD-02',
+    code: 'EST',
+    name: 'Estate & Campus Maintenance',
+    parentCategoryId: 'WC-02',
+    isActive: true,
+  },
+  {
+    id: 'WD-03',
+    code: 'STU',
+    name: 'Student Welfare & Hostels',
+    parentCategoryId: 'WC-01',
+    isActive: true,
+  },
+  {
+    id: 'WD-04',
+    code: 'ELE',
+    name: 'Electrical Engineering Wing',
+    parentCategoryId: 'WC-02',
+    isActive: true,
+  },
+  {
+    id: 'WD-05',
+    code: 'SPO',
+    name: 'Sports Council & Facilities',
+    parentCategoryId: 'WC-01',
+    isActive: true,
+  },
+];
+
+export const initialFundingSources: CivilManagement.FundingSourceMaster[] = [
+  {
+    id: 'FS-01',
+    code: 'UGC',
+    name: 'UGC Development Grant',
+    sourceType: 'UGC',
+    isActive: true,
+  },
+  {
+    id: 'FS-02',
+    code: 'SGC',
+    name: 'State Govt Capital Grant',
+    sourceType: 'State Govt',
+    isActive: true,
+  },
+  {
+    id: 'FS-03',
+    code: 'IDF',
+    name: 'Institute Development Fund (Internal)',
+    sourceType: 'University',
+    isActive: true,
+  },
+  {
+    id: 'FS-04',
+    code: 'RUSA',
+    name: 'Rashtriya Uchchatar Shiksha Abhiyan (RUSA)',
+    sourceType: 'Central Govt',
+    isActive: true,
+  },
+  {
+    id: 'FS-05',
+    code: 'CSR',
+    name: 'Industry CSR Infrastructure Contribution',
+    sourceType: 'External',
+    isActive: true,
+  },
+];
+
+export const initialMandateDocuments: CivilManagement.MandateDocument[] = [
+  {
+    id: 'MD-01',
+    name: 'Detailed Estimate & Preliminary Survey Report',
+    description:
+      'Detailed cost estimate with soil investigation and rate analysis',
+    applicableCategories: [
+      'WC-01',
+      'WC-02',
+      'WC-03',
+      'WC-04',
+      'WC-05',
+      'WC-06',
+    ],
+    isMandatory: true,
+    maxFileSizeMB: 10,
+    allowedFormats: ['pdf'],
+    isActive: true,
+  },
+  {
+    id: 'MD-02',
+    name: 'Land Title & Ownership Verification Certificate',
+    description: 'Proof of unencumbered university land possession',
+    applicableCategories: ['WC-01', 'WC-05'],
+    isMandatory: true,
+    maxFileSizeMB: 5,
+    allowedFormats: ['pdf', 'jpg'],
+    isActive: true,
+  },
+  {
+    id: 'MD-03',
+    name: 'Structural Design, Drawings & Stability Certificate',
+    description:
+      'Architectural and structural drawings signed by chartered engineer',
+    applicableCategories: ['WC-01', 'WC-04'],
+    isMandatory: true,
+    maxFileSizeMB: 25,
+    allowedFormats: ['pdf'],
+    isActive: true,
+  },
+  {
+    id: 'MD-04',
+    name: 'Soil Investigation & Geotechnical Test Report',
+    description: 'Bearing capacity test report from NABL accredited laboratory',
+    applicableCategories: ['WC-01', 'WC-04'],
+    isMandatory: true,
+    maxFileSizeMB: 10,
+    allowedFormats: ['pdf'],
+    isActive: true,
+  },
+  {
+    id: 'MD-05',
+    name: 'Statutory Environmental & Fire NOC Clearance',
+    description:
+      'NOC from State Pollution Control Board and State Fire Department',
+    applicableCategories: ['WC-01'],
+    isMandatory: false,
+    maxFileSizeMB: 5,
+    allowedFormats: ['pdf'],
+    isActive: true,
+  },
+  {
+    id: 'MD-06',
+    name: 'Scope of Work & Specification Document',
+    description: 'Detailed technical specifications and execution timeline',
+    applicableCategories: [
+      'WC-01',
+      'WC-02',
+      'WC-03',
+      'WC-04',
+      'WC-05',
+      'WC-06',
+    ],
+    isMandatory: true,
+    maxFileSizeMB: 10,
+    allowedFormats: ['pdf'],
+    isActive: true,
+  },
+];
+
+export const initialMBStatuses: CivilManagement.MBStatusMaster[] = [
+  {
+    id: 'MBS-01',
+    code: 'REC',
+    name: 'Draft Recorded by JE',
+    description: 'Recorded in digital measurement book by Junior Engineer',
+    sequence: 1,
+    isActive: true,
+  },
+  {
+    id: 'MBS-02',
+    code: 'CHK',
+    name: 'Test Checked by AE',
+    description: 'Minimum 50% test check carried out by Assistant Engineer',
+    sequence: 2,
+    isActive: true,
+  },
+  {
+    id: 'MBS-03',
+    code: 'SCR',
+    name: 'Scrutinized by EE',
+    description:
+      'Scrutinized and accepted by Executive Engineer (10% test check)',
+    sequence: 3,
+    isActive: true,
+  },
+  {
+    id: 'MBS-04',
+    code: 'BIL',
+    name: 'Linked to Running Account (RA) Bill',
+    description: 'Locked and attached to contractor RA Bill for payment',
+    sequence: 4,
+    isActive: true,
+  },
+  {
+    id: 'MBS-05',
+    code: 'FIN',
+    name: 'Finalized & Closed',
+    description: 'Measurement book closed after final bill settlement',
+    sequence: 5,
+    isActive: true,
+  },
+];
+
+export const initialStatusMasters: CivilManagement.StatusMaster[] = [
+  {
+    id: 'SM-01',
+    module: 'work',
+    code: 'REQ',
+    label: 'Requirement Generated',
+    colorHex: '#6b7280',
+    sequence: 1,
+    isActive: true,
+  },
+  {
+    id: 'SM-02',
+    module: 'work',
+    code: 'REG',
+    label: 'Work Registered',
+    colorHex: '#3b82f6',
+    sequence: 2,
+    isActive: true,
+  },
+  {
+    id: 'SM-03',
+    module: 'work',
+    code: 'AA',
+    label: 'Administrative Sanction Granted',
+    colorHex: '#8b5cf6',
+    sequence: 3,
+    isActive: true,
+  },
+  {
+    id: 'SM-04',
+    module: 'work',
+    code: 'TS',
+    label: 'Technical Sanction Granted',
+    colorHex: '#0ea5e9',
+    sequence: 4,
+    isActive: true,
+  },
+  {
+    id: 'SM-05',
+    module: 'work',
+    code: 'BL',
+    label: 'Budget Allocated & Locked',
+    colorHex: '#f59e0b',
+    sequence: 5,
+    isActive: true,
+  },
+  {
+    id: 'SM-06',
+    module: 'work',
+    code: 'TEN',
+    label: 'Tender Issued',
+    colorHex: '#ec4899',
+    sequence: 6,
+    isActive: true,
+  },
+  {
+    id: 'SM-07',
+    module: 'work',
+    code: 'WO',
+    label: 'Work Order Issued',
+    colorHex: '#10b981',
+    sequence: 7,
+    isActive: true,
+  },
+  {
+    id: 'SM-08',
+    module: 'work',
+    code: 'WIP',
+    label: 'In Progress (Execution)',
+    colorHex: '#14b8a6',
+    sequence: 8,
+    isActive: true,
+  },
+  {
+    id: 'SM-09',
+    module: 'work',
+    code: 'CC',
+    label: 'Completed & CC Issued',
+    colorHex: '#22c55e',
+    sequence: 9,
+    isActive: true,
+  },
+  {
+    id: 'SM-10',
+    module: 'work',
+    code: 'DLP',
+    label: 'Defect Liability Period (DLP)',
+    colorHex: '#f97316',
+    sequence: 10,
+    isActive: true,
+  },
+  {
+    id: 'SM-11',
+    module: 'work',
+    code: 'CLS',
+    label: 'Closed',
+    colorHex: '#475569',
+    sequence: 11,
+    isActive: true,
+  },
+];
+
+export const initialWorkSuspensions: CivilManagement.WorkSuspensionForeclosure[] =
+  [
+    {
+      id: 'WS-01',
+      workId: '4',
+      workName: 'Examination Hall Structural Strengthening',
+      workOrderId: '4',
+      workOrderNo: 'WO/CW/2025-26/004',
+      contractorName: 'Sharma Constructions Pvt Ltd',
+      actionType: 'Suspension',
+      clauseReference: 'Clause 15 (Suspension of Work)',
+      orderNo: 'ORD/SUSP/2025/012',
+      orderDate: '2025-08-10',
+      effectiveDate: '2025-08-12',
+      reason: 'Design Revision',
+      reasonDescription:
+        'Structural consultant proposed seismic retrofitting design changes following geotechnical soil re-test findings.',
+      sitePreservationExpenses: 45000,
+      orderedBy: 'Executive Engineer (Civil)',
+      status: 'Active Suspension',
+      remarks:
+        'Contractor instructed to secure foundation excavation and ensure water dewatering.',
+    },
+    {
+      id: 'WS-02',
+      workId: '5',
+      workName: 'Staff Quarters Type IV (Block A & B)',
+      workOrderId: '5',
+      workOrderNo: 'WO/CW/2024-25/005',
+      contractorName: 'Apex Buildcon Engineers',
+      actionType: 'Foreclosure',
+      clauseReference: 'Clause 13 (Foreclosure of Contract due to Abandonment)',
+      orderNo: 'ORD/FORECLOSE/2025/003',
+      orderDate: '2025-05-18',
+      effectiveDate: '2025-05-20',
+      reason: 'Fund Crunch',
+      reasonDescription:
+        'State Government grant funding withdrawn due to revised departmental master planning. Work foreclosed without penalty to contractor.',
+      finalMeasurementDate: '2025-06-05',
+      settlementAmount: 1850000,
+      compensationPaid: 1850000,
+      orderedBy: 'Superintending Engineer',
+      status: 'Foreclosed',
+      remarks:
+        'Final bill prepared on actual measurements. Contractor agreed to amicable settlement under CPWD GCC Clause 13.',
+    },
+  ];

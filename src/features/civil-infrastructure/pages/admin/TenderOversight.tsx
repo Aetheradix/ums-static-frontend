@@ -133,6 +133,10 @@ export default function TenderOversight() {
   const [mapActualTenderAmt, setMapActualTenderAmt] = useState('');
   const [mapTenderPercent, setMapTenderPercent] = useState('');
 
+  const [mappingViewMode, setMappingViewMode] = useState<'list' | 'create'>(
+    'list'
+  );
+
   useEffect(() => {
     if (mapTenderPricingType === 'At Par') {
       setMapActualTenderAmt(mapContractAmt);
@@ -145,7 +149,8 @@ export default function TenderOversight() {
       const base = Number(mapContractAmt);
       const pct = Number(mapTenderPercent);
       if (!isNaN(base) && !isNaN(pct) && pct > 0) {
-        const factor = mapTenderPricingType === 'Below' ? 1 - pct / 100 : 1 + pct / 100;
+        const factor =
+          mapTenderPricingType === 'Below' ? 1 - pct / 100 : 1 + pct / 100;
         setMapActualTenderAmt(String(Math.round(base * factor)));
       }
     }
@@ -354,7 +359,7 @@ export default function TenderOversight() {
       `Agency mapped to Work successfully! Work Order created for ${selectedContractor.companyName}.`
     );
 
-    // Reset Form
+    // Reset Form and return to list
     setMapWorkId('');
     setMapContractorId('');
     setMapTpiAgencyId('');
@@ -365,6 +370,7 @@ export default function TenderOversight() {
     setMapSdAmount('');
     setMapTenderPricingType('At Par');
     setMapActualTenderAmt('');
+    setMappingViewMode('list');
   };
 
   const publishedBids = tenders.filter(
@@ -386,120 +392,128 @@ export default function TenderOversight() {
         tabs={[
           {
             title: 'Agency-Work Mapping',
-            content: (
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '1.5rem',
-                }}
-              >
-                <FormCard
-                  title="Create Agency-Work Mapping"
-                  subtitle="Link an onboarded contractor/agency to a registered work project."
-                >
-                  <FormGrid columns={1}>
-                    <DropDownList
-                      label="Registered Work *"
-                      data={works
-                        .filter((w: any) =>
-                          [
-                            'Registered',
-                            'Requirement Generated',
-                            'AA Approved',
-                            'TS Granted',
-                            'Budget Locked',
-                            'Tender Stage',
-                          ].includes(w.status)
-                        )
-                        .map((w: any) => ({
-                          name: `${w.workId} - ${w.name} (Est: ₹${(w.estimatedCost / 100000).toFixed(1)}L)`,
-                          value: w.id,
-                        }))}
-                      textField={'name' as any}
-                      optionValue="value"
-                      value={mapWorkId}
-                      onChange={v => {
-                        setMapWorkId(v as string);
-                        const wk = works.find((w: any) => w.id === v);
-                        if (wk) setMapContractAmt(String(wk.estimatedCost));
-                      }}
+            content:
+              mappingViewMode === 'create' ? (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between pb-2 border-b border-gray-100">
+                    <Button
+                      label="Back to Active Mappings List"
+                      icon="arrow-left"
+                      variant="secondary"
+                      size="small"
+                      onClick={() => setMappingViewMode('list')}
                     />
-                    <DropDownList
-                      label="Contractor / Agency *"
-                      data={contractors
-                        .filter((c: any) => c.status === 'Active')
-                        .map((c: any) => ({
-                          name: `${c.companyName} (${c.grade})`,
-                          value: c.id,
-                        }))}
-                      textField={'name' as any}
-                      optionValue="value"
-                      value={mapContractorId}
-                      onChange={v => setMapContractorId(v as string)}
-                    />
-                    <DropDownList
-                      label="TPI Quality Agency *"
-                      data={tpiAgencies
-                        .filter((t: any) => t.status === 'Active')
-                        .map((t: any) => ({ name: t.name, value: t.id }))}
-                      textField={'name' as any}
-                      optionValue="value"
-                      value={mapTpiAgencyId}
-                      onChange={v => setMapTpiAgencyId(v as string)}
-                    />
-                    <DropDownList
-                      label="Quality Lab Testing Agency *"
-                      data={labAgencies
-                        .filter((l: any) => l.status === 'Active')
-                        .map((l: any) => ({ name: l.name, value: l.id }))}
-                      textField={'name' as any}
-                      optionValue="value"
-                      value={mapQualityLabId}
-                      onChange={v => setMapQualityLabId(v as string)}
-                    />
-                    <TextBox
-                      label="BOQ Value (₹) *"
-                      placeholder="e.g. 26200000"
-                      value={mapContractAmt}
-                      onChange={v => setMapContractAmt(v)}
-                    />
-                    <DropDownList
-                      label="Tender Obtained At *"
-                      data={['Below', 'Above', 'At Par'].map(v => ({
-                        name: v,
-                        value: v,
-                      }))}
-                      textField="name"
-                      optionValue="value"
-                      value={mapTenderPricingType}
-                      onChange={v => {
-                        setMapTenderPricingType(v as string);
-                        setMapTenderPercent('');
-                      }}
-                    />
-                    {(mapTenderPricingType === 'Below' || mapTenderPricingType === 'Above') && (
-                      <TextBox
-                        label={`Percentage ${mapTenderPricingType === 'Below' ? 'Below' : 'Above'} BOQ Value (%)`}
-                        placeholder={`e.g. 5 (means ${mapTenderPricingType === 'Below' ? '5% below' : '5% above'} BOQ value)`}
-                        value={mapTenderPercent}
-                        onChange={v => setMapTenderPercent(v)}
-                      />
-                    )}
-                    <TextBox
-                      label="Actual Tender Amount (₹) *"
-                      placeholder="e.g. 25000000"
-                      value={mapActualTenderAmt}
-                      onChange={v => setMapActualTenderAmt(v)}
-                      required
-                    />
-                    <TextBox
-                      label="Security Deposit Amount "
-                      placeholder="e.g. 1310000"
-                      value={mapSdAmount}
-                      onChange={v => setMapSdAmount(v)}
-                    />
+                    <span className="text-xs font-semibold text-gray-500">
+                      Step: Create Agency-Work Mapping
+                    </span>
+                  </div>
+
+                  <FormCard
+                    title="Create Agency-Work Mapping"
+                    subtitle="Link an onboarded contractor/agency to a registered work project."
+                  >
                     <FormGrid columns={2}>
+                      <DropDownList
+                        label="Registered Work *"
+                        data={works
+                          .filter((w: any) =>
+                            [
+                              'Registered',
+                              'Requirement Generated',
+                              'AA Approved',
+                              'TS Granted',
+                              'Budget Locked',
+                              'Tender Stage',
+                            ].includes(w.status)
+                          )
+                          .map((w: any) => ({
+                            name: `${w.workId} - ${w.name} (Est: ₹${(w.estimatedCost / 100000).toFixed(1)}L)`,
+                            value: w.id,
+                          }))}
+                        textField={'name' as any}
+                        optionValue="value"
+                        value={mapWorkId}
+                        onChange={v => {
+                          setMapWorkId(v as string);
+                          const wk = works.find((w: any) => w.id === v);
+                          if (wk) setMapContractAmt(String(wk.estimatedCost));
+                        }}
+                      />
+                      <DropDownList
+                        label="Contractor / Agency *"
+                        data={contractors
+                          .filter((c: any) => c.status === 'Active')
+                          .map((c: any) => ({
+                            name: `${c.companyName} (${c.grade})`,
+                            value: c.id,
+                          }))}
+                        textField={'name' as any}
+                        optionValue="value"
+                        value={mapContractorId}
+                        onChange={v => setMapContractorId(v as string)}
+                      />
+                      <DropDownList
+                        label="TPI Quality Agency *"
+                        data={tpiAgencies
+                          .filter((t: any) => t.status === 'Active')
+                          .map((t: any) => ({ name: t.name, value: t.id }))}
+                        textField={'name' as any}
+                        optionValue="value"
+                        value={mapTpiAgencyId}
+                        onChange={v => setMapTpiAgencyId(v as string)}
+                      />
+                      <DropDownList
+                        label="Quality Lab Testing Agency *"
+                        data={labAgencies
+                          .filter((l: any) => l.status === 'Active')
+                          .map((l: any) => ({ name: l.name, value: l.id }))}
+                        textField={'name' as any}
+                        optionValue="value"
+                        value={mapQualityLabId}
+                        onChange={v => setMapQualityLabId(v as string)}
+                      />
+                      <TextBox
+                        label="BOQ Value (₹) *"
+                        placeholder="e.g. 26200000"
+                        value={mapContractAmt}
+                        onChange={v => setMapContractAmt(v)}
+                      />
+                      <DropDownList
+                        label="Tender Obtained At *"
+                        data={['Below', 'Above', 'At Par'].map(v => ({
+                          name: v,
+                          value: v,
+                        }))}
+                        textField="name"
+                        optionValue="value"
+                        value={mapTenderPricingType}
+                        onChange={v => {
+                          setMapTenderPricingType(v as string);
+                          setMapTenderPercent('');
+                        }}
+                      />
+                      {(mapTenderPricingType === 'Below' ||
+                        mapTenderPricingType === 'Above') && (
+                        <TextBox
+                          label={`Percentage ${mapTenderPricingType === 'Below' ? 'Below' : 'Above'} BOQ Value (%)`}
+                          placeholder={`e.g. 5 (means ${mapTenderPricingType === 'Below' ? '5% below' : '5% above'} BOQ value)`}
+                          value={mapTenderPercent}
+                          onChange={v => setMapTenderPercent(v)}
+                        />
+                      )}
+                      <TextBox
+                        label="Actual Tender Amount (₹) *"
+                        placeholder="e.g. 25000000"
+                        value={mapActualTenderAmt}
+                        onChange={v => setMapActualTenderAmt(v)}
+                        required
+                      />
+                      <TextBox
+                        label="Security Deposit Amount "
+                        placeholder="e.g. 1310000"
+                        value={mapSdAmount}
+                        onChange={v => setMapSdAmount(v)}
+                      />
                       <DatePicker
                         label="Commencement Date *"
                         value={
@@ -525,23 +539,35 @@ export default function TenderOversight() {
                         }
                       />
                     </FormGrid>
-                    <div style={{ marginTop: '0.5rem', width: '100%' }}>
-                      <div style={{ width: '100%' }}>
-                        <Button
-                          label="Execute Agency-Work Mapping"
-                          icon="link"
-                          variant="primary"
-                          onClick={handleCreateMapping}
-                        />
-                      </div>
+                    <div className="mt-6 flex justify-end gap-3 pt-4 border-t border-gray-100">
+                      <Button
+                        label="Cancel"
+                        variant="secondary"
+                        onClick={() => setMappingViewMode('list')}
+                      />
+                      <Button
+                        label="Execute Agency-Work Mapping"
+                        icon="check"
+                        variant="primary"
+                        onClick={handleCreateMapping}
+                      />
                     </div>
-                  </FormGrid>
-                </FormCard>
-
+                  </FormCard>
+                </div>
+              ) : (
                 <FormCard
                   title="Active Mappings & Contract Allocations"
                   subtitle="List of contractors currently mapped to active works."
                 >
+                  <div className="mb-4 flex justify-end">
+                    <Button
+                      label="Create Mapping"
+                      icon="plus"
+                      variant="primary"
+                      onClick={() => setMappingViewMode('create')}
+                    />
+                  </div>
+
                   <table className="civil-table">
                     <thead>
                       <tr>
@@ -629,8 +655,7 @@ export default function TenderOversight() {
                     </tbody>
                   </table>
                 </FormCard>
-              </div>
-            ),
+              ),
           },
           {
             title: `All Tenders (${tenders.length})`,
@@ -821,38 +846,38 @@ export default function TenderOversight() {
                   </div>
                 ) : (
                   <GridPanel
-                     data={publishedBids}
-                     columns={[
-                       {
-                         field: 'tenderNo',
-                         header: 'NIT No',
-                         cell: (t: any) => (
-                           <span
-                             style={{ fontFamily: 'monospace', fontWeight: 700 }}
-                           >
-                             {t.tenderNo}
-                           </span>
-                         ),
-                       },
-                       { field: 'workName', header: 'Work' },
-                       {
-                         field: 'totalBidsReceived',
-                         header: 'Bids',
-                         cell: (t: any) => (
-                           <span style={{ fontWeight: 700, color: '#2563eb' }}>
-                             {t.totalBidsReceived}
-                           </span>
-                         ),
-                       },
-                       { field: 'closingDate', header: 'Closing Date' },
-                       {
-                         field: 'status',
-                         header: 'Status',
-                         cell: (t: any) => (
-                           <StatusBadge label={t.status} variant="pending" />
-                         ),
-                       },
-                     ]}
+                    data={publishedBids}
+                    columns={[
+                      {
+                        field: 'tenderNo',
+                        header: 'NIT No',
+                        cell: (t: any) => (
+                          <span
+                            style={{ fontFamily: 'monospace', fontWeight: 700 }}
+                          >
+                            {t.tenderNo}
+                          </span>
+                        ),
+                      },
+                      { field: 'workName', header: 'Work' },
+                      {
+                        field: 'totalBidsReceived',
+                        header: 'Bids',
+                        cell: (t: any) => (
+                          <span style={{ fontWeight: 700, color: '#2563eb' }}>
+                            {t.totalBidsReceived}
+                          </span>
+                        ),
+                      },
+                      { field: 'closingDate', header: 'Closing Date' },
+                      {
+                        field: 'status',
+                        header: 'Status',
+                        cell: (t: any) => (
+                          <StatusBadge label={t.status} variant="pending" />
+                        ),
+                      },
+                    ]}
                   />
                 )}
               </FormCard>

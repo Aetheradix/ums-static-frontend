@@ -1,10 +1,17 @@
 const BASE = '/civil-infrastructure';
 
 export const civilUrls = {
-  // Portals
-  adminPortal: `${BASE}/admin`,
-  engineerPortal: `${BASE}/engineer`,
-  financePortal: `${BASE}/finance`,
+  // Sub-Menus
+  civilMenu: '/home/sub-menu/civil-infrastructure',
+  adminMenu: '/home/sub-menu/civil-admin',
+  engineerMenu: '/home/sub-menu/civil-engineer',
+  financeMenu: '/home/sub-menu/civil-finance',
+  externalMastersMenu: '/home/sub-menu/civil-external-masters',
+
+  // Portals (Direct Dashboards)
+  adminPortal: `${BASE}/admin/dashboard`,
+  engineerPortal: `${BASE}/engineer/dashboard`,
+  financePortal: `${BASE}/finance/dashboard`,
 
   // Admin Pages
   adminDashboard: `${BASE}/admin/dashboard`,
@@ -16,6 +23,7 @@ export const civilUrls = {
   tenderOversight: `${BASE}/admin/tender-oversight`,
   agencyVerification: `${BASE}/admin/agency-verification`,
   workOrderSign: `${BASE}/admin/work-order-sign`,
+  workManpowerMapping: `${BASE}/admin/work-manpower-mapping`,
   adminEotRequest: `${BASE}/admin/eot-requests`,
   completionCertificate: `${BASE}/admin/completion-certificate`,
   adminReports: `${BASE}/admin/reports`,
@@ -23,6 +31,29 @@ export const civilUrls = {
   adminBOQCompilation: `${BASE}/admin/boq-compilation`,
   adminMilestones: `${BASE}/admin/milestones`,
   milestoneApprovals: `${BASE}/admin/milestone-approvals`,
+
+  // Admin Gap-Fill & Indian Workflow Pages
+  annualWorkPlan: `${BASE}/admin/annual-work-plan`,
+  statutoryCompliance: `${BASE}/admin/statutory-compliance`,
+  labourCompliance: `${BASE}/admin/labour-compliance`,
+  deviationApproval: `${BASE}/admin/deviation-approval`,
+  tpiReports: `${BASE}/admin/tpi-reports`,
+  assetRegister: `${BASE}/admin/asset-register`,
+
+  // Admin Masters
+  sorType: `${BASE}/admin/masters/sor-type`,
+  sorChapter: `${BASE}/admin/masters/sor-chapter`,
+  sorSubject: `${BASE}/admin/masters/sor-subject`,
+  sorItemMaster: `${BASE}/admin/masters/sor-items`,
+  projectMaster: `${BASE}/admin/masters/projects`,
+  workCategoryMaster: `${BASE}/admin/masters/work-categories`,
+  workDepartmentMaster: `${BASE}/admin/masters/work-departments`,
+  fundingSourceMaster: `${BASE}/admin/masters/funding-sources`,
+  mandateDocumentMaster: `${BASE}/admin/masters/mandate-documents`,
+  qualityLabMaster: `${BASE}/admin/masters/quality-labs`,
+  tpiAgencyMaster: `${BASE}/admin/masters/tpi-agencies`,
+  mbStatusMaster: `${BASE}/admin/masters/mb-statuses`,
+  statusMaster: `${BASE}/admin/masters/statuses`,
 
   // Engineer Pages
   engineerDashboard: `${BASE}/engineer/dashboard`,
@@ -38,6 +69,8 @@ export const civilUrls = {
   milestoneSignoff: `${BASE}/engineer/milestone-signoff`,
   requestCC: `${BASE}/engineer/request-cc`,
   mbReport: `${BASE}/engineer/mb-report`,
+  siteHandover: `${BASE}/engineer/site-handover`,
+  deviationStatement: `${BASE}/engineer/deviation-statement`,
 
   // Finance Pages
   financeDashboard: `${BASE}/finance/dashboard`,
@@ -46,4 +79,6 @@ export const civilUrls = {
   finalBillSettlement: `${BASE}/finance/final-bill-settlement`,
   paymentRelease: `${BASE}/finance/payment-release`,
   dlpMonitoring: `${BASE}/finance/dlp-monitoring`,
+  utilizationCertificate: `${BASE}/finance/utilization-certificate`,
+  pvcCalculation: `${BASE}/finance/pvc-calculation`,
 };

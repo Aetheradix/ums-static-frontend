@@ -107,6 +107,16 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
         toPath = '/home/sub-menu/affiliation-settings';
       } else if (path.toLowerCase() === 'open-book-examination') {
         toPath = '/home/sub-menu/open-book-examination';
+      } else if (path.toLowerCase() === 'civil-infrastructure') {
+        toPath = '/home/sub-menu/civil-infrastructure';
+      } else if (path.toLowerCase() === 'civil-admin') {
+        toPath = '/home/sub-menu/civil-admin';
+      } else if (path.toLowerCase() === 'civil-engineer') {
+        toPath = '/home/sub-menu/civil-engineer';
+      } else if (path.toLowerCase() === 'civil-finance') {
+        toPath = '/home/sub-menu/civil-finance';
+      } else if (path.toLowerCase() === 'civil-external-masters') {
+        toPath = '/home/sub-menu/civil-external-masters';
       }
 
       generatedItems.push({
