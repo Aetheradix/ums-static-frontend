@@ -24,6 +24,7 @@ import ProfileScrutiny from './profile-scrutiny';
 import InspectionCommittee from './inspection-committee';
 import StandingCommitteeMeeting from './standing-committee-meeting';
 import AffiliationFeeMasterRoutes from './affiliation-fee-master';
+import SpecialServiceRequests from './special-service-requests';
 
 export default function AffiliationManagementSystem() {
   return (
@@ -98,6 +99,10 @@ export default function AffiliationManagementSystem() {
       <Route
         path="affiliation-fee-master/*"
         element={<AffiliationFeeMasterRoutes />}
+      />
+      <Route
+        path="special-service-requests/*"
+        element={<SpecialServiceRequests />}
       />
     </Routes>
   );

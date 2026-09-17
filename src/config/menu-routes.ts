@@ -8282,6 +8282,15 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'sync',
                 colorScheme: 'orange',
               },
+              {
+                label: 'Special Service Requests',
+                slug: 'special-service-requests',
+                description:
+                  'Apply for Name Change, Location Change & Society Modification.',
+                path: '/affiliation-management-system/special-service-requests',
+                icon: 'published_with_changes',
+                colorScheme: 'pink',
+              },
             ],
           },
           {
