@@ -16,6 +16,7 @@ import {
   StatusBadge,
   Tabs,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import {
   type CivilTender,
   contractors as initialContractors,
@@ -25,7 +26,6 @@ import {
   workOrders as initialWorkOrders,
   civilWorks as initialWorks,
 } from '../../mocks';
-import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
@@ -455,7 +455,7 @@ export default function TenderOversight() {
                         onChange={v => setMapContractorId(v as string)}
                       />
                       <DropDownList
-                        label="TPI Quality Agency *"
+                        label="TPI Quality Agency"
                         data={tpiAgencies
                           .filter((t: any) => t.status === 'Active')
                           .map((t: any) => ({ name: t.name, value: t.id }))}
@@ -465,7 +465,7 @@ export default function TenderOversight() {
                         onChange={v => setMapTpiAgencyId(v as string)}
                       />
                       <DropDownList
-                        label="Quality Lab Testing Agency *"
+                        label="Quality Lab Testing Agency"
                         data={labAgencies
                           .filter((l: any) => l.status === 'Active')
                           .map((l: any) => ({ name: l.name, value: l.id }))}
