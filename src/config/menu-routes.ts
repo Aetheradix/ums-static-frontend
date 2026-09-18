@@ -8434,6 +8434,15 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'blue',
               },
               {
+                label: 'Special Service Request Approvals',
+                slug: 'special-service-request-approval',
+                description:
+                  'Scrutinize and approve college special service applications.',
+                path: '/affiliation-management-system/special-service-request-approval',
+                icon: 'published_with_changes',
+                colorScheme: 'teal',
+              },
+              {
                 label: 'Approval Status Report',
                 slug: 'approval-status-report',
                 description: 'View approval status of affiliations.',
