@@ -151,6 +151,7 @@ export interface CivilWork {
   ownershipVerified?: string;
   // Dynamic documents uploaded via document master
   mandateDocs?: Record<string, string>; // { docTypeName: uploadedFileName }
+  isStatuaryCheck?: boolean;
   isActive?: boolean;
 }
 

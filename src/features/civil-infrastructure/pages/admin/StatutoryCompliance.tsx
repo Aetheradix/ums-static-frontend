@@ -26,7 +26,7 @@ const CLEARANCE_TYPES = [
   'RERA Registration Certificate',
 ];
 
-const INITIAL_CLEARANCES: CivilManagement.StatutoryClearance[] = [
+export const INITIAL_CLEARANCES: CivilManagement.StatutoryClearance[] = [
   {
     id: 'NOC-01',
     workId: '1',
@@ -124,9 +124,21 @@ export default function StatutoryCompliance() {
     useState<CivilManagement.StatutoryClearance['status']>('Applied');
   const [formRemarks, setFormRemarks] = useState('');
 
+  const statutoryWorks = useMemo(() => {
+    return works.filter(
+      w =>
+        Boolean(w.isStatuaryCheck) ||
+        (w.isStatuaryCheck === undefined &&
+          (w.id === '1' ||
+            w.id === '2' ||
+            w.workRegistrationId === 1 ||
+            w.workRegistrationId === 2))
+    );
+  }, [works]);
+
   const filteredData = useMemo(() => {
     if (filterWorkId === 'ALL') return data;
-    return data.filter(d => d.workId === filterWorkId);
+    return data.filter(d => String(d.workId) === String(filterWorkId));
   }, [data, filterWorkId]);
 
   // Check how many critical clearances are pending
@@ -135,8 +147,8 @@ export default function StatutoryCompliance() {
   }, [data]);
 
   const openAdd = () => {
-    const w = works[0];
-    setFormWorkId(w?.id || '1');
+    const w = statutoryWorks[0] || works[0];
+    setFormWorkId(String(w?.workRegistrationId || w?.id || '1'));
     setFormType(CLEARANCE_TYPES[0]);
     setFormAuthority('');
     setFormAppDate(new Date().toISOString().split('T')[0]);
@@ -178,7 +190,9 @@ export default function StatutoryCompliance() {
       );
       return;
     }
-    const w = works.find(x => x.id === formWorkId);
+    const w = works.find(
+      x => String(x.workRegistrationId || x.id) === String(formWorkId)
+    );
 
     if (popup.mode === 'add') {
       const newItem: CivilManagement.StatutoryClearance = {
@@ -275,10 +289,10 @@ export default function StatutoryCompliance() {
           <DropDownList
             label="Filter by Work Project"
             data={[
-              { label: 'All Civil Works', value: 'ALL' },
-              ...works.map(w => ({
-                label: `${w.workId} — ${w.name}`,
-                value: w.id,
+              { label: 'All Statutory Works', value: 'ALL' },
+              ...statutoryWorks.map(w => ({
+                label: `${w.code || w.workId || `CW-${w.id}`} — ${w.name}`,
+                value: String(w.workRegistrationId || w.id),
               })),
             ]}
             textField="label"
@@ -594,9 +608,9 @@ export default function StatutoryCompliance() {
           >
             <DropDownList
               label="Civil Work Scheme *"
-              data={works.map(w => ({
-                label: `${w.workId} — ${w.name}`,
-                value: w.id,
+              data={statutoryWorks.map(w => ({
+                label: `${w.code || w.workId || `CW-${w.id}`} — ${w.name}`,
+                value: String(w.workRegistrationId || w.id),
               }))}
               textField="label"
               optionValue="value"

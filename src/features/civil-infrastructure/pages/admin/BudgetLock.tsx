@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
+import {
+  DropDownList,
+  NumberBox,
+  TextArea,
+  TextBox,
+} from 'shared/components/forms';
 import {
   FormCard,
   FormGrid,
@@ -19,13 +24,22 @@ export default function BudgetLock() {
     const saved = localStorage.getItem('civil_works');
     const worksList = saved ? JSON.parse(saved) : civilWorks;
     return worksList.map((w: any) => ({
-      budgetHead: 'Civil Works',
-      financialYear: '2025-26',
+      ...w,
+      workId: w.code || w.workId || `CW-${String(w.id).padStart(3, '0')}`,
+      name: w.name,
+      category: w.workCategoryName || w.category || '—',
+      department: w.subCategoryName || w.department || '—',
+      workBasis: w.workBasis || 'SOR',
+      tsAmount: w.technicalSanctionAmount || w.tsAmount || 0,
+      budgetHead: w.budgetHeadName || w.budgetHead || 'Civil Works',
+      financialYear: w.financialYear || '2025-26',
       lockedBy: 'Finance Officer',
       budgetLocked:
+        w.isLocked === true ||
         w.status === 'Budget Locked' ||
+        w.status === 'BudgetLocked' ||
+        w.budgetLocked === true ||
         (w.tsAmount > 0 && w.contractAmount > 0),
-      ...w,
     }));
   });
   const [popup, setPopup] = useState<{
@@ -35,6 +49,7 @@ export default function BudgetLock() {
   const [fYear, setFYear] = useState('2025-26');
   const [bHead, setBHead] = useState('Civil Works');
   const [remarks, setRemarks] = useState('');
+  const [lockAmount, setLockAmount] = useState<number | null>(null);
 
   useEffect(() => {
     civilStorage.set(CIVIL_STORAGE_KEYS.WORKS, data);
@@ -42,15 +57,24 @@ export default function BudgetLock() {
 
   const handleLock = () => {
     if (!popup.item) return;
+    const finalAmount =
+      lockAmount != null && Number(lockAmount) > 0
+        ? Number(lockAmount)
+        : popup.item.tsAmount;
+
     setData((prev: any[]) =>
       prev.map((d: any) =>
-        d.id === popup.item.id
+        d.id === popup.item.id ||
+        d.workRegistrationId === popup.item.workRegistrationId
           ? {
               ...d,
               status: 'Budget Locked' as any,
               budgetLocked: true,
+              isLocked: true,
               financialYear: fYear,
               budgetHead: bHead,
+              budgetAmount: finalAmount,
+              tsAmount: finalAmount,
             }
           : d
       )
@@ -171,9 +195,14 @@ export default function BudgetLock() {
                       icon="lock"
                       variant="primary"
                       onClick={() => {
-                        setFYear('2025-26');
-                        setBHead('Civil Works');
-                        setRemarks('');
+                        setFYear(item.financialYear || '2025-26');
+                        setBHead(item.budgetHead || 'Civil Works');
+                        setRemarks(item.remarks || '');
+                        setLockAmount(
+                          item.budgetAmount && item.budgetAmount > 0
+                            ? item.budgetAmount
+                            : item.tsAmount || 0
+                        );
                         setPopup({ mode: 'lock', item });
                       }}
                     />
@@ -213,8 +242,16 @@ export default function BudgetLock() {
             >
               {[
                 ['Work Name', popup.item.name],
-                ['TS Amount', `₹${(popup.item.tsAmount / 100000).toFixed(2)}L`],
-                ['Funding Source', popup.item.fundingSource],
+                [
+                  'TS Amount',
+                  `₹${((popup.item.tsAmount || popup.item.technicalSanctionAmount || 0) / 100000).toFixed(2)}L`,
+                ],
+                [
+                  'Funding Source',
+                  popup.item.fundingSourceName ||
+                    popup.item.fundingSource ||
+                    '—',
+                ],
               ].map(([k, v]) => (
                 <div key={k}>
                   <div
@@ -253,11 +290,13 @@ export default function BudgetLock() {
                 value={bHead}
                 onChange={v => setBHead(v as string)}
               />
-              <TextBox
+              <NumberBox
                 label="Amount to Lock (₹)"
-                value={String(popup.item.tsAmount)}
-                onChange={() => {}}
-                disabled
+                value={lockAmount ?? undefined}
+                onChange={v => setLockAmount(v ? Number(v) : null)}
+                placeholder="e.g. 3205000"
+                mode="decimal"
+                required
               />
             </FormGrid>
             <TextArea

@@ -28,6 +28,7 @@ import {
 } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
+import { INITIAL_CLEARANCES } from './StatutoryCompliance';
 
 type PopupState =
   | { mode: 'closed' }
@@ -97,6 +98,13 @@ export default function WorkRegistration() {
       employeeIds: w.employeeIds || [101],
       externalEngineers: w.externalEngineers || [],
       isActive: w.isActive !== false,
+      isStatuaryCheck:
+        w.isStatuaryCheck !== undefined
+          ? Boolean(w.isStatuaryCheck)
+          : w.id === '1' ||
+            w.id === '2' ||
+            w.workRegistrationId === 1 ||
+            w.workRegistrationId === 2,
     }));
   });
 
@@ -247,16 +255,85 @@ export default function WorkRegistration() {
         isActive: true,
       };
       setData(prev => [newWork, ...prev]);
+
+      if (newWork.isStatuaryCheck) {
+        const savedClearances = localStorage.getItem(
+          CIVIL_STORAGE_KEYS.STATUTORY_CLEARANCES
+        );
+        const existingList: CivilManagement.StatutoryClearance[] =
+          savedClearances ? JSON.parse(savedClearances) : INITIAL_CLEARANCES;
+        const newClearance: CivilManagement.StatutoryClearance = {
+          id: `NOC-${Date.now().toString().slice(-4)}`,
+          workId: String(newWork.id),
+          workName: newWork.name,
+          clearanceType: 'Municipal Building Permission & Sanction Plan',
+          authority: 'Local Municipal / Town Planning Authority',
+          applicationDate: new Date().toISOString().split('T')[0],
+          expectedDate: '',
+          receivedDate: '',
+          validUpto: '',
+          referenceNo: `NOC/${newWork.code || 'CW'}/01`,
+          documentFileName: '',
+          isBlocking: true,
+          status: 'Applied',
+          remarks:
+            'Statutory compliance tracking initiated upon Work Registration.',
+        };
+        civilStorage.set(CIVIL_STORAGE_KEYS.STATUTORY_CLEARANCES, [
+          newClearance,
+          ...existingList,
+        ]);
+      }
+
       ToastService.success(`Work registered successfully as ${newWork.code}.`);
     } else if (popup.mode === 'edit' && popup.item) {
+      const updatedWork = { ...popup.item, ...payload };
       setData(prev =>
         prev.map(d =>
           d.workRegistrationId === popup.item.workRegistrationId ||
           d.id === popup.item.id
-            ? { ...d, ...payload }
+            ? updatedWork
             : d
         )
       );
+
+      if (updatedWork.isStatuaryCheck) {
+        const savedClearances = localStorage.getItem(
+          CIVIL_STORAGE_KEYS.STATUTORY_CLEARANCES
+        );
+        const existingList: CivilManagement.StatutoryClearance[] =
+          savedClearances ? JSON.parse(savedClearances) : INITIAL_CLEARANCES;
+        const targetId = String(
+          updatedWork.id || updatedWork.workRegistrationId
+        );
+        const alreadyExists = existingList.some(
+          (c: any) => String(c.workId) === targetId
+        );
+        if (!alreadyExists) {
+          const newClearance: CivilManagement.StatutoryClearance = {
+            id: `NOC-${Date.now().toString().slice(-4)}`,
+            workId: targetId,
+            workName: updatedWork.name,
+            clearanceType: 'Municipal Building Permission & Sanction Plan',
+            authority: 'Local Municipal / Town Planning Authority',
+            applicationDate: new Date().toISOString().split('T')[0],
+            expectedDate: '',
+            receivedDate: '',
+            validUpto: '',
+            referenceNo: `NOC/${updatedWork.code || 'CW'}/01`,
+            documentFileName: '',
+            isBlocking: true,
+            status: 'Applied',
+            remarks:
+              'Statutory compliance tracking initiated upon Work Registration.',
+          };
+          civilStorage.set(CIVIL_STORAGE_KEYS.STATUTORY_CLEARANCES, [
+            newClearance,
+            ...existingList,
+          ]);
+        }
+      }
+
       ToastService.success('Work registration updated successfully.');
     }
     close();
@@ -344,7 +421,7 @@ export default function WorkRegistration() {
             },
             {
               field: 'isStatuaryCheck',
-              header: 'Statuary Check',
+              header: 'Statutory Check',
               cell: (w: any) => (
                 <span
                   className={`text-xs font-semibold px-2 py-0.5 rounded ${
@@ -470,8 +547,10 @@ export default function WorkRegistration() {
                     value: form.fundingSourceName || form.fundingSource || '—',
                   },
                   {
-                    label: 'Is Statuary Check',
-                    value: form.isStatuaryCheck ? 'Yes' : 'No',
+                    label: 'Statutory Check',
+                    value: form.isStatuaryCheck
+                      ? 'Verified (Yes)'
+                      : 'Pending (No)',
                   },
                   { label: 'Work Basis', value: form.workBasis || 'SOR' },
                   {
@@ -483,26 +562,31 @@ export default function WorkRegistration() {
               />
             </FormCard>
 
-            {form.mandateDocs && Object.keys(form.mandateDocs).length > 0 && (
-              <FormCard title="Attached Mandate Documents">
-                <div className="grid grid-cols-2 gap-2">
-                  {Object.entries(form.mandateDocs).map(([name, file]) => (
-                    <div
-                      key={name}
-                      className="p-2.5 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2 text-xs"
-                    >
-                      <span className="text-green-700 font-bold">✓</span>
-                      <div>
-                        <div className="font-semibold text-green-900">
-                          {name}
+            {form.mandateDocs &&
+              Object.entries(form.mandateDocs).filter(([_, file]) =>
+                Boolean(file)
+              ).length > 0 && (
+                <FormCard title="Attached Mandate Documents">
+                  <div className="grid grid-cols-2 gap-2">
+                    {Object.entries(form.mandateDocs)
+                      .filter(([_, file]) => Boolean(file))
+                      .map(([name, file]) => (
+                        <div
+                          key={name}
+                          className="p-2.5 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2 text-xs"
+                        >
+                          <span className="text-green-700 font-bold">✓</span>
+                          <div>
+                            <div className="font-semibold text-green-900">
+                              {name}
+                            </div>
+                            <div className="text-gray-600">{String(file)}</div>
+                          </div>
                         </div>
-                        <div className="text-gray-600">{String(file)}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </FormCard>
-            )}
+                      ))}
+                  </div>
+                </FormCard>
+              )}
 
             <ButtonPanel>
               <Button label="Close" variant="outlined" onClick={close} />
@@ -609,7 +693,7 @@ export default function WorkRegistration() {
             </FormGrid>
 
             <Checkbox
-              label="Statutory Compliance Verified"
+              label="Statutory Compliance Required"
               checked={!!form.isStatuaryCheck}
               onChange={val =>
                 setForm((f: any) => ({ ...f, isStatuaryCheck: val }))
@@ -622,7 +706,7 @@ export default function WorkRegistration() {
                 📄 Mandatory Pre-Requisite Documents
               </label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {mandateDocs.slice(0, 4).map(doc => (
+                {mandateDocs.map(doc => (
                   <FileUpload
                     key={doc.id}
                     label={`${doc.name} ${doc.isMandatory ? '*' : ''}`}

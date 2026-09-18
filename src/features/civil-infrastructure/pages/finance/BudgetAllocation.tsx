@@ -25,37 +25,42 @@ import { civilUrls } from '../../urls';
 import '../civil.css';
 
 const FINANCIAL_YEARS = [
-  { id: 1, text: '2024-25' },
-  { id: 2, text: '2025-26' },
-  { id: 3, text: '2026-27' },
+  { value: 1, id: 1, text: '2024-25' },
+  { value: 2, id: 2, text: '2025-26' },
+  { value: 3, id: 3, text: '2026-27' },
 ];
 
 const BUDGET_HEADS = [
   {
+    value: 1,
     id: 1,
     text: 'Capital Outlay — University Buildings & Civil Works (4202-01-203)',
     code: '4202-01-203',
     name: 'Capital Outlay — University Buildings & Civil Works',
   },
   {
+    value: 2,
     id: 2,
     text: 'Revenue Maintenance & Repairs of Hostels/Colleges (2202-03-102)',
     code: '2202-03-102',
     name: 'Revenue Maintenance & Repairs of Hostels/Colleges',
   },
   {
+    value: 3,
     id: 3,
     text: 'UGC Development Grant — Institutional Infrastructure (UGC-CAP-99)',
     code: 'UGC-CAP-99',
     name: 'UGC Development Grant — Institutional Infrastructure',
   },
   {
+    value: 4,
     id: 4,
     text: 'Institute Development Fund - Internal Corpus (IDF-GEN-12)',
     code: 'IDF-GEN-12',
     name: 'Institute Development Fund (Internal Corpus)',
   },
   {
+    value: 5,
     id: 5,
     text: 'RUSA Phase-II Modernization & Lab Complex (RUSA-INF-05)',
     code: 'RUSA-INF-05',
@@ -72,37 +77,51 @@ export default function BudgetAllocation() {
   const [data, setData] = useState<any[]>(() => {
     const saved = localStorage.getItem('civil_works');
     const list = saved ? JSON.parse(saved) : initialWorks;
-    return list.map((w: any) => ({
-      ...w,
-      workRegistrationId: w.workRegistrationId || Number(w.id) || 0,
-      workCode:
-        w.code || w.workId || `CW-2025-${String(w.id).padStart(3, '0')}`,
-      workName: w.name,
-      technicalSanctionAmount: w.technicalSanctionAmount || w.tsAmount || 0,
-      financialYearId: w.financialYearId || 2,
-      financialYear:
-        w.financialYear ||
-        FINANCIAL_YEARS.find(f => f.id === (w.financialYearId || 2))?.text ||
-        '2025-26',
-      budgetHeadId: w.budgetHeadId ? Number(w.budgetHeadId) : 1,
-      budgetHeadName:
-        w.budgetHeadName ||
-        BUDGET_HEADS.find(h => h.id === Number(w.budgetHeadId || 1))?.name ||
-        'Capital Outlay — University Buildings & Civil Works',
-      budgetHeadCode:
-        w.budgetHeadCode ||
-        BUDGET_HEADS.find(h => h.id === Number(w.budgetHeadId || 1))?.code ||
-        '4202-01-203',
-      budgetAmount:
-        w.budgetAmount ||
-        w.allocatedAmount ||
-        (w.tsAmount > 0 ? w.tsAmount : 0),
-      isLocked:
-        w.isLocked === true ||
+    return list.map((w: any) => {
+      const hasAllocation = Boolean(
+        w.budgetAllocationId ||
+        w.status === 'BudgetAllocated' ||
         w.status === 'BudgetLocked' ||
-        w.status === 'Budget Locked',
-      remarks: w.remarks || w.budgetRemarks || '',
-    }));
+        w.status === 'Budget Locked'
+      );
+      return {
+        ...w,
+        workRegistrationId: w.workRegistrationId || Number(w.id) || 0,
+        workCode:
+          w.code || w.workId || `CW-2025-${String(w.id).padStart(3, '0')}`,
+        workName: w.name,
+        technicalSanctionAmount: w.technicalSanctionAmount || w.tsAmount || 0,
+        financialYearId: w.financialYearId || (hasAllocation ? 2 : undefined),
+        financialYear:
+          w.financialYear ||
+          (w.financialYearId
+            ? FINANCIAL_YEARS.find(f => f.id === w.financialYearId)?.text
+            : hasAllocation
+              ? '2025-26'
+              : undefined),
+        budgetHeadId: w.budgetHeadId ? Number(w.budgetHeadId) : undefined,
+        budgetHeadName:
+          w.budgetHeadName ||
+          (w.budgetHeadId
+            ? BUDGET_HEADS.find(h => h.id === Number(w.budgetHeadId))?.name
+            : undefined),
+        budgetHeadCode:
+          w.budgetHeadCode ||
+          (w.budgetHeadId
+            ? BUDGET_HEADS.find(h => h.id === Number(w.budgetHeadId))?.code
+            : undefined),
+        budgetAmount: hasAllocation
+          ? w.budgetAmount ||
+            w.allocatedAmount ||
+            (w.tsAmount > 0 ? w.tsAmount : 0)
+          : undefined,
+        isLocked:
+          w.isLocked === true ||
+          w.status === 'BudgetLocked' ||
+          w.status === 'Budget Locked',
+        remarks: w.remarks || w.budgetRemarks || '',
+      };
+    });
   });
 
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
@@ -201,7 +220,7 @@ export default function BudgetAllocation() {
     );
 
     ToastService.success(
-      `Budget allocated: ${formatCurrency(amt)} under [${head.code}]. ${
+      `Budget Allocated: ${formatCurrency(amt)} under [${head.code}]. ${
         isLockedCheckbox
           ? 'Budget Locked for tendering.'
           : 'Allocation recorded.'
@@ -284,22 +303,30 @@ export default function BudgetAllocation() {
             {
               field: 'financialYear',
               header: 'Financial Year',
-              cell: (c: any) => <span>FY {c.financialYear || '2025-26'}</span>,
+              cell: (c: any) =>
+                c.financialYear ? (
+                  <span>FY {c.financialYear}</span>
+                ) : (
+                  <span className="text-gray-400">—</span>
+                ),
               width: '130px',
             },
             {
               field: 'budgetHeadName',
               header: 'Budget Head',
-              cell: (c: any) => (
-                <div>
-                  <span className="font-medium text-purple-800 text-xs bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
-                    {c.budgetHeadCode || '4202-01-203'}
-                  </span>
-                  <div className="text-xs text-gray-600 mt-1 truncate max-w-55">
-                    {c.budgetHeadName}
+              cell: (c: any) =>
+                c.budgetHeadCode ? (
+                  <div>
+                    <span className="font-medium text-purple-800 text-xs bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
+                      {c.budgetHeadCode}
+                    </span>
+                    <div className="text-xs text-gray-600 mt-1 truncate max-w-55">
+                      {c.budgetHeadName}
+                    </div>
                   </div>
-                </div>
-              ),
+                ) : (
+                  <span className="text-gray-400">—</span>
+                ),
             },
             {
               field: 'budgetAmount',
@@ -318,9 +345,16 @@ export default function BudgetAllocation() {
               field: 'isLocked',
               header: 'Status',
               cell: (c: any) => {
-                const isLocked = c.isLocked || c.status === 'BudgetLocked';
+                const isLocked =
+                  c.isLocked === true ||
+                  c.status === 'BudgetLocked' ||
+                  c.status === 'Budget Locked';
                 const isAllocated = Boolean(
-                  c.budgetAllocationId || c.budgetAmount > 0
+                  c.budgetAllocationId ||
+                  c.status === 'BudgetAllocated' ||
+                  (c.budgetAmount != null &&
+                    c.budgetAmount > 0 &&
+                    c.budgetAllocationId)
                 );
                 return (
                   <StatusBadge
@@ -329,7 +363,7 @@ export default function BudgetAllocation() {
                         ? 'Budget Locked'
                         : isAllocated
                           ? 'Budget Allocated'
-                          : 'Pending Allocation'
+                          : 'Allocation Pending'
                     }
                     variant={
                       isLocked
@@ -423,7 +457,9 @@ export default function BudgetAllocation() {
                 fields={[
                   {
                     label: 'Financial Year',
-                    value: `FY ${popup.item.financialYear}`,
+                    value: popup.item.financialYear
+                      ? `FY ${popup.item.financialYear}`
+                      : '—',
                   },
                   {
                     label: 'Accounting Head Code',
@@ -435,13 +471,20 @@ export default function BudgetAllocation() {
                   },
                   {
                     label: 'Allocated Budget Amount',
-                    value: formatCurrency(popup.item.budgetAmount),
+                    value: popup.item.budgetAmount
+                      ? formatCurrency(popup.item.budgetAmount)
+                      : '—',
                   },
                   {
                     label: 'Allocation Status',
                     value: popup.item.isLocked
                       ? 'Locked (Frozen for Tendering)'
-                      : 'Allocated',
+                      : Boolean(
+                            popup.item.budgetAllocationId ||
+                            popup.item.status === 'BudgetAllocated'
+                          )
+                        ? 'Allocated'
+                        : 'Allocation Pending',
                   },
                   {
                     label: 'Remarks / Authority Ref',

@@ -140,6 +140,7 @@ declare namespace CivilManagement {
     workBasis: 'SOR Based' | 'BOQ Based';
     executionRoute: 'Internal' | 'External Agency';
     status: string;
+    isStatuaryCheck?: boolean;
     isActive: boolean;
     documents?: WorkRegistrationDocumentItem[];
     // Legacy fields preserved for backward compat
@@ -169,6 +170,7 @@ declare namespace CivilManagement {
     externalEngineers?: ExternalEngineer[];
     workBasis: string;
     executionRoute: string;
+    isStatuaryCheck?: boolean;
     status?: string;
   }
 
