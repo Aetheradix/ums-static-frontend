@@ -295,7 +295,7 @@ export default function BudgetAllocation() {
                   <span className="font-medium text-purple-800 text-xs bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
                     {c.budgetHeadCode || '4202-01-203'}
                   </span>
-                  <div className="text-xs text-gray-600 mt-1 truncate max-w-[220px]">
+                  <div className="text-xs text-gray-600 mt-1 truncate max-w-55">
                     {c.budgetHeadName}
                   </div>
                 </div>

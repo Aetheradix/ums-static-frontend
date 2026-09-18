@@ -2,9 +2,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ToastService } from 'services';
 import { Button, ButtonPanel, StatusButton } from 'shared/components/buttons';
 import {
+  Checkbox,
   DropDownList,
   FileUpload,
-  NumberBox,
   TextBox,
 } from 'shared/components/forms';
 import GridActionButtons from 'shared/components/grid/GridActionButtons';
@@ -17,7 +17,6 @@ import {
   PreviewGrid,
   StatusBadge,
 } from 'shared/new-components';
-import { formatCurrency } from 'shared/utils/currency';
 import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import {
   civilWorks as initialData,
@@ -69,7 +68,7 @@ const EMPTY_WORK = {
   fundingSourceName: '',
   workBasis: 'SOR',
   executionRoute: 'Internal',
-  estimatedCost: 0,
+  isStatuaryCheck: false,
   status: 'Registered',
   isActive: true,
   mandateDocs: {} as Record<string, string>,
@@ -344,9 +343,19 @@ export default function WorkRegistration() {
               },
             },
             {
-              field: 'estimatedCost',
-              header: 'Estimated Cost (₹)',
-              cell: (w: any) => <span>{formatCurrency(w.estimatedCost)}</span>,
+              field: 'isStatuaryCheck',
+              header: 'Statuary Check',
+              cell: (w: any) => (
+                <span
+                  className={`text-xs font-semibold px-2 py-0.5 rounded ${
+                    w.isStatuaryCheck
+                      ? 'bg-green-100 text-green-700 border border-green-300'
+                      : 'bg-gray-100 text-gray-500 border border-gray-200'
+                  }`}
+                >
+                  {w.isStatuaryCheck ? '✓ Yes' : '✗ No'}
+                </span>
+              ),
             },
             {
               field: 'status',
@@ -461,8 +470,8 @@ export default function WorkRegistration() {
                     value: form.fundingSourceName || form.fundingSource || '—',
                   },
                   {
-                    label: 'Estimated Cost',
-                    value: formatCurrency(form.estimatedCost),
+                    label: 'Is Statuary Check',
+                    value: form.isStatuaryCheck ? 'Yes' : 'No',
                   },
                   { label: 'Work Basis', value: form.workBasis || 'SOR' },
                   {
@@ -599,17 +608,12 @@ export default function WorkRegistration() {
               />
             </FormGrid>
 
-            <NumberBox
-              label="Estimated Cost (₹) *"
-              value={form.estimatedCost}
+            <Checkbox
+              label="Statutory Compliance Verified"
+              checked={!!form.isStatuaryCheck}
               onChange={val =>
-                setForm((f: any) => ({
-                  ...f,
-                  estimatedCost: val ? Number(val) : 0,
-                }))
+                setForm((f: any) => ({ ...f, isStatuaryCheck: val }))
               }
-              mode="decimal"
-              required
             />
 
             {/* Mandate Document Upload Section */}

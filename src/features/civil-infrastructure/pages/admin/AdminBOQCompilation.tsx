@@ -229,40 +229,20 @@ export default function AdminBOQCompilation() {
           : item
       )
     );
-    ToastService.success(
-      'BOQ compiled baseline has been locked. AA/TS is now authorized.'
-    );
-  };
 
-  const handleApproveBOQ = () => {
-    if (workBOQItems.length === 0) {
-      ToastService.error('Cannot approve an empty BOQ. Add items first.');
-      return;
-    }
-
-    const isConfirmed = window.confirm(
-      `Approve BOQ for "${currentWork?.name || selectedWorkId}" with total valuation of ₹${totalBOQAmount.toLocaleString('en-IN')}? This will update the work status and lock the baseline.`
-    );
-    if (!isConfirmed) return;
-
-    setData(prev =>
-      prev.map(item =>
-        String(item.workId) === selectedWorkId
-          ? { ...item, isLocked: true }
-          : item
-      )
-    );
+    // Transfer BOQ Valuation → estimatedCost on the work record
     setWorks(prev => {
       const updated = prev.map(w =>
         String(w.workRegistrationId || w.id) === selectedWorkId
-          ? { ...w, status: 'AA Approved' }
+          ? { ...w, estimatedCost: totalBOQAmount }
           : w
       );
       localStorage.setItem('civil_works', JSON.stringify(updated));
       return updated;
     });
+
     ToastService.success(
-      'BOQ approved by Admin. Baseline is locked for Administrative Sanction.'
+      'BOQ compiled baseline has been locked. AA/TS is now authorized.'
     );
   };
 
@@ -537,13 +517,6 @@ export default function AdminBOQCompilation() {
                     setNonSorUnit('');
                     setPopup({ mode: 'add' });
                   }}
-                />
-                <Button
-                  label="Approve BOQ (Admin)"
-                  icon="check"
-                  variant="success"
-                  onClick={handleApproveBOQ}
-                  disabled={workBOQItems.length === 0}
                 />
                 <Button
                   label="Lock Baseline"
