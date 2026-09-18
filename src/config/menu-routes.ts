@@ -8417,6 +8417,15 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'purple',
               },
               {
+                label: 'Standing Committee Decision',
+                slug: 'standing-committee-decision',
+                description:
+                  'Record, review, and track final standing committee decisions.',
+                path: '/affiliation-management-system/standing-committee-decision',
+                icon: 'gavel',
+                colorScheme: 'indigo',
+              },
+              {
                 label: 'Final Registration Approval',
                 slug: 'final-registration-approval',
                 description:

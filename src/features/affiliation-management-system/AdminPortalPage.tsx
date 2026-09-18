@@ -51,6 +51,14 @@ export default function AdminPortalPage() {
           path: '/affiliation-management-system/standing-committee-meeting',
         },
         {
+          title: 'Standing Committee Decision',
+          description:
+            'Record, review, and track final affiliation decisions taken by the committee.',
+          icon: 'gavel',
+          colorScheme: 'indigo',
+          path: '/affiliation-management-system/standing-committee-decision',
+        },
+        {
           title: 'Final Registration Approval',
           description: 'Review inspection reports and grant final affiliation.',
           icon: 'verified',
