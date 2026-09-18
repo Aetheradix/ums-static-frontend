@@ -300,16 +300,15 @@ export function useCivilStorage<T>(
 
   const setStoredState = useCallback(
     (valOrFn: T | ((prev: T) => T)) => {
-      setState(prev => {
-        const next =
-          typeof valOrFn === 'function'
-            ? (valOrFn as (prev: T) => T)(prev)
-            : valOrFn;
-        civilStorage.set(key, next);
-        return next;
-      });
+      const current = civilStorage.get<T>(key, initialDefault);
+      const next =
+        typeof valOrFn === 'function'
+          ? (valOrFn as (prev: T) => T)(current)
+          : valOrFn;
+      civilStorage.set(key, next);
+      setState(next);
     },
-    [key]
+    [key, initialDefault]
   );
 
   return [state, setStoredState];

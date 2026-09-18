@@ -24,6 +24,21 @@ import '../civil.css';
 
 type PopupState = { mode: 'closed' } | { mode: 'create' };
 
+const formatLocalDate = (d?: Date | null): string => {
+  if (!d) return '';
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const parseLocalDate = (str?: string): Date | undefined => {
+  if (!str) return undefined;
+  const [year, month, day] = str.split('-').map(Number);
+  if (!year || !month || !day) return undefined;
+  return new Date(year, month - 1, day);
+};
+
 const PRESET_OPTIONS = [
   {
     value: 'custom',
@@ -254,12 +269,10 @@ export default function AdminMilestoneDefinition() {
       sequenceNo: nextSeq,
       milestoneName: mName,
       description: mDesc,
-      plannedStartDate: mStart || new Date().toISOString().split('T')[0],
+      plannedStartDate: mStart || formatLocalDate(new Date()),
       plannedEndDate:
         mEnd ||
-        new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-          .toISOString()
-          .split('T')[0],
+        formatLocalDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)),
       weightage: Number(mWeight),
       status: 'Pending',
       qualityTestRequired: qaRequired === 'Yes',
@@ -996,14 +1009,14 @@ export default function AdminMilestoneDefinition() {
 
         <FormGrid columns={2}>
           <TextBox
-            label="Milestone Name / Stage *"
+            label="Milestone Name / Stage"
             placeholder="e.g. Milestone 1: Plinth level foundation work"
             value={mName}
             onChange={setMName}
             required
           />
           <TextBox
-            label="Weightage / Payment Release % *"
+            label="Weightage / Payment Release %"
             placeholder={`e.g. 15 (Max capacity remaining: ${100 - totalWeightage}%)`}
             value={mWeight}
             onChange={setMWeight}
@@ -1011,16 +1024,16 @@ export default function AdminMilestoneDefinition() {
           />
         </FormGrid>
 
-        <FormGrid columns={3}>
+        <FormGrid columns={2}>
           <DatePicker
             label="Planned Start Date"
-            value={mStart ? new Date(mStart) : undefined}
-            onChange={v => setMStart(v ? v.toISOString().split('T')[0] : '')}
+            value={parseLocalDate(mStart)}
+            onChange={v => setMStart(formatLocalDate(v))}
           />
           <DatePicker
             label="Planned End Date"
-            value={mEnd ? new Date(mEnd) : undefined}
-            onChange={v => setMEnd(v ? v.toISOString().split('T')[0] : '')}
+            value={parseLocalDate(mEnd)}
+            onChange={v => setMEnd(formatLocalDate(v))}
           />
           <DropDownList
             label="Quality Test Gate (TPI) Required?"
@@ -1035,7 +1048,7 @@ export default function AdminMilestoneDefinition() {
         {qaRequired === 'Yes' && (
           <div style={{ marginTop: '1.5rem', marginBottom: '0.5rem' }}>
             <TextBox
-              label="Quality Test Name *"
+              label="Quality Test Name"
               placeholder="e.g. Compressive Strength of Concrete"
               value={testName}
               onChange={setTestName}

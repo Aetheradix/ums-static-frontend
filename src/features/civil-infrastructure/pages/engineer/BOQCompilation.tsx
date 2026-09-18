@@ -6,7 +6,8 @@ import {
   FormPopup,
   GridPanel,
 } from 'shared/new-components';
-import { type BOQItem, boqItems, civilWorks } from '../../mocks';
+import { type BOQItem, boqItems as initialBOQ, civilWorks } from '../../mocks';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
@@ -16,17 +17,22 @@ export default function BOQCompilation() {
     workId?: string;
   }>({ mode: 'closed' });
 
-  const [civilWorksList] = useState(() => {
-    const saved = localStorage.getItem('civil_works');
-    return saved ? JSON.parse(saved) : civilWorks;
-  });
-
-  const worksWithBOQ = [...new Set(boqItems.map(b => b.workId))];
-  const worksList = civilWorksList.filter((w: any) =>
-    worksWithBOQ.includes(w.id)
+  const [civilWorksList] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.WORKS,
+    civilWorks
+  );
+  const [allBOQItems] = useCivilStorage<BOQItem[]>(
+    CIVIL_STORAGE_KEYS.BOQ_ITEMS,
+    initialBOQ
   );
 
-  const workBOQ = (wid: string) => boqItems.filter(b => b.workId === wid);
+  const worksWithBOQ = [...new Set(allBOQItems.map(b => String(b.workId)))];
+  const worksList = civilWorksList.filter((w: any) =>
+    worksWithBOQ.includes(String(w.workRegistrationId || w.id))
+  );
+
+  const workBOQ = (wid: string) =>
+    allBOQItems.filter(b => String(b.workId) === String(wid));
   const boqTotal = (items: BOQItem[]) =>
     items.reduce((s, i) => s + i.amount, 0);
 

@@ -184,18 +184,28 @@ export default function EMeasurementBook() {
 
   // ── RULE ENGINE ───────────────────────────────────────────────────────────
   const getAvailableBOQItems = (workId: string) => {
+    const storedBOQ = civilStorage.get<typeof boqItems>(
+      CIVIL_STORAGE_KEYS.BOQ_ITEMS,
+      boqItems
+    );
     const workObj = civilWorksList.find(
       w =>
         String(w.id) === String(workId) || String(w.workId) === String(workId)
     );
-    return boqItems.filter(
+    return storedBOQ.filter(
       b =>
         String(b.workId) === String(workId) ||
         (workObj && String(b.workId) === String(workObj.id))
     );
   };
 
-  const getSelectedBOQ = () => boqItems.find(b => b.id === selectedBOQItemId);
+  const getSelectedBOQ = () => {
+    const storedBOQ = civilStorage.get<typeof boqItems>(
+      CIVIL_STORAGE_KEYS.BOQ_ITEMS,
+      boqItems
+    );
+    return storedBOQ.find(b => b.id === selectedBOQItemId);
+  };
 
   const getPrevCumulative = (boqItemId: string) =>
     data

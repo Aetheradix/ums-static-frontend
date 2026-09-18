@@ -1,13 +1,20 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ToastService } from 'services';
-import { Button } from 'shared/components/buttons';
-import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
+import { Button, ButtonPanel } from 'shared/components/buttons';
+import {
+  DropDownList,
+  FileUpload,
+  TextArea,
+  TextBox,
+} from 'shared/components/forms';
+import GridActionButtons from 'shared/components/grid/GridActionButtons';
 import {
   FormCard,
   FormGrid,
   FormPage,
-  FormPopup,
   GridPanel,
+  PreviewGrid,
   StatusBadge,
 } from 'shared/new-components';
 import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
@@ -93,7 +100,12 @@ export const INITIAL_CLEARANCES: CivilManagement.StatutoryClearance[] = [
   },
 ];
 
+type PageMode = 'list' | 'create' | 'edit' | 'view';
+
 export default function StatutoryCompliance() {
+  const [searchParams] = useSearchParams();
+  const paramWorkId = searchParams.get('workId');
+
   const [works] = useCivilStorage<any[]>(
     CIVIL_STORAGE_KEYS.WORKS,
     initialWorks
@@ -103,12 +115,17 @@ export default function StatutoryCompliance() {
     INITIAL_CLEARANCES
   );
 
-  const [filterWorkId, setFilterWorkId] = useState('ALL');
+  const [filterWorkId, setFilterWorkId] = useState(paramWorkId || 'ALL');
 
-  const [popup, setPopup] = useState<{
-    mode: 'closed' | 'add' | 'edit' | 'view';
-    item?: CivilManagement.StatutoryClearance;
-  }>({ mode: 'closed' });
+  useEffect(() => {
+    if (paramWorkId) {
+      setFilterWorkId(paramWorkId);
+    }
+  }, [paramWorkId]);
+
+  const [mode, setMode] = useState<PageMode>('list');
+  const [activeItem, setActiveItem] =
+    useState<CivilManagement.StatutoryClearance | null>(null);
 
   const [formWorkId, setFormWorkId] = useState('');
   const [formType, setFormType] = useState(CLEARANCE_TYPES[0]);
@@ -146,9 +163,22 @@ export default function StatutoryCompliance() {
     return data.filter(d => d.isBlocking && d.status === 'Applied').length;
   }, [data]);
 
+  const handleBackToList = useCallback(() => {
+    setMode('list');
+    setActiveItem(null);
+  }, []);
+
   const openAdd = () => {
-    const w = statutoryWorks[0] || works[0];
-    setFormWorkId(String(w?.workRegistrationId || w?.id || '1'));
+    const selectedWork =
+      statutoryWorks.find(
+        w => String(w.workRegistrationId || w.id) === String(filterWorkId)
+      ) ||
+      statutoryWorks[0] ||
+      works[0];
+
+    setFormWorkId(
+      String(selectedWork?.workRegistrationId || selectedWork?.id || '1')
+    );
     setFormType(CLEARANCE_TYPES[0]);
     setFormAuthority('');
     setFormAppDate(new Date().toISOString().split('T')[0]);
@@ -160,7 +190,8 @@ export default function StatutoryCompliance() {
     setFormBlocking(true);
     setFormStatus('Applied');
     setFormRemarks('');
-    setPopup({ mode: 'add' });
+    setActiveItem(null);
+    setMode('create');
   };
 
   const openEdit = (item: CivilManagement.StatutoryClearance) => {
@@ -176,14 +207,17 @@ export default function StatutoryCompliance() {
     setFormBlocking(item.isBlocking);
     setFormStatus(item.status);
     setFormRemarks(item.remarks || '');
-    setPopup({ mode: 'edit', item });
+    setActiveItem(item);
+    setMode('edit');
   };
 
   const openView = (item: CivilManagement.StatutoryClearance) => {
-    setPopup({ mode: 'view', item });
+    setActiveItem(item);
+    setMode('view');
   };
 
-  const handleSave = () => {
+  const handleSave = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!formAuthority.trim() || !formAppDate) {
       ToastService.error(
         'Sanctioning Authority and Application Date are required.'
@@ -194,7 +228,7 @@ export default function StatutoryCompliance() {
       x => String(x.workRegistrationId || x.id) === String(formWorkId)
     );
 
-    if (popup.mode === 'add') {
+    if (mode === 'create') {
       const newItem: CivilManagement.StatutoryClearance = {
         id: `NOC-${Date.now().toString().slice(-4)}`,
         workId: formWorkId,
@@ -213,10 +247,10 @@ export default function StatutoryCompliance() {
       };
       setData(prev => [newItem, ...prev]);
       ToastService.success(`Clearance requirement "${formType}" tracked.`);
-    } else if (popup.mode === 'edit' && popup.item) {
+    } else if (mode === 'edit' && activeItem) {
       setData(prev =>
         prev.map(d =>
-          d.id === popup.item!.id
+          d.id === activeItem.id
             ? {
                 ...d,
                 workId: formWorkId,
@@ -238,8 +272,269 @@ export default function StatutoryCompliance() {
       );
       ToastService.success('Clearance record updated.');
     }
-    setPopup({ mode: 'closed' });
+    handleBackToList();
   };
+
+  if (mode === 'create' || mode === 'edit') {
+    return (
+      <FormPage
+        title={
+          mode === 'create'
+            ? 'Track New Statutory Clearance'
+            : `Update Statutory Clearance — ${activeItem?.referenceNo || activeItem?.id}`
+        }
+        description="Record application reference, approval certificate, and validity timeline."
+        breadcrumbs={[
+          { label: 'Home', to: '/home/menu' },
+          { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+          { label: 'Admin Login', to: civilUrls.adminMenu },
+          { label: 'Statutory Compliance', to: civilUrls.statutoryCompliance },
+          {
+            label:
+              mode === 'create'
+                ? 'Track New Clearance'
+                : `Edit ${activeItem?.referenceNo || activeItem?.id}`,
+          },
+        ]}
+        headerAction={
+          <Button
+            label="Back to Clearances List"
+            icon="arrow-left"
+            variant="outlined"
+            onClick={handleBackToList}
+          />
+        }
+      >
+        <FormCard
+          title={
+            mode === 'create'
+              ? 'Track New Statutory Clearance'
+              : `Update Statutory Clearance (${activeItem?.referenceNo || activeItem?.id})`
+          }
+        >
+          <form onSubmit={handleSave} className="flex flex-col gap-4">
+            <DropDownList
+              label="Civil Work Scheme"
+              data={statutoryWorks.map(w => ({
+                label: `${w.code || w.workId || `CW-${w.id}`} — ${w.name}`,
+                value: String(w.workRegistrationId || w.id),
+              }))}
+              textField="label"
+              optionValue="value"
+              value={formWorkId}
+              onChange={val => setFormWorkId(val as string)}
+              required
+            />
+
+            <FormGrid columns={2}>
+              <DropDownList
+                label="Clearance / NOC Category"
+                data={CLEARANCE_TYPES.map(c => ({ label: c, value: c }))}
+                textField="label"
+                optionValue="value"
+                value={formType}
+                onChange={val => setFormType(val as string)}
+                required
+              />
+              <TextBox
+                label="Statutory Authority / Agency"
+                placeholder="e.g. State Pollution Control Board"
+                value={formAuthority}
+                onChange={setFormAuthority}
+                required
+              />
+            </FormGrid>
+
+            <FormGrid columns={2}>
+              <TextBox
+                label="Application Reference / File No."
+                placeholder="MPPCB/CTE/2026/912"
+                value={formRefNo}
+                onChange={setFormRefNo}
+              />
+              <DropDownList
+                label="Current Clearance Status"
+                data={[
+                  { label: 'Applied (Under Scrutiny)', value: 'Applied' },
+                  { label: 'Received (NOC Issued)', value: 'Received' },
+                  { label: 'Not Required (Exempted)', value: 'Not Required' },
+                  { label: 'Expired (Renewal Required)', value: 'Expired' },
+                  { label: 'Rejected (Compliance Needed)', value: 'Rejected' },
+                ]}
+                textField="label"
+                optionValue="value"
+                value={formStatus}
+                onChange={val => setFormStatus(val as any)}
+              />
+            </FormGrid>
+
+            <FormGrid columns={3}>
+              <TextBox
+                label="Application Date"
+                placeholder="YYYY-MM-DD"
+                value={formAppDate}
+                onChange={setFormAppDate}
+                required
+              />
+              <TextBox
+                label="Received Date"
+                placeholder="YYYY-MM-DD"
+                value={formRecDate}
+                onChange={setFormRecDate}
+              />
+              <TextBox
+                label="Validity Expiry Date"
+                placeholder="YYYY-MM-DD"
+                value={formValidity}
+                onChange={setFormValidity}
+              />
+            </FormGrid>
+
+            <FormGrid columns={2}>
+              <DropDownList
+                label="Execution Blocking Dependency"
+                data={[
+                  {
+                    label: 'Yes — Site Work Cannot Start Without This NOC',
+                    value: 'true',
+                  },
+                  {
+                    label: 'No — Parallel Non-Blocking Clearance',
+                    value: 'false',
+                  },
+                ]}
+                textField="label"
+                optionValue="value"
+                value={formBlocking ? 'true' : 'false'}
+                onChange={val => setFormBlocking(val === 'true')}
+              />
+              <FileUpload
+                label="Upload Sanctioned Order / NOC PDF"
+                accept=".pdf,.jpg,.png,.jpeg"
+                mode="file"
+                uploadNote="Max size 10MB (.pdf, .jpg, .png)"
+                onChange={(file: File | null) => {
+                  setFormFileName(file?.name || '');
+                  if (file) ToastService.success(`Attached ${file.name}`);
+                }}
+              />
+            </FormGrid>
+
+            <TextArea
+              label="Clearance Conditions & Compliance Remarks"
+              placeholder="Record mandatory conditions imposed by the sanctioning authority..."
+              value={formRemarks}
+              onChange={setFormRemarks}
+              rows={3}
+            />
+
+            <ButtonPanel>
+              <Button
+                label="Cancel"
+                variant="outlined"
+                onClick={handleBackToList}
+                type="button"
+              />
+              <Button
+                label={mode === 'create' ? 'Track Clearance' : 'Save Changes'}
+                variant="primary"
+                icon="check"
+                type="submit"
+              />
+            </ButtonPanel>
+          </form>
+        </FormCard>
+      </FormPage>
+    );
+  }
+
+  if (mode === 'view' && activeItem) {
+    return (
+      <FormPage
+        title={`Clearance Dossier — ${activeItem.clearanceType}`}
+        description="Complete statutory record, authority details, and validity timeline."
+        breadcrumbs={[
+          { label: 'Home', to: '/home/menu' },
+          { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+          { label: 'Admin Login', to: civilUrls.adminMenu },
+          { label: 'Statutory Compliance', to: civilUrls.statutoryCompliance },
+          { label: activeItem.referenceNo || activeItem.id },
+        ]}
+        headerAction={
+          <Button
+            label="Back to Clearances List"
+            icon="arrow-left"
+            variant="outlined"
+            onClick={handleBackToList}
+          />
+        }
+      >
+        <div className="flex flex-col gap-4">
+          <FormCard title="Clearance Details">
+            <PreviewGrid
+              columns={3}
+              fields={[
+                { label: 'Clearance ID', value: activeItem.id },
+                { label: 'Permission Type', value: activeItem.clearanceType },
+                { label: 'Applied Work', value: activeItem.workName },
+                { label: 'Sanctioning Authority', value: activeItem.authority },
+                {
+                  label: 'Application / Cert Ref',
+                  value: activeItem.referenceNo || 'Pending Submission',
+                },
+                {
+                  label: 'Criticality',
+                  value: activeItem.isBlocking
+                    ? 'Strict Execution Blocking'
+                    : 'Parallel Clearance',
+                },
+                {
+                  label: 'Application Date',
+                  value: activeItem.applicationDate,
+                },
+                {
+                  label: 'Received Date',
+                  value: activeItem.receivedDate || 'Awaiting Issuance',
+                },
+                {
+                  label: 'Validity Expiry',
+                  value: activeItem.validUpto || 'Indefinite / As per law',
+                },
+                { label: 'Clearance Status', value: activeItem.status },
+                {
+                  label: 'Attached Document',
+                  value: activeItem.documentFileName || 'No document attached',
+                },
+              ]}
+            />
+          </FormCard>
+
+          {activeItem.remarks && (
+            <FormCard title="Authority Stipulations & Conditions">
+              <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-950">
+                {activeItem.remarks}
+              </div>
+            </FormCard>
+          )}
+
+          <ButtonPanel>
+            <Button
+              label="Back to Clearances List"
+              variant="outlined"
+              icon="arrow-left"
+              onClick={handleBackToList}
+            />
+            <Button
+              label="Edit Clearance"
+              variant="primary"
+              icon="pencil"
+              onClick={() => openEdit(activeItem)}
+            />
+          </ButtonPanel>
+        </div>
+      </FormPage>
+    );
+  }
 
   return (
     <FormPage
@@ -411,24 +706,12 @@ export default function StatutoryCompliance() {
               header: 'Actions',
               sortable: false,
               cell: (item: CivilManagement.StatutoryClearance) => (
-                <div style={{ display: 'flex', gap: '0.375rem' }}>
-                  <Button
-                    size="small"
-                    label=""
-                    icon="eye"
-                    variant="outlined"
-                    onClick={() => openView(item)}
-                    title="View Clearance Details"
-                  />
-                  <Button
-                    size="small"
-                    label=""
-                    icon="pencil"
-                    variant="outlined"
-                    onClick={() => openEdit(item)}
-                    title="Update Status / Certificate"
-                  />
-                </div>
+                <GridActionButtons
+                  onView={() => openView(item)}
+                  onEdit={() => openEdit(item)}
+                  viewTooltip="View Clearance Details"
+                  editTooltip="Update Clearance / Certificate"
+                />
               ),
             },
           ]}
@@ -436,336 +719,6 @@ export default function StatutoryCompliance() {
           searchPlaceholder="Search statutory clearances..."
         />
       </FormCard>
-
-      {/* POPUP MODALS */}
-      <FormPopup
-        visible={popup.mode !== 'closed'}
-        onHide={() => setPopup({ mode: 'closed' })}
-        title={
-          popup.mode === 'view'
-            ? `Clearance Dossier — ${popup.item?.clearanceType}`
-            : popup.mode === 'add'
-              ? 'Track New Statutory Clearance'
-              : `Update Statutory Clearance — ${popup.item?.referenceNo || popup.item?.id}`
-        }
-        subtitle="Record application reference, approval certificate, and validity timeline."
-        size="lg"
-      >
-        {popup.mode === 'view' ? (
-          /* View Details Modal */
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.25rem',
-              marginTop: '0.5rem',
-            }}
-          >
-            <div
-              style={{
-                padding: '1rem',
-                background: '#f9fafb',
-                borderRadius: '0.75rem',
-                border: '1px solid #e5e7eb',
-              }}
-            >
-              <div
-                style={{
-                  fontSize: '1.05rem',
-                  fontWeight: 700,
-                  color: '#111827',
-                }}
-              >
-                {popup.item?.clearanceType}
-              </div>
-              <div
-                style={{
-                  fontSize: '0.8125rem',
-                  color: '#4b5563',
-                  marginTop: '4px',
-                }}
-              >
-                Applied For: <strong>{popup.item?.workName}</strong>
-              </div>
-            </div>
-
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '1rem',
-                fontSize: '0.8125rem',
-                lineHeight: 1.8,
-              }}
-            >
-              <div
-                style={{
-                  background: '#ffffff',
-                  border: '1px solid #e5e7eb',
-                  padding: '0.875rem',
-                  borderRadius: '0.5rem',
-                }}
-              >
-                <div
-                  style={{
-                    fontWeight: 600,
-                    color: '#374151',
-                    marginBottom: '0.25rem',
-                  }}
-                >
-                  Authority & Reference
-                </div>
-                <div>
-                  <strong>Issuing Authority:</strong> {popup.item?.authority}
-                </div>
-                <div>
-                  <strong>Application / Order Ref:</strong>{' '}
-                  {popup.item?.referenceNo || '—'}
-                </div>
-                <div>
-                  <strong>Criticality:</strong>{' '}
-                  {popup.item?.isBlocking
-                    ? 'Strict Execution Blocking'
-                    : 'Parallel Clearance'}
-                </div>
-                <div>
-                  <strong>Current Status:</strong>{' '}
-                  <StatusBadge
-                    label={popup.item?.status || 'Applied'}
-                    variant="approved"
-                  />
-                </div>
-              </div>
-
-              <div
-                style={{
-                  background: '#ffffff',
-                  border: '1px solid #e5e7eb',
-                  padding: '0.875rem',
-                  borderRadius: '0.5rem',
-                }}
-              >
-                <div
-                  style={{
-                    fontWeight: 600,
-                    color: '#374151',
-                    marginBottom: '0.25rem',
-                  }}
-                >
-                  Timeline & Certificate
-                </div>
-                <div>
-                  <strong>Application Date:</strong>{' '}
-                  {popup.item?.applicationDate}
-                </div>
-                <div>
-                  <strong>Received Date:</strong>{' '}
-                  {popup.item?.receivedDate || 'Awaiting Issuance'}
-                </div>
-                <div>
-                  <strong>Validity Thru:</strong>{' '}
-                  {popup.item?.validUpto || 'Indefinite / As per law'}
-                </div>
-                <div>
-                  <strong>Attached File:</strong>{' '}
-                  {popup.item?.documentFileName || 'No file attached'}
-                </div>
-              </div>
-            </div>
-
-            {popup.item?.remarks && (
-              <div
-                style={{
-                  background: '#f8fafc',
-                  border: '1px solid #e2e8f0',
-                  padding: '0.75rem 1rem',
-                  borderRadius: '0.5rem',
-                  fontSize: '0.8125rem',
-                }}
-              >
-                <strong>Authority Stipulations & Conditions:</strong>{' '}
-                {popup.item.remarks}
-              </div>
-            )}
-
-            <div className="flex justify-end mt-4">
-              <Button
-                label="Close"
-                variant="outlined"
-                onClick={() => setPopup({ mode: 'closed' })}
-              />
-            </div>
-          </div>
-        ) : (
-          /* Form Modal */
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1rem',
-              marginTop: '0.5rem',
-            }}
-          >
-            <DropDownList
-              label="Civil Work Scheme *"
-              data={statutoryWorks.map(w => ({
-                label: `${w.code || w.workId || `CW-${w.id}`} — ${w.name}`,
-                value: String(w.workRegistrationId || w.id),
-              }))}
-              textField="label"
-              optionValue="value"
-              value={formWorkId}
-              onChange={val => setFormWorkId(val as string)}
-              required
-            />
-
-            <FormGrid columns={2}>
-              <DropDownList
-                label="Clearance / NOC Category *"
-                data={CLEARANCE_TYPES.map(c => ({ label: c, value: c }))}
-                textField="label"
-                optionValue="value"
-                value={formType}
-                onChange={val => setFormType(val as string)}
-                required
-              />
-              <TextBox
-                label="Statutory Authority / Agency *"
-                placeholder="e.g. State Pollution Control Board"
-                value={formAuthority}
-                onChange={setFormAuthority}
-                required
-              />
-            </FormGrid>
-
-            <FormGrid columns={2}>
-              <TextBox
-                label="Application Reference / File No."
-                placeholder="MPPCB/CTE/2026/912"
-                value={formRefNo}
-                onChange={setFormRefNo}
-              />
-              <DropDownList
-                label="Current Clearance Status"
-                data={[
-                  { label: 'Applied (Under Scrutiny)', value: 'Applied' },
-                  { label: 'Received (NOC Issued)', value: 'Received' },
-                  { label: 'Not Required (Exempted)', value: 'Not Required' },
-                  { label: 'Expired (Renewal Required)', value: 'Expired' },
-                  { label: 'Rejected (Compliance Needed)', value: 'Rejected' },
-                ]}
-                textField="label"
-                optionValue="value"
-                value={formStatus}
-                onChange={val => setFormStatus(val as any)}
-              />
-            </FormGrid>
-
-            <FormGrid columns={3}>
-              <TextBox
-                label="Application Date *"
-                placeholder="YYYY-MM-DD"
-                value={formAppDate}
-                onChange={setFormAppDate}
-                required
-              />
-              <TextBox
-                label="Received Date"
-                placeholder="YYYY-MM-DD"
-                value={formRecDate}
-                onChange={setFormRecDate}
-              />
-              <TextBox
-                label="Validity Expiry Date"
-                placeholder="YYYY-MM-DD"
-                value={formValidity}
-                onChange={setFormValidity}
-              />
-            </FormGrid>
-
-            <FormGrid columns={2}>
-              <DropDownList
-                label="Execution Blocking Dependency"
-                data={[
-                  {
-                    label: 'Yes — Site Work Cannot Start Without This NOC',
-                    value: 'true',
-                  },
-                  {
-                    label: 'No — Parallel Non-Blocking Clearance',
-                    value: 'false',
-                  },
-                ]}
-                textField="label"
-                optionValue="value"
-                value={formBlocking ? 'true' : 'false'}
-                onChange={val => setFormBlocking(val === 'true')}
-              />
-              <div>
-                <label
-                  style={{
-                    fontSize: '0.78rem',
-                    fontWeight: 600,
-                    color: '#374151',
-                    display: 'block',
-                    marginBottom: '0.375rem',
-                  }}
-                >
-                  Upload Sanctioned Order / NOC PDF
-                </label>
-                <input
-                  type="file"
-                  accept=".pdf,.jpg,.png"
-                  onChange={e => {
-                    const f = e.target.files?.[0];
-                    if (f) {
-                      setFormFileName(f.name);
-                      ToastService.success(`Attached ${f.name}`);
-                    }
-                  }}
-                  style={{ fontSize: '0.8125rem' }}
-                />
-                {formFileName && (
-                  <div
-                    style={{
-                      fontSize: '0.72rem',
-                      color: '#16a34a',
-                      fontWeight: 600,
-                      marginTop: '2px',
-                    }}
-                  >
-                    ✓ Selected: {formFileName}
-                  </div>
-                )}
-              </div>
-            </FormGrid>
-
-            <TextArea
-              label="Clearance Conditions & Compliance Remarks"
-              placeholder="Record mandatory conditions imposed by the sanctioning authority..."
-              value={formRemarks}
-              onChange={setFormRemarks}
-              rows={2}
-            />
-
-            <div className="flex justify-end gap-3 mt-4">
-              <Button
-                label="Cancel"
-                variant="outlined"
-                onClick={() => setPopup({ mode: 'closed' })}
-              />
-              <Button
-                label={
-                  popup.mode === 'add' ? 'Track Clearance' : 'Save Changes'
-                }
-                variant="primary"
-                icon="check"
-                onClick={handleSave}
-              />
-            </div>
-          </div>
-        )}
-      </FormPopup>
     </FormPage>
   );
 }

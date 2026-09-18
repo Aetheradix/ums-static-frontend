@@ -391,6 +391,7 @@ export default function TenderOversight() {
       ]}
     >
       <Tabs
+        style={{ paddingBottom: '10px' }}
         tabs={[
           {
             title: 'Agency-Work Mapping',
@@ -443,11 +444,17 @@ export default function TenderOversight() {
                       />
                       <DropDownList
                         label="Contractor / Agency *"
-                        data={contractors
-                          .filter((c: any) => c.status === 'Active')
+                        data={(contractors.length > 0
+                          ? contractors
+                          : initialContractors
+                        )
+                          .filter(
+                            (c: any) =>
+                              c.status === 'Active' || c.isActive !== false
+                          )
                           .map((c: any) => ({
-                            name: `${c.companyName} (${c.grade})`,
-                            value: c.id,
+                            name: `${c.name || c.companyName} (${c.class || c.licenseGrade || 'Class A'})`,
+                            value: c.id || c.vendorAgencyRegistrationId,
                           }))}
                         textField={'name' as any}
                         optionValue="value"
@@ -456,8 +463,14 @@ export default function TenderOversight() {
                       />
                       <DropDownList
                         label="TPI Quality Agency"
-                        data={tpiAgencies
-                          .filter((t: any) => t.status === 'Active')
+                        data={(tpiAgencies.length > 0
+                          ? tpiAgencies
+                          : initialTPIAgencies
+                        )
+                          .filter(
+                            (t: any) =>
+                              t.status === 'Active' || t.isActive !== false
+                          )
                           .map((t: any) => ({ name: t.name, value: t.id }))}
                         textField={'name' as any}
                         optionValue="value"
@@ -466,8 +479,14 @@ export default function TenderOversight() {
                       />
                       <DropDownList
                         label="Quality Lab Testing Agency"
-                        data={labAgencies
-                          .filter((l: any) => l.status === 'Active')
+                        data={(labAgencies.length > 0
+                          ? labAgencies
+                          : initialLabAgencies
+                        )
+                          .filter(
+                            (l: any) =>
+                              l.status === 'Active' || l.isActive !== false
+                          )
                           .map((l: any) => ({ name: l.name, value: l.id }))}
                         textField={'name' as any}
                         optionValue="value"

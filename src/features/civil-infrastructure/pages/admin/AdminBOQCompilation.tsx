@@ -21,6 +21,7 @@ import {
   initialSORTypes,
   initialSORChapters,
 } from '../../mocks';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
@@ -33,12 +34,15 @@ export default function AdminBOQCompilation() {
   const [searchParams, setSearchParams] = useSearchParams();
   const workIdParam = searchParams.get('workId') || '1';
 
-  const [works, setWorks] = useState<CivilWork[]>(() => {
-    const saved = localStorage.getItem('civil_works');
-    return saved ? JSON.parse(saved) : civilWorks;
-  });
+  const [works, setWorks] = useCivilStorage<CivilWork[]>(
+    CIVIL_STORAGE_KEYS.WORKS,
+    civilWorks
+  );
 
-  const [data, setData] = useState<BOQItem[]>(initialBOQ);
+  const [data, setData] = useCivilStorage<BOQItem[]>(
+    CIVIL_STORAGE_KEYS.BOQ_ITEMS,
+    initialBOQ
+  );
   const [selectedWorkId, setSelectedWorkId] = useState<string>(workIdParam);
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
 
@@ -50,14 +54,14 @@ export default function AdminBOQCompilation() {
   const [nonSorUnit, setNonSorUnit] = useState('');
 
   // SOR Hierarchy Masters State
-  const [sorTypes] = useState<CivilManagement.SORType[]>(() => {
-    const saved = localStorage.getItem('civil_sor_types');
-    return saved ? JSON.parse(saved) : initialSORTypes;
-  });
-  const [sorChapters] = useState<CivilManagement.SORChapter[]>(() => {
-    const saved = localStorage.getItem('civil_sor_chapters');
-    return saved ? JSON.parse(saved) : initialSORChapters;
-  });
+  const [sorTypes] = useCivilStorage<CivilManagement.SORType[]>(
+    CIVIL_STORAGE_KEYS.SOR_TYPES,
+    initialSORTypes
+  );
+  const [sorChapters] = useCivilStorage<CivilManagement.SORChapter[]>(
+    CIVIL_STORAGE_KEYS.SOR_CHAPTERS,
+    initialSORChapters
+  );
   const [sorTypeFilter, setSorTypeFilter] = useState('ALL');
   const [sorChapterFilter, setSorChapterFilter] = useState('ALL');
 
@@ -67,22 +71,18 @@ export default function AdminBOQCompilation() {
     }
   }, [workIdParam]);
 
-  // Watch storage updates
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const savedWorks = localStorage.getItem('civil_works');
-      if (savedWorks) {
-        setWorks(JSON.parse(savedWorks));
-      }
-    };
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-
   const currentWork = works.find(
     w => String(w.workRegistrationId || w.id) === selectedWorkId
   );
-  const workBOQItems = data.filter(b => String(b.workId) === selectedWorkId);
+  const workBOQItems = data.filter(
+    (b, idx, arr) =>
+      String(b.workId) === selectedWorkId &&
+      arr.findIndex(
+        x =>
+          String(x.workId) === selectedWorkId &&
+          (x.id === b.id || (b.sorItemId && x.sorItemId === b.sorItemId))
+      ) === idx
+  );
   const totalBOQAmount = workBOQItems.reduce((s, i) => s + i.amount, 0);
   const isLocked =
     workBOQItems.length > 0 && workBOQItems.every(i => i.isLocked);
@@ -130,7 +130,7 @@ export default function AdminBOQCompilation() {
         }
         const refSor = sorItems[0];
         const newItem: BOQItem = {
-          id: String(Date.now()),
+          id: `boq-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
           boqId: `BOQ-${selectedWorkId.padStart(3, '0')}`,
           workId: selectedWorkId,
           sorItemId: refSor?.id ?? 'non-sor',
@@ -160,7 +160,7 @@ export default function AdminBOQCompilation() {
           return;
         }
         const newItem: BOQItem = {
-          id: String(Date.now()),
+          id: `boq-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
           boqId: `BOQ-${selectedWorkId.padStart(3, '0')}`,
           workId: selectedWorkId,
           sorItemId: selectedSorId,
@@ -172,7 +172,18 @@ export default function AdminBOQCompilation() {
           amount: calculatedAmt,
           isLocked: false,
         };
-        setData(prev => [...prev, newItem]);
+        setData(prev => {
+          if (
+            prev.some(
+              i =>
+                String(i.workId) === selectedWorkId &&
+                i.sorItemId === selectedSorId
+            )
+          ) {
+            return prev;
+          }
+          return [...prev, newItem];
+        });
         ToastService.success('Item added to BOQ compiler.');
       }
     } else if (popup.mode === 'edit' && popup.item) {
@@ -207,7 +218,17 @@ export default function AdminBOQCompilation() {
     );
     if (!isConfirmed) return;
 
-    setData(prev => prev.filter(i => i.id !== item.id));
+    setData(prev =>
+      prev.filter(
+        i =>
+          i.id !== item.id &&
+          !(
+            String(i.workId) === String(item.workId) &&
+            i.sorItemId &&
+            i.sorItemId === item.sorItemId
+          )
+      )
+    );
     ToastService.success('Item removed from BOQ compiler.');
   };
 

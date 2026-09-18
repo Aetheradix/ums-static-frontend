@@ -722,9 +722,7 @@ export default function TPIReports() {
                 onChange={val => setFormAgencyId(val as string)}
                 required
               />
-            </FormGrid>
 
-            <FormGrid columns={3}>
               <TextBox
                 label="Auditor / Lead Inspector Name *"
                 placeholder="Er. A.K. Sharma"

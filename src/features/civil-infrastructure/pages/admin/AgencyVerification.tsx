@@ -1,18 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ToastService } from 'services';
-import { Button, StatusButton } from 'shared/components/buttons';
-import {
-  DropDownList,
-  FormSubSection,
-  NumberBox,
-  TextBox,
-} from 'shared/components/forms';
+import { Button, ButtonPanel, StatusButton } from 'shared/components/buttons';
+import { DropDownList, NumberBox, TextBox } from 'shared/components/forms';
 import GridActionButtons from 'shared/components/grid/GridActionButtons';
 import {
   FormCard,
   FormGrid,
   FormPage,
-  FormPopup,
   GridPanel,
   PreviewGrid,
   StatusBadge,
@@ -27,6 +21,7 @@ import { civilUrls } from '../../urls';
 import '../civil.css';
 
 type ActiveTab = 'VENDOR' | 'LAB' | 'TPI';
+type PageMode = 'list' | 'create' | 'edit' | 'view';
 
 const GRADE_OPTIONS = [
   { label: 'Class A (Unlimited / Central PWD)', value: 'Class A (Unlimited)' },
@@ -37,6 +32,8 @@ const GRADE_OPTIONS = [
 
 export default function AgencyRegistration() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('VENDOR');
+  const [mode, setMode] = useState<PageMode>('list');
+  const [selectedItem, setSelectedItem] = useState<any>(null);
 
   // Vendor / Contractor state
   const [vendors, setVendors] = useState<MockVendorAgencyRegistration[]>(() => {
@@ -93,13 +90,6 @@ export default function AgencyRegistration() {
       isActive: t.status === 'Active',
     }));
   });
-
-  // Popup state
-  const [popup, setPopup] = useState<{
-    mode: 'closed' | 'view' | 'create' | 'edit';
-    type: ActiveTab;
-    item?: any;
-  }>({ mode: 'closed', type: 'VENDOR' });
 
   // Vendor form state
   const [vForm, setVForm] = useState<Partial<MockVendorAgencyRegistration>>({
@@ -168,6 +158,11 @@ export default function AgencyRegistration() {
     localStorage.setItem('civil_tpi_agencies', JSON.stringify(tpiAgencies));
   }, [tpiAgencies]);
 
+  const handleBackToList = useCallback(() => {
+    setMode('list');
+    setSelectedItem(null);
+  }, []);
+
   const openCreate = () => {
     if (activeTab === 'VENDOR') {
       setVForm({
@@ -222,10 +217,12 @@ export default function AgencyRegistration() {
         isActive: true,
       });
     }
-    setPopup({ mode: 'create', type: activeTab });
+    setSelectedItem(null);
+    setMode('create');
   };
 
   const openEdit = (item: any) => {
+    setSelectedItem(item);
     if (activeTab === 'VENDOR') {
       setVForm({ ...item });
     } else if (activeTab === 'LAB') {
@@ -233,19 +230,21 @@ export default function AgencyRegistration() {
     } else {
       setTForm({ ...item, isActive: item.isActive !== false });
     }
-    setPopup({ mode: 'edit', type: activeTab, item });
+    setMode('edit');
   };
 
   const openView = (item: any) => {
-    setPopup({ mode: 'view', type: activeTab, item });
+    setSelectedItem(item);
+    setMode('view');
   };
 
-  const handleSaveVendor = () => {
+  const handleSaveVendor = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!vForm.companyName?.trim() || !vForm.gstNumber?.trim()) {
       ToastService.error('Company Name and GSTIN are required.');
       return;
     }
-    if (popup.mode === 'create') {
+    if (mode === 'create') {
       const newItem: MockVendorAgencyRegistration = {
         ...(vForm as MockVendorAgencyRegistration),
         vendorAgencyRegistrationId: Date.now(),
@@ -257,59 +256,62 @@ export default function AgencyRegistration() {
       ToastService.success(
         `Vendor Agency "${newItem.companyName}" registered successfully.`
       );
-    } else if (popup.mode === 'edit' && popup.item) {
+    } else if (mode === 'edit' && selectedItem) {
       setVendors(prev =>
         prev.map(v =>
-          v.vendorAgencyRegistrationId === popup.item.vendorAgencyRegistrationId
+          v.vendorAgencyRegistrationId ===
+          selectedItem.vendorAgencyRegistrationId
             ? ({ ...v, ...vForm } as MockVendorAgencyRegistration)
             : v
         )
       );
       ToastService.success('Vendor Agency details updated.');
     }
-    setPopup({ mode: 'closed', type: activeTab });
+    handleBackToList();
   };
 
-  const handleSaveLab = () => {
+  const handleSaveLab = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!lForm.name.trim() || !lForm.nablAccreditation.trim()) {
       ToastService.error('Lab Name and NABL Certificate are required.');
       return;
     }
-    if (popup.mode === 'create') {
+    if (mode === 'create') {
       const newItem: any = {
         ...lForm,
         id: `LAB-${Date.now().toString().slice(-4)}`,
       };
       setLabs(prev => [newItem, ...prev]);
       ToastService.success(`Quality Lab "${newItem.name}" empaneled.`);
-    } else if (popup.mode === 'edit' && popup.item) {
+    } else if (mode === 'edit' && selectedItem) {
       setLabs(prev =>
-        prev.map(l => (l.id === popup.item.id ? { ...l, ...lForm } : l))
+        prev.map(l => (l.id === selectedItem.id ? { ...l, ...lForm } : l))
       );
       ToastService.success('Quality Lab details updated.');
     }
-    setPopup({ mode: 'closed', type: activeTab });
+    handleBackToList();
   };
 
-  const handleSaveTpi = () => {
+  const handleSaveTpi = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!tForm.name.trim() || !tForm.licenseNo.trim()) {
       ToastService.error('Agency Name and License No are required.');
       return;
     }
-    if (popup.mode === 'create') {
+    if (mode === 'create') {
       const newItem: any = {
         ...tForm,
         id: `TPI-${Date.now().toString().slice(-4)}`,
       };
       setTpiAgencies(prev => [newItem, ...prev]);
       ToastService.success(`TPI Agency "${newItem.name}" registered.`);
-    } else if (popup.mode === 'edit' && popup.item) {
+    } else if (mode === 'edit' && selectedItem) {
       setTpiAgencies(prev =>
-        prev.map(t => (t.id === popup.item.id ? { ...t, ...tForm } : t))
+        prev.map(t => (t.id === selectedItem.id ? { ...t, ...tForm } : t))
       );
       ToastService.success('TPI Agency updated.');
     }
-    setPopup({ mode: 'closed', type: activeTab });
+    handleBackToList();
   };
 
   const toggleVendorStatus = (item: MockVendorAgencyRegistration) => {
@@ -357,6 +359,572 @@ export default function AgencyRegistration() {
     );
   };
 
+  if (mode === 'create' || mode === 'edit') {
+    const pageTitle =
+      activeTab === 'VENDOR'
+        ? mode === 'create'
+          ? 'Register Vendor Agency / Contractor'
+          : `Edit Vendor Agency — ${vForm.companyName || 'Contractor'}`
+        : activeTab === 'LAB'
+          ? mode === 'create'
+            ? 'Empanel Quality Testing Lab'
+            : `Edit Quality Lab — ${lForm.name || 'Lab'}`
+          : mode === 'create'
+            ? 'Empanel TPI Agency'
+            : `Edit TPI Agency — ${tForm.name || 'Agency'}`;
+
+    return (
+      <FormPage
+        title={pageTitle}
+        description="Verification and accreditation credentials."
+        breadcrumbs={[
+          { label: 'Home', to: '/home/menu' },
+          { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+          { label: 'Admin Login', to: civilUrls.adminMenu },
+          { label: 'Agency Registration', to: civilUrls.agencyVerification },
+          { label: mode === 'create' ? 'Register' : 'Edit' },
+        ]}
+        headerAction={
+          <Button
+            label="Back to Agencies List"
+            icon="arrow-left"
+            variant="outlined"
+            onClick={handleBackToList}
+          />
+        }
+      >
+        {activeTab === 'VENDOR' && (
+          <form onSubmit={handleSaveVendor} className="flex flex-col gap-5">
+            <FormCard title="1. Agency Profile & Contact">
+              <FormGrid columns={2}>
+                <TextBox
+                  label="Company / Firm Name"
+                  placeholder="e.g. Apex Buildcon Engineers Pvt Ltd"
+                  value={vForm.companyName ?? ''}
+                  onChange={v => setVForm(f => ({ ...f, companyName: v }))}
+                  required
+                />
+                <TextBox
+                  label="Proprietor / Managing Director Name"
+                  placeholder="e.g. Shri Rajesh Singhania"
+                  value={vForm.proprietorName ?? ''}
+                  onChange={v => setVForm(f => ({ ...f, proprietorName: v }))}
+                  required
+                />
+                <TextBox
+                  label="Contact Person"
+                  placeholder="e.g. Er. Rohit Verma"
+                  value={vForm.contactPerson ?? ''}
+                  onChange={v => setVForm(f => ({ ...f, contactPerson: v }))}
+                />
+                <TextBox
+                  label="Contact Phone"
+                  placeholder="e.g. +91 98260 12345"
+                  value={vForm.contactPhone ?? ''}
+                  onChange={v => setVForm(f => ({ ...f, contactPhone: v }))}
+                  required
+                />
+                <TextBox
+                  label="Contact Email"
+                  placeholder="e.g. contact@apexbuildcon.in"
+                  value={vForm.contactEmail ?? ''}
+                  onChange={v => setVForm(f => ({ ...f, contactEmail: v }))}
+                />
+                <TextBox
+                  label="Registered Office Address"
+                  placeholder="e.g. 14, Industrial Area, Sector 3, Bhopal"
+                  value={vForm.officeAddress ?? ''}
+                  onChange={v => setVForm(f => ({ ...f, officeAddress: v }))}
+                  required
+                />
+              </FormGrid>
+            </FormCard>
+
+            <FormCard title="2. Statutory Tax & Compliance">
+              <FormGrid columns={2}>
+                <TextBox
+                  label="GSTIN Number"
+                  placeholder="e.g. 23AAACA1234F1Z5"
+                  value={vForm.gstNumber ?? ''}
+                  onChange={v => setVForm(f => ({ ...f, gstNumber: v }))}
+                  required
+                />
+                <TextBox
+                  label="PAN Number"
+                  placeholder="e.g. AAACA1234F"
+                  value={vForm.panNumber ?? ''}
+                  onChange={v => setVForm(f => ({ ...f, panNumber: v }))}
+                  required
+                />
+                <DropDownList
+                  label="Contractor License Grade"
+                  data={GRADE_OPTIONS}
+                  textField="label"
+                  optionValue="value"
+                  value={vForm.licenseGrade ?? 'Class A (Unlimited)'}
+                  onChange={v =>
+                    setVForm(f => ({ ...f, licenseGrade: String(v) }))
+                  }
+                  required
+                />
+                <TextBox
+                  label="PWD Registration Number"
+                  placeholder="e.g. MP-PWD-CLASS-A-2021-89"
+                  value={vForm.pwdRegistrationNumber ?? ''}
+                  onChange={v =>
+                    setVForm(f => ({ ...f, pwdRegistrationNumber: v }))
+                  }
+                />
+              </FormGrid>
+            </FormCard>
+
+            <FormCard title="3. Bank Mandate & Financials">
+              <FormGrid columns={3}>
+                <TextBox
+                  label="Bank Name"
+                  placeholder="e.g. State Bank of India"
+                  value={vForm.bankName ?? ''}
+                  onChange={v => setVForm(f => ({ ...f, bankName: v }))}
+                  required
+                />
+                <TextBox
+                  label="Account Number"
+                  placeholder="e.g. 38291048201"
+                  value={vForm.bankAccountNumber ?? ''}
+                  onChange={v =>
+                    setVForm(f => ({ ...f, bankAccountNumber: v }))
+                  }
+                  required
+                />
+                <TextBox
+                  label="IFSC Code"
+                  placeholder="e.g. SBIN0001234"
+                  value={vForm.ifscCode ?? ''}
+                  onChange={v => setVForm(f => ({ ...f, ifscCode: v }))}
+                  required
+                />
+                <NumberBox
+                  label="Security Deposit Paid (₹)"
+                  placeholder="e.g. 2500000"
+                  value={vForm.securityDepositPaid}
+                  onChange={v =>
+                    setVForm(f => ({
+                      ...f,
+                      securityDepositPaid: Number(v) || 0,
+                    }))
+                  }
+                  mode="decimal"
+                />
+                <NumberBox
+                  label="Performance Bond Value (₹)"
+                  placeholder="e.g. 5000000"
+                  value={vForm.performanceBondValue}
+                  onChange={v =>
+                    setVForm(f => ({
+                      ...f,
+                      performanceBondValue: Number(v) || 0,
+                    }))
+                  }
+                  mode="decimal"
+                />
+                <NumberBox
+                  label="Total Completed Works"
+                  placeholder="e.g. 18"
+                  value={vForm.completedWorks}
+                  onChange={v =>
+                    setVForm(f => ({
+                      ...f,
+                      completedWorks: Number(v) || 0,
+                    }))
+                  }
+                />
+              </FormGrid>
+            </FormCard>
+
+            <ButtonPanel>
+              <Button
+                label="Cancel"
+                variant="outlined"
+                onClick={handleBackToList}
+                type="button"
+              />
+              <Button
+                label={mode === 'create' ? 'Register Vendor' : 'Update Vendor'}
+                variant="primary"
+                icon="check"
+                type="submit"
+              />
+            </ButtonPanel>
+          </form>
+        )}
+
+        {activeTab === 'LAB' && (
+          <FormCard title={pageTitle}>
+            <form onSubmit={handleSaveLab} className="flex flex-col gap-4">
+              <FormGrid columns={2}>
+                <TextBox
+                  label="Laboratory Name"
+                  placeholder="e.g. Central Building Materials Testing Lab"
+                  value={lForm.name}
+                  onChange={v => setLForm((f: any) => ({ ...f, name: v }))}
+                  required
+                />
+                <TextBox
+                  label="NABL Certificate No."
+                  placeholder="e.g. NABL-TC-8821"
+                  value={lForm.nablAccreditation}
+                  onChange={v =>
+                    setLForm((f: any) => ({ ...f, nablAccreditation: v }))
+                  }
+                  required
+                />
+                <TextBox
+                  label="Contact Person"
+                  placeholder="e.g. Dr. A.K. Sharma"
+                  value={lForm.contactPerson}
+                  onChange={v =>
+                    setLForm((f: any) => ({ ...f, contactPerson: v }))
+                  }
+                  required
+                />
+                <TextBox
+                  label="Mobile Number"
+                  placeholder="e.g. +91 98270 54321"
+                  value={lForm.mobile}
+                  onChange={v => setLForm((f: any) => ({ ...f, mobile: v }))}
+                  required
+                />
+                <TextBox
+                  label="Email ID"
+                  placeholder="e.g. info@centralmaterials.org"
+                  value={lForm.email}
+                  onChange={v => setLForm((f: any) => ({ ...f, email: v }))}
+                />
+                <TextBox
+                  label="Testing Scope"
+                  placeholder="e.g. Concrete Cube, Rebar Tensile, Soil Bearing"
+                  value={lForm.scopeOfTesting}
+                  onChange={v =>
+                    setLForm((f: any) => ({ ...f, scopeOfTesting: v }))
+                  }
+                />
+              </FormGrid>
+              <TextBox
+                label="Laboratory Address"
+                placeholder="e.g. Plot 12, Industrial Area, Sector 1, Bhopal"
+                value={lForm.address}
+                onChange={v => setLForm((f: any) => ({ ...f, address: v }))}
+              />
+              <ButtonPanel>
+                <Button
+                  label="Cancel"
+                  variant="outlined"
+                  onClick={handleBackToList}
+                  type="button"
+                />
+                <Button
+                  label={mode === 'create' ? 'Empanel Lab' : 'Update Lab'}
+                  variant="primary"
+                  icon="check"
+                  type="submit"
+                />
+              </ButtonPanel>
+            </form>
+          </FormCard>
+        )}
+
+        {activeTab === 'TPI' && (
+          <FormCard title={pageTitle}>
+            <form onSubmit={handleSaveTpi} className="flex flex-col gap-4">
+              <FormGrid columns={2}>
+                <TextBox
+                  label="Inspection Agency Name"
+                  placeholder="e.g. RITES Ltd — Third Party Quality Assurance"
+                  value={tForm.name}
+                  onChange={v => setTForm((f: any) => ({ ...f, name: v }))}
+                  required
+                />
+                <TextBox
+                  label="License / Accreditation No."
+                  placeholder="e.g. TPI-QCI-2024-098"
+                  value={tForm.licenseNo}
+                  onChange={v => setTForm((f: any) => ({ ...f, licenseNo: v }))}
+                  required
+                />
+                <TextBox
+                  label="Contact Representative"
+                  placeholder="e.g. Er. V.K. Nair"
+                  value={tForm.contactPerson}
+                  onChange={v =>
+                    setTForm((f: any) => ({ ...f, contactPerson: v }))
+                  }
+                  required
+                />
+                <TextBox
+                  label="Mobile Number"
+                  placeholder="e.g. +91 94250 87654"
+                  value={tForm.mobile}
+                  onChange={v => setTForm((f: any) => ({ ...f, mobile: v }))}
+                  required
+                />
+                <TextBox
+                  label="Email ID"
+                  placeholder="e.g. civil.qa@rites.co.in"
+                  value={tForm.email}
+                  onChange={v => setTForm((f: any) => ({ ...f, email: v }))}
+                />
+                <DropDownList
+                  label="Agency Tier / Class"
+                  data={[
+                    {
+                      label: 'Class A (Central PSU / RITES / EIL)',
+                      value: 'Class A (Central PSU/Agency)',
+                    },
+                    {
+                      label: 'Class B (State PSU / WAPCOS)',
+                      value: 'Class B (State PSU/Agency)',
+                    },
+                    {
+                      label: 'Class C (Chartered Engineering Firm)',
+                      value: 'Class C (Chartered Firm)',
+                    },
+                  ]}
+                  textField="label"
+                  optionValue="value"
+                  value={tForm.contractorClass}
+                  onChange={v =>
+                    setTForm((f: any) => ({
+                      ...f,
+                      contractorClass: String(v),
+                    }))
+                  }
+                />
+              </FormGrid>
+              <TextBox
+                label="Office Address"
+                placeholder="e.g. Regional QA Office, Bhopal"
+                value={tForm.address}
+                onChange={v => setTForm((f: any) => ({ ...f, address: v }))}
+              />
+              <ButtonPanel>
+                <Button
+                  label="Cancel"
+                  variant="outlined"
+                  onClick={handleBackToList}
+                  type="button"
+                />
+                <Button
+                  label={
+                    mode === 'create'
+                      ? 'Empanel TPI Agency'
+                      : 'Update TPI Agency'
+                  }
+                  variant="primary"
+                  icon="check"
+                  type="submit"
+                />
+              </ButtonPanel>
+            </form>
+          </FormCard>
+        )}
+      </FormPage>
+    );
+  }
+
+  if (mode === 'view' && selectedItem) {
+    const pageTitle = `Agency Dossier — ${selectedItem.companyName || selectedItem.name}`;
+
+    return (
+      <FormPage
+        title={pageTitle}
+        description="Complete accreditation profile, credentials, and performance history."
+        breadcrumbs={[
+          { label: 'Home', to: '/home/menu' },
+          { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+          { label: 'Admin Login', to: civilUrls.adminMenu },
+          { label: 'Agency Registration', to: civilUrls.agencyVerification },
+          { label: selectedItem.companyName || selectedItem.name },
+        ]}
+        headerAction={
+          <Button
+            label="Back to Agencies List"
+            icon="arrow-left"
+            variant="outlined"
+            onClick={handleBackToList}
+          />
+        }
+      >
+        <div className="flex flex-col gap-4">
+          <FormCard title="Accreditation & Details">
+            {activeTab === 'VENDOR' && (
+              <PreviewGrid
+                columns={3}
+                fields={[
+                  {
+                    label: 'Company / Firm Name',
+                    value: selectedItem.companyName,
+                  },
+                  {
+                    label: 'Registration Number',
+                    value: selectedItem.registrationNumber,
+                  },
+                  {
+                    label: 'Proprietor Name',
+                    value: selectedItem.proprietorName,
+                  },
+                  {
+                    label: 'Contact Person',
+                    value: selectedItem.contactPerson || '—',
+                  },
+                  { label: 'Contact Phone', value: selectedItem.contactPhone },
+                  {
+                    label: 'Contact Email',
+                    value: selectedItem.contactEmail || '—',
+                  },
+                  {
+                    label: 'Office Address',
+                    value: selectedItem.officeAddress,
+                  },
+                  {
+                    label: 'GSTIN',
+                    value: `${selectedItem.gstNumber} ${selectedItem.isGstPanValidated ? '(✓ Validated)' : ''}`,
+                  },
+                  { label: 'PAN Number', value: selectedItem.panNumber },
+                  {
+                    label: 'Contractor Grade',
+                    value: selectedItem.licenseGrade,
+                  },
+                  {
+                    label: 'Bank Details',
+                    value: `${selectedItem.bankName} (A/c: ${selectedItem.bankAccountNumber}, IFSC: ${selectedItem.ifscCode})`,
+                  },
+                  {
+                    label: 'Bank Mandate Status',
+                    value: (
+                      <StatusBadge
+                        label={
+                          selectedItem.isBankMandateVerified
+                            ? 'Verified'
+                            : 'Pending'
+                        }
+                        variant={
+                          selectedItem.isBankMandateVerified
+                            ? 'approved'
+                            : 'pending'
+                        }
+                      />
+                    ),
+                  },
+                  {
+                    label: 'PWD Registration',
+                    value: selectedItem.isRegisteredWithPwd
+                      ? `Yes (${selectedItem.pwdRegistrationNumber || 'PWD-REG-2022'})`
+                      : 'No',
+                  },
+                  {
+                    label: 'Security Deposit Paid',
+                    value: `₹${(selectedItem.securityDepositPaid || 0).toLocaleString('en-IN')}`,
+                  },
+                  {
+                    label: 'Performance Bond Value',
+                    value: `₹${(selectedItem.performanceBondValue || 0).toLocaleString('en-IN')}`,
+                  },
+                  {
+                    label: 'Completed Works',
+                    value: selectedItem.completedWorks || 0,
+                  },
+                  {
+                    label: 'Total Works Done',
+                    value: selectedItem.totalWorksDone || 0,
+                  },
+                  {
+                    label: 'Active Status',
+                    value: (
+                      <StatusBadge
+                        label={selectedItem.isActive ? 'Active' : 'Suspended'}
+                        variant={
+                          selectedItem.isActive ? 'approved' : 'rejected'
+                        }
+                      />
+                    ),
+                  },
+                ]}
+              />
+            )}
+
+            {activeTab === 'LAB' && (
+              <PreviewGrid
+                columns={2}
+                fields={[
+                  { label: 'Lab Name', value: selectedItem.name },
+                  { label: 'Address', value: selectedItem.address },
+                  {
+                    label: 'NABL Certificate',
+                    value: selectedItem.nablAccreditation,
+                  },
+                  {
+                    label: 'NABL Validity',
+                    value: selectedItem.nablValidity || '2027-12-31',
+                  },
+                  {
+                    label: 'Contact Person',
+                    value: selectedItem.contactPerson,
+                  },
+                  { label: 'Mobile', value: selectedItem.mobile },
+                  { label: 'Email', value: selectedItem.email },
+                  {
+                    label: 'Scope of Testing',
+                    value: selectedItem.scopeOfTesting,
+                  },
+                ]}
+              />
+            )}
+
+            {activeTab === 'TPI' && (
+              <PreviewGrid
+                columns={2}
+                fields={[
+                  { label: 'Agency Name', value: selectedItem.name },
+                  { label: 'Address', value: selectedItem.address },
+                  { label: 'License No', value: selectedItem.licenseNo },
+                  {
+                    label: 'License Validity',
+                    value: selectedItem.licenseValidity || '2028-03-31',
+                  },
+                  {
+                    label: 'Tier / Class',
+                    value: selectedItem.contractorClass,
+                  },
+                  {
+                    label: 'Contact Person',
+                    value: selectedItem.contactPerson,
+                  },
+                  { label: 'Mobile', value: selectedItem.mobile },
+                  { label: 'Email', value: selectedItem.email },
+                ]}
+              />
+            )}
+          </FormCard>
+
+          <ButtonPanel>
+            <Button
+              label="Back to Agencies List"
+              variant="outlined"
+              icon="arrow-left"
+              onClick={handleBackToList}
+            />
+            <Button
+              label="Edit Agency Details"
+              variant="primary"
+              icon="pencil"
+              onClick={() => openEdit(selectedItem)}
+            />
+          </ButtonPanel>
+        </div>
+      </FormPage>
+    );
+  }
+
   return (
     <FormPage
       title="Agency Registration & Empanelment"
@@ -368,7 +936,7 @@ export default function AgencyRegistration() {
         { label: 'Agency Registration' },
       ]}
     >
-      {/* 3-Tab Header Switcher matching dynamic pattern */}
+      {/* 3-Tab Header Switcher */}
       <div
         style={{
           display: 'flex',
@@ -382,7 +950,10 @@ export default function AgencyRegistration() {
         <div style={{ display: 'flex', gap: '0.75rem' }}>
           <button
             type="button"
-            onClick={() => setActiveTab('VENDOR')}
+            onClick={() => {
+              setActiveTab('VENDOR');
+              setMode('list');
+            }}
             style={{
               padding: '0.625rem 1.25rem',
               borderRadius: '0.5rem',
@@ -404,7 +975,10 @@ export default function AgencyRegistration() {
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab('LAB')}
+            onClick={() => {
+              setActiveTab('LAB');
+              setMode('list');
+            }}
             style={{
               padding: '0.625rem 1.25rem',
               borderRadius: '0.5rem',
@@ -424,7 +998,10 @@ export default function AgencyRegistration() {
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab('TPI')}
+            onClick={() => {
+              setActiveTab('TPI');
+              setMode('list');
+            }}
             style={{
               padding: '0.625rem 1.25rem',
               borderRadius: '0.5rem',
@@ -762,26 +1339,23 @@ export default function AgencyRegistration() {
                         marginTop: '2px',
                       }}
                     >
-                      Thru: {t.licenseValidity || '2028-03-31'}
+                      Valid thru: {t.licenseValidity || '2028-03-31'}
                     </div>
                   </div>
                 ),
               },
               {
                 field: 'contractorClass',
-                header: 'Tier',
+                header: 'Tier / Class',
                 cell: (t: any) => (
-                  <span
-                    className="civil-pill purple"
-                    style={{ fontSize: '0.72rem' }}
-                  >
-                    {t.contractorClass || 'Class A'}
+                  <span style={{ fontSize: '0.75rem', color: '#4b5563' }}>
+                    {t.contractorClass}
                   </span>
                 ),
               },
               {
                 field: 'contactPerson',
-                header: 'Representative',
+                header: 'Agency Contact',
                 cell: (t: any) => (
                   <div style={{ fontSize: '0.75rem' }}>
                     <div>{t.contactPerson}</div>
@@ -821,517 +1395,6 @@ export default function AgencyRegistration() {
           />
         </FormCard>
       )}
-
-      {/* POPUP MODALS */}
-      <FormPopup
-        visible={popup.mode !== 'closed'}
-        onHide={() => setPopup({ mode: 'closed', type: activeTab })}
-        title={
-          popup.mode === 'view'
-            ? `Agency Dossier — ${popup.item?.name || popup.item?.companyName}`
-            : popup.mode === 'create'
-              ? `Register ${popup.type === 'VENDOR' ? 'Vendor Agency / Contractor' : popup.type === 'LAB' ? 'Testing Lab' : 'TPI Agency'}`
-              : `Edit ${popup.type === 'VENDOR' ? 'Vendor Agency' : popup.type === 'LAB' ? 'Testing Lab' : 'TPI Agency'}`
-        }
-        subtitle="Verification and accreditation credentials."
-        size="xl"
-      >
-        {popup.mode === 'view' ? (
-          /* View Modal */
-          <div>
-            {popup.type === 'VENDOR' && popup.item && (
-              <PreviewGrid
-                columns={3}
-                fields={[
-                  {
-                    label: 'Company / Firm Name',
-                    value: popup.item.companyName,
-                  },
-                  {
-                    label: 'Registration Number',
-                    value: popup.item.registrationNumber,
-                  },
-                  {
-                    label: 'Proprietor Name',
-                    value: popup.item.proprietorName,
-                  },
-                  {
-                    label: 'Contact Person',
-                    value: popup.item.contactPerson || '—',
-                  },
-                  { label: 'Contact Phone', value: popup.item.contactPhone },
-                  {
-                    label: 'Contact Email',
-                    value: popup.item.contactEmail || '—',
-                  },
-                  { label: 'Office Address', value: popup.item.officeAddress },
-                  {
-                    label: 'GSTIN',
-                    value: `${popup.item.gstNumber} ${popup.item.isGstPanValidated ? '(✓ Validated)' : ''}`,
-                  },
-                  { label: 'PAN Number', value: popup.item.panNumber },
-                  { label: 'Contractor Grade', value: popup.item.licenseGrade },
-                  {
-                    label: 'Bank Details',
-                    value: `${popup.item.bankName} (A/c: ${popup.item.bankAccountNumber}, IFSC: ${popup.item.ifscCode})`,
-                  },
-                  {
-                    label: 'Bank Mandate Status',
-                    value: (
-                      <StatusBadge
-                        label={
-                          popup.item.isBankMandateVerified
-                            ? 'Verified'
-                            : 'Pending'
-                        }
-                        variant={
-                          popup.item.isBankMandateVerified
-                            ? 'approved'
-                            : 'pending'
-                        }
-                      />
-                    ),
-                  },
-                  {
-                    label: 'PWD Registration',
-                    value: popup.item.isRegisteredWithPwd
-                      ? `Yes (${popup.item.pwdRegistrationNumber || 'PWD-REG-2022'})`
-                      : 'No',
-                  },
-                  {
-                    label: 'Security Deposit Paid',
-                    value: `₹${(popup.item.securityDepositPaid || 0).toLocaleString('en-IN')}`,
-                  },
-                  {
-                    label: 'Performance Bond Value',
-                    value: `₹${(popup.item.performanceBondValue || 0).toLocaleString('en-IN')}`,
-                  },
-                  {
-                    label: 'Completed Works',
-                    value: popup.item.completedWorks || 0,
-                  },
-                  {
-                    label: 'Total Works Done',
-                    value: popup.item.totalWorksDone || 0,
-                  },
-                  {
-                    label: 'Active Status',
-                    value: (
-                      <StatusBadge
-                        label={popup.item.isActive ? 'Active' : 'Suspended'}
-                        variant={popup.item.isActive ? 'approved' : 'rejected'}
-                      />
-                    ),
-                  },
-                ]}
-              />
-            )}
-
-            {popup.type === 'LAB' && popup.item && (
-              <PreviewGrid
-                columns={2}
-                fields={[
-                  { label: 'Lab Name', value: popup.item.name },
-                  { label: 'Address', value: popup.item.address },
-                  {
-                    label: 'NABL Certificate',
-                    value: popup.item.nablAccreditation,
-                  },
-                  {
-                    label: 'NABL Validity',
-                    value: popup.item.nablValidity || '2027-12-31',
-                  },
-                  { label: 'Contact Person', value: popup.item.contactPerson },
-                  { label: 'Mobile', value: popup.item.mobile },
-                  { label: 'Email', value: popup.item.email },
-                  {
-                    label: 'Scope of Testing',
-                    value: popup.item.scopeOfTesting,
-                  },
-                ]}
-              />
-            )}
-
-            {popup.type === 'TPI' && popup.item && (
-              <PreviewGrid
-                columns={2}
-                fields={[
-                  { label: 'Agency Name', value: popup.item.name },
-                  { label: 'Address', value: popup.item.address },
-                  { label: 'License No', value: popup.item.licenseNo },
-                  {
-                    label: 'License Validity',
-                    value: popup.item.licenseValidity || '2028-03-31',
-                  },
-                  { label: 'Tier / Class', value: popup.item.contractorClass },
-                  { label: 'Contact Person', value: popup.item.contactPerson },
-                  { label: 'Mobile', value: popup.item.mobile },
-                  { label: 'Email', value: popup.item.email },
-                ]}
-              />
-            )}
-
-            <div className="flex justify-end mt-4">
-              <Button
-                label="Close"
-                variant="outlined"
-                onClick={() => setPopup({ mode: 'closed', type: activeTab })}
-              />
-            </div>
-          </div>
-        ) : (
-          /* Create / Edit Form */
-          <div>
-            {popup.type === 'VENDOR' && (
-              <div>
-                <FormSubSection
-                  title="1. Agency Profile & Contact"
-                  icon="business"
-                >
-                  <FormGrid columns={2}>
-                    <TextBox
-                      label="Company / Firm Name *"
-                      placeholder="e.g. Apex Buildcon Engineers Pvt Ltd"
-                      value={vForm.companyName ?? ''}
-                      onChange={v => setVForm(f => ({ ...f, companyName: v }))}
-                      required
-                    />
-                    <TextBox
-                      label="Proprietor / Managing Director Name *"
-                      placeholder="e.g. Shri Rajesh Singhania"
-                      value={vForm.proprietorName ?? ''}
-                      onChange={v =>
-                        setVForm(f => ({ ...f, proprietorName: v }))
-                      }
-                      required
-                    />
-                    <TextBox
-                      label="Contact Person"
-                      placeholder="e.g. Er. Rohit Verma"
-                      value={vForm.contactPerson ?? ''}
-                      onChange={v =>
-                        setVForm(f => ({ ...f, contactPerson: v }))
-                      }
-                    />
-                    <TextBox
-                      label="Contact Phone *"
-                      placeholder="e.g. +91 98260 12345"
-                      value={vForm.contactPhone ?? ''}
-                      onChange={v => setVForm(f => ({ ...f, contactPhone: v }))}
-                      required
-                    />
-                    <TextBox
-                      label="Contact Email"
-                      placeholder="e.g. contact@apexbuildcon.in"
-                      value={vForm.contactEmail ?? ''}
-                      onChange={v => setVForm(f => ({ ...f, contactEmail: v }))}
-                    />
-                    <TextBox
-                      label="Registered Office Address *"
-                      placeholder="e.g. 14, Industrial Area, Sector 3, Bhopal"
-                      value={vForm.officeAddress ?? ''}
-                      onChange={v =>
-                        setVForm(f => ({ ...f, officeAddress: v }))
-                      }
-                      required
-                    />
-                  </FormGrid>
-                </FormSubSection>
-
-                <FormSubSection
-                  title="2. Statutory Tax & Compliance"
-                  icon="verified"
-                >
-                  <FormGrid columns={2}>
-                    <TextBox
-                      label="GSTIN Number *"
-                      placeholder="e.g. 23AAACA1234F1Z5"
-                      value={vForm.gstNumber ?? ''}
-                      onChange={v => setVForm(f => ({ ...f, gstNumber: v }))}
-                      required
-                    />
-                    <TextBox
-                      label="PAN Number *"
-                      placeholder="e.g. AAACA1234F"
-                      value={vForm.panNumber ?? ''}
-                      onChange={v => setVForm(f => ({ ...f, panNumber: v }))}
-                      required
-                    />
-                    <DropDownList
-                      label="Contractor License Grade *"
-                      data={GRADE_OPTIONS}
-                      textField="label"
-                      optionValue="value"
-                      value={vForm.licenseGrade ?? 'Class A (Unlimited)'}
-                      onChange={v =>
-                        setVForm(f => ({ ...f, licenseGrade: String(v) }))
-                      }
-                      required
-                    />
-                    <TextBox
-                      label="PWD Registration Number"
-                      placeholder="e.g. MP-PWD-CLASS-A-2021-89"
-                      value={vForm.pwdRegistrationNumber ?? ''}
-                      onChange={v =>
-                        setVForm(f => ({ ...f, pwdRegistrationNumber: v }))
-                      }
-                    />
-                  </FormGrid>
-                </FormSubSection>
-
-                <FormSubSection
-                  title="3. Bank Mandate & Financials"
-                  icon="account_balance"
-                >
-                  <FormGrid columns={3}>
-                    <TextBox
-                      label="Bank Name *"
-                      placeholder="e.g. State Bank of India"
-                      value={vForm.bankName ?? ''}
-                      onChange={v => setVForm(f => ({ ...f, bankName: v }))}
-                      required
-                    />
-                    <TextBox
-                      label="Account Number *"
-                      placeholder="e.g. 38291048201"
-                      value={vForm.bankAccountNumber ?? ''}
-                      onChange={v =>
-                        setVForm(f => ({ ...f, bankAccountNumber: v }))
-                      }
-                      required
-                    />
-                    <TextBox
-                      label="IFSC Code *"
-                      placeholder="e.g. SBIN0001234"
-                      value={vForm.ifscCode ?? ''}
-                      onChange={v => setVForm(f => ({ ...f, ifscCode: v }))}
-                      required
-                    />
-                    <NumberBox
-                      label="Security Deposit Paid (₹)"
-                      placeholder="e.g. 2500000"
-                      value={vForm.securityDepositPaid}
-                      onChange={v =>
-                        setVForm(f => ({
-                          ...f,
-                          securityDepositPaid: Number(v) || 0,
-                        }))
-                      }
-                      mode="decimal"
-                    />
-                    <NumberBox
-                      label="Performance Bond Value (₹)"
-                      placeholder="e.g. 5000000"
-                      value={vForm.performanceBondValue}
-                      onChange={v =>
-                        setVForm(f => ({
-                          ...f,
-                          performanceBondValue: Number(v) || 0,
-                        }))
-                      }
-                      mode="decimal"
-                    />
-                    <NumberBox
-                      label="Total Completed Works"
-                      placeholder="e.g. 18"
-                      value={vForm.completedWorks}
-                      onChange={v =>
-                        setVForm(f => ({
-                          ...f,
-                          completedWorks: Number(v) || 0,
-                        }))
-                      }
-                    />
-                  </FormGrid>
-                </FormSubSection>
-
-                <div className="flex justify-end gap-3 mt-4">
-                  <Button
-                    label="Cancel"
-                    variant="outlined"
-                    onClick={() =>
-                      setPopup({ mode: 'closed', type: activeTab })
-                    }
-                  />
-                  <Button
-                    label={
-                      popup.mode === 'create'
-                        ? 'Register Vendor'
-                        : 'Update Vendor'
-                    }
-                    variant="primary"
-                    icon="save"
-                    onClick={handleSaveVendor}
-                  />
-                </div>
-              </div>
-            )}
-
-            {popup.type === 'LAB' && (
-              <div>
-                <FormGrid columns={2}>
-                  <TextBox
-                    label="Laboratory Name *"
-                    value={lForm.name}
-                    onChange={v => setLForm((f: any) => ({ ...f, name: v }))}
-                    required
-                  />
-                  <TextBox
-                    label="NABL Certificate No. *"
-                    value={lForm.nablAccreditation}
-                    onChange={v =>
-                      setLForm((f: any) => ({ ...f, nablAccreditation: v }))
-                    }
-                    required
-                  />
-                  <TextBox
-                    label="Contact Person *"
-                    value={lForm.contactPerson}
-                    onChange={v =>
-                      setLForm((f: any) => ({ ...f, contactPerson: v }))
-                    }
-                    required
-                  />
-                  <TextBox
-                    label="Mobile Number *"
-                    value={lForm.mobile}
-                    onChange={v => setLForm((f: any) => ({ ...f, mobile: v }))}
-                    required
-                  />
-                  <TextBox
-                    label="Email ID"
-                    value={lForm.email}
-                    onChange={v => setLForm((f: any) => ({ ...f, email: v }))}
-                  />
-                  <TextBox
-                    label="Testing Scope"
-                    value={lForm.scopeOfTesting}
-                    onChange={v =>
-                      setLForm((f: any) => ({ ...f, scopeOfTesting: v }))
-                    }
-                  />
-                </FormGrid>
-                <div style={{ marginTop: '0.75rem' }}>
-                  <TextBox
-                    label="Laboratory Address"
-                    value={lForm.address}
-                    onChange={v => setLForm((f: any) => ({ ...f, address: v }))}
-                  />
-                </div>
-                <div className="flex justify-end gap-3 mt-4">
-                  <Button
-                    label="Cancel"
-                    variant="outlined"
-                    onClick={() =>
-                      setPopup({ mode: 'closed', type: activeTab })
-                    }
-                  />
-                  <Button
-                    label={
-                      popup.mode === 'create' ? 'Empanel Lab' : 'Update Lab'
-                    }
-                    variant="primary"
-                    icon="save"
-                    onClick={handleSaveLab}
-                  />
-                </div>
-              </div>
-            )}
-
-            {popup.type === 'TPI' && (
-              <div>
-                <FormGrid columns={2}>
-                  <TextBox
-                    label="Inspection Agency Name *"
-                    value={tForm.name}
-                    onChange={v => setTForm((f: any) => ({ ...f, name: v }))}
-                    required
-                  />
-                  <TextBox
-                    label="License / Accreditation No. *"
-                    value={tForm.licenseNo}
-                    onChange={v =>
-                      setTForm((f: any) => ({ ...f, licenseNo: v }))
-                    }
-                    required
-                  />
-                  <TextBox
-                    label="Contact Representative *"
-                    value={tForm.contactPerson}
-                    onChange={v =>
-                      setTForm((f: any) => ({ ...f, contactPerson: v }))
-                    }
-                    required
-                  />
-                  <TextBox
-                    label="Mobile Number *"
-                    value={tForm.mobile}
-                    onChange={v => setTForm((f: any) => ({ ...f, mobile: v }))}
-                    required
-                  />
-                  <TextBox
-                    label="Email ID"
-                    value={tForm.email}
-                    onChange={v => setTForm((f: any) => ({ ...f, email: v }))}
-                  />
-                  <DropDownList
-                    label="Agency Tier / Class"
-                    data={[
-                      {
-                        label: 'Class A (Central PSU / RITES / EIL)',
-                        value: 'Class A (Central PSU/Agency)',
-                      },
-                      {
-                        label: 'Class B (State PSU / WAPCOS)',
-                        value: 'Class B (State PSU/Agency)',
-                      },
-                      {
-                        label: 'Class C (Chartered Engineering Firm)',
-                        value: 'Class C (Chartered Firm)',
-                      },
-                    ]}
-                    textField="label"
-                    optionValue="value"
-                    value={tForm.contractorClass}
-                    onChange={v =>
-                      setTForm((f: any) => ({
-                        ...f,
-                        contractorClass: String(v),
-                      }))
-                    }
-                  />
-                </FormGrid>
-                <div style={{ marginTop: '0.75rem' }}>
-                  <TextBox
-                    label="Office Address"
-                    value={tForm.address}
-                    onChange={v => setTForm((f: any) => ({ ...f, address: v }))}
-                  />
-                </div>
-                <div className="flex justify-end gap-3 mt-4">
-                  <Button
-                    label="Cancel"
-                    variant="outlined"
-                    onClick={() =>
-                      setPopup({ mode: 'closed', type: activeTab })
-                    }
-                  />
-                  <Button
-                    label={
-                      popup.mode === 'create'
-                        ? 'Empanel TPI Agency'
-                        : 'Update TPI Agency'
-                    }
-                    variant="primary"
-                    icon="save"
-                    onClick={handleSaveTpi}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-      </FormPopup>
     </FormPage>
   );
 }
