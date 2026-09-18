@@ -1,8 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ToastService } from 'services';
 import { Button, StatusButton } from 'shared/components/buttons';
-import { DropDownList, FileUpload, TextBox } from 'shared/components/forms';
-import GridActionButtons from 'shared/components/grid/GridActionButtons';
+import {
+  Checkbox,
+  DropDownList,
+  FileUpload,
+  TextBox,
+} from 'shared/components/forms';
+import 'shared/components/grid/GridActionButtons.css';
 import {
   FormActions,
   FormCard,
@@ -80,12 +86,14 @@ const EMPTY_WORK = {
   fundingSourceName: '',
   workBasis: 'SOR',
   executionRoute: 'Internal',
+  isStatuaryCheck: false,
   status: 'Registered',
   isActive: true,
   mandateDocs: {} as Record<string, string>,
 };
 
 export default function WorkRegistration() {
+  const navigate = useNavigate();
   const [data, setData] = useState<any[]>(() => {
     const saved = localStorage.getItem('civil_works');
     const list = saved ? JSON.parse(saved) : initialData;
@@ -109,6 +117,7 @@ export default function WorkRegistration() {
           ? 'ExternalAgency'
           : 'Internal',
       isActive: w.isActive !== false,
+      isStatuaryCheck: Boolean(w.isStatuaryCheck),
       mandateDocs: w.mandateDocs || {},
     }));
   });
@@ -180,6 +189,7 @@ export default function WorkRegistration() {
       subCategoryName: firstSub?.name || '',
       fundingSourceId: 1,
       fundingSourceName: firstFund?.name || '',
+      isStatuaryCheck: false,
       mandateDocs: {},
     });
     setEditingItem(null);
@@ -436,6 +446,14 @@ export default function WorkRegistration() {
               />
             </FormGrid>
 
+            <Checkbox
+              label="Statutory Compliance Verified"
+              checked={!!form.isStatuaryCheck}
+              onChange={val =>
+                setForm((f: any) => ({ ...f, isStatuaryCheck: val }))
+              }
+            />
+
             {/* Documents Section */}
             <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg flex flex-col gap-3">
               <div className="flex items-center justify-between">
@@ -527,6 +545,20 @@ export default function WorkRegistration() {
                 value: viewItem.executionRoute || 'Internal',
               },
               {
+                label: 'Statutory Check',
+                value: (
+                  <span
+                    className={`text-xs font-semibold px-2 py-0.5 rounded ${
+                      viewItem.isStatuaryCheck
+                        ? 'bg-green-100 text-green-700 border border-green-300'
+                        : 'bg-gray-100 text-gray-500 border border-gray-200'
+                    }`}
+                  >
+                    {viewItem.isStatuaryCheck ? '✓ Yes' : '✗ No'}
+                  </span>
+                ),
+              },
+              {
                 label: 'Work Status',
                 value: (
                   <StatusBadge
@@ -578,13 +610,33 @@ export default function WorkRegistration() {
             onClick={handleBackToList}
             type="button"
           />
-          <Button
-            label="Edit Work"
-            icon="pencil"
-            variant="primary"
-            onClick={() => openEdit(viewItem)}
-            type="button"
-          />
+          <div className="flex items-center gap-2">
+            {viewItem.isStatuaryCheck && (
+              <Button
+                label="Statutory Compliance"
+                icon="shield"
+                variant="outlined"
+                onClick={() =>
+                  navigate(
+                    `${civilUrls.statutoryCompliance}?workId=${String(
+                      viewItem.workRegistrationId ||
+                        viewItem.id ||
+                        viewItem.workId ||
+                        ''
+                    )}`
+                  )
+                }
+                type="button"
+              />
+            )}
+            <Button
+              label="Edit Work"
+              icon="pencil"
+              variant="primary"
+              onClick={() => openEdit(viewItem)}
+              type="button"
+            />
+          </div>
         </div>
       </FormPage>
     );
@@ -637,6 +689,31 @@ export default function WorkRegistration() {
             {
               field: 'priorityLevel',
               header: 'Priority',
+              cell: (w: any) => {
+                const p = w.priorityLevel || w.priority || 'Medium';
+                const variant =
+                  p === 'Critical' || p === 'High'
+                    ? 'rejected'
+                    : p === 'Medium'
+                      ? 'pending'
+                      : 'neutral';
+                return <StatusBadge label={p} variant={variant} />;
+              },
+            },
+            {
+              field: 'isStatuaryCheck',
+              header: 'Statuary Check',
+              cell: (w: any) => (
+                <span
+                  className={`text-xs font-semibold px-2 py-0.5 rounded ${
+                    w.isStatuaryCheck
+                      ? 'bg-green-100 text-green-700 border border-green-300'
+                      : 'bg-gray-100 text-gray-500 border border-gray-200'
+                  }`}
+                >
+                  {w.isStatuaryCheck ? '✓ Yes' : '✗ No'}
+                </span>
+              ),
             },
             {
               field: 'status',
@@ -663,14 +740,48 @@ export default function WorkRegistration() {
               field: 'workRegistrationId',
               header: 'Actions',
               sortable: false,
-              cell: (item: any) => (
-                <GridActionButtons
-                  onView={() => openView(item)}
-                  onEdit={() => openEdit(item)}
-                  viewTooltip="View Details"
-                  editTooltip="Edit Work"
-                />
-              ),
+              cell: (item: any) => {
+                const workId = String(
+                  item.workRegistrationId || item.id || item.workId || ''
+                );
+                return (
+                  <div className="grid-action-buttons">
+                    <Button
+                      icon="eye"
+                      variant="outlined"
+                      size="small"
+                      className="grid-action-button grid-action-button-view"
+                      onClick={() => openView(item)}
+                      tooltip="View Details"
+                      ariaLabel="View Details"
+                    />
+                    <Button
+                      icon="pencil"
+                      variant="outlined"
+                      size="small"
+                      className="grid-action-button grid-action-button-edit"
+                      onClick={() => openEdit(item)}
+                      tooltip="Edit Work"
+                      ariaLabel="Edit Work"
+                    />
+                    {item.isStatuaryCheck && (
+                      <Button
+                        icon="shield"
+                        variant="outlined"
+                        size="small"
+                        className="grid-action-button hover:!border-black hover:!bg-black/[0.04] hover:!text-black"
+                        tooltip="Statutory Compliance & NOC"
+                        ariaLabel="Statutory Compliance"
+                        onClick={() =>
+                          navigate(
+                            `${civilUrls.statutoryCompliance}?workId=${workId}`
+                          )
+                        }
+                      />
+                    )}
+                  </div>
+                );
+              },
             },
           ]}
           toolbar={
