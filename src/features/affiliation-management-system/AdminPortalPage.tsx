@@ -65,6 +65,14 @@ export default function AdminPortalPage() {
           path: '/affiliation-management-system/college-renewal-admin/upcoming',
         },
         {
+          title: 'Special Service Request Approvals',
+          description:
+            'Scrutinize and approve college special service applications (Location, Name, Society change, etc.).',
+          icon: 'published_with_changes',
+          colorScheme: 'teal',
+          path: '/affiliation-management-system/special-service-request-approval',
+        },
+        {
           title: 'Approval Status Report',
           description: 'View approval status of affiliations.',
           icon: 'check_circle',
