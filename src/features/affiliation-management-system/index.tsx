@@ -23,6 +23,7 @@ import BasicRegistrationDetails from './basic-registration-details';
 import ProfileScrutiny from './profile-scrutiny';
 import InspectionCommittee from './inspection-committee';
 import StandingCommitteeMeeting from './standing-committee-meeting';
+import StandingCommitteeDecision from './standing-committee-decision';
 import AffiliationFeeMasterRoutes from './affiliation-fee-master';
 import SpecialServiceRequests from './special-service-requests';
 import SpecialServiceRequestApproval from './special-service-request-approval';
@@ -87,6 +88,10 @@ export default function AffiliationManagementSystem() {
       <Route
         path="standing-committee-meeting/*"
         element={<StandingCommitteeMeeting />}
+      />
+      <Route
+        path="standing-committee-decision/*"
+        element={<StandingCommitteeDecision />}
       />
       <Route path="affiliation-settings/*">
         <Route path="available-facility/*" element={<AvailableFacility />} />
