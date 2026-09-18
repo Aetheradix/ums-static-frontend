@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
@@ -11,6 +11,7 @@ import {
   StatusBadge,
 } from 'shared/new-components';
 import { type RABill, raBills as initialData, mbEntries } from '../../mocks';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
@@ -24,10 +25,10 @@ const statusVariant = (s: string) =>
         : 'neutral';
 
 export default function RABillProcessing() {
-  const [data, setData] = useState<RABill[]>(() => {
-    const saved = localStorage.getItem('civil_ra_bills');
-    return saved ? JSON.parse(saved) : initialData;
-  });
+  const [data, setData] = useCivilStorage<RABill[]>(
+    CIVIL_STORAGE_KEYS.RA_BILLS,
+    initialData
+  );
 
   const [popup, setPopup] = useState<{
     mode: 'closed' | 'view' | 'process';
@@ -59,25 +60,10 @@ export default function RABillProcessing() {
     otherDeductions: 0,
   });
 
-  const [mbList, setMbList] = useState(() => {
-    const saved = localStorage.getItem('civil_mb_entries');
-    return saved ? JSON.parse(saved) : mbEntries;
-  });
-
-  useEffect(() => {
-    const handleStorage = () => {
-      const saved = localStorage.getItem('civil_mb_entries');
-      if (saved) setMbList(JSON.parse(saved));
-      const savedBills = localStorage.getItem('civil_ra_bills');
-      if (savedBills) setData(JSON.parse(savedBills));
-    };
-    window.addEventListener('storage', handleStorage);
-    return () => window.removeEventListener('storage', handleStorage);
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('civil_ra_bills', JSON.stringify(data));
-  }, [data]);
+  const [mbList] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.MB_ENTRIES,
+    mbEntries
+  );
 
   const linkedMBs = (ids: string[]) =>
     mbList.filter((m: any) => ids.includes(m.id));
@@ -175,8 +161,9 @@ export default function RABillProcessing() {
       title="RA Bill Statutory Verification & Processing"
       description="Finance audit of Measurement Book linkages, Goods & Services Tax (GST), Income Tax TDS Sec 194C, GST-TDS Sec 51, and BOCW Labour Cess deductions. Rule 1 strictly enforced."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.financePortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Finance & Accounts', to: civilUrls.financeMenu },
         { label: 'RA Bill Processing' },
       ]}
     >

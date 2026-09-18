@@ -9,6 +9,7 @@ import {
   FormPopup,
   GridPanel,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import { civilWorks } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -36,7 +37,7 @@ export default function BudgetLock() {
   const [remarks, setRemarks] = useState('');
 
   useEffect(() => {
-    localStorage.setItem('civil_works', JSON.stringify(data));
+    civilStorage.set(CIVIL_STORAGE_KEYS.WORKS, data);
   }, [data]);
 
   const handleLock = () => {
@@ -65,8 +66,9 @@ export default function BudgetLock() {
       title="Fiscal Budget Allocation Lock"
       description="The ledger locks funds against the Work ID. Hard stop enforced — tender cannot publish without locked budget."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'Budget Lock' },
       ]}
     >

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextBox } from 'shared/components/forms';
@@ -9,11 +9,10 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../../civilStorage';
 import { initialFundingSources } from '../../../mocks';
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
-
-const STORAGE_KEY = 'civil_funding_sources';
 
 const SOURCE_TYPE_OPTIONS = [
   { label: 'UGC Grant', value: 'UGC' },
@@ -25,12 +24,9 @@ const SOURCE_TYPE_OPTIONS = [
 ];
 
 export default function FundingSourceMaster() {
-  const [data, setData] = useState<CivilManagement.FundingSourceMaster[]>(
-    () => {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : initialFundingSources;
-    }
-  );
+  const [data, setData] = useCivilStorage<
+    CivilManagement.FundingSourceMaster[]
+  >(CIVIL_STORAGE_KEYS.FUNDING_SOURCES, initialFundingSources);
 
   const [popup, setPopup] = useState<{
     mode: 'closed' | 'add' | 'edit';
@@ -42,10 +38,6 @@ export default function FundingSourceMaster() {
   const [formSourceType, setFormSourceType] =
     useState<CivilManagement.FundingSourceMaster['sourceType']>('UGC');
   const [formActive, setFormActive] = useState(true);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }, [data]);
 
   const openAdd = () => {
     setFormCode('');
@@ -118,9 +110,10 @@ export default function FundingSourceMaster() {
       title="Funding Source Master"
       description="Manage civil project funding bodies, capital grants, UGC allocations, and institutional development endowments."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
-        { label: 'Masters' },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
+        { label: 'External Masters', to: civilUrls.externalMastersMenu },
         { label: 'Funding Source' },
       ]}
     >

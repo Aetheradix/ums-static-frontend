@@ -95,8 +95,9 @@ export default function WorkCategorization() {
       title="Work Categorization"
       description="Tag each work type to route workflow logic, financial accounting rules, and approval speed-tracks."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'Work Categorization' },
       ]}
     >

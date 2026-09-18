@@ -9,11 +9,12 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../../civilStorage';
 import { initialTPIAgencies } from '../../../mocks';
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
 
-const STORAGE_KEY = 'civil_tpi_agencies';
+const STORAGE_KEY = CIVIL_STORAGE_KEYS.TPI_AGENCIES;
 
 export default function TPIAgencyMaster() {
   const [data, setData] = useState<CivilManagement.TPIAgencyItem[]>(() => {
@@ -67,7 +68,7 @@ export default function TPIAgencyMaster() {
   const [formActive, setFormActive] = useState(true);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    civilStorage.set(STORAGE_KEY, data);
   }, [data]);
 
   const openAdd = () => {
@@ -161,9 +162,10 @@ export default function TPIAgencyMaster() {
       title="Third Party Inspection (TPI) Agency Master"
       description="Manage empaneled Third Party Quality Assurance & Inspection (TPI/TPQA) agencies (e.g. RITES, SGS, WAPCOS)."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
-        { label: 'Masters' },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
+        { label: 'External Masters', to: civilUrls.externalMastersMenu },
         { label: 'TPI Agency' },
       ]}
     >

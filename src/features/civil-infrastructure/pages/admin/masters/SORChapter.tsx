@@ -9,18 +9,22 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import {
+  CIVIL_STORAGE_KEYS,
+  civilStorage,
+  useCivilStorage,
+} from '../../../civilStorage';
 import { initialSORChapters, initialSORTypes } from '../../../mocks';
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
 
-const STORAGE_CHAPTERS = 'civil_sor_chapters';
-const STORAGE_TYPES = 'civil_sor_types';
+const STORAGE_CHAPTERS = CIVIL_STORAGE_KEYS.SOR_CHAPTERS;
 
 export default function SORChapterMaster() {
-  const [types] = useState<CivilManagement.SORType[]>(() => {
-    const saved = localStorage.getItem(STORAGE_TYPES);
-    return saved ? JSON.parse(saved) : initialSORTypes;
-  });
+  const [types] = useCivilStorage<CivilManagement.SORType[]>(
+    CIVIL_STORAGE_KEYS.SOR_TYPES,
+    initialSORTypes
+  );
 
   const [data, setData] = useState<CivilManagement.SORChapter[]>(() => {
     const saved = localStorage.getItem(STORAGE_CHAPTERS);
@@ -40,7 +44,7 @@ export default function SORChapterMaster() {
   const [formActive, setFormActive] = useState(true);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_CHAPTERS, JSON.stringify(data));
+    civilStorage.set(STORAGE_CHAPTERS, data);
   }, [data]);
 
   const filteredData = useMemo(() => {
@@ -124,9 +128,10 @@ export default function SORChapterMaster() {
       title="SOR Chapter Master"
       description="Define chapters grouping related works under each SOR Classification (e.g. Earthwork, RCC, Brickwork)."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
-        { label: 'Masters' },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
+        { label: 'External Masters', to: civilUrls.externalMastersMenu },
         { label: 'SOR Chapter' },
       ]}
     >

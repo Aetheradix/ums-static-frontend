@@ -400,8 +400,9 @@ export default function CompletionCertificate() {
       title="Project Completion Certificate & Handover"
       description="Joint Technical Inspection Committee audit, snag list clearance blocker checks, mandatory quality tests verification, and asset handover to Estate Section / Using Department."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'Completion Certificate' },
       ]}
     >

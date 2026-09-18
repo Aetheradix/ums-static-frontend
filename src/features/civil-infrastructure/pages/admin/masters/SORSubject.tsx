@@ -10,6 +10,11 @@ import {
   StatusBadge,
 } from 'shared/new-components';
 import {
+  CIVIL_STORAGE_KEYS,
+  civilStorage,
+  useCivilStorage,
+} from '../../../civilStorage';
+import {
   initialSORChapters,
   initialSORSubjects,
   initialSORTypes,
@@ -17,20 +22,18 @@ import {
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
 
-const STORAGE_SUBJECTS = 'civil_sor_subjects';
-const STORAGE_CHAPTERS = 'civil_sor_chapters';
-const STORAGE_TYPES = 'civil_sor_types';
+const STORAGE_SUBJECTS = CIVIL_STORAGE_KEYS.SOR_SUBJECTS;
 
 export default function SORSubjectMaster() {
-  const [types] = useState<CivilManagement.SORType[]>(() => {
-    const saved = localStorage.getItem(STORAGE_TYPES);
-    return saved ? JSON.parse(saved) : initialSORTypes;
-  });
+  const [types] = useCivilStorage<CivilManagement.SORType[]>(
+    CIVIL_STORAGE_KEYS.SOR_TYPES,
+    initialSORTypes
+  );
 
-  const [chapters] = useState<CivilManagement.SORChapter[]>(() => {
-    const saved = localStorage.getItem(STORAGE_CHAPTERS);
-    return saved ? JSON.parse(saved) : initialSORChapters;
-  });
+  const [chapters] = useCivilStorage<CivilManagement.SORChapter[]>(
+    CIVIL_STORAGE_KEYS.SOR_CHAPTERS,
+    initialSORChapters
+  );
 
   const [data, setData] = useState<CivilManagement.SORSubject[]>(() => {
     const saved = localStorage.getItem(STORAGE_SUBJECTS);
@@ -49,7 +52,7 @@ export default function SORSubjectMaster() {
   const [formActive, setFormActive] = useState(true);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_SUBJECTS, JSON.stringify(data));
+    civilStorage.set(STORAGE_SUBJECTS, data);
   }, [data]);
 
   const filteredData = useMemo(() => {
@@ -132,9 +135,10 @@ export default function SORSubjectMaster() {
       title="SOR Subject Master"
       description="Define specific item categories and subjects under each chapter (e.g., M25 RCC Columns, Excavation in hard rock)."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
-        { label: 'Masters' },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
+        { label: 'External Masters', to: civilUrls.externalMastersMenu },
         { label: 'SOR Subject' },
       ]}
     >

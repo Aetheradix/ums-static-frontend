@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ToastService } from 'services';
 import { Button, StatusButton } from 'shared/components/buttons';
 import {
@@ -16,6 +16,7 @@ import {
   PreviewGrid,
   StatusBadge,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import {
   civilWorks,
   initialTechnicalPlans,
@@ -59,15 +60,15 @@ const statusVariantMap: Record<
 };
 
 export default function TechnicalPlanning() {
-  const [works, setWorks] = useState<CivilWork[]>(() => {
-    const saved = localStorage.getItem('civil_works');
-    return saved ? JSON.parse(saved) : civilWorks;
-  });
+  const [works] = useCivilStorage<CivilWork[]>(
+    CIVIL_STORAGE_KEYS.WORKS,
+    civilWorks
+  );
 
-  const [plans, setPlans] = useState<MockTechnicalPlan[]>(() => {
-    const saved = localStorage.getItem('civil_technical_plans');
-    return saved ? JSON.parse(saved) : initialTechnicalPlans;
-  });
+  const [plans, setPlans] = useCivilStorage<MockTechnicalPlan[]>(
+    CIVIL_STORAGE_KEYS.TECHNICAL_PLANS,
+    initialTechnicalPlans
+  );
 
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
 
@@ -92,19 +93,7 @@ export default function TechnicalPlanning() {
   // Sync to localStorage
   const savePlans = (newPlans: MockTechnicalPlan[]) => {
     setPlans(newPlans);
-    localStorage.setItem('civil_technical_plans', JSON.stringify(newPlans));
   };
-
-  useEffect(() => {
-    const handleStorage = () => {
-      const savedWorks = localStorage.getItem('civil_works');
-      if (savedWorks) setWorks(JSON.parse(savedWorks));
-      const savedPlans = localStorage.getItem('civil_technical_plans');
-      if (savedPlans) setPlans(JSON.parse(savedPlans));
-    };
-    window.addEventListener('storage', handleStorage);
-    return () => window.removeEventListener('storage', handleStorage);
-  }, []);
 
   const openCreateModal = () => {
     setFormWorkId(works[0]?.workRegistrationId || 1);
@@ -245,8 +234,9 @@ export default function TechnicalPlanning() {
       title="Technical Plan Management"
       description="Manage civil engineering technical plans, plot areas, concrete grades, geotechnical properties, and material estimations."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.engineerPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Engineer Portal', to: civilUrls.engineerMenu },
         { label: 'Technical Planning' },
       ]}
     >

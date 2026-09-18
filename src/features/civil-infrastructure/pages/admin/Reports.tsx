@@ -65,8 +65,9 @@ export default function AdminReports() {
       title="Civil Infrastructure — Reports"
       description="Summary reports for admin/VC review: financial position, work-wise status, and contractor performance."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'Reports' },
       ]}
     >

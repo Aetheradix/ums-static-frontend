@@ -14,6 +14,7 @@ import {
   StatusBadge,
 } from 'shared/new-components';
 import { formatCurrency } from 'shared/utils/currency';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import { civilWorks as initialWorks } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -55,7 +56,7 @@ export default function TechnicalSanction() {
   const [remark, setRemark] = useState('');
 
   useEffect(() => {
-    localStorage.setItem('civil_works', JSON.stringify(data));
+    civilStorage.set(CIVIL_STORAGE_KEYS.WORKS, data);
   }, [data]);
 
   const closePopup = () => {
@@ -131,7 +132,7 @@ export default function TechnicalSanction() {
               remark: remark.trim() || undefined,
               status:
                 d.status === 'AaApproved' || d.status === 'AA Approved'
-                  ? 'TsGranted'
+                  ? 'TS Granted'
                   : d.status,
             }
           : d
@@ -167,8 +168,9 @@ export default function TechnicalSanction() {
       title="Technical Sanction Approvals"
       description="Review structural design, verify engineering specifications, and issue official Technical Sanctions (TS Amount ≤ AA Amount)."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'Technical Sanction' },
       ]}
     >

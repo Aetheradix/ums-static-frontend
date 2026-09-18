@@ -9,11 +9,12 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../../civilStorage';
 import { initialCivilProjects } from '../../../mocks';
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
 
-const STORAGE_PROJECTS = 'civil_projects';
+const STORAGE_PROJECTS = CIVIL_STORAGE_KEYS.PROJECTS;
 
 export default function ProjectMaster() {
   const [data, setData] = useState<CivilManagement.CivilProject[]>(() => {
@@ -49,7 +50,7 @@ export default function ProjectMaster() {
   const [formActive, setFormActive] = useState(true);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_PROJECTS, JSON.stringify(data));
+    civilStorage.set(STORAGE_PROJECTS, data);
   }, [data]);
 
   const openAdd = () => {
@@ -125,9 +126,10 @@ export default function ProjectMaster() {
       title="Project Master"
       description="Define civil infrastructure master projects, development zones, and strategic university campus schemes."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
-        { label: 'Masters' },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
+        { label: 'External Masters', to: civilUrls.externalMastersMenu },
         { label: 'Project Master' },
       ]}
     >

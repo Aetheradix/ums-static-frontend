@@ -19,6 +19,7 @@ import {
   StatusBadge,
 } from 'shared/new-components';
 import { formatCurrency } from 'shared/utils/currency';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import { civilWorks as initialWorks } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -113,7 +114,7 @@ export default function BudgetAllocation() {
   const [allocationDoc, setAllocationDoc] = useState<File | null>(null);
 
   useEffect(() => {
-    localStorage.setItem('civil_works', JSON.stringify(data));
+    civilStorage.set(CIVIL_STORAGE_KEYS.WORKS, data);
   }, [data]);
 
   const closePopup = () => {
@@ -190,7 +191,7 @@ export default function BudgetAllocation() {
               allocatedAmount: amt,
               remarks: remarks.trim() || undefined,
               isLocked: isLockedCheckbox,
-              status: isLockedCheckbox ? 'BudgetLocked' : 'BudgetAllocated',
+              status: isLockedCheckbox ? 'Budget Locked' : 'BudgetAllocated',
               documentName: allocationDoc
                 ? allocationDoc.name
                 : d.documentName || `Budget_Order_${d.workCode}.pdf`,
@@ -214,8 +215,9 @@ export default function BudgetAllocation() {
       title="Budget Allocation"
       description="Allocate and lock fiscal expenditure budgets against technically sanctioned civil engineering works."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.financePortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Finance & Accounts', to: civilUrls.financeMenu },
         { label: 'Budget Allocation' },
       ]}
     >

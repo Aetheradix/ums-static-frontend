@@ -345,7 +345,7 @@ body {
 @layer base {
   html,
   body {
-    @apply h-full m-0 p-0 overflow-y-auto select-none;
+    @apply h-full m-0 p-0 overflow-y-auto;
     background-color: var(--body-bg);
     font-family: var(--font-sans);
   }

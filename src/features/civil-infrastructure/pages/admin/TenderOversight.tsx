@@ -25,6 +25,7 @@ import {
   workOrders as initialWorkOrders,
   civilWorks as initialWorks,
 } from '../../mocks';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
@@ -156,17 +157,17 @@ export default function TenderOversight() {
     }
   }, [mapTenderPricingType, mapContractAmt, mapTenderPercent]);
 
-  // Persist all data changes to localStorage
+  // Persist all data changes to localStorage & broadcast
   useEffect(() => {
-    localStorage.setItem('civil_tenders', JSON.stringify(tenders));
+    civilStorage.set(CIVIL_STORAGE_KEYS.TENDERS, tenders);
   }, [tenders]);
 
   useEffect(() => {
-    localStorage.setItem('civil_works', JSON.stringify(works));
+    civilStorage.set(CIVIL_STORAGE_KEYS.WORKS, works);
   }, [works]);
 
   useEffect(() => {
-    localStorage.setItem('civil_work_orders', JSON.stringify(workOrders));
+    civilStorage.set(CIVIL_STORAGE_KEYS.WORK_ORDERS, workOrders);
   }, [workOrders]);
 
   const handleAward = () => {
@@ -383,8 +384,9 @@ export default function TenderOversight() {
       title="Tender Oversight & Mapping"
       description="Publish BOQ to portal, evaluate contractor bids, map agencies to registered works, and award tenders."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'Tender Oversight' },
       ]}
     >

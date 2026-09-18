@@ -7,13 +7,17 @@ import {
   GridPanel,
 } from 'shared/new-components';
 import { type SORItem, sorItems as initialData } from '../../mocks';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
 type PopupState = { mode: 'closed' } | { mode: 'view'; item: SORItem };
 
 export default function SORMaster() {
-  const [data] = useState(initialData);
+  const [data] = useCivilStorage<SORItem[]>(
+    CIVIL_STORAGE_KEYS.SOR_ITEMS_BASE,
+    initialData
+  );
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
 
   return (
@@ -21,8 +25,9 @@ export default function SORMaster() {
       title="SOR Master — Schedule of Rates"
       description="Government-notified SOR items locked at official rates. Engineers select items; system auto-calculates costs."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.engineerPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Engineer Portal', to: civilUrls.engineerMenu },
         { label: 'SOR Master' },
       ]}
     >

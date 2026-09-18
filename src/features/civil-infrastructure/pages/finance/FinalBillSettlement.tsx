@@ -10,6 +10,11 @@ import {
   GridPanel,
 } from 'shared/new-components';
 import {
+  CIVIL_STORAGE_KEYS,
+  civilStorage,
+  useCivilStorage,
+} from '../../civilStorage';
+import {
   raBills as initialBills,
   civilWorks as initialWorks,
 } from '../../mocks';
@@ -17,15 +22,15 @@ import { civilUrls } from '../../urls';
 import '../civil.css';
 
 export default function FinalBillSettlement() {
-  const [works] = useState(() => {
-    const saved = localStorage.getItem('civil_works');
-    return saved ? JSON.parse(saved) : initialWorks;
-  });
+  const [works] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.WORKS,
+    initialWorks
+  );
 
-  const [bills] = useState(() => {
-    const saved = localStorage.getItem('civil_ra_bills');
-    return saved ? JSON.parse(saved) : initialBills;
-  });
+  const [bills] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.RA_BILLS,
+    initialBills
+  );
 
   const [popup, setPopup] = useState<{ mode: 'closed' | 'settle'; item?: any }>(
     { mode: 'closed' }
@@ -39,10 +44,7 @@ export default function FinalBillSettlement() {
   });
 
   useEffect(() => {
-    localStorage.setItem(
-      'civil_settled_bills',
-      JSON.stringify(Array.from(settled))
-    );
+    civilStorage.set(CIVIL_STORAGE_KEYS.SETTLED_BILLS, Array.from(settled));
   }, [settled]);
 
   const handleSettle = () => {
@@ -87,8 +89,9 @@ export default function FinalBillSettlement() {
       title="Final Bill Settlement"
       description="Post-completion reconciliation: total measurements verified, all deductions settled, and final balance released."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.financePortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Finance & Accounts', to: civilUrls.financeMenu },
         { label: 'Final Bill Settlement' },
       ]}
     >

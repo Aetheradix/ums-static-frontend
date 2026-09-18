@@ -15,6 +15,7 @@ import {
   GridPanel,
   Tabs,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import { civilWorks, milestones as initialMilestones } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -192,7 +193,7 @@ export default function QualityFramework() {
     );
 
     setMilestones(updatedMilestones);
-    localStorage.setItem('civil_milestones', JSON.stringify(updatedMilestones));
+    civilStorage.set(CIVIL_STORAGE_KEYS.MILESTONES, updatedMilestones);
 
     // Sync to civil_quality_tests for other parts of the app (like Dashboard)
     const updatedTests = updatedMilestones
@@ -215,7 +216,7 @@ export default function QualityFramework() {
         uploadedDoc: m.uploadedDoc,
         remarks: m.testRemarks,
       }));
-    localStorage.setItem('civil_quality_tests', JSON.stringify(updatedTests));
+    civilStorage.set(CIVIL_STORAGE_KEYS.QUALITY_TESTS, updatedTests);
 
     if (result === 'Fail') {
       ToastService.error(
@@ -248,8 +249,9 @@ export default function QualityFramework() {
       title="Quality Assurance Framework"
       description="Systematic control structure establishing mandatory QA/QC test matrices, TPI agency assignments, and NABL lab validation."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.engineerPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Engineer Portal', to: civilUrls.engineerMenu },
         { label: 'Quality Framework' },
       ]}
     >

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
@@ -10,11 +10,10 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import { civilWorks as initialWorks } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
-
-const STORAGE_KEY = 'civil_statutory_clearances';
 
 const CLEARANCE_TYPES = [
   'Municipal Building Permission & Sanction Plan',
@@ -95,15 +94,14 @@ const INITIAL_CLEARANCES: CivilManagement.StatutoryClearance[] = [
 ];
 
 export default function StatutoryCompliance() {
-  const [works] = useState<any[]>(() => {
-    const saved = localStorage.getItem('civil_works');
-    return saved ? JSON.parse(saved) : initialWorks;
-  });
-
-  const [data, setData] = useState<CivilManagement.StatutoryClearance[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : INITIAL_CLEARANCES;
-  });
+  const [works] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.WORKS,
+    initialWorks
+  );
+  const [data, setData] = useCivilStorage<CivilManagement.StatutoryClearance[]>(
+    CIVIL_STORAGE_KEYS.STATUTORY_CLEARANCES,
+    INITIAL_CLEARANCES
+  );
 
   const [filterWorkId, setFilterWorkId] = useState('ALL');
 
@@ -125,10 +123,6 @@ export default function StatutoryCompliance() {
   const [formStatus, setFormStatus] =
     useState<CivilManagement.StatutoryClearance['status']>('Applied');
   const [formRemarks, setFormRemarks] = useState('');
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }, [data]);
 
   const filteredData = useMemo(() => {
     if (filterWorkId === 'ALL') return data;
@@ -238,8 +232,9 @@ export default function StatutoryCompliance() {
       title="Statutory Clearance & NOC Tracker"
       description="Monitor mandatory government permissions (Municipal, Fire, Pollution Control, CEIG, Airport, Forest) required before breaking ground or issuing tenders."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'Statutory Compliance' },
       ]}
     >

@@ -8,6 +8,7 @@ import {
   FormPopup,
   GridPanel,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import {
   type Milestone,
   civilWorks,
@@ -79,7 +80,11 @@ export default function MilestoneSignoff() {
       }
     };
     window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener('civil_storage_update', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('civil_storage_update', handleStorageChange);
+    };
   }, []);
 
   const canSignOff = (m: Milestone) => {
@@ -128,10 +133,7 @@ export default function MilestoneSignoff() {
     };
 
     const updatedRequests = [...requestsList, newReq];
-    localStorage.setItem(
-      'civil_milestone_payment_requests',
-      JSON.stringify(updatedRequests)
-    );
+    civilStorage.set('civil_milestone_payment_requests', updatedRequests);
     setPaymentRequests(updatedRequests);
 
     const updatedMilestones = data.map((m: any) =>
@@ -143,12 +145,11 @@ export default function MilestoneSignoff() {
         : m
     );
     setData(updatedMilestones);
-    localStorage.setItem('civil_milestones', JSON.stringify(updatedMilestones));
+    civilStorage.set(CIVIL_STORAGE_KEYS.MILESTONES, updatedMilestones);
 
     ToastService.success(
       'Milestone sign-off & payment release request submitted to Admin.'
     );
-    window.dispatchEvent(new Event('storage'));
     setPopup({ mode: 'closed' });
     setRemarks('');
     setSelectedWorkId('');
@@ -180,8 +181,9 @@ export default function MilestoneSignoff() {
       title="Milestone Sign-offs"
       description="Milestone sign-off is blocked if any mandatory quality test is failed or pending. Next phases cannot begin without sign-off."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.engineerPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Engineer Portal', to: civilUrls.engineerMenu },
         { label: 'Milestone Sign-offs' },
       ]}
     >

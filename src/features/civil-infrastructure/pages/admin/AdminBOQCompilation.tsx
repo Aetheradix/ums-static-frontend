@@ -286,8 +286,9 @@ export default function AdminBOQCompilation() {
       title="Admin BOQ Compilation & Baseline Lock"
       description="Compile the Bill of Quantities (BOQ) by linking approved SOR rate codes and standard quantities. Lock baseline to fix cost ceiling."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'BOQ Compilation' },
       ]}
     >

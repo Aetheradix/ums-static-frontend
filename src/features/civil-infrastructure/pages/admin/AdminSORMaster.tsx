@@ -560,7 +560,12 @@ export default function AdminSORMaster() {
       ToastService.success('Project updated successfully.');
     }
     setProjectPopup({ mode: 'closed' });
-    setProjectForm({ area: '', campus: 'Main Campus', location: '', constructionPermissionDoc: '' });
+    setProjectForm({
+      area: '',
+      campus: 'Main Campus',
+      location: '',
+      constructionPermissionDoc: '',
+    });
   };
 
   // SOR Actions
@@ -677,8 +682,9 @@ export default function AdminSORMaster() {
       title="Admin Master Registries"
       description="Manage Schedule of Rates (SOR), Third-Party Inspection (TPI) agencies, and accredited Quality Testing Labs."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'Master Registries' },
       ]}
     >
@@ -1548,15 +1554,22 @@ export default function AdminSORMaster() {
               {
                 field: 'constructionPermissionDoc',
                 header: 'Construction Permission',
-                cell: (s: any) => (
+                cell: (s: any) =>
                   s.constructionPermissionDoc ? (
-                    <span style={{ color: '#16a34a', fontWeight: 500, fontSize: '0.75rem' }}>
+                    <span
+                      style={{
+                        color: '#16a34a',
+                        fontWeight: 500,
+                        fontSize: '0.75rem',
+                      }}
+                    >
                       📄 {s.constructionPermissionDoc}
                     </span>
                   ) : (
-                    <span style={{ color: '#9ca3af', fontSize: '0.75rem' }}>No Doc</span>
-                  )
-                ),
+                    <span style={{ color: '#9ca3af', fontSize: '0.75rem' }}>
+                      No Doc
+                    </span>
+                  ),
               },
               {
                 field: 'id',
@@ -2349,7 +2362,10 @@ export default function AdminSORMaster() {
             onChange={e => {
               const file = e.target.files?.[0];
               if (file) {
-                setProjectForm((f: any) => ({ ...f, constructionPermissionDoc: file.name }));
+                setProjectForm((f: any) => ({
+                  ...f,
+                  constructionPermissionDoc: file.name,
+                }));
                 ToastService.success(
                   `Uploaded construction permission: ${file.name}`
                 );

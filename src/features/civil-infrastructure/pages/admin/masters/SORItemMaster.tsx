@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ToastService } from 'services';
 import { Button, StatusButton } from 'shared/components/buttons';
 import {
@@ -17,6 +17,11 @@ import {
   PreviewGrid,
 } from 'shared/new-components';
 import {
+  CIVIL_STORAGE_KEYS,
+  civilStorage,
+  useCivilStorage,
+} from '../../../civilStorage';
+import {
   initialSORItemMasters,
   initialSORTypes,
   initialSORChapters,
@@ -33,25 +38,25 @@ type PopupState =
   | { mode: 'view'; item: MockSORItem };
 
 export default function SORItemMaster() {
-  const [items, setItems] = useState<MockSORItem[]>(() => {
-    const saved = localStorage.getItem('civil_sor_item_masters');
-    return saved ? JSON.parse(saved) : initialSORItemMasters;
-  });
+  const [items, setItems] = useCivilStorage<MockSORItem[]>(
+    'civil_sor_item_masters',
+    initialSORItemMasters
+  );
 
-  const [sorTypes] = useState<CivilManagement.SORType[]>(() => {
-    const saved = localStorage.getItem('civil_sor_types');
-    return saved ? JSON.parse(saved) : initialSORTypes;
-  });
+  const [sorTypes] = useCivilStorage<CivilManagement.SORType[]>(
+    CIVIL_STORAGE_KEYS.SOR_TYPES,
+    initialSORTypes
+  );
 
-  const [sorChapters] = useState<CivilManagement.SORChapter[]>(() => {
-    const saved = localStorage.getItem('civil_sor_chapters');
-    return saved ? JSON.parse(saved) : initialSORChapters;
-  });
+  const [sorChapters] = useCivilStorage<CivilManagement.SORChapter[]>(
+    CIVIL_STORAGE_KEYS.SOR_CHAPTERS,
+    initialSORChapters
+  );
 
-  const [sorSubjects] = useState<CivilManagement.SORSubject[]>(() => {
-    const saved = localStorage.getItem('civil_sor_subjects');
-    return saved ? JSON.parse(saved) : initialSORSubjects;
-  });
+  const [sorSubjects] = useCivilStorage<CivilManagement.SORSubject[]>(
+    CIVIL_STORAGE_KEYS.SOR_SUBJECTS,
+    initialSORSubjects
+  );
 
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
 
@@ -66,17 +71,8 @@ export default function SORItemMaster() {
 
   const saveItems = (newItems: MockSORItem[]) => {
     setItems(newItems);
-    localStorage.setItem('civil_sor_item_masters', JSON.stringify(newItems));
+    civilStorage.set(CIVIL_STORAGE_KEYS.SOR_ITEMS, newItems);
   };
-
-  useEffect(() => {
-    const handleStorage = () => {
-      const saved = localStorage.getItem('civil_sor_item_masters');
-      if (saved) setItems(JSON.parse(saved));
-    };
-    window.addEventListener('storage', handleStorage);
-    return () => window.removeEventListener('storage', handleStorage);
-  }, []);
 
   const openCreateModal = () => {
     setFormTypeId(sorTypes[0]?.id ? Number(sorTypes[0].id) : 1);
@@ -184,8 +180,10 @@ export default function SORItemMaster() {
       title="Schedule of Rates (SOR) Item Master"
       description="Manage statutory government-notified Schedule of Rates (SOR) line items, descriptions, standard units, and baseline rates."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
+        { label: 'External Masters', to: civilUrls.externalMastersMenu },
         { label: 'SOR Item Master' },
       ]}
     >

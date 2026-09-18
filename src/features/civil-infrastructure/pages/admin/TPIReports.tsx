@@ -266,8 +266,9 @@ export default function TPIReports() {
       title="Third Party Inspection (TPI) Reports & Quality Audits"
       description="Independent technical quality assurance audits, Non-Conformance Reports (NCRs), and Contractor Action Taken Reports (ATRs)."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'TPI Reports' },
       ]}
     >

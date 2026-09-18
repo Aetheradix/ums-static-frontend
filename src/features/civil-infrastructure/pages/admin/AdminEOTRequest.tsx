@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { TextArea, TextBox } from 'shared/components/forms';
@@ -15,6 +15,7 @@ import {
   eotRequests as initialData,
   civilWorks as initialWorks,
 } from '../../mocks';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
@@ -28,15 +29,15 @@ const statusVariant = (s: string) =>
         : 'neutral';
 
 export default function AdminEOTRequest() {
-  const [data, setData] = useState<any[]>(() => {
-    const saved = localStorage.getItem('civil_eot_requests');
-    return saved ? JSON.parse(saved) : initialData;
-  });
+  const [data, setData] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.EOT_REQUESTS,
+    initialData
+  );
 
-  const [works, setWorks] = useState<any[]>(() => {
-    const saved = localStorage.getItem('civil_works');
-    return saved ? JSON.parse(saved) : initialWorks;
-  });
+  const [works, setWorks] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.WORKS,
+    initialWorks
+  );
 
   const [popup, setPopup] = useState<{ mode: 'closed' | 'review'; item?: any }>(
     { mode: 'closed' }
@@ -44,14 +45,6 @@ export default function AdminEOTRequest() {
   const [approvedDays, setApprovedDays] = useState('');
   const [approvedBudget, setApprovedBudget] = useState('');
   const [resolution, setResolution] = useState('');
-
-  useEffect(() => {
-    localStorage.setItem('civil_eot_requests', JSON.stringify(data));
-  }, [data]);
-
-  useEffect(() => {
-    localStorage.setItem('civil_works', JSON.stringify(works));
-  }, [works]);
 
   const handleOpenReview = (item: any) => {
     setApprovedDays(String(item.daysRequested ?? ''));
@@ -158,8 +151,9 @@ export default function AdminEOTRequest() {
       title="EOT & Revised Estimate Decisions"
       description="Process contractor applications for project schedule extension (Extension of Time) or scope budget revision."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'EOT Requests' },
       ]}
     >

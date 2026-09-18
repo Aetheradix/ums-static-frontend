@@ -9,18 +9,22 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import {
+  CIVIL_STORAGE_KEYS,
+  civilStorage,
+  useCivilStorage,
+} from '../../../civilStorage';
 import { initialMandateDocuments, initialWorkCategories } from '../../../mocks';
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
 
-const STORAGE_DOCS = 'civil_mandate_documents';
-const STORAGE_CATS = 'civil_work_categories';
+const STORAGE_DOCS = CIVIL_STORAGE_KEYS.MANDATE_DOCUMENTS;
 
 export default function MandateDocumentMaster() {
-  const [categories] = useState<CivilManagement.WorkCategoryMaster[]>(() => {
-    const saved = localStorage.getItem(STORAGE_CATS);
-    return saved ? JSON.parse(saved) : initialWorkCategories;
-  });
+  const [categories] = useCivilStorage<CivilManagement.WorkCategoryMaster[]>(
+    CIVIL_STORAGE_KEYS.WORK_CATEGORIES,
+    initialWorkCategories
+  );
 
   const [data, setData] = useState<CivilManagement.MandateDocument[]>(() => {
     const saved = localStorage.getItem(STORAGE_DOCS);
@@ -41,7 +45,7 @@ export default function MandateDocumentMaster() {
   const [formActive, setFormActive] = useState(true);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_DOCS, JSON.stringify(data));
+    civilStorage.set(STORAGE_DOCS, data);
   }, [data]);
 
   const openAdd = () => {
@@ -139,9 +143,10 @@ export default function MandateDocumentMaster() {
       title="Mandate Document Master"
       description="Define mandatory statutory clearance, technical drawings, and verification documents required during Work Registration."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
-        { label: 'Masters' },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
+        { label: 'External Masters', to: civilUrls.externalMastersMenu },
         { label: 'Mandate Document' },
       ]}
     >

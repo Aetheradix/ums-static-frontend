@@ -17,6 +17,7 @@ import {
   milestones as initialMilestones,
   initialWorkSuspensions,
 } from '../../mocks';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
@@ -148,11 +149,11 @@ export default function WorkOrderSign() {
   });
 
   useEffect(() => {
-    localStorage.setItem('civil_work_orders', JSON.stringify(workOrders));
+    civilStorage.set(CIVIL_STORAGE_KEYS.WORK_ORDERS, workOrders);
   }, [workOrders]);
 
   useEffect(() => {
-    localStorage.setItem('civil_work_suspensions', JSON.stringify(suspensions));
+    civilStorage.set(CIVIL_STORAGE_KEYS.WORK_SUSPENSIONS, suspensions);
   }, [suspensions]);
 
   const contractor = (id: string) => contractors.find((c: any) => c.id === id);
@@ -252,7 +253,7 @@ export default function WorkOrderSign() {
         : w
     );
     setCivilWorks(updatedWorks);
-    localStorage.setItem('civil_works', JSON.stringify(updatedWorks));
+    civilStorage.set(CIVIL_STORAGE_KEYS.WORKS, updatedWorks);
 
     ToastService.success(
       'Work Order approved and signed by Admin. Notice to Proceed issued. Project start timestamp recorded.'
@@ -412,8 +413,9 @@ export default function WorkOrderSign() {
       title="Work Order & Contract Agreement Management"
       description="Generate digitized contracts, track statutory stamp duties, register Performance Bank Guarantees, issue Notice to Proceed, and manage CPWD Clause 13 & 15 Suspensions/Foreclosures."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'Work Orders & Agreements' },
       ]}
     >

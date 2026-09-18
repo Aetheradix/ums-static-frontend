@@ -21,6 +21,7 @@ import {
   milestones as initialMilestones,
   raBills,
 } from '../../mocks';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
@@ -101,7 +102,7 @@ export default function EMeasurementBook() {
   });
 
   useEffect(() => {
-    localStorage.setItem('civil_mb_entries', JSON.stringify(data));
+    civilStorage.set(CIVIL_STORAGE_KEYS.MB_ENTRIES, data);
   }, [data]);
 
   useEffect(() => {
@@ -364,8 +365,7 @@ export default function EMeasurementBook() {
     };
 
     const updatedBills = [newBill, ...existingBills];
-    localStorage.setItem('civil_ra_bills', JSON.stringify(updatedBills));
-    window.dispatchEvent(new Event('storage'));
+    civilStorage.set(CIVIL_STORAGE_KEYS.RA_BILLS, updatedBills);
 
     ToastService.success(
       `RA Bill ${nextBillNo} for ₹${(gross / 100000).toFixed(2)}L created & submitted to Finance for statutory deductions!`
@@ -392,8 +392,9 @@ export default function EMeasurementBook() {
       title="E-Measurement Book (E-MB)"
       description="Single source of truth for physical measurements and financial claims, organized project-wise with ERP-enforced 4-rule integrity."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.engineerPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Engineer Portal', to: civilUrls.engineerMenu },
         { label: 'E-Measurement Book' },
       ]}
     >

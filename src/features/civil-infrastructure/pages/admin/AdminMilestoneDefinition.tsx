@@ -673,8 +673,9 @@ export default function AdminMilestoneDefinition() {
       title="Admin Milestone & Payment Release Setup"
       description="Configure project execution milestones and link them directly to financial progress releases (e.g. Plinth, Walls, Slab, Finishing)."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'Milestone Definition' },
       ]}
     >

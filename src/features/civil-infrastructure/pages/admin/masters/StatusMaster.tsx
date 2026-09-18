@@ -9,11 +9,12 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../../civilStorage';
 import { initialStatusMasters } from '../../../mocks';
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
 
-const STORAGE_KEY = 'civil_status_masters';
+const STORAGE_KEY = CIVIL_STORAGE_KEYS.STATUS_MASTERS;
 
 const MODULE_OPTIONS = [
   { label: 'All Modules', value: 'ALL' },
@@ -44,7 +45,7 @@ export default function StatusMaster() {
   const [formActive, setFormActive] = useState(true);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    civilStorage.set(STORAGE_KEY, data);
   }, [data]);
 
   const filteredData = useMemo(() => {
@@ -135,9 +136,10 @@ export default function StatusMaster() {
       title="Workflow Status Master"
       description="Registry of lifecycle statuses and transition states across Civil Engineering workflows."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
-        { label: 'Masters' },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
+        { label: 'External Masters', to: civilUrls.externalMastersMenu },
         { label: 'Status Master' },
       ]}
     >

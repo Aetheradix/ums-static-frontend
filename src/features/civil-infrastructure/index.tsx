@@ -22,7 +22,6 @@ import WorkRegistration from './pages/admin/WorkRegistration';
 // ── Admin Gap-Fill & Indian Workflow Pages ─────────────────────────
 import StatutoryCompliance from './pages/admin/StatutoryCompliance';
 import TPIReports from './pages/admin/TPIReports';
-import AssetRegister from './pages/admin/AssetRegister';
 
 // ── Admin Masters ──────────────────────────────────────────────────
 import FundingSourceMaster from './pages/admin/masters/FundingSourceMaster';
@@ -42,7 +41,6 @@ import WorkDepartmentMaster from './pages/admin/masters/WorkDepartmentMaster';
 // ── Engineer Pages ─────────────────────────────────────────────────
 import BOQCompilation from './pages/engineer/BOQCompilation';
 import EngineerDashboard from './pages/engineer/Dashboard';
-import DeviationStatement from './pages/engineer/DeviationStatement';
 import EMeasurementBook from './pages/engineer/EMeasurementBook';
 import EOTRequest from './pages/engineer/EOTRequest';
 import ExecutionRouter from './pages/engineer/ExecutionRouter';
@@ -52,7 +50,6 @@ import ProgressMonitoring from './pages/engineer/ProgressMonitoring';
 import QualityFramework from './pages/engineer/QualityFramework';
 import QualityTesting from './pages/engineer/QualityTesting';
 import RequestCC from './pages/engineer/RequestCC';
-import SiteHandover from './pages/engineer/SiteHandover';
 import SORMaster from './pages/engineer/SORMaster';
 import TechnicalPlanning from './pages/engineer/TechnicalPlanning';
 
@@ -62,7 +59,6 @@ import FinanceDashboard from './pages/finance/Dashboard';
 import DLPMonitoring from './pages/finance/DLPMonitoring';
 import FinalBillSettlement from './pages/finance/FinalBillSettlement';
 import PaymentRelease from './pages/finance/PaymentRelease';
-import PVCCalculation from './pages/finance/PVCCalculation';
 import RABillProcessing from './pages/finance/RABillProcessing';
 import UtilizationCertificate from './pages/finance/UtilizationCertificate';
 
@@ -127,7 +123,6 @@ export default function CivilInfrastructure() {
         element={<StatutoryCompliance />}
       />
       <Route path="admin/tpi-reports" element={<TPIReports />} />
-      <Route path="admin/asset-register" element={<AssetRegister />} />
 
       {/* Admin Masters */}
       <Route path="admin/masters/sor-type" element={<SORType />} />
@@ -185,11 +180,6 @@ export default function CivilInfrastructure() {
       <Route path="engineer/milestone-signoff" element={<MilestoneSignoff />} />
       <Route path="engineer/request-cc" element={<RequestCC />} />
       <Route path="engineer/mb-report" element={<MBReport />} />
-      <Route path="engineer/site-handover" element={<SiteHandover />} />
-      <Route
-        path="engineer/deviation-statement"
-        element={<DeviationStatement />}
-      />
 
       {/* ── Finance Login ─────────────────────────────────────────── */}
       <Route
@@ -211,7 +201,6 @@ export default function CivilInfrastructure() {
         path="finance/utilization-certificate"
         element={<UtilizationCertificate />}
       />
-      <Route path="finance/pvc-calculation" element={<PVCCalculation />} />
     </Routes>
   );
 }

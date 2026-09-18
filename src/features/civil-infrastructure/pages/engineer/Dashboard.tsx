@@ -1,11 +1,11 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FormCard, FormPage, StatCard } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import {
+  mbEntries as initialMBEntries,
   milestones as initialMilestones,
   qualityTests as initialTests,
   civilWorks as initialWorks,
-  mbEntries,
   progressLogs,
 } from '../../mocks';
 import { civilUrls } from '../../urls';
@@ -35,65 +35,22 @@ const QUICK_ACTIONS = [
 export default function EngineerDashboard() {
   const navigate = useNavigate();
 
-  const [works] = useState<any[]>(() => {
-    const saved = localStorage.getItem('civil_works');
-    return saved ? JSON.parse(saved) : initialWorks;
-  });
-
-  const [milestones] = useState<any[]>(() => {
-    const saved = localStorage.getItem('civil_milestones');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      const merged = parsed.map((m: any) => {
-        const mockM = initialMilestones.find((mw: any) => mw.id === m.id);
-        if (mockM && mockM.qualityTestRequired) {
-          return {
-            ...m,
-            testName: m.testName || mockM.testName,
-            testType: m.testType || mockM.testType,
-            materialTested: m.materialTested || mockM.materialTested,
-            labName: m.labName || mockM.labName,
-            requiredValue: m.requiredValue || mockM.requiredValue,
-          };
-        }
-        return m;
-      });
-      const parsedIds = new Set(merged.map((m: any) => m.id));
-      const missing = initialMilestones.filter(
-        (m: any) => !parsedIds.has(m.id)
-      );
-      const finalMerged = [...merged, ...missing];
-      localStorage.setItem('civil_milestones', JSON.stringify(finalMerged));
-      return finalMerged;
-    }
-    return initialMilestones;
-  });
-
-  const [tests] = useState<any[]>(() => {
-    const saved = localStorage.getItem('civil_quality_tests');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      const merged = parsed.map((t: any) => {
-        const mockT = initialTests.find(
-          (mt: any) => mt.id === t.id || mt.milestoneId === t.milestoneId
-        );
-        if (mockT) {
-          return {
-            ...t,
-            testName: t.testName || mockT.testName,
-            testType: t.testType || mockT.testType,
-            materialTested: t.materialTested || mockT.materialTested,
-            labName: t.labName || mockT.labName,
-            requiredValue: t.requiredValue || mockT.requiredValue,
-          };
-        }
-        return t;
-      });
-      localStorage.setItem('civil_quality_tests', JSON.stringify(merged));
-      return merged;
-    }
-    return initialTests;
-  });
+  const [works] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.WORKS,
+    initialWorks
+  );
+  const [milestones] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.MILESTONES,
+    initialMilestones
+  );
+  const [tests] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.QUALITY_TESTS,
+    initialTests
+  );
+  const [mbList] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.MB_ENTRIES,
+    initialMBEntries
+  );
 
   const myWorks = works.filter((w: any) =>
     ['In Progress', 'Work Order Issued', 'Tender Awarded'].includes(w.status)
@@ -104,8 +61,11 @@ export default function EngineerDashboard() {
   const pendingTests = tests.filter(
     (t: any) => t.result === 'Pending' || t.result === undefined
   );
-  const pendingMBs = mbEntries.filter(
-    (m: any) => m.status === 'Draft' || m.status === 'Submitted'
+  const pendingMBs = mbList.filter(
+    (m: any) =>
+      m.status === 'Draft' ||
+      m.status === 'Submitted' ||
+      m.status === 'Verified by AE'
   );
 
   return (
@@ -113,8 +73,9 @@ export default function EngineerDashboard() {
       title="Site Engineer / JE — Dashboard"
       description="Your active assignments: field progress, E-MB entries, quality testing, and milestone sign-offs."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.engineerPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Engineer Portal', to: civilUrls.engineerMenu },
         { label: 'Engineer Dashboard' },
       ]}
     >
@@ -128,7 +89,7 @@ export default function EngineerDashboard() {
         />
         <StatCard
           title="MB Entries This Month"
-          value={String(mbEntries.length)}
+          value={String(mbList.length)}
           icon="book"
           colorScheme="teal"
           subtitle="E-Measurement Book"

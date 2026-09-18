@@ -18,6 +18,7 @@ import {
   StatusBadge,
 } from 'shared/new-components';
 import { formatCurrency } from 'shared/utils/currency';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import {
   civilWorks as initialData,
   initialCivilProjects,
@@ -131,7 +132,7 @@ export default function WorkRegistration() {
   const [form, setForm] = useState<any>(EMPTY_WORK);
 
   useEffect(() => {
-    localStorage.setItem('civil_works', JSON.stringify(data));
+    civilStorage.set(CIVIL_STORAGE_KEYS.WORKS, data);
   }, [data]);
 
   const close = useCallback(() => {
@@ -283,8 +284,9 @@ export default function WorkRegistration() {
       title="Work Registration"
       description="Manage and register civil engineering works, project allocations, site engineers, and mandate documents."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'Work Registration' },
       ]}
     >

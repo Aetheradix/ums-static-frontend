@@ -7995,14 +7995,6 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'green',
               },
               {
-                label: 'Asset Register & Handover',
-                description:
-                  'Capitalize completed civil works into institutional assets.',
-                path: '/civil-infrastructure/admin/asset-register',
-                icon: 'account_balance',
-                colorScheme: 'teal',
-              },
-              {
                 label: 'Statutory Compliance / NOCs',
                 description:
                   'Track environmental, fire, municipal, and heritage NOCs.',
@@ -8135,22 +8127,6 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'emoji_events',
                 colorScheme: 'indigo',
               },
-              {
-                label: 'Site Handover',
-                description:
-                  'Possession certificate, site encumbrance check, and geo-photos.',
-                path: '/civil-infrastructure/engineer/site-handover',
-                icon: 'key',
-                colorScheme: 'teal',
-              },
-              {
-                label: 'Deviation Statement',
-                description:
-                  'Clause 12 deviations, extra items, substitutions and justifications.',
-                path: '/civil-infrastructure/engineer/deviation-statement',
-                icon: 'difference',
-                colorScheme: 'amber',
-              },
             ],
           },
           {
@@ -8213,14 +8189,6 @@ export const menuConfig: Menu.MenuItem[] = [
                 path: '/civil-infrastructure/finance/utilization-certificate',
                 icon: 'document_scanner',
                 colorScheme: 'indigo',
-              },
-              {
-                label: 'Price Variation (PVC)',
-                description:
-                  'CPWD Clause 10CC price escalation calculations based on WPI/CPI.',
-                path: '/civil-infrastructure/finance/pvc-calculation',
-                icon: 'trending_up',
-                colorScheme: 'orange',
               },
             ],
           },

@@ -9,11 +9,12 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../../civilStorage';
 import { initialMBStatuses } from '../../../mocks';
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
 
-const STORAGE_KEY = 'civil_mb_statuses';
+const STORAGE_KEY = CIVIL_STORAGE_KEYS.MB_STATUSES;
 
 export default function MBStatusMaster() {
   const [data, setData] = useState<CivilManagement.MBStatusMaster[]>(() => {
@@ -33,7 +34,7 @@ export default function MBStatusMaster() {
   const [formActive, setFormActive] = useState(true);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    civilStorage.set(STORAGE_KEY, data);
   }, [data]);
 
   const openAdd = () => {
@@ -115,9 +116,10 @@ export default function MBStatusMaster() {
       title="Measurement Book (MB) Status Master"
       description="Define the statutory verification workflow stages for e-Measurement Book entries (JE entry, AE 50% test check, EE 10% scrutiny, Bill linkage)."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
-        { label: 'Masters' },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
+        { label: 'External Masters', to: civilUrls.externalMastersMenu },
         { label: 'MB Status' },
       ]}
     >

@@ -362,8 +362,9 @@ export default function AgencyRegistration() {
       title="Agency Registration & Empanelment"
       description="Unified registry for Civil Contractors (Vendors), NABL Accredited Testing Laboratories, and Third Party Inspection (TPI) Agencies."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'Agency Registration' },
       ]}
     >

@@ -30,7 +30,8 @@ const INITIAL_PAYMENT_REQUESTS = [
     amountToRelease: 3930000,
     requestDate: '2026-06-20',
     status: 'Pending Admin Approval',
-    engineerRemarks: 'Foundation work completed. Soil bearing and RCC test logs verified and passed.',
+    engineerRemarks:
+      'Foundation work completed. Soil bearing and RCC test logs verified and passed.',
     approvalRemarks: '',
   },
   {
@@ -45,7 +46,8 @@ const INITIAL_PAYMENT_REQUESTS = [
     amountToRelease: 2700000,
     requestDate: '2026-05-12',
     status: 'Approved by Admin',
-    engineerRemarks: 'Foundation and footings finished. Steel reinforcement inspected.',
+    engineerRemarks:
+      'Foundation and footings finished. Steel reinforcement inspected.',
     approvalRemarks: 'Looks good. Quality lab certificate submitted.',
     approvalDate: '2026-05-14',
   },
@@ -61,7 +63,8 @@ const INITIAL_PAYMENT_REQUESTS = [
     amountToRelease: 1600000,
     requestDate: '2026-07-10',
     status: 'Pending Admin Approval',
-    engineerRemarks: 'Road surface excavation and sub-grade grading done. Quality report uploaded.',
+    engineerRemarks:
+      'Road surface excavation and sub-grade grading done. Quality report uploaded.',
     approvalRemarks: '',
   },
 ];
@@ -149,8 +152,9 @@ export default function MilestoneApprovals() {
       title="Milestone Sign-off Approvals"
       description="Milestone sign-off requests submitted by site engineers requiring administrative approval."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'Milestone Sign-off Approvals' },
       ]}
     >

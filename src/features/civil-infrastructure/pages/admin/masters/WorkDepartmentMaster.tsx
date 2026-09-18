@@ -9,18 +9,22 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import {
+  CIVIL_STORAGE_KEYS,
+  civilStorage,
+  useCivilStorage,
+} from '../../../civilStorage';
 import { initialWorkCategories, initialWorkDepartments } from '../../../mocks';
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
 
-const STORAGE_DEPTS = 'civil_work_departments';
-const STORAGE_CATS = 'civil_work_categories';
+const STORAGE_DEPTS = CIVIL_STORAGE_KEYS.WORK_DEPARTMENTS;
 
 export default function WorkDepartmentMaster() {
-  const [categories] = useState<CivilManagement.WorkCategoryMaster[]>(() => {
-    const saved = localStorage.getItem(STORAGE_CATS);
-    return saved ? JSON.parse(saved) : initialWorkCategories;
-  });
+  const [categories] = useCivilStorage<CivilManagement.WorkCategoryMaster[]>(
+    CIVIL_STORAGE_KEYS.WORK_CATEGORIES,
+    initialWorkCategories
+  );
 
   const [data, setData] = useState<CivilManagement.WorkDepartmentMaster[]>(
     () => {
@@ -42,7 +46,7 @@ export default function WorkDepartmentMaster() {
   const [formActive, setFormActive] = useState(true);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_DEPTS, JSON.stringify(data));
+    civilStorage.set(STORAGE_DEPTS, data);
   }, [data]);
 
   const filteredData = useMemo(() => {
@@ -121,9 +125,10 @@ export default function WorkDepartmentMaster() {
       title="Work Department / Sub-Category Master"
       description="Manage civil sub-departments, executing divisions, and sub-categories under primary work categories."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
-        { label: 'Masters' },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
+        { label: 'External Masters', to: civilUrls.externalMastersMenu },
         { label: 'Work Department' },
       ]}
     >

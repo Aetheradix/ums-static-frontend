@@ -14,6 +14,7 @@ import {
   FormPopup,
   GridPanel,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import { civilWorks, milestones as initialMilestones } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -139,7 +140,7 @@ export default function QualityTesting() {
     );
 
     setMilestones(updatedMilestones);
-    localStorage.setItem('civil_milestones', JSON.stringify(updatedMilestones));
+    civilStorage.set(CIVIL_STORAGE_KEYS.MILESTONES, updatedMilestones);
 
     // Sync to civil_quality_tests for other parts of the app (like Dashboard)
     const updatedTests = updatedMilestones
@@ -162,7 +163,7 @@ export default function QualityTesting() {
         uploadedDoc: m.uploadedDoc,
         remarks: m.testRemarks,
       }));
-    localStorage.setItem('civil_quality_tests', JSON.stringify(updatedTests));
+    civilStorage.set(CIVIL_STORAGE_KEYS.QUALITY_TESTS, updatedTests);
 
     if (result === 'Fail') {
       ToastService.error(
@@ -188,8 +189,9 @@ export default function QualityTesting() {
       title="Quality Testing & Lab Certificates"
       description="Material verification certificates from lab are logged. Dependency: milestone cannot close if test is failed or un-uploaded."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.engineerPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Engineer Portal', to: civilUrls.engineerMenu },
         { label: 'Quality Testing' },
       ]}
     >

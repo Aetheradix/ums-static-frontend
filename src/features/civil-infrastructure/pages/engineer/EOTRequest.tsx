@@ -20,13 +20,10 @@ import {
   eotRequests as initialData,
   civilWorks,
 } from '../../mocks';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
-const WORK_OPTIONS = civilWorks.map(w => ({
-  name: `${w.workId} — ${w.name}`,
-  value: w.id,
-}));
 const EOT_TYPES = [
   {
     name: 'Extension of Time (Delay → Timeline increase, No cost change)',
@@ -48,7 +45,17 @@ const statusVariant = (s: string) =>
         : 'neutral';
 
 export default function EOTRequest() {
-  const [data, setData] = useState(initialData);
+  const [works] = useCivilStorage<any[]>(CIVIL_STORAGE_KEYS.WORKS, civilWorks);
+  const [data, setData] = useCivilStorage<EOTRequest[]>(
+    CIVIL_STORAGE_KEYS.EOT_REQUESTS,
+    initialData
+  );
+
+  const WORK_OPTIONS = works.map(w => ({
+    name: `${w.workId || w.code} — ${w.name}`,
+    value: w.id,
+  }));
+
   const [popup, setPopup] = useState<{
     mode: 'closed' | 'create' | 'view';
     item?: EOTRequest;
@@ -88,8 +95,9 @@ export default function EOTRequest() {
       title="Extension of Time / Revised Estimate"
       description="Two independent workflows: EOT (delay → timeline extended, no cost change) or Revised Estimate (additional budget required)."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.engineerPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Engineer Portal', to: civilUrls.engineerMenu },
         { label: 'EOT Request' },
       ]}
     >

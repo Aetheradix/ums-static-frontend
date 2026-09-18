@@ -13,49 +13,15 @@ import {
   YAxis,
 } from 'recharts';
 import { FormCard, FormPage, StatCard } from 'shared/new-components';
-import { civilWorks, milestones, raBills, tenders } from '../../mocks';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
+import {
+  civilWorks as initialWorks,
+  milestones as initialMilestones,
+  raBills as initialRaBills,
+  tenders as initialTenders,
+} from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
-
-const totalWorks = civilWorks.length;
-const inProgress = civilWorks.filter(w => w.status === 'In Progress').length;
-const completed = civilWorks.filter(
-  w =>
-    w.status === 'Completed' ||
-    w.status === 'DLP Active' ||
-    w.status === 'Closed'
-).length;
-const pendingAA = civilWorks.filter(
-  w => w.status === 'Registered' || w.status === 'Requirement Generated'
-).length;
-const pendingTS = civilWorks.filter(w => w.status === 'AA Approved').length;
-const pendingBudget = civilWorks.filter(w => w.status === 'TS Granted').length;
-const activeTenders = tenders.filter(
-  t =>
-    t.status === 'Published' ||
-    t.status === 'Bids Received' ||
-    t.status === 'Under Evaluation'
-).length;
-
-const totalAAAmount = civilWorks.reduce((s, w) => s + w.aaAmount, 0);
-const totalContractAmt = civilWorks.reduce((s, w) => s + w.contractAmount, 0);
-const pendingRaBills = raBills.filter(
-  b => b.status !== 'Paid' && b.status !== 'Rejected'
-).length;
-const delayedMilestones = milestones.filter(m => m.status === 'Delayed').length;
-
-const STATUS_DIST = [
-  { name: 'In Progress', value: inProgress, color: '#3b82f6' },
-  { name: 'Completed', value: completed, color: '#22c55e' },
-  { name: 'AA Pending', value: pendingAA, color: '#f59e0b' },
-  { name: 'Budget Lock', value: pendingBudget, color: '#8b5cf6' },
-  {
-    name: 'Tender Stage',
-    value: tenders.filter(t => ['Published', 'Awarded'].includes(t.status))
-      .length,
-    color: '#06b6d4',
-  },
-];
 
 const BUDGET_TREND = [
   { month: 'Feb', Sanctioned: 18.5, Utilized: 2.1 },
@@ -98,14 +64,86 @@ const QUICK_ACTIONS = [
 export default function AdminDashboard() {
   const navigate = useNavigate();
 
+  const [civilWorks] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.WORKS,
+    initialWorks
+  );
+  const [tenders] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.TENDERS,
+    initialTenders
+  );
+  const [milestones] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.MILESTONES,
+    initialMilestones
+  );
+  const [raBills] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.RA_BILLS,
+    initialRaBills
+  );
+
+  const totalWorks = civilWorks.length;
+  const inProgress = civilWorks.filter(
+    w => w.status === 'In Progress' || w.status === 'Work Order Issued'
+  ).length;
+  const completed = civilWorks.filter(
+    w =>
+      w.status === 'Completed' ||
+      w.status === 'DLP Active' ||
+      w.status === 'Closed'
+  ).length;
+  const pendingAA = civilWorks.filter(
+    w => w.status === 'Registered' || w.status === 'Requirement Generated'
+  ).length;
+  const pendingTS = civilWorks.filter(
+    w => w.status === 'AA Approved' || w.status === 'AaApproved'
+  ).length;
+  const pendingBudget = civilWorks.filter(
+    w => w.status === 'TS Granted' || w.status === 'TsGranted'
+  ).length;
+  const activeTenders = tenders.filter(
+    t =>
+      t.status === 'Published' ||
+      t.status === 'Bids Received' ||
+      t.status === 'Under Evaluation'
+  ).length;
+
+  const totalAAAmount = civilWorks.reduce(
+    (s, w) => s + (w.aaAmount || w.administrativeApprovalAmount || 0),
+    0
+  );
+  const totalContractAmt = civilWorks.reduce(
+    (s, w) => s + (w.contractAmount || 0),
+    0
+  );
+  const pendingRaBills = raBills.filter(
+    b => b.status !== 'Paid' && b.status !== 'Rejected'
+  ).length;
+  const delayedMilestones = milestones.filter(
+    m => m.status === 'Delayed'
+  ).length;
+
+  const STATUS_DIST = [
+    { name: 'In Progress', value: inProgress, color: '#3b82f6' },
+    { name: 'Completed', value: completed, color: '#22c55e' },
+    { name: 'AA Pending', value: pendingAA, color: '#f59e0b' },
+    { name: 'Budget Lock', value: pendingBudget, color: '#8b5cf6' },
+    {
+      name: 'Tender Stage',
+      value: tenders.filter(t => ['Published', 'Awarded'].includes(t.status))
+        .length,
+      color: '#06b6d4',
+    },
+  ];
+
   return (
     <FormPage
       title="Civil Infrastructure — Admin Dashboard"
       description="Command centre for all civil works: AA/TS approvals, budget locks, tender oversight, and completion."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
-        { label: 'Admin Dashboard' },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
+        { label: 'Dashboard' },
       ]}
     >
       {/* KPI Stats */}

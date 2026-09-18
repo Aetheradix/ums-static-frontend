@@ -319,8 +319,9 @@ export default function WorkManpowerMapping() {
       title="Work to Manpower Mapping"
       description="Map and manage engineering personnel, site supervisors, project managers, and responsibilities for registered civil works."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'Work-Manpower Mapping' },
       ]}
     >

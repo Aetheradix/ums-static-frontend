@@ -14,6 +14,7 @@ import {
   StatusBadge,
 } from 'shared/new-components';
 import { formatCurrency } from 'shared/utils/currency';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import { civilWorks as initialWorks } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -55,7 +56,7 @@ export default function AdminApproval() {
   const [documentFile, setDocumentFile] = useState<File | null>(null);
 
   useEffect(() => {
-    localStorage.setItem('civil_works', JSON.stringify(data));
+    civilStorage.set(CIVIL_STORAGE_KEYS.WORKS, data);
   }, [data]);
 
   const isSanctioned = (item?: any): boolean => {
@@ -143,7 +144,7 @@ export default function AdminApproval() {
               status:
                 d.status === 'Registered' ||
                 d.status === 'Requirement Generated'
-                  ? 'AaApproved'
+                  ? 'AA Approved'
                   : d.status,
             }
           : d
@@ -179,8 +180,9 @@ export default function AdminApproval() {
       title="Administrative Sanction Approvals"
       description="Review project scopes, establish legally binding expenditure limits, and grant official administrative sanctions."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'Administrative Sanction' },
       ]}
     >

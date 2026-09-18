@@ -16,19 +16,20 @@ import {
   type DLPRecord,
   type DLPDefectItem,
 } from '../../mocks';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
 export default function DLPMonitoring() {
-  const [works] = useState(() => {
-    const saved = localStorage.getItem('civil_works');
-    return saved ? JSON.parse(saved) : initialWorks;
-  });
+  const [works, setWorks] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.WORKS,
+    initialWorks
+  );
 
-  const [dlp, setDlp] = useState<DLPRecord[]>(() => {
-    const saved = localStorage.getItem('civil_dlp_records');
-    return saved ? JSON.parse(saved) : initialDlp;
-  });
+  const [dlp, setDlp] = useCivilStorage<DLPRecord[]>(
+    CIVIL_STORAGE_KEYS.DLP_RECORDS,
+    initialDlp
+  );
 
   // Modal states
   const [popup, setPopup] = useState<{
@@ -246,6 +247,14 @@ export default function DLPMonitoring() {
     );
 
     setDlp(updated);
+    setWorks((prevWorks: any[]) =>
+      prevWorks.map((w: any) =>
+        String(w.id) === String(popup.item!.workId) ||
+        String(w.workId) === String(popup.item!.workId)
+          ? { ...w, status: 'Closed' }
+          : w
+      )
+    );
     ToastService.success(
       `Retention Release Order ${releaseForm.orderNo} approved! Net amount ${formatCurrency(netRelease)} processed.`
     );
@@ -257,8 +266,9 @@ export default function DLPMonitoring() {
       title="DLP Monitoring & Retention Release"
       description="Track Defect Liability Periods, log post-completion structural & architectural snags, enforce contractor rectification deadlines, and authorize Security Deposit / Retention releases."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.financePortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Finance & Accounts', to: civilUrls.financeMenu },
         { label: 'DLP Monitoring' },
       ]}
     >

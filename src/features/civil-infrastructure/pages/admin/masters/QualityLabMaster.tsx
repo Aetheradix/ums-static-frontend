@@ -9,11 +9,12 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../../civilStorage';
 import { initialLabAgencies } from '../../../mocks';
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
 
-const STORAGE_KEY = 'civil_lab_agencies';
+const STORAGE_KEY = CIVIL_STORAGE_KEYS.LAB_AGENCIES;
 
 export default function QualityLabMaster() {
   const [data, setData] = useState<CivilManagement.QualityLabItem[]>(() => {
@@ -67,7 +68,7 @@ export default function QualityLabMaster() {
   const [formActive, setFormActive] = useState(true);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    civilStorage.set(STORAGE_KEY, data);
   }, [data]);
 
   const openAdd = () => {
@@ -161,9 +162,10 @@ export default function QualityLabMaster() {
       title="Quality Testing Laboratory Master"
       description="Register NABL accredited civil testing laboratories authorized for material compressive strength, bitumen, and soil investigations."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
-        { label: 'Masters' },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
+        { label: 'External Masters', to: civilUrls.externalMastersMenu },
         { label: 'Quality Lab' },
       ]}
     >

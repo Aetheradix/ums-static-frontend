@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Bar,
@@ -10,6 +9,7 @@ import {
   YAxis,
 } from 'recharts';
 import { FormCard, FormPage, StatCard } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import {
   raBills as initialBills,
   dlpRecords as initialDlp,
@@ -21,20 +21,18 @@ import '../civil.css';
 export default function FinanceDashboard() {
   const navigate = useNavigate();
 
-  const [works] = useState(() => {
-    const saved = localStorage.getItem('civil_works');
-    return saved ? JSON.parse(saved) : initialWorks;
-  });
-
-  const [bills] = useState(() => {
-    const saved = localStorage.getItem('civil_ra_bills');
-    return saved ? JSON.parse(saved) : initialBills;
-  });
-
-  const [dlp] = useState(() => {
-    const saved = localStorage.getItem('civil_dlp_records');
-    return saved ? JSON.parse(saved) : initialDlp;
-  });
+  const [works] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.WORKS,
+    initialWorks
+  );
+  const [bills] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.RA_BILLS,
+    initialBills
+  );
+  const [dlp] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.DLP_RECORDS,
+    initialDlp
+  );
 
   const totalAllocated = works.reduce(
     (s: number, w: any) => s + (w.tsAmount || 0),
@@ -96,8 +94,9 @@ export default function FinanceDashboard() {
       title="Finance Department — Civil Dashboard"
       description="Budget allocation, RA Bill processing, payment release, and DLP retention monitoring."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.financePortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Finance & Accounts', to: civilUrls.financeMenu },
         { label: 'Finance Dashboard' },
       ]}
     >

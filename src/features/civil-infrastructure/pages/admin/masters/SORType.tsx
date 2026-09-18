@@ -9,11 +9,12 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../../civilStorage';
 import { initialSORTypes } from '../../../mocks';
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
 
-const STORAGE_KEY = 'civil_sor_types';
+const STORAGE_KEY = CIVIL_STORAGE_KEYS.SOR_TYPES;
 
 export default function SORTypeMaster() {
   const [data, setData] = useState<CivilManagement.SORType[]>(() => {
@@ -31,7 +32,7 @@ export default function SORTypeMaster() {
   const [formActive, setFormActive] = useState(true);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    civilStorage.set(STORAGE_KEY, data);
   }, [data]);
 
   const openAdd = () => {
@@ -101,9 +102,10 @@ export default function SORTypeMaster() {
       title="SOR Type Master"
       description="Define Schedule of Rates top-level classifications (e.g., Building, Roads, Electrical, Public Health)."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
-        { label: 'Masters' },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
+        { label: 'External Masters', to: civilUrls.externalMastersMenu },
         { label: 'SOR Type' },
       ]}
     >

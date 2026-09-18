@@ -35,8 +35,9 @@ export default function BOQCompilation() {
       title="BOQ Compilation"
       description="The module aggregates SOR item entries into the formal Bill of Quantities (BOQ). Once locked, this becomes the un-editable financial baseline for all subsequent approvals."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.engineerPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Engineer Portal', to: civilUrls.engineerMenu },
         { label: 'BOQ Compilation' },
       ]}
     >

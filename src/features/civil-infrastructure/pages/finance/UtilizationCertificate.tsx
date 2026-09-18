@@ -10,6 +10,11 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import {
+  CIVIL_STORAGE_KEYS,
+  civilStorage,
+  useCivilStorage,
+} from '../../civilStorage';
 import { civilWorks as initialWorks } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -87,10 +92,10 @@ const formatCurrency = (val?: number) =>
   '₹' + (val || 0).toLocaleString('en-IN');
 
 export default function UtilizationCertificate() {
-  const [works] = useState<any[]>(() => {
-    const saved = localStorage.getItem('civil_works');
-    return saved ? JSON.parse(saved) : initialWorks;
-  });
+  const [works] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.WORKS,
+    initialWorks
+  );
 
   const [data, setData] = useState<CivilManagement.UtilizationCertificate[]>(
     () => {
@@ -113,7 +118,7 @@ export default function UtilizationCertificate() {
   const [formPrevExp, setFormPrevExp] = useState('0');
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    civilStorage.set(STORAGE_KEY, data);
   }, [data]);
 
   const openAdd = () => {
@@ -193,8 +198,9 @@ export default function UtilizationCertificate() {
       title="Utilization Certificate (GFR Form 12-A)"
       description="Statutory GFR Annexure 12-A utilization statements mandated by Government funding agencies (UGC, State Govt, Central Ministry) for capital grant release."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.financePortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Finance & Accounts', to: civilUrls.financeMenu },
         { label: 'Utilization Certificate' },
       ]}
     >
