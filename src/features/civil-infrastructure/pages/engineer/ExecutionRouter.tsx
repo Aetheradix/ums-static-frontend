@@ -1,4 +1,5 @@
 import { FormCard, FormPage } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import { civilWorks } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -52,9 +53,11 @@ const EXECUTION_ROUTING: Array<{
 ];
 
 export default function ExecutionRouter() {
-  const internal = civilWorks.filter(w => w.executionRoute === 'Internal');
-  const external = civilWorks.filter(
-    w => w.executionRoute === 'External Agency'
+  const [works] = useCivilStorage<any[]>(CIVIL_STORAGE_KEYS.WORKS, civilWorks);
+  const internal = works.filter(w => w.executionRoute === 'Internal');
+  const external = works.filter(
+    w =>
+      w.executionRoute === 'External Agency' || w.executionRoute === 'External'
   );
 
   return (
@@ -62,8 +65,9 @@ export default function ExecutionRouter() {
       title="Execution Router"
       description="The ERP routes each work through one of three pathways based on category, estimated cost, and execution method."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.engineerPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Engineer Portal', to: civilUrls.engineerMenu },
         { label: 'Execution Router' },
       ]}
     >

@@ -13,6 +13,7 @@ import InlineCreatePanel from './InlineCreatePanel/InlineCreatePanel';
 import PaymentDialog from './PaymentDialog';
 import PortalSelector from './PortalSelector/PortalSelector';
 import PreviewField from './PreviewField/PreviewField';
+import PreviewGrid from './PreviewGrid/PreviewGrid';
 import PreviewSection from './PreviewSection/PreviewSection';
 import PreviewSummary from './PreviewSummary/PreviewSummary';
 import ProgressBar from './ProgressBar';
@@ -48,6 +49,7 @@ export {
   PaymentDialog,
   PortalSelector,
   PreviewField,
+  PreviewGrid,
   PreviewSection,
   PreviewSummary,
   ProgressBar,

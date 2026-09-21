@@ -6,6 +6,7 @@ import {
   FormPopup,
   GridPanel,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import { type SORItem, sorItems as initialData } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -13,7 +14,10 @@ import '../civil.css';
 type PopupState = { mode: 'closed' } | { mode: 'view'; item: SORItem };
 
 export default function SORMaster() {
-  const [data] = useState(initialData);
+  const [data] = useCivilStorage<SORItem[]>(
+    CIVIL_STORAGE_KEYS.SOR_ITEMS_BASE,
+    initialData
+  );
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
 
   return (
@@ -21,8 +25,9 @@ export default function SORMaster() {
       title="SOR Master — Schedule of Rates"
       description="Government-notified SOR items locked at official rates. Engineers select items; system auto-calculates costs."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.engineerPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Engineer Portal', to: civilUrls.engineerMenu },
         { label: 'SOR Master' },
       ]}
     >
@@ -57,7 +62,9 @@ export default function SORMaster() {
             d =>
               d.category === cat ||
               (cat === 'Finishing' &&
-                ['Flooring', 'Painting', 'Plastering'].includes(d.category))
+                ['Flooring', 'Painting', 'Plastering'].includes(
+                  d.category || ''
+                ))
           );
           return (
             <FormCard key={cat}>
@@ -92,7 +99,7 @@ export default function SORMaster() {
           columns={[
             { cell: (_, o) => <span>{o.rowIndex + 1}</span>, width: '50px' },
             {
-              field: 'code',
+              field: 'sorCode',
               header: 'SOR Code',
               cell: (s: SORItem) => (
                 <span
@@ -103,15 +110,17 @@ export default function SORMaster() {
                     fontSize: '0.75rem',
                   }}
                 >
-                  {s.code}
+                  {s.sorCode || s.code}
                 </span>
               ),
             },
             {
-              field: 'description',
+              field: 'workDescription',
               header: 'Item Description',
               cell: (s: SORItem) => (
-                <span style={{ fontWeight: 500 }}>{s.description}</span>
+                <span style={{ fontWeight: 500 }}>
+                  {s.workDescription || s.itemDescription || s.description}
+                </span>
               ),
             },
             {
@@ -122,7 +131,7 @@ export default function SORMaster() {
                   className="civil-pill blue"
                   style={{ fontSize: '0.65rem' }}
                 >
-                  {s.category}
+                  {s.category || 'General'}
                 </span>
               ),
             },
@@ -136,19 +145,22 @@ export default function SORMaster() {
               ),
             },
             {
-              field: 'govtRate',
-              header: 'Govt Rate (₹)',
-              cell: (s: SORItem) => (
-                <span style={{ fontWeight: 700, color: '#16a34a' }}>
-                  ₹{s.govtRate.toLocaleString('en-IN')}
-                </span>
-              ),
+              field: 'rate',
+              header: 'Standard Rate (₹)',
+              cell: (s: SORItem) => {
+                const r = s.rate ?? s.govtRate ?? 0;
+                return (
+                  <span style={{ fontWeight: 700, color: '#16a34a' }}>
+                    ₹{r.toLocaleString('en-IN')}
+                  </span>
+                );
+              },
             },
             {
               field: 'year',
               header: 'SOR Year',
               cell: (s: SORItem) => (
-                <span className="civil-pill teal">{s.year}</span>
+                <span className="civil-pill teal">{s.year || '2025-26'}</span>
               ),
             },
             {
@@ -174,7 +186,7 @@ export default function SORMaster() {
       <FormPopup
         visible={popup.mode !== 'closed'}
         onHide={() => setPopup({ mode: 'closed' })}
-        title={`SOR Item — ${(popup as any).item?.code ?? ''}`}
+        title={`SOR Item — ${(popup as any).item?.sorCode ?? (popup as any).item?.code ?? ''}`}
         subtitle="Government rate master — read only."
         size="lg"
       >
@@ -191,15 +203,20 @@ export default function SORMaster() {
             }}
           >
             {[
-              ['SOR Code', popup.item.code],
-              ['Category', popup.item.category],
-              ['Description', popup.item.description],
+              ['SOR Code', popup.item.sorCode || popup.item.code],
+              ['Category', popup.item.category || 'General'],
+              [
+                'Description',
+                popup.item.workDescription ||
+                  popup.item.itemDescription ||
+                  popup.item.description,
+              ],
               ['Unit of Measurement', popup.item.unit],
               [
-                'Govt Rate (₹)',
-                `₹${popup.item.govtRate.toLocaleString('en-IN')} per ${popup.item.unit}`,
+                'Standard Rate (₹)',
+                `₹${(popup.item.rate ?? popup.item.govtRate ?? 0).toLocaleString('en-IN')} per ${popup.item.unit}`,
               ],
-              ['SOR Financial Year', popup.item.year],
+              ['SOR Financial Year', popup.item.year || '2025-26'],
               ['Rate Source', 'State Govt PWD SOR 2025-26'],
               ['Modification Allowed', 'No — Locked by ERP'],
             ].map(([k, v]) => (

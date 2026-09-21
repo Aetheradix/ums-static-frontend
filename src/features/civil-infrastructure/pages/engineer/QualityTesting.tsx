@@ -14,6 +14,7 @@ import {
   FormPopup,
   GridPanel,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import { civilWorks, milestones as initialMilestones } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -139,7 +140,7 @@ export default function QualityTesting() {
     );
 
     setMilestones(updatedMilestones);
-    localStorage.setItem('civil_milestones', JSON.stringify(updatedMilestones));
+    civilStorage.set(CIVIL_STORAGE_KEYS.MILESTONES, updatedMilestones);
 
     // Sync to civil_quality_tests for other parts of the app (like Dashboard)
     const updatedTests = updatedMilestones
@@ -162,7 +163,7 @@ export default function QualityTesting() {
         uploadedDoc: m.uploadedDoc,
         remarks: m.testRemarks,
       }));
-    localStorage.setItem('civil_quality_tests', JSON.stringify(updatedTests));
+    civilStorage.set(CIVIL_STORAGE_KEYS.QUALITY_TESTS, updatedTests);
 
     if (result === 'Fail') {
       ToastService.error(
@@ -170,7 +171,10 @@ export default function QualityTesting() {
       );
     } else {
       ToastService.success(
-        'Quality test result recorded. Lab certificate & documents uploaded.'
+        popup.item.qualityTestStatus === 'Fail' ||
+          popup.item.qualityTestStatus === 'Re-test Required'
+          ? 'Rectification accepted and Re-Test PASSED! Milestone blocker lifted.'
+          : 'Quality test result recorded. Lab certificate & documents uploaded.'
       );
     }
     setPopup({ mode: 'closed' });
@@ -185,8 +189,9 @@ export default function QualityTesting() {
       title="Quality Testing & Lab Certificates"
       description="Material verification certificates from lab are logged. Dependency: milestone cannot close if test is failed or un-uploaded."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.engineerPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Engineer Portal', to: civilUrls.engineerMenu },
         { label: 'Quality Testing' },
       ]}
     >
@@ -348,21 +353,36 @@ export default function QualityTesting() {
                   {(item.qualityTestStatus || 'Pending') !== 'Pass' && (
                     <Button
                       size="small"
-                      label="Update Result"
-                      icon="upload"
-                      variant="primary"
+                      label={
+                        item.qualityTestStatus === 'Fail' ||
+                        item.qualityTestStatus === 'Re-test Required'
+                          ? 'Rectify & Re-Test'
+                          : 'Update Result'
+                      }
+                      icon={
+                        item.qualityTestStatus === 'Fail' ||
+                        item.qualityTestStatus === 'Re-test Required'
+                          ? 'refresh'
+                          : 'upload'
+                      }
+                      variant={
+                        item.qualityTestStatus === 'Fail' ||
+                        item.qualityTestStatus === 'Re-test Required'
+                          ? 'warning'
+                          : 'primary'
+                      }
                       onClick={() => {
                         setCertNo(item.certNo || '');
                         setObservedValue(item.observedValue || '');
                         setDocName(item.uploadedDoc || '');
-                        setResult(
-                          item.qualityTestStatus === 'Fail' ? 'Fail' : 'Pass'
+                        setResult('Pass');
+                        setRemarks(
+                          item.qualityTestStatus === 'Fail' ||
+                            item.qualityTestStatus === 'Re-test Required'
+                            ? `[Rectification Action]: Corrective grouting and re-curing executed. Re-tested on site.`
+                            : item.testRemarks || ''
                         );
-                        setRemarks(item.testRemarks || '');
-                        setTestDate(
-                          item.testDate ||
-                            new Date().toISOString().split('T')[0]
-                        );
+                        setTestDate(new Date().toISOString().split('T')[0]);
                         setPopup({ mode: 'update', item });
                       }}
                     />
@@ -448,16 +468,39 @@ export default function QualityTesting() {
 
                 {popup.mode === 'update' && (
                   <>
+                    {(popup.item.qualityTestStatus === 'Fail' ||
+                      popup.item.qualityTestStatus === 'Re-test Required') && (
+                      <div
+                        style={{
+                          background: '#fef2f2',
+                          border: '1px solid #fecaca',
+                          borderRadius: '0.5rem',
+                          padding: '0.75rem 1rem',
+                          marginBottom: '1rem',
+                          fontSize: '0.8125rem',
+                          color: '#991b1b',
+                        }}
+                      >
+                        <strong>
+                          ⚠️ Non-Conformance Notice (NCR Triggered):
+                        </strong>{' '}
+                        Previous test failed (Observed:{' '}
+                        {popup.item.observedValue || 'Below standard'}). Enter
+                        the contractor's corrective rectification details below
+                        and upload the certified re-test report to clear this
+                        quality gate.
+                      </div>
+                    )}
                     <FormGrid columns={2}>
                       <TextBox
-                        label="Observed Value *"
+                        label="Observed Value"
                         placeholder="e.g. 22.4 N/mm²"
                         value={observedValue}
                         onChange={setObservedValue}
                         required
                       />
                       <TextBox
-                        label="Lab Certificate No. *"
+                        label="Lab Certificate No."
                         placeholder="e.g. IIT/BPL/CC/2025/0142"
                         value={certNo}
                         onChange={setCertNo}
@@ -466,7 +509,7 @@ export default function QualityTesting() {
                     </FormGrid>
                     <FormGrid columns={2}>
                       <DropDownList
-                        label="Test Result *"
+                        label="Test Result"
                         data={['Pass', 'Fail', 'Re-test Required'].map(v => ({
                           name: v,
                           value: v,
@@ -475,13 +518,15 @@ export default function QualityTesting() {
                         optionValue="value"
                         value={result}
                         onChange={v => setResult(v as any)}
+                        required
                       />
                       <DatePicker
-                        label="Test Date *"
+                        label="Test Date"
                         value={testDate ? new Date(testDate) : undefined}
                         onChange={v =>
                           setTestDate(v ? v.toISOString().split('T')[0] : '')
                         }
+                        required
                       />
                     </FormGrid>
                     <div style={{ marginBottom: '1rem' }}>

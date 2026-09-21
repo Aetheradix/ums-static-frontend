@@ -1,252 +1,657 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ToastService } from 'services';
-import { Button } from 'shared/components/buttons';
+import { Button, StatusButton } from 'shared/components/buttons';
 import {
+  Checkbox,
   DropDownList,
-  MultiSelectList,
+  FileUpload,
   TextBox,
 } from 'shared/components/forms';
+import 'shared/components/grid/GridActionButtons.css';
 import {
+  FormActions,
   FormCard,
   FormGrid,
   FormPage,
-  FormPopup,
   GridPanel,
+  PreviewGrid,
   StatusBadge,
 } from 'shared/new-components';
-import { type CivilWork, civilWorks as initialData } from '../../mocks';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
+import {
+  initialCivilProjects,
+  civilWorks as initialData,
+  initialFundingSources,
+  initialMandateDocuments,
+  initialWorkCategories,
+  initialWorkDepartments,
+} from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
-type PopupState =
-  | { mode: 'closed' }
-  | { mode: 'create' }
-  | { mode: 'edit'; item: CivilWork }
-  | { mode: 'view'; item: CivilWork };
+const CIVIL_STATUS_VARIANT_MAP: Record<
+  string,
+  'approved' | 'rejected' | 'pending' | 'neutral'
+> = {
+  registered: 'neutral',
+  'requirement generated': 'pending',
+  requirementgenerated: 'pending',
+  aaapproved: 'approved',
+  'aa approved': 'approved',
+  tsgranted: 'approved',
+  'ts granted': 'approved',
+  budgetlocked: 'approved',
+  'budget locked': 'approved',
+};
 
-const CATEGORIES = [
-  'New Capital Construction',
-  'Maintenance/Overhaul',
-  'Renewal',
-  'Strengthening',
-  'Deposit Work',
-  'Emergency Work',
-].map(v => ({ name: v, value: v }));
-
-const DEPT_OPTIONS = [
-  'Civil Work',
-  'Electrical Work',
-  'Painting Work',
-  'Furniture Work',
-  'Sanitary & Plumbing Work',
-  'Horticulture Work',
-].map(v => ({ name: v, value: v }));
-
-const FUNDING_SOURCES = [
-  'University Fund',
-  'UGC Grant',
-  'UGC Special Grant',
-  'Central Govt',
-  'State Govt',
-  'External',
-].map(v => ({ name: v, value: v }));
+function getCivilStatusVariant(
+  status: string
+): 'approved' | 'rejected' | 'pending' | 'neutral' {
+  return CIVIL_STATUS_VARIANT_MAP[status.toLowerCase()] ?? 'neutral';
+}
 
 const ROUTE_OPTIONS = [
-  { name: 'Internal Execution', value: 'Internal' },
-  { name: 'External Agency / Deposit', value: 'External Agency' },
+  { text: 'Internal Execution', value: 'Internal' },
+  { text: 'External Agency / Deposit', value: 'ExternalAgency' },
 ];
 
 const PRIORITY_OPTIONS = [
-  { name: 'High', value: 'High' },
-  { name: 'Medium', value: 'Medium' },
-  { name: 'Low', value: 'Low' },
-];
-
-const SITE_ENGINEERS = [
-  'Er. Rajesh Verma',
-  'Er. Amit Sharma',
-  'Er. Priya Patel',
-  'Er. Sandeep Singh',
-  'Er. Vikram Malhotra',
-  'Er. Suresh Kumar',
-  'Er. Kavitha Menon',
-].map(v => ({ name: v, value: v }));
-
-const initialProjects = [
-  {
-    id: 'P1',
-    area: 'Academic Block-3 Construction',
-    campus: 'Main Campus',
-    location: 'Behind Central Library, adjacent to block-2',
-  },
-  {
-    id: 'P2',
-    area: 'Hostel Ground leveling',
-    campus: 'South Campus',
-    location: 'Sports complex parking annex',
-  },
-  {
-    id: 'P3',
-    area: 'Electrical substation wiring',
-    campus: 'North Campus',
-    location: 'Utility zone near north gate',
-  },
-];
-
-const LAND_OWNERSHIP_OPTIONS = [
-  'Govt',
-  'University',
-  'Private',
-  'Lease',
-  'Donation',
-].map(v => ({ name: v, value: v }));
-
-const OWNERSHIP_VERIFIED_OPTIONS = [
-  { name: 'Yes', value: 'Yes' },
-  { name: 'No', value: 'No' },
+  { text: 'Critical', value: 'Critical' },
+  { text: 'High', value: 'High' },
+  { text: 'Medium', value: 'Medium' },
+  { text: 'Low', value: 'Low' },
 ];
 
 const WORK_BASIS_OPTIONS = [
-  { name: 'SOR', value: 'SOR' },
-  { name: 'Non-SOR', value: 'Non-SOR' },
+  { text: 'SOR Based', value: 'SOR' },
+  { text: 'Non-SOR', value: 'NonSor' },
+  { text: 'BOQ Based', value: 'BoqBased' },
 ];
 
-// ── Document Master ────────────────────────────────────────────────────────────
-// Add new document types here — they will automatically appear in the dropdown.
-const MANDATE_DOC_MASTER = [
-  { id: 'construction_agreement', name: 'Construction Agreement Document', accept: '.pdf,.doc,.docx' },
-  { id: 'scope_of_work',         name: 'Scope of Work (SOW) Document',    accept: '.pdf,.doc,.docx' },
-  { id: 'layout_drawing',        name: 'Layout / Drawing Document',        accept: '.pdf,.doc,.docx,.png,.jpg,.jpeg,.dwg' },
-  { id: 'env_clearance',         name: 'Environmental Clearance Certificate', accept: '.pdf,.doc,.docx' },
-];
+type PageMode = 'list' | 'create' | 'edit' | 'view';
 
-const EMPTY: Partial<CivilWork> = {
-  workId: '',
+const EMPTY_WORK = {
+  workRegistrationId: 0,
+  code: '',
   name: '',
-  category: '' as any,
-  department: '',
-  campus: 'Main Campus',
-  location: '',
-  executionRoute: '' as any,
-  estimatedCost: 0,
-  fundingSource: '',
-  startDate: new Date().toISOString().split('T')[0],
-  expectedEndDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
-    .toISOString()
-    .split('T')[0], // default 1 year
-  siteEngineer: '',
-  priority: '' as any,
+  projectId: 1,
+  projectDescription: '',
+  workCategoryId: 1,
+  workCategoryName: '',
+  subCategoryId: 1,
+  subCategoryName: '',
+  priorityLevel: 'Medium',
+  fundingSourceId: 1,
+  fundingSourceName: '',
+  workBasis: 'SOR',
+  executionRoute: 'Internal',
+  isStatuaryCheck: false,
   status: 'Registered',
-  workBasis: '' as any,
-  projectArea: '',
-  landOwnershipType: '',
-  ownershipVerified: '',
-};
-
-const statusVariant = (s: string) => {
-  if (s === 'Completed' || s === 'DLP Active') return 'approved';
-  if (s === 'In Progress') return 'pending';
-  if (s === 'Registered' || s === 'Requirement Generated') return 'neutral';
-  return 'neutral';
+  isActive: true,
+  mandateDocs: {} as Record<string, string>,
 };
 
 export default function WorkRegistration() {
-  const [data, setData] = useState<CivilWork[]>(() => {
+  const navigate = useNavigate();
+  const [data, setData] = useState<any[]>(() => {
     const saved = localStorage.getItem('civil_works');
-    return saved ? JSON.parse(saved) : initialData;
+    const list = saved ? JSON.parse(saved) : initialData;
+    return list.map((w: any) => ({
+      ...w,
+      workRegistrationId: w.workRegistrationId || Number(w.id) || 0,
+      code: w.code || w.workId || `CW-2025-${String(w.id).padStart(3, '0')}`,
+      priorityLevel: w.priorityLevel || w.priority || 'Medium',
+      workBasis:
+        w.workBasis === 'SOR Based' || w.workBasis === 'SOR'
+          ? 'SOR'
+          : w.workBasis === 'BOQ Based' ||
+              w.workBasis === 'BOQBased' ||
+              w.workBasis === 'BoqBased'
+            ? 'BoqBased'
+            : w.workBasis || 'SOR',
+      executionRoute:
+        w.executionRoute === 'External Agency' ||
+        w.executionRoute === 'External' ||
+        w.executionRoute === 'ExternalAgency'
+          ? 'ExternalAgency'
+          : 'Internal',
+      isActive: w.isActive !== false,
+      isStatuaryCheck: Boolean(w.isStatuaryCheck),
+      mandateDocs: w.mandateDocs || {},
+    }));
   });
-  const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
-  const [form, setForm] = useState<Partial<CivilWork>>(EMPTY);
-  const [selectedDocTypes, setSelectedDocTypes] = useState<string[]>([]);
-  const [projects] = useState<any[]>(() => {
+
+  const [projects] = useState<CivilManagement.CivilProject[]>(() => {
     const saved = localStorage.getItem('civil_projects');
-    return saved ? JSON.parse(saved) : initialProjects;
+    return saved ? JSON.parse(saved) : initialCivilProjects;
   });
-  const projectAreaOptions = projects.map(p => ({
-    name: p.area,
-    value: p.area,
-  }));
+
+  const [categories] = useState<CivilManagement.WorkCategoryMaster[]>(() => {
+    const saved = localStorage.getItem('civil_work_categories');
+    return saved ? JSON.parse(saved) : initialWorkCategories;
+  });
+
+  const [departments] = useState<CivilManagement.WorkDepartmentMaster[]>(() => {
+    const saved = localStorage.getItem('civil_work_departments');
+    return saved ? JSON.parse(saved) : initialWorkDepartments;
+  });
+
+  const [fundingSources] = useState<CivilManagement.FundingSourceMaster[]>(
+    () => {
+      const saved = localStorage.getItem('civil_funding_sources');
+      return saved ? JSON.parse(saved) : initialFundingSources;
+    }
+  );
+
+  const [mandateDocs] = useState<CivilManagement.MandateDocument[]>(() => {
+    const saved = localStorage.getItem('civil_mandate_documents');
+    return saved ? JSON.parse(saved) : initialMandateDocuments;
+  });
+
+  const [mode, setMode] = useState<PageMode>('list');
+  const [viewItem, setViewItem] = useState<any>(null);
+  const [editingItem, setEditingItem] = useState<any>(null);
+  const [form, setForm] = useState<any>(EMPTY_WORK);
 
   useEffect(() => {
-    localStorage.setItem('civil_works', JSON.stringify(data));
+    civilStorage.set(CIVIL_STORAGE_KEYS.WORKS, data);
   }, [data]);
 
-  const close = useCallback(() => {
-    setPopup({ mode: 'closed' });
-    setForm(EMPTY);
-    setSelectedDocTypes([]);
+  const handleBackToList = useCallback(() => {
+    setMode('list');
+    setEditingItem(null);
+    setViewItem(null);
+    setForm(EMPTY_WORK);
   }, []);
 
-  // Auto-generate Work ID
-  const nextWorkId = () => {
-    const workCounter = data.length + 1;
-    return `CW-${new Date().getFullYear()}-${String(workCounter).padStart(3, '0')}`;
+  const nextWorkCode = () => {
+    const counter = data.length + 1;
+    return `CW-${new Date().getFullYear()}-${String(counter).padStart(3, '0')}`;
   };
 
-  const handleSave = () => {
-    if (!form.name) {
+  const openCreate = () => {
+    const firstProj = projects[0];
+    const firstCat = categories[0];
+    const firstSub =
+      departments.find(d => d.parentCategoryId === firstCat?.id) ||
+      departments[0];
+    const firstFund = fundingSources[0];
+    setForm({
+      ...EMPTY_WORK,
+      projectId: 1,
+      projectDescription: firstProj
+        ? `${firstProj.name} (${firstProj.campus})`
+        : '',
+      workCategoryId: 1,
+      workCategoryName: firstCat?.name || '',
+      subCategoryId: 1,
+      subCategoryName: firstSub?.name || '',
+      fundingSourceId: 1,
+      fundingSourceName: firstFund?.name || '',
+      isStatuaryCheck: false,
+      mandateDocs: {},
+    });
+    setEditingItem(null);
+    setMode('create');
+  };
+
+  const openEdit = (item: any) => {
+    setForm({
+      ...item,
+      mandateDocs: item.mandateDocs || {},
+    });
+    setEditingItem(item);
+    setMode('edit');
+  };
+
+  const openView = (item: any) => {
+    setViewItem(item);
+    setMode('view');
+  };
+
+  const filteredSubCategories = useMemo(() => {
+    const catCode = categories.find(
+      (_, i) => i + 1 === Number(form.workCategoryId)
+    )?.id;
+    if (!catCode) return departments;
+    const direct = departments.filter(d => d.parentCategoryId === catCode);
+    return direct.length > 0 ? direct : departments;
+  }, [departments, categories, form.workCategoryId]);
+
+  const handleProjectChange = (val: unknown) => {
+    const id = Number(val);
+    const proj =
+      projects[id - 1] ||
+      projects.find(p => p.id === String(val)) ||
+      projects[0];
+    if (proj) {
+      setForm((f: any) => ({
+        ...f,
+        projectId: id,
+        projectDescription: `${proj.name} (${proj.campus})`,
+      }));
+    }
+  };
+
+  const handleCategoryChange = (val: unknown) => {
+    const id = Number(val);
+    const cat =
+      categories[id - 1] ||
+      categories.find(c => c.id === String(val)) ||
+      categories[0];
+    const sub =
+      departments.find(d => d.parentCategoryId === cat?.id) || departments[0];
+    setForm((f: any) => ({
+      ...f,
+      workCategoryId: id,
+      workCategoryName: cat?.name || '',
+      subCategoryId: 1,
+      subCategoryName: sub?.name || '',
+    }));
+  };
+
+  const handleSave = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!form.name?.trim()) {
       ToastService.error('Work Name is required.');
       return;
     }
-    const deptValue = Array.isArray(form.department)
-      ? form.department.join(', ')
-      : form.department || '';
-    if (!deptValue) {
-      ToastService.error('Category is required.');
-      return;
-    }
 
-    const savedForm = {
-      ...form,
-      department: deptValue,
+    const workRegId = form.workRegistrationId || Date.now();
+    const workCode = form.code || nextWorkCode();
+
+    const payload = {
+      workRegistrationId: workRegId,
+      code: workCode,
+      workId: workCode,
+      name: form.name.trim(),
+      projectId: Number(form.projectId),
+      projectDescription: form.projectDescription,
+      workCategoryId: Number(form.workCategoryId),
+      workCategoryName: form.workCategoryName,
+      subCategoryId: Number(form.subCategoryId),
+      subCategoryName: form.subCategoryName,
+      priorityLevel: form.priorityLevel || 'Medium',
+      fundingSourceId: Number(form.fundingSourceId),
+      fundingSourceName: form.fundingSourceName,
+      workBasis: form.workBasis || 'SOR',
+      executionRoute: form.executionRoute || 'Internal',
+      status: form.status || 'Registered',
+      isActive: form.isActive !== false,
+      mandateDocs: form.mandateDocs || {},
     };
 
-    // Determine initial status — Deposit Work skips BOQ and goes directly to Milestone stage
-    const isDepositWork = form.category === 'Deposit Work';
-
-    if (popup.mode === 'create') {
-      setData(prev => [
-        ...prev,
-        {
-          ...savedForm,
-          id: String(Date.now()),
-          workId: nextWorkId(),
-          aaAmount: 0,
-          tsAmount: 0,
-          contractAmount: 0,
-          physicalProgress: 0,
-          financialProgress: 0,
-          // Deposit Works skip BOQ/AA/TS/Tender flow — they go directly to Milestone
-          status: isDepositWork ? 'Tender Awarded' : 'Registered',
-        } as CivilWork,
-      ]);
-      ToastService.success(
-        isDepositWork
-          ? 'Deposit Work registered. Proceeding directly to Milestone Definition (BOQ/Tender stages skipped).'
-          : 'Work registered successfully. Unique Work ID generated.'
-      );
-    } else if (popup.mode === 'edit') {
+    if (mode === 'create') {
+      const newWork = {
+        ...payload,
+        id: String(payload.workRegistrationId),
+        status: 'Registered',
+        isActive: true,
+      };
+      setData(prev => [newWork, ...prev]);
+      ToastService.success('Work registered successfully.');
+    } else if (mode === 'edit' && editingItem) {
+      const updatedWork = { ...editingItem, ...payload };
       setData(prev =>
         prev.map(d =>
-          d.id === (popup as any).item.id
-            ? ({ ...d, ...savedForm } as CivilWork)
+          d.workRegistrationId === editingItem.workRegistrationId ||
+          d.id === editingItem.id
+            ? updatedWork
             : d
         )
       );
-      ToastService.success('Work record updated.');
+      ToastService.success('Work updated successfully.');
     }
-    close();
+    handleBackToList();
   };
 
-  const isReadOnly = popup.mode === 'view';
+  const handleToggleStatus = (item: any) => {
+    setData(prev =>
+      prev.map(d => {
+        if (
+          d.workRegistrationId === item.workRegistrationId ||
+          d.id === item.id
+        ) {
+          const next = d.isActive === false ? true : false;
+          ToastService.info(`Work ${next ? 'Activated' : 'Suspended'}.`);
+          return { ...d, isActive: next };
+        }
+        return d;
+      })
+    );
+  };
+
+  // ─── CREATE / EDIT ──────────────────────────────────────────────────────────
+
+  if (mode === 'create' || mode === 'edit') {
+    return (
+      <FormPage
+        title={
+          mode === 'create'
+            ? 'Register New Work'
+            : `Edit Work — ${form.code || form.workId}`
+        }
+        description="Fill in the details to register a new civil engineering work, project allocation, and mandate documents."
+        breadcrumbs={[
+          { label: 'Home', to: '/home/menu' },
+          { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+          { label: 'Admin Login', to: civilUrls.adminMenu },
+          { label: 'Work Registration', to: civilUrls.workRegistration },
+          {
+            label:
+              mode === 'create'
+                ? 'Register New Work'
+                : `Edit ${form.code || form.workId}`,
+          },
+        ]}
+      >
+        <FormCard title="Work Specifications & Documents">
+          <form onSubmit={handleSave} className="flex flex-col gap-5">
+            <FormGrid columns={3}>
+              <DropDownList
+                label="Project"
+                data={projects.map((p, idx) => ({
+                  text: `${p.name} (${p.campus})`,
+                  value: idx + 1,
+                }))}
+                value={form.projectId}
+                onChange={handleProjectChange}
+                required
+              />
+              <TextBox
+                label="Work Name"
+                placeholder="Enter Work Name"
+                value={form.name}
+                onChange={val => setForm((f: any) => ({ ...f, name: val }))}
+                maxLength={250}
+                required
+              />
+              <DropDownList
+                label="Work Category"
+                data={categories.map((c, idx) => ({
+                  text: `${c.code} — ${c.name}`,
+                  value: idx + 1,
+                }))}
+                value={form.workCategoryId}
+                onChange={handleCategoryChange}
+                required
+              />
+              <DropDownList
+                label="Sub Category"
+                data={filteredSubCategories.map((d, idx) => ({
+                  text: `${d.code} — ${d.name}`,
+                  value: idx + 1,
+                }))}
+                value={form.subCategoryId}
+                onChange={val => {
+                  const id = Number(val);
+                  const sub =
+                    filteredSubCategories[id - 1] || filteredSubCategories[0];
+                  setForm((f: any) => ({
+                    ...f,
+                    subCategoryId: id,
+                    subCategoryName: sub?.name || '',
+                  }));
+                }}
+                required
+              />
+              <DropDownList
+                label="Priority Level"
+                data={PRIORITY_OPTIONS}
+                value={form.priorityLevel}
+                onChange={val =>
+                  setForm((f: any) => ({ ...f, priorityLevel: val as string }))
+                }
+                required
+              />
+              <DropDownList
+                label="Funding Source"
+                data={fundingSources.map((s, idx) => ({
+                  text: s.name,
+                  value: idx + 1,
+                }))}
+                value={form.fundingSourceId}
+                onChange={val => {
+                  const id = Number(val);
+                  const fs = fundingSources[id - 1] || fundingSources[0];
+                  setForm((f: any) => ({
+                    ...f,
+                    fundingSourceId: id,
+                    fundingSourceName: fs?.name || '',
+                  }));
+                }}
+                required
+              />
+              <DropDownList
+                label="Work Basis"
+                data={WORK_BASIS_OPTIONS}
+                value={form.workBasis}
+                onChange={val =>
+                  setForm((f: any) => ({ ...f, workBasis: val as string }))
+                }
+                required
+              />
+              <DropDownList
+                label="Execution Route"
+                data={ROUTE_OPTIONS}
+                value={form.executionRoute}
+                onChange={val =>
+                  setForm((f: any) => ({
+                    ...f,
+                    executionRoute: val as string,
+                  }))
+                }
+                required
+              />
+            </FormGrid>
+
+            <Checkbox
+              label="Statutory Compliance Verified"
+              checked={!!form.isStatuaryCheck}
+              onChange={val =>
+                setForm((f: any) => ({ ...f, isStatuaryCheck: val }))
+              }
+            />
+
+            {/* Documents Section */}
+            <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <h4 className="text-sm font-bold text-gray-800">Documents</h4>
+                <span className="text-xs text-gray-500">
+                  Max file size: 10MB (.pdf, .jpg, .png)
+                </span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {mandateDocs.map(doc => (
+                  <FileUpload
+                    key={doc.id}
+                    label={doc.name}
+                    required={doc.isMandatory}
+                    accept=".pdf,.png,.jpg,.jpeg"
+                    mode="file"
+                    uploadNote={doc.description || 'Upload mandate document'}
+                    onChange={(file: File | null) =>
+                      setForm((f: any) => ({
+                        ...f,
+                        mandateDocs: {
+                          ...(f.mandateDocs || {}),
+                          [doc.name]: file?.name || '',
+                        },
+                      }))
+                    }
+                  />
+                ))}
+              </div>
+            </div>
+
+            <FormActions
+              isEditMode={mode === 'edit'}
+              onSave={handleSave}
+              onReset={handleBackToList}
+            />
+          </form>
+        </FormCard>
+      </FormPage>
+    );
+  }
+
+  // ─── VIEW ───────────────────────────────────────────────────────────────────
+
+  if (mode === 'view' && viewItem) {
+    const workCode =
+      viewItem.code || viewItem.workId || `#${viewItem.workRegistrationId}`;
+    return (
+      <FormPage
+        title={`Work Details — ${workCode}`}
+        description="Complete specifications, administrative approval, and progressive civil workflow record."
+        breadcrumbs={[
+          { label: 'Home', to: '/home/menu' },
+          { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+          { label: 'Admin Login', to: civilUrls.adminMenu },
+          { label: 'Work Registration', to: civilUrls.workRegistration },
+          { label: `Details — ${workCode}` },
+        ]}
+      >
+        <FormCard title="Civil Work Registration Details">
+          <PreviewGrid
+            columns={3}
+            fields={[
+              { label: 'Work Code', value: viewItem.code || viewItem.workId },
+              { label: 'Work Name', value: viewItem.name },
+              {
+                label: 'Project',
+                value: viewItem.projectDescription || '—',
+              },
+              {
+                label: 'Work Category',
+                value: viewItem.workCategoryName || '—',
+              },
+              {
+                label: 'Sub Category',
+                value: viewItem.subCategoryName || '—',
+              },
+              {
+                label: 'Priority Level',
+                value: viewItem.priorityLevel || 'Medium',
+              },
+              {
+                label: 'Funding Source',
+                value: viewItem.fundingSourceName || '—',
+              },
+              { label: 'Work Basis', value: viewItem.workBasis || 'SOR' },
+              {
+                label: 'Execution Route',
+                value: viewItem.executionRoute || 'Internal',
+              },
+              {
+                label: 'Statutory Check',
+                value: (
+                  <span
+                    className={`text-xs font-semibold px-2 py-0.5 rounded ${
+                      viewItem.isStatuaryCheck
+                        ? 'bg-green-100 text-green-700 border border-green-300'
+                        : 'bg-gray-100 text-gray-500 border border-gray-200'
+                    }`}
+                  >
+                    {viewItem.isStatuaryCheck ? '✓ Yes' : '✗ No'}
+                  </span>
+                ),
+              },
+              {
+                label: 'Work Status',
+                value: (
+                  <StatusBadge
+                    label={viewItem.status || 'Registered'}
+                    variant={getCivilStatusVariant(
+                      viewItem.status || 'Registered'
+                    )}
+                  />
+                ),
+              },
+            ]}
+          />
+
+          {viewItem.mandateDocs &&
+            Object.entries(viewItem.mandateDocs).filter(([_, file]) =>
+              Boolean(file)
+            ).length > 0 && (
+              <div className="mt-4">
+                <h4 className="text-xs font-bold text-gray-700 uppercase mb-2">
+                  Attached Documents
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {Object.entries(viewItem.mandateDocs)
+                    .filter(([_, file]) => Boolean(file))
+                    .map(([name, file]) => (
+                      <div
+                        key={name}
+                        className="p-2.5 bg-green-50 border border-green-200 rounded flex items-center gap-2 text-xs"
+                      >
+                        <span className="text-green-700 font-bold">✓</span>
+                        <div>
+                          <div className="font-semibold text-green-900">
+                            {name}
+                          </div>
+                          <div className="text-gray-500">{String(file)}</div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+        </FormCard>
+
+        <div className="flex justify-between items-center pt-2">
+          <Button
+            label="Back to Work Registrations"
+            icon="arrow-left"
+            variant="outlined"
+            onClick={handleBackToList}
+            type="button"
+          />
+          <div className="flex items-center gap-2">
+            {viewItem.isStatuaryCheck && (
+              <Button
+                label="Statutory Compliance"
+                icon="shield"
+                variant="outlined"
+                onClick={() =>
+                  navigate(
+                    `${civilUrls.statutoryCompliance}?workId=${String(
+                      viewItem.workRegistrationId ||
+                        viewItem.id ||
+                        viewItem.workId ||
+                        ''
+                    )}`
+                  )
+                }
+                type="button"
+              />
+            )}
+            <Button
+              label="Edit Work"
+              icon="pencil"
+              variant="primary"
+              onClick={() => openEdit(viewItem)}
+              type="button"
+            />
+          </div>
+        </div>
+      </FormPage>
+    );
+  }
+
+  // ─── LIST ───────────────────────────────────────────────────────────────────
 
   return (
     <FormPage
       title="Work Registration"
-      description="Log infrastructure requirements and register with a unique Work ID. All civil works begin here."
+      description="Manage and register civil works, category allocations, priority levels, and execution routes."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'Work Registration' },
       ]}
     >
@@ -254,522 +659,143 @@ export default function WorkRegistration() {
         <GridPanel
           data={data}
           columns={[
-            { cell: (_, o) => <span>{o.rowIndex + 1}</span>, width: '50px' },
             {
-              field: 'workId',
-              header: 'Work ID',
-              cell: (w: any) => (
-                <span
-                  style={{
-                    fontFamily: 'monospace',
-                    fontWeight: 700,
-                    color: '#1d4ed8',
-                  }}
-                >
-                  {w.workId}
-                </span>
-              ),
+              field: 'workRegistrationId',
+              header: '#',
+              cell: (_, o) => <span>{o.rowIndex + 1}</span>,
+              width: '50px',
             },
             {
-              field: 'projectArea',
-              header: 'Project Area',
-              cell: (w: any) => (
-                <span style={{ fontSize: '0.8125rem', color: '#4b5563' }}>
-                  {w.projectArea ?? '—'}
-                </span>
-              ),
+              field: 'code',
+              header: 'Work Code',
+              cell: (item: any) => <span>{item.code || item.workId}</span>,
             },
             {
               field: 'name',
               header: 'Work Name',
-              cell: (w: any) => (
-                <span style={{ fontWeight: 600 }}>{w.name}</span>
+            },
+            {
+              field: 'projectDescription',
+              header: 'Project Description',
+              cell: (item: any) => (
+                <span>{item.projectDescription || '-'}</span>
               ),
             },
             {
-              field: 'category',
-              header: 'Work Type',
-              cell: (w: any) => (
-                <span style={{ fontSize: '0.75rem' }}>{w.category}</span>
-              ),
-            },
-            { field: 'department', header: 'Category' },
-            {
-              field: 'workBasis',
-              header: 'Work Basis',
-              cell: (w: any) => (
-                <span
-                  className={`civil-pill ${w.workBasis === 'BOQ Based' || w.workBasis === 'Non-SOR' ? 'purple' : 'blue'}`}
-                >
-                  {w.workBasis ?? 'SOR'}
-                </span>
-              ),
+              field: 'workCategoryName',
+              header: 'Category',
+              cell: (item: any) => <span>{item.workCategoryName || '-'}</span>,
             },
             {
-              field: 'estimatedCost',
-              header: 'Est. Cost',
-              cell: (w: any) => (
-                <span>
-                  {w.estimatedCost
-                    ? `₹${(w.estimatedCost / 100000).toFixed(1)}L`
-                    : '—'}
-                </span>
-              ),
-            },
-            {
-              field: 'docs' as any,
-              header: 'Uploaded Documents',
-              cell: (w: any) => (
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '2px',
-                    fontSize: '0.72rem',
-                  }}
-                >
-                  {w.mandateDocs && Object.keys(w.mandateDocs).length > 0
-                    ? Object.entries(w.mandateDocs).map(([docName, fileName]) => (
-                        <span key={docName} style={{ color: '#16a34a', fontWeight: 500 }}>
-                          📄 {docName}: {fileName as string}
-                        </span>
-                      ))
-                    : <span style={{ color: '#9ca3af' }}>No Docs</span>
-                  }
-                </div>
-              ),
-            },
-            {
-              field: 'priority',
+              field: 'priorityLevel',
               header: 'Priority',
+              cell: (w: any) => {
+                const p = w.priorityLevel || w.priority || 'Medium';
+                const variant =
+                  p === 'Critical' || p === 'High'
+                    ? 'rejected'
+                    : p === 'Medium'
+                      ? 'pending'
+                      : 'neutral';
+                return <StatusBadge label={p} variant={variant} />;
+              },
+            },
+            {
+              field: 'isStatuaryCheck',
+              header: 'Statuary Check',
               cell: (w: any) => (
                 <span
-                  className={`civil-pill ${w.priority === 'High' ? 'red' : w.priority === 'Medium' ? 'amber' : 'gray'}`}
+                  className={`text-xs font-semibold px-2 py-0.5 rounded ${
+                    w.isStatuaryCheck
+                      ? 'bg-green-100 text-green-700 border border-green-300'
+                      : 'bg-gray-100 text-gray-500 border border-gray-200'
+                  }`}
                 >
-                  {w.priority}
+                  {w.isStatuaryCheck ? '✓ Yes' : '✗ No'}
                 </span>
               ),
             },
             {
               field: 'status',
-              header: 'Status',
-              cell: (w: any) => (
+              header: 'Work Status',
+              cell: (item: any) => (
                 <StatusBadge
-                  label={w.status}
-                  variant={statusVariant(w.status)}
+                  label={item.status || 'N/A'}
+                  variant={getCivilStatusVariant(item.status || '')}
                 />
               ),
             },
             {
-              field: 'id',
-              header: 'Actions',
+              field: 'isActive',
+              header: 'Status',
               sortable: false,
               cell: (item: any) => (
-                <div style={{ display: 'flex', gap: '0.375rem' }}>
-                  <Button
-                    size="small"
-                    label=""
-                    icon="eye"
-                    variant="outlined"
-                    onClick={() => {
-                      setForm({
-                        ...item,
-                        department: item.department
-                          ? item.department
-                              .split(', ')
-                              .map((x: string) => x.trim())
-                          : [],
-                      });
-                      // Restore selected doc types from saved mandateDocs
-                      if (item.mandateDocs) {
-                        setSelectedDocTypes(Object.keys(item.mandateDocs));
-                      } else {
-                        setSelectedDocTypes([]);
-                      }
-                      setPopup({ mode: 'view', item });
-                    }}
-                  />
-                  <Button
-                    size="small"
-                    label=""
-                    icon="pencil"
-                    variant="outlined"
-                    onClick={() => {
-                      setForm({
-                        ...item,
-                        department: item.department
-                          ? item.department
-                              .split(', ')
-                              .map((x: string) => x.trim())
-                          : [],
-                      });
-                      // Restore selected doc types from saved mandateDocs
-                      if (item.mandateDocs) {
-                        setSelectedDocTypes(Object.keys(item.mandateDocs));
-                      } else {
-                        setSelectedDocTypes([]);
-                      }
-                      setPopup({ mode: 'edit', item });
-                    }}
-                  />
-                </div>
+                <StatusButton
+                  value={item.isActive !== false}
+                  onClick={() => handleToggleStatus(item)}
+                />
               ),
+            },
+            {
+              field: 'workRegistrationId',
+              header: 'Actions',
+              sortable: false,
+              cell: (item: any) => {
+                const workId = String(
+                  item.workRegistrationId || item.id || item.workId || ''
+                );
+                return (
+                  <div className="grid-action-buttons">
+                    <Button
+                      icon="eye"
+                      variant="outlined"
+                      size="small"
+                      className="grid-action-button grid-action-button-view"
+                      onClick={() => openView(item)}
+                      tooltip="View Details"
+                      ariaLabel="View Details"
+                    />
+                    <Button
+                      icon="pencil"
+                      variant="outlined"
+                      size="small"
+                      className="grid-action-button grid-action-button-edit"
+                      onClick={() => openEdit(item)}
+                      tooltip="Edit Work"
+                      ariaLabel="Edit Work"
+                    />
+                    {item.isStatuaryCheck && (
+                      <Button
+                        icon="shield"
+                        variant="outlined"
+                        size="small"
+                        className="grid-action-button hover:!border-black hover:!bg-black/[0.04] hover:!text-black"
+                        tooltip="Statutory Compliance & NOC"
+                        ariaLabel="Statutory Compliance"
+                        onClick={() =>
+                          navigate(
+                            `${civilUrls.statutoryCompliance}?workId=${workId}`
+                          )
+                        }
+                      />
+                    )}
+                  </div>
+                );
+              },
             },
           ]}
           toolbar={
             <Button
-              label="Register New Work"
+              label="Register Work"
               icon="plus"
               variant="primary"
-              onClick={() => {
-                setForm({
-                  ...EMPTY,
-                  department: [] as any,
-                });
-                setPopup({ mode: 'create' });
-              }}
+              onClick={openCreate}
             />
           }
           searchBox
           searchPlaceholder="Search civil works..."
         />
       </FormCard>
-
-      <FormPopup
-        visible={popup.mode !== 'closed'}
-        onHide={close}
-        title={
-          popup.mode === 'create'
-            ? 'Register New Civil Work'
-            : popup.mode === 'edit'
-              ? 'Edit Work Registration'
-              : 'View Work Registration'
-        }
-        subtitle="Fill all metadata attributes for official work registration."
-        size="xl"
-      >
-        {popup.mode !== 'create' && (
-          <div
-            style={{
-              marginBottom: '1rem',
-              display: 'flex',
-              gap: '0.5rem',
-              alignItems: 'center',
-            }}
-          >
-            <span
-              style={{ fontSize: '0.85rem', fontWeight: 600, color: '#374151' }}
-            >
-              Work ID:
-            </span>
-            <span
-              style={{
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                color: '#1d4ed8',
-                background: '#eff6ff',
-                padding: '0.25rem 0.5rem',
-                borderRadius: '0.25rem',
-                fontSize: '0.85rem',
-              }}
-            >
-              {form.workId}
-            </span>
-          </div>
-        )}
-
-        <FormGrid columns={2}>
-          {/* 1. Project Area Name */}
-          <DropDownList
-            label="Project Area Name"
-            placeholder="Select Project Area"
-            data={projectAreaOptions}
-            textField="name"
-            optionValue="value"
-            value={form.projectArea}
-            onChange={v => setForm(f => ({ ...f, projectArea: v as string }))}
-            disabled={isReadOnly}
-          />
-
-          {/* 2. Work Name / Title */}
-          <TextBox
-            label="Work Name / Title"
-            placeholder="e.g. New Academic Block – Science Wing"
-            value={form.name ?? ''}
-            onChange={v => setForm(f => ({ ...f, name: v }))}
-            required
-            disabled={isReadOnly}
-          />
-
-          {/* 3. Work Type */}
-          <DropDownList
-            label="Work Type"
-            placeholder="Select Work Type"
-            data={CATEGORIES}
-            textField={'name' as any}
-            optionValue="value"
-            value={form.category}
-            onChange={v => {
-              setForm(f => ({
-                ...f,
-                category: v as any,
-                landOwnershipType:
-                  v === 'New Capital Construction' ? f.landOwnershipType : '',
-                ownershipVerified:
-                  v === 'New Capital Construction' ? f.ownershipVerified : '',
-              }));
-            }}
-            disabled={isReadOnly}
-          />
-
-          {/* 4. Land Ownership Type */}
-          {form.category === 'New Capital Construction' && (
-            <DropDownList
-              label="Land Ownership Type"
-              placeholder="Select Land Ownership"
-              data={LAND_OWNERSHIP_OPTIONS}
-              textField="name"
-              optionValue="value"
-              value={form.landOwnershipType}
-              onChange={v =>
-                setForm(f => ({ ...f, landOwnershipType: v as string }))
-              }
-              disabled={isReadOnly}
-            />
-          )}
-          {/* 6. Ownership Verified */}
-          {form.category === 'New Capital Construction' && (
-            <DropDownList
-              label="Ownership Verified"
-              placeholder="Select Option"
-              data={OWNERSHIP_VERIFIED_OPTIONS}
-              textField="name"
-              optionValue="value"
-              value={form.ownershipVerified}
-              onChange={v =>
-                setForm(f => ({ ...f, ownershipVerified: v as string }))
-              }
-              disabled={isReadOnly}
-            />
-          )}
-
-          {/* 5. Category */}
-          <MultiSelectList
-            label="Category"
-            placeholder="Select Categories"
-            data={DEPT_OPTIONS}
-            textField="name"
-            valueField="value"
-            value={
-              (Array.isArray(form.department)
-                ? form.department
-                : form.department
-                  ? form.department.split(', ').map(x => x.trim())
-                  : []) as any
-            }
-            onChange={(v: any) => setForm(f => ({ ...f, department: v }))}
-            disabled={isReadOnly}
-          />
-
-          {/* 7. Priority */}
-          <DropDownList
-            label="Priority"
-            placeholder="Select Priority"
-            data={PRIORITY_OPTIONS}
-            textField={'name' as any}
-            optionValue="value"
-            value={form.priority}
-            onChange={v => setForm(f => ({ ...f, priority: v as any }))}
-            disabled={isReadOnly}
-          />
-
-          {/* 8. Funding Source */}
-          <DropDownList
-            label="Funding Source"
-            placeholder="Select Funding Source"
-            data={FUNDING_SOURCES}
-            textField={'name' as any}
-            optionValue="value"
-            value={form.fundingSource}
-            onChange={v => setForm(f => ({ ...f, fundingSource: v as string }))}
-            disabled={isReadOnly}
-          />
-
-          {/* 9. Site Engineer In-Charge */}
-          <MultiSelectList
-            label="Site Engineer In-Charge"
-            placeholder="Select Site Engineers"
-            data={SITE_ENGINEERS}
-            textField="name"
-            valueField="value"
-            value={
-              (Array.isArray(form.siteEngineer)
-                ? form.siteEngineer
-                : form.siteEngineer
-                  ? [form.siteEngineer]
-                  : []) as any
-            }
-            onChange={(v: any) => setForm(f => ({ ...f, siteEngineer: v }))}
-            disabled={isReadOnly}
-          />
-
-          {/* 10. Work Basis (SOR or BOQ Based) */}
-          <DropDownList
-            label="Work Basis (SOR or Non-SOR Based)"
-            placeholder="Select Work Basis"
-            data={WORK_BASIS_OPTIONS}
-            textField={'name' as any}
-            optionValue="value"
-            value={form.workBasis}
-            onChange={v => setForm(f => ({ ...f, workBasis: v as any }))}
-            disabled={isReadOnly}
-          />
-
-          {/* 11. Execution Route (for issuing tender) */}
-          <DropDownList
-            label="Execution Route (for issuing tender)"
-            placeholder="Select Execution Route"
-            data={ROUTE_OPTIONS}
-            textField={'name' as any}
-            optionValue="value"
-            value={form.executionRoute}
-            onChange={v => setForm(f => ({ ...f, executionRoute: v as any }))}
-            disabled={isReadOnly}
-          />
-        </FormGrid>
-
-        <h4
-          style={{
-            fontSize: '0.875rem',
-            fontWeight: 700,
-            color: '#1f2937',
-            marginBottom: '0.5rem',
-            borderTop: '1px solid #f3f4f6',
-            paddingTop: '0.75rem',
-          }}
-        >
-          📄 Upload Mandate Documents
-        </h4>
-
-        {/* Step 1: Select which document types to upload from master */}
-        <FormGrid columns={2}>
-          <MultiSelectList
-            label="Select Documents to Upload"
-            placeholder="Choose document types from master..."
-            data={MANDATE_DOC_MASTER.map(d => ({ name: d.name, value: d.id }))}
-            textField="name"
-            valueField="value"
-            value={selectedDocTypes as any}
-            onChange={(v: any) => {
-              const ids: string[] = Array.isArray(v) ? v : [];
-              setSelectedDocTypes(ids);
-              // Remove deselected doc types from mandateDocs
-              setForm(f => {
-                const existing = { ...(f.mandateDocs ?? {}) };
-                const activeNames = new Set(
-                  ids.map(id => MANDATE_DOC_MASTER.find(d => d.id === id)?.name ?? id)
-                );
-                Object.keys(existing).forEach(k => {
-                  if (!activeNames.has(k)) delete existing[k];
-                });
-                return { ...f, mandateDocs: existing };
-              });
-            }}
-            disabled={isReadOnly}
-          />
-          <div /> {/* Spacer to align with 2-column layout */}
-        </FormGrid>
-
-        {/* Step 2: One file input per selected document type */}
-        {selectedDocTypes.length > 0 && (
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
-              gap: '0.75rem',
-              marginTop: '0.75rem',
-            }}
-          >
-            {selectedDocTypes.map(docId => {
-              const docDef = MANDATE_DOC_MASTER.find(d => d.id === docId);
-              if (!docDef) return null;
-              const uploadedName = (form.mandateDocs ?? {})[docDef.name];
-              return (
-                <div key={docId}>
-                  <label
-                    style={{
-                      fontSize: '0.78rem',
-                      fontWeight: 600,
-                      color: '#374151',
-                      display: 'block',
-                      marginBottom: '0.375rem',
-                    }}
-                  >
-                    {docDef.name}
-                  </label>
-                  <input
-                    type="file"
-                    accept={docDef.accept}
-                    disabled={isReadOnly}
-                    onChange={e => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        setForm(f => ({
-                          ...f,
-                          mandateDocs: {
-                            ...(f.mandateDocs ?? {}),
-                            [docDef.name]: file.name,
-                          },
-                        }));
-                        ToastService.success(
-                          `Uploaded "${docDef.name}": ${file.name}`
-                        );
-                      }
-                    }}
-                    style={{
-                      width: '100%',
-                      padding: '0.375rem',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '0.375rem',
-                      fontSize: '0.8125rem',
-                      background: '#ffffff',
-                    }}
-                  />
-                  {uploadedName && (
-                    <span
-                      style={{
-                        fontSize: '0.72rem',
-                        color: '#16a34a',
-                        display: 'block',
-                        marginTop: '0.25rem',
-                        fontWeight: 600,
-                      }}
-                    >
-                      ✓ Selected: {uploadedName}
-                    </span>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
-
-        {!isReadOnly && (
-          <div className="flex justify-end gap-3 mt-4">
-            <Button label="Cancel" variant="outlined" onClick={close} />
-            <Button
-              label={
-                popup.mode === 'create'
-                  ? 'Register Work & Generate ID'
-                  : 'Update'
-              }
-              variant="primary"
-              icon="save"
-              onClick={handleSave}
-            />
-          </div>
-        )}
-      </FormPopup>
     </FormPage>
   );
 }

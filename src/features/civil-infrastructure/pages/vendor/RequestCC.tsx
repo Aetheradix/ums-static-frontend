@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { TextArea, TextBox } from 'shared/components/forms';
@@ -9,6 +9,7 @@ import {
   FormPopup,
   GridPanel,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import { civilWorks } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -19,15 +20,15 @@ type PopupState =
   | { mode: 'view'; requestItem: any };
 
 export default function RequestCC() {
-  const [works, setWorks] = useState<any[]>(() => {
-    const saved = localStorage.getItem('civil_works');
-    return saved ? JSON.parse(saved) : civilWorks;
-  });
+  const [works, setWorks] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.WORKS,
+    civilWorks
+  );
 
-  const [ccRequests, setCcRequests] = useState<any[]>(() => {
-    const saved = localStorage.getItem('civil_cc_requests');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [ccRequests, setCcRequests] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.CC_REQUESTS,
+    []
+  );
 
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
 
@@ -36,22 +37,6 @@ export default function RequestCC() {
   const [remarks, setRemarks] = useState('');
   const [finalBillNo, setFinalBillNo] = useState('');
 
-  // Storage listener to synchronize updates across portals
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const savedCC = localStorage.getItem('civil_cc_requests');
-      if (savedCC) {
-        setCcRequests(JSON.parse(savedCC));
-      }
-      const savedWorks = localStorage.getItem('civil_works');
-      if (savedWorks) {
-        setWorks(JSON.parse(savedWorks));
-      }
-    };
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-
   const handleCreateRequest = () => {
     if (popup.mode !== 'request') return;
     if (!completionDate) {
@@ -59,7 +44,7 @@ export default function RequestCC() {
       return;
     }
     if (!remarks.trim()) {
-      ToastService.error('Justification remarks are required.');
+      ToastService.error('Remarks are required.');
       return;
     }
 
@@ -82,7 +67,6 @@ export default function RequestCC() {
       ...ccRequests.filter(r => r.workId !== item.id),
       newRequest,
     ];
-    localStorage.setItem('civil_cc_requests', JSON.stringify(updatedCC));
     setCcRequests(updatedCC);
 
     // Also update physical progress to 100% and status to Completed in civil_works
@@ -91,10 +75,7 @@ export default function RequestCC() {
         ? { ...w, physicalProgress: 100, status: 'Completed' }
         : w
     );
-    localStorage.setItem('civil_works', JSON.stringify(updatedWorks));
     setWorks(updatedWorks);
-
-    window.dispatchEvent(new Event('storage'));
 
     ToastService.success(
       'Completion Certificate (CC) request submitted successfully to Admin.'
@@ -110,9 +91,10 @@ export default function RequestCC() {
       title="Request Completion Certificate"
       description="Apply for project completion audits and final technical closures for completed works."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.engineerPortal },
-        { label: 'Request CC' },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Vendor Login', to: civilUrls.vendorMenu },
+        { label: 'Request Completion Certificate' },
       ]}
     >
       <FormCard subtitle="Only works with high physical progress are eligible for final CC requests.">
@@ -296,7 +278,7 @@ export default function RequestCC() {
             <FormGrid columns={2}>
               <TextBox
                 type="date"
-                label="Actual Completion Date *"
+                label="Actual Completion Date"
                 value={completionDate}
                 onChange={setCompletionDate}
                 required
@@ -309,8 +291,8 @@ export default function RequestCC() {
               />
             </FormGrid>
             <TextArea
-              label="Site Engineer Audit Justification / Remarks *"
-              placeholder="Certify that all BOQ items are measured, quality passes recorded, and physical handover is completed..."
+              label="Remarks"
+              placeholder="Remarks certifying that all BOQ items are measured, quality passes recorded, and physical handover is completed..."
               value={remarks}
               onChange={setRemarks}
               rows={3}

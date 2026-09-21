@@ -66,6 +66,26 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
         label = 'User Role Assignment';
       } else if (path.toLowerCase() === 'role-permissions') {
         label = 'Role Permissions';
+      } else if (
+        path.toLowerCase() === 'admin' &&
+        location.pathname.includes('civil-infrastructure')
+      ) {
+        label = 'Admin Login';
+      } else if (
+        path.toLowerCase() === 'engineer' &&
+        location.pathname.includes('civil-infrastructure')
+      ) {
+        label = 'Engineer Portal';
+      } else if (
+        path.toLowerCase() === 'finance' &&
+        location.pathname.includes('civil-infrastructure')
+      ) {
+        label = 'Finance & Accounts';
+      } else if (
+        path.toLowerCase() === 'masters' &&
+        location.pathname.includes('civil-infrastructure')
+      ) {
+        label = 'External Masters';
       }
 
       let toPath = currentPath;
@@ -107,6 +127,38 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
         toPath = '/home/sub-menu/affiliation-settings';
       } else if (path.toLowerCase() === 'open-book-examination') {
         toPath = '/home/sub-menu/open-book-examination';
+      } else if (path.toLowerCase() === 'civil-infrastructure') {
+        toPath = '/home/sub-menu/civil-infrastructure';
+      } else if (
+        path.toLowerCase() === 'civil-admin' ||
+        (path.toLowerCase() === 'admin' &&
+          location.pathname.includes('civil-infrastructure'))
+      ) {
+        toPath = '/home/sub-menu/civil-admin';
+      } else if (
+        path.toLowerCase() === 'civil-engineer' ||
+        (path.toLowerCase() === 'engineer' &&
+          location.pathname.includes('civil-infrastructure'))
+      ) {
+        toPath = '/home/sub-menu/civil-engineer';
+      } else if (
+        path.toLowerCase() === 'civil-finance' ||
+        (path.toLowerCase() === 'finance' &&
+          location.pathname.includes('civil-infrastructure'))
+      ) {
+        toPath = '/home/sub-menu/civil-finance';
+      } else if (
+        path.toLowerCase() === 'civil-external-masters' ||
+        (path.toLowerCase() === 'masters' &&
+          location.pathname.includes('civil-infrastructure'))
+      ) {
+        toPath = '/home/sub-menu/civil-external-masters';
+      } else if (
+        path.toLowerCase() === 'civil-vendor' ||
+        (path.toLowerCase() === 'vendor' &&
+          location.pathname.includes('civil-infrastructure'))
+      ) {
+        toPath = '/home/sub-menu/civil-vendor';
       }
 
       generatedItems.push({

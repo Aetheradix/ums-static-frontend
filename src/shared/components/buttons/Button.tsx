@@ -5,6 +5,7 @@ import './Button.css';
 type ButtonType = 'button' | 'submit' | 'reset';
 type ButtonVariant =
   | 'primary'
+  | 'secondary'
   | 'success'
   | 'danger'
   | 'warning'
@@ -26,6 +27,7 @@ interface ButtonProps {
   size?: ButtonSize;
   isActive?: boolean;
   tooltip?: string;
+  title?: string;
   tooltipPosition?: 'top' | 'bottom' | 'left' | 'right';
   ariaLabel?: string;
 }
@@ -44,6 +46,7 @@ export default function Button({
   size = 'medium',
   isActive,
   tooltip,
+  title,
   tooltipPosition = 'top',
   ariaLabel,
 }: React.PropsWithChildren<ButtonProps>) {
@@ -119,13 +122,14 @@ export default function Button({
       label={label}
       loading={isLoading}
       disabled={disabled}
-      tooltip={tooltip}
+      tooltip={tooltip ?? title}
+      title={title}
       tooltipOptions={{
         position: tooltipPosition,
         showDelay: 150,
         hideDelay: 50,
       }}
-      aria-label={ariaLabel ?? tooltip ?? label}
+      aria-label={ariaLabel ?? tooltip ?? title ?? label}
     />
   );
 }

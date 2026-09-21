@@ -7775,13 +7775,128 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'dashboard',
                 colorScheme: 'blue',
               },
+              // {
+              //   label: 'Masters',
+              //   description:
+              //     'Manage SOR items, Third-Party Inspection (TPI) agencies, and Quality Lab registries.',
+              //   path: '/civil-infrastructure/admin/sor-master',
+              //   icon: 'list_alt',
+              //   colorScheme: 'teal',
+              // },
               {
-                label: 'Masters',
+                label: 'External Masters',
+                slug: 'civil-external-masters',
                 description:
-                  'Manage SOR items, Third-Party Inspection (TPI) agencies, and Quality Lab registries.',
-                path: '/civil-infrastructure/admin/sor-master',
-                icon: 'list_alt',
+                  'Manage SOR types, chapters, subjects, items, projects, funding sources, labs, and status masters.',
+                icon: 'settings_suggest',
                 colorScheme: 'teal',
+                path: '/home/sub-menu/civil-external-masters',
+                children: [
+                  {
+                    label: 'SOR Types',
+                    description:
+                      'Schedule of Rates major classifications and code definitions.',
+                    path: '/civil-infrastructure/admin/masters/sor-type',
+                    icon: 'category',
+                    colorScheme: 'blue',
+                  },
+                  {
+                    label: 'SOR Chapters',
+                    description:
+                      'Schedule of Rates chapter hierarchy under classifications.',
+                    path: '/civil-infrastructure/admin/masters/sor-chapter',
+                    icon: 'menu_book',
+                    colorScheme: 'teal',
+                  },
+                  {
+                    label: 'SOR Subjects',
+                    description:
+                      'SOR subject classifications and sub-chapters.',
+                    path: '/civil-infrastructure/admin/masters/sor-subject',
+                    icon: 'subject',
+                    colorScheme: 'indigo',
+                  },
+                  {
+                    label: 'SOR Item Master',
+                    description:
+                      'Manage government-notified Schedule of Rates line items, units, and rates.',
+                    path: '/civil-infrastructure/admin/masters/sor-items',
+                    icon: 'format_list_numbered',
+                    colorScheme: 'purple',
+                  },
+                  {
+                    label: 'Project Master',
+                    description:
+                      'Campus project definitions, locations, and structural categories.',
+                    path: '/civil-infrastructure/admin/masters/projects',
+                    icon: 'apartment',
+                    colorScheme: 'orange',
+                  },
+                  {
+                    label: 'Work Category Master',
+                    description:
+                      'Capital construction, maintenance, renovation, and deposit work types.',
+                    path: '/civil-infrastructure/admin/masters/work-categories',
+                    icon: 'class',
+                    colorScheme: 'green',
+                  },
+                  {
+                    label: 'Work Department Master',
+                    description:
+                      'University executing departments, wings, and sections.',
+                    path: '/civil-infrastructure/admin/masters/work-departments',
+                    icon: 'domain',
+                    colorScheme: 'blue',
+                  },
+                  {
+                    label: 'Funding Source Master',
+                    description:
+                      'UGC, State Government, RUSA, CSR, and internal fund sources.',
+                    path: '/civil-infrastructure/admin/masters/funding-sources',
+                    icon: 'account_balance',
+                    colorScheme: 'teal',
+                  },
+                  {
+                    label: 'Mandate Document Master',
+                    description:
+                      'Required compliance documents, sanctions, and upload checklist masters.',
+                    path: '/civil-infrastructure/admin/masters/mandate-documents',
+                    icon: 'description',
+                    colorScheme: 'amber',
+                  },
+                  {
+                    label: 'Quality Lab Master',
+                    description:
+                      'Empaneled material testing laboratories, NABL accreditation, and scopes.',
+                    path: '/civil-infrastructure/admin/masters/quality-labs',
+                    icon: 'science',
+                    colorScheme: 'red',
+                  },
+                  {
+                    label: 'TPI Agency Master',
+                    description:
+                      'Empaneled Third-Party Inspection QA agencies and contract periods.',
+                    path: '/civil-infrastructure/admin/masters/tpi-agencies',
+                    icon: 'fact_check',
+                    colorScheme: 'indigo',
+                  },
+                  {
+                    label: 'MB Status Master',
+                    description:
+                      'Measurement Book approval lifecycle and verification status codes.',
+                    path: '/civil-infrastructure/admin/masters/mb-statuses',
+                    icon: 'rule',
+                    colorScheme: 'teal',
+                  },
+                  {
+                    label: 'Work Status Master',
+                    description:
+                      'Civil work lifecycle execution status definitions and flags.',
+                    path: '/civil-infrastructure/admin/masters/statuses',
+                    icon: 'flag',
+                    colorScheme: 'purple',
+                  },
+                ],
               },
               {
                 label: 'Work Registration',
@@ -7839,7 +7954,14 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'gavel',
                 colorScheme: 'teal',
               },
-
+              {
+                label: 'Extension Request',
+                description:
+                  'Review and approve contractor timeline extensions and revised estimates.',
+                path: '/civil-infrastructure/admin/eot-requests',
+                icon: 'update',
+                colorScheme: 'amber',
+              },
               {
                 label: 'Work Order Sign',
                 description:
@@ -7865,20 +7987,28 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'indigo',
               },
               {
-                label: 'Extension Request',
-                description:
-                  'Review and approve contractor timeline extensions and revised estimates.',
-                path: '/civil-infrastructure/admin/eot-requests',
-                icon: 'update',
-                colorScheme: 'amber',
-              },
-              {
                 label: 'Completion Certificate',
                 description:
                   'Issue completion certificates and trigger DLP monitoring.',
                 path: '/civil-infrastructure/admin/completion-certificate',
                 icon: 'emoji_events',
                 colorScheme: 'green',
+              },
+              {
+                label: 'Statutory Compliance / NOCs',
+                description:
+                  'Track environmental, fire, municipal, and heritage NOCs.',
+                path: '/civil-infrastructure/admin/statutory-compliance',
+                icon: 'verified',
+                colorScheme: 'purple',
+              },
+              {
+                label: 'TPI Inspection Reports',
+                description:
+                  'Third-Party Inspection QA reports and NCR tracking.',
+                path: '/civil-infrastructure/admin/tpi-reports',
+                icon: 'fact_check',
+                colorScheme: 'indigo',
               },
               {
                 label: 'Reports',
@@ -7906,14 +8036,14 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'dashboard',
                 colorScheme: 'blue',
               },
-              // {
-              //   label: 'Planning Workbench',
-              //   description:
-              //     'Input site dimensions, soil data, and resource projections.',
-              //   path: '/civil-infrastructure/engineer/technical-planning',
-              //   icon: 'architecture',
-              //   colorScheme: 'purple',
-              // },
+              {
+                label: 'Technical Planning',
+                description:
+                  'Manage civil engineering technical plans, plot areas, concrete grades, and material estimations.',
+                path: '/civil-infrastructure/engineer/technical-planning',
+                icon: 'architecture',
+                colorScheme: 'purple',
+              },
               {
                 label: 'SOR Rate Master',
                 description:
@@ -7959,44 +8089,6 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'share_location',
                 colorScheme: 'teal',
               },
-              {
-                label: 'E-Measurement Book',
-                description:
-                  'Real-time quantity measurement book entry. 4 rules enforced.',
-                path: '/civil-infrastructure/engineer/e-measurement-book',
-                icon: 'menu_book',
-                colorScheme: 'purple',
-              },
-              // {
-              //   label: 'E-MB Report',
-              //   description:
-              //     'Work-wise E-MB measurements, bills, and recovery ledger.',
-              //   path: '/civil-infrastructure/engineer/mb-report',
-              //   icon: 'assessment',
-              //   colorScheme: 'blue',
-              // },
-              {
-                label: 'Milestone Sign-off',
-                description: 'EE milestone checklist validation.',
-                path: '/civil-infrastructure/engineer/milestone-signoff',
-                icon: 'verified',
-                colorScheme: 'orange',
-              },
-              {
-                label: 'Work Extension',
-                description:
-                  'Extension of time applications and revised estimates.',
-                path: '/civil-infrastructure/engineer/eot-request',
-                icon: 'more_time',
-                colorScheme: 'green',
-              },
-              {
-                label: 'Request CC',
-                description: 'Apply for project completion certificate.',
-                path: '/civil-infrastructure/engineer/request-cc',
-                icon: 'emoji_events',
-                colorScheme: 'indigo',
-              },
             ],
           },
           {
@@ -8038,19 +8130,80 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'orange',
               },
               {
-                label: 'Payment Release',
-                description: 'EFT payment with mandatory UTR reference log.',
-                path: '/civil-infrastructure/finance/payment-release',
-                icon: 'payments',
-                colorScheme: 'red',
-              },
-              {
                 label: 'DLP Retention',
                 description:
                   'Monitor DLP timer and defects, release retention.',
                 path: '/civil-infrastructure/finance/dlp-monitoring',
                 icon: 'lock_open',
                 colorScheme: 'pink',
+              },
+            ],
+          },
+          {
+            label: 'Vendor',
+            slug: 'civil-vendor',
+            description:
+              'Vendor self-service: manpower mapping, E-MB verification, extension requests, milestone payments, and completion certificates.',
+            icon: 'storefront',
+            colorScheme: 'amber',
+            path: '/home/sub-menu/civil-vendor',
+            children: [
+              {
+                label: 'Work to Manpower Mapping',
+                description:
+                  'Map engineering personnel, site supervisors, and responsibilities for registered civil works.',
+                path: '/civil-infrastructure/vendor/work-manpower-mapping',
+                icon: 'people',
+                colorScheme: 'indigo',
+              },
+              {
+                label: 'E-Measurement Book (E-MB) Verification',
+                description:
+                  'Real-time quantity measurement book entry and contractor verification.',
+                path: '/civil-infrastructure/vendor/e-measurement-book',
+                icon: 'menu_book',
+                colorScheme: 'purple',
+              },
+              {
+                label:
+                  'Work Extension Request (Extension of Time / Revised Estimate)',
+                description:
+                  'Extension of time applications and revised estimates.',
+                path: '/civil-infrastructure/vendor/eot-request',
+                icon: 'more_time',
+                colorScheme: 'green',
+              },
+              {
+                label: 'Milestone Status (Request for payment)',
+                description:
+                  'View milestone details and apply for milestone release/payment request.',
+                path: '/civil-infrastructure/vendor/milestone-status',
+                icon: 'verified',
+                colorScheme: 'orange',
+              },
+              {
+                label: 'Utilization Certificate',
+                description:
+                  'Statutory GFR 12-A grant utilization tracking and submission.',
+                path: '/civil-infrastructure/vendor/utilization-certificate',
+                icon: 'document_scanner',
+                colorScheme: 'teal',
+              },
+              {
+                label: 'Request Completion Certificate',
+                description:
+                  'Apply for project completion certificate and final inspection.',
+                path: '/civil-infrastructure/vendor/request-cc',
+                icon: 'emoji_events',
+                colorScheme: 'indigo',
+              },
+              {
+                label: 'Payment Release details',
+                description:
+                  'Track EFT/NEFT transfers, payment references, and UTR logs.',
+                path: '/civil-infrastructure/vendor/payment-release',
+                icon: 'payments',
+                colorScheme: 'red',
               },
             ],
           },

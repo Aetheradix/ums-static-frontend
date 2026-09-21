@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { TextArea, TextBox } from 'shared/components/forms';
@@ -10,6 +10,7 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import {
   type EOTRequest,
   eotRequests as initialData,
@@ -28,15 +29,15 @@ const statusVariant = (s: string) =>
         : 'neutral';
 
 export default function AdminEOTRequest() {
-  const [data, setData] = useState<any[]>(() => {
-    const saved = localStorage.getItem('civil_eot_requests');
-    return saved ? JSON.parse(saved) : initialData;
-  });
+  const [data, setData] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.EOT_REQUESTS,
+    initialData
+  );
 
-  const [works, setWorks] = useState<any[]>(() => {
-    const saved = localStorage.getItem('civil_works');
-    return saved ? JSON.parse(saved) : initialWorks;
-  });
+  const [works, setWorks] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.WORKS,
+    initialWorks
+  );
 
   const [popup, setPopup] = useState<{ mode: 'closed' | 'review'; item?: any }>(
     { mode: 'closed' }
@@ -44,14 +45,6 @@ export default function AdminEOTRequest() {
   const [approvedDays, setApprovedDays] = useState('');
   const [approvedBudget, setApprovedBudget] = useState('');
   const [resolution, setResolution] = useState('');
-
-  useEffect(() => {
-    localStorage.setItem('civil_eot_requests', JSON.stringify(data));
-  }, [data]);
-
-  useEffect(() => {
-    localStorage.setItem('civil_works', JSON.stringify(works));
-  }, [works]);
 
   const handleOpenReview = (item: any) => {
     setApprovedDays(String(item.daysRequested ?? ''));
@@ -158,8 +151,9 @@ export default function AdminEOTRequest() {
       title="EOT & Revised Estimate Decisions"
       description="Process contractor applications for project schedule extension (Extension of Time) or scope budget revision."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'EOT Requests' },
       ]}
     >
@@ -380,7 +374,7 @@ export default function AdminEOTRequest() {
         visible={popup.mode !== 'closed'}
         onHide={() => setPopup({ mode: 'closed' })}
         title={`EOT Request Review — ${popup.item?.eotNo}`}
-        subtitle="Review contractor justification and record final resolution."
+        subtitle="Review request remarks and record final resolution."
         size="lg"
       >
         {popup.item && (
@@ -446,7 +440,7 @@ export default function AdminEOTRequest() {
                   marginBottom: '0.25rem',
                 }}
               >
-                Contractor Justification:
+                Remarks:
               </div>
               <div style={{ color: '#1f2937', fontStyle: 'italic' }}>
                 "{popup.item.justification}"
@@ -471,17 +465,19 @@ export default function AdminEOTRequest() {
                 <FormGrid columns={2}>
                   {popup.item.type === 'Extension of Time' ? (
                     <TextBox
-                      label="Approved Delay Extension (Days) *"
+                      label="Approved Delay Extension (Days)"
                       value={approvedDays}
                       onChange={setApprovedDays}
                       placeholder="e.g. 90"
+                      required
                     />
                   ) : (
                     <TextBox
-                      label="Sanctioned Revised Estimate Budget (₹) *"
+                      label="Sanctioned Revised Estimate Budget (₹)"
                       value={approvedBudget}
                       onChange={setApprovedBudget}
                       placeholder="e.g. 250000"
+                      required
                     />
                   )}
                   <div
@@ -505,11 +501,12 @@ export default function AdminEOTRequest() {
                 </FormGrid>
                 <div style={{ marginTop: '0.5rem', marginBottom: '1rem' }}>
                   <TextArea
-                    label="Executive Engineer Resolution Remarks *"
+                    label="Executive Engineer Resolution Remarks"
                     placeholder="Provide comments, reasons, or details of approval/rejection..."
                     value={resolution}
                     onChange={setResolution}
                     rows={3}
+                    required
                   />
                 </div>
                 <div className="flex justify-end gap-3 mt-4 border-top pt-4">

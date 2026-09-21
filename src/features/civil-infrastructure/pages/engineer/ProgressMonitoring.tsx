@@ -9,55 +9,35 @@ import {
   FormPopup,
   GridPanel,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import {
   type ProgressLog,
-  progressLogs as initialLogs,
   civilWorks,
+  progressLogs as initialLogs,
   milestones as initialMilestones,
 } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
 export default function ProgressMonitoring() {
-  const [civilWorksList] = useState(() => {
-    const saved = localStorage.getItem('civil_works');
-    return saved ? JSON.parse(saved) : civilWorks;
-  });
+  const [civilWorksList, setCivilWorksList] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.WORKS,
+    civilWorks
+  );
 
   const WORK_OPTIONS = civilWorksList
     .filter((w: any) => w.status === 'In Progress')
     .map((w: any) => ({ name: `${w.workId} — ${w.name}`, value: w.id }));
 
-  const [milestones] = useState<any[]>(() => {
-    const saved = localStorage.getItem('civil_milestones');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      const merged = parsed.map((m: any) => {
-        const mockM = initialMilestones.find((mw: any) => mw.id === m.id);
-        if (mockM && mockM.qualityTestRequired) {
-          return {
-            ...m,
-            testName: m.testName || mockM.testName,
-            testType: m.testType || mockM.testType,
-            materialTested: m.materialTested || mockM.materialTested,
-            labName: m.labName || mockM.labName,
-            requiredValue: m.requiredValue || mockM.requiredValue,
-          };
-        }
-        return m;
-      });
-      const parsedIds = new Set(merged.map((m: any) => m.id));
-      const missing = initialMilestones.filter(
-        (m: any) => !parsedIds.has(m.id)
-      );
-      const finalMerged = [...merged, ...missing];
-      localStorage.setItem('civil_milestones', JSON.stringify(finalMerged));
-      return finalMerged;
-    }
-    return initialMilestones;
-  });
+  const [milestones] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.MILESTONES,
+    initialMilestones
+  );
 
-  const [logs, setLogs] = useState(initialLogs);
+  const [logs, setLogs] = useCivilStorage<ProgressLog[]>(
+    CIVIL_STORAGE_KEYS.PROGRESS_LOGS,
+    initialLogs
+  );
   const [popup, setPopup] = useState<{
     mode: 'closed' | 'create' | 'view';
     item?: ProgressLog;
@@ -143,6 +123,13 @@ export default function ProgressMonitoring() {
         : undefined,
     };
     setLogs(prev => [newLog, ...prev]);
+    setCivilWorksList(prev =>
+      prev.map((w: any) =>
+        String(w.id) === String(workId) || String(w.workId) === String(workId)
+          ? { ...w, physicalProgress: pct }
+          : w
+      )
+    );
     ToastService.success('Progress log registered with geo-coordinates.');
     setPopup({ mode: 'closed' });
     setWorkId('');
@@ -158,8 +145,9 @@ export default function ProgressMonitoring() {
       title="Progress Monitoring & Field Logs"
       description="Site supervisors update incremental progress with mandatory geo-tagged/time-stamped images and variance notes."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.engineerPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Engineer Portal', to: civilUrls.engineerMenu },
         { label: 'Progress Monitoring' },
       ]}
     >
@@ -378,7 +366,7 @@ export default function ProgressMonitoring() {
           <>
             <FormGrid columns={3}>
               <DropDownList
-                label="Work *"
+                label="Work"
                 data={WORK_OPTIONS}
                 textField={'name' as any}
                 optionValue="value"
@@ -398,9 +386,10 @@ export default function ProgressMonitoring() {
                     setGeoLon('77.4250');
                   }
                 }}
+                required
               />
               <DropDownList
-                label="Select Milestone *"
+                label="Select Milestone"
                 data={milestones
                   .filter((m: any) => m.workId === workId)
                   .map((m: any) => ({
@@ -414,7 +403,7 @@ export default function ProgressMonitoring() {
                 required
               />
               <TextBox
-                label="Physical Progress (%) *"
+                label="Physical Progress (%)"
                 placeholder="0–100"
                 value={progress}
                 onChange={setProgress}
@@ -432,23 +421,14 @@ export default function ProgressMonitoring() {
                 return (
                   <div
                     style={{
-                      padding: '0.875rem 1.125rem',
                       background: '#f8fafc',
                       border: '1px solid #e2e8f0',
                       borderRadius: '0.75rem',
+                      padding: '0.875rem 1.125rem',
                       fontSize: '0.8125rem',
                       marginBottom: '1rem',
                     }}
                   >
-                    <div
-                      style={{
-                        fontWeight: 700,
-                        color: '#1e293b',
-                        marginBottom: '0.5rem',
-                      }}
-                    >
-                      📋 Milestone Target Details
-                    </div>
                     <div
                       style={{
                         display: 'grid',
@@ -535,7 +515,7 @@ export default function ProgressMonitoring() {
                 );
               })()}
             <TextArea
-              label="Progress Description *"
+              label="Progress Description"
               placeholder="Describe work done today, quantities, locations, sections..."
               value={description}
               onChange={setDescription}
@@ -545,13 +525,13 @@ export default function ProgressMonitoring() {
             <FormCard title="🌍 Mandatory Geo-tagging">
               <FormGrid columns={2}>
                 <TextBox
-                  label="GPS Latitude *"
+                  label="GPS Latitude"
                   value={geoLat}
                   disabled
                   required
                 />
                 <TextBox
-                  label="GPS Longitude *"
+                  label="GPS Longitude"
                   value={geoLon}
                   disabled
                   required

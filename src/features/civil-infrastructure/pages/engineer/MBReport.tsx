@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button } from 'shared/components/buttons';
 import {
   FormCard,
@@ -6,43 +6,22 @@ import {
   FormPopup,
   GridPanel,
 } from 'shared/new-components';
-import { civilWorks, raBills, mbEntries } from '../../mocks';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
+import { civilWorks, mbEntries, raBills } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
 type PopupState = { visible: boolean; work?: any };
 
 export default function MBReport() {
-  const [works, setWorks] = useState<any[]>(() => {
-    const saved = localStorage.getItem('civil_works');
-    return saved ? JSON.parse(saved) : civilWorks;
-  });
-
-  const [mbList, setMbList] = useState<any[]>(() => {
-    const saved = localStorage.getItem('civil_mb_entries');
-    return saved ? JSON.parse(saved) : mbEntries;
-  });
-
-  const [bills, setBills] = useState<any[]>(() => {
-    const saved = localStorage.getItem('civil_ra_bills');
-    return saved ? JSON.parse(saved) : raBills;
-  });
+  const [works] = useCivilStorage<any[]>(CIVIL_STORAGE_KEYS.WORKS, civilWorks);
+  const [mbList] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.MB_ENTRIES,
+    mbEntries
+  );
+  const [bills] = useCivilStorage<any[]>(CIVIL_STORAGE_KEYS.RA_BILLS, raBills);
 
   const [popup, setPopup] = useState<PopupState>({ visible: false });
-
-  // Sync state on storage updates
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const savedWorks = localStorage.getItem('civil_works');
-      if (savedWorks) setWorks(JSON.parse(savedWorks));
-      const savedMB = localStorage.getItem('civil_mb_entries');
-      if (savedMB) setMbList(JSON.parse(savedMB));
-      const savedBills = localStorage.getItem('civil_ra_bills');
-      if (savedBills) setBills(JSON.parse(savedBills));
-    };
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
 
   // Compute work-wise aggregated values
   const reportData = works.map((w: any) => {
@@ -104,8 +83,9 @@ export default function MBReport() {
       title="E-Measurement Book (E-MB) Status Report"
       description="Work-wise analysis of measurement books, advances taken, recovery balances, and RA bill clearance cycles."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.engineerPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Engineer Portal', to: civilUrls.engineerMenu },
         { label: 'E-MB Report' },
       ]}
     >

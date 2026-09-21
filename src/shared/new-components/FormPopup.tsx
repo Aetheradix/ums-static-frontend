@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import './FormPopup.css';
 
-type FormPopupSize = 'default' | 'lg' | 'xl';
+type FormPopupSize = 'default' | 'md' | 'lg' | 'xl';
 
 interface FormPopupProps {
   /** Whether the popup is visible */
@@ -35,6 +35,7 @@ interface FormPopupProps {
 
 const SIZE_CLASSES: Record<FormPopupSize, string> = {
   default: '',
+  md: '',
   lg: 'form-popup-lg',
   xl: 'form-popup-xl',
 };

@@ -8,6 +8,7 @@ import {
   FormPopup,
   GridPanel,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import {
   type Milestone,
   civilWorks,
@@ -79,7 +80,11 @@ export default function MilestoneSignoff() {
       }
     };
     window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener('civil_storage_update', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('civil_storage_update', handleStorageChange);
+    };
   }, []);
 
   const canSignOff = (m: Milestone) => {
@@ -97,7 +102,7 @@ export default function MilestoneSignoff() {
 
   const handleSignOff = (item: Milestone) => {
     if (!remarks.trim()) {
-      ToastService.error('Justification remarks are required.');
+      ToastService.error('Remarks are required.');
       return;
     }
 
@@ -128,10 +133,7 @@ export default function MilestoneSignoff() {
     };
 
     const updatedRequests = [...requestsList, newReq];
-    localStorage.setItem(
-      'civil_milestone_payment_requests',
-      JSON.stringify(updatedRequests)
-    );
+    civilStorage.set('civil_milestone_payment_requests', updatedRequests);
     setPaymentRequests(updatedRequests);
 
     const updatedMilestones = data.map((m: any) =>
@@ -143,12 +145,11 @@ export default function MilestoneSignoff() {
         : m
     );
     setData(updatedMilestones);
-    localStorage.setItem('civil_milestones', JSON.stringify(updatedMilestones));
+    civilStorage.set(CIVIL_STORAGE_KEYS.MILESTONES, updatedMilestones);
 
     ToastService.success(
       'Milestone sign-off & payment release request submitted to Admin.'
     );
-    window.dispatchEvent(new Event('storage'));
     setPopup({ mode: 'closed' });
     setRemarks('');
     setSelectedWorkId('');
@@ -177,12 +178,13 @@ export default function MilestoneSignoff() {
 
   return (
     <FormPage
-      title="Milestone Sign-offs"
-      description="Milestone sign-off is blocked if any mandatory quality test is failed or pending. Next phases cannot begin without sign-off."
+      title="Milestone Status (Request for payment)"
+      description="View milestone details and apply for milestone release/payment request. Enforces quality test sign-off dependencies."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.engineerPortal },
-        { label: 'Milestone Sign-offs' },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Vendor Login', to: civilUrls.vendorMenu },
+        { label: 'Milestone Status' },
       ]}
     >
       <div
@@ -363,7 +365,7 @@ export default function MilestoneSignoff() {
               ],
               ['Request Date', popup.requestItem.requestDate],
               ['Status', popup.requestItem.status],
-              ['Justification Remarks', popup.requestItem.remarks],
+              ['Remarks', popup.requestItem.remarks],
               ['Approval Date', popup.requestItem.approvalDate || '—'],
               ['Approval Remarks', popup.requestItem.approvalRemarks || '—'],
               ['Payment Date', popup.requestItem.paymentDate || '—'],
@@ -373,7 +375,7 @@ export default function MilestoneSignoff() {
                 key={k}
                 style={{
                   gridColumn:
-                    k === 'Justification Remarks' ||
+                    k === 'Remarks' ||
                     k === 'Approval Remarks' ||
                     k === 'Work ID / Name'
                       ? 'span 2'
@@ -620,8 +622,8 @@ export default function MilestoneSignoff() {
                           to the Contractor.
                         </div>
                         <TextArea
-                          label="Justification Remarks *"
-                          placeholder="Detail the percentage progress of construction, field check status, and metrics achieved..."
+                          label="Remarks"
+                          placeholder="Remarks regarding percentage progress of construction, field check status, and metrics achieved..."
                           value={remarks}
                           onChange={setRemarks}
                           rows={3}

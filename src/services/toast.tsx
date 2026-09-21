@@ -38,4 +38,20 @@ function error(message: string | string[], title?: string) {
   });
 }
 
-export default { setToastRef, success, error };
+function info(message: string, title?: string) {
+  toastRef?.current?.show({
+    severity: 'info',
+    summary: title,
+    detail: message,
+  });
+}
+
+function warn(message: string, title?: string) {
+  toastRef?.current?.show({
+    severity: 'warn',
+    summary: title,
+    detail: message,
+  });
+}
+
+export default { setToastRef, success, error, info, warn, warning: warn };

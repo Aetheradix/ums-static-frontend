@@ -15,6 +15,7 @@ import {
   GridPanel,
   Tabs,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import { civilWorks, milestones as initialMilestones } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -192,7 +193,7 @@ export default function QualityFramework() {
     );
 
     setMilestones(updatedMilestones);
-    localStorage.setItem('civil_milestones', JSON.stringify(updatedMilestones));
+    civilStorage.set(CIVIL_STORAGE_KEYS.MILESTONES, updatedMilestones);
 
     // Sync to civil_quality_tests for other parts of the app (like Dashboard)
     const updatedTests = updatedMilestones
@@ -215,7 +216,7 @@ export default function QualityFramework() {
         uploadedDoc: m.uploadedDoc,
         remarks: m.testRemarks,
       }));
-    localStorage.setItem('civil_quality_tests', JSON.stringify(updatedTests));
+    civilStorage.set(CIVIL_STORAGE_KEYS.QUALITY_TESTS, updatedTests);
 
     if (result === 'Fail') {
       ToastService.error(
@@ -248,8 +249,9 @@ export default function QualityFramework() {
       title="Quality Assurance Framework"
       description="Systematic control structure establishing mandatory QA/QC test matrices, TPI agency assignments, and NABL lab validation."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.engineerPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Engineer Portal', to: civilUrls.engineerMenu },
         { label: 'Quality Framework' },
       ]}
     >
@@ -691,14 +693,14 @@ export default function QualityFramework() {
                   <>
                     <FormGrid columns={2}>
                       <TextBox
-                        label="Observed Value *"
+                        label="Observed Value"
                         placeholder="e.g. 22.4 N/mm²"
                         value={observedValue}
                         onChange={setObservedValue}
                         required
                       />
                       <TextBox
-                        label="Lab Certificate No. *"
+                        label="Lab Certificate No."
                         placeholder="e.g. IIT/BPL/CC/2025/0142"
                         value={certNo}
                         onChange={setCertNo}
@@ -707,7 +709,7 @@ export default function QualityFramework() {
                     </FormGrid>
                     <FormGrid columns={2}>
                       <DropDownList
-                        label="Test Result *"
+                        label="Test Result"
                         data={['Pass', 'Fail', 'Re-test Required'].map(v => ({
                           name: v,
                           value: v,
@@ -716,13 +718,15 @@ export default function QualityFramework() {
                         optionValue="value"
                         value={result}
                         onChange={v => setResult(v as any)}
+                        required
                       />
                       <DatePicker
-                        label="Test Date *"
+                        label="Test Date"
                         value={testDate ? new Date(testDate) : undefined}
                         onChange={v =>
                           setTestDate(v ? v.toISOString().split('T')[0] : '')
                         }
+                        required
                       />
                     </FormGrid>
                     <div style={{ marginBottom: '1rem' }}>

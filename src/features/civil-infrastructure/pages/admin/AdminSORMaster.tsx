@@ -99,83 +99,116 @@ const EMPTY_LAB: Partial<LabAgency> = {
 
 const initialSorTypes = [
   {
-    id: 'T1',
+    id: '1',
     code: 'ROAD',
-    type: 'Roads & Highways',
+    name: 'Roads, Pavements & Bridges',
+    type: 'Roads, Pavements & Bridges',
     description:
       'Schedule of rates for construction and maintenance of roads and highways.',
+    isActive: true,
   },
   {
-    id: 'T2',
+    id: '2',
     code: 'BLDG',
-    type: 'Buildings & Structures',
+    name: 'Building Works (MP PWD SOR 2024)',
+    type: 'Building Works (MP PWD SOR 2024)',
     description:
       'Schedule of rates for residential, commercial, and institutional building works.',
+    isActive: true,
   },
   {
-    id: 'T3',
+    id: '3',
     code: 'ELEC',
-    type: 'Electrical Works',
+    name: 'Electrical & Electrification Works',
+    type: 'Electrical & Electrification Works',
     description:
       'Schedule of rates for internal and external electrical installations.',
+    isActive: true,
   },
 ];
 
 const initialSorChapters = [
   {
-    id: 'C1',
+    id: '1',
+    sorTypeId: '1',
     sorTypeCode: 'ROAD',
-    chapterNo: 'Ch-1',
-    chapterDesc: 'Earthwork and Site Clearance',
+    chapterNo: '01',
+    name: 'Earthwork & Site Clearance',
+    chapterDesc: 'Earthwork & Site Clearance',
+    isActive: true,
   },
   {
-    id: 'C2',
+    id: '2',
+    sorTypeId: '1',
     sorTypeCode: 'ROAD',
-    chapterNo: 'Ch-2',
+    chapterNo: '02',
+    name: 'Sub-base and Base Courses',
     chapterDesc: 'Sub-base and Base Courses',
+    isActive: true,
   },
   {
-    id: 'C3',
+    id: '3',
+    sorTypeId: '2',
     sorTypeCode: 'BLDG',
-    chapterNo: 'Ch-1',
-    chapterDesc: 'Concrete and RCC Works',
+    chapterNo: '01',
+    name: 'Plain & Reinforced Concrete Works',
+    chapterDesc: 'Plain & Reinforced Concrete Works',
+    isActive: true,
   },
   {
-    id: 'C4',
+    id: '4',
+    sorTypeId: '2',
     sorTypeCode: 'BLDG',
-    chapterNo: 'Ch-2',
-    chapterDesc: 'Brick Masonry and Plastering',
+    chapterNo: '02',
+    name: 'Brick Masonry & Plastering',
+    chapterDesc: 'Brick Masonry & Plastering',
+    isActive: true,
   },
   {
-    id: 'C5',
+    id: '5',
+    sorTypeId: '3',
     sorTypeCode: 'ELEC',
-    chapterNo: 'Ch-1',
-    chapterDesc: 'Wiring and Conduit Installation',
+    chapterNo: '01',
+    name: 'Conduit & Internal Wiring Works',
+    chapterDesc: 'Conduit & Internal Wiring Works',
+    isActive: true,
   },
 ];
 
 const initialSorSubjects = [
   {
-    id: 'S1',
+    id: '1',
+    sorChapterId: '1',
+    sorTypeId: '1',
     sorTypeCode: 'ROAD',
-    chapterNo: 'Ch-1',
-    chapterDesc: 'Earthwork and Site Clearance',
-    subjectName: 'Excavation in ordinary soil',
+    chapterNo: '01',
+    chapterDesc: 'Earthwork & Site Clearance',
+    name: 'Excavation in ordinary soil up to 1.5m depth',
+    subjectName: 'Excavation in ordinary soil up to 1.5m depth',
     subjectDesc:
       'Excavation in ordinary soil up to 1.5m depth including dressing and disposal.',
     refIsCode: 'IS 1200 Part 1',
+    referenceCode: 'IS 1200 Part 1',
     newPara: 'Para 3.1.2',
+    paragraph: 'Para 3.1.2',
+    isActive: true,
   },
   {
-    id: 'S2',
+    id: '2',
+    sorChapterId: '3',
+    sorTypeId: '2',
     sorTypeCode: 'BLDG',
-    chapterNo: 'Ch-1',
-    chapterDesc: 'Concrete and RCC Works',
-    subjectName: 'M25 Grade Reinforcement Concrete',
+    chapterNo: '01',
+    chapterDesc: 'Plain & Reinforced Concrete Works',
+    name: 'M25 Grade Reinforcement Concrete in Columns and Beams',
+    subjectName: 'M25 Grade Reinforcement Concrete in Columns and Beams',
     subjectDesc:
       'Providing and laying M25 grade concrete including curing, testing, and shuttering.',
     refIsCode: 'IS 456:2000',
+    referenceCode: 'IS 456:2000',
     newPara: 'Para 5.4',
+    paragraph: 'Para 5.4',
+    isActive: true,
   },
 ];
 
@@ -560,7 +593,12 @@ export default function AdminSORMaster() {
       ToastService.success('Project updated successfully.');
     }
     setProjectPopup({ mode: 'closed' });
-    setProjectForm({ area: '', campus: 'Main Campus', location: '', constructionPermissionDoc: '' });
+    setProjectForm({
+      area: '',
+      campus: 'Main Campus',
+      location: '',
+      constructionPermissionDoc: '',
+    });
   };
 
   // SOR Actions
@@ -677,8 +715,9 @@ export default function AdminSORMaster() {
       title="Admin Master Registries"
       description="Manage Schedule of Rates (SOR), Third-Party Inspection (TPI) agencies, and accredited Quality Testing Labs."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.adminPortal },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'Master Registries' },
       ]}
     >
@@ -1548,15 +1587,22 @@ export default function AdminSORMaster() {
               {
                 field: 'constructionPermissionDoc',
                 header: 'Construction Permission',
-                cell: (s: any) => (
+                cell: (s: any) =>
                   s.constructionPermissionDoc ? (
-                    <span style={{ color: '#16a34a', fontWeight: 500, fontSize: '0.75rem' }}>
+                    <span
+                      style={{
+                        color: '#16a34a',
+                        fontWeight: 500,
+                        fontSize: '0.75rem',
+                      }}
+                    >
                       📄 {s.constructionPermissionDoc}
                     </span>
                   ) : (
-                    <span style={{ color: '#9ca3af', fontSize: '0.75rem' }}>No Doc</span>
-                  )
-                ),
+                    <span style={{ color: '#9ca3af', fontSize: '0.75rem' }}>
+                      No Doc
+                    </span>
+                  ),
               },
               {
                 field: 'id',
@@ -1613,9 +1659,9 @@ export default function AdminSORMaster() {
       >
         <FormGrid columns={2}>
           <DropDownList
-            label="SOR Type *"
+            label="SOR Type"
             data={sorTypes.map(t => ({
-              name: `${t.code} - ${t.type}`,
+              name: `${t.code} - ${t.name || t.type}`,
               value: t.code,
             }))}
             textField="name"
@@ -1633,15 +1679,21 @@ export default function AdminSORMaster() {
                 ...f,
                 sorTypeCode: v as string,
                 chapterNo: defaultChapter,
-                subjectName: matchedSubject ? matchedSubject.subjectName : '',
+                subjectName: matchedSubject
+                  ? matchedSubject.name || matchedSubject.subjectName
+                  : '',
               }));
             }}
+            required
           />
           <DropDownList
-            label="Chapter Number *"
+            label="Chapter Number"
             data={sorChapters
               .filter(c => c.sorTypeCode === sorForm.sorTypeCode)
-              .map(c => ({ name: c.chapterNo, value: c.chapterNo }))}
+              .map(c => ({
+                name: `Ch-${String(c.chapterNo).replace(/^ch-?/i, '')}: ${c.name || c.chapterDesc}`,
+                value: c.chapterNo,
+              }))}
             textField="name"
             optionValue="value"
             value={sorForm.chapterNo}
@@ -1652,23 +1704,26 @@ export default function AdminSORMaster() {
               setSorForm((f: any) => ({
                 ...f,
                 chapterNo: v as string,
-                subjectName: matchedSubject ? matchedSubject.subjectName : '',
+                subjectName: matchedSubject
+                  ? matchedSubject.name || matchedSubject.subjectName
+                  : '',
               }));
             }}
+            required
           />
         </FormGrid>
 
         <div style={{ marginTop: '1rem' }}>
           <FormGrid columns={2}>
             <TextBox
-              label="Subject Name *"
+              label="Subject Name"
               placeholder="Enter subject name..."
               value={sorForm.subjectName ?? ''}
               onChange={v => setSorForm((f: any) => ({ ...f, subjectName: v }))}
               required
             />
             <TextBox
-              label="Page No. *"
+              label="Page No."
               placeholder="e.g. 14"
               value={sorForm.pageNo ?? ''}
               onChange={v => setSorForm((f: any) => ({ ...f, pageNo: v }))}
@@ -1686,7 +1741,7 @@ export default function AdminSORMaster() {
               onChange={v => setSorForm((f: any) => ({ ...f, subTitle: v }))}
             />
             <TextBox
-              label="Serial No. *"
+              label="Serial No."
               placeholder="e.g. 1.2"
               value={sorForm.serialNo ?? ''}
               onChange={v => setSorForm((f: any) => ({ ...f, serialNo: v }))}
@@ -1707,7 +1762,7 @@ export default function AdminSORMaster() {
               rows={2}
             />
             <TextArea
-              label="Work Description *"
+              label="Work Description"
               placeholder="Enter work details..."
               value={sorForm.workDesc ?? ''}
               onChange={v => setSorForm((f: any) => ({ ...f, workDesc: v }))}
@@ -1726,7 +1781,7 @@ export default function AdminSORMaster() {
               onChange={v => setSorForm((f: any) => ({ ...f, cementBags: v }))}
             />
             <DropDownList
-              label="Unit *"
+              label="Unit"
               data={sorUnits.map(u => ({ name: u.name, value: u.name }))}
               textField="name"
               optionValue="value"
@@ -1734,6 +1789,7 @@ export default function AdminSORMaster() {
               onChange={v =>
                 setSorForm((f: any) => ({ ...f, unit: v as string }))
               }
+              required
             />
           </FormGrid>
         </div>
@@ -1741,14 +1797,14 @@ export default function AdminSORMaster() {
         <div style={{ marginTop: '1rem' }}>
           <FormGrid columns={2}>
             <TextBox
-              label="Rate (Rs) *"
+              label="Rate (Rs)"
               placeholder="e.g. 450"
               value={sorForm.rate ?? ''}
               onChange={v => setSorForm((f: any) => ({ ...f, rate: v }))}
               required
             />
             <TextBox
-              label="Effective Date *"
+              label="Effective Date"
               type="date"
               value={sorForm.effectiveDate ?? ''}
               onChange={v =>
@@ -1829,14 +1885,14 @@ export default function AdminSORMaster() {
       >
         <FormGrid columns={2}>
           <TextBox
-            label="Agency Name *"
+            label="Agency Name"
             placeholder="e.g. RITES Limited"
             value={tpiForm.name ?? ''}
             onChange={v => setTpiForm(f => ({ ...f, name: v }))}
             required
           />
           <TextBox
-            label="License / Registration No *"
+            label="License / Registration No"
             placeholder="e.g. TPI-REG-2025-001"
             value={tpiForm.licenseNo ?? ''}
             onChange={v => setTpiForm(f => ({ ...f, licenseNo: v }))}
@@ -1846,7 +1902,7 @@ export default function AdminSORMaster() {
 
         <FormGrid columns={3}>
           <TextBox
-            label="Contact Person Name *"
+            label="Contact Person Name"
             placeholder="e.g. Shri R.K. Varma"
             value={tpiForm.contactPerson ?? ''}
             onChange={v => setTpiForm(f => ({ ...f, contactPerson: v }))}
@@ -1914,14 +1970,14 @@ export default function AdminSORMaster() {
       >
         <FormGrid columns={2}>
           <TextBox
-            label="Laboratory / Facility Name *"
+            label="Laboratory / Facility Name"
             placeholder="e.g. MANIT Material Testing Lab"
             value={labForm.name ?? ''}
             onChange={v => setLabForm(f => ({ ...f, name: v }))}
             required
           />
           <TextBox
-            label="NABL Accreditation No *"
+            label="NABL Accreditation No"
             placeholder="e.g. NABL-TC-8891"
             value={labForm.nablAccreditation ?? ''}
             onChange={v => setLabForm(f => ({ ...f, nablAccreditation: v }))}
@@ -1931,7 +1987,7 @@ export default function AdminSORMaster() {
 
         <FormGrid columns={3}>
           <TextBox
-            label="Lab Director / In-Charge *"
+            label="Lab Director / In-Charge"
             placeholder="e.g. Dr. S. K. Gupta"
             value={labForm.contactPerson ?? ''}
             onChange={v => setLabForm(f => ({ ...f, contactPerson: v }))}
@@ -1952,7 +2008,7 @@ export default function AdminSORMaster() {
         </FormGrid>
 
         <TextBox
-          label="Scope of Testing / Materials Allowed (comma separated) *"
+          label="Scope of Testing / Materials Allowed (comma separated)"
           placeholder="e.g. Concrete, Steel, Soils, Aggregates, Bitumen"
           value={labForm.scopeOfTesting ?? ''}
           onChange={v => setLabForm(f => ({ ...f, scopeOfTesting: v }))}
@@ -2005,7 +2061,7 @@ export default function AdminSORMaster() {
       >
         <FormGrid columns={2}>
           <TextBox
-            label="SOR Type Code *"
+            label="SOR Type Code"
             placeholder="e.g. ROAD"
             value={sorTypeForm.code ?? ''}
             onChange={v => setSorTypeForm((f: any) => ({ ...f, code: v }))}
@@ -2013,7 +2069,7 @@ export default function AdminSORMaster() {
             disabled={sorTypePopup.mode === 'edit'}
           />
           <TextBox
-            label="SOR Type *"
+            label="SOR Type"
             placeholder="e.g. Roads & Highways"
             value={sorTypeForm.type ?? ''}
             onChange={v => setSorTypeForm((f: any) => ({ ...f, type: v }))}
@@ -2022,7 +2078,7 @@ export default function AdminSORMaster() {
         </FormGrid>
         <div style={{ marginTop: '1rem' }}>
           <TextArea
-            label="Description *"
+            label="Description"
             placeholder="Enter category description..."
             value={sorTypeForm.description ?? ''}
             onChange={v =>
@@ -2061,9 +2117,9 @@ export default function AdminSORMaster() {
       >
         <FormGrid columns={2}>
           <DropDownList
-            label="SOR Type *"
+            label="SOR Type"
             data={sorTypes.map(t => ({
-              name: `${t.code} - ${t.type}`,
+              name: `${t.code} - ${t.name || t.type}`,
               value: t.code,
             }))}
             textField="name"
@@ -2075,9 +2131,10 @@ export default function AdminSORMaster() {
                 sorTypeCode: v as string,
               }))
             }
+            required
           />
           <TextBox
-            label="Chapter No. *"
+            label="Chapter No."
             placeholder="e.g. Ch-1"
             value={sorChapterForm.chapterNo ?? ''}
             onChange={v =>
@@ -2088,7 +2145,7 @@ export default function AdminSORMaster() {
         </FormGrid>
         <div style={{ marginTop: '1rem' }}>
           <TextArea
-            label="Chapter Description *"
+            label="Chapter Description"
             placeholder="Enter chapter description..."
             value={sorChapterForm.chapterDesc ?? ''}
             onChange={v =>
@@ -2127,9 +2184,9 @@ export default function AdminSORMaster() {
       >
         <FormGrid columns={2}>
           <DropDownList
-            label="SOR Type *"
+            label="SOR Type"
             data={sorTypes.map(t => ({
-              name: `${t.code} - ${t.type}`,
+              name: `${t.code} - ${t.name || t.type}`,
               value: t.code,
             }))}
             textField="name"
@@ -2146,12 +2203,16 @@ export default function AdminSORMaster() {
                 chapterDesc: matchingChapters[0]?.chapterDesc ?? '',
               }));
             }}
+            required
           />
           <DropDownList
-            label="Chapter No. *"
+            label="Chapter No."
             data={sorChapters
               .filter(c => c.sorTypeCode === sorSubjectForm.sorTypeCode)
-              .map(c => ({ name: c.chapterNo, value: c.chapterNo }))}
+              .map(c => ({
+                name: `Ch-${String(c.chapterNo).replace(/^ch-?/i, '')}: ${c.name || c.chapterDesc}`,
+                value: c.chapterNo,
+              }))}
             textField="name"
             optionValue="value"
             value={sorSubjectForm.chapterNo}
@@ -2164,9 +2225,10 @@ export default function AdminSORMaster() {
               setSorSubjectForm((f: any) => ({
                 ...f,
                 chapterNo: v as string,
-                chapterDesc: chapter ? chapter.chapterDesc : '',
+                chapterDesc: chapter ? chapter.name || chapter.chapterDesc : '',
               }));
             }}
+            required
           />
         </FormGrid>
 
@@ -2186,7 +2248,7 @@ export default function AdminSORMaster() {
         <div style={{ marginTop: '1rem' }}>
           <FormGrid columns={2}>
             <TextBox
-              label="Subject Name *"
+              label="Subject Name"
               placeholder="Enter subject name..."
               value={sorSubjectForm.subjectName ?? ''}
               onChange={v =>
@@ -2252,7 +2314,7 @@ export default function AdminSORMaster() {
       >
         <FormGrid columns={1}>
           <TextBox
-            label="Unit Name *"
+            label="Unit Name"
             placeholder="e.g. Sqm, Cum, Rmt, Tonne"
             value={sorUnitForm.name ?? ''}
             onChange={v => setSorUnitForm((f: any) => ({ ...f, name: v }))}
@@ -2298,14 +2360,14 @@ export default function AdminSORMaster() {
       >
         <FormGrid columns={2}>
           <TextBox
-            label="Project Area *"
+            label="Project Area"
             placeholder="e.g. Academic Block-3 Construction"
             value={projectForm.area ?? ''}
             onChange={v => setProjectForm((f: any) => ({ ...f, area: v }))}
             required
           />
           <DropDownList
-            label="Campus *"
+            label="Campus"
             data={[
               'Main Campus',
               'North Campus',
@@ -2318,6 +2380,7 @@ export default function AdminSORMaster() {
             onChange={v =>
               setProjectForm((f: any) => ({ ...f, campus: v as string }))
             }
+            required
           />
         </FormGrid>
 
@@ -2349,7 +2412,10 @@ export default function AdminSORMaster() {
             onChange={e => {
               const file = e.target.files?.[0];
               if (file) {
-                setProjectForm((f: any) => ({ ...f, constructionPermissionDoc: file.name }));
+                setProjectForm((f: any) => ({
+                  ...f,
+                  constructionPermissionDoc: file.name,
+                }));
                 ToastService.success(
                   `Uploaded construction permission: ${file.name}`
                 );

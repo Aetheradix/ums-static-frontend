@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { TextArea, TextBox } from 'shared/components/forms';
@@ -10,61 +10,38 @@ import {
   GridPanel,
 } from 'shared/new-components';
 import { type RABill, raBills as initialData, civilWorks } from '../../mocks';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
 export default function PaymentRelease() {
-  const [data, setData] = useState(() => {
-    const saved = localStorage.getItem('civil_ra_bills');
-    return saved ? JSON.parse(saved) : initialData;
-  });
+  const [data, setData] = useCivilStorage<RABill[]>(
+    CIVIL_STORAGE_KEYS.RA_BILLS,
+    initialData
+  );
 
-  const [works] = useState(() => {
-    const saved = localStorage.getItem('civil_works');
-    return saved ? JSON.parse(saved) : civilWorks;
-  });
+  const [works, setWorks] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.WORKS,
+    civilWorks
+  );
 
   const [activeTab, setActiveTab] = useState<'ra_bill' | 'milestone'>(
     'ra_bill'
   );
 
-  const [paymentRequests, setPaymentRequests] = useState<any[]>(() => {
-    const saved = localStorage.getItem('civil_milestone_payment_requests');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [paymentRequests, setPaymentRequests] = useCivilStorage<any[]>(
+    'civil_milestone_payment_requests',
+    []
+  );
 
   const [popup, setPopup] = useState<{
-    mode:
-      | 'closed'
-      | 'release'
-      | 'view'
-      | 'release_milestone'
-      | 'view_milestone';
+    mode: 'closed' | 'release' | 'release_milestone' | 'view_milestone';
     item?: RABill;
     requestItem?: any;
   }>({ mode: 'closed' });
+
   const [payRef, setPayRef] = useState('');
   const [payRemarks, setPayRemarks] = useState('');
-
-  // Watch local storage for external updates (e.g. from admin approval)
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const saved = localStorage.getItem('civil_milestone_payment_requests');
-      if (saved) {
-        setPaymentRequests(JSON.parse(saved));
-      }
-      const savedBills = localStorage.getItem('civil_ra_bills');
-      if (savedBills) {
-        setData(JSON.parse(savedBills));
-      }
-    };
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('civil_ra_bills', JSON.stringify(data));
-  }, [data]);
 
   const readyToPay = data.filter((b: any) => b.status === 'Finance Cleared');
   const paid = data.filter((b: any) => b.status === 'Paid');
@@ -77,6 +54,7 @@ export default function PaymentRelease() {
       );
       return;
     }
+    const releasedBill = popup.item;
     setData((prev: any[]) =>
       prev.map((b: any) =>
         b.id === popup.item!.id
@@ -89,6 +67,32 @@ export default function PaymentRelease() {
           : b
       )
     );
+    if (releasedBill) {
+      setWorks((prevWorks: any[]) =>
+        prevWorks.map((w: any) => {
+          if (
+            String(w.id) === String(releasedBill.workId) ||
+            String(w.workId) === String(releasedBill.workId)
+          ) {
+            const currentPaid =
+              ((w.contractAmount || w.estimatedCost || 1) *
+                (w.financialProgress || 0)) /
+                100 +
+              releasedBill.netPayable;
+            const targetTotal = w.contractAmount || w.estimatedCost || 1;
+            const newFinancialProgress = Math.min(
+              100,
+              Math.round((currentPaid / targetTotal) * 100)
+            );
+            return {
+              ...w,
+              financialProgress: newFinancialProgress,
+            };
+          }
+          return w;
+        })
+      );
+    }
     ToastService.success(
       `Payment released. UTR: ${payRef}. Contractor account credited.`
     );
@@ -137,12 +141,13 @@ export default function PaymentRelease() {
 
   return (
     <FormPage
-      title="Payment Release"
+      title="Payment Release Details"
       description="Treasury initiates EFT/NEFT transfers for finance-cleared RA bills. Payment reference and UTR number are mandatory."
       breadcrumbs={[
-        { label: 'Home', to: '/home' },
-        { label: 'Civil Infrastructure', to: civilUrls.financePortal },
-        { label: 'Payment Release' },
+        { label: 'Home', to: '/home/menu' },
+        { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
+        { label: 'Vendor Login', to: civilUrls.vendorMenu },
+        { label: 'Payment Release Details' },
       ]}
     >
       <div
@@ -785,10 +790,11 @@ export default function PaymentRelease() {
 
             <FormGrid columns={2}>
               <TextBox
-                label="UTR / NEFT Reference Number *"
+                label="UTR / NEFT Reference Number"
                 placeholder="e.g. UTR1029384756"
                 value={payRef}
                 onChange={setPayRef}
+                required
               />
             </FormGrid>
 
@@ -847,7 +853,7 @@ export default function PaymentRelease() {
                   ],
                   ['Request Date', popup.requestItem.requestDate],
                   ['Status', popup.requestItem.status],
-                  ['Justification Remarks', popup.requestItem.remarks],
+                  ['Remarks', popup.requestItem.remarks],
                   ['Approval Date', popup.requestItem.approvalDate || '—'],
                   [
                     'Approval Remarks',
@@ -860,8 +866,7 @@ export default function PaymentRelease() {
                     key={k}
                     style={{
                       gridColumn:
-                        k === 'Justification Remarks' ||
-                        k === 'Approval Remarks'
+                        k === 'Remarks' || k === 'Approval Remarks'
                           ? 'span 3'
                           : 'span 1',
                     }}
@@ -902,10 +907,11 @@ export default function PaymentRelease() {
 
                   <FormGrid columns={2}>
                     <TextBox
-                      label="UTR / NEFT Reference Number *"
+                      label="UTR / NEFT Reference Number"
                       placeholder="e.g. UTR1029384756"
                       value={payRef}
                       onChange={setPayRef}
+                      required
                     />
                   </FormGrid>
 
