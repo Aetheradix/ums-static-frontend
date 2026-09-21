@@ -17,7 +17,7 @@ export default function HmsPortalPage() {
         {
           title: 'Public Forum',
           description:
-            'Open to applicants — fill the hostel admission form without signing in, and track it until your ERP credentials are issued.',
+            'Open to applicants — fill the hostel admission form without signing in, and track it from hostel assignment to your ERP credentials.',
           icon: 'public',
           colorScheme: 'green',
           path: hmsUrls.public.root,
@@ -26,7 +26,7 @@ export default function HmsPortalPage() {
         {
           title: 'Hostel Admin',
           description:
-            'Register hostels and issue their credentials, monitor seats remaining hostel-wise, and read the occupancy and collection reports.',
+            'Register hostels and issue their credentials, assign each admission request a hostel and forward it to the warden, and monitor seats hostel-wise.',
           icon: 'admin_panel_settings',
           colorScheme: 'red',
           path: hmsUrls.admin.root,
@@ -34,7 +34,7 @@ export default function HmsPortalPage() {
         {
           title: 'Hostel Warden',
           description:
-            'Configure rooms and facilities, approve admissions, allot rooms, and run attendance, leave, mess, visitors and grievances.',
+            'Configure rooms and facilities, approve the admissions forwarded to you, allot rooms, and run attendance, leave, mess, visitors and grievances.',
           icon: 'badge',
           colorScheme: 'purple',
           path: hmsUrls.warden.root,

@@ -27,7 +27,7 @@ const STEPS = [
   { label: 'Verify', icon: 'pi pi-id-card' },
   { label: 'Student Details', icon: 'pi pi-user' },
   { label: 'Parent & Guardian', icon: 'pi pi-users' },
-  { label: 'Hostel & Emergency', icon: 'pi pi-home' },
+  { label: 'Room & Emergency', icon: 'pi pi-home' },
   { label: 'Health & Consent', icon: 'pi pi-heart' },
   { label: 'Preview & Submit', icon: 'pi pi-check-circle' },
 ];
@@ -50,11 +50,16 @@ const RELATIONS = [
   'Other',
 ].map(r => ({ id: r, text: r }));
 
+/** What the applicant fills in — everything the Hostel Cell and warden add later is omitted. */
 type FormState = Omit<
   Application,
   | 'id'
   | 'applicationNo'
   | 'submittedOn'
+  | 'assignedHostelId'
+  | 'forwardedOn'
+  | 'forwardedBy'
+  | 'adminRemarks'
   | 'status'
   | 'remarks'
   | 'decisionDate'
@@ -84,7 +89,6 @@ const blank = (): FormState => ({
   guardianRelation: '',
   guardianContact: '',
   guardianAddress: '',
-  preferredHostelId: '',
   preferredRoomType: '',
   emergencyName: '',
   emergencyRelation: '',
@@ -130,13 +134,6 @@ export default function AdmissionForm() {
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm(prev => ({ ...prev, [key]: value }));
 
-  const hostelOptions = data.hostels
-    .filter(h => h.status === 'Active')
-    .map(h => ({ id: h.id, text: `${h.nameEn} — ${h.type}` }));
-
-  const hostelName = (id: string) =>
-    data.hostels.find(h => h.id === id)?.nameEn ?? '—';
-
   /**
    * Pre-fill from the university directory. A miss never blocks the flow —
    * the form simply opens with whatever was typed, ready to fill by hand.
@@ -173,6 +170,10 @@ export default function AdmissionForm() {
       id: uid('AP'),
       applicationNo: `HSTL/${new Date().getFullYear()}/${String(data.applications.length + 1).padStart(4, '0')}`,
       submittedOn: today(),
+      assignedHostelId: '',
+      forwardedOn: '',
+      forwardedBy: '',
+      adminRemarks: '',
       status: 'Pending',
       remarks: '',
       decisionDate: '',
@@ -189,7 +190,7 @@ export default function AdmissionForm() {
     return (
       <FormPage
         title="Application Submitted"
-        description="Your hostel admission form has reached the warden of the hostel you applied to."
+        description="Your hostel admission form has reached the University Hostel Cell, which assigns your hostel and forwards it to the warden."
       >
         <FormCard title="Acknowledgement" icon="check-circle">
           <div className="flex flex-col items-center gap-5 py-8 text-center">
@@ -203,10 +204,10 @@ export default function AdmissionForm() {
                 Thank you, {submitted.studentName || 'applicant'}
               </h3>
               <p className="mx-auto mt-2 max-w-xl text-sm text-slate-600 dark:text-slate-300">
-                Your application has gone to{' '}
-                {hostelName(submitted.preferredHostelId)} for approval. Track it
-                with your application number — once the warden approves, your
-                ERP login credentials appear on the tracking page.
+                The University Hostel Cell will assign you a hostel and forward
+                your application to its warden for approval. Track it with your
+                application number — once the warden approves, your ERP login
+                credentials appear on the tracking page.
               </p>
             </div>
             <div className="w-full max-w-md">
@@ -239,7 +240,7 @@ export default function AdmissionForm() {
   return (
     <FormPage
       title="Hostel Admission Form"
-      description="Apply for university hostel accommodation. Your academic details are fetched from the university record; you fill in guardian, hostel preference and health details."
+      description="Apply for university hostel accommodation. Your academic details are fetched from the university record; you fill in guardian, room preference and health details. The University Hostel Cell assigns your hostel."
     >
       <FormCard>
         <Stepper steps={STEPS} activeStep={step} onStepClick={setStep} />
@@ -440,19 +441,11 @@ export default function AdmissionForm() {
       {step === 3 && (
         <>
           <FormCard
-            title="Hostel Preference"
-            subtitle="The warden allots your room after approval — your preference is taken into account."
+            title="Room Preference"
+            subtitle="The University Hostel Cell assigns your hostel, and its warden allots your room after approval — your room-type preference is taken into account."
             icon="home"
           >
             <FormGrid columns={2}>
-              <DropDownList
-                label="Preferred Hostel"
-                data={hostelOptions}
-                textField="text"
-                valueField="id"
-                value={form.preferredHostelId}
-                onChange={v => set('preferredHostelId', (v as string) ?? '')}
-              />
               <DropDownList
                 label="Preferred Room Type"
                 data={ROOM_TYPE_OPTIONS}
@@ -462,6 +455,13 @@ export default function AdmissionForm() {
                 onChange={v => set('preferredRoomType', (v as string) ?? '')}
               />
             </FormGrid>
+            <div className="mt-4">
+              <SectionNote tone="info" title="You do not pick a hostel">
+                Hostels are assigned by the University Hostel Cell according to
+                your gender and the seats available. You will see the hostel
+                assigned to you on the tracking page.
+              </SectionNote>
+            </div>
           </FormCard>
 
           <FormCard
@@ -598,14 +598,14 @@ export default function AdmissionForm() {
             />
           </PreviewSection>
 
-          <PreviewSection title="Hostel & Emergency" step={3}>
-            <PreviewField
-              label="Preferred Hostel"
-              value={hostelName(form.preferredHostelId)}
-            />
+          <PreviewSection title="Room & Emergency" step={3}>
             <PreviewField
               label="Preferred Room Type"
               value={form.preferredRoomType}
+            />
+            <PreviewField
+              label="Hostel"
+              value="Assigned by the University Hostel Cell"
             />
             <PreviewField
               label="Emergency Contact"

@@ -17,7 +17,7 @@ export const menuConfig: Menu.MenuItem[] = [
         label: 'Public Forum',
         slug: 'hms-public',
         description:
-          'Open to applicants — fill the hostel admission form without signing in, and track it until ERP credentials are issued.',
+          'Open to applicants — fill the hostel admission form without signing in, and track it from hostel assignment to ERP credentials.',
         path: '/hostel-admission',
         icon: 'public',
         colorScheme: 'green',
@@ -26,7 +26,7 @@ export const menuConfig: Menu.MenuItem[] = [
         label: 'Hostel Admin',
         slug: 'hms-admin',
         description:
-          'Register hostels and issue their credentials, monitor seats remaining hostel-wise, and read occupancy and collection reports.',
+          'Register hostels and issue their credentials, assign admission requests to a hostel and forward them to the warden, and monitor seats hostel-wise.',
         path: '/hostel-management-system/admin',
         icon: 'admin_panel_settings',
         colorScheme: 'red',
@@ -46,6 +46,15 @@ export const menuConfig: Menu.MenuItem[] = [
             path: '/hostel-management-system/admin/hostel-registration',
             icon: 'apartment',
             colorScheme: 'blue',
+          },
+          {
+            label: 'Admission Requests',
+            slug: 'hms-admin-admission-requests',
+            description:
+              'Assign each application a hostel — with capacity, occupied and forwarded counts in view — and forward it to that warden.',
+            path: '/hostel-management-system/admin/admission-requests',
+            icon: 'forward_to_inbox',
+            colorScheme: 'orange',
           },
           {
             label: 'Seat Monitoring',
@@ -69,7 +78,7 @@ export const menuConfig: Menu.MenuItem[] = [
         label: 'Hostel Warden',
         slug: 'hms-warden',
         description:
-          'Configure rooms and facilities, approve admissions, allot rooms, and run attendance, leave, mess, visitors and grievances.',
+          'Configure rooms and facilities, approve the admissions forwarded to you, allot rooms, and run attendance, leave, mess, visitors and grievances.',
         path: '/hostel-management-system/warden',
         icon: 'badge',
         colorScheme: 'purple',
@@ -101,7 +110,7 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Admission Requests',
             slug: 'hms-admission-requests',
             description:
-              'Approve or reject applications sent to your hostel and issue student ERP credentials.',
+              'Approve or reject the applications the Hostel Cell has assigned to your hostel, and issue student ERP credentials.',
             path: '/hostel-management-system/warden/admission-requests',
             icon: 'how_to_reg',
             colorScheme: 'indigo',

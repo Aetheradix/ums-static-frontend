@@ -8,6 +8,9 @@ import { useLocation } from 'react-router-dom';
 
 export type PortalRole = 'admin' | 'warden' | 'student';
 
+/** The hostel admin signed in for this prototype — the University Hostel Cell. */
+export const MOCK_ADMIN_NAME = 'University Hostel Cell';
+
 /** The warden signed in for this prototype runs Boys Hostel - Block A. */
 export const MOCK_WARDEN_HOSTEL_ID = 'H1';
 export const MOCK_WARDEN_NAME = 'Rajesh Kumar';
@@ -20,7 +23,7 @@ export const MOCK_STUDENT_NAME = 'Rahul Verma';
  * Bump when `HmsData` changes shape — a snapshot stored under an older
  * version is dropped rather than half-merged.
  */
-const DATA_VERSION = '4';
+const DATA_VERSION = '6';
 const DATA_KEY = 'hmsData';
 const VERSION_KEY = 'hmsDataVersion';
 
@@ -173,7 +176,35 @@ export interface StudentDirectoryEntry {
   permanentAddress: string;
 }
 
-export type ApplicationStatus = 'Pending' | 'Approved' | 'Rejected';
+/**
+ * An application's journey: submitted from the public forum (`Pending`, with
+ * the Hostel Cell) → hostel assigned and forwarded to that hostel's warden
+ * (`Forwarded`) → the warden approves or rejects it.
+ */
+export type ApplicationStatus =
+  | 'Pending'
+  | 'Forwarded'
+  | 'Approved'
+  | 'Rejected';
+
+/** Badge variant for each application status — shared by every screen. */
+export const APPLICATION_STATUS_VARIANT: Record<
+  ApplicationStatus,
+  'pending' | 'info' | 'approved' | 'rejected'
+> = {
+  Pending: 'pending',
+  Forwarded: 'info',
+  Approved: 'approved',
+  Rejected: 'rejected',
+};
+
+/** What each status means from the Hostel Cell's and the applicant's side. */
+export const APPLICATION_STATUS_LABEL: Record<ApplicationStatus, string> = {
+  Pending: 'Awaiting Assignment',
+  Forwarded: 'Forwarded to Warden',
+  Approved: 'Approved',
+  Rejected: 'Rejected',
+};
 
 export interface Application {
   id: string;
@@ -203,8 +234,15 @@ export interface Application {
   guardianContact: string;
   guardianAddress: string;
 
-  preferredHostelId: string;
+  /** Room type the student asked for — the hostel itself is assigned by the Hostel Cell. */
   preferredRoomType: string;
+
+  /** Hostel the Hostel Cell assigned; empty until the application is forwarded. */
+  assignedHostelId: string;
+  forwardedOn: string;
+  forwardedBy: string;
+  /** Note from the Hostel Cell to the warden, shown alongside the application. */
+  adminRemarks: string;
 
   emergencyName: string;
   emergencyRelation: string;
@@ -791,6 +829,90 @@ const ROSTER: [
     'Rachna Jain',
     'Ratlam',
   ],
+  [
+    'JEE2026023',
+    'Harsh Vyas',
+    'Male',
+    'B.Tech',
+    'Information Technology',
+    'General',
+    'A+',
+    'Mukesh Vyas',
+    'Sangeeta Vyas',
+    'Ujjain',
+  ],
+  [
+    'JEE2026024',
+    'Yash Dubey',
+    'Male',
+    'B.Tech',
+    'Computer Science & Engineering',
+    'OBC',
+    'O+',
+    'Rajeev Dubey',
+    'Neelam Dubey',
+    'Indore',
+  ],
+  [
+    'DAVV2026025',
+    'Aakash Parmar',
+    'Male',
+    'MBA',
+    'Marketing',
+    'SC',
+    'B+',
+    'Bhagwan Parmar',
+    'Leela Parmar',
+    'Dhar',
+  ],
+  [
+    'JEE2026026',
+    'Pranav Kulkarni',
+    'Male',
+    'B.Tech',
+    'Electronics & Communication',
+    'General',
+    'AB+',
+    'Anil Kulkarni',
+    'Madhuri Kulkarni',
+    'Indore',
+  ],
+  [
+    'JEE2026027',
+    'Mohit Bhil',
+    'Male',
+    'B.Sc',
+    'Chemistry',
+    'ST',
+    'O-',
+    'Kalu Singh Bhil',
+    'Radha Bhil',
+    'Jhabua',
+  ],
+  [
+    'DAVV2026028',
+    'Arjun Saxena',
+    'Male',
+    'MCA',
+    'Computer Applications',
+    'General',
+    'A-',
+    'Pankaj Saxena',
+    'Ritu Saxena',
+    'Dewas',
+  ],
+  [
+    'JEE2026029',
+    'Faizan Ansari',
+    'Male',
+    'B.Com',
+    'Accounting & Finance',
+    'OBC',
+    'B-',
+    'Salim Ansari',
+    'Shabana Ansari',
+    'Khargone',
+  ],
 ];
 
 const BRANCH_CODE: Record<string, string> = {
@@ -851,17 +973,36 @@ const PREFERENCES: RoomType[] = [
 ];
 
 /**
- * The first `approvedCount` of the roster are approved residents, the next few
- * sit in the warden's pending queue, and two are rejected — so every bucket on
- * the Admission Requests screen has rows.
+ * How each hostel's seeded queue is shaped, in roster order: the first
+ * `approved` are residents, the next `forwarded` sit with the warden awaiting
+ * a decision, the next `rejected` were turned down, and whoever is left is
+ * still with the Hostel Cell waiting to be assigned a hostel — so every bucket
+ * on both the admin's and the warden's Admission Requests screens has rows.
+ * The boys' hostel, which the prototype's warden runs, carries the fuller
+ * queue so that grid has plenty to page through.
  */
-const APPROVED_COUNT = 6;
-const PENDING_COUNT = 4;
+const QUEUE_SHAPE: Record<
+  string,
+  { approved: number; forwarded: number; rejected: number }
+> = {
+  H1: { approved: 5, forwarded: 9, rejected: 2 },
+  H2: { approved: 5, forwarded: 2, rejected: 1 },
+};
+
+/** Who decided the seeded applications — each hostel's own warden. */
+const WARDEN_OF: Record<string, string> = {
+  H1: 'Rajesh Kumar',
+  H2: 'Sunita Sharma',
+};
+
+/** `2026-06-DD`, clamped to the month, for the seeded application timeline. */
+const juneDate = (day: number) =>
+  `2026-06-${String(Math.min(Math.max(day, 1), 30)).padStart(2, '0')}`;
 
 const seedApplications = (): Application[] => {
   const directory = seedDirectory();
   // Statuses are assigned within each hostel's own queue, so both the boys'
-  // and the girls' warden see approved, pending and rejected rows.
+  // and the girls' warden see approved, forwarded and rejected rows.
   const seenPerHostel = new Map<string, number>();
 
   return directory.map((d, i) => {
@@ -869,20 +1010,30 @@ const seedApplications = (): Application[] => {
     const rank = seenPerHostel.get(hostelId) ?? 0;
     seenPerHostel.set(hostelId, rank + 1);
 
-    const approved = rank < APPROVED_COUNT;
-    const pending = !approved && rank < APPROVED_COUNT + PENDING_COUNT;
+    const shape = QUEUE_SHAPE[hostelId] ?? QUEUE_SHAPE.H2;
+    const approved = rank < shape.approved;
+    const forwarded = !approved && rank < shape.approved + shape.forwarded;
+    const rejected =
+      !approved &&
+      !forwarded &&
+      rank < shape.approved + shape.forwarded + shape.rejected;
     const status: ApplicationStatus = approved
       ? 'Approved'
-      : pending
-        ? 'Pending'
-        : 'Rejected';
-    const day = String((i % 27) + 1).padStart(2, '0');
+      : forwarded
+        ? 'Forwarded'
+        : rejected
+          ? 'Rejected'
+          : 'Pending';
+    // Everything past `Pending` has been through the Hostel Cell.
+    const assigned = status !== 'Pending';
+    const decided = approved || rejected;
+    const day = (i % 27) + 1;
     const roster = ROSTER[i];
 
     return {
       id: `AP${i + 1}`,
       applicationNo: `HMS/2026/${String(i + 1).padStart(4, '0')}`,
-      submittedOn: `2026-06-${day}`,
+      submittedOn: juneDate(day),
       rollNumber: d.rollNumber,
       enrollmentNumber: d.enrollmentNumber,
       studentName: d.studentName,
@@ -903,8 +1054,12 @@ const seedApplications = (): Application[] => {
       guardianRelation: i % 3 === 0 ? 'Father' : 'Mother',
       guardianContact: d.parentMobile,
       guardianAddress: d.permanentAddress,
-      preferredHostelId: hostelId,
       preferredRoomType: PREFERENCES[i % PREFERENCES.length],
+      assignedHostelId: assigned ? hostelId : '',
+      forwardedOn: assigned ? juneDate(day + 1) : '',
+      forwardedBy: assigned ? MOCK_ADMIN_NAME : '',
+      adminRemarks:
+        assigned && i % 2 === 0 ? 'Documents verified by the Hostel Cell.' : '',
       emergencyName: d.fatherName,
       emergencyRelation: 'Father',
       emergencyContact: d.parentMobile,
@@ -918,15 +1073,11 @@ const seedApplications = (): Application[] => {
       status,
       remarks: approved
         ? 'Documents verified. Room allotted.'
-        : status === 'Rejected'
+        : rejected
           ? 'Permanent address is within 15 km of the campus — day scholar.'
           : '',
-      decisionDate: approved
-        ? `2026-06-${day}`
-        : status === 'Rejected'
-          ? '2026-06-28'
-          : '',
-      decidedBy: status === 'Pending' ? '' : 'Rajesh Kumar',
+      decisionDate: approved ? juneDate(day + 3) : rejected ? '2026-06-28' : '',
+      decidedBy: decided ? (WARDEN_OF[hostelId] ?? 'Rajesh Kumar') : '',
       erpLoginId: approved ? `S${101 + i}` : '',
       erpPassword: approved ? `${d.studentName.split(' ')[0]}@${101 + i}` : '',
     };
@@ -935,31 +1086,41 @@ const seedApplications = (): Application[] => {
 
 /**
  * Approved applicants are packed into rooms of their preferred type. The last
- * few are deliberately left unallotted so the Room Allotment screen always has
- * students waiting in its queue.
+ * few approved in each hostel are deliberately left unallotted so every
+ * warden's Room Allotment screen has students waiting in its queue.
  */
-const AWAITING_ALLOTMENT = 3;
+const AWAITING_ALLOTMENT_PER_HOSTEL = 2;
 
 const seedAllocations = (rooms: Room[]): Allocation[] => {
   const approvedAll = seedApplications().filter(a => a.status === 'Approved');
-  const approved = approvedAll.slice(
-    0,
-    Math.max(approvedAll.length - AWAITING_ALLOTMENT, 0)
+  const approvedPerHostel = new Map<string, number>();
+  approvedAll.forEach(a =>
+    approvedPerHostel.set(
+      a.assignedHostelId,
+      (approvedPerHostel.get(a.assignedHostelId) ?? 0) + 1
+    )
   );
+  const seenPerHostel = new Map<string, number>();
+  const approved = approvedAll.filter(a => {
+    const rank = seenPerHostel.get(a.assignedHostelId) ?? 0;
+    seenPerHostel.set(a.assignedHostelId, rank + 1);
+    const total = approvedPerHostel.get(a.assignedHostelId) ?? 0;
+    return rank < Math.max(total - AWAITING_ALLOTMENT_PER_HOSTEL, 0);
+  });
   const usedBeds = new Map<string, number>();
   const allocations: Allocation[] = [];
 
   approved.forEach((application, i) => {
     const hostelRooms = rooms.filter(
       r =>
-        r.hostelId === application.preferredHostelId &&
+        r.hostelId === application.assignedHostelId &&
         r.roomType === application.preferredRoomType
     );
     const room =
       hostelRooms.find(r => (usedBeds.get(r.id) ?? 0) < r.beds) ??
       rooms.find(
         r =>
-          r.hostelId === application.preferredHostelId &&
+          r.hostelId === application.assignedHostelId &&
           (usedBeds.get(r.id) ?? 0) < r.beds
       );
     if (!room) return;
@@ -974,7 +1135,7 @@ const seedAllocations = (rooms: Room[]): Allocation[] => {
       roomId: room.id,
       roomType: room.roomType,
       allottedOn: application.decisionDate || '2026-06-20',
-      allottedBy: 'Rajesh Kumar',
+      allottedBy: WARDEN_OF[room.hostelId] ?? 'Rajesh Kumar',
       status: 'Active',
     });
   });
@@ -1808,5 +1969,64 @@ export const hostelOccupancy = (
     occupancyRate: configuredBeds
       ? Math.round((allottedBeds / configuredBeds) * 100)
       : 0,
+  };
+};
+
+/**
+ * The Hostel Cell's view of a hostel when deciding whom to forward there:
+ * sanctioned capacity, seats already occupied, and requests already forwarded
+ * that have not yet turned into an occupied bed.
+ */
+export interface HostelPipeline {
+  hostelId: string;
+  /** Sanctioned seats, as declared at registration. */
+  capacity: number;
+  /** Beds the warden has actually configured as rooms. */
+  configuredBeds: number;
+  /** Beds held under an active allotment. */
+  occupied: number;
+  /** Forwarded to the warden, decision still pending. */
+  awaitingDecision: number;
+  /** Approved by the warden but not yet allotted a room. */
+  approvedAwaitingRoom: number;
+  /** Everything forwarded that is still in the warden's pipeline. */
+  forwarded: number;
+  /** Seats the Hostel Cell can still forward against: capacity − occupied − forwarded. */
+  headroom: number;
+}
+
+export const hostelPipeline = (
+  hostel: Hostel,
+  rooms: Room[],
+  applications: Application[],
+  allocations: Allocation[]
+): HostelPipeline => {
+  const active = allocations.filter(
+    a => a.hostelId === hostel.id && a.status === 'Active'
+  );
+  const allottedStudentIds = new Set(active.map(a => a.studentId));
+  const assigned = applications.filter(a => a.assignedHostelId === hostel.id);
+
+  const awaitingDecision = assigned.filter(
+    a => a.status === 'Forwarded'
+  ).length;
+  const approvedAwaitingRoom = assigned.filter(
+    a =>
+      a.status === 'Approved' &&
+      (!a.erpLoginId || !allottedStudentIds.has(a.erpLoginId))
+  ).length;
+  const forwarded = awaitingDecision + approvedAwaitingRoom;
+
+  return {
+    hostelId: hostel.id,
+    capacity: hostel.capacity,
+    configuredBeds: rooms
+      .filter(r => r.hostelId === hostel.id)
+      .reduce((sum, r) => sum + r.beds, 0),
+    occupied: active.length,
+    awaitingDecision,
+    approvedAwaitingRoom,
+    forwarded,
+    headroom: hostel.capacity - active.length - forwarded,
   };
 };
