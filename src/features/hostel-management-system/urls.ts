@@ -14,6 +14,7 @@ export const hmsUrls = {
     hostelRegistrationNew: `${HMS_BASE}/admin/hostel-registration/new`,
     hostelRegistrationEdit: (id: string) =>
       `${HMS_BASE}/admin/hostel-registration/${id}`,
+    admissionRequests: `${HMS_BASE}/admin/admission-requests`,
     monitoring: `${HMS_BASE}/admin/monitoring`,
     reports: `${HMS_BASE}/admin/reports`,
   },

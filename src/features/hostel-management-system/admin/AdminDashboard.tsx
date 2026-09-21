@@ -10,7 +10,14 @@ import {
   StatusBadge,
 } from 'shared/new-components';
 import { EmptyState, OccupancyBar, SectionNote } from '../components/ui';
-import { hostelOccupancy, useHms, useHmsRole } from '../context/HmsContext';
+import {
+  APPLICATION_STATUS_LABEL,
+  APPLICATION_STATUS_VARIANT,
+  hostelOccupancy,
+  hostelPipeline,
+  useHms,
+  useHmsRole,
+} from '../context/HmsContext';
 import type { Hostel } from '../context/HmsContext';
 import { hmsBreadcrumbs } from '../utils/breadcrumbs';
 import { hmsUrls } from '../urls';
@@ -38,7 +45,9 @@ export default function AdminDashboard() {
       configuredBeds,
       allottedBeds,
       availableBeds: Math.max(configuredBeds - allottedBeds, 0),
-      pendingApplications: data.applications.filter(a => a.status === 'Pending')
+      awaitingAssignment: data.applications.filter(a => a.status === 'Pending')
+        .length,
+      withWardens: data.applications.filter(a => a.status === 'Forwarded')
         .length,
       openGrievances: data.grievances.filter(
         g => g.status === 'Open' || g.status === 'In Progress'
@@ -98,11 +107,11 @@ export default function AdminDashboard() {
           subtitle={`${stats.availableBeds} still free`}
         />
         <StatCard
-          title="Pending Admissions"
-          value={stats.pendingApplications}
-          icon="hourglass_top"
+          title="Awaiting Assignment"
+          value={stats.awaitingAssignment}
+          icon="forward_to_inbox"
           colorScheme="amber"
-          subtitle="Awaiting a warden decision"
+          subtitle={`${stats.withWardens} forwarded, with wardens`}
         />
       </FormGrid>
 
@@ -138,7 +147,7 @@ export default function AdminDashboard() {
 
       <FormCard
         title="Hostel-wise Occupancy"
-        subtitle="Beds configured against beds allotted, hostel by hostel."
+        subtitle="Beds allotted against beds configured, plus the requests already forwarded to each warden — so you can see how many more each hostel can take."
         icon="chart-bar"
         headerAction={
           <Button
@@ -214,6 +223,50 @@ export default function AdminDashboard() {
               },
             },
             {
+              header: 'Forwarded',
+              sortable: false,
+              width: 120,
+              cell: item => {
+                const p = hostelPipeline(
+                  item,
+                  data.rooms,
+                  data.applications,
+                  data.allocations
+                );
+                return (
+                  <StatusBadge
+                    label={String(p.forwarded)}
+                    variant={p.forwarded > 0 ? 'info' : 'muted'}
+                  />
+                );
+              },
+            },
+            {
+              header: 'Can Forward',
+              sortable: false,
+              width: 130,
+              cell: item => {
+                const p = hostelPipeline(
+                  item,
+                  data.rooms,
+                  data.applications,
+                  data.allocations
+                );
+                return (
+                  <StatusBadge
+                    label={`${Math.max(p.headroom, 0)} of ${p.capacity}`}
+                    variant={
+                      p.headroom <= 0
+                        ? 'danger'
+                        : p.headroom <= 3
+                          ? 'warning'
+                          : 'success'
+                    }
+                  />
+                );
+              },
+            },
+            {
               field: 'wardenName',
               header: 'Warden',
               width: 170,
@@ -225,8 +278,17 @@ export default function AdminDashboard() {
 
       <FormCard
         title="Latest Admission Requests"
-        subtitle="The five most recent applications from the public forum."
+        subtitle="The five most recent applications from the public forum. Assign each a hostel under Admission Requests."
         icon="inbox"
+        headerAction={
+          <Button
+            label="Admission Requests"
+            icon="arrow-right"
+            variant="outlined"
+            size="small"
+            onClick={() => navigate(hmsUrls.admin.admissionRequests)}
+          />
+        }
       >
         {recentApplications.length === 0 ? (
           <EmptyState
@@ -262,12 +324,12 @@ export default function AdminDashboard() {
                 ),
               },
               {
-                field: 'preferredHostelId',
-                header: 'Applied Hostel',
+                field: 'assignedHostelId',
+                header: 'Assigned Hostel',
                 width: 200,
                 cell: item => (
                   <>
-                    {data.hostels.find(h => h.id === item.preferredHostelId)
+                    {data.hostels.find(h => h.id === item.assignedHostelId)
                       ?.nameEn ?? '—'}
                   </>
                 ),
@@ -276,17 +338,11 @@ export default function AdminDashboard() {
               {
                 field: 'status',
                 header: 'Status',
-                width: 120,
+                width: 160,
                 cell: item => (
                   <StatusBadge
-                    label={item.status}
-                    variant={
-                      item.status === 'Approved'
-                        ? 'approved'
-                        : item.status === 'Rejected'
-                          ? 'rejected'
-                          : 'pending'
-                    }
+                    label={APPLICATION_STATUS_LABEL[item.status]}
+                    variant={APPLICATION_STATUS_VARIANT[item.status]}
                   />
                 ),
               },

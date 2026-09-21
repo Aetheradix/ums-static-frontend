@@ -16,6 +16,7 @@ import {
 } from 'shared/new-components';
 import { KeyValueTile, SectionNote } from '../components/ui';
 import {
+  APPLICATION_STATUS_VARIANT,
   buildStudentCredentials,
   MOCK_WARDEN_HOSTEL_ID,
   nextStudentSequence,
@@ -28,17 +29,16 @@ import type { Application, ApplicationStatus } from '../context/HmsContext';
 import { hmsBreadcrumbs } from '../utils/breadcrumbs';
 import { hmsUrls } from '../urls';
 
-const STATUS_VARIANT: Record<
-  ApplicationStatus,
-  'approved' | 'rejected' | 'pending'
-> = {
-  Approved: 'approved',
-  Rejected: 'rejected',
-  Pending: 'pending',
+/** From the warden's side a forwarded application is one awaiting their decision. */
+const STATUS_LABEL: Record<ApplicationStatus, string> = {
+  Pending: 'Awaiting Assignment',
+  Forwarded: 'Awaiting Decision',
+  Approved: 'Approved',
+  Rejected: 'Rejected',
 };
 
 const FILTERS = [
-  { id: 'Pending', text: 'Pending' },
+  { id: 'Forwarded', text: 'Awaiting Decision' },
   { id: 'Approved', text: 'Approved' },
   { id: 'Rejected', text: 'Rejected' },
   { id: 'All', text: 'All Applications' },
@@ -49,17 +49,21 @@ export default function AdmissionRequests() {
   const { activePortal } = useHmsRole();
   const navigate = useNavigate();
 
-  const [statusFilter, setStatusFilter] = useState('Pending');
+  const [statusFilter, setStatusFilter] = useState('Forwarded');
   const [viewing, setViewing] = useState<Application | null>(null);
   const [rejecting, setRejecting] = useState<Application | null>(null);
   const [rejectRemark, setRejectRemark] = useState('');
   const [approved, setApproved] = useState<Application | null>(null);
 
-  /** The warden only sees applications addressed to their own hostel. */
+  /**
+   * The warden only sees applications the Hostel Cell has assigned to their
+   * hostel — anything still `Pending` is with the Hostel Cell, unassigned.
+   */
   const scoped = useMemo(
     () =>
       data.applications.filter(
-        a => a.preferredHostelId === MOCK_WARDEN_HOSTEL_ID
+        a =>
+          a.assignedHostelId === MOCK_WARDEN_HOSTEL_ID && a.status !== 'Pending'
       ),
     [data.applications]
   );
@@ -74,7 +78,7 @@ export default function AdmissionRequests() {
 
   const counts = useMemo(
     () => ({
-      pending: scoped.filter(a => a.status === 'Pending').length,
+      pending: scoped.filter(a => a.status === 'Forwarded').length,
       approved: scoped.filter(a => a.status === 'Approved').length,
       rejected: scoped.filter(a => a.status === 'Rejected').length,
     }),
@@ -123,32 +127,33 @@ export default function AdmissionRequests() {
     setViewing(null);
   };
 
+  /** Undo a decision — the application goes back to awaiting the warden's call. */
   const handleReopen = (application: Application) => {
     update('applications', application.id, {
       ...application,
-      status: 'Pending',
+      status: 'Forwarded',
       decisionDate: '',
       decidedBy: '',
       remarks: '',
       erpLoginId: '',
       erpPassword: '',
     });
-    ToastService.success('Application moved back to Pending.');
+    ToastService.success('Application moved back to Awaiting Decision.');
   };
 
   return (
     <FormPage
       title="Admission Requests"
-      description="Applications sent to your hostel from the public forum. Approving one issues the student their ERP credentials so they can sign in and pay."
+      description="Applications the University Hostel Cell has assigned to your hostel. Approving one issues the student their ERP credentials so they can sign in and pay."
       breadcrumbs={hmsBreadcrumbs(activePortal, 'Admission Requests')}
     >
       <FormGrid columns={3}>
         <StatCard
-          title="Pending Review"
+          title="Awaiting Decision"
           value={counts.pending}
           icon="hourglass_top"
           colorScheme="amber"
-          subtitle="Awaiting your decision"
+          subtitle="Forwarded to you by the Hostel Cell"
         />
         <StatCard
           title="Approved"
@@ -235,15 +240,27 @@ export default function AdmissionRequests() {
                 />
               ),
             },
-            { field: 'submittedOn', header: 'Submitted', width: 125 },
+            {
+              field: 'forwardedOn',
+              header: 'Forwarded',
+              width: 130,
+              cell: item => (
+                <div className="flex flex-col">
+                  <span>{item.forwardedOn || '—'}</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                    Applied {item.submittedOn}
+                  </span>
+                </div>
+              ),
+            },
             {
               field: 'status',
               header: 'Status',
-              width: 115,
+              width: 150,
               cell: item => (
                 <StatusBadge
-                  label={item.status}
-                  variant={STATUS_VARIANT[item.status]}
+                  label={STATUS_LABEL[item.status]}
+                  variant={APPLICATION_STATUS_VARIANT[item.status]}
                 />
               ),
             },
@@ -260,7 +277,7 @@ export default function AdmissionRequests() {
                     size="small"
                     onClick={() => setViewing(item)}
                   />
-                  {item.status === 'Pending' ? (
+                  {item.status === 'Forwarded' ? (
                     <>
                       <Button
                         label="Approve"
@@ -312,7 +329,7 @@ export default function AdmissionRequests() {
                 variant="outlined"
                 onClick={() => setViewing(null)}
               />
-              {viewing.status === 'Pending' && (
+              {viewing.status === 'Forwarded' && (
                 <>
                   <Button
                     label="Reject"
@@ -386,14 +403,21 @@ export default function AdmissionRequests() {
               />
             </PreviewSection>
 
-            <PreviewSection title="Hostel Preference & Emergency" step={3}>
+            <PreviewSection title="Hostel Assignment & Emergency" step={3}>
               <PreviewField
-                label="Preferred Hostel"
-                value={hostelName(viewing.preferredHostelId)}
+                label="Assigned Hostel"
+                value={hostelName(viewing.assignedHostelId)}
               />
               <PreviewField
                 label="Preferred Room Type"
                 value={viewing.preferredRoomType}
+              />
+              <PreviewField label="Forwarded On" value={viewing.forwardedOn} />
+              <PreviewField label="Forwarded By" value={viewing.forwardedBy} />
+              <PreviewField
+                label="Note from Hostel Cell"
+                value={viewing.adminRemarks}
+                fullWidth
               />
               <PreviewField
                 label="Emergency Contact"
@@ -436,7 +460,10 @@ export default function AdmissionRequests() {
             </PreviewSection>
 
             <PreviewSection title="Decision" step={5}>
-              <PreviewField label="Status" value={viewing.status} />
+              <PreviewField
+                label="Status"
+                value={STATUS_LABEL[viewing.status]}
+              />
               <PreviewField
                 label="Decision Date"
                 value={viewing.decisionDate}
@@ -510,7 +537,7 @@ export default function AdmissionRequests() {
                 {approved.studentName}
               </p>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                {approved.rollNumber} · {hostelName(approved.preferredHostelId)}{' '}
+                {approved.rollNumber} · {hostelName(approved.assignedHostelId)}{' '}
                 · prefers{' '}
                 {approved.preferredRoomType || 'no particular room type'}
               </p>

@@ -38,17 +38,17 @@ export default function AdminReports() {
   );
 
   // ── Admission pipeline ────────────────────────────────────────────────────
+  // Per hostel, so only applications the Hostel Cell has assigned appear here;
+  // the unassigned remainder is surfaced as a total above the table.
   const admissionRows = useMemo(
     () =>
       data.hostels.map(h => {
-        const apps = data.applications.filter(
-          a => a.preferredHostelId === h.id
-        );
+        const apps = data.applications.filter(a => a.assignedHostelId === h.id);
         return {
           id: h.id,
           hostel: h.nameEn,
           total: apps.length,
-          pending: apps.filter(a => a.status === 'Pending').length,
+          forwarded: apps.filter(a => a.status === 'Forwarded').length,
           approved: apps.filter(a => a.status === 'Approved').length,
           rejected: apps.filter(a => a.status === 'Rejected').length,
         };
@@ -128,6 +128,7 @@ export default function AdminReports() {
         .filter(p => p.status === 'Pending')
         .reduce((s, p) => s + p.amount, 0),
       applications: data.applications.length,
+      unassigned: data.applications.filter(a => a.status === 'Pending').length,
       grievances: data.grievances.length,
     }),
     [data.payments, data.applications, data.grievances]
@@ -157,6 +158,7 @@ export default function AdminReports() {
           value={totals.applications}
           icon="assignment"
           colorScheme="blue"
+          subtitle={`${totals.unassigned} awaiting hostel assignment`}
         />
         <StatCard
           title="Grievances"
@@ -207,15 +209,15 @@ export default function AdminReports() {
                   emptyMessage="No applications received."
                   columns={[
                     { field: 'hostel', header: 'Hostel', width: 260 },
-                    { field: 'total', header: 'Applications', width: 130 },
+                    { field: 'total', header: 'Assigned', width: 130 },
                     {
-                      field: 'pending',
-                      header: 'Pending',
+                      field: 'forwarded',
+                      header: 'With Warden',
                       width: 120,
                       cell: item => (
                         <StatusBadge
-                          label={String(item.pending)}
-                          variant={item.pending > 0 ? 'pending' : 'muted'}
+                          label={String(item.forwarded)}
+                          variant={item.forwarded > 0 ? 'info' : 'muted'}
                         />
                       ),
                     },

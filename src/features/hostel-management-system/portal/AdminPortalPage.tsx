@@ -6,7 +6,7 @@ export default function AdminPortalPage() {
   return (
     <PortalSelector
       moduleTitle="Hostel Admin"
-      moduleDescription="Register hostels on the system, issue each one its warden credentials, and monitor seats, occupancy and collections across every hostel."
+      moduleDescription="Register hostels on the system, issue each one its warden credentials, assign incoming admission requests to a hostel, and monitor seats, occupancy and collections across every hostel."
       backPath={hmsUrls.root}
       backLabel="Hostel Management System"
       breadcrumbs={hmsBreadcrumbs(null, 'Hostel Admin')}
@@ -14,7 +14,7 @@ export default function AdminPortalPage() {
         {
           title: 'Dashboard',
           description:
-            'Hostels on the system, beds configured against beds allotted, pending admissions and fee collection at a glance.',
+            'Hostels on the system, beds configured against beds allotted, admissions awaiting assignment and fee collection at a glance.',
           icon: 'dashboard',
           colorScheme: 'teal',
           path: hmsUrls.admin.dashboard,
@@ -26,6 +26,14 @@ export default function AdminPortalPage() {
           icon: 'apartment',
           colorScheme: 'blue',
           path: hmsUrls.admin.hostelRegistration,
+        },
+        {
+          title: 'Admission Requests',
+          description:
+            'Applications from the public forum land here. Assign each one a hostel — with capacity, occupancy and forwarded counts in view — and forward it to that warden.',
+          icon: 'forward_to_inbox',
+          colorScheme: 'indigo',
+          path: hmsUrls.admin.admissionRequests,
         },
         {
           title: 'Seat Monitoring',

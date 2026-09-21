@@ -34,8 +34,8 @@ export default function WardenDashboard() {
     () => ({
       pendingAdmissions: data.applications.filter(
         a =>
-          a.status === 'Pending' &&
-          a.preferredHostelId === MOCK_WARDEN_HOSTEL_ID
+          a.status === 'Forwarded' &&
+          a.assignedHostelId === MOCK_WARDEN_HOSTEL_ID
       ).length,
       pendingLeave: data.leaveRequests.filter(
         l => l.hostelId === MOCK_WARDEN_HOSTEL_ID && l.status === 'Pending'

@@ -8,7 +8,8 @@ import TrackApplication from './TrackApplication';
 /**
  * The public forum — reachable at `/hostel-admission` without signing in.
  * It shares the module's data store, so an application submitted here lands
- * in the warden's approval queue.
+ * in the hostel admin's queue, to be assigned a hostel and forwarded to its
+ * warden.
  */
 export default function HmsPublicForum() {
   return (
