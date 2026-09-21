@@ -399,13 +399,13 @@ export default function EMeasurementBook() {
 
   return (
     <FormPage
-      title="E-Measurement Book (E-MB)"
+      title="E-Measurement Book (E-MB) Verification"
       description="Single source of truth for physical measurements and financial claims, organized project-wise with ERP-enforced 4-rule integrity."
       breadcrumbs={[
         { label: 'Home', to: '/home/menu' },
         { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
-        { label: 'Engineer Portal', to: civilUrls.engineerMenu },
-        { label: 'E-Measurement Book' },
+        { label: 'Vendor Login', to: civilUrls.vendorMenu },
+        { label: 'E-Measurement Book (E-MB) Verification' },
       ]}
     >
       {/* SOR → BOQ → MB Chain */}

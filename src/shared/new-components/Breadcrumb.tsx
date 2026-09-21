@@ -153,6 +153,12 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
           location.pathname.includes('civil-infrastructure'))
       ) {
         toPath = '/home/sub-menu/civil-external-masters';
+      } else if (
+        path.toLowerCase() === 'civil-vendor' ||
+        (path.toLowerCase() === 'vendor' &&
+          location.pathname.includes('civil-infrastructure'))
+      ) {
+        toPath = '/home/sub-menu/civil-vendor';
       }
 
       generatedItems.push({

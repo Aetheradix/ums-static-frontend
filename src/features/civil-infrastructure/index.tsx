@@ -15,7 +15,6 @@ import AdminReports from './pages/admin/Reports';
 import TechnicalSanction from './pages/admin/TechnicalSanction';
 import TenderOversight from './pages/admin/TenderOversight';
 import WorkCategorization from './pages/admin/WorkCategorization';
-import WorkManpowerMapping from './pages/admin/WorkManpowerMapping';
 import WorkOrderSign from './pages/admin/WorkOrderSign';
 import WorkRegistration from './pages/admin/WorkRegistration';
 
@@ -41,15 +40,11 @@ import WorkDepartmentMaster from './pages/admin/masters/WorkDepartmentMaster';
 // ── Engineer Pages ─────────────────────────────────────────────────
 import BOQCompilation from './pages/engineer/BOQCompilation';
 import EngineerDashboard from './pages/engineer/Dashboard';
-import EMeasurementBook from './pages/engineer/EMeasurementBook';
-import EOTRequest from './pages/engineer/EOTRequest';
 import ExecutionRouter from './pages/engineer/ExecutionRouter';
 import MBReport from './pages/engineer/MBReport';
-import MilestoneSignoff from './pages/engineer/MilestoneSignoff';
 import ProgressMonitoring from './pages/engineer/ProgressMonitoring';
 import QualityFramework from './pages/engineer/QualityFramework';
 import QualityTesting from './pages/engineer/QualityTesting';
-import RequestCC from './pages/engineer/RequestCC';
 import SORMaster from './pages/engineer/SORMaster';
 import TechnicalPlanning from './pages/engineer/TechnicalPlanning';
 
@@ -58,15 +53,22 @@ import BudgetAllocation from './pages/finance/BudgetAllocation';
 import FinanceDashboard from './pages/finance/Dashboard';
 import DLPMonitoring from './pages/finance/DLPMonitoring';
 import FinalBillSettlement from './pages/finance/FinalBillSettlement';
-import PaymentRelease from './pages/finance/PaymentRelease';
 import RABillProcessing from './pages/finance/RABillProcessing';
-import UtilizationCertificate from './pages/finance/UtilizationCertificate';
+
+// ── Vendor Login / Admin User Pages ─────────────────────────────────
+import EMeasurementBook from './pages/vendor/EMeasurementBook';
+import EOTRequest from './pages/vendor/EOTRequest';
+import MilestoneSignoff from './pages/vendor/MilestoneSignoff';
+import PaymentRelease from './pages/vendor/PaymentRelease';
+import RequestCC from './pages/vendor/RequestCC';
+import UtilizationCertificate from './pages/vendor/UtilizationCertificate';
+import WorkManpowerMapping from './pages/vendor/WorkManpowerMapping';
 
 /**
  * Civil Infrastructure Module Routes
  *
  * Mounted at path="civil-infrastructure/*" in the main features router.
- * Three role-based portals: admin, engineer, finance with comprehensive masters and Indian workflow routes.
+ * Four role-based portals: admin, engineer, finance, and vendor with comprehensive masters and Indian workflow routes.
  */
 export default function CivilInfrastructure() {
   return (
@@ -101,7 +103,12 @@ export default function CivilInfrastructure() {
       <Route path="admin/work-order-sign" element={<WorkOrderSign />} />
       <Route
         path="admin/work-manpower-mapping"
-        element={<WorkManpowerMapping />}
+        element={
+          <Navigate
+            to="/civil-infrastructure/vendor/work-manpower-mapping"
+            replace
+          />
+        }
       />
       <Route
         path="admin/milestone-approvals"
@@ -174,11 +181,34 @@ export default function CivilInfrastructure() {
       <Route path="engineer/quality-testing" element={<QualityTesting />} />
       <Route
         path="engineer/e-measurement-book"
-        element={<EMeasurementBook />}
+        element={
+          <Navigate
+            to="/civil-infrastructure/vendor/e-measurement-book"
+            replace
+          />
+        }
       />
-      <Route path="engineer/eot-request" element={<EOTRequest />} />
-      <Route path="engineer/milestone-signoff" element={<MilestoneSignoff />} />
-      <Route path="engineer/request-cc" element={<RequestCC />} />
+      <Route
+        path="engineer/eot-request"
+        element={
+          <Navigate to="/civil-infrastructure/vendor/eot-request" replace />
+        }
+      />
+      <Route
+        path="engineer/milestone-signoff"
+        element={
+          <Navigate
+            to="/civil-infrastructure/vendor/milestone-status"
+            replace
+          />
+        }
+      />
+      <Route
+        path="engineer/request-cc"
+        element={
+          <Navigate to="/civil-infrastructure/vendor/request-cc" replace />
+        }
+      />
       <Route path="engineer/mb-report" element={<MBReport />} />
 
       {/* ── Finance Login ─────────────────────────────────────────── */}
@@ -195,12 +225,46 @@ export default function CivilInfrastructure() {
         path="finance/final-bill-settlement"
         element={<FinalBillSettlement />}
       />
-      <Route path="finance/payment-release" element={<PaymentRelease />} />
+      <Route
+        path="finance/payment-release"
+        element={
+          <Navigate to="/civil-infrastructure/vendor/payment-release" replace />
+        }
+      />
       <Route path="finance/dlp-monitoring" element={<DLPMonitoring />} />
       <Route
         path="finance/utilization-certificate"
+        element={
+          <Navigate
+            to="/civil-infrastructure/vendor/utilization-certificate"
+            replace
+          />
+        }
+      />
+
+      {/* ── Vendor Login / Admin User ─────────────────────────────── */}
+      <Route
+        path="vendor"
+        element={
+          <Navigate
+            to="/civil-infrastructure/vendor/work-manpower-mapping"
+            replace
+          />
+        }
+      />
+      <Route
+        path="vendor/work-manpower-mapping"
+        element={<WorkManpowerMapping />}
+      />
+      <Route path="vendor/e-measurement-book" element={<EMeasurementBook />} />
+      <Route path="vendor/eot-request" element={<EOTRequest />} />
+      <Route path="vendor/milestone-status" element={<MilestoneSignoff />} />
+      <Route
+        path="vendor/utilization-certificate"
         element={<UtilizationCertificate />}
       />
+      <Route path="vendor/request-cc" element={<RequestCC />} />
+      <Route path="vendor/payment-release" element={<PaymentRelease />} />
     </Routes>
   );
 }

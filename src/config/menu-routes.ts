@@ -7945,7 +7945,14 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'gavel',
                 colorScheme: 'teal',
               },
-
+              {
+                label: 'Extension Request',
+                description:
+                  'Review and approve contractor timeline extensions and revised estimates.',
+                path: '/civil-infrastructure/admin/eot-requests',
+                icon: 'update',
+                colorScheme: 'amber',
+              },
               {
                 label: 'Work Order Sign',
                 description:
@@ -7953,14 +7960,6 @@ export const menuConfig: Menu.MenuItem[] = [
                 path: '/civil-infrastructure/admin/work-order-sign',
                 icon: 'history_edu',
                 colorScheme: 'purple',
-              },
-              {
-                label: 'Work to Manpower Mapping',
-                description:
-                  'Map engineering personnel, site supervisors, and responsibilities for registered civil works.',
-                path: '/civil-infrastructure/admin/work-manpower-mapping',
-                icon: 'people',
-                colorScheme: 'indigo',
               },
               {
                 label: 'Milestone Definition',
@@ -7977,14 +7976,6 @@ export const menuConfig: Menu.MenuItem[] = [
                 path: '/civil-infrastructure/admin/milestone-approvals',
                 icon: 'check_circle',
                 colorScheme: 'indigo',
-              },
-              {
-                label: 'Extension Request',
-                description:
-                  'Review and approve contractor timeline extensions and revised estimates.',
-                path: '/civil-infrastructure/admin/eot-requests',
-                icon: 'update',
-                colorScheme: 'amber',
               },
               {
                 label: 'Completion Certificate',
@@ -8089,44 +8080,6 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'share_location',
                 colorScheme: 'teal',
               },
-              {
-                label: 'E-Measurement Book',
-                description:
-                  'Real-time quantity measurement book entry. 4 rules enforced.',
-                path: '/civil-infrastructure/engineer/e-measurement-book',
-                icon: 'menu_book',
-                colorScheme: 'purple',
-              },
-              // {
-              //   label: 'E-MB Report',
-              //   description:
-              //     'Work-wise E-MB measurements, bills, and recovery ledger.',
-              //   path: '/civil-infrastructure/engineer/mb-report',
-              //   icon: 'assessment',
-              //   colorScheme: 'blue',
-              // },
-              {
-                label: 'Milestone Sign-off',
-                description: 'EE milestone checklist validation.',
-                path: '/civil-infrastructure/engineer/milestone-signoff',
-                icon: 'verified',
-                colorScheme: 'orange',
-              },
-              {
-                label: 'Work Extension',
-                description:
-                  'Extension of time applications and revised estimates.',
-                path: '/civil-infrastructure/engineer/eot-request',
-                icon: 'more_time',
-                colorScheme: 'green',
-              },
-              {
-                label: 'Request CC',
-                description: 'Apply for project completion certificate.',
-                path: '/civil-infrastructure/engineer/request-cc',
-                icon: 'emoji_events',
-                colorScheme: 'indigo',
-              },
             ],
           },
           {
@@ -8168,13 +8121,6 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'orange',
               },
               {
-                label: 'Payment Release',
-                description: 'EFT payment with mandatory UTR reference log.',
-                path: '/civil-infrastructure/finance/payment-release',
-                icon: 'payments',
-                colorScheme: 'red',
-              },
-              {
                 label: 'DLP Retention',
                 description:
                   'Monitor DLP timer and defects, release retention.',
@@ -8182,13 +8128,73 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'lock_open',
                 colorScheme: 'pink',
               },
+            ],
+          },
+          {
+            label: 'Vendor',
+            slug: 'civil-vendor',
+            description:
+              'Vendor self-service: manpower mapping, E-MB verification, extension requests, milestone payments, and completion certificates.',
+            icon: 'storefront',
+            colorScheme: 'amber',
+            path: '/home/sub-menu/civil-vendor',
+            children: [
               {
-                label: 'Utilization Certificates',
+                label: 'Work to Manpower Mapping',
+                description:
+                  'Map engineering personnel, site supervisors, and responsibilities for registered civil works.',
+                path: '/civil-infrastructure/vendor/work-manpower-mapping',
+                icon: 'people',
+                colorScheme: 'indigo',
+              },
+              {
+                label: 'E-Measurement Book (E-MB) Verification',
+                description:
+                  'Real-time quantity measurement book entry and contractor verification.',
+                path: '/civil-infrastructure/vendor/e-measurement-book',
+                icon: 'menu_book',
+                colorScheme: 'purple',
+              },
+              {
+                label:
+                  'Work Extension Request (Extension of Time / Revised Estimate)',
+                description:
+                  'Extension of time applications and revised estimates.',
+                path: '/civil-infrastructure/vendor/eot-request',
+                icon: 'more_time',
+                colorScheme: 'green',
+              },
+              {
+                label: 'Milestone Status (Request for payment)',
+                description:
+                  'View milestone details and apply for milestone release/payment request.',
+                path: '/civil-infrastructure/vendor/milestone-status',
+                icon: 'verified',
+                colorScheme: 'orange',
+              },
+              {
+                label: 'Utilization Certificate',
                 description:
                   'Statutory GFR 12-A grant utilization tracking and submission.',
-                path: '/civil-infrastructure/finance/utilization-certificate',
+                path: '/civil-infrastructure/vendor/utilization-certificate',
                 icon: 'document_scanner',
+                colorScheme: 'teal',
+              },
+              {
+                label: 'Request Completion Certificate',
+                description:
+                  'Apply for project completion certificate and final inspection.',
+                path: '/civil-infrastructure/vendor/request-cc',
+                icon: 'emoji_events',
                 colorScheme: 'indigo',
+              },
+              {
+                label: 'Payment Release details',
+                description:
+                  'Track EFT/NEFT transfers, payment references, and UTR logs.',
+                path: '/civil-infrastructure/vendor/payment-release',
+                icon: 'payments',
+                colorScheme: 'red',
               },
             ],
           },

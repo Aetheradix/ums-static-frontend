@@ -93,8 +93,8 @@ export default function RequestCC() {
       breadcrumbs={[
         { label: 'Home', to: '/home/menu' },
         { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
-        { label: 'Engineer Portal', to: civilUrls.engineerMenu },
-        { label: 'Request CC' },
+        { label: 'Vendor Login', to: civilUrls.vendorMenu },
+        { label: 'Request Completion Certificate' },
       ]}
     >
       <FormCard subtitle="Only works with high physical progress are eligible for final CC requests.">

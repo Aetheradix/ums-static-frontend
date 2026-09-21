@@ -141,13 +141,13 @@ export default function PaymentRelease() {
 
   return (
     <FormPage
-      title="Payment Release"
+      title="Payment Release Details"
       description="Treasury initiates EFT/NEFT transfers for finance-cleared RA bills. Payment reference and UTR number are mandatory."
       breadcrumbs={[
         { label: 'Home', to: '/home/menu' },
         { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
-        { label: 'Finance & Accounts', to: civilUrls.financeMenu },
-        { label: 'Payment Release' },
+        { label: 'Vendor Login', to: civilUrls.vendorMenu },
+        { label: 'Payment Release Details' },
       ]}
     >
       <div

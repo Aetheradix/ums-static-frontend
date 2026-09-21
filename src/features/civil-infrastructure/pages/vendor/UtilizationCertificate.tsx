@@ -195,12 +195,12 @@ export default function UtilizationCertificate() {
 
   return (
     <FormPage
-      title="Utilization Certificate (GFR Form 12-A)"
+      title="Utilization Certificate"
       description="Statutory GFR Annexure 12-A utilization statements mandated by Government funding agencies (UGC, State Govt, Central Ministry) for capital grant release."
       breadcrumbs={[
         { label: 'Home', to: '/home/menu' },
         { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
-        { label: 'Finance & Accounts', to: civilUrls.financeMenu },
+        { label: 'Vendor Login', to: civilUrls.vendorMenu },
         { label: 'Utilization Certificate' },
       ]}
     >

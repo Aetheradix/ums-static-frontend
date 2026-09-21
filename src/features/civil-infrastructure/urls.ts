@@ -6,12 +6,14 @@ export const civilUrls = {
   adminMenu: '/home/sub-menu/civil-admin',
   engineerMenu: '/home/sub-menu/civil-engineer',
   financeMenu: '/home/sub-menu/civil-finance',
+  vendorMenu: '/home/sub-menu/civil-vendor',
   externalMastersMenu: '/home/sub-menu/civil-external-masters',
 
   // Portals (Direct Dashboards)
   adminPortal: `${BASE}/admin/dashboard`,
   engineerPortal: `${BASE}/engineer/dashboard`,
   financePortal: `${BASE}/finance/dashboard`,
+  vendorPortal: `${BASE}/vendor/work-manpower-mapping`,
 
   // Admin Pages
   adminDashboard: `${BASE}/admin/dashboard`,
@@ -23,7 +25,7 @@ export const civilUrls = {
   tenderOversight: `${BASE}/admin/tender-oversight`,
   agencyVerification: `${BASE}/admin/agency-verification`,
   workOrderSign: `${BASE}/admin/work-order-sign`,
-  workManpowerMapping: `${BASE}/admin/work-manpower-mapping`,
+  workManpowerMapping: `${BASE}/vendor/work-manpower-mapping`,
   adminEotRequest: `${BASE}/admin/eot-requests`,
   completionCertificate: `${BASE}/admin/completion-certificate`,
   adminReports: `${BASE}/admin/reports`,
@@ -64,10 +66,10 @@ export const civilUrls = {
   qualityFramework: `${BASE}/engineer/quality-framework`,
   progressMonitoring: `${BASE}/engineer/progress-monitoring`,
   qualityTesting: `${BASE}/engineer/quality-testing`,
-  eMeasurementBook: `${BASE}/engineer/e-measurement-book`,
-  eotRequest: `${BASE}/engineer/eot-request`,
-  milestoneSignoff: `${BASE}/engineer/milestone-signoff`,
-  requestCC: `${BASE}/engineer/request-cc`,
+  eMeasurementBook: `${BASE}/vendor/e-measurement-book`,
+  eotRequest: `${BASE}/vendor/eot-request`,
+  milestoneSignoff: `${BASE}/vendor/milestone-status`,
+  requestCC: `${BASE}/vendor/request-cc`,
   mbReport: `${BASE}/engineer/mb-report`,
   siteHandover: `${BASE}/engineer/site-handover`,
   deviationStatement: `${BASE}/engineer/deviation-statement`,
@@ -77,8 +79,17 @@ export const civilUrls = {
   budgetAllocation: `${BASE}/finance/budget-allocation`,
   raBillProcessing: `${BASE}/finance/ra-bill-processing`,
   finalBillSettlement: `${BASE}/finance/final-bill-settlement`,
-  paymentRelease: `${BASE}/finance/payment-release`,
+  paymentRelease: `${BASE}/vendor/payment-release`,
   dlpMonitoring: `${BASE}/finance/dlp-monitoring`,
-  utilizationCertificate: `${BASE}/finance/utilization-certificate`,
+  utilizationCertificate: `${BASE}/vendor/utilization-certificate`,
   pvcCalculation: `${BASE}/finance/pvc-calculation`,
+
+  // Vendor Pages
+  vendorWorkManpowerMapping: `${BASE}/vendor/work-manpower-mapping`,
+  vendorEMeasurementBook: `${BASE}/vendor/e-measurement-book`,
+  vendorEotRequest: `${BASE}/vendor/eot-request`,
+  vendorMilestoneStatus: `${BASE}/vendor/milestone-status`,
+  vendorUtilizationCertificate: `${BASE}/vendor/utilization-certificate`,
+  vendorRequestCC: `${BASE}/vendor/request-cc`,
+  vendorPaymentRelease: `${BASE}/vendor/payment-release`,
 };

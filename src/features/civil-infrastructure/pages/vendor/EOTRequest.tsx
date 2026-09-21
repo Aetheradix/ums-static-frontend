@@ -92,13 +92,13 @@ export default function EOTRequest() {
 
   return (
     <FormPage
-      title="Extension of Time / Revised Estimate"
+      title="Work Extension Request (Extension of Time / Revised Estimate)"
       description="Two independent workflows: EOT (delay → timeline extended, no cost change) or Revised Estimate (additional budget required)."
       breadcrumbs={[
         { label: 'Home', to: '/home/menu' },
         { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
-        { label: 'Engineer Portal', to: civilUrls.engineerMenu },
-        { label: 'EOT Request' },
+        { label: 'Vendor Login', to: civilUrls.vendorMenu },
+        { label: 'Work Extension Request' },
       ]}
     >
       <div

@@ -321,8 +321,8 @@ export default function WorkManpowerMapping() {
       breadcrumbs={[
         { label: 'Home', to: '/home/menu' },
         { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
-        { label: 'Admin Login', to: civilUrls.adminMenu },
-        { label: 'Work-Manpower Mapping' },
+        { label: 'Vendor Login', to: civilUrls.vendorMenu },
+        { label: 'Work to Manpower Mapping' },
       ]}
     >
       <FormCard>

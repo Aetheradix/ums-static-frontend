@@ -178,13 +178,13 @@ export default function MilestoneSignoff() {
 
   return (
     <FormPage
-      title="Milestone Sign-offs"
-      description="Milestone sign-off is blocked if any mandatory quality test is failed or pending. Next phases cannot begin without sign-off."
+      title="Milestone Status (Request for payment)"
+      description="View milestone details and apply for milestone release/payment request. Enforces quality test sign-off dependencies."
       breadcrumbs={[
         { label: 'Home', to: '/home/menu' },
         { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
-        { label: 'Engineer Portal', to: civilUrls.engineerMenu },
-        { label: 'Milestone Sign-offs' },
+        { label: 'Vendor Login', to: civilUrls.vendorMenu },
+        { label: 'Milestone Status' },
       ]}
     >
       <div
