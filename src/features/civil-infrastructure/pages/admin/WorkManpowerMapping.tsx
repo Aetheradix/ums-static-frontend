@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ToastService } from 'services';
 import { Button, StatusButton } from 'shared/components/buttons';
 import {
   DatePicker,
   DropDownList,
-  FileUpload,
   TextArea,
   TextBox,
 } from 'shared/components/forms';
@@ -21,8 +20,8 @@ import {
 import {
   civilWorks,
   initialWorkManpowerMappings,
-  type MockWorkManpowerMapping,
   type CivilWork,
+  type MockWorkManpowerMapping,
 } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -121,7 +120,6 @@ export default function WorkManpowerMapping() {
   const [relieveDate, setRelieveDate] = useState<string>(
     new Date().toISOString().split('T')[0]
   );
-  const [relieveDocName, setRelieveDocName] = useState<string>('');
   const [relieveRemarks, setRelieveRemarks] = useState<string>('');
 
   const saveMappings = (newMappings: MockWorkManpowerMapping[]) => {
@@ -160,7 +158,7 @@ export default function WorkManpowerMapping() {
 
   const openEditModal = (item: MockWorkManpowerMapping) => {
     setFormWorkId(item.workRegistrationId);
-    setFormIsInternal(item.isInternal);
+    setFormIsInternal(item.isInternal !== false);
     setFormEmployeeId(item.employeeId || 101);
     setFormExternalName(item.externalEngineerName || '');
     setFormExternalDesignation(
@@ -175,7 +173,6 @@ export default function WorkManpowerMapping() {
 
   const openRelieveModal = (item: MockWorkManpowerMapping) => {
     setRelieveDate(new Date().toISOString().split('T')[0]);
-    setRelieveDocName('');
     setRelieveRemarks('');
     setPopup({ mode: 'relieve', item });
   };
@@ -193,8 +190,11 @@ export default function WorkManpowerMapping() {
             ...m,
             toDate: relieveDate,
             isActive: false,
-            relievingDocument: relieveDocName || undefined,
-            relievingRemarks: relieveRemarks || 'Marked as Out / Relieved',
+            remarks: relieveRemarks
+              ? m.remarks
+                ? `${m.remarks} | Relieved: ${relieveRemarks}`
+                : relieveRemarks
+              : m.remarks,
           }
         : m
     );
@@ -713,18 +713,6 @@ export default function WorkManpowerMapping() {
             />
 
             <div style={{ marginTop: '0.75rem' }}>
-              <FileUpload
-                label="Relieving Order / Handover Document (Optional)"
-                accept=".pdf,.png,.jpg,.jpeg"
-                mode="file"
-                uploadNote="Max size 10MB (.pdf, .jpg, .png)"
-                onChange={(file: File | null) =>
-                  setRelieveDocName(file?.name || '')
-                }
-              />
-            </div>
-
-            <div style={{ marginTop: '0.75rem' }}>
               <TextArea
                 label="Relieving Remarks / Reason for Out"
                 placeholder="e.g. Work phase completed, transferred to another project, handover completed..."
@@ -823,17 +811,7 @@ export default function WorkManpowerMapping() {
                   ),
                 },
                 {
-                  label: 'Relieving Document',
-                  value: popup.item.relievingDocument || '—',
-                  hidden: !popup.item.relievingDocument,
-                },
-                {
-                  label: 'Relieving Remarks',
-                  value: popup.item.relievingRemarks || '—',
-                  hidden: !popup.item.relievingRemarks,
-                },
-                {
-                  label: 'Assignment Notes',
+                  label: 'Relieving / Assignment Remarks',
                   value: popup.item.remarks || '—',
                 },
               ]}

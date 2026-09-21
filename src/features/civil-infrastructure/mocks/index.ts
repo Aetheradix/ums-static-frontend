@@ -22,7 +22,11 @@ export type WorkStatus =
   | 'DLP Active'
   | 'Closed';
 
-export type ExecutionRoute = 'Internal' | 'External Agency' | 'External';
+export type ExecutionRoute =
+  | 'Internal'
+  | 'ExternalAgency'
+  | 'External Agency'
+  | 'External';
 
 export interface MockWorkRegistration {
   workRegistrationId: number;
@@ -37,21 +41,24 @@ export interface MockWorkRegistration {
   priorityLevel: 'Low' | 'Medium' | 'High' | 'Critical' | string;
   fundingSourceId: number;
   fundingSourceName?: string;
-  workBasis: 'SOR' | 'NonSor' | 'BOQBased' | string;
-  executionRoute: 'Internal' | 'External' | string;
-  siteEngineerSource: 'Internal' | 'External';
+  workBasis: 'SOR' | 'NonSor' | 'BoqBased' | 'BOQBased' | string;
+  executionRoute: 'Internal' | 'ExternalAgency' | 'External' | string;
+  siteEngineerSource?: 'Internal' | 'External';
   employeeIds?: number[];
   externalEngineers?: { engineerName: string; mobileNumber: string }[];
   status: string;
   estimatedCost: number;
   isActive: boolean;
+  isStatuaryCheck?: boolean;
 }
 
 export interface MockAdministrativeSanction extends MockWorkRegistration {
   administrativeSanctionId?: number;
   administrativeApprovalAmount?: number;
+  aaAmount?: number;
   remark?: string;
-  aaStatus: 'Pending' | 'AAApproved' | string;
+  aaRemarks?: string;
+  aaStatus: 'Pending' | 'AAApproved' | 'AaApproved' | string;
   documentId?: string;
   documentName?: string;
 }
@@ -59,7 +66,9 @@ export interface MockAdministrativeSanction extends MockWorkRegistration {
 export interface MockTechnicalSanction extends MockAdministrativeSanction {
   technicalSanctionId?: number;
   technicalSanctionAmount?: number;
-  tsStatus: 'Pending' | 'Approved' | string;
+  tsAmount?: number;
+  tsRemarks?: string;
+  tsStatus: 'Pending' | 'Approved' | 'TsGranted' | string;
   canGrantTs?: boolean;
 }
 
@@ -71,6 +80,11 @@ export interface MockBudgetAllocation extends MockTechnicalSanction {
   budgetHeadName?: string;
   budgetHeadCode?: string;
   budgetAmount?: number;
+  allocatedAmount?: number;
+  remarks?: string;
+  documentId?: string;
+  documentName?: string;
+  lockedAt?: string;
   isLocked?: boolean;
   canAllocateBudget?: boolean;
 }
@@ -733,14 +747,28 @@ export const civilWorks: CivilWork[] = [
 export interface MockSORItem {
   sorItemId: number;
   sorCode: string;
-  itemDescription: string;
+  workDescription: string;
+  itemDescription?: string; // alias
   unit: string;
   rate: number;
+  financialYearId?: number;
+  financialYear?: string;
+  pageNumber?: number;
+  serialNumber?: string;
+  serialDescription?: string;
+  subjectTitle?: string;
+  numberOfCementBags?: number;
+  effectiveDate?: string;
+  isRateSet?: boolean;
+  percentage?: number;
   sorTypeId: number;
+  sorTypeCode?: string;
   sorTypeName?: string;
   sorChapterId: number;
+  chapterNo?: string;
   sorChapterName?: string;
   sorSubjectId?: number;
+  subjectName?: string;
   sorSubjectName?: string;
   isActive: boolean;
 }
@@ -748,15 +776,23 @@ export interface MockSORItem {
 export interface SORItem {
   id: string;
   sorItemId?: number;
-  code: string;
   sorCode?: string;
-  description: string;
-  itemDescription?: string;
+  code?: string; // alias
+  workDescription?: string;
+  description?: string; // alias
+  itemDescription?: string; // alias
   unit: string;
-  govtRate: number; // ₹ per unit
   rate?: number;
-  category: string;
-  year: string;
+  govtRate?: number; // legacy alias
+  category?: string; // legacy alias
+  year?: string; // legacy alias
+  financialYearId?: number;
+  pageNumber?: number;
+  serialNumber?: string;
+  numberOfCementBags?: number;
+  effectiveDate?: string;
+  isRateSet?: boolean;
+  percentage?: number;
   sorTypeId?: number | string;
   sorTypeName?: string;
   sorChapterId?: number | string;
@@ -780,7 +816,13 @@ export interface MockTechnicalPlan {
   concreteGrade: 'M10' | 'M15' | 'M20' | 'M25' | 'M30' | 'M35' | 'M40' | string;
   steelQuantity?: number;
   brickworkQuantity?: number;
-  status: 'Submitted' | 'Under Review' | 'Approved' | 'Rejected' | string;
+  status:
+    | 'Submitted'
+    | 'UnderReview'
+    | 'Under Review'
+    | 'Approved'
+    | 'Rejected'
+    | string;
   isActive: boolean;
 }
 
@@ -849,8 +891,34 @@ export interface MockWorkManpowerMapping {
   fromDate: string;
   toDate?: string;
   remarks?: string;
-  relievingDocument?: string;
-  relievingRemarks?: string;
+  isActive: boolean;
+}
+
+// ─── Agency to Work Mappings ────────────────────────────────────────────────
+export interface MockAgencyWorkMapping {
+  agencyWorkMappingId: number;
+  workRegistrationId: number;
+  workRegistrationCode?: string;
+  workRegistrationName?: string;
+  vendorAgencyRegistrationId: number;
+  vendorAgencyName?: string;
+  qualityInspectionAgencyId?: number;
+  qualityInspectionAgencyName?: string;
+  qualityLabId?: number;
+  qualityLabName?: string;
+  boqValue: number;
+  tenderPricingType:
+    | 'PercentageAbove'
+    | 'PercentageBelow'
+    | 'AtPar'
+    | 'ItemRate'
+    | string;
+  tenderPercentage?: number;
+  actualTenderAmount: number;
+  securityDepositAmount?: number;
+  commencementDate: string;
+  completionDate: string;
+  remarks?: string;
   isActive: boolean;
 }
 
@@ -1031,10 +1099,19 @@ export const initialSORItemMasters: MockSORItem[] = [
     sorSubjectId: 1,
     sorSubjectName: 'General Site Clearance & Excavation',
     sorCode: 'SOR-2024-01-001',
+    workDescription:
+      'Earth work in excavation by mechanical means (Hydraulic excavator) / manual means in foundation trenches or drains not exceeding 1.5 m in width or 10 sqm on plan, including dressing of sides and ramming of bottoms, lift up to 1.5 m, including getting out the excavated soil and disposal of surplus excavated soil as directed, within a lead of 50 m. All kinds of soil.',
     itemDescription:
       'Earth work in excavation by mechanical means (Hydraulic excavator) / manual means in foundation trenches or drains not exceeding 1.5 m in width or 10 sqm on plan, including dressing of sides and ramming of bottoms, lift up to 1.5 m, including getting out the excavated soil and disposal of surplus excavated soil as directed, within a lead of 50 m. All kinds of soil.',
     unit: 'Cum',
     rate: 285.5,
+    financialYearId: 2,
+    pageNumber: 12,
+    serialNumber: '1.1',
+    numberOfCementBags: 0,
+    effectiveDate: '2024-04-01',
+    isRateSet: true,
+    percentage: 0,
     isActive: true,
   },
   {
@@ -1046,10 +1123,19 @@ export const initialSORItemMasters: MockSORItem[] = [
     sorSubjectId: 1,
     sorSubjectName: 'General Site Clearance & Excavation',
     sorCode: 'SOR-2024-01-002',
+    workDescription:
+      'Earth work in excavation in ordinary rock including dressing of sides, lift up to 1.5 m, stack measurement within lead of 50 m.',
     itemDescription:
       'Earth work in excavation in ordinary rock including dressing of sides, lift up to 1.5 m, stack measurement within lead of 50 m.',
     unit: 'Cum',
     rate: 495.0,
+    financialYearId: 2,
+    pageNumber: 14,
+    serialNumber: '1.2',
+    numberOfCementBags: 0,
+    effectiveDate: '2024-04-01',
+    isRateSet: true,
+    percentage: 0,
     isActive: true,
   },
   {
@@ -1061,10 +1147,19 @@ export const initialSORItemMasters: MockSORItem[] = [
     sorSubjectId: 3,
     sorSubjectName: 'Substructure Concrete',
     sorCode: 'SOR-2024-02-001',
+    workDescription:
+      'Providing and laying in position cement concrete of specified grade excluding the cost of centering and shuttering - All work up to plinth level: 1:2:4 (1 cement : 2 coarse sand (zone-III) derived from natural sources : 4 graded stone aggregate 20 mm nominal size derived from natural sources).',
     itemDescription:
       'Providing and laying in position cement concrete of specified grade excluding the cost of centering and shuttering - All work up to plinth level: 1:2:4 (1 cement : 2 coarse sand (zone-III) derived from natural sources : 4 graded stone aggregate 20 mm nominal size derived from natural sources).',
     unit: 'Cum',
     rate: 5450.0,
+    financialYearId: 2,
+    pageNumber: 22,
+    serialNumber: '2.1',
+    numberOfCementBags: 6,
+    effectiveDate: '2024-04-01',
+    isRateSet: true,
+    percentage: 0,
     isActive: true,
   },
   {
@@ -1076,10 +1171,19 @@ export const initialSORItemMasters: MockSORItem[] = [
     sorSubjectId: 4,
     sorSubjectName: 'Superstructure RCC Beams & Columns',
     sorCode: 'SOR-2024-02-002',
+    workDescription:
+      'Reinforced cement concrete work in beams, suspended floors, roofs having slope up to 15 deg, landings, balconies, shelves, chajjas, lintels, bands, plain window sills, staircases and spiral stair cases up to floor five level, excluding the cost of centering, shuttering, finishing and reinforcement, with 1:1.5:3 (1 cement : 1.5 coarse sand : 3 graded stone aggregate 20 mm nominal size).',
     itemDescription:
       'Reinforced cement concrete work in beams, suspended floors, roofs having slope up to 15 deg, landings, balconies, shelves, chajjas, lintels, bands, plain window sills, staircases and spiral stair cases up to floor five level, excluding the cost of centering, shuttering, finishing and reinforcement, with 1:1.5:3 (1 cement : 1.5 coarse sand : 3 graded stone aggregate 20 mm nominal size).',
     unit: 'Cum',
     rate: 7200.0,
+    financialYearId: 2,
+    pageNumber: 26,
+    serialNumber: '2.2',
+    numberOfCementBags: 8,
+    effectiveDate: '2024-04-01',
+    isRateSet: true,
+    percentage: 0,
     isActive: true,
   },
   {
@@ -1091,10 +1195,19 @@ export const initialSORItemMasters: MockSORItem[] = [
     sorSubjectId: 4,
     sorSubjectName: 'Superstructure RCC Beams & Columns',
     sorCode: 'SOR-2024-02-003',
+    workDescription:
+      'Steel reinforcement for R.C.C. work including straightening, cutting, bending, placing in position and binding all complete up to plinth level: Thermo-Mechanically Treated bars of grade Fe-500D or more.',
     itemDescription:
       'Steel reinforcement for R.C.C. work including straightening, cutting, bending, placing in position and binding all complete up to plinth level: Thermo-Mechanically Treated bars of grade Fe-500D or more.',
     unit: 'Kg',
     rate: 78.5,
+    financialYearId: 2,
+    pageNumber: 30,
+    serialNumber: '2.3',
+    numberOfCementBags: 0,
+    effectiveDate: '2024-04-01',
+    isRateSet: true,
+    percentage: 0,
     isActive: true,
   },
   {
@@ -1106,10 +1219,19 @@ export const initialSORItemMasters: MockSORItem[] = [
     sorSubjectId: 5,
     sorSubjectName: 'Fly Ash Brick Masonry',
     sorCode: 'SOR-2024-03-001',
+    workDescription:
+      'Brick work with common burnt clay F.P.S. (non modular) bricks of class designation 7.5 in foundation and plinth in: Cement mortar 1:6 (1 cement : 6 coarse sand).',
     itemDescription:
       'Brick work with common burnt clay F.P.S. (non modular) bricks of class designation 7.5 in foundation and plinth in: Cement mortar 1:6 (1 cement : 6 coarse sand).',
     unit: 'Cum',
     rate: 4650.0,
+    financialYearId: 2,
+    pageNumber: 35,
+    serialNumber: '3.1',
+    numberOfCementBags: 2,
+    effectiveDate: '2024-04-01',
+    isRateSet: true,
+    percentage: 0,
     isActive: true,
   },
   {
@@ -1121,10 +1243,19 @@ export const initialSORItemMasters: MockSORItem[] = [
     sorSubjectId: 5,
     sorSubjectName: 'Fly Ash Brick Masonry',
     sorCode: 'SOR-2024-03-002',
+    workDescription:
+      'Brick work with modular fly ash lime bricks (FALG Bricks) conforming to IS:12894-2002, in superstructure above plinth level up to floor V level in : Cement mortar 1:6 (1 cement : 6 coarse sand).',
     itemDescription:
       'Brick work with modular fly ash lime bricks (FALG Bricks) conforming to IS:12894-2002, in superstructure above plinth level up to floor V level in : Cement mortar 1:6 (1 cement : 6 coarse sand).',
     unit: 'Cum',
     rate: 4850.0,
+    financialYearId: 2,
+    pageNumber: 38,
+    serialNumber: '3.2',
+    numberOfCementBags: 2,
+    effectiveDate: '2024-04-01',
+    isRateSet: true,
+    percentage: 0,
     isActive: true,
   },
   {
@@ -1136,10 +1267,19 @@ export const initialSORItemMasters: MockSORItem[] = [
     sorSubjectId: 8,
     sorSubjectName: 'Granular Sub Base (GSB)',
     sorCode: 'SOR-2024-RD-001',
+    workDescription:
+      'Construction of Granular Sub-base by providing well graded material, spreading in uniform layers with motor grader on prepared surface, mixing by pug mill/motor grader at OMC, and compacting with smooth wheel roller to achieve the desired density, complete as per Technical Specification Clause 401. Plant Mix Method - Grading I Material.',
     itemDescription:
       'Construction of Granular Sub-base by providing well graded material, spreading in uniform layers with motor grader on prepared surface, mixing by pug mill/motor grader at OMC, and compacting with smooth wheel roller to achieve the desired density, complete as per Technical Specification Clause 401. Plant Mix Method - Grading I Material.',
     unit: 'Cum',
     rate: 1450.0,
+    financialYearId: 2,
+    pageNumber: 50,
+    serialNumber: '4.1',
+    numberOfCementBags: 0,
+    effectiveDate: '2024-04-01',
+    isRateSet: true,
+    percentage: 0,
     isActive: true,
   },
   {
@@ -1151,10 +1291,19 @@ export const initialSORItemMasters: MockSORItem[] = [
     sorSubjectId: 10,
     sorSubjectName: 'Dense Bituminous Macadam (DBM)',
     sorCode: 'SOR-2024-RD-002',
+    workDescription:
+      'Providing and laying dense bituminous macadam with 100-120 TPH batch type HMP using crushed aggregates of specified grading, premixed with bituminous binder @ 4.0 to 4.5 per cent by weight of total mix and filler, transporting the hot mix to work site, laying with a hydrostatic paver finisher with sensor control to the required grade, level and alignment, rolling with smooth wheeled, vibratory and tandem rollers to achieve the desired density (50 mm thickness).',
     itemDescription:
       'Providing and laying dense bituminous macadam with 100-120 TPH batch type HMP using crushed aggregates of specified grading, premixed with bituminous binder @ 4.0 to 4.5 per cent by weight of total mix and filler, transporting the hot mix to work site, laying with a hydrostatic paver finisher with sensor control to the required grade, level and alignment, rolling with smooth wheeled, vibratory and tandem rollers to achieve the desired density (50 mm thickness).',
     unit: 'Cum',
     rate: 8950.0,
+    financialYearId: 2,
+    pageNumber: 62,
+    serialNumber: '5.1',
+    numberOfCementBags: 0,
+    effectiveDate: '2024-04-01',
+    isRateSet: true,
+    percentage: 0,
     isActive: true,
   },
 ];
@@ -1162,135 +1311,195 @@ export const initialSORItemMasters: MockSORItem[] = [
 export const sorItems: SORItem[] = [
   {
     id: '1',
+    sorCode: 'SOR-CC-001',
     code: 'SOR-CC-001',
+    workDescription: 'RCC M20 Concrete (Including formwork)',
     description: 'RCC M20 Concrete (Including formwork)',
+    itemDescription: 'RCC M20 Concrete (Including formwork)',
     unit: 'Cum',
+    rate: 7600,
     govtRate: 7600,
     category: 'Concrete Works',
     year: '2025-26',
   },
   {
     id: '2',
+    sorCode: 'SOR-CC-002',
     code: 'SOR-CC-002',
+    workDescription: 'RCC M25 Concrete (Including formwork)',
     description: 'RCC M25 Concrete (Including formwork)',
+    itemDescription: 'RCC M25 Concrete (Including formwork)',
     unit: 'Cum',
+    rate: 8400,
     govtRate: 8400,
     category: 'Concrete Works',
     year: '2025-26',
   },
   {
     id: '3',
+    sorCode: 'SOR-CC-003',
     code: 'SOR-CC-003',
+    workDescription: 'PCC M10 Plain Cement Concrete',
     description: 'PCC M10 Plain Cement Concrete',
+    itemDescription: 'PCC M10 Plain Cement Concrete',
     unit: 'Cum',
+    rate: 5200,
     govtRate: 5200,
     category: 'Concrete Works',
     year: '2025-26',
   },
   {
     id: '4',
+    sorCode: 'SOR-ST-001',
     code: 'SOR-ST-001',
+    workDescription: 'HYSD Steel Reinforcement Fe415',
     description: 'HYSD Steel Reinforcement Fe415',
+    itemDescription: 'HYSD Steel Reinforcement Fe415',
     unit: 'Kg',
+    rate: 68,
     govtRate: 68,
     category: 'Steel Works',
     year: '2025-26',
   },
   {
     id: '5',
+    sorCode: 'SOR-ST-002',
     code: 'SOR-ST-002',
+    workDescription: 'MS Structural Steel (Sections)',
     description: 'MS Structural Steel (Sections)',
+    itemDescription: 'MS Structural Steel (Sections)',
     unit: 'Kg',
+    rate: 72,
     govtRate: 72,
     category: 'Steel Works',
     year: '2025-26',
   },
   {
     id: '6',
+    sorCode: 'SOR-EX-001',
     code: 'SOR-EX-001',
+    workDescription: 'Earth Excavation in Ordinary Soil',
     description: 'Earth Excavation in Ordinary Soil',
+    itemDescription: 'Earth Excavation in Ordinary Soil',
     unit: 'Cum',
+    rate: 350,
     govtRate: 350,
     category: 'Earthwork',
     year: '2025-26',
   },
   {
     id: '7',
+    sorCode: 'SOR-EX-002',
     code: 'SOR-EX-002',
+    workDescription: 'Earth Filling & Compaction',
     description: 'Earth Filling & Compaction',
+    itemDescription: 'Earth Filling & Compaction',
     unit: 'Cum',
+    rate: 280,
     govtRate: 280,
     category: 'Earthwork',
     year: '2025-26',
   },
   {
     id: '8',
+    sorCode: 'SOR-MN-001',
     code: 'SOR-MN-001',
+    workDescription: 'Brick Masonry 1:6 CM (Conventional)',
     description: 'Brick Masonry 1:6 CM (Conventional)',
+    itemDescription: 'Brick Masonry 1:6 CM (Conventional)',
     unit: 'Cum',
+    rate: 6200,
     govtRate: 6200,
     category: 'Masonry',
     year: '2025-26',
   },
   {
     id: '9',
+    sorCode: 'SOR-MN-002',
     code: 'SOR-MN-002',
+    workDescription: 'Hollow Block Masonry (200mm)',
     description: 'Hollow Block Masonry (200mm)',
+    itemDescription: 'Hollow Block Masonry (200mm)',
     unit: 'Sqm',
+    rate: 890,
     govtRate: 890,
     category: 'Masonry',
     year: '2025-26',
   },
   {
     id: '10',
+    sorCode: 'SOR-PL-001',
     code: 'SOR-PL-001',
+    workDescription: 'Cement Plaster 12mm 1:4 (Internal)',
     description: 'Cement Plaster 12mm 1:4 (Internal)',
+    itemDescription: 'Cement Plaster 12mm 1:4 (Internal)',
     unit: 'Sqm',
+    rate: 185,
     govtRate: 185,
     category: 'Plastering',
     year: '2025-26',
   },
   {
     id: '11',
+    sorCode: 'SOR-PL-002',
     code: 'SOR-PL-002',
+    workDescription: 'Cement Plaster 20mm 1:4 (External)',
     description: 'Cement Plaster 20mm 1:4 (External)',
+    itemDescription: 'Cement Plaster 20mm 1:4 (External)',
     unit: 'Sqm',
+    rate: 220,
     govtRate: 220,
     category: 'Plastering',
     year: '2025-26',
   },
   {
     id: '12',
+    sorCode: 'SOR-FL-001',
     code: 'SOR-FL-001',
+    workDescription: 'Vitrified Floor Tiles 600x600mm (AAA Grade)',
     description: 'Vitrified Floor Tiles 600x600mm (AAA Grade)',
+    itemDescription: 'Vitrified Floor Tiles 600x600mm (AAA Grade)',
     unit: 'Sqm',
+    rate: 950,
     govtRate: 950,
     category: 'Flooring',
     year: '2025-26',
   },
   {
     id: '13',
+    sorCode: 'SOR-FL-002',
     code: 'SOR-FL-002',
+    workDescription: 'Kota Stone Flooring (Polished)',
     description: 'Kota Stone Flooring (Polished)',
+    itemDescription: 'Kota Stone Flooring (Polished)',
     unit: 'Sqm',
+    rate: 680,
     govtRate: 680,
     category: 'Flooring',
     year: '2025-26',
   },
   {
     id: '14',
+    sorCode: 'SOR-PT-001',
     code: 'SOR-PT-001',
+    workDescription: 'Acrylic Distemper (2 coats) on Plastered Surface',
     description: 'Acrylic Distemper (2 coats) on Plastered Surface',
+    itemDescription: 'Acrylic Distemper (2 coats) on Plastered Surface',
     unit: 'Sqm',
+    rate: 95,
     govtRate: 95,
     category: 'Painting',
     year: '2025-26',
   },
   {
     id: '15',
+    sorCode: 'SOR-PT-002',
     code: 'SOR-PT-002',
+    workDescription: 'Exterior Emulsion Paint (Weather Coat, 2 coats)',
     description: 'Exterior Emulsion Paint (Weather Coat, 2 coats)',
+    itemDescription: 'Exterior Emulsion Paint (Weather Coat, 2 coats)',
     unit: 'Sqm',
+    rate: 145,
     govtRate: 145,
     category: 'Painting',
     year: '2025-26',
@@ -1300,175 +1509,236 @@ export const sorItems: SORItem[] = [
 // ─── BOQ Items (Bill of Quantities) ──────────────────────────────────────────
 export interface BOQItem {
   id: string;
-  boqId: string; // parent BOQ reference
+  billOfQuantityCode?: string;
+  boqId?: string; // parent BOQ reference
   workId: string;
   sorItemId: string;
   sorCode: string;
-  description: string;
+  itemDescription: string;
+  description?: string; // legacy alias
   unit: string;
-  govtRate: number;
-  approvedQty: number;
-  amount: number; // govtRate × approvedQty
+  rate: number;
+  govtRate?: number; // legacy alias
+  approvedQuantity: number;
+  approvedQty?: number; // legacy alias
+  amount: number; // rate × approvedQuantity
   isLocked: boolean;
+  isNonSor?: boolean;
   milestoneId?: string;
+  lockedAt?: string;
 }
 
 export const boqItems: BOQItem[] = [
   // CW-2025-001 (Academic Block)
   {
     id: 'b1',
+    billOfQuantityCode: 'BOQ-001-01',
     boqId: 'BOQ-001',
     workId: '1',
     sorItemId: '6',
     sorCode: 'SOR-EX-001',
+    itemDescription: 'Earth Excavation in Ordinary Soil',
     description: 'Earth Excavation in Ordinary Soil',
     unit: 'Cum',
+    rate: 350,
     govtRate: 350,
+    approvedQuantity: 850,
     approvedQty: 850,
     amount: 297500,
     isLocked: true,
+    isNonSor: false,
     milestoneId: 'm1',
   },
   {
     id: 'b2',
+    billOfQuantityCode: 'BOQ-001-02',
     boqId: 'BOQ-001',
     workId: '1',
     sorItemId: '3',
     sorCode: 'SOR-CC-003',
+    itemDescription: 'PCC M10 Plain Cement Concrete',
     description: 'PCC M10 Plain Cement Concrete',
     unit: 'Cum',
+    rate: 5200,
     govtRate: 5200,
+    approvedQuantity: 120,
     approvedQty: 120,
     amount: 624000,
     isLocked: true,
+    isNonSor: false,
     milestoneId: 'm1',
   },
   {
     id: 'b3',
+    billOfQuantityCode: 'BOQ-001-03',
     boqId: 'BOQ-001',
     workId: '1',
     sorItemId: '1',
     sorCode: 'SOR-CC-001',
+    itemDescription: 'RCC M20 Concrete (Including formwork)',
     description: 'RCC M20 Concrete (Including formwork)',
     unit: 'Cum',
+    rate: 7600,
     govtRate: 7600,
+    approvedQuantity: 900,
     approvedQty: 900,
     amount: 6840000,
     isLocked: true,
+    isNonSor: false,
     milestoneId: 'm2',
   },
   {
     id: 'b4',
+    billOfQuantityCode: 'BOQ-001-04',
     boqId: 'BOQ-001',
     workId: '1',
     sorItemId: '4',
     sorCode: 'SOR-ST-001',
+    itemDescription: 'HYSD Steel Reinforcement Fe415',
     description: 'HYSD Steel Reinforcement Fe415',
     unit: 'Kg',
+    rate: 68,
     govtRate: 68,
+    approvedQuantity: 95000,
     approvedQty: 95000,
     amount: 6460000,
     isLocked: true,
+    isNonSor: false,
     milestoneId: 'm2',
   },
   {
     id: 'b5',
+    billOfQuantityCode: 'BOQ-001-05',
     boqId: 'BOQ-001',
     workId: '1',
     sorItemId: '8',
     sorCode: 'SOR-MN-001',
+    itemDescription: 'Brick Masonry 1:6 CM',
     description: 'Brick Masonry 1:6 CM',
     unit: 'Cum',
+    rate: 6200,
     govtRate: 6200,
+    approvedQuantity: 480,
     approvedQty: 480,
     amount: 2976000,
     isLocked: true,
+    isNonSor: false,
     milestoneId: 'm3',
   },
   {
     id: 'b6',
+    billOfQuantityCode: 'BOQ-001-06',
     boqId: 'BOQ-001',
     workId: '1',
     sorItemId: '10',
     sorCode: 'SOR-PL-001',
+    itemDescription: 'Cement Plaster 12mm (Internal)',
     description: 'Cement Plaster 12mm (Internal)',
     unit: 'Sqm',
+    rate: 185,
     govtRate: 185,
+    approvedQuantity: 8500,
     approvedQty: 8500,
     amount: 1572500,
     isLocked: true,
+    isNonSor: false,
     milestoneId: 'm3',
   },
   {
     id: 'b7',
+    billOfQuantityCode: 'BOQ-001-07',
     boqId: 'BOQ-001',
     workId: '1',
     sorItemId: '12',
     sorCode: 'SOR-FL-001',
+    itemDescription: 'Vitrified Floor Tiles 600x600mm',
     description: 'Vitrified Floor Tiles 600x600mm',
     unit: 'Sqm',
+    rate: 950,
     govtRate: 950,
+    approvedQuantity: 3200,
     approvedQty: 3200,
     amount: 3040000,
     isLocked: true,
+    isNonSor: false,
     milestoneId: 'm4',
   },
   {
     id: 'b8',
+    billOfQuantityCode: 'BOQ-001-08',
     boqId: 'BOQ-001',
     workId: '1',
     sorItemId: '14',
     sorCode: 'SOR-PT-001',
+    itemDescription: 'Acrylic Distemper (2 coats)',
     description: 'Acrylic Distemper (2 coats)',
     unit: 'Sqm',
+    rate: 95,
     govtRate: 95,
+    approvedQuantity: 9000,
     approvedQty: 9000,
     amount: 855000,
     isLocked: true,
+    isNonSor: false,
     milestoneId: 'm4',
   },
 
   // CW-2025-003 (Road Resurfacing)
   {
     id: 'b9',
+    billOfQuantityCode: 'BOQ-003-01',
     boqId: 'BOQ-003',
     workId: '3',
     sorItemId: '6',
     sorCode: 'SOR-EX-001',
+    itemDescription: 'Earth Excavation in Ordinary Soil',
     description: 'Earth Excavation in Ordinary Soil',
     unit: 'Cum',
+    rate: 350,
     govtRate: 350,
+    approvedQuantity: 400,
     approvedQty: 400,
     amount: 140000,
     isLocked: true,
+    isNonSor: false,
     milestoneId: 'm7',
   },
   {
     id: 'b10',
+    billOfQuantityCode: 'BOQ-003-02',
     boqId: 'BOQ-003',
     workId: '3',
     sorItemId: '7',
     sorCode: 'SOR-EX-002',
+    itemDescription: 'Earth Filling & Compaction',
     description: 'Earth Filling & Compaction',
     unit: 'Cum',
+    rate: 280,
     govtRate: 280,
+    approvedQuantity: 350,
     approvedQty: 350,
     amount: 98000,
     isLocked: true,
+    isNonSor: false,
     milestoneId: 'm8',
   },
   {
     id: 'b11',
+    billOfQuantityCode: 'BOQ-003-03',
     boqId: 'BOQ-003',
     workId: '3',
     sorItemId: '3',
     sorCode: 'SOR-CC-003',
+    itemDescription: 'PCC M10 Plain Cement Concrete',
     description: 'PCC M10 Plain Cement Concrete',
     unit: 'Cum',
+    rate: 5200,
     govtRate: 5200,
+    approvedQuantity: 180,
     approvedQty: 180,
     amount: 936000,
     isLocked: true,
+    isNonSor: false,
     milestoneId: 'm8',
   },
 ];
@@ -2794,94 +3064,162 @@ export const workOrders: WorkOrder[] = [
 ];
 
 export interface TPIAgency {
-  id: string;
-  name: string;
-  contactPerson: string;
-  email: string;
-  mobile: string;
-  licenseNo: string;
-  address: string;
-  status: 'Active' | 'Inactive';
+  id: string | number;
+  qualityInspectionAgencyId?: number;
+  agencyName: string;
+  name?: string; // alias
+  agencyCode: string;
+  contactPersonName: string;
+  contactPerson?: string; // alias
+  contactEmail: string;
+  email?: string; // alias
+  mobileNumber: string;
+  mobile?: string; // alias
+  licenseNumber: string;
+  licenseNo?: string; // alias
+  officeAddress: string;
+  address?: string; // alias
+  status?: 'Active' | 'Inactive';
+  isActive?: boolean;
 }
 
 export interface LabAgency {
-  id: string;
+  id: string | number;
+  qualityLabId?: number;
   name: string;
-  contactPerson: string;
+  labCode: string;
+  labDirector: string;
+  contactPerson?: string; // alias
   email: string;
-  mobile: string;
-  nablAccreditation: string;
-  scopeOfTesting: string;
-  address: string;
-  status: 'Active' | 'Inactive';
+  mobileNumber: string;
+  mobile?: string; // alias
+  nablAccreditationNumber: string;
+  nablAccreditation?: string; // alias
+  testingScope: string;
+  scopeOfTesting?: string; // alias
+  labAddress: string;
+  address?: string; // alias
+  status?: 'Active' | 'Inactive';
+  isActive?: boolean;
 }
 
 export const initialTPIAgencies: TPIAgency[] = [
   {
     id: 'TPI-01',
+    qualityInspectionAgencyId: 1,
+    agencyName: 'RITES Limited',
     name: 'RITES Limited',
+    agencyCode: 'TPI-RITES-01',
+    contactPersonName: 'Shri A.K. Sharma',
     contactPerson: 'Shri A.K. Sharma',
+    contactEmail: 'sharma.ak@rites.com',
     email: 'sharma.ak@rites.com',
+    mobileNumber: '9425012345',
     mobile: '9425012345',
+    licenseNumber: 'TPI-REG-2021-098',
     licenseNo: 'TPI-REG-2021-098',
+    officeAddress: 'Bhopal Office, MP Nagar',
     address: 'Bhopal Office, MP Nagar',
     status: 'Active',
+    isActive: true,
   },
   {
     id: 'TPI-02',
+    qualityInspectionAgencyId: 2,
+    agencyName: 'SGS India Pvt Ltd',
     name: 'SGS India Pvt Ltd',
+    agencyCode: 'TPI-SGS-02',
+    contactPersonName: 'Mr. Vivek Patel',
     contactPerson: 'Mr. Vivek Patel',
+    contactEmail: 'vivek.patel@sgs.com',
     email: 'vivek.patel@sgs.com',
+    mobileNumber: '9893098765',
     mobile: '9893098765',
+    licenseNumber: 'TPI-REG-2022-142',
     licenseNo: 'TPI-REG-2022-142',
+    officeAddress: 'Indore Regional Hub',
     address: 'Indore Regional Hub',
     status: 'Active',
+    isActive: true,
   },
   {
     id: 'TPI-03',
+    qualityInspectionAgencyId: 3,
+    agencyName: 'WAPCOS Limited',
     name: 'WAPCOS Limited',
+    agencyCode: 'TPI-WAPCOS-03',
+    contactPersonName: 'Dr. Sanjay Gupta',
     contactPerson: 'Dr. Sanjay Gupta',
+    contactEmail: 'bhopal@wapcos.co.in',
     email: 'bhopal@wapcos.co.in',
+    mobileNumber: '9111822334',
     mobile: '9111822334',
+    licenseNumber: 'TPI-REG-2023-311',
     licenseNo: 'TPI-REG-2023-311',
+    officeAddress: 'Arera Hills, Bhopal',
     address: 'Arera Hills, Bhopal',
     status: 'Active',
+    isActive: true,
   },
 ];
 
 export const initialLabAgencies: LabAgency[] = [
   {
     id: 'LAB-01',
+    qualityLabId: 1,
     name: 'IIT Bhopal Civil Testing Lab',
+    labCode: 'LAB-IITB-01',
+    labDirector: 'Dr. R.C. Mishra',
     contactPerson: 'Dr. R.C. Mishra',
     email: 'civil.testing@iitb.ac.in',
+    mobileNumber: '7552908871',
     mobile: '7552908871',
+    nablAccreditationNumber: 'NABL-TC-8891',
     nablAccreditation: 'NABL-TC-8891',
+    testingScope: 'Concrete, Steel, Aggregates, Cement',
     scopeOfTesting: 'Concrete, Steel, Aggregates, Cement',
+    labAddress: 'IIT Campus, Bhopal',
     address: 'IIT Campus, Bhopal',
     status: 'Active',
+    isActive: true,
   },
   {
     id: 'LAB-02',
+    qualityLabId: 2,
     name: 'MANIT Material Testing Lab',
+    labCode: 'LAB-MANIT-02',
+    labDirector: 'Prof. Sandeep Verma',
     contactPerson: 'Prof. Sandeep Verma',
     email: 'verma.sandeep@manit.ac.in',
+    mobileNumber: '7552670231',
     mobile: '7552670231',
+    nablAccreditationNumber: 'NABL-TC-4521',
     nablAccreditation: 'NABL-TC-4521',
+    testingScope: 'Concrete, Bitumen, Soils, Steel',
     scopeOfTesting: 'Concrete, Bitumen, Soils, Steel',
+    labAddress: 'MANIT Campus, Link Road 3',
     address: 'MANIT Campus, Link Road 3',
     status: 'Active',
+    isActive: true,
   },
   {
     id: 'LAB-03',
+    qualityLabId: 3,
     name: 'MP PWD Central Laboratory',
+    labCode: 'LAB-PWD-03',
+    labDirector: 'Er. Rajesh K. Soni',
     contactPerson: 'Er. Rajesh K. Soni',
     email: 'pwd.centrallab@mp.gov.in',
+    mobileNumber: '9407055443',
     mobile: '9407055443',
+    nablAccreditationNumber: 'NABL-TC-1209',
     nablAccreditation: 'NABL-TC-1209',
+    testingScope: 'Brickwork, Concrete, Soils, Bitumen',
     scopeOfTesting: 'Brickwork, Concrete, Soils, Bitumen',
+    labAddress: 'PWD Yard, Jahangirabad',
     address: 'PWD Yard, Jahangirabad',
     status: 'Active',
+    isActive: true,
   },
 ];
 
@@ -2890,37 +3228,57 @@ export const initialLabAgencies: LabAgency[] = [
 export const initialCivilProjects: CivilManagement.CivilProject[] = [
   {
     id: 'PROJ-01',
+    projectId: 1,
+    projectDescription: 'Main Campus Academic Complex Expansion',
     name: 'Main Campus Academic Complex Expansion',
     description:
       'Construction of multidisciplinary academic blocks, advanced research labs, and seminar halls',
+    campusId: 1,
+    campusName: 'Main Campus',
     campus: 'Main Campus',
+    projectLocation: 'North Sector – Academic Zone',
     location: 'North Sector – Academic Zone',
     isActive: true,
   },
   {
     id: 'PROJ-02',
+    projectId: 2,
+    projectDescription: 'Student Residential Infrastructure Phase II',
     name: 'Student Residential Infrastructure Phase II',
     description:
       'Modern 200-bed student hostels with integrated mess and recreation facilities',
+    campusId: 1,
+    campusName: 'Main Campus',
     campus: 'Main Campus',
+    projectLocation: 'South Sector – Hostel Zone',
     location: 'South Sector – Hostel Zone',
     isActive: true,
   },
   {
     id: 'PROJ-03',
+    projectId: 3,
+    projectDescription: 'Campus Green Infrastructure & Solar Transition',
     name: 'Campus Green Infrastructure & Solar Transition',
     description:
       'Rooftop solar installations, campus stormwater harvesting, and eco-paving',
+    campusId: 2,
+    campusName: 'City Campus',
     campus: 'City Campus',
+    projectLocation: 'Zone B – Energy Center',
     location: 'Zone B – Energy Center',
     isActive: true,
   },
   {
     id: 'PROJ-04',
+    projectId: 4,
+    projectDescription: 'University Sports Complex & Stadium',
     name: 'University Sports Complex & Stadium',
     description:
       'Multi-purpose indoor sports complex, athletic track, and pavilion',
+    campusId: 1,
+    campusName: 'Main Campus',
     campus: 'Main Campus',
+    projectLocation: 'East Sector – Sports Ground',
     location: 'East Sector – Sports Ground',
     isActive: true,
   },
@@ -3019,6 +3377,8 @@ export const initialSORSubjects: CivilManagement.SORSubject[] = [
     sorChapterName: 'Earth Work, Site Clearance & Excavation',
     sorTypeId: 'ST-01',
     name: 'Excavation in ordinary soil up to 1.5m depth',
+    referenceCode: 'REF-EW-01',
+    paragraph: 'Para 2.1',
     isActive: true,
   },
   {
@@ -3027,6 +3387,8 @@ export const initialSORSubjects: CivilManagement.SORSubject[] = [
     sorChapterName: 'Plain & Reinforced Cement Concrete (PCC/RCC)',
     sorTypeId: 'ST-01',
     name: 'M25 Grade RCC in Columns, Beams & Slabs',
+    referenceCode: 'REF-CC-01',
+    paragraph: 'Para 4.3',
     isActive: true,
   },
   {
@@ -3035,6 +3397,8 @@ export const initialSORSubjects: CivilManagement.SORSubject[] = [
     sorChapterName: 'Plain & Reinforced Cement Concrete (PCC/RCC)',
     sorTypeId: 'ST-01',
     name: 'M20 Grade Plain Cement Concrete in Foundation',
+    referenceCode: 'REF-CC-02',
+    paragraph: 'Para 4.1',
     isActive: true,
   },
   {
@@ -3043,6 +3407,8 @@ export const initialSORSubjects: CivilManagement.SORSubject[] = [
     sorChapterName: 'Brick Masonry, AAC Blocks & Stone Work',
     sorTypeId: 'ST-01',
     name: 'Fly Ash Brickwork in 1:6 cement mortar',
+    referenceCode: 'REF-BM-01',
+    paragraph: 'Para 6.2',
     isActive: true,
   },
   {
@@ -3051,6 +3417,8 @@ export const initialSORSubjects: CivilManagement.SORSubject[] = [
     sorChapterName: 'Finishing Works, Plastering, Painting & Waterproofing',
     sorTypeId: 'ST-01',
     name: '15mm Cement Plaster in 1:4 mix with neat finish',
+    referenceCode: 'REF-FW-01',
+    paragraph: 'Para 11.4',
     isActive: true,
   },
 ];
@@ -3146,36 +3514,41 @@ export const initialWorkDepartments: CivilManagement.WorkDepartmentMaster[] = [
 export const initialFundingSources: CivilManagement.FundingSourceMaster[] = [
   {
     id: 'FS-01',
-    code: 'UGC',
+    fundingSourceId: 1,
     name: 'UGC Development Grant',
+    fundingSourceName: 'UGC Development Grant',
     sourceType: 'UGC',
     isActive: true,
   },
   {
     id: 'FS-02',
-    code: 'SGC',
+    fundingSourceId: 2,
     name: 'State Govt Capital Grant',
+    fundingSourceName: 'State Govt Capital Grant',
     sourceType: 'State Govt',
     isActive: true,
   },
   {
     id: 'FS-03',
-    code: 'IDF',
+    fundingSourceId: 3,
     name: 'Institute Development Fund (Internal)',
+    fundingSourceName: 'Institute Development Fund (Internal)',
     sourceType: 'University',
     isActive: true,
   },
   {
     id: 'FS-04',
-    code: 'RUSA',
+    fundingSourceId: 4,
     name: 'Rashtriya Uchchatar Shiksha Abhiyan (RUSA)',
+    fundingSourceName: 'Rashtriya Uchchatar Shiksha Abhiyan (RUSA)',
     sourceType: 'Central Govt',
     isActive: true,
   },
   {
     id: 'FS-05',
-    code: 'CSR',
+    fundingSourceId: 5,
     name: 'Industry CSR Infrastructure Contribution',
+    fundingSourceName: 'Industry CSR Infrastructure Contribution',
     sourceType: 'External',
     isActive: true,
   },
@@ -3184,79 +3557,99 @@ export const initialFundingSources: CivilManagement.FundingSourceMaster[] = [
 export const initialMandateDocuments: CivilManagement.MandateDocument[] = [
   {
     id: 'MD-01',
-    name: 'Detailed Estimate & Preliminary Survey Report',
+    name: 'Work Order',
     description:
-      'Detailed cost estimate with soil investigation and rate analysis',
-    applicableCategories: [
-      'WC-01',
-      'WC-02',
-      'WC-03',
-      'WC-04',
-      'WC-05',
-      'WC-06',
-    ],
+      'Official order issued for execution of the approved civil work.',
+    isRequired: true,
     isMandatory: true,
-    maxFileSizeMB: 10,
-    allowedFormats: ['pdf'],
+    allowMultiple: false,
+    allowMultipleFiles: false,
     isActive: true,
   },
   {
     id: 'MD-02',
-    name: 'Land Title & Ownership Verification Certificate',
-    description: 'Proof of unencumbered university land possession',
-    applicableCategories: ['WC-01', 'WC-05'],
-    isMandatory: true,
-    maxFileSizeMB: 5,
-    allowedFormats: ['pdf', 'jpg'],
+    name: 'Agreement',
+    description:
+      'Agreement executed between the organization and the contractor or agency.',
+    isRequired: false,
+    isMandatory: false,
+    allowMultiple: false,
+    allowMultipleFiles: false,
     isActive: true,
   },
   {
     id: 'MD-03',
-    name: 'Structural Design, Drawings & Stability Certificate',
+    name: 'Tender Document',
     description:
-      'Architectural and structural drawings signed by chartered engineer',
-    applicableCategories: ['WC-01', 'WC-04'],
-    isMandatory: true,
-    maxFileSizeMB: 25,
-    allowedFormats: ['pdf'],
+      'Document containing tender details, terms and conditions for the work.',
+    isRequired: false,
+    isMandatory: false,
+    allowMultiple: false,
+    allowMultipleFiles: false,
     isActive: true,
   },
   {
     id: 'MD-04',
-    name: 'Soil Investigation & Geotechnical Test Report',
-    description: 'Bearing capacity test report from NABL accredited laboratory',
-    applicableCategories: ['WC-01', 'WC-04'],
-    isMandatory: true,
-    maxFileSizeMB: 10,
-    allowedFormats: ['pdf'],
+    name: 'Completion Certificate',
+    description:
+      'Certificate confirming completion of the civil work as per approved specifications.',
+    isRequired: false,
+    isMandatory: false,
+    allowMultiple: false,
+    allowMultipleFiles: false,
     isActive: true,
   },
   {
     id: 'MD-05',
-    name: 'Statutory Environmental & Fire NOC Clearance',
+    name: 'Administrative Approval',
     description:
-      'NOC from State Pollution Control Board and State Fire Department',
-    applicableCategories: ['WC-01'],
-    isMandatory: false,
-    maxFileSizeMB: 5,
-    allowedFormats: ['pdf'],
+      'Document containing approval of the competent authority for the proposed work.',
+    isRequired: true,
+    isMandatory: true,
+    allowMultiple: false,
+    allowMultipleFiles: false,
     isActive: true,
   },
   {
     id: 'MD-06',
-    name: 'Scope of Work & Specification Document',
-    description: 'Detailed technical specifications and execution timeline',
-    applicableCategories: [
-      'WC-01',
-      'WC-02',
-      'WC-03',
-      'WC-04',
-      'WC-05',
-      'WC-06',
-    ],
+    name: 'Technical Sanction',
+    description: 'Technical approval of the estimate and proposed civil work.',
+    isRequired: false,
+    isMandatory: false,
+    allowMultiple: false,
+    allowMultipleFiles: false,
+    isActive: true,
+  },
+  {
+    id: 'MD-07',
+    name: 'Detailed Project Report',
+    description:
+      'Detailed report containing project scope, specifications, cost and implementation details.',
+    isRequired: false,
+    isMandatory: false,
+    allowMultiple: false,
+    allowMultipleFiles: false,
+    isActive: true,
+  },
+  {
+    id: 'MD-08',
+    name: 'Estimate',
+    description: 'Detailed cost estimate prepared for the proposed civil work.',
+    isRequired: true,
     isMandatory: true,
-    maxFileSizeMB: 10,
-    allowedFormats: ['pdf'],
+    allowMultiple: false,
+    allowMultipleFiles: false,
+    isActive: true,
+  },
+  {
+    id: 'MD-09',
+    name: 'Site Inspection Report',
+    description:
+      'Detailed site inspection and geotechnical verification report.',
+    isRequired: false,
+    isMandatory: false,
+    allowMultiple: false,
+    allowMultipleFiles: false,
     isActive: true,
   },
 ];

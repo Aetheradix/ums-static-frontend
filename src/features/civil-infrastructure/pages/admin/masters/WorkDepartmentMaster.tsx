@@ -1,117 +1,100 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ToastService } from 'services';
-import { Button } from 'shared/components/buttons';
-import { DropDownList, TextBox } from 'shared/components/forms';
+import { Button, StatusButton } from 'shared/components/buttons';
+import { TextBox } from 'shared/components/forms';
 import {
+  FormActions,
   FormCard,
   FormPage,
   FormPopup,
   GridPanel,
-  StatusBadge,
 } from 'shared/new-components';
-import {
-  CIVIL_STORAGE_KEYS,
-  civilStorage,
-  useCivilStorage,
-} from '../../../civilStorage';
-import { initialWorkCategories, initialWorkDepartments } from '../../../mocks';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../../civilStorage';
+import { initialWorkDepartments } from '../../../mocks';
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
 
-const STORAGE_DEPTS = CIVIL_STORAGE_KEYS.WORK_DEPARTMENTS;
+type PopupState =
+  | { mode: 'closed' }
+  | { mode: 'create' }
+  | { mode: 'edit'; item: CivilManagement.WorkDepartmentMaster };
 
 export default function WorkDepartmentMaster() {
-  const [categories] = useCivilStorage<CivilManagement.WorkCategoryMaster[]>(
-    CIVIL_STORAGE_KEYS.WORK_CATEGORIES,
-    initialWorkCategories
-  );
+  const [data, setData] = useCivilStorage<
+    CivilManagement.WorkDepartmentMaster[]
+  >(CIVIL_STORAGE_KEYS.WORK_DEPARTMENTS, initialWorkDepartments);
 
-  const [data, setData] = useState<CivilManagement.WorkDepartmentMaster[]>(
-    () => {
-      const saved = localStorage.getItem(STORAGE_DEPTS);
-      return saved ? JSON.parse(saved) : initialWorkDepartments;
-    }
-  );
+  const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
 
-  const [filterCat, setFilterCat] = useState<string>('ALL');
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
 
-  const [popup, setPopup] = useState<{
-    mode: 'closed' | 'add' | 'edit';
-    item?: CivilManagement.WorkDepartmentMaster;
-  }>({ mode: 'closed' });
+  const closePopup = useCallback(() => setPopup({ mode: 'closed' }), []);
 
-  const [formCatId, setFormCatId] = useState('');
-  const [formCode, setFormCode] = useState('');
-  const [formName, setFormName] = useState('');
-  const [formActive, setFormActive] = useState(true);
-
-  useEffect(() => {
-    civilStorage.set(STORAGE_DEPTS, data);
-  }, [data]);
-
-  const filteredData = useMemo(() => {
-    if (filterCat === 'ALL') return data;
-    return data.filter(d => d.parentCategoryId === filterCat);
-  }, [data, filterCat]);
-
-  const openAdd = () => {
-    setFormCatId(categories[0]?.id || '');
-    setFormCode('');
-    setFormName('');
-    setFormActive(true);
-    setPopup({ mode: 'add' });
+  const openCreate = () => {
+    setName('');
+    setDescription('');
+    setPopup({ mode: 'create' });
   };
 
   const openEdit = (item: CivilManagement.WorkDepartmentMaster) => {
-    setFormCatId(item.parentCategoryId || categories[0]?.id || '');
-    setFormCode(item.code);
-    setFormName(item.name);
-    setFormActive(item.isActive);
+    setName(item.name || '');
+    setDescription(item.description || '');
     setPopup({ mode: 'edit', item });
   };
 
-  const handleSave = () => {
-    if (!formCode.trim() || !formName.trim()) {
-      ToastService.error('Department Code and Name are required.');
+  const handleReset = () => {
+    if (popup.mode === 'edit' && popup.item) {
+      openEdit(popup.item);
+    } else {
+      openCreate();
+    }
+  };
+
+  const handleSave = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!name.trim()) {
+      ToastService.error('Name is required.');
       return;
     }
 
-    if (popup.mode === 'add') {
+    if (popup.mode === 'create') {
+      const nextId = data.length + 1;
       const newItem: CivilManagement.WorkDepartmentMaster = {
+        workDepartmentId: nextId,
         id: `WD-${Date.now().toString().slice(-4)}`,
-        code: formCode.trim().toUpperCase(),
-        name: formName.trim(),
-        parentCategoryId: formCatId,
-        isActive: formActive,
+        code: `WD-${String(nextId).padStart(2, '0')}`,
+        name: name.trim(),
+        description: description.trim() || undefined,
+        isActive: true,
       };
       setData(prev => [newItem, ...prev]);
-      ToastService.success(`Sub-Category / Dept "${newItem.name}" added.`);
+      ToastService.success(`Work Department "${newItem.name}" added.`);
     } else if (popup.mode === 'edit' && popup.item) {
       setData(prev =>
         prev.map(d =>
+          d.workDepartmentId === popup.item!.workDepartmentId ||
           d.id === popup.item!.id
             ? {
                 ...d,
-                code: formCode.trim().toUpperCase(),
-                name: formName.trim(),
-                parentCategoryId: formCatId,
-                isActive: formActive,
+                name: name.trim(),
+                description: description.trim() || undefined,
               }
             : d
         )
       );
-      ToastService.success(`Sub-Category / Dept updated.`);
+      ToastService.success('Work Department updated.');
     }
     setPopup({ mode: 'closed' });
   };
 
-  const toggleStatus = (id: string) => {
+  const handleToggleStatus = (item: CivilManagement.WorkDepartmentMaster) => {
     setData(prev =>
       prev.map(d => {
-        if (d.id === id) {
+        if (d.workDepartmentId === item.workDepartmentId || d.id === item.id) {
           const next = !d.isActive;
           ToastService.info(
-            `Department ${next ? 'Activated' : 'Deactivated'}.`
+            `Work Department ${next ? 'Activated' : 'Deactivated'}.`
           );
           return { ...d, isActive: next };
         }
@@ -122,209 +105,95 @@ export default function WorkDepartmentMaster() {
 
   return (
     <FormPage
-      title="Work Department / Sub-Category Master"
-      description="Manage civil sub-departments, executing divisions, and sub-categories under primary work categories."
+      title="Work Department Master"
+      description="Manage work departments for civil engineering works."
       breadcrumbs={[
         { label: 'Home', to: '/home/menu' },
         { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
         { label: 'Admin Login', to: civilUrls.adminMenu },
-        { label: 'External Masters', to: civilUrls.externalMastersMenu },
+        { label: 'External Masters', to: civilUrls.workDepartmentMaster },
         { label: 'Work Department' },
       ]}
     >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '1rem',
-          gap: '1rem',
-        }}
-      >
-        <div style={{ width: '320px' }}>
-          <DropDownList
-            label="Filter by Work Category"
-            data={[
-              { label: 'All Categories', value: 'ALL' },
-              ...categories.map(c => ({ label: c.name, value: c.id })),
-            ]}
-            textField="label"
-            optionValue="value"
-            value={filterCat}
-            onChange={val => setFilterCat(val as string)}
-          />
-        </div>
-        <Button
-          label="Add Department"
-          icon="plus"
-          variant="primary"
-          onClick={openAdd}
-        />
-      </div>
-
       <FormCard>
         <GridPanel
-          data={filteredData}
+          data={data}
+          onEdit={item => openEdit(item)}
           columns={[
-            { cell: (_, o) => <span>{o.rowIndex + 1}</span>, width: '50px' },
             {
-              field: 'code',
-              header: 'Dept Code',
-              cell: (item: CivilManagement.WorkDepartmentMaster) => (
-                <span
-                  style={{
-                    fontFamily: 'monospace',
-                    fontWeight: 700,
-                    color: '#1d4ed8',
-                  }}
-                >
-                  {item.code}
-                </span>
-              ),
+              cell: (_, option) => <span>{option.rowIndex + 1}</span>,
+              width: '30px',
             },
+            { field: 'name', header: 'Name' },
             {
-              field: 'name',
-              header: 'Department / Executing Sub-Division',
+              field: 'description',
+              header: 'Description',
               cell: (item: CivilManagement.WorkDepartmentMaster) => (
-                <span style={{ fontWeight: 600 }}>{item.name}</span>
+                <span>{item.description ? item.description : 'N/A'}</span>
               ),
-            },
-            {
-              field: 'parentCategoryId',
-              header: 'Parent Work Category',
-              cell: (item: CivilManagement.WorkDepartmentMaster) => {
-                const cat = categories.find(
-                  c => c.id === item.parentCategoryId
-                );
-                return (
-                  <span
-                    className="civil-pill blue"
-                    style={{ fontSize: '0.75rem' }}
-                  >
-                    {cat?.name || 'All Categories'}
-                  </span>
-                );
-              },
             },
             {
               field: 'isActive',
               header: 'Status',
-              cell: (item: CivilManagement.WorkDepartmentMaster) => (
-                <button
-                  type="button"
-                  onClick={() => toggleStatus(item.id)}
-                  style={{
-                    border: 'none',
-                    background: 'transparent',
-                    cursor: 'pointer',
-                    padding: 0,
-                  }}
-                  title="Click to toggle status"
-                >
-                  <StatusBadge
-                    label={item.isActive ? 'Active' : 'Inactive'}
-                    variant={item.isActive ? 'success' : 'neutral'}
-                  />
-                </button>
-              ),
-            },
-            {
-              field: 'id',
-              header: 'Actions',
               sortable: false,
               cell: (item: CivilManagement.WorkDepartmentMaster) => (
-                <div style={{ display: 'flex', gap: '0.375rem' }}>
-                  <Button
-                    size="small"
-                    label=""
-                    icon="pencil"
-                    variant="outlined"
-                    onClick={() => openEdit(item)}
-                  />
-                  <Button
-                    size="small"
-                    label=""
-                    icon={item.isActive ? 'lock' : 'unlock'}
-                    variant="outlined"
-                    onClick={() => toggleStatus(item.id)}
-                  />
-                </div>
+                <StatusButton
+                  value={item.isActive}
+                  onClick={() => handleToggleStatus(item)}
+                />
               ),
             },
           ]}
+          toolbar={
+            <Button
+              label="Create"
+              icon="plus"
+              variant="primary"
+              onClick={openCreate}
+            />
+          }
           searchBox
-          searchPlaceholder="Search departments..."
         />
       </FormCard>
 
       <FormPopup
         visible={popup.mode !== 'closed'}
-        onHide={() => setPopup({ mode: 'closed' })}
+        onHide={closePopup}
         title={
-          popup.mode === 'add'
-            ? 'Add Department / Sub-Category'
-            : 'Edit Department'
+          popup.mode === 'edit'
+            ? 'Edit Work Department'
+            : 'Create Work Department'
         }
-        subtitle="Executing engineering division or sub-category."
-        size="md"
+        subtitle={
+          popup.mode === 'edit'
+            ? 'Update the work department details.'
+            : 'Fill in the details to add a new work department.'
+        }
       >
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem',
-            marginTop: '0.5rem',
-          }}
-        >
-          <DropDownList
-            label="Parent Work Category"
-            data={categories.map(c => ({ label: c.name, value: c.id }))}
-            textField="label"
-            optionValue="value"
-            value={formCatId}
-            onChange={val => setFormCatId(val as string)}
-          />
-          <TextBox
-            label="Department / Sub-Category Code"
-            placeholder="e.g. CIV, EST, ELE"
-            value={formCode}
-            onChange={setFormCode}
-            required
-          />
-          <TextBox
-            label="Department Name"
-            placeholder="e.g. Civil Engineering Dept"
-            value={formName}
-            onChange={setFormName}
-            required
-          />
-          <DropDownList
-            label="Status"
-            data={[
-              { label: 'Active', value: 'true' },
-              { label: 'Inactive', value: 'false' },
-            ]}
-            textField="label"
-            optionValue="value"
-            value={formActive ? 'true' : 'false'}
-            onChange={val => setFormActive(val === 'true')}
-          />
-          <div className="flex justify-end gap-3 mt-4">
-            <Button
-              label="Cancel"
-              variant="outlined"
-              onClick={() => setPopup({ mode: 'closed' })}
+        {(popup.mode === 'create' || popup.mode === 'edit') && (
+          <form onSubmit={handleSave}>
+            <TextBox
+              label="Name"
+              placeholder="Enter Work Department Name"
+              value={name}
+              onChange={setName}
+              maxLength={150}
+              required
             />
-            <Button
-              label={
-                popup.mode === 'add' ? 'Create Department' : 'Save Changes'
-              }
-              variant="primary"
-              icon="check"
-              onClick={handleSave}
+            <TextBox
+              label="Description"
+              placeholder="Enter Description"
+              value={description}
+              onChange={setDescription}
+              maxLength={250}
             />
-          </div>
-        </div>
+            <FormActions
+              isEditMode={popup.mode === 'edit'}
+              onSave={handleSave}
+              onReset={handleReset}
+            />
+          </form>
+        )}
       </FormPopup>
     </FormPage>
   );

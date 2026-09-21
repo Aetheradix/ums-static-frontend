@@ -1,151 +1,147 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ToastService } from 'services';
-import { Button } from 'shared/components/buttons';
-import { DropDownList, TextBox } from 'shared/components/forms';
+import { Button, StatusButton } from 'shared/components/buttons';
+import { TextArea, TextBox } from 'shared/components/forms';
 import {
+  FormActions,
   FormCard,
+  FormGrid,
   FormPage,
   FormPopup,
   GridPanel,
-  StatusBadge,
 } from 'shared/new-components';
-import { CIVIL_STORAGE_KEYS, civilStorage } from '../../../civilStorage';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../../civilStorage';
 import { initialTPIAgencies } from '../../../mocks';
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
 
-const STORAGE_KEY = CIVIL_STORAGE_KEYS.TPI_AGENCIES;
+type PopupState =
+  | { mode: 'closed' }
+  | { mode: 'create' }
+  | { mode: 'edit'; item: CivilManagement.TPIAgencyItem };
 
 export default function TPIAgencyMaster() {
-  const [data, setData] = useState<CivilManagement.TPIAgencyItem[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        return parsed.map((t: any) => ({
-          id: t.id || `TPI-${Math.random().toString(36).substring(2, 6)}`,
-          name: t.name || '',
-          contactPerson: t.contactPerson || '',
-          email: t.email || '',
-          mobile: t.mobile || '',
-          licenseNo: t.licenseNo || '',
-          licenseValidity: t.licenseValidity || '2028-03-31',
-          address: t.address || '',
-          contractorClass: t.contractorClass || 'Class A (Central PSU/Agency)',
-          isActive: t.status === 'Active' || t.isActive !== false,
-        }));
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    return initialTPIAgencies.map(t => ({
-      id: t.id,
-      name: t.name,
-      contactPerson: t.contactPerson,
-      email: t.email,
-      mobile: t.mobile,
-      licenseNo: t.licenseNo,
-      licenseValidity: '2028-03-31',
-      address: t.address,
-      contractorClass: 'Class A (Central PSU/Agency)',
-      isActive: t.status === 'Active',
-    }));
-  });
+  const [data, setData] = useCivilStorage<CivilManagement.TPIAgencyItem[]>(
+    CIVIL_STORAGE_KEYS.TPI_AGENCIES,
+    initialTPIAgencies
+  );
 
-  const [popup, setPopup] = useState<{
-    mode: 'closed' | 'add' | 'edit';
-    item?: CivilManagement.TPIAgencyItem;
-  }>({ mode: 'closed' });
+  const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
 
-  const [formName, setFormName] = useState('');
-  const [formContact, setFormContact] = useState('');
-  const [formEmail, setFormEmail] = useState('');
-  const [formMobile, setFormMobile] = useState('');
-  const [formLicense, setFormLicense] = useState('');
-  const [formValidity, setFormValidity] = useState('2028-03-31');
-  const [formAddress, setFormAddress] = useState('');
-  const [formClass, setFormClass] = useState('Class A (Central PSU/Agency)');
-  const [formActive, setFormActive] = useState(true);
+  // Form state
+  const [agencyName, setAgencyName] = useState('');
+  const [licenseNumber, setLicenseNumber] = useState('');
+  const [contactPersonName, setContactPersonName] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
+  const [officeAddress, setOfficeAddress] = useState('');
 
-  useEffect(() => {
-    civilStorage.set(STORAGE_KEY, data);
-  }, [data]);
+  const closePopup = useCallback(() => setPopup({ mode: 'closed' }), []);
 
-  const openAdd = () => {
-    setFormName('');
-    setFormContact('');
-    setFormEmail('');
-    setFormMobile('');
-    setFormLicense('');
-    setFormValidity('2028-03-31');
-    setFormAddress('');
-    setFormClass('Class A (Central PSU/Agency)');
-    setFormActive(true);
-    setPopup({ mode: 'add' });
+  const openCreate = () => {
+    setAgencyName('');
+    setLicenseNumber('');
+    setContactPersonName('');
+    setContactEmail('');
+    setMobileNumber('');
+    setOfficeAddress('');
+    setPopup({ mode: 'create' });
   };
 
   const openEdit = (item: CivilManagement.TPIAgencyItem) => {
-    setFormName(item.name);
-    setFormContact(item.contactPerson);
-    setFormEmail(item.email);
-    setFormMobile(item.mobile);
-    setFormLicense(item.licenseNo);
-    setFormValidity(item.licenseValidity || '2028-03-31');
-    setFormAddress(item.address);
-    setFormClass(item.contractorClass || 'Class A (Central PSU/Agency)');
-    setFormActive(item.isActive);
+    setAgencyName(item.agencyName || item.name || '');
+    setLicenseNumber(item.licenseNumber || (item as any).licenseNo || '');
+    setContactPersonName(
+      item.contactPersonName || (item as any).contactPerson || ''
+    );
+    setContactEmail(item.contactEmail || (item as any).email || '');
+    setMobileNumber(item.mobileNumber || (item as any).mobile || '');
+    setOfficeAddress(item.officeAddress || (item as any).address || '');
     setPopup({ mode: 'edit', item });
   };
 
-  const handleSave = () => {
-    if (!formName.trim() || !formLicense.trim()) {
-      ToastService.error('Agency Name and License No are required.');
+  const handleReset = () => {
+    if (popup.mode === 'edit' && popup.item) {
+      openEdit(popup.item);
+    } else {
+      openCreate();
+    }
+  };
+
+  const handleSave = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!agencyName.trim()) {
+      ToastService.error('Agency Name is required.');
+      return;
+    }
+    if (!licenseNumber.trim()) {
+      ToastService.error('License / Registration No is required.');
+      return;
+    }
+    if (!contactPersonName.trim()) {
+      ToastService.error('Contact Person Name is required.');
       return;
     }
 
-    if (popup.mode === 'add') {
+    if (popup.mode === 'create') {
+      const nextId = data.length + 1;
       const newItem: CivilManagement.TPIAgencyItem = {
-        id: `TPI-${Date.now().toString().slice(-4)}`,
-        name: formName.trim(),
-        contactPerson: formContact.trim(),
-        email: formEmail.trim(),
-        mobile: formMobile.trim(),
-        licenseNo: formLicense.trim(),
-        licenseValidity: formValidity,
-        address: formAddress.trim(),
-        contractorClass: formClass,
-        isActive: formActive,
+        qualityInspectionAgencyId: nextId,
+        id: `TPI-${String(nextId).padStart(2, '0')}`,
+        agencyCode: `TPI-AG-${String(nextId).padStart(2, '0')}`,
+        agencyName: agencyName.trim(),
+        name: agencyName.trim(),
+        licenseNumber: licenseNumber.trim(),
+        licenseNo: licenseNumber.trim(),
+        contactPersonName: contactPersonName.trim(),
+        contactPerson: contactPersonName.trim(),
+        contactEmail: contactEmail.trim() || undefined,
+        email: contactEmail.trim() || undefined,
+        mobileNumber: mobileNumber.trim() || undefined,
+        mobile: mobileNumber.trim() || undefined,
+        officeAddress: officeAddress.trim() || undefined,
+        address: officeAddress.trim() || undefined,
+        isActive: true,
       };
       setData(prev => [newItem, ...prev]);
-      ToastService.success(`TPI Agency "${newItem.name}" registered.`);
+      ToastService.success(
+        `TPI Agency "${newItem.agencyName}" added successfully.`
+      );
     } else if (popup.mode === 'edit' && popup.item) {
       setData(prev =>
         prev.map(d =>
-          d.id === popup.item!.id
+          d.qualityInspectionAgencyId ===
+            popup.item!.qualityInspectionAgencyId || d.id === popup.item!.id
             ? {
                 ...d,
-                name: formName.trim(),
-                contactPerson: formContact.trim(),
-                email: formEmail.trim(),
-                mobile: formMobile.trim(),
-                licenseNo: formLicense.trim(),
-                licenseValidity: formValidity,
-                address: formAddress.trim(),
-                contractorClass: formClass,
-                isActive: formActive,
+                agencyName: agencyName.trim(),
+                name: agencyName.trim(),
+                licenseNumber: licenseNumber.trim(),
+                licenseNo: licenseNumber.trim(),
+                contactPersonName: contactPersonName.trim(),
+                contactPerson: contactPersonName.trim(),
+                contactEmail: contactEmail.trim() || undefined,
+                email: contactEmail.trim() || undefined,
+                mobileNumber: mobileNumber.trim() || undefined,
+                mobile: mobileNumber.trim() || undefined,
+                officeAddress: officeAddress.trim() || undefined,
+                address: officeAddress.trim() || undefined,
               }
             : d
         )
       );
-      ToastService.success(`TPI Agency updated.`);
+      ToastService.success('TPI Agency updated successfully.');
     }
     setPopup({ mode: 'closed' });
   };
 
-  const toggleStatus = (id: string) => {
+  const handleToggleStatus = (item: CivilManagement.TPIAgencyItem) => {
     setData(prev =>
       prev.map(d => {
-        if (d.id === id) {
+        if (
+          d.qualityInspectionAgencyId === item.qualityInspectionAgencyId ||
+          d.id === item.id
+        ) {
           const next = !d.isActive;
           ToastService.info(
             `TPI Agency ${next ? 'Activated' : 'Deactivated'}.`
@@ -159,298 +155,174 @@ export default function TPIAgencyMaster() {
 
   return (
     <FormPage
-      title="Third Party Inspection (TPI) Agency Master"
-      description="Manage empaneled Third Party Quality Assurance & Inspection (TPI/TPQA) agencies (e.g. RITES, SGS, WAPCOS)."
+      title="Quality Inspection Agency (TPI)"
+      description="Manage Third-Party Inspection (TPI) agencies and independent QA/QC engineering consultants."
       breadcrumbs={[
         { label: 'Home', to: '/home/menu' },
         { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
         { label: 'Admin Login', to: civilUrls.adminMenu },
-        { label: 'External Masters', to: civilUrls.externalMastersMenu },
-        { label: 'TPI Agency' },
+        { label: 'External Masters', to: civilUrls.tpiAgencyMaster },
+        { label: 'Quality Inspection Agency (TPI)' },
       ]}
     >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          marginBottom: '1rem',
-        }}
-      >
-        <Button
-          label="Empanel TPI Agency"
-          icon="plus"
-          variant="primary"
-          onClick={openAdd}
-        />
-      </div>
-
       <FormCard>
         <GridPanel
           data={data}
+          onEdit={item => openEdit(item)}
           columns={[
-            { cell: (_, o) => <span>{o.rowIndex + 1}</span>, width: '50px' },
             {
-              field: 'id',
+              field: 'agencyCode',
               header: 'Agency ID',
               cell: (item: CivilManagement.TPIAgencyItem) => (
-                <span
-                  style={{
-                    fontFamily: 'monospace',
-                    fontWeight: 700,
-                    color: '#1d4ed8',
-                  }}
-                >
-                  {item.id}
+                <span style={{ color: '#2563eb', fontWeight: 600 }}>
+                  {item.agencyCode || item.id}
                 </span>
               ),
             },
             {
-              field: 'name',
-              header: 'Agency Title & Address',
+              field: 'agencyName',
+              header: 'Agency Name',
               cell: (item: CivilManagement.TPIAgencyItem) => (
-                <div>
-                  <div style={{ fontWeight: 600, color: '#111827' }}>
-                    {item.name}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: '0.75rem',
-                      color: '#6b7280',
-                      marginTop: '2px',
-                    }}
-                  >
-                    {item.address}
-                  </div>
-                </div>
-              ),
-            },
-            {
-              field: 'licenseNo',
-              header: 'License & Registration',
-              cell: (item: CivilManagement.TPIAgencyItem) => (
-                <div>
-                  <span
-                    className="civil-pill blue"
-                    style={{ fontSize: '0.72rem' }}
-                  >
-                    {item.licenseNo}
-                  </span>
-                  <div
-                    style={{
-                      fontSize: '0.75rem',
-                      color: '#6b7280',
-                      marginTop: '2px',
-                    }}
-                  >
-                    Valid thru: {item.licenseValidity || '—'}
-                  </div>
-                </div>
-              ),
-            },
-            {
-              field: 'contractorClass',
-              header: 'Empanelment Tier',
-              cell: (item: CivilManagement.TPIAgencyItem) => (
-                <span
-                  className="civil-pill purple"
-                  style={{ fontSize: '0.72rem' }}
-                >
-                  {item.contractorClass || 'Class A'}
+                <span style={{ fontWeight: 600 }}>
+                  {item.agencyName || item.name}
                 </span>
               ),
             },
             {
-              field: 'contactPerson',
-              header: 'Key Representative',
+              field: 'licenseNumber',
+              header: 'License No',
               cell: (item: CivilManagement.TPIAgencyItem) => (
-                <div style={{ fontSize: '0.8125rem' }}>
-                  <div>{item.contactPerson}</div>
-                  <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>
-                    {item.mobile}
-                  </div>
-                </div>
+                <span>
+                  {item.licenseNumber || (item as any).licenseNo || '-'}
+                </span>
+              ),
+            },
+            {
+              field: 'contactPersonName',
+              header: 'Contact Person',
+              cell: (item: CivilManagement.TPIAgencyItem) => (
+                <span>
+                  {item.contactPersonName || (item as any).contactPerson || '-'}
+                </span>
+              ),
+            },
+            {
+              field: 'contactEmail',
+              header: 'Email ID',
+              cell: (item: CivilManagement.TPIAgencyItem) => (
+                <span>
+                  {item.contactEmail || (item as any).email
+                    ? item.contactEmail || (item as any).email
+                    : 'N/A'}
+                </span>
+              ),
+            },
+            {
+              field: 'mobileNumber',
+              header: 'Mobile Number',
+              cell: (item: CivilManagement.TPIAgencyItem) => (
+                <span>
+                  {item.mobileNumber || (item as any).mobile
+                    ? item.mobileNumber || (item as any).mobile
+                    : 'N/A'}
+                </span>
               ),
             },
             {
               field: 'isActive',
               header: 'Status',
-              cell: (item: CivilManagement.TPIAgencyItem) => (
-                <button
-                  type="button"
-                  onClick={() => toggleStatus(item.id)}
-                  style={{
-                    border: 'none',
-                    background: 'transparent',
-                    cursor: 'pointer',
-                    padding: 0,
-                  }}
-                  title="Click to toggle status"
-                >
-                  <StatusBadge
-                    label={item.isActive ? 'Active' : 'Inactive'}
-                    variant={item.isActive ? 'success' : 'neutral'}
-                  />
-                </button>
-              ),
-            },
-            {
-              field: 'id',
-              header: 'Actions',
               sortable: false,
               cell: (item: CivilManagement.TPIAgencyItem) => (
-                <div style={{ display: 'flex', gap: '0.375rem' }}>
-                  <Button
-                    size="small"
-                    label=""
-                    icon="pencil"
-                    variant="outlined"
-                    onClick={() => openEdit(item)}
-                  />
-                  <Button
-                    size="small"
-                    label=""
-                    icon={item.isActive ? 'lock' : 'unlock'}
-                    variant="outlined"
-                    onClick={() => toggleStatus(item.id)}
-                  />
-                </div>
+                <StatusButton
+                  value={item.isActive !== false}
+                  onClick={() => handleToggleStatus(item)}
+                />
               ),
             },
           ]}
+          toolbar={
+            <Button
+              label="Add TPI Agency"
+              icon="plus"
+              variant="primary"
+              onClick={openCreate}
+            />
+          }
           searchBox
-          searchPlaceholder="Search TPI agencies..."
         />
       </FormCard>
 
       <FormPopup
         visible={popup.mode !== 'closed'}
-        onHide={() => setPopup({ mode: 'closed' })}
-        title={popup.mode === 'add' ? 'Empanel TPI Agency' : 'Edit TPI Agency'}
-        subtitle="Third Party Inspection & Quality Assurance consultant."
-        size="lg"
+        onHide={closePopup}
+        title={
+          popup.mode === 'edit'
+            ? 'Edit Quality Inspection Agency (TPI)'
+            : 'Add Quality Inspection Agency (TPI)'
+        }
+        subtitle="Independent Third-Party Inspection (TPI) quality check agency registry details."
       >
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem',
-            marginTop: '0.5rem',
-          }}
-        >
-          <TextBox
-            label="Agency Name"
-            placeholder="e.g. RITES Limited / SGS India"
-            value={formName}
-            onChange={setFormName}
-            required
-          />
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '1rem',
-            }}
-          >
-            <TextBox
-              label="Registration / License No."
-              placeholder="e.g. TPI-REG-2024-098"
-              value={formLicense}
-              onChange={setFormLicense}
-              required
+        {(popup.mode === 'create' || popup.mode === 'edit') && (
+          <form onSubmit={handleSave}>
+            <FormGrid columns={2}>
+              <TextBox
+                label="Agency Name"
+                placeholder="e.g. RITES Limited"
+                value={agencyName}
+                onChange={setAgencyName}
+                maxLength={200}
+                required
+              />
+              <TextBox
+                label="License / Registration No"
+                placeholder="e.g. TPI-REG-2025-001"
+                value={licenseNumber}
+                onChange={setLicenseNumber}
+                maxLength={100}
+                required
+              />
+            </FormGrid>
+            <FormGrid columns={2}>
+              <TextBox
+                label="Contact Person Name"
+                placeholder="e.g. Shri R.K. Varma"
+                value={contactPersonName}
+                onChange={setContactPersonName}
+                maxLength={150}
+                required
+              />
+              <TextBox
+                label="Contact Email ID"
+                placeholder="e.g. info@rites.com"
+                value={contactEmail}
+                onChange={setContactEmail}
+                maxLength={150}
+              />
+              <TextBox
+                label="Mobile Number"
+                placeholder="e.g. 9876543210"
+                value={mobileNumber}
+                onChange={setMobileNumber}
+                maxLength={10}
+              />
+            </FormGrid>
+            <TextArea
+              label="Office Address"
+              placeholder="Enter complete administrative address..."
+              value={officeAddress}
+              onChange={setOfficeAddress}
+              rows={3}
             />
-            <TextBox
-              label="Validity Expiry Date"
-              placeholder="YYYY-MM-DD"
-              value={formValidity}
-              onChange={setFormValidity}
+            <FormActions
+              isEditMode={popup.mode === 'edit'}
+              saveLabel={
+                popup.mode === 'edit' ? 'Update Agency' : 'Save Agency'
+              }
+              onSave={handleSave}
+              onReset={handleReset}
             />
-          </div>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '1rem',
-            }}
-          >
-            <DropDownList
-              label="Empanelment Tier"
-              data={[
-                {
-                  label: 'Class A (Central PSU / Govt Accredited)',
-                  value: 'Class A (Central PSU/Agency)',
-                },
-                {
-                  label: 'Class B (State Level Empaneled)',
-                  value: 'Class B (State Level)',
-                },
-                {
-                  label: 'Class C (Independent Engineering Consultant)',
-                  value: 'Class C (Consultant)',
-                },
-              ]}
-              textField="label"
-              optionValue="value"
-              value={formClass}
-              onChange={val => setFormClass(val as string)}
-            />
-            <TextBox
-              label="Regional Branch Address"
-              placeholder="Office address in state capital..."
-              value={formAddress}
-              onChange={setFormAddress}
-            />
-          </div>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr 1fr',
-              gap: '1rem',
-            }}
-          >
-            <TextBox
-              label="Principal Engineer / Rep"
-              placeholder="Shri A.K. Sharma"
-              value={formContact}
-              onChange={setFormContact}
-            />
-            <TextBox
-              label="Contact Phone / Mobile"
-              placeholder="9425012345"
-              value={formMobile}
-              onChange={setFormMobile}
-            />
-            <TextBox
-              label="Official Email"
-              placeholder="tpi.nodal@agency.com"
-              value={formEmail}
-              onChange={setFormEmail}
-            />
-          </div>
-          <DropDownList
-            label="Status"
-            data={[
-              { label: 'Active (Empaneled)', value: 'true' },
-              { label: 'Inactive (Suspended)', value: 'false' },
-            ]}
-            textField="label"
-            optionValue="value"
-            value={formActive ? 'true' : 'false'}
-            onChange={val => setFormActive(val === 'true')}
-          />
-          <div className="flex justify-end gap-3 mt-4">
-            <Button
-              label="Cancel"
-              variant="outlined"
-              onClick={() => setPopup({ mode: 'closed' })}
-            />
-            <Button
-              label={popup.mode === 'add' ? 'Register Agency' : 'Save Changes'}
-              variant="primary"
-              icon="check"
-              onClick={handleSave}
-            />
-          </div>
-        </div>
+          </form>
+        )}
       </FormPopup>
     </FormPage>
   );

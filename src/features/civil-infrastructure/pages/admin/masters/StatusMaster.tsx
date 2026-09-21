@@ -1,127 +1,118 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ToastService } from 'services';
-import { Button } from 'shared/components/buttons';
-import { DropDownList, TextBox } from 'shared/components/forms';
+import { Button, StatusButton } from 'shared/components/buttons';
+import { TextBox } from 'shared/components/forms';
 import {
+  FormActions,
   FormCard,
+  FormGrid,
   FormPage,
   FormPopup,
   GridPanel,
-  StatusBadge,
 } from 'shared/new-components';
-import { CIVIL_STORAGE_KEYS, civilStorage } from '../../../civilStorage';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../../civilStorage';
 import { initialStatusMasters } from '../../../mocks';
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
 
-const STORAGE_KEY = CIVIL_STORAGE_KEYS.STATUS_MASTERS;
-
-const MODULE_OPTIONS = [
-  { label: 'All Modules', value: 'ALL' },
-  { label: 'Civil Work Lifecycle', value: 'work' },
-  { label: 'Tendering & Bidding', value: 'tender' },
-  { label: 'Measurement Book (MB)', value: 'mb' },
-  { label: 'RA Bill & Finance', value: 'ra-bill' },
-];
+type PopupState =
+  | { mode: 'closed' }
+  | { mode: 'create' }
+  | { mode: 'edit'; item: CivilManagement.StatusMaster };
 
 export default function StatusMaster() {
-  const [data, setData] = useState<CivilManagement.StatusMaster[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : initialStatusMasters;
-  });
+  const [data, setData] = useCivilStorage<CivilManagement.StatusMaster[]>(
+    CIVIL_STORAGE_KEYS.STATUS_MASTERS,
+    initialStatusMasters
+  );
 
-  const [filterModule, setFilterModule] = useState<string>('ALL');
+  const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
 
-  const [popup, setPopup] = useState<{
-    mode: 'closed' | 'add' | 'edit';
-    item?: CivilManagement.StatusMaster;
-  }>({ mode: 'closed' });
+  const [statusType, setStatusType] = useState('');
+  const [statusTypeCode, setStatusTypeCode] = useState('');
+  const [status, setStatus] = useState('');
 
-  const [formModule, setFormModule] = useState('work');
-  const [formCode, setFormCode] = useState('');
-  const [formLabel, setFormLabel] = useState('');
-  const [formColor, setFormColor] = useState('#3b82f6');
-  const [formSeq, setFormSeq] = useState('1');
-  const [formActive, setFormActive] = useState(true);
+  const closePopup = useCallback(() => setPopup({ mode: 'closed' }), []);
 
-  useEffect(() => {
-    civilStorage.set(STORAGE_KEY, data);
-  }, [data]);
-
-  const filteredData = useMemo(() => {
-    if (filterModule === 'ALL') return data;
-    return data.filter(d => d.module === filterModule);
-  }, [data, filterModule]);
-
-  const openAdd = () => {
-    setFormModule(filterModule !== 'ALL' ? filterModule : 'work');
-    setFormCode('');
-    setFormLabel('');
-    setFormColor('#3b82f6');
-    setFormSeq((data.length + 1).toString());
-    setFormActive(true);
-    setPopup({ mode: 'add' });
+  const openCreate = () => {
+    setStatusType('');
+    setStatusTypeCode('');
+    setStatus('');
+    setPopup({ mode: 'create' });
   };
 
   const openEdit = (item: CivilManagement.StatusMaster) => {
-    setFormModule(item.module);
-    setFormCode(item.code);
-    setFormLabel(item.label);
-    setFormColor(item.colorHex || '#3b82f6');
-    setFormSeq(item.sequence.toString());
-    setFormActive(item.isActive);
+    setStatusType(item.statusType || item.module || '');
+    setStatusTypeCode(item.statusTypeCode || item.code || '');
+    setStatus(item.status || item.label || '');
     setPopup({ mode: 'edit', item });
   };
 
-  const handleSave = () => {
-    if (!formCode.trim() || !formLabel.trim()) {
-      ToastService.error('Status Code and Label are required.');
+  const handleReset = () => {
+    if (popup.mode === 'edit' && popup.item) {
+      openEdit(popup.item);
+    } else {
+      openCreate();
+    }
+  };
+
+  const handleSave = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!statusType.trim()) {
+      ToastService.error('Status Type is required.');
+      return;
+    }
+    if (!statusTypeCode.trim()) {
+      ToastService.error('Status Type Code is required.');
+      return;
+    }
+    if (!status.trim()) {
+      ToastService.error('Status is required.');
       return;
     }
 
-    const seqNumber = parseInt(formSeq, 10) || 1;
-
-    if (popup.mode === 'add') {
+    if (popup.mode === 'create') {
+      const nextId = data.length + 1;
       const newItem: CivilManagement.StatusMaster = {
+        statusMasterId: nextId,
         id: `SM-${Date.now().toString().slice(-4)}`,
-        module: formModule,
-        code: formCode.trim().toUpperCase(),
-        label: formLabel.trim(),
-        colorHex: formColor,
-        sequence: seqNumber,
-        isActive: formActive,
+        statusType: statusType.trim(),
+        statusTypeCode: statusTypeCode.trim().toUpperCase(),
+        status: status.trim(),
+        module: statusType.trim(),
+        code: statusTypeCode.trim().toUpperCase(),
+        label: status.trim(),
+        sequence: nextId,
+        isActive: true,
       };
-      setData(prev =>
-        [...prev, newItem].sort((a, b) => a.sequence - b.sequence)
-      );
-      ToastService.success(`Status "${newItem.label}" added.`);
+      setData(prev => [newItem, ...prev]);
+      ToastService.success(`Status "${newItem.status}" created.`);
     } else if (popup.mode === 'edit' && popup.item) {
       setData(prev =>
-        prev
-          .map(d =>
-            d.id === popup.item!.id
-              ? {
-                  ...d,
-                  module: formModule,
-                  code: formCode.trim().toUpperCase(),
-                  label: formLabel.trim(),
-                  colorHex: formColor,
-                  sequence: seqNumber,
-                  isActive: formActive,
-                }
-              : d
-          )
-          .sort((a, b) => a.sequence - b.sequence)
+        prev.map(d =>
+          d.statusMasterId === popup.item!.statusMasterId ||
+          d.id === popup.item!.id
+            ? {
+                ...d,
+                statusType: statusType.trim(),
+                statusTypeCode: statusTypeCode.trim().toUpperCase(),
+                status: status.trim(),
+                module: statusType.trim(),
+                code: statusTypeCode.trim().toUpperCase(),
+                label: status.trim(),
+              }
+            : d
+        )
       );
-      ToastService.success(`Status updated.`);
+      ToastService.success('Status updated.');
     }
     setPopup({ mode: 'closed' });
   };
 
-  const toggleStatus = (id: string) => {
+  const handleToggleStatus = (item: CivilManagement.StatusMaster) => {
     setData(prev =>
       prev.map(d => {
-        if (d.id === id) {
+        if (d.statusMasterId === item.statusMasterId || d.id === item.id) {
           const next = !d.isActive;
           ToastService.info(`Status ${next ? 'Activated' : 'Deactivated'}.`);
           return { ...d, isActive: next };
@@ -133,266 +124,117 @@ export default function StatusMaster() {
 
   return (
     <FormPage
-      title="Workflow Status Master"
-      description="Registry of lifecycle statuses and transition states across Civil Engineering workflows."
+      title="Status Master"
+      description="Manage status classifications and workflow status definitions across civil modules."
       breadcrumbs={[
         { label: 'Home', to: '/home/menu' },
         { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
         { label: 'Admin Login', to: civilUrls.adminMenu },
-        { label: 'External Masters', to: civilUrls.externalMastersMenu },
+        { label: 'External Masters', to: civilUrls.statusMaster },
         { label: 'Status Master' },
       ]}
     >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '1rem',
-          gap: '1rem',
-        }}
-      >
-        <div style={{ width: '280px' }}>
-          <DropDownList
-            label="Filter by Sub-Module"
-            data={MODULE_OPTIONS}
-            textField="label"
-            optionValue="value"
-            value={filterModule}
-            onChange={val => setFilterModule(val as string)}
-          />
-        </div>
-        <Button
-          label="Add Status"
-          icon="plus"
-          variant="primary"
-          onClick={openAdd}
-        />
-      </div>
-
       <FormCard>
         <GridPanel
-          data={filteredData}
+          data={data}
+          onEdit={item => openEdit(item)}
           columns={[
             {
-              field: 'sequence',
-              header: 'Seq #',
-              cell: (item: CivilManagement.StatusMaster) => (
-                <span
-                  style={{
-                    width: '26px',
-                    height: '26px',
-                    borderRadius: '50%',
-                    background: '#f3f4f6',
-                    color: '#374151',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 700,
-                    fontSize: '0.8125rem',
-                  }}
-                >
-                  {item.sequence}
-                </span>
-              ),
-              width: '70px',
+              cell: (_, option) => <span>{option.rowIndex + 1}</span>,
+              width: '30px',
             },
             {
-              field: 'module',
-              header: 'Sub-Module',
+              field: 'statusType',
+              header: 'Status Type',
               cell: (item: CivilManagement.StatusMaster) => (
-                <span
-                  className="civil-pill blue"
-                  style={{ fontSize: '0.72rem', textTransform: 'uppercase' }}
-                >
-                  {item.module}
-                </span>
+                <span>{item.statusType || item.module}</span>
               ),
             },
             {
-              field: 'code',
-              header: 'Status Code',
+              field: 'statusTypeCode',
+              header: 'Status Type Code',
               cell: (item: CivilManagement.StatusMaster) => (
-                <span
-                  style={{
-                    fontFamily: 'monospace',
-                    fontWeight: 700,
-                    color: '#1d4ed8',
-                  }}
-                >
-                  {item.code}
-                </span>
+                <span>{item.statusTypeCode || item.code}</span>
               ),
             },
             {
-              field: 'label',
-              header: 'Status Label & Preview',
+              field: 'status',
+              header: 'Status Name',
               cell: (item: CivilManagement.StatusMaster) => (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.5rem',
-                  }}
-                >
-                  <span
-                    style={{
-                      width: '12px',
-                      height: '12px',
-                      borderRadius: '50%',
-                      background: item.colorHex || '#3b82f6',
-                      display: 'inline-block',
-                    }}
-                  />
-                  <span style={{ fontWeight: 600 }}>{item.label}</span>
-                </div>
+                <span>{item.status || item.label}</span>
               ),
             },
             {
               field: 'isActive',
               header: 'Status',
-              cell: (item: CivilManagement.StatusMaster) => (
-                <button
-                  type="button"
-                  onClick={() => toggleStatus(item.id)}
-                  style={{
-                    border: 'none',
-                    background: 'transparent',
-                    cursor: 'pointer',
-                    padding: 0,
-                  }}
-                  title="Click to toggle status"
-                >
-                  <StatusBadge
-                    label={item.isActive ? 'Active' : 'Inactive'}
-                    variant={item.isActive ? 'success' : 'neutral'}
-                  />
-                </button>
-              ),
-            },
-            {
-              field: 'id',
-              header: 'Actions',
               sortable: false,
               cell: (item: CivilManagement.StatusMaster) => (
-                <div style={{ display: 'flex', gap: '0.375rem' }}>
-                  <Button
-                    size="small"
-                    label=""
-                    icon="pencil"
-                    variant="outlined"
-                    onClick={() => openEdit(item)}
-                  />
-                  <Button
-                    size="small"
-                    label=""
-                    icon={item.isActive ? 'lock' : 'unlock'}
-                    variant="outlined"
-                    onClick={() => toggleStatus(item.id)}
-                  />
-                </div>
+                <StatusButton
+                  value={item.isActive}
+                  onClick={() => handleToggleStatus(item)}
+                />
               ),
             },
           ]}
+          toolbar={
+            <Button
+              label="Create"
+              icon="plus"
+              variant="primary"
+              onClick={openCreate}
+            />
+          }
           searchBox
-          searchPlaceholder="Search workflow statuses..."
         />
       </FormCard>
 
       <FormPopup
         visible={popup.mode !== 'closed'}
-        onHide={() => setPopup({ mode: 'closed' })}
+        onHide={closePopup}
         title={
-          popup.mode === 'add' ? 'Add Workflow Status' : 'Edit Workflow Status'
+          popup.mode === 'edit' ? 'Edit Status Master' : 'Create Status Master'
         }
-        subtitle="Civil infrastructure process status registry."
-        size="md"
+        subtitle={
+          popup.mode === 'edit'
+            ? 'Update the status master details.'
+            : 'Fill in the details to add a new status master.'
+        }
       >
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem',
-            marginTop: '0.5rem',
-          }}
-        >
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '1rem',
-            }}
-          >
-            <DropDownList
-              label="Module"
-              data={MODULE_OPTIONS.filter(o => o.value !== 'ALL')}
-              textField="label"
-              optionValue="value"
-              value={formModule}
-              onChange={val => setFormModule(val as string)}
-              required
+        {(popup.mode === 'create' || popup.mode === 'edit') && (
+          <form onSubmit={handleSave}>
+            <FormGrid columns={2}>
+              <TextBox
+                label="Status Type"
+                placeholder="e.g. Tender, WorkOrder"
+                value={statusType}
+                onChange={setStatusType}
+                maxLength={50}
+                required
+              />
+              <TextBox
+                label="Status Type Code"
+                placeholder="e.g. TND_STATUS, WO_STATUS"
+                value={statusTypeCode}
+                onChange={setStatusTypeCode}
+                maxLength={50}
+                required
+              />
+              <TextBox
+                label="Status"
+                placeholder="e.g. Draft, Approved, Rejected"
+                value={status}
+                onChange={setStatus}
+                maxLength={50}
+                required
+              />
+            </FormGrid>
+            <FormActions
+              isEditMode={popup.mode === 'edit'}
+              onSave={handleSave}
+              onReset={handleReset}
             />
-            <TextBox
-              label="Workflow Sequence (1..N)"
-              placeholder="1"
-              value={formSeq}
-              onChange={setFormSeq}
-              required
-            />
-          </div>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '1rem',
-            }}
-          >
-            <TextBox
-              label="Status Code"
-              placeholder="e.g. REQ, REG, AA, TS"
-              value={formCode}
-              onChange={setFormCode}
-              required
-            />
-            <TextBox
-              label="Status Badge Color (Hex)"
-              placeholder="#3b82f6"
-              value={formColor}
-              onChange={setFormColor}
-            />
-          </div>
-          <TextBox
-            label="Display Label"
-            placeholder="e.g. Administrative Sanction Granted"
-            value={formLabel}
-            onChange={setFormLabel}
-            required
-          />
-          <DropDownList
-            label="Status"
-            data={[
-              { label: 'Active', value: 'true' },
-              { label: 'Inactive', value: 'false' },
-            ]}
-            textField="label"
-            optionValue="value"
-            value={formActive ? 'true' : 'false'}
-            onChange={val => setFormActive(val === 'true')}
-          />
-          <div className="flex justify-end gap-3 mt-4">
-            <Button
-              label="Cancel"
-              variant="outlined"
-              onClick={() => setPopup({ mode: 'closed' })}
-            />
-            <Button
-              label={popup.mode === 'add' ? 'Create Status' : 'Save Changes'}
-              variant="primary"
-              icon="check"
-              onClick={handleSave}
-            />
-          </div>
-        </div>
+          </form>
+        )}
       </FormPopup>
     </FormPage>
   );

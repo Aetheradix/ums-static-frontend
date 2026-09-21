@@ -10,7 +10,7 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
-import { civilWorks as initialWorks, initialTPIAgencies } from '../../mocks';
+import { initialTPIAgencies, civilWorks as initialWorks } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
@@ -702,7 +702,7 @@ export default function TPIReports() {
           >
             <FormGrid columns={2}>
               <DropDownList
-                label="Civil Work Scheme *"
+                label="Civil Work Scheme"
                 data={works.map(w => ({
                   label: `${w.workId} — ${w.name}`,
                   value: w.id,
@@ -714,7 +714,7 @@ export default function TPIReports() {
                 required
               />
               <DropDownList
-                label="Empaneled TPI Agency *"
+                label="Empaneled TPI Agency"
                 data={tpiAgencies.map(a => ({ label: a.name, value: a.id }))}
                 textField="label"
                 optionValue="value"
@@ -724,21 +724,21 @@ export default function TPIReports() {
               />
 
               <TextBox
-                label="Auditor / Lead Inspector Name *"
+                label="Auditor / Lead Inspector Name"
                 placeholder="Er. A.K. Sharma"
                 value={formEngineer}
                 onChange={setFormEngineer}
                 required
               />
               <TextBox
-                label="Inspection Date *"
+                label="Inspection Date"
                 placeholder="YYYY-MM-DD"
                 value={formDate}
                 onChange={setFormDate}
                 required
               />
               <DropDownList
-                label="Overall Quality Rating *"
+                label="Overall Quality Rating"
                 data={[
                   {
                     label: 'Satisfactory (Good Quality)',
@@ -777,7 +777,7 @@ export default function TPIReports() {
             </FormGrid>
 
             <TextArea
-              label="Detailed Technical Observations *"
+              label="Detailed Technical Observations"
               placeholder="Record slump test, concrete compaction, curing frequency, rebar lap lengths, and batch plant inspection findings..."
               value={formObservations}
               onChange={setFormObservations}
@@ -825,7 +825,7 @@ export default function TPIReports() {
             </div>
 
             <TextArea
-              label="Contractor Action Taken Report (ATR) & Rectification Description *"
+              label="Contractor Action Taken Report (ATR) & Rectification Description"
               placeholder="Describe corrective actions taken, non-destructive test results post repair, and preventive measures implemented..."
               value={atrDesc}
               onChange={setAtrDesc}
@@ -860,7 +860,7 @@ export default function TPIReports() {
             }}
           >
             <TextBox
-              label="Non-Conformance Defect Description *"
+              label="Non-Conformance Defect Description"
               placeholder="e.g. Inadequate concrete cover on soffit of beam B-12"
               value={ncrDesc}
               onChange={setNcrDesc}
@@ -868,14 +868,14 @@ export default function TPIReports() {
             />
             <FormGrid columns={2}>
               <TextBox
-                label="Defect Location / Grid Coordinates *"
+                label="Defect Location / Grid Coordinates"
                 placeholder="Zone B, Grid 3-4 at First Floor"
                 value={ncrLocation}
                 onChange={setNcrLocation}
                 required
               />
               <DropDownList
-                label="Defect Severity Tier *"
+                label="Defect Severity Tier"
                 data={[
                   { label: 'Observation (Procedural)', value: 'Observation' },
                   {

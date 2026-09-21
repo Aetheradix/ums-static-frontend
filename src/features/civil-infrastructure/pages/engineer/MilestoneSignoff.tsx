@@ -102,7 +102,7 @@ export default function MilestoneSignoff() {
 
   const handleSignOff = (item: Milestone) => {
     if (!remarks.trim()) {
-      ToastService.error('Justification remarks are required.');
+      ToastService.error('Remarks are required.');
       return;
     }
 
@@ -365,7 +365,7 @@ export default function MilestoneSignoff() {
               ],
               ['Request Date', popup.requestItem.requestDate],
               ['Status', popup.requestItem.status],
-              ['Justification Remarks', popup.requestItem.remarks],
+              ['Remarks', popup.requestItem.remarks],
               ['Approval Date', popup.requestItem.approvalDate || '—'],
               ['Approval Remarks', popup.requestItem.approvalRemarks || '—'],
               ['Payment Date', popup.requestItem.paymentDate || '—'],
@@ -375,7 +375,7 @@ export default function MilestoneSignoff() {
                 key={k}
                 style={{
                   gridColumn:
-                    k === 'Justification Remarks' ||
+                    k === 'Remarks' ||
                     k === 'Approval Remarks' ||
                     k === 'Work ID / Name'
                       ? 'span 2'
@@ -622,8 +622,8 @@ export default function MilestoneSignoff() {
                           to the Contractor.
                         </div>
                         <TextArea
-                          label="Justification Remarks *"
-                          placeholder="Detail the percentage progress of construction, field check status, and metrics achieved..."
+                          label="Remarks"
+                          placeholder="Remarks regarding percentage progress of construction, field check status, and metrics achieved..."
                           value={remarks}
                           onChange={setRemarks}
                           rows={3}

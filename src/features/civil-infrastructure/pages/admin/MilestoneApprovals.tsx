@@ -307,7 +307,7 @@ export default function MilestoneApprovals() {
                   ],
                   ['Request Date', (popup as any).requestItem.requestDate],
                   ['Workflow Status', (popup as any).requestItem.status],
-                  ['Justification Remarks', (popup as any).requestItem.remarks],
+                  ['Remarks', (popup as any).requestItem.remarks],
                   [
                     'Approval Date',
                     (popup as any).requestItem.approvalDate || '—',
@@ -325,7 +325,7 @@ export default function MilestoneApprovals() {
                     key={k}
                     style={{
                       gridColumn:
-                        k === 'Justification Remarks' ||
+                        k === 'Remarks' ||
                         k === 'Approval Remarks' ||
                         k === 'Work ID / Name'
                           ? 'span 2'
@@ -352,7 +352,7 @@ export default function MilestoneApprovals() {
             {popup.mode === 'review_milestone' && (
               <>
                 <TextArea
-                  label="Approval / Rejection Remarks *"
+                  label="Approval / Rejection Remarks"
                   placeholder="Add administrative review, field validation check notes, or rejection reason..."
                   value={milestoneRemarks}
                   onChange={setMilestoneRemarks}

@@ -10,14 +10,14 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import {
-  workOrders as initialWorkOrders,
   contractors as initialContractors,
-  civilWorks as initialWorks,
   milestones as initialMilestones,
+  workOrders as initialWorkOrders,
+  civilWorks as initialWorks,
   initialWorkSuspensions,
 } from '../../mocks';
-import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
@@ -1736,7 +1736,7 @@ export default function WorkOrderSign() {
                   </FormGrid>
 
                   <TextArea
-                    label="Reason Description & Background Justification"
+                    label="Remarks"
                     placeholder="Detailed narrative describing the circumstances leading to suspension or foreclosure..."
                     value={suspForm.reasonDescription}
                     onChange={val =>

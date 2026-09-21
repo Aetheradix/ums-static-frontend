@@ -10,12 +10,12 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import {
   type EOTRequest,
   eotRequests as initialData,
   civilWorks as initialWorks,
 } from '../../mocks';
-import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
@@ -374,7 +374,7 @@ export default function AdminEOTRequest() {
         visible={popup.mode !== 'closed'}
         onHide={() => setPopup({ mode: 'closed' })}
         title={`EOT Request Review — ${popup.item?.eotNo}`}
-        subtitle="Review contractor justification and record final resolution."
+        subtitle="Review request remarks and record final resolution."
         size="lg"
       >
         {popup.item && (
@@ -440,7 +440,7 @@ export default function AdminEOTRequest() {
                   marginBottom: '0.25rem',
                 }}
               >
-                Contractor Justification:
+                Remarks:
               </div>
               <div style={{ color: '#1f2937', fontStyle: 'italic' }}>
                 "{popup.item.justification}"
@@ -465,17 +465,19 @@ export default function AdminEOTRequest() {
                 <FormGrid columns={2}>
                   {popup.item.type === 'Extension of Time' ? (
                     <TextBox
-                      label="Approved Delay Extension (Days) *"
+                      label="Approved Delay Extension (Days)"
                       value={approvedDays}
                       onChange={setApprovedDays}
                       placeholder="e.g. 90"
+                      required
                     />
                   ) : (
                     <TextBox
-                      label="Sanctioned Revised Estimate Budget (₹) *"
+                      label="Sanctioned Revised Estimate Budget (₹)"
                       value={approvedBudget}
                       onChange={setApprovedBudget}
                       placeholder="e.g. 250000"
+                      required
                     />
                   )}
                   <div
@@ -499,11 +501,12 @@ export default function AdminEOTRequest() {
                 </FormGrid>
                 <div style={{ marginTop: '0.5rem', marginBottom: '1rem' }}>
                   <TextArea
-                    label="Executive Engineer Resolution Remarks *"
+                    label="Executive Engineer Resolution Remarks"
                     placeholder="Provide comments, reasons, or details of approval/rejection..."
                     value={resolution}
                     onChange={setResolution}
                     rows={3}
+                    required
                   />
                 </div>
                 <div className="flex justify-end gap-3 mt-4 border-top pt-4">

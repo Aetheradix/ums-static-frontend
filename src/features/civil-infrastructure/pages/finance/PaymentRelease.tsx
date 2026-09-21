@@ -790,10 +790,11 @@ export default function PaymentRelease() {
 
             <FormGrid columns={2}>
               <TextBox
-                label="UTR / NEFT Reference Number *"
+                label="UTR / NEFT Reference Number"
                 placeholder="e.g. UTR1029384756"
                 value={payRef}
                 onChange={setPayRef}
+                required
               />
             </FormGrid>
 
@@ -852,7 +853,7 @@ export default function PaymentRelease() {
                   ],
                   ['Request Date', popup.requestItem.requestDate],
                   ['Status', popup.requestItem.status],
-                  ['Justification Remarks', popup.requestItem.remarks],
+                  ['Remarks', popup.requestItem.remarks],
                   ['Approval Date', popup.requestItem.approvalDate || '—'],
                   [
                     'Approval Remarks',
@@ -865,8 +866,7 @@ export default function PaymentRelease() {
                     key={k}
                     style={{
                       gridColumn:
-                        k === 'Justification Remarks' ||
-                        k === 'Approval Remarks'
+                        k === 'Remarks' || k === 'Approval Remarks'
                           ? 'span 3'
                           : 'span 1',
                     }}
@@ -907,10 +907,11 @@ export default function PaymentRelease() {
 
                   <FormGrid columns={2}>
                     <TextBox
-                      label="UTR / NEFT Reference Number *"
+                      label="UTR / NEFT Reference Number"
                       placeholder="e.g. UTR1029384756"
                       value={payRef}
                       onChange={setPayRef}
+                      required
                     />
                   </FormGrid>
 

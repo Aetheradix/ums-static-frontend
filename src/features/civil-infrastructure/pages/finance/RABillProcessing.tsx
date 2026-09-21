@@ -499,7 +499,7 @@ export default function RABillProcessing() {
                     disabled
                   />
                   <DropDownList
-                    label="GST Rate *"
+                    label="GST Rate"
                     data={[
                       {
                         label: '18% (Standard Civil Construction Works)',
@@ -520,7 +520,7 @@ export default function RABillProcessing() {
                     required
                   />
                   <DropDownList
-                    label="GST Charge Mechanism *"
+                    label="GST Charge Mechanism"
                     data={[
                       {
                         label: 'Forward Charge (Billed by Contractor)',
@@ -582,7 +582,7 @@ export default function RABillProcessing() {
                     }
                   />
                   <DropDownList
-                    label="IT-TDS Sec 194C Rate *"
+                    label="IT-TDS Sec 194C Rate"
                     data={[
                       { label: '2% (Company / Partnership Firm)', value: 2 },
                       { label: '1% (Individual / Proprietorship)', value: 1 },
@@ -598,7 +598,7 @@ export default function RABillProcessing() {
 
                 <FormGrid columns={3}>
                   <DropDownList
-                    label="GST-TDS Sec 51 Rate *"
+                    label="GST-TDS Sec 51 Rate"
                     data={[
                       {
                         label: '2% (Contracts > ₹2.5 Lakhs: 1% CGST + 1% SGST)',
@@ -614,7 +614,7 @@ export default function RABillProcessing() {
                     }
                   />
                   <DropDownList
-                    label="BOCW Labour Welfare Cess *"
+                    label="BOCW Labour Welfare Cess"
                     data={[
                       { label: '1% (Mandatory BOCW Act 1996)', value: 1 },
                       { label: '0% (Exempt Supply Only)', value: 0 },

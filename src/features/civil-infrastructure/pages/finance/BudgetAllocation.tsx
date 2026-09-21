@@ -210,7 +210,11 @@ export default function BudgetAllocation() {
               allocatedAmount: amt,
               remarks: remarks.trim() || undefined,
               isLocked: isLockedCheckbox,
-              status: isLockedCheckbox ? 'Budget Locked' : 'BudgetAllocated',
+              lockedAt: isLockedCheckbox
+                ? d.lockedAt || new Date().toISOString().split('T')[0]
+                : undefined,
+              status: isLockedCheckbox ? 'BudgetLocked' : 'BudgetAllocated',
+              documentId: d.documentId || `doc-bg-${Date.now()}`,
               documentName: allocationDoc
                 ? allocationDoc.name
                 : d.documentName || `Budget_Order_${d.workCode}.pdf`,
@@ -487,6 +491,18 @@ export default function BudgetAllocation() {
                         : 'Allocation Pending',
                   },
                   {
+                    label: 'Locked At',
+                    value: popup.item.lockedAt
+                      ? popup.item.lockedAt
+                      : popup.item.isLocked
+                        ? 'Locked'
+                        : '—',
+                  },
+                  {
+                    label: 'Sanction / Budget Document',
+                    value: popup.item.documentName || '—',
+                  },
+                  {
                     label: 'Remarks / Authority Ref',
                     value: popup.item.remarks || 'None recorded',
                   },
@@ -518,7 +534,7 @@ export default function BudgetAllocation() {
 
             <FormGrid columns={2}>
               <DropDownList
-                label="Financial Year *"
+                label="Financial Year"
                 data={FINANCIAL_YEARS}
                 value={financialYearId}
                 onChange={val => setFinancialYearId(Number(val))}
@@ -527,7 +543,7 @@ export default function BudgetAllocation() {
               <NumberBox
                 value={budgetAmount ?? undefined}
                 onChange={val => setBudgetAmount(val ? Number(val) : null)}
-                label="Allocated Fund Amount (₹) *"
+                label="Allocated Fund Amount (₹)"
                 placeholder="e.g. 25000000.00"
                 mode="decimal"
                 required
@@ -535,7 +551,7 @@ export default function BudgetAllocation() {
             </FormGrid>
 
             <DropDownList
-              label="Budget Head of Account *"
+              label="Budget Head of Account"
               data={BUDGET_HEADS}
               value={budgetHeadId}
               onChange={val => setBudgetHeadId(Number(val))}

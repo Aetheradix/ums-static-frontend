@@ -7,7 +7,7 @@ import {
   GridPanel,
 } from 'shared/new-components';
 import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
-import { civilWorks, raBills, mbEntries } from '../../mocks';
+import { civilWorks, mbEntries, raBills } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 

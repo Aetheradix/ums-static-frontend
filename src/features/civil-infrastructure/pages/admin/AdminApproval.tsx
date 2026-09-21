@@ -137,14 +137,14 @@ export default function AdminApproval() {
               aaAmount: amount,
               administrativeSanctionId:
                 d.administrativeSanctionId || Date.now(),
-              aaStatus: 'AAApproved',
+              aaStatus: 'AaApproved',
               remark: remark.trim() || undefined,
               documentId: d.documentId || `doc-${Date.now()}`,
               documentName: docName,
               status:
                 d.status === 'Registered' ||
                 d.status === 'Requirement Generated'
-                  ? 'AA Approved'
+                  ? 'AaApproved'
                   : d.status,
             }
           : d
@@ -407,8 +407,8 @@ export default function AdminApproval() {
               <TextArea
                 value={remark}
                 onChange={val => setRemark(val)}
-                label="AA Justification / Remarks"
-                placeholder="Economic justification for approval..."
+                label="Remarks"
+                placeholder="Remarks for approval..."
                 rows={3}
                 autoResize
               />
@@ -515,7 +515,7 @@ export default function AdminApproval() {
                         : 'Not Sanctioned',
                   },
                   {
-                    label: 'Justification / Remarks',
+                    label: 'Remarks',
                     value:
                       popup.item.remark ||
                       popup.item.aaRemarks ||

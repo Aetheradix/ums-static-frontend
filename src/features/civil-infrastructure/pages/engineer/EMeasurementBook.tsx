@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
@@ -11,9 +11,10 @@ import {
   StatusBadge,
   Tabs,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import {
-  type MBEntry,
   type CivilWork,
+  type MBEntry,
   type RABill,
   boqItems,
   civilWorks,
@@ -21,7 +22,6 @@ import {
   milestones as initialMilestones,
   raBills,
 } from '../../mocks';
-import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
@@ -1403,9 +1403,11 @@ export default function EMeasurementBook() {
             required
           />
           <TextBox
-            label="Govt Rate (₹)"
+            label="Rate (₹)"
             value={
-              boqItem ? `₹${boqItem.govtRate.toLocaleString('en-IN')}` : '—'
+              boqItem
+                ? `₹${(boqItem.rate ?? boqItem.govtRate ?? 0).toLocaleString('en-IN')}`
+                : '—'
             }
             onChange={() => {}}
             disabled

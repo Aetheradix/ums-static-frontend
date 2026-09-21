@@ -7,41 +7,62 @@ declare namespace CivilManagement {
   // ─── Masters ─────────────────────────────────────────────────────────────────
 
   interface CivilProject {
-    id: string;
-    name: string;
-    description: string;
-    campus: string;
-    location: string;
+    projectId?: number;
+    id?: string | number;
+    projectDescription: string;
+    name?: string;
+    description?: string;
+    projectLocation?: string;
+    location?: string;
+    campusId?: number;
+    campusName?: string;
+    campus?: string;
+    projectDocument?: string;
     isActive: boolean;
   }
 
   interface SORType {
-    id: string;
+    id?: string | number;
+    sorTypeId?: number;
     code: string;
     name: string;
+    description?: string;
     isActive: boolean;
   }
 
   interface SORChapter {
-    id: string;
-    sorTypeId: string;
+    id?: string | number;
+    sorChapterId?: number;
+    sorTypeId: string | number;
     sorTypeName?: string;
+    sorTypeCode?: string;
     chapterNo: string;
+    chapterNumber?: string;
     name: string;
+    description?: string;
     isActive: boolean;
   }
 
   interface SORSubject {
-    id: string;
-    sorChapterId: string;
+    id?: string | number;
+    sorSubjectId?: number;
+    sorChapterId: string | number;
     sorChapterName?: string;
-    sorTypeId?: string;
+    chapterNo?: string;
+    chapterDescription?: string;
+    sorTypeId?: string | number;
+    sorTypeCode?: string;
     name: string;
+    description?: string;
+    referenceCode?: string;
+    referenceIsCode?: string;
+    paragraph?: string;
     isActive: boolean;
   }
 
   interface WorkCategoryMaster {
-    id: string;
+    id?: string | number;
+    workCategoryId?: number;
     code: string;
     name: string;
     description?: string;
@@ -49,18 +70,23 @@ declare namespace CivilManagement {
   }
 
   interface WorkDepartmentMaster {
-    id: string;
-    code: string;
+    id?: string | number;
+    workDepartmentId?: number;
+    code?: string;
     name: string;
+    description?: string;
     parentCategoryId?: string;
     isActive: boolean;
   }
 
   interface FundingSourceMaster {
-    id: string;
-    code: string;
+    id?: string | number;
+    fundingSourceId?: number;
+    code?: string;
     name: string;
-    sourceType:
+    fundingSourceName?: string;
+    description?: string;
+    sourceType?:
       | 'Central Govt'
       | 'State Govt'
       | 'UGC'
@@ -71,32 +97,41 @@ declare namespace CivilManagement {
   }
 
   interface MandateDocument {
-    id: string;
+    id?: string | number;
+    mandateDocumentId?: number;
     name: string;
-    description: string;
-    applicableCategories: string[]; // workCategoryIds
-    isMandatory: boolean;
-    maxFileSizeMB: number;
-    allowedFormats: string[]; // e.g. ['pdf', 'jpg']
+    description?: string;
+    isRequired?: boolean;
+    isMandatory?: boolean;
+    allowMultiple?: boolean;
+    allowMultipleFiles?: boolean;
+    applicableCategories?: string[]; // workCategoryIds
+    maxFileSizeMB?: number;
+    allowedFormats?: string[]; // e.g. ['pdf', 'jpg']
     isActive: boolean;
   }
 
   interface MBStatusMaster {
-    id: string;
-    code: string;
+    id?: string | number;
+    measurementBookStatusId?: number;
+    code?: string;
     name: string;
     description?: string;
-    sequence: number;
+    sequence?: number;
     isActive: boolean;
   }
 
   interface StatusMaster {
-    id: string;
-    module: string; // 'work' | 'tender' | 'mb' | 'ra-bill'
-    code: string;
-    label: string;
+    id?: string | number;
+    statusMasterId?: number;
+    statusType?: string;
+    statusTypeCode?: string;
+    status?: string;
+    module?: string; // 'work' | 'tender' | 'mb' | 'ra-bill'
+    code?: string;
+    label?: string;
     colorHex?: string;
-    sequence: number;
+    sequence?: number;
     isActive: boolean;
   }
 
@@ -539,29 +574,44 @@ declare namespace CivilManagement {
   // ─── Agency Registration (Unified) ───────────────────────────────────────────
 
   interface QualityLabItem {
-    id: string;
+    id?: string | number;
+    qualityLabId?: number;
     name: string;
-    contactPerson: string;
-    email: string;
-    mobile: string;
-    nablAccreditation: string;
+    labCode?: string;
+    labDirector?: string;
+    contactPerson?: string;
+    email?: string;
+    mobileNumber?: string;
+    mobile?: string;
+    nablAccreditationNumber?: string;
+    nablAccreditation?: string;
     nablValidity?: string;
-    scopeOfTesting: string;
-    address: string;
-    isActive: boolean;
+    testingScope?: string;
+    scopeOfTesting?: string;
+    labAddress?: string;
+    address?: string;
+    isActive?: boolean;
   }
 
   interface TPIAgencyItem {
-    id: string;
-    name: string;
-    contactPerson: string;
-    email: string;
-    mobile: string;
-    licenseNo: string;
+    id?: string | number;
+    qualityInspectionAgencyId?: number;
+    agencyName?: string;
+    name?: string;
+    agencyCode?: string;
+    contactPersonName?: string;
+    contactPerson?: string;
+    contactEmail?: string;
+    email?: string;
+    mobileNumber?: string;
+    mobile?: string;
+    licenseNumber?: string;
+    licenseNo?: string;
     licenseValidity?: string;
-    address: string;
+    officeAddress?: string;
+    address?: string;
     contractorClass?: string;
-    isActive: boolean;
+    isActive?: boolean;
   }
 
   interface VendorAgencyItem {

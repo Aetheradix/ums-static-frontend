@@ -12,9 +12,9 @@ import {
   StatusBadge,
 } from 'shared/new-components';
 import {
-  initialVendorAgencies,
   initialLabAgencies,
   initialTPIAgencies,
+  initialVendorAgencies,
   type MockVendorAgencyRegistration,
 } from '../../mocks';
 import { civilUrls } from '../../urls';

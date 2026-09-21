@@ -44,7 +44,7 @@ export default function RequestCC() {
       return;
     }
     if (!remarks.trim()) {
-      ToastService.error('Justification remarks are required.');
+      ToastService.error('Remarks are required.');
       return;
     }
 
@@ -278,7 +278,7 @@ export default function RequestCC() {
             <FormGrid columns={2}>
               <TextBox
                 type="date"
-                label="Actual Completion Date *"
+                label="Actual Completion Date"
                 value={completionDate}
                 onChange={setCompletionDate}
                 required
@@ -291,8 +291,8 @@ export default function RequestCC() {
               />
             </FormGrid>
             <TextArea
-              label="Site Engineer Audit Justification / Remarks *"
-              placeholder="Certify that all BOQ items are measured, quality passes recorded, and physical handover is completed..."
+              label="Remarks"
+              placeholder="Remarks certifying that all BOQ items are measured, quality passes recorded, and physical handover is completed..."
               value={remarks}
               onChange={setRemarks}
               rows={3}

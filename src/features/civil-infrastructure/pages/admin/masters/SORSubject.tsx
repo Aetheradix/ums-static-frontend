@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import { DropDownList, TextBox } from 'shared/components/forms';
+import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
 import {
   FormCard,
   FormPage,
@@ -9,11 +9,7 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
-import {
-  CIVIL_STORAGE_KEYS,
-  civilStorage,
-  useCivilStorage,
-} from '../../../civilStorage';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../../civilStorage';
 import {
   initialSORChapters,
   initialSORSubjects,
@@ -21,8 +17,6 @@ import {
 } from '../../../mocks';
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
-
-const STORAGE_SUBJECTS = CIVIL_STORAGE_KEYS.SOR_SUBJECTS;
 
 export default function SORSubjectMaster() {
   const [types] = useCivilStorage<CivilManagement.SORType[]>(
@@ -35,77 +29,154 @@ export default function SORSubjectMaster() {
     initialSORChapters
   );
 
-  const [data, setData] = useState<CivilManagement.SORSubject[]>(() => {
-    const saved = localStorage.getItem(STORAGE_SUBJECTS);
-    return saved ? JSON.parse(saved) : initialSORSubjects;
-  });
-
-  const [filterChapter, setFilterChapter] = useState<string>('ALL');
+  const [data, setData] = useCivilStorage<CivilManagement.SORSubject[]>(
+    CIVIL_STORAGE_KEYS.SOR_SUBJECTS,
+    initialSORSubjects
+  );
 
   const [popup, setPopup] = useState<{
     mode: 'closed' | 'add' | 'edit';
     item?: CivilManagement.SORSubject;
   }>({ mode: 'closed' });
 
+  const [formTypeId, setFormTypeId] = useState('');
   const [formChapterId, setFormChapterId] = useState('');
   const [formName, setFormName] = useState('');
-  const [formActive, setFormActive] = useState(true);
+  const [formRefCode, setFormRefCode] = useState('');
+  const [formParagraph, setFormParagraph] = useState('');
+  const [formDesc, setFormDesc] = useState('');
 
-  useEffect(() => {
-    civilStorage.set(STORAGE_SUBJECTS, data);
-  }, [data]);
+  const filteredChapters = useMemo(() => {
+    if (!formTypeId) return chapters;
+    return chapters.filter(
+      c => c.sorTypeId === formTypeId || (c as any).sorTypeCode === formTypeId
+    );
+  }, [chapters, formTypeId]);
 
-  const filteredData = useMemo(() => {
-    if (filterChapter === 'ALL') return data;
-    return data.filter(d => d.sorChapterId === filterChapter);
-  }, [data, filterChapter]);
+  const selectedChapter = useMemo(() => {
+    return chapters.find(
+      c => c.id === formChapterId || (c as any).sorChapterId === formChapterId
+    );
+  }, [chapters, formChapterId]);
 
   const openAdd = () => {
-    setFormChapterId(chapters[0]?.id || '');
+    const defaultType = String(types[0]?.id || '');
+    setFormTypeId(defaultType);
+    const firstChap =
+      chapters.find(c => String(c.sorTypeId) === defaultType) || chapters[0];
+    setFormChapterId(String(firstChap?.id || ''));
     setFormName('');
-    setFormActive(true);
+    setFormRefCode('');
+    setFormParagraph('');
+    setFormDesc('');
     setPopup({ mode: 'add' });
   };
 
   const openEdit = (item: CivilManagement.SORSubject) => {
-    setFormChapterId(item.sorChapterId);
-    setFormName(item.name);
-    setFormActive(item.isActive);
+    setFormTypeId(
+      String(item.sorTypeId || (item as any).sorTypeCode || types[0]?.id || '')
+    );
+    setFormChapterId(
+      String(
+        item.sorChapterId || (item as any).chapterId || chapters[0]?.id || ''
+      )
+    );
+    setFormName(item.name || (item as any).subjectName || '');
+    setFormRefCode(item.referenceCode || (item as any).refIsCode || '');
+    setFormParagraph(item.paragraph || (item as any).newPara || '');
+    setFormDesc(item.description || '');
     setPopup({ mode: 'edit', item });
+  };
+
+  const handleReset = () => {
+    if (popup.mode === 'edit' && popup.item) {
+      setFormTypeId(
+        String(
+          popup.item.sorTypeId ||
+            (popup.item as any).sorTypeCode ||
+            types[0]?.id ||
+            ''
+        )
+      );
+      setFormChapterId(
+        String(
+          popup.item.sorChapterId ||
+            (popup.item as any).chapterId ||
+            chapters[0]?.id ||
+            ''
+        )
+      );
+      setFormName(popup.item.name || (popup.item as any).subjectName || '');
+      setFormRefCode(
+        popup.item.referenceCode || (popup.item as any).refIsCode || ''
+      );
+      setFormParagraph(
+        popup.item.paragraph || (popup.item as any).newPara || ''
+      );
+      setFormDesc(popup.item.description || '');
+    } else {
+      const defaultType = String(types[0]?.id || '');
+      setFormTypeId(defaultType);
+      const firstChap =
+        chapters.find(c => String(c.sorTypeId) === defaultType) || chapters[0];
+      setFormChapterId(String(firstChap?.id || ''));
+      setFormName('');
+      setFormRefCode('');
+      setFormParagraph('');
+      setFormDesc('');
+    }
   };
 
   const handleSave = () => {
     if (!formChapterId || !formName.trim()) {
-      ToastService.error('Chapter and Subject Name are required.');
+      ToastService.error('SOR Chapter and Subject Name are required.');
       return;
     }
 
-    const chapObj = chapters.find(c => c.id === formChapterId);
-    const chapName = chapObj?.name || '';
-    const typeId = chapObj?.sorTypeId || '';
+    const chapObj = chapters.find(
+      c => c.id === formChapterId || (c as any).sorChapterId === formChapterId
+    );
+    const chapName = chapObj?.name || (chapObj as any)?.chapterDesc || '';
+    const chapNo = chapObj?.chapterNo || (chapObj as any)?.chapterNumber || '';
+    const typeObj = types.find(
+      t => t.id === formTypeId || t.code === formTypeId
+    );
+    const typeCode = typeObj?.code || 'SOR';
 
     if (popup.mode === 'add') {
       const newItem: CivilManagement.SORSubject = {
         id: `SSU-${Date.now().toString().slice(-4)}`,
+        sorTypeId: formTypeId,
+        sorTypeCode: typeCode,
         sorChapterId: formChapterId,
         sorChapterName: chapName,
-        sorTypeId: typeId,
+        chapterNo: chapNo,
+        chapterDescription: chapName,
         name: formName.trim(),
-        isActive: formActive,
+        referenceCode: formRefCode.trim() || undefined,
+        paragraph: formParagraph.trim() || undefined,
+        description: formDesc.trim() || undefined,
+        isActive: true,
       };
       setData(prev => [newItem, ...prev]);
-      ToastService.success(`SOR Subject "${newItem.name}" added successfully.`);
+      ToastService.success(
+        `SOR Subject "${newItem.name}" created successfully.`
+      );
     } else if (popup.mode === 'edit' && popup.item) {
       setData(prev =>
         prev.map(d =>
           d.id === popup.item!.id
             ? {
                 ...d,
+                sorTypeId: formTypeId,
                 sorChapterId: formChapterId,
                 sorChapterName: chapName,
-                sorTypeId: typeId,
+                chapterNo: chapNo,
+                chapterDescription: chapName,
                 name: formName.trim(),
-                isActive: formActive,
+                referenceCode: formRefCode.trim() || undefined,
+                paragraph: formParagraph.trim() || undefined,
+                description: formDesc.trim() || undefined,
               }
             : d
         )
@@ -119,10 +190,9 @@ export default function SORSubjectMaster() {
     setData(prev =>
       prev.map(d => {
         if (d.id === id) {
-          const next = !d.isActive;
-          ToastService.info(
-            `SOR Subject ${next ? 'Activated' : 'Deactivated'}.`
-          );
+          const current = d.isActive !== false;
+          const next = !current;
+          ToastService.info(`Subject ${next ? 'Activated' : 'Deactivated'}.`);
           return { ...d, isActive: next };
         }
         return d;
@@ -133,7 +203,7 @@ export default function SORSubjectMaster() {
   return (
     <FormPage
       title="SOR Subject Master"
-      description="Define specific item categories and subjects under each chapter (e.g., M25 RCC Columns, Excavation in hard rock)."
+      description="Manage Schedule of Rates (SOR) subjects for civil infrastructure."
       breadcrumbs={[
         { label: 'Home', to: '/home/menu' },
         { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
@@ -142,81 +212,98 @@ export default function SORSubjectMaster() {
         { label: 'SOR Subject' },
       ]}
     >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '1rem',
-          gap: '1rem',
-        }}
-      >
-        <div style={{ width: '360px' }}>
-          <DropDownList
-            label="Filter by Chapter"
-            data={[
-              { label: 'All Chapters', value: 'ALL' },
-              ...chapters.map(c => ({
-                label: `Ch-${c.chapterNo}: ${c.name}`,
-                value: c.id,
-              })),
-            ]}
-            textField="label"
-            optionValue="value"
-            value={filterChapter}
-            onChange={val => setFilterChapter(val as string)}
-          />
-        </div>
-        <Button
-          label="Add SOR Subject"
-          icon="plus"
-          variant="primary"
-          onClick={openAdd}
-        />
-      </div>
-
       <FormCard>
         <GridPanel
-          data={filteredData}
+          data={data}
           columns={[
             { cell: (_, o) => <span>{o.rowIndex + 1}</span>, width: '50px' },
             {
-              field: 'sorChapterName',
-              header: 'Chapter',
+              field: 'sorTypeCode',
+              header: 'SOR Type',
               cell: (item: CivilManagement.SORSubject) => {
-                const chap = chapters.find(c => c.id === item.sorChapterId);
+                const chap = chapters.find(
+                  c =>
+                    c.id === item.sorChapterId ||
+                    (c as any).sorChapterId === item.sorChapterId
+                );
+                const typ = types.find(
+                  t => t.id === item.sorTypeId || t.id === chap?.sorTypeId
+                );
                 return (
-                  <span style={{ fontSize: '0.8125rem', fontWeight: 600 }}>
-                    {chap
-                      ? `Ch-${chap.chapterNo}: ${chap.name}`
-                      : item.sorChapterName || item.sorChapterId}
+                  <span>{typ?.code || (item as any).sorTypeCode || 'SOR'}</span>
+                );
+              },
+            },
+            {
+              field: 'chapterNo',
+              header: 'Chapter No',
+              cell: (item: CivilManagement.SORSubject) => {
+                const chap = chapters.find(
+                  c =>
+                    c.id === item.sorChapterId ||
+                    (c as any).sorChapterId === item.sorChapterId
+                );
+                return (
+                  <span>
+                    {(item as any).chapterNo ||
+                      chap?.chapterNo ||
+                      (chap as any)?.chapterNumber ||
+                      '01'}
+                  </span>
+                );
+              },
+            },
+            {
+              field: 'chapterDescription',
+              header: 'Chapter Description',
+              cell: (item: CivilManagement.SORSubject) => {
+                const chap = chapters.find(
+                  c =>
+                    c.id === item.sorChapterId ||
+                    (c as any).sorChapterId === item.sorChapterId
+                );
+                return (
+                  <span>
+                    {item.sorChapterName ||
+                      (item as any).chapterDescription ||
+                      chap?.name ||
+                      (chap as any)?.chapterDesc ||
+                      '—'}
                   </span>
                 );
               },
             },
             {
               field: 'name',
-              header: 'Subject / Scope',
+              header: 'Subject Name',
               cell: (item: CivilManagement.SORSubject) => (
-                <span style={{ fontWeight: 600, color: '#1f2937' }}>
-                  {item.name}
+                <span style={{ fontWeight: 600, color: '#111827' }}>
+                  {item.name || (item as any).subjectName || '—'}
                 </span>
               ),
             },
             {
-              field: 'sorTypeId',
-              header: 'Classification',
-              cell: (item: CivilManagement.SORSubject) => {
-                const t = types.find(x => x.id === item.sorTypeId);
-                return (
-                  <span
-                    className="civil-pill blue"
-                    style={{ fontSize: '0.72rem' }}
-                  >
-                    {t?.code || 'SOR'}
-                  </span>
-                );
-              },
+              field: 'description',
+              header: 'Subject Description',
+              cell: (item: CivilManagement.SORSubject) => (
+                <span>{item.description || '—'}</span>
+              ),
+            },
+            {
+              field: 'referenceCode',
+              header: 'Ref. IS Code',
+              cell: (item: CivilManagement.SORSubject) => (
+                <span>
+                  {item.referenceCode || (item as any).refIsCode || 'N/A'}
+                </span>
+              ),
+            },
+            {
+              field: 'paragraph',
+              header: 'Paragraph',
+              cell: (item: CivilManagement.SORSubject) => (
+                <span>{item.paragraph || (item as any).newPara || 'N/A'}</span>
+              ),
             },
             {
               field: 'isActive',
@@ -224,7 +311,7 @@ export default function SORSubjectMaster() {
               cell: (item: CivilManagement.SORSubject) => (
                 <button
                   type="button"
-                  onClick={() => toggleStatus(item.id)}
+                  onClick={() => toggleStatus(String(item.id || ''))}
                   style={{
                     border: 'none',
                     background: 'transparent',
@@ -234,15 +321,15 @@ export default function SORSubjectMaster() {
                   title="Click to toggle status"
                 >
                   <StatusBadge
-                    label={item.isActive ? 'Active' : 'Inactive'}
-                    variant={item.isActive ? 'success' : 'neutral'}
+                    label={item.isActive !== false ? 'Active' : 'Inactive'}
+                    variant={item.isActive !== false ? 'success' : 'neutral'}
                   />
                 </button>
               ),
             },
             {
               field: 'id',
-              header: 'Actions',
+              header: 'Action',
               sortable: false,
               cell: (item: CivilManagement.SORSubject) => (
                 <div style={{ display: 'flex', gap: '0.375rem' }}>
@@ -253,77 +340,149 @@ export default function SORSubjectMaster() {
                     variant="outlined"
                     onClick={() => openEdit(item)}
                   />
-                  <Button
-                    size="small"
-                    label=""
-                    icon={item.isActive ? 'lock' : 'unlock'}
-                    variant="outlined"
-                    onClick={() => toggleStatus(item.id)}
-                  />
                 </div>
               ),
             },
           ]}
+          toolbar={
+            <Button
+              label="Create"
+              icon="plus"
+              variant="primary"
+              onClick={openAdd}
+            />
+          }
           searchBox
-          searchPlaceholder="Search SOR subjects..."
+          searchPlaceholder="Search subjects..."
         />
       </FormCard>
 
       <FormPopup
         visible={popup.mode !== 'closed'}
         onHide={() => setPopup({ mode: 'closed' })}
-        title={popup.mode === 'add' ? 'Add SOR Subject' : 'Edit SOR Subject'}
-        subtitle="Specify item trade subject under a chapter."
-        size="md"
+        title={
+          popup.mode === 'add' ? 'Add New SOR Subject' : 'Edit SOR Subject'
+        }
+        subtitle="Manage subject details under SOR types and chapters."
+        size="lg"
       >
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '1rem',
+            gap: '1.25rem',
             marginTop: '0.5rem',
           }}
         >
-          <DropDownList
-            label="Chapter"
-            data={chapters.map(c => ({
-              label: `Ch-${c.chapterNo}: ${c.name} (${types.find(t => t.id === c.sorTypeId)?.code || ''})`,
-              value: c.id,
-            }))}
-            textField="label"
-            optionValue="value"
-            value={formChapterId}
-            onChange={val => setFormChapterId(val as string)}
-            required
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '1.25rem',
+            }}
+          >
+            <DropDownList
+              label="SOR Type"
+              data={types.map(t => ({
+                label: `${t.code} — ${t.name || (t as any).type || (t as any).description || t.code}`,
+                value: t.id,
+              }))}
+              textField="label"
+              optionValue="value"
+              value={formTypeId}
+              onChange={val => {
+                const newTypeId = val as string;
+                setFormTypeId(newTypeId);
+                const firstMatching = chapters.find(
+                  c => c.sorTypeId === newTypeId
+                );
+                if (firstMatching) {
+                  setFormChapterId(String(firstMatching.id || ''));
+                }
+              }}
+              required
+            />
+            <DropDownList
+              label="SOR Chapter"
+              data={filteredChapters.map(c => ({
+                label: `${c.chapterNo || (c as any).chapterNumber} — ${c.name || (c as any).chapterDesc}`,
+                value: c.id,
+              }))}
+              textField="label"
+              optionValue="value"
+              value={formChapterId}
+              onChange={val => setFormChapterId(val as string)}
+              required
+            />
+          </div>
+
+          <TextArea
+            label="Chapter Description (Autofilled)"
+            value={
+              selectedChapter?.name ||
+              (selectedChapter as any)?.chapterDesc ||
+              (selectedChapter as any)?.description ||
+              ''
+            }
+            rows={2}
+            disabled
           />
-          <TextBox
-            label="Subject Title / Scope Description"
-            placeholder="e.g. M25 Grade RCC in Columns and Slabs"
-            value={formName}
-            onChange={setFormName}
-            required
-          />
-          <DropDownList
-            label="Status"
-            data={[
-              { label: 'Active', value: 'true' },
-              { label: 'Inactive', value: 'false' },
-            ]}
-            textField="label"
-            optionValue="value"
-            value={formActive ? 'true' : 'false'}
-            onChange={val => setFormActive(val === 'true')}
-          />
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '1.25rem',
+            }}
+          >
+            <TextBox
+              label="Subject Name"
+              placeholder="Enter subject name..."
+              value={formName}
+              onChange={setFormName}
+              required
+            />
+            <TextBox
+              label="Ref. IS Code"
+              placeholder="e.g. IS 456:2000"
+              value={formRefCode}
+              onChange={setFormRefCode}
+            />
+          </div>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '1.25rem',
+            }}
+          >
+            <TextArea
+              label="Subject Description"
+              placeholder="Enter subject technical details..."
+              value={formDesc}
+              onChange={setFormDesc}
+              rows={3}
+            />
+            <TextBox
+              label="Paragraph"
+              placeholder="e.g. Para 5.4"
+              value={formParagraph}
+              onChange={setFormParagraph}
+            />
+          </div>
+
           <div className="flex justify-end gap-3 mt-4">
             <Button
-              label="Cancel"
+              label="Reset"
+              icon="times"
               variant="outlined"
-              onClick={() => setPopup({ mode: 'closed' })}
+              onClick={handleReset}
             />
             <Button
-              label={popup.mode === 'add' ? 'Create Subject' : 'Save Changes'}
+              label="Save"
               variant="primary"
-              icon="check"
+              icon="save"
               onClick={handleSave}
             />
           </div>

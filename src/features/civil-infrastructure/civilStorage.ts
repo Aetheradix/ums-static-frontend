@@ -212,12 +212,146 @@ export const DEFAULT_DATA_MAP: Record<string, any> = {
 
 const EVENT_NAME = 'civil_storage_update';
 
+export function normalizeCivilItem(key: string, item: any): any {
+  if (!item || typeof item !== 'object') return item;
+
+  if (key === CIVIL_STORAGE_KEYS.SOR_TYPES) {
+    return {
+      ...item,
+      id: String(item.id || `ST-${item.code || '01'}`),
+      code: item.code || item.sorTypeCode || 'SOR',
+      name:
+        item.name ||
+        item.type ||
+        item.description ||
+        item.code ||
+        'Classification',
+      description: item.description || item.name || item.type || '',
+      isActive: item.isActive !== false,
+    };
+  }
+
+  if (key === CIVIL_STORAGE_KEYS.SOR_CHAPTERS) {
+    const rawNo = String(item.chapterNo || item.chapterNumber || '01').replace(
+      /^Ch-+/i,
+      ''
+    );
+    const mappedType =
+      item.sorTypeId ||
+      (item.sorTypeCode === 'ROAD'
+        ? 'ST-02'
+        : item.sorTypeCode === 'BLDG'
+          ? 'ST-01'
+          : item.sorTypeCode === 'ELEC'
+            ? 'ST-03'
+            : 'ST-01');
+    return {
+      ...item,
+      id: String(item.id || `SCH-${rawNo}`),
+      sorTypeId: String(mappedType),
+      sorTypeName:
+        item.sorTypeName ||
+        (mappedType === 'ST-02'
+          ? 'Roads, Pavements & Bridges'
+          : mappedType === 'ST-03'
+            ? 'Internal & External Electrical Works'
+            : 'Building & Civil Works'),
+      chapterNo: rawNo,
+      chapterNumber: rawNo,
+      name:
+        item.name || item.chapterDesc || item.description || `Chapter ${rawNo}`,
+      description: item.description || item.chapterDesc || item.name || '',
+      isActive: item.isActive !== false,
+    };
+  }
+
+  if (key === CIVIL_STORAGE_KEYS.SOR_SUBJECTS) {
+    return {
+      ...item,
+      id: String(item.id || `SSU-${Date.now()}`),
+      sorChapterId: String(item.sorChapterId || 'SCH-01'),
+      sorChapterName:
+        item.sorChapterName || item.chapterDesc || 'Chapter Works',
+      sorTypeId: String(item.sorTypeId || 'ST-01'),
+      name:
+        item.name || item.subjectName || item.description || 'Subject Trade',
+      referenceCode: item.referenceCode || item.refIsCode || undefined,
+      paragraph: item.paragraph || item.newPara || undefined,
+      isActive: item.isActive !== false,
+    };
+  }
+
+  if (key === CIVIL_STORAGE_KEYS.FUNDING_SOURCES) {
+    return {
+      ...item,
+      fundingSourceId: Number(item.fundingSourceId || item.id || 1),
+      name:
+        item.name || item.fundingSourceName || item.code || 'Funding Source',
+      fundingSourceName:
+        item.fundingSourceName || item.name || 'Funding Source',
+      sourceType: item.sourceType || 'University',
+      isActive: item.isActive !== false,
+    };
+  }
+
+  if (key === CIVIL_STORAGE_KEYS.PROJECTS) {
+    return {
+      ...item,
+      projectId: Number(item.projectId || item.id || 1),
+      id: item.id || String(item.projectId || 1),
+      projectDescription:
+        item.projectDescription ||
+        item.name ||
+        item.area ||
+        item.description ||
+        'Civil Project',
+      projectLocation:
+        item.projectLocation || item.location || 'Campus Location',
+      campusId: Number(item.campusId || 1),
+      campusName: item.campusName || item.campus || 'Main Campus',
+      isActive: item.isActive !== false,
+    };
+  }
+
+  if (key === CIVIL_STORAGE_KEYS.MANDATE_DOCUMENTS) {
+    const isReq =
+      item.isRequired !== undefined
+        ? !!item.isRequired
+        : item.isMandatory !== undefined
+          ? !!item.isMandatory
+          : false;
+    const allowMult =
+      item.allowMultiple !== undefined
+        ? !!item.allowMultiple
+        : item.allowMultipleFiles !== undefined
+          ? !!item.allowMultipleFiles
+          : false;
+    return {
+      ...item,
+      id: String(item.id || `MD-${Date.now()}`),
+      name: item.name || item.documentName || item.title || 'Mandate Document',
+      description: item.description || item.desc || '',
+      isRequired: isReq,
+      isMandatory: isReq,
+      allowMultiple: allowMult,
+      allowMultipleFiles: allowMult,
+      isActive: item.isActive !== false,
+    };
+  }
+
+  return item;
+}
+
 export const civilStorage = {
   get<T>(key: string, defaultVal?: T): T {
     try {
       const saved = localStorage.getItem(key);
       if (saved !== null) {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          return parsed.map(it => normalizeCivilItem(key, it)) as T;
+        }
+        return normalizeCivilItem(key, parsed) as T;
       }
     } catch (e) {
       console.warn(`[civilStorage] Failed parsing ${key}`, e);
@@ -226,7 +360,11 @@ export const civilStorage = {
       defaultVal !== undefined ? defaultVal : (DEFAULT_DATA_MAP[key] as T);
     if (fallback !== undefined) {
       try {
-        localStorage.setItem(key, JSON.stringify(fallback));
+        const normalized = Array.isArray(fallback)
+          ? fallback.map(it => normalizeCivilItem(key, it))
+          : normalizeCivilItem(key, fallback);
+        localStorage.setItem(key, JSON.stringify(normalized));
+        return normalized as T;
       } catch (e) {
         // quota exceeded or private mode
       }

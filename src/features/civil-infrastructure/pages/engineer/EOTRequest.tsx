@@ -302,34 +302,37 @@ export default function EOTRequest() {
           <>
             <FormGrid columns={2}>
               <DropDownList
-                label="Work *"
+                label="Work"
                 data={WORK_OPTIONS}
                 textField="name"
                 optionValue="value"
                 value={form.workId}
                 onChange={v => setForm(f => ({ ...f, workId: v as string }))}
+                required
               />
               <DropDownList
-                label="Request Type *"
+                label="Request Type"
                 data={EOT_TYPES}
                 textField="name"
                 optionValue="value"
                 value={form.type}
                 onChange={v => setForm(f => ({ ...f, type: v as any }))}
+                required
               />
             </FormGrid>
             {form.type === 'Extension of Time' && (
               <FormGrid columns={2}>
                 <TextBox
-                  label="Days Extension Requested *"
+                  label="Days Extension Requested"
                   placeholder="e.g. 92"
                   value={String(form.daysRequested ?? '')}
                   onChange={v =>
                     setForm(f => ({ ...f, daysRequested: Number(v) }))
                   }
+                  required
                 />
                 <DatePicker
-                  label="Proposed New End Date *"
+                  label="Proposed New End Date"
                   value={
                     form.proposedEndDate
                       ? new Date(form.proposedEndDate)
@@ -341,31 +344,35 @@ export default function EOTRequest() {
                       proposedEndDate: v ? v.toISOString().split('T')[0] : '',
                     }))
                   }
+                  required
                 />
               </FormGrid>
             )}
             {form.type === 'Revised Estimate' && (
               <TextBox
-                label="Additional Budget Required (₹) *"
+                label="Additional Budget Required (₹)"
                 placeholder="e.g. 280000"
                 value={String(form.additionalBudget ?? '')}
                 onChange={v =>
                   setForm(f => ({ ...f, additionalBudget: Number(v) }))
                 }
+                required
               />
             )}
             <TextBox
-              label="Reason *"
+              label="Reason"
               placeholder="e.g. Monsoon season delay + Supply chain disruption"
               value={form.reason ?? ''}
               onChange={v => setForm(f => ({ ...f, reason: v }))}
+              required
             />
             <TextArea
-              label="Detailed Justification *"
-              placeholder="Site records, rainfall data, delays by day..."
+              label="Remarks"
+              placeholder="Detailed remarks, site records, rainfall data, delays by day..."
               rows={4}
               value={form.justification ?? ''}
               onChange={v => setForm(f => ({ ...f, justification: v }))}
+              required
             />
             <div className="flex justify-end gap-3 mt-4">
               <Button
@@ -418,7 +425,7 @@ export default function EOTRequest() {
                     : '—',
                 ],
                 ['Reason', popup.item.reason],
-                ['Justification', popup.item.justification],
+                ['Remarks', popup.item.justification],
                 ['Status', popup.item.status],
                 [
                   'Approved Days',

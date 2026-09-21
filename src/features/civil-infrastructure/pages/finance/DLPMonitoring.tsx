@@ -767,7 +767,7 @@ export default function DLPMonitoring() {
         >
           <FormGrid columns={2}>
             <DropDownList
-              label="Defect Category *"
+              label="Defect Category"
               data={[
                 { label: 'Structural Cracks / Settlement', value: 'Crack' },
                 { label: 'Roof / Wall Seepage & Dampness', value: 'Seepage' },
@@ -791,7 +791,7 @@ export default function DLPMonitoring() {
               required
             />
             <TextBox
-              label="Specific Location / Grid *"
+              label="Specific Location / Grid"
               placeholder="e.g. 2nd Floor Corridor Grid B-3"
               value={defectForm.location}
               onChange={val => setDefectForm({ ...defectForm, location: val })}
@@ -800,16 +800,17 @@ export default function DLPMonitoring() {
           </FormGrid>
 
           <TextArea
-            label="Detailed Defect Description *"
+            label="Detailed Defect Description"
             placeholder="Describe the nature, extent, and observed impact of the defect..."
             value={defectForm.description}
             onChange={val => setDefectForm({ ...defectForm, description: val })}
             rows={2}
+            required
           />
 
           <FormGrid columns={3}>
             <TextBox
-              label="Reported Date *"
+              label="Reported Date"
               type="date"
               value={defectForm.reportedDate}
               onChange={val =>
@@ -818,7 +819,7 @@ export default function DLPMonitoring() {
               required
             />
             <TextBox
-              label="Notice to Contractor Date *"
+              label="Notice to Contractor Date"
               type="date"
               value={defectForm.contractorNotifiedDate}
               onChange={val =>
@@ -827,7 +828,7 @@ export default function DLPMonitoring() {
               required
             />
             <TextBox
-              label="Rectification Deadline *"
+              label="Rectification Deadline"
               type="date"
               value={defectForm.rectificationDeadline}
               onChange={val =>
@@ -930,14 +931,14 @@ export default function DLPMonitoring() {
 
           <FormGrid columns={2}>
             <TextBox
-              label="Release Sanction Order No *"
+              label="Release Sanction Order No"
               placeholder="ORD/RET/2026/012"
               value={releaseForm.orderNo}
               onChange={val => setReleaseForm({ ...releaseForm, orderNo: val })}
               required
             />
             <TextBox
-              label="Sanction Order Date *"
+              label="Sanction Order Date"
               type="date"
               value={releaseForm.releaseDate}
               onChange={val =>
@@ -949,7 +950,7 @@ export default function DLPMonitoring() {
 
           <FormGrid columns={2}>
             <TextBox
-              label="Retention Amount to Release (₹) *"
+              label="Retention Amount to Release (₹)"
               type="number"
               value={String(releaseForm.amount)}
               onChange={val =>
@@ -973,7 +974,7 @@ export default function DLPMonitoring() {
 
           <FormGrid columns={2}>
             <TextBox
-              label="PFMS / Bank Disbursement Reference *"
+              label="PFMS / Bank Disbursement Reference"
               placeholder="PFMS/RET/2026/88921"
               value={releaseForm.paymentRef}
               onChange={val =>
@@ -982,7 +983,7 @@ export default function DLPMonitoring() {
               required
             />
             <TextBox
-              label="Sanctioning Authority *"
+              label="Sanctioning Authority"
               value={releaseForm.authorizedBy}
               onChange={val =>
                 setReleaseForm({ ...releaseForm, authorizedBy: val })

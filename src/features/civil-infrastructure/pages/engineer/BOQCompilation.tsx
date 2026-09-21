@@ -6,8 +6,8 @@ import {
   FormPopup,
   GridPanel,
 } from 'shared/new-components';
-import { type BOQItem, boqItems as initialBOQ, civilWorks } from '../../mocks';
 import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
+import { type BOQItem, civilWorks, boqItems as initialBOQ } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
@@ -250,7 +250,8 @@ export default function BOQCompilation() {
                   <thead>
                     <tr>
                       <th>#</th>
-                      <th>SOR Code</th>
+                      <th>BOQ Code</th>
+                      <th>Item Code</th>
                       <th>Description</th>
                       <th>Unit</th>
                       <th>Rate (₹)</th>
@@ -269,24 +270,56 @@ export default function BOQCompilation() {
                               fontFamily: 'monospace',
                               fontSize: '0.72rem',
                               fontWeight: 700,
+                              color: '#0f766e',
+                            }}
+                          >
+                            {item.billOfQuantityCode || '—'}
+                          </span>
+                        </td>
+                        <td>
+                          <span
+                            style={{
+                              fontFamily: 'monospace',
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
                               color: '#1d4ed8',
                             }}
                           >
-                            {item.sorCode}
+                            {item.sorCode || (item.isNonSor ? 'NON-SOR' : '—')}
                           </span>
                         </td>
-                        <td style={{ maxWidth: 200 }}>{item.description}</td>
+                        <td style={{ maxWidth: 200 }}>
+                          {item.itemDescription || item.description}
+                        </td>
                         <td>{item.unit}</td>
-                        <td>₹{item.govtRate.toLocaleString('en-IN')}</td>
+                        <td>
+                          ₹
+                          {(item.rate ?? item.govtRate ?? 0).toLocaleString(
+                            'en-IN'
+                          )}
+                        </td>
                         <td style={{ fontWeight: 700 }}>
-                          {item.approvedQty.toLocaleString('en-IN')}
+                          {(
+                            item.approvedQuantity ??
+                            item.approvedQty ??
+                            0
+                          ).toLocaleString('en-IN')}
                         </td>
                         <td style={{ fontWeight: 700, color: '#16a34a' }}>
                           ₹{(item.amount / 100000).toFixed(2)}L
                         </td>
                         <td>
                           {item.isLocked ? (
-                            <span className="civil-pill green">🔒</span>
+                            <span
+                              className="civil-pill green"
+                              title={
+                                item.lockedAt
+                                  ? `Locked on ${new Date(item.lockedAt).toLocaleDateString('en-IN')}`
+                                  : 'Locked'
+                              }
+                            >
+                              🔒 Locked
+                            </span>
                           ) : (
                             <span className="civil-pill amber">Draft</span>
                           )}
@@ -295,7 +328,7 @@ export default function BOQCompilation() {
                     ))}
                     <tr style={{ background: '#f0fdf4' }}>
                       <td
-                        colSpan={6}
+                        colSpan={7}
                         style={{ textAlign: 'right', fontWeight: 700 }}
                       >
                         Grand Total

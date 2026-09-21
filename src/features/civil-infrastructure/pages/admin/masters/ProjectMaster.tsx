@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
+import { DropDownList, FileUpload, TextBox } from 'shared/components/forms';
 import {
   FormCard,
   FormPage,
@@ -9,96 +9,111 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
-import { CIVIL_STORAGE_KEYS, civilStorage } from '../../../civilStorage';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../../civilStorage';
 import { initialCivilProjects } from '../../../mocks';
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
 
-const STORAGE_PROJECTS = CIVIL_STORAGE_KEYS.PROJECTS;
+const CAMPUS_OPTIONS = [
+  { label: 'Main Campus', value: 1 },
+  { label: 'City Campus', value: 2 },
+  { label: 'North Campus', value: 3 },
+  { label: 'South Campus', value: 4 },
+];
 
 export default function ProjectMaster() {
-  const [data, setData] = useState<CivilManagement.CivilProject[]>(() => {
-    const saved = localStorage.getItem(STORAGE_PROJECTS);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        // Normalize if old schema
-        return parsed.map((p: any) => ({
-          id: p.id || `PROJ-${Math.random().toString(36).substring(2, 6)}`,
-          name: p.name || p.area || 'Untitled Project',
-          description: p.description || p.location || '',
-          campus: p.campus || 'Main Campus',
-          location: p.location || '',
-          isActive: p.isActive !== false,
-        }));
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    return initialCivilProjects;
-  });
+  const [data, setData] = useCivilStorage<CivilManagement.CivilProject[]>(
+    CIVIL_STORAGE_KEYS.PROJECTS,
+    initialCivilProjects
+  );
 
   const [popup, setPopup] = useState<{
     mode: 'closed' | 'add' | 'edit';
     item?: CivilManagement.CivilProject;
   }>({ mode: 'closed' });
 
-  const [formName, setFormName] = useState('');
-  const [formDesc, setFormDesc] = useState('');
-  const [formCampus, setFormCampus] = useState('Main Campus');
+  const [formDescription, setFormDescription] = useState('');
+  const [formCampusId, setFormCampusId] = useState<number>(1);
   const [formLocation, setFormLocation] = useState('');
-  const [formActive, setFormActive] = useState(true);
-
-  useEffect(() => {
-    civilStorage.set(STORAGE_PROJECTS, data);
-  }, [data]);
+  const [formDocument, setFormDocument] = useState<File | null>(null);
 
   const openAdd = () => {
-    setFormName('');
-    setFormDesc('');
-    setFormCampus('Main Campus');
+    setFormDescription('');
+    setFormCampusId(1);
     setFormLocation('');
-    setFormActive(true);
+    setFormDocument(null);
     setPopup({ mode: 'add' });
   };
 
   const openEdit = (item: CivilManagement.CivilProject) => {
-    setFormName(item.name);
-    setFormDesc(item.description);
-    setFormCampus(item.campus);
-    setFormLocation(item.location);
-    setFormActive(item.isActive);
+    setFormDescription(item.projectDescription || item.name || '');
+    setFormCampusId(item.campusId || 1);
+    setFormLocation(item.projectLocation || item.location || '');
+    setFormDocument(null);
     setPopup({ mode: 'edit', item });
   };
 
+  const handleReset = () => {
+    if (popup.mode === 'edit' && popup.item) {
+      setFormDescription(
+        popup.item.projectDescription || popup.item.name || ''
+      );
+      setFormCampusId(popup.item.campusId || 1);
+      setFormLocation(popup.item.projectLocation || popup.item.location || '');
+      setFormDocument(null);
+    } else {
+      setFormDescription('');
+      setFormCampusId(1);
+      setFormLocation('');
+      setFormDocument(null);
+    }
+  };
+
   const handleSave = () => {
-    if (!formName.trim() || !formLocation.trim()) {
-      ToastService.error('Project Name and Location are required.');
+    if (!formDescription.trim()) {
+      ToastService.error('Project Description is required.');
       return;
     }
 
+    const campusObj =
+      CAMPUS_OPTIONS.find(c => c.value === Number(formCampusId)) ||
+      CAMPUS_OPTIONS[0];
+
     if (popup.mode === 'add') {
+      const nextId = data.length + 1;
       const newItem: CivilManagement.CivilProject = {
-        id: `PROJ-${Date.now().toString().slice(-4)}`,
-        name: formName.trim(),
-        description: formDesc.trim(),
-        campus: formCampus,
-        location: formLocation.trim(),
-        isActive: formActive,
+        projectId: nextId,
+        id: `PROJ-${String(nextId).padStart(2, '0')}`,
+        projectDescription: formDescription.trim(),
+        name: formDescription.trim(),
+        projectLocation: formLocation.trim() || undefined,
+        location: formLocation.trim() || undefined,
+        campusId: Number(formCampusId),
+        campusName: campusObj.label,
+        campus: campusObj.label,
+        projectDocument: formDocument ? formDocument.name : undefined,
+        isActive: true,
       };
       setData(prev => [newItem, ...prev]);
-      ToastService.success(`Project "${newItem.name}" created successfully.`);
+      ToastService.success(
+        `Project "${newItem.projectDescription}" created successfully.`
+      );
     } else if (popup.mode === 'edit' && popup.item) {
       setData(prev =>
         prev.map(d =>
-          d.id === popup.item!.id
+          d.projectId === popup.item!.projectId || d.id === popup.item!.id
             ? {
                 ...d,
-                name: formName.trim(),
-                description: formDesc.trim(),
-                campus: formCampus,
-                location: formLocation.trim(),
-                isActive: formActive,
+                projectDescription: formDescription.trim(),
+                name: formDescription.trim(),
+                projectLocation: formLocation.trim() || undefined,
+                location: formLocation.trim() || undefined,
+                campusId: Number(formCampusId),
+                campusName: campusObj.label,
+                campus: campusObj.label,
+                projectDocument: formDocument
+                  ? formDocument.name
+                  : d.projectDocument,
               }
             : d
         )
@@ -108,10 +123,10 @@ export default function ProjectMaster() {
     setPopup({ mode: 'closed' });
   };
 
-  const toggleStatus = (id: string) => {
+  const toggleStatus = (item: CivilManagement.CivilProject) => {
     setData(prev =>
       prev.map(d => {
-        if (d.id === id) {
+        if (d.projectId === item.projectId || d.id === item.id) {
           const next = !d.isActive;
           ToastService.info(`Project ${next ? 'Activated' : 'Deactivated'}.`);
           return { ...d, isActive: next };
@@ -123,14 +138,14 @@ export default function ProjectMaster() {
 
   return (
     <FormPage
-      title="Project Master"
-      description="Define civil infrastructure master projects, development zones, and strategic university campus schemes."
+      title="Civil Project Master"
+      description="Manage civil construction projects linked to university campuses."
       breadcrumbs={[
         { label: 'Home', to: '/home/menu' },
         { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
         { label: 'Admin Login', to: civilUrls.adminMenu },
         { label: 'External Masters', to: civilUrls.externalMastersMenu },
-        { label: 'Project Master' },
+        { label: 'Civil Project Master' },
       ]}
     >
       <div
@@ -141,7 +156,7 @@ export default function ProjectMaster() {
         }}
       >
         <Button
-          label="Add New Project"
+          label="Create"
           icon="plus"
           variant="primary"
           onClick={openAdd}
@@ -154,62 +169,56 @@ export default function ProjectMaster() {
           columns={[
             { cell: (_, o) => <span>{o.rowIndex + 1}</span>, width: '50px' },
             {
-              field: 'id',
-              header: 'Project Code',
+              field: 'campusName',
+              header: 'Campus Name',
               cell: (item: CivilManagement.CivilProject) => (
-                <span
-                  style={{
-                    fontFamily: 'monospace',
-                    fontWeight: 700,
-                    color: '#1d4ed8',
-                  }}
-                >
-                  {item.id}
+                <span style={{ fontWeight: 500 }}>
+                  {item.campusName || item.campus || 'Main Campus'}
                 </span>
               ),
             },
             {
-              field: 'name',
-              header: 'Project Scheme / Name',
+              field: 'projectDescription',
+              header: 'Project Description',
               cell: (item: CivilManagement.CivilProject) => (
-                <div>
-                  <div style={{ fontWeight: 600, color: '#111827' }}>
-                    {item.name}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: '0.75rem',
-                      color: '#6b7280',
-                      marginTop: '2px',
-                    }}
-                  >
-                    {item.description}
-                  </div>
-                </div>
+                <span style={{ fontWeight: 600, color: '#111827' }}>
+                  {item.projectDescription || item.name}
+                </span>
               ),
             },
             {
-              field: 'campus',
-              header: 'Campus & Location',
+              field: 'projectLocation',
+              header: 'Project Location',
               cell: (item: CivilManagement.CivilProject) => (
-                <div>
+                <span>{item.projectLocation || item.location || 'N/A'}</span>
+              ),
+            },
+            {
+              field: 'projectDocument',
+              header: 'Project Document',
+              cell: (item: CivilManagement.CivilProject) => {
+                if (!item.projectDocument) {
+                  return <span style={{ color: '#9ca3af' }}>N/A</span>;
+                }
+                return (
                   <span
-                    className="civil-pill blue"
-                    style={{ fontSize: '0.72rem' }}
-                  >
-                    {item.campus}
-                  </span>
-                  <div
                     style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.375rem',
+                      padding: '0.25rem 0.625rem',
                       fontSize: '0.75rem',
-                      color: '#4b5563',
-                      marginTop: '2px',
+                      fontWeight: 500,
+                      color: '#1d4ed8',
+                      backgroundColor: '#eff6ff',
+                      borderRadius: '0.375rem',
+                      border: '1px solid #bfdbfe',
                     }}
                   >
-                    {item.location}
-                  </div>
-                </div>
-              ),
+                    📄 {item.projectDocument}
+                  </span>
+                );
+              },
             },
             {
               field: 'isActive',
@@ -217,7 +226,7 @@ export default function ProjectMaster() {
               cell: (item: CivilManagement.CivilProject) => (
                 <button
                   type="button"
-                  onClick={() => toggleStatus(item.id)}
+                  onClick={() => toggleStatus(item)}
                   style={{
                     border: 'none',
                     background: 'transparent',
@@ -234,8 +243,8 @@ export default function ProjectMaster() {
               ),
             },
             {
-              field: 'id',
-              header: 'Actions',
+              field: 'projectId',
+              header: 'Action',
               sortable: false,
               cell: (item: CivilManagement.CivilProject) => (
                 <div style={{ display: 'flex', gap: '0.375rem' }}>
@@ -246,103 +255,85 @@ export default function ProjectMaster() {
                     variant="outlined"
                     onClick={() => openEdit(item)}
                   />
-                  <Button
-                    size="small"
-                    label=""
-                    icon={item.isActive ? 'lock' : 'unlock'}
-                    variant="outlined"
-                    onClick={() => toggleStatus(item.id)}
-                  />
                 </div>
               ),
             },
           ]}
           searchBox
-          searchPlaceholder="Search projects by name, code or campus..."
+          searchPlaceholder="Search projects..."
         />
       </FormCard>
 
       <FormPopup
         visible={popup.mode !== 'closed'}
         onHide={() => setPopup({ mode: 'closed' })}
-        title={
-          popup.mode === 'add' ? 'Add Civil Project' : 'Edit Civil Project'
+        title={popup.mode === 'add' ? 'Create Project' : 'Edit Project'}
+        subtitle={
+          popup.mode === 'add'
+            ? 'Fill in the details to add a new civil project.'
+            : 'Update the civil project details.'
         }
-        subtitle="Establish top-level development scheme under which individual works are registered."
         size="lg"
       >
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '1rem',
+            gap: '1.25rem',
             marginTop: '0.5rem',
           }}
         >
-          <TextBox
-            label="Project Scheme Name"
-            placeholder="e.g. Science Complex Development Phase II"
-            value={formName}
-            onChange={setFormName}
-            required
-          />
-          <TextArea
-            label="Project Scope & Description"
-            placeholder="Detailed description of works encompassed under this scheme..."
-            value={formDesc}
-            onChange={setFormDesc}
-            rows={3}
-          />
           <div
             style={{
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
-              gap: '1rem',
+              gap: '1.25rem',
             }}
           >
             <DropDownList
-              label="Campus"
-              data={[
-                { label: 'Main Campus', value: 'Main Campus' },
-                { label: 'City Campus', value: 'City Campus' },
-                { label: 'North Campus', value: 'North Campus' },
-                { label: 'South Campus', value: 'South Campus' },
-              ]}
+              label="University Campus"
+              data={CAMPUS_OPTIONS}
               textField="label"
               optionValue="value"
-              value={formCampus}
-              onChange={val => setFormCampus(val as string)}
+              value={formCampusId}
+              onChange={val => setFormCampusId(Number(val))}
               required
             />
             <TextBox
-              label="Site Location / Zone"
-              placeholder="e.g. North Sector – Academic Zone Plot 12"
-              value={formLocation}
-              onChange={setFormLocation}
+              label="Project Description"
+              placeholder="Enter Project Description (e.g. Block A Construction)"
+              value={formDescription}
+              onChange={setFormDescription}
               required
             />
+            <TextBox
+              label="Project Location"
+              placeholder="Enter Location / Address"
+              value={formLocation}
+              onChange={setFormLocation}
+            />
           </div>
-          <DropDownList
-            label="Status"
-            data={[
-              { label: 'Active (Works can be registered)', value: 'true' },
-              { label: 'Inactive (Registration suspended)', value: 'false' },
-            ]}
-            textField="label"
-            optionValue="value"
-            value={formActive ? 'true' : 'false'}
-            onChange={val => setFormActive(val === 'true')}
+
+          <FileUpload
+            label="Project Document"
+            accept=".pdf,.png,.jpg,.jpeg,image/*"
+            mode="file"
+            uploadNote="Upload project document (.pdf, .png, .jpg, .jpeg)"
+            value={formDocument}
+            onChange={file => setFormDocument(file)}
           />
+
           <div className="flex justify-end gap-3 mt-4">
             <Button
-              label="Cancel"
+              label="Reset"
+              icon="times"
               variant="outlined"
-              onClick={() => setPopup({ mode: 'closed' })}
+              onClick={handleReset}
             />
             <Button
-              label={popup.mode === 'add' ? 'Create Project' : 'Save Changes'}
+              label="Save"
               variant="primary"
-              icon="check"
+              icon="save"
               onClick={handleSave}
             />
           </div>

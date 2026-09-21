@@ -312,10 +312,11 @@ export default function FinalBillSettlement() {
 
             <FormGrid columns={2}>
               <TextBox
-                label="Voucher No *"
+                label="Voucher No"
                 placeholder="e.g. VOUCH/FIN/2026/045"
                 value={voucherNo}
                 onChange={setVoucherNo}
+                required
               />
             </FormGrid>
 

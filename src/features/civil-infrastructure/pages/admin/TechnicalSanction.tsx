@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ToastService } from 'services';
 import { Button, ButtonPanel, StatusButton } from 'shared/components/buttons';
-import { NumberBox, TextArea } from 'shared/components/forms';
+import { FileUpload, NumberBox, TextArea } from 'shared/components/forms';
 import GridActionButtons from 'shared/components/grid/GridActionButtons';
 import { AlertPanel } from 'shared/components/panels';
 import {
@@ -32,6 +32,8 @@ export default function TechnicalSanction() {
       ...w,
       workRegistrationId: w.workRegistrationId || Number(w.id) || 0,
       code: w.code || w.workId || `CW-2025-${String(w.id).padStart(3, '0')}`,
+      administrativeApprovalAmount:
+        w.administrativeApprovalAmount || w.aaAmount || 0,
       aaAmount: w.administrativeApprovalAmount || w.aaAmount || 0,
       technicalSanctionAmount:
         w.technicalSanctionAmount ?? (w.tsAmount > 0 ? w.tsAmount : undefined),
@@ -41,10 +43,15 @@ export default function TechnicalSanction() {
           ? 'Approved'
           : 'Pending'),
       remark: w.remark || w.tsRemarks || '',
+      documentName:
+        w.documentName ||
+        (w.tsAmount > 0 ? `TS_Order_${w.code || w.workId}.pdf` : undefined),
       canGrantTs:
         w.canGrantTs !== undefined
           ? w.canGrantTs
-          : (w.aaStatus === 'AAApproved' || w.aaAmount > 0) &&
+          : (w.aaStatus === 'AaApproved' ||
+              w.aaStatus === 'AAApproved' ||
+              w.aaAmount > 0) &&
             (!w.technicalSanctionAmount || w.technicalSanctionAmount <= 0) &&
             w.tsStatus !== 'Approved',
       isActive: w.isActive !== false,
@@ -54,6 +61,7 @@ export default function TechnicalSanction() {
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
   const [tsAmount, setTsAmount] = useState<number | null>(null);
   const [remark, setRemark] = useState('');
+  const [documentFile, setDocumentFile] = useState<File | null>(null);
 
   useEffect(() => {
     civilStorage.set(CIVIL_STORAGE_KEYS.WORKS, data);
@@ -63,6 +71,7 @@ export default function TechnicalSanction() {
     setPopup({ mode: 'closed' });
     setTsAmount(null);
     setRemark('');
+    setDocumentFile(null);
   };
 
   const isEligibleForSanction = (c: any) => {
@@ -75,7 +84,10 @@ export default function TechnicalSanction() {
       (c.technicalSanctionAmount != null && c.technicalSanctionAmount > 0)
     );
     const hasAa = Boolean(
-      c.aaStatus === 'AAApproved' || (c.aaAmount && c.aaAmount > 0)
+      c.aaStatus === 'AaApproved' ||
+      c.aaStatus === 'AAApproved' ||
+      (c.aaAmount && c.aaAmount > 0) ||
+      (c.administrativeApprovalAmount && c.administrativeApprovalAmount > 0)
     );
     return hasAa && !hasActiveTs;
   };
@@ -84,13 +96,17 @@ export default function TechnicalSanction() {
     const defaultAmount =
       item.technicalSanctionAmount && item.technicalSanctionAmount > 0
         ? item.technicalSanctionAmount
-        : item.aaAmount && item.aaAmount > 0
-          ? item.aaAmount
-          : item.estimatedCost > 0
-            ? item.estimatedCost
-            : 0;
+        : item.administrativeApprovalAmount &&
+            item.administrativeApprovalAmount > 0
+          ? item.administrativeApprovalAmount
+          : item.aaAmount && item.aaAmount > 0
+            ? item.aaAmount
+            : item.estimatedCost > 0
+              ? item.estimatedCost
+              : 0;
     setTsAmount(defaultAmount);
     setRemark(item.remark || '');
+    setDocumentFile(null);
     setPopup({ mode: 'grant', item });
   };
 
@@ -108,7 +124,10 @@ export default function TechnicalSanction() {
       return;
     }
 
-    const maxAllowedAmount = popup.item.aaAmount ?? popup.item.estimatedCost;
+    const maxAllowedAmount =
+      popup.item.administrativeApprovalAmount ??
+      popup.item.aaAmount ??
+      popup.item.estimatedCost;
     if (maxAllowedAmount > 0 && enteredAmount > maxAllowedAmount) {
       ToastService.error(
         `Technical Sanction Amount (${formatCurrency(enteredAmount)}) cannot exceed the Approved AA Amount (${formatCurrency(maxAllowedAmount)}).`
@@ -117,6 +136,10 @@ export default function TechnicalSanction() {
     }
 
     const targetItem = popup.item;
+    const docName = documentFile
+      ? documentFile.name
+      : targetItem.documentName ||
+        `TS_Order_${targetItem.code || targetItem.workId}.pdf`;
 
     setData(prev =>
       prev.map(d =>
@@ -130,9 +153,11 @@ export default function TechnicalSanction() {
               tsStatus: 'Approved',
               canGrantTs: false,
               remark: remark.trim() || undefined,
+              documentId: d.documentId || `doc-ts-${Date.now()}`,
+              documentName: docName,
               status:
                 d.status === 'AaApproved' || d.status === 'AA Approved'
-                  ? 'TS Granted'
+                  ? 'TsGranted'
                   : d.status,
             }
           : d
@@ -518,6 +543,12 @@ export default function TechnicalSanction() {
                 mode="decimal"
                 required
               />
+              <FileUpload
+                label="Technical Sanction Order Document (PDF/DOC)"
+                accept=".pdf,.doc,.docx"
+                value={documentFile}
+                onChange={file => setDocumentFile(file)}
+              />
               <TextArea
                 value={remark}
                 onChange={val => setRemark(val)}
@@ -533,7 +564,12 @@ export default function TechnicalSanction() {
               Technical Sanction certifies engineering feasibility and
               establishes the technical expenditure limit. The TS Amount cannot
               exceed the approved AA Amount (
-              {popup.item.aaAmount ? formatCurrency(popup.item.aaAmount) : '—'}
+              {popup.item.administrativeApprovalAmount || popup.item.aaAmount
+                ? formatCurrency(
+                    popup.item.administrativeApprovalAmount ||
+                      popup.item.aaAmount
+                  )
+                : '—'}
               ). Any cost overrun requires a Revised Estimate.
             </AlertPanel>
 

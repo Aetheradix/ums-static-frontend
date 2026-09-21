@@ -493,14 +493,14 @@ export default function QualityTesting() {
                     )}
                     <FormGrid columns={2}>
                       <TextBox
-                        label="Observed Value *"
+                        label="Observed Value"
                         placeholder="e.g. 22.4 N/mm²"
                         value={observedValue}
                         onChange={setObservedValue}
                         required
                       />
                       <TextBox
-                        label="Lab Certificate No. *"
+                        label="Lab Certificate No."
                         placeholder="e.g. IIT/BPL/CC/2025/0142"
                         value={certNo}
                         onChange={setCertNo}
@@ -509,7 +509,7 @@ export default function QualityTesting() {
                     </FormGrid>
                     <FormGrid columns={2}>
                       <DropDownList
-                        label="Test Result *"
+                        label="Test Result"
                         data={['Pass', 'Fail', 'Re-test Required'].map(v => ({
                           name: v,
                           value: v,
@@ -518,13 +518,15 @@ export default function QualityTesting() {
                         optionValue="value"
                         value={result}
                         onChange={v => setResult(v as any)}
+                        required
                       />
                       <DatePicker
-                        label="Test Date *"
+                        label="Test Date"
                         value={testDate ? new Date(testDate) : undefined}
                         onChange={v =>
                           setTestDate(v ? v.toISOString().split('T')[0] : '')
                         }
+                        required
                       />
                     </FormGrid>
                     <div style={{ marginBottom: '1rem' }}>

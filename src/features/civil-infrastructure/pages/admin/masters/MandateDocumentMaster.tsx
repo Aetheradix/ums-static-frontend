@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
+import { Checkbox, TextArea, TextBox } from 'shared/components/forms';
 import {
   FormCard,
   FormPage,
@@ -9,27 +9,16 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
-import {
-  CIVIL_STORAGE_KEYS,
-  civilStorage,
-  useCivilStorage,
-} from '../../../civilStorage';
-import { initialMandateDocuments, initialWorkCategories } from '../../../mocks';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../../civilStorage';
+import { initialMandateDocuments } from '../../../mocks';
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
 
-const STORAGE_DOCS = CIVIL_STORAGE_KEYS.MANDATE_DOCUMENTS;
-
 export default function MandateDocumentMaster() {
-  const [categories] = useCivilStorage<CivilManagement.WorkCategoryMaster[]>(
-    CIVIL_STORAGE_KEYS.WORK_CATEGORIES,
-    initialWorkCategories
+  const [data, setData] = useCivilStorage<CivilManagement.MandateDocument[]>(
+    CIVIL_STORAGE_KEYS.MANDATE_DOCUMENTS,
+    initialMandateDocuments
   );
-
-  const [data, setData] = useState<CivilManagement.MandateDocument[]>(() => {
-    const saved = localStorage.getItem(STORAGE_DOCS);
-    return saved ? JSON.parse(saved) : initialMandateDocuments;
-  });
 
   const [popup, setPopup] = useState<{
     mode: 'closed' | 'add' | 'edit';
@@ -38,36 +27,41 @@ export default function MandateDocumentMaster() {
 
   const [formName, setFormName] = useState('');
   const [formDesc, setFormDesc] = useState('');
-  const [formMandatory, setFormMandatory] = useState(true);
-  const [formMaxMB, setFormMaxMB] = useState('10');
-  const [formFormats, setFormFormats] = useState('pdf');
-  const [formCategories, setFormCategories] = useState<string[]>([]);
-  const [formActive, setFormActive] = useState(true);
-
-  useEffect(() => {
-    civilStorage.set(STORAGE_DOCS, data);
-  }, [data]);
+  const [formRequired, setFormRequired] = useState(false);
+  const [formAllowMultiple, setFormAllowMultiple] = useState(false);
 
   const openAdd = () => {
     setFormName('');
     setFormDesc('');
-    setFormMandatory(true);
-    setFormMaxMB('10');
-    setFormFormats('pdf');
-    setFormCategories(categories.map(c => c.id));
-    setFormActive(true);
+    setFormRequired(false);
+    setFormAllowMultiple(false);
     setPopup({ mode: 'add' });
   };
 
   const openEdit = (item: CivilManagement.MandateDocument) => {
-    setFormName(item.name);
-    setFormDesc(item.description);
-    setFormMandatory(item.isMandatory);
-    setFormMaxMB(item.maxFileSizeMB.toString());
-    setFormFormats(item.allowedFormats.join(', '));
-    setFormCategories(item.applicableCategories || []);
-    setFormActive(item.isActive);
+    setFormName(item.name || '');
+    setFormDesc(item.description || '');
+    setFormRequired(item.isRequired ?? item.isMandatory ?? false);
+    setFormAllowMultiple(
+      item.allowMultiple ?? item.allowMultipleFiles ?? false
+    );
     setPopup({ mode: 'edit', item });
+  };
+
+  const handleReset = () => {
+    if (popup.mode === 'edit' && popup.item) {
+      setFormName(popup.item.name || '');
+      setFormDesc(popup.item.description || '');
+      setFormRequired(popup.item.isRequired ?? popup.item.isMandatory ?? false);
+      setFormAllowMultiple(
+        popup.item.allowMultiple ?? popup.item.allowMultipleFiles ?? false
+      );
+    } else {
+      setFormName('');
+      setFormDesc('');
+      setFormRequired(false);
+      setFormAllowMultiple(false);
+    }
   };
 
   const handleSave = () => {
@@ -76,25 +70,21 @@ export default function MandateDocumentMaster() {
       return;
     }
 
-    const maxMbParsed = parseInt(formMaxMB, 10) || 10;
-    const formatArr = formFormats
-      .split(',')
-      .map(s => s.trim().toLowerCase())
-      .filter(Boolean);
-
     if (popup.mode === 'add') {
       const newItem: CivilManagement.MandateDocument = {
         id: `MD-${Date.now().toString().slice(-4)}`,
         name: formName.trim(),
         description: formDesc.trim(),
-        applicableCategories: formCategories,
-        isMandatory: formMandatory,
-        maxFileSizeMB: maxMbParsed,
-        allowedFormats: formatArr.length > 0 ? formatArr : ['pdf'],
-        isActive: formActive,
+        isRequired: formRequired,
+        isMandatory: formRequired,
+        allowMultiple: formAllowMultiple,
+        allowMultipleFiles: formAllowMultiple,
+        isActive: true,
       };
       setData(prev => [newItem, ...prev]);
-      ToastService.success(`Mandate Document "${newItem.name}" added.`);
+      ToastService.success(
+        `Mandate Document "${newItem.name}" added successfully.`
+      );
     } else if (popup.mode === 'edit' && popup.item) {
       setData(prev =>
         prev.map(d =>
@@ -103,27 +93,26 @@ export default function MandateDocumentMaster() {
                 ...d,
                 name: formName.trim(),
                 description: formDesc.trim(),
-                applicableCategories: formCategories,
-                isMandatory: formMandatory,
-                maxFileSizeMB: maxMbParsed,
-                allowedFormats: formatArr.length > 0 ? formatArr : ['pdf'],
-                isActive: formActive,
+                isRequired: formRequired,
+                isMandatory: formRequired,
+                allowMultiple: formAllowMultiple,
+                allowMultipleFiles: formAllowMultiple,
               }
             : d
         )
       );
-      ToastService.success(`Mandate Document updated.`);
+      ToastService.success(`Mandate Document updated successfully.`);
     }
     setPopup({ mode: 'closed' });
   };
 
-  const toggleStatus = (id: string) => {
+  const toggleStatus = (item: CivilManagement.MandateDocument) => {
     setData(prev =>
       prev.map(d => {
-        if (d.id === id) {
+        if (d.id === item.id) {
           const next = !d.isActive;
           ToastService.info(
-            `Document rule ${next ? 'Activated' : 'Deactivated'}.`
+            `Document "${d.name}" ${next ? 'Activated' : 'Deactivated'}.`
           );
           return { ...d, isActive: next };
         }
@@ -132,21 +121,15 @@ export default function MandateDocumentMaster() {
     );
   };
 
-  const toggleCategorySelection = (catId: string) => {
-    setFormCategories(prev =>
-      prev.includes(catId) ? prev.filter(c => c !== catId) : [...prev, catId]
-    );
-  };
-
   return (
     <FormPage
       title="Mandate Document Master"
-      description="Define mandatory statutory clearance, technical drawings, and verification documents required during Work Registration."
+      description="Manage mandate documents for civil engineering works."
       breadcrumbs={[
         { label: 'Home', to: '/home/menu' },
+        { label: 'Campus Facilities', to: '/home/menu' },
         { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
-        { label: 'Admin Login', to: civilUrls.adminMenu },
-        { label: 'External Masters', to: civilUrls.externalMastersMenu },
+        { label: 'Masters', to: civilUrls.adminMenu },
         { label: 'Mandate Document' },
       ]}
     >
@@ -158,7 +141,7 @@ export default function MandateDocumentMaster() {
         }}
       >
         <Button
-          label="Add Mandate Document"
+          label="Create"
           icon="plus"
           variant="primary"
           onClick={openAdd}
@@ -172,76 +155,32 @@ export default function MandateDocumentMaster() {
             { cell: (_, o) => <span>{o.rowIndex + 1}</span>, width: '50px' },
             {
               field: 'name',
-              header: 'Document Requirement',
-              cell: (item: CivilManagement.MandateDocument) => (
-                <div>
-                  <div style={{ fontWeight: 600, color: '#111827' }}>
-                    {item.name}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: '0.75rem',
-                      color: '#6b7280',
-                      marginTop: '2px',
-                    }}
-                  >
-                    {item.description}
-                  </div>
-                </div>
-              ),
+              header: 'Name',
+              sortable: true,
             },
             {
-              field: 'isMandatory',
-              header: 'Mandatory?',
+              field: 'description',
+              header: 'Description',
+              sortable: true,
+            },
+            {
+              field: 'isRequired',
+              header: 'Is Required',
+              sortable: true,
               cell: (item: CivilManagement.MandateDocument) => (
-                <span
-                  className={`civil-pill ${item.isMandatory ? 'red' : 'gray'}`}
-                  style={{ fontSize: '0.72rem' }}
-                >
-                  {item.isMandatory ? 'Mandatory' : 'Optional'}
+                <span>
+                  {item.isRequired || item.isMandatory ? 'Yes' : 'No'}
                 </span>
               ),
             },
             {
-              field: 'allowedFormats',
-              header: 'Upload Constraints',
+              field: 'allowMultiple',
+              header: 'Allow Multiple',
+              sortable: true,
               cell: (item: CivilManagement.MandateDocument) => (
-                <div style={{ fontSize: '0.75rem', color: '#4b5563' }}>
-                  <span>Max: {item.maxFileSizeMB} MB</span>
-                  <div style={{ color: '#6b7280', marginTop: '2px' }}>
-                    Formats: {item.allowedFormats.join(', ').toUpperCase()}
-                  </div>
-                </div>
-              ),
-            },
-            {
-              field: 'applicableCategories',
-              header: 'Applicable Categories',
-              cell: (item: CivilManagement.MandateDocument) => (
-                <div
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '0.25rem',
-                    maxWidth: '240px',
-                  }}
-                >
-                  {item.applicableCategories?.map(catId => {
-                    const cat = categories.find(c => c.id === catId);
-                    return (
-                      <span
-                        key={catId}
-                        className="civil-pill blue"
-                        style={{
-                          fontSize: '0.68rem',
-                          padding: '0.15rem 0.4rem',
-                        }}
-                      >
-                        {cat?.code || catId}
-                      </span>
-                    );
-                  })}
-                </div>
+                <span>
+                  {item.allowMultiple || item.allowMultipleFiles ? 'Yes' : 'No'}
+                </span>
               ),
             },
             {
@@ -250,7 +189,7 @@ export default function MandateDocumentMaster() {
               cell: (item: CivilManagement.MandateDocument) => (
                 <button
                   type="button"
-                  onClick={() => toggleStatus(item.id)}
+                  onClick={() => toggleStatus(item)}
                   style={{
                     border: 'none',
                     background: 'transparent',
@@ -268,7 +207,7 @@ export default function MandateDocumentMaster() {
             },
             {
               field: 'id',
-              header: 'Actions',
+              header: 'Action',
               sortable: false,
               cell: (item: CivilManagement.MandateDocument) => (
                 <div style={{ display: 'flex', gap: '0.375rem' }}>
@@ -279,19 +218,12 @@ export default function MandateDocumentMaster() {
                     variant="outlined"
                     onClick={() => openEdit(item)}
                   />
-                  <Button
-                    size="small"
-                    label=""
-                    icon={item.isActive ? 'lock' : 'unlock'}
-                    variant="outlined"
-                    onClick={() => toggleStatus(item.id)}
-                  />
                 </div>
               ),
             },
           ]}
           searchBox
-          searchPlaceholder="Search document requirements..."
+          searchPlaceholder="Search..."
         />
       </FormCard>
 
@@ -300,142 +232,68 @@ export default function MandateDocumentMaster() {
         onHide={() => setPopup({ mode: 'closed' })}
         title={
           popup.mode === 'add'
-            ? 'Add Mandate Document Rule'
-            : 'Edit Mandate Document Rule'
+            ? 'Create Mandate Document'
+            : 'Edit Mandate Document'
         }
-        subtitle="Specify document required during civil work registration."
-        size="lg"
+        subtitle={
+          popup.mode === 'add'
+            ? 'Fill in the details to add a new mandate document.'
+            : 'Fill in the details to edit the mandate document.'
+        }
+        size="md"
       >
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '1rem',
+            gap: '1.25rem',
             marginTop: '0.5rem',
           }}
         >
           <TextBox
-            label="Document Title / Requirement Name"
-            placeholder="e.g. Detailed Estimate & Preliminary Survey Report"
+            label="Name"
+            placeholder="Enter Mandate Document Name"
             value={formName}
             onChange={setFormName}
             required
           />
           <TextArea
-            label="Instructions for Uploading Engineer"
-            placeholder="Specify what should be contained in this document..."
+            label="Description"
+            placeholder="Enter Description"
             value={formDesc}
             onChange={setFormDesc}
-            rows={2}
+            rows={3}
           />
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: '1fr 1fr 1fr',
-              gap: '1rem',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '1.5rem',
             }}
           >
-            <DropDownList
-              label="Requirement Type"
-              data={[
-                { label: 'Mandatory (Blocks Submission)', value: 'true' },
-                { label: 'Optional (Recommended)', value: 'false' },
-              ]}
-              textField="label"
-              optionValue="value"
-              value={formMandatory ? 'true' : 'false'}
-              onChange={val => setFormMandatory(val === 'true')}
+            <Checkbox
+              label="Is Required"
+              checked={formRequired}
+              onChange={setFormRequired}
             />
-            <TextBox
-              label="Max File Size (MB)"
-              placeholder="10"
-              value={formMaxMB}
-              onChange={setFormMaxMB}
-            />
-            <TextBox
-              label="Allowed Formats"
-              placeholder="pdf, jpg, png"
-              value={formFormats}
-              onChange={setFormFormats}
+            <Checkbox
+              label="Allow Multiple Files"
+              checked={formAllowMultiple}
+              onChange={setFormAllowMultiple}
             />
           </div>
-
-          <div>
-            <label
-              style={{
-                fontSize: '0.8125rem',
-                fontWeight: 600,
-                color: '#374151',
-                display: 'block',
-                marginBottom: '0.5rem',
-              }}
-            >
-              Applicable Work Categories:
-            </label>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '0.5rem',
-              }}
-            >
-              {categories.map(cat => {
-                const checked = formCategories.includes(cat.id);
-                return (
-                  <label
-                    key={cat.id}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      padding: '0.5rem 0.75rem',
-                      borderRadius: '0.5rem',
-                      border: checked
-                        ? '1px solid #3b82f6'
-                        : '1px solid #e5e7eb',
-                      background: checked ? '#eff6ff' : '#ffffff',
-                      cursor: 'pointer',
-                      fontSize: '0.8125rem',
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      onChange={() => toggleCategorySelection(cat.id)}
-                    />
-                    <span>
-                      <strong>{cat.code}</strong> — {cat.name}
-                    </span>
-                  </label>
-                );
-              })}
-            </div>
-          </div>
-
-          <DropDownList
-            label="Status"
-            data={[
-              { label: 'Active', value: 'true' },
-              { label: 'Inactive', value: 'false' },
-            ]}
-            textField="label"
-            optionValue="value"
-            value={formActive ? 'true' : 'false'}
-            onChange={val => setFormActive(val === 'true')}
-          />
 
           <div className="flex justify-end gap-3 mt-4">
             <Button
-              label="Cancel"
+              label="Reset"
+              icon="times"
               variant="outlined"
-              onClick={() => setPopup({ mode: 'closed' })}
+              onClick={handleReset}
             />
             <Button
-              label={
-                popup.mode === 'add' ? 'Create Requirement' : 'Save Changes'
-              }
+              label="Save"
               variant="primary"
-              icon="check"
+              icon="save"
               onClick={handleSave}
             />
           </div>

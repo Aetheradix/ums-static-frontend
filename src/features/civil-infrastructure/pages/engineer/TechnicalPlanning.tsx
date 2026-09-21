@@ -3,9 +3,9 @@ import { ToastService } from 'services';
 import { Button, StatusButton } from 'shared/components/buttons';
 import {
   DropDownList,
+  FormSubSection,
   NumberBox,
   TextBox,
-  FormSubSection,
 } from 'shared/components/forms';
 import GridActionButtons from 'shared/components/grid/GridActionButtons';
 import {
@@ -20,8 +20,8 @@ import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import {
   civilWorks,
   initialTechnicalPlans,
-  type MockTechnicalPlan,
   type CivilWork,
+  type MockTechnicalPlan,
 } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -43,8 +43,9 @@ const CONCRETE_GRADES = [
 ];
 
 const STATUS_OPTIONS = [
+  { label: 'Draft', value: 'Draft' },
   { label: 'Submitted', value: 'Submitted' },
-  { label: 'Under Review', value: 'Under Review' },
+  { label: 'Under Review', value: 'UnderReview' },
   { label: 'Approved', value: 'Approved' },
   { label: 'Rejected', value: 'Rejected' },
 ];
@@ -56,7 +57,9 @@ const statusVariantMap: Record<
   approved: 'approved',
   rejected: 'rejected',
   submitted: 'pending',
+  underreview: 'pending',
   'under review': 'pending',
+  draft: 'neutral',
 };
 
 export default function TechnicalPlanning() {
@@ -355,7 +358,7 @@ export default function TechnicalPlanning() {
               icon="assignment"
             >
               <DropDownList
-                label="Work Registration *"
+                label="Work Registration"
                 data={workOptions}
                 textField="text"
                 optionValue="value"
@@ -364,7 +367,7 @@ export default function TechnicalPlanning() {
                 required
               />
               <DropDownList
-                label="Technical Plan Status *"
+                label="Technical Plan Status"
                 data={STATUS_OPTIONS}
                 textField="label"
                 optionValue="value"
@@ -380,7 +383,7 @@ export default function TechnicalPlanning() {
               icon="square_foot"
             >
               <NumberBox
-                label="Plot Area (Sq. Ft.) *"
+                label="Plot Area (Sq. Ft.)"
                 placeholder="e.g. 5000.00"
                 value={formPlotArea}
                 onChange={v => setFormPlotArea(Number(v) || 0)}
@@ -413,7 +416,7 @@ export default function TechnicalPlanning() {
               icon="landscape"
             >
               <TextBox
-                label="Soil Type *"
+                label="Soil Type"
                 placeholder="e.g. Medium Sandy Clay / Black Cotton"
                 value={formSoilType}
                 onChange={setFormSoilType}
@@ -421,7 +424,7 @@ export default function TechnicalPlanning() {
                 required
               />
               <NumberBox
-                label="Bearing Capacity (KN/m²) *"
+                label="Bearing Capacity (KN/m²)"
                 placeholder="e.g. 150.00"
                 value={formBearingCapacity}
                 onChange={v => setFormBearingCapacity(Number(v) || 0)}
@@ -436,7 +439,7 @@ export default function TechnicalPlanning() {
               icon="engineering"
             >
               <DropDownList
-                label="Concrete Grade *"
+                label="Concrete Grade"
                 data={CONCRETE_GRADES}
                 textField="label"
                 optionValue="value"

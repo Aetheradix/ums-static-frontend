@@ -417,7 +417,7 @@ export default function TenderOversight() {
                   >
                     <FormGrid columns={2}>
                       <DropDownList
-                        label="Registered Work *"
+                        label="Registered Work"
                         data={works
                           .filter((w: any) =>
                             [
@@ -441,9 +441,10 @@ export default function TenderOversight() {
                           const wk = works.find((w: any) => w.id === v);
                           if (wk) setMapContractAmt(String(wk.estimatedCost));
                         }}
+                        required
                       />
                       <DropDownList
-                        label="Contractor / Agency *"
+                        label="Contractor / Agency"
                         data={(contractors.length > 0
                           ? contractors
                           : initialContractors
@@ -460,6 +461,7 @@ export default function TenderOversight() {
                         optionValue="value"
                         value={mapContractorId}
                         onChange={v => setMapContractorId(v as string)}
+                        required
                       />
                       <DropDownList
                         label="TPI Quality Agency"
@@ -494,13 +496,14 @@ export default function TenderOversight() {
                         onChange={v => setMapQualityLabId(v as string)}
                       />
                       <TextBox
-                        label="BOQ Value (₹) *"
+                        label="BOQ Value (₹)"
                         placeholder="e.g. 26200000"
                         value={mapContractAmt}
                         onChange={v => setMapContractAmt(v)}
+                        required
                       />
                       <DropDownList
-                        label="Tender Obtained At *"
+                        label="Tender Obtained At"
                         data={['Below', 'Above', 'At Par'].map(v => ({
                           name: v,
                           value: v,
@@ -512,6 +515,7 @@ export default function TenderOversight() {
                           setMapTenderPricingType(v as string);
                           setMapTenderPercent('');
                         }}
+                        required
                       />
                       {(mapTenderPricingType === 'Below' ||
                         mapTenderPricingType === 'Above') && (
@@ -523,20 +527,20 @@ export default function TenderOversight() {
                         />
                       )}
                       <TextBox
-                        label="Actual Tender Amount (₹) *"
+                        label="Actual Tender Amount (₹)"
                         placeholder="e.g. 25000000"
                         value={mapActualTenderAmt}
                         onChange={v => setMapActualTenderAmt(v)}
                         required
                       />
                       <TextBox
-                        label="Security Deposit Amount "
+                        label="Security Deposit Amount"
                         placeholder="e.g. 1310000"
                         value={mapSdAmount}
                         onChange={v => setMapSdAmount(v)}
                       />
                       <DatePicker
-                        label="Commencement Date *"
+                        label="Commencement Date"
                         value={
                           mapCommenceDate
                             ? new Date(mapCommenceDate)
@@ -547,9 +551,10 @@ export default function TenderOversight() {
                             v ? v.toISOString().split('T')[0] : ''
                           )
                         }
+                        required
                       />
                       <DatePicker
-                        label="Scheduled Completion Date *"
+                        label="Scheduled Completion Date"
                         value={
                           mapComplDate ? new Date(mapComplDate) : undefined
                         }
@@ -558,6 +563,7 @@ export default function TenderOversight() {
                             v ? v.toISOString().split('T')[0] : ''
                           )
                         }
+                        required
                       />
                     </FormGrid>
                     <div className="mt-6 flex justify-end gap-3 pt-4 border-t border-gray-100">

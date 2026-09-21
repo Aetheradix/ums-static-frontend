@@ -1,99 +1,101 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ToastService } from 'services';
-import { Button } from 'shared/components/buttons';
-import { DropDownList, TextBox } from 'shared/components/forms';
+import { Button, StatusButton } from 'shared/components/buttons';
+import { TextBox } from 'shared/components/forms';
 import {
+  FormActions,
   FormCard,
   FormPage,
   FormPopup,
   GridPanel,
-  StatusBadge,
 } from 'shared/new-components';
 import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../../civilStorage';
 import { initialFundingSources } from '../../../mocks';
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
 
-const SOURCE_TYPE_OPTIONS = [
-  { label: 'UGC Grant', value: 'UGC' },
-  { label: 'State Govt Grant', value: 'State Govt' },
-  { label: 'Central Govt Grant', value: 'Central Govt' },
-  { label: 'University Internal Fund', value: 'University' },
-  { label: 'External / CSR / Donor', value: 'External' },
-  { label: 'Other Sponsoring Agency', value: 'Other' },
-];
+type PopupState =
+  | { mode: 'closed' }
+  | { mode: 'create' }
+  | { mode: 'edit'; item: CivilManagement.FundingSourceMaster };
 
 export default function FundingSourceMaster() {
   const [data, setData] = useCivilStorage<
     CivilManagement.FundingSourceMaster[]
   >(CIVIL_STORAGE_KEYS.FUNDING_SOURCES, initialFundingSources);
 
-  const [popup, setPopup] = useState<{
-    mode: 'closed' | 'add' | 'edit';
-    item?: CivilManagement.FundingSourceMaster;
-  }>({ mode: 'closed' });
+  const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
 
-  const [formCode, setFormCode] = useState('');
-  const [formName, setFormName] = useState('');
-  const [formSourceType, setFormSourceType] =
-    useState<CivilManagement.FundingSourceMaster['sourceType']>('UGC');
-  const [formActive, setFormActive] = useState(true);
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
 
-  const openAdd = () => {
-    setFormCode('');
-    setFormName('');
-    setFormSourceType('UGC');
-    setFormActive(true);
-    setPopup({ mode: 'add' });
+  const closePopup = useCallback(() => setPopup({ mode: 'closed' }), []);
+
+  const openCreate = () => {
+    setName('');
+    setDescription('');
+    setPopup({ mode: 'create' });
   };
 
   const openEdit = (item: CivilManagement.FundingSourceMaster) => {
-    setFormCode(item.code);
-    setFormName(item.name);
-    setFormSourceType(item.sourceType);
-    setFormActive(item.isActive);
+    setName(item.name || item.fundingSourceName || '');
+    setDescription(item.description || '');
     setPopup({ mode: 'edit', item });
   };
 
-  const handleSave = () => {
-    if (!formCode.trim() || !formName.trim()) {
-      ToastService.error('Funding Code and Source Name are required.');
+  const handleReset = () => {
+    if (popup.mode === 'edit' && popup.item) {
+      openEdit(popup.item);
+    } else {
+      openCreate();
+    }
+  };
+
+  const handleSave = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!name.trim()) {
+      ToastService.error('Funding Source Name is required.');
       return;
     }
 
-    if (popup.mode === 'add') {
+    if (popup.mode === 'create') {
+      const nextId = data.length + 1;
       const newItem: CivilManagement.FundingSourceMaster = {
-        id: `FS-${Date.now().toString().slice(-4)}`,
-        code: formCode.trim().toUpperCase(),
-        name: formName.trim(),
-        sourceType: formSourceType,
-        isActive: formActive,
+        fundingSourceId: nextId,
+        id: `FS-${String(nextId).padStart(2, '0')}`,
+        name: name.trim(),
+        fundingSourceName: name.trim(),
+        description: description.trim() || undefined,
+        sourceType: 'UGC',
+        isActive: true,
       };
       setData(prev => [newItem, ...prev]);
-      ToastService.success(`Funding Source "${newItem.name}" added.`);
+      ToastService.success(
+        `Funding Source "${newItem.name}" added successfully.`
+      );
     } else if (popup.mode === 'edit' && popup.item) {
       setData(prev =>
         prev.map(d =>
+          d.fundingSourceId === popup.item!.fundingSourceId ||
           d.id === popup.item!.id
             ? {
                 ...d,
-                code: formCode.trim().toUpperCase(),
-                name: formName.trim(),
-                sourceType: formSourceType,
-                isActive: formActive,
+                name: name.trim(),
+                fundingSourceName: name.trim(),
+                description: description.trim() || undefined,
               }
             : d
         )
       );
-      ToastService.success(`Funding Source updated.`);
+      ToastService.success('Funding Source updated successfully.');
     }
     setPopup({ mode: 'closed' });
   };
 
-  const toggleStatus = (id: string) => {
+  const handleToggleStatus = (item: CivilManagement.FundingSourceMaster) => {
     setData(prev =>
       prev.map(d => {
-        if (d.id === id) {
+        if (d.fundingSourceId === item.fundingSourceId || d.id === item.id) {
           const next = !d.isActive;
           ToastService.info(
             `Funding Source ${next ? 'Activated' : 'Deactivated'}.`
@@ -108,185 +110,101 @@ export default function FundingSourceMaster() {
   return (
     <FormPage
       title="Funding Source Master"
-      description="Manage civil project funding bodies, capital grants, UGC allocations, and institutional development endowments."
+      description="Manage funding sources (University Fund, UGC Grant, State/Central Govt, etc.) for civil infrastructure projects."
       breadcrumbs={[
         { label: 'Home', to: '/home/menu' },
         { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
         { label: 'Admin Login', to: civilUrls.adminMenu },
-        { label: 'External Masters', to: civilUrls.externalMastersMenu },
+        { label: 'External Masters', to: civilUrls.fundingSourceMaster },
         { label: 'Funding Source' },
       ]}
     >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          marginBottom: '1rem',
-        }}
-      >
-        <Button
-          label="Add Funding Source"
-          icon="plus"
-          variant="primary"
-          onClick={openAdd}
-        />
-      </div>
-
       <FormCard>
         <GridPanel
           data={data}
+          onEdit={item => openEdit(item)}
           columns={[
-            { cell: (_, o) => <span>{o.rowIndex + 1}</span>, width: '50px' },
             {
-              field: 'code',
-              header: 'Code',
-              cell: (item: CivilManagement.FundingSourceMaster) => (
-                <span
-                  style={{
-                    fontFamily: 'monospace',
-                    fontWeight: 700,
-                    color: '#1d4ed8',
-                  }}
-                >
-                  {item.code}
-                </span>
-              ),
+              cell: (_, option) => <span>{option.rowIndex + 1}</span>,
+              width: '30px',
             },
             {
               field: 'name',
-              header: 'Funding Source Title',
+              header: 'Funding Source Name',
               cell: (item: CivilManagement.FundingSourceMaster) => (
-                <span style={{ fontWeight: 600 }}>{item.name}</span>
+                <span>{item.name || item.fundingSourceName}</span>
               ),
             },
             {
-              field: 'sourceType',
-              header: 'Governance Category',
+              field: 'description',
+              header: 'Description',
               cell: (item: CivilManagement.FundingSourceMaster) => (
-                <span
-                  className="civil-pill purple"
-                  style={{ fontSize: '0.75rem' }}
-                >
-                  {item.sourceType}
-                </span>
+                <span>{item.description ? item.description : 'N/A'}</span>
               ),
             },
             {
               field: 'isActive',
               header: 'Status',
-              cell: (item: CivilManagement.FundingSourceMaster) => (
-                <button
-                  type="button"
-                  onClick={() => toggleStatus(item.id)}
-                  style={{
-                    border: 'none',
-                    background: 'transparent',
-                    cursor: 'pointer',
-                    padding: 0,
-                  }}
-                  title="Click to toggle status"
-                >
-                  <StatusBadge
-                    label={item.isActive ? 'Active' : 'Inactive'}
-                    variant={item.isActive ? 'success' : 'neutral'}
-                  />
-                </button>
-              ),
-            },
-            {
-              field: 'id',
-              header: 'Actions',
               sortable: false,
               cell: (item: CivilManagement.FundingSourceMaster) => (
-                <div style={{ display: 'flex', gap: '0.375rem' }}>
-                  <Button
-                    size="small"
-                    label=""
-                    icon="pencil"
-                    variant="outlined"
-                    onClick={() => openEdit(item)}
-                  />
-                  <Button
-                    size="small"
-                    label=""
-                    icon={item.isActive ? 'lock' : 'unlock'}
-                    variant="outlined"
-                    onClick={() => toggleStatus(item.id)}
-                  />
-                </div>
+                <StatusButton
+                  value={item.isActive}
+                  onClick={() => handleToggleStatus(item)}
+                />
               ),
             },
           ]}
+          toolbar={
+            <Button
+              label="Create"
+              icon="plus"
+              variant="primary"
+              onClick={openCreate}
+            />
+          }
           searchBox
-          searchPlaceholder="Search funding sources..."
         />
       </FormCard>
 
       <FormPopup
+        size="lg"
         visible={popup.mode !== 'closed'}
-        onHide={() => setPopup({ mode: 'closed' })}
+        onHide={closePopup}
         title={
-          popup.mode === 'add' ? 'Add Funding Source' : 'Edit Funding Source'
+          popup.mode === 'edit'
+            ? 'Edit Funding Source'
+            : 'Create Funding Source'
         }
-        subtitle="Grant allocation agency or capital budget head."
-        size="md"
+        subtitle={
+          popup.mode === 'edit'
+            ? 'Update the funding source details.'
+            : 'Fill in the details to add a new funding source.'
+        }
       >
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem',
-            marginTop: '0.5rem',
-          }}
-        >
-          <TextBox
-            label="Funding Code"
-            placeholder="e.g. UGC, SGC, RUSA, IDF"
-            value={formCode}
-            onChange={setFormCode}
-            required
-          />
-          <TextBox
-            label="Funding Source Name"
-            placeholder="e.g. UGC Infrastructure & Equipment Grant"
-            value={formName}
-            onChange={setFormName}
-            required
-          />
-          <DropDownList
-            label="Source Category"
-            data={SOURCE_TYPE_OPTIONS}
-            textField="label"
-            optionValue="value"
-            value={formSourceType}
-            onChange={val => setFormSourceType(val as any)}
-            required
-          />
-          <DropDownList
-            label="Status"
-            data={[
-              { label: 'Active', value: 'true' },
-              { label: 'Inactive', value: 'false' },
-            ]}
-            textField="label"
-            optionValue="value"
-            value={formActive ? 'true' : 'false'}
-            onChange={val => setFormActive(val === 'true')}
-          />
-          <div className="flex justify-end gap-3 mt-4">
-            <Button
-              label="Cancel"
-              variant="outlined"
-              onClick={() => setPopup({ mode: 'closed' })}
+        {(popup.mode === 'create' || popup.mode === 'edit') && (
+          <form onSubmit={handleSave}>
+            <TextBox
+              label="Funding Source Name"
+              placeholder="Enter Funding Source Name (e.g. UGC Grant)"
+              value={name}
+              onChange={setName}
+              maxLength={50}
+              required
             />
-            <Button
-              label={popup.mode === 'add' ? 'Create Source' : 'Save Changes'}
-              variant="primary"
-              icon="check"
-              onClick={handleSave}
+            <TextBox
+              label="Description"
+              placeholder="Enter Description"
+              value={description}
+              onChange={setDescription}
+              maxLength={250}
             />
-          </div>
-        </div>
+            <FormActions
+              isEditMode={popup.mode === 'edit'}
+              onSave={handleSave}
+              onReset={handleReset}
+            />
+          </form>
+        )}
       </FormPopup>
     </FormPage>
   );

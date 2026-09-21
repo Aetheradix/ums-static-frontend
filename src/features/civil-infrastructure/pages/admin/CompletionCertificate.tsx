@@ -669,13 +669,13 @@ export default function CompletionCertificate() {
           >
             <FormGrid columns={3}>
               <TextBox
-                label="Completion Certificate No *"
+                label="Completion Certificate No"
                 value={certNo}
                 onChange={setCertNo}
                 required
               />
               <DropDownList
-                label="DLP Duration Period *"
+                label="DLP Duration Period"
                 data={[
                   { label: '12 Months (Standard Civil Works)', value: 12 },
                   { label: '24 Months (Buildings / Hostels)', value: 24 },
@@ -695,7 +695,7 @@ export default function CompletionCertificate() {
                 required
               />
               <TextBox
-                label="Handover / Taking Over Date *"
+                label="Handover / Taking Over Date"
                 value={new Date().toISOString().split('T')[0]}
                 onChange={() => {}}
                 disabled
@@ -704,14 +704,14 @@ export default function CompletionCertificate() {
 
             <FormGrid columns={2}>
               <TextBox
-                label="Taking-Over Department / Faculty *"
+                label="Taking-Over Department / Faculty"
                 placeholder="Faculty of Science & Technology"
                 value={handoverDept}
                 onChange={setHandoverDept}
                 required
               />
               <TextBox
-                label="Estate Officer / Custodian *"
+                label="Estate Officer / Custodian"
                 value={estateOfficer}
                 onChange={setEstateOfficer}
                 required
@@ -719,11 +719,12 @@ export default function CompletionCertificate() {
             </FormGrid>
 
             <TextArea
-              label="Official Inspection & Certification Remarks *"
+              label="Official Inspection & Certification Remarks"
               placeholder="Summary of joint inspection findings, taking-over note, key handover..."
               value={certRemarks}
               onChange={setCertRemarks}
               rows={2}
+              required
             />
 
             <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200">

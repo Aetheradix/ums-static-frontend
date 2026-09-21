@@ -1,154 +1,145 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ToastService } from 'services';
-import { Button } from 'shared/components/buttons';
-import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
+import { Button, StatusButton } from 'shared/components/buttons';
+import { TextArea, TextBox } from 'shared/components/forms';
+import GridActionButtons from 'shared/components/grid/GridActionButtons';
 import {
+  FormActions,
   FormCard,
+  FormGrid,
   FormPage,
   FormPopup,
   GridPanel,
+  PreviewGrid,
   StatusBadge,
 } from 'shared/new-components';
-import { CIVIL_STORAGE_KEYS, civilStorage } from '../../../civilStorage';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../../civilStorage';
 import { initialLabAgencies } from '../../../mocks';
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
 
-const STORAGE_KEY = CIVIL_STORAGE_KEYS.LAB_AGENCIES;
+type PopupState =
+  | { mode: 'closed' }
+  | { mode: 'create' }
+  | { mode: 'edit'; item: CivilManagement.QualityLabItem }
+  | { mode: 'view'; item: CivilManagement.QualityLabItem };
 
 export default function QualityLabMaster() {
-  const [data, setData] = useState<CivilManagement.QualityLabItem[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        return parsed.map((l: any) => ({
-          id: l.id || `LAB-${Math.random().toString(36).substring(2, 6)}`,
-          name: l.name || '',
-          contactPerson: l.contactPerson || '',
-          email: l.email || '',
-          mobile: l.mobile || '',
-          nablAccreditation: l.nablAccreditation || '',
-          nablValidity: l.nablValidity || '2027-12-31',
-          scopeOfTesting: l.scopeOfTesting || '',
-          address: l.address || '',
-          isActive: l.status === 'Active' || l.isActive !== false,
-        }));
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    return initialLabAgencies.map(l => ({
-      id: l.id,
-      name: l.name,
-      contactPerson: l.contactPerson,
-      email: l.email,
-      mobile: l.mobile,
-      nablAccreditation: l.nablAccreditation,
-      nablValidity: '2027-12-31',
-      scopeOfTesting: l.scopeOfTesting,
-      address: l.address,
-      isActive: l.status === 'Active',
-    }));
-  });
+  const [data, setData] = useCivilStorage<CivilManagement.QualityLabItem[]>(
+    CIVIL_STORAGE_KEYS.LAB_AGENCIES,
+    initialLabAgencies
+  );
 
-  const [popup, setPopup] = useState<{
-    mode: 'closed' | 'add' | 'edit';
-    item?: CivilManagement.QualityLabItem;
-  }>({ mode: 'closed' });
+  const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
 
-  const [formName, setFormName] = useState('');
-  const [formContact, setFormContact] = useState('');
-  const [formEmail, setFormEmail] = useState('');
-  const [formMobile, setFormMobile] = useState('');
-  const [formNabl, setFormNabl] = useState('');
-  const [formValidity, setFormValidity] = useState('2027-12-31');
-  const [formScope, setFormScope] = useState('');
-  const [formAddress, setFormAddress] = useState('');
-  const [formActive, setFormActive] = useState(true);
+  // Form states
+  const [name, setName] = useState('');
+  const [nablAccreditationNumber, setNablAccreditationNumber] = useState('');
+  const [labDirector, setLabDirector] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
+  const [email, setEmail] = useState('');
+  const [labAddress, setLabAddress] = useState('');
+  const [testingScope, setTestingScope] = useState('');
 
-  useEffect(() => {
-    civilStorage.set(STORAGE_KEY, data);
-  }, [data]);
+  const closePopup = useCallback(() => setPopup({ mode: 'closed' }), []);
 
-  const openAdd = () => {
-    setFormName('');
-    setFormContact('');
-    setFormEmail('');
-    setFormMobile('');
-    setFormNabl('');
-    setFormValidity('2027-12-31');
-    setFormScope('');
-    setFormAddress('');
-    setFormActive(true);
-    setPopup({ mode: 'add' });
+  const openCreate = () => {
+    setName('');
+    setNablAccreditationNumber('');
+    setLabDirector('');
+    setMobileNumber('');
+    setEmail('');
+    setLabAddress('');
+    setTestingScope('');
+    setPopup({ mode: 'create' });
   };
 
   const openEdit = (item: CivilManagement.QualityLabItem) => {
-    setFormName(item.name);
-    setFormContact(item.contactPerson);
-    setFormEmail(item.email);
-    setFormMobile(item.mobile);
-    setFormNabl(item.nablAccreditation);
-    setFormValidity(item.nablValidity || '2027-12-31');
-    setFormScope(item.scopeOfTesting);
-    setFormAddress(item.address);
-    setFormActive(item.isActive);
+    setName(item.name || '');
+    setNablAccreditationNumber(
+      item.nablAccreditationNumber || (item as any).nablAccreditation || ''
+    );
+    setLabDirector(item.labDirector || (item as any).contactPerson || '');
+    setMobileNumber(item.mobileNumber || (item as any).mobile || '');
+    setEmail(item.email || '');
+    setLabAddress(item.labAddress || (item as any).address || '');
+    setTestingScope(item.testingScope || (item as any).scopeOfTesting || '');
     setPopup({ mode: 'edit', item });
   };
 
-  const handleSave = () => {
-    if (!formName.trim() || !formNabl.trim()) {
-      ToastService.error('Lab Name and NABL Accreditation are required.');
+  const handleReset = () => {
+    if (popup.mode === 'edit' && popup.item) {
+      openEdit(popup.item);
+    } else {
+      openCreate();
+    }
+  };
+
+  const handleSave = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!name.trim()) {
+      ToastService.error('Lab Name is required.');
+      return;
+    }
+    if (!nablAccreditationNumber.trim()) {
+      ToastService.error('NABL Accreditation Number is required.');
+      return;
+    }
+    if (!labDirector.trim()) {
+      ToastService.error('Lab Director is required.');
+      return;
+    }
+    if (!testingScope.trim()) {
+      ToastService.error('Testing Scope is required.');
       return;
     }
 
-    if (popup.mode === 'add') {
+    if (popup.mode === 'create') {
+      const nextId = data.length + 1;
       const newItem: CivilManagement.QualityLabItem = {
-        id: `LAB-${Date.now().toString().slice(-4)}`,
-        name: formName.trim(),
-        contactPerson: formContact.trim(),
-        email: formEmail.trim(),
-        mobile: formMobile.trim(),
-        nablAccreditation: formNabl.trim(),
-        nablValidity: formValidity,
-        scopeOfTesting: formScope.trim(),
-        address: formAddress.trim(),
-        isActive: formActive,
+        qualityLabId: nextId,
+        id: `LAB-${String(nextId).padStart(2, '0')}`,
+        labCode: `LAB-${String(nextId).padStart(3, '0')}`,
+        name: name.trim(),
+        nablAccreditationNumber: nablAccreditationNumber.trim(),
+        labDirector: labDirector.trim(),
+        mobileNumber: mobileNumber.trim() || undefined,
+        email: email.trim() || undefined,
+        labAddress: labAddress.trim() || undefined,
+        testingScope: testingScope.trim(),
+        isActive: true,
       };
       setData(prev => [newItem, ...prev]);
       ToastService.success(`Quality Lab "${newItem.name}" added successfully.`);
     } else if (popup.mode === 'edit' && popup.item) {
       setData(prev =>
         prev.map(d =>
-          d.id === popup.item!.id
+          d.qualityLabId === popup.item!.qualityLabId || d.id === popup.item!.id
             ? {
                 ...d,
-                name: formName.trim(),
-                contactPerson: formContact.trim(),
-                email: formEmail.trim(),
-                mobile: formMobile.trim(),
-                nablAccreditation: formNabl.trim(),
-                nablValidity: formValidity,
-                scopeOfTesting: formScope.trim(),
-                address: formAddress.trim(),
-                isActive: formActive,
+                name: name.trim(),
+                nablAccreditationNumber: nablAccreditationNumber.trim(),
+                labDirector: labDirector.trim(),
+                mobileNumber: mobileNumber.trim() || undefined,
+                email: email.trim() || undefined,
+                labAddress: labAddress.trim() || undefined,
+                testingScope: testingScope.trim(),
               }
             : d
         )
       );
-      ToastService.success(`Quality Lab updated successfully.`);
+      ToastService.success('Quality Lab updated successfully.');
     }
     setPopup({ mode: 'closed' });
   };
 
-  const toggleStatus = (id: string) => {
+  const handleToggleStatus = (item: CivilManagement.QualityLabItem) => {
     setData(prev =>
       prev.map(d => {
-        if (d.id === id) {
+        if (d.qualityLabId === item.qualityLabId || d.id === item.id) {
           const next = !d.isActive;
           ToastService.info(
-            `Testing Lab ${next ? 'Activated' : 'Deactivated'}.`
+            `Quality Lab ${next ? 'Activated' : 'Deactivated'}.`
           );
           return { ...d, isActive: next };
         }
@@ -159,277 +150,238 @@ export default function QualityLabMaster() {
 
   return (
     <FormPage
-      title="Quality Testing Laboratory Master"
-      description="Register NABL accredited civil testing laboratories authorized for material compressive strength, bitumen, and soil investigations."
+      title="Quality Lab Master"
+      description="Manage civil testing and material quality control laboratories."
       breadcrumbs={[
         { label: 'Home', to: '/home/menu' },
         { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
         { label: 'Admin Login', to: civilUrls.adminMenu },
-        { label: 'External Masters', to: civilUrls.externalMastersMenu },
+        { label: 'External Masters', to: civilUrls.qualityLabMaster },
         { label: 'Quality Lab' },
       ]}
     >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          marginBottom: '1rem',
-        }}
-      >
-        <Button
-          label="Register Quality Lab"
-          icon="plus"
-          variant="primary"
-          onClick={openAdd}
-        />
-      </div>
-
       <FormCard>
         <GridPanel
           data={data}
           columns={[
-            { cell: (_, o) => <span>{o.rowIndex + 1}</span>, width: '50px' },
             {
-              field: 'id',
-              header: 'Lab ID',
+              cell: (_, option) => <span>{option.rowIndex + 1}</span>,
+              width: '30px',
+            },
+            {
+              field: 'labCode',
+              header: 'Lab Code',
               cell: (item: CivilManagement.QualityLabItem) => (
-                <span
-                  style={{
-                    fontFamily: 'monospace',
-                    fontWeight: 700,
-                    color: '#1d4ed8',
-                  }}
-                >
-                  {item.id}
+                <span>
+                  {item.labCode || item.id || `LAB-${item.qualityLabId}`}
+                </span>
+              ),
+            },
+            { field: 'name', header: 'Lab Name' },
+            {
+              field: 'nablAccreditationNumber',
+              header: 'NABL Accreditation No.',
+              cell: (item: CivilManagement.QualityLabItem) => (
+                <span>
+                  {item.nablAccreditationNumber ||
+                    (item as any).nablAccreditation ||
+                    '-'}
                 </span>
               ),
             },
             {
-              field: 'name',
-              header: 'Laboratory & Institute',
+              field: 'labDirector',
+              header: 'Lab Director',
               cell: (item: CivilManagement.QualityLabItem) => (
-                <div>
-                  <div style={{ fontWeight: 600, color: '#111827' }}>
-                    {item.name}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: '0.75rem',
-                      color: '#6b7280',
-                      marginTop: '2px',
-                    }}
-                  >
-                    {item.address}
-                  </div>
-                </div>
-              ),
-            },
-            {
-              field: 'nablAccreditation',
-              header: 'NABL Accreditation',
-              cell: (item: CivilManagement.QualityLabItem) => (
-                <div>
-                  <span
-                    className="civil-pill green"
-                    style={{ fontSize: '0.72rem' }}
-                  >
-                    {item.nablAccreditation}
-                  </span>
-                  <div
-                    style={{
-                      fontSize: '0.75rem',
-                      color: '#6b7280',
-                      marginTop: '2px',
-                    }}
-                  >
-                    Valid thru: {item.nablValidity || '—'}
-                  </div>
-                </div>
-              ),
-            },
-            {
-              field: 'scopeOfTesting',
-              header: 'Authorized Scope',
-              cell: (item: CivilManagement.QualityLabItem) => (
-                <span style={{ fontSize: '0.8125rem', color: '#374151' }}>
-                  {item.scopeOfTesting}
+                <span>
+                  {item.labDirector || (item as any).contactPerson || '-'}
                 </span>
               ),
             },
             {
-              field: 'contactPerson',
-              header: 'Contact Person',
+              field: 'mobileNumber',
+              header: 'Mobile',
               cell: (item: CivilManagement.QualityLabItem) => (
-                <div style={{ fontSize: '0.8125rem' }}>
-                  <div>{item.contactPerson}</div>
-                  <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>
-                    {item.mobile}
-                  </div>
-                </div>
+                <span>{item.mobileNumber || (item as any).mobile || '-'}</span>
               ),
             },
             {
               field: 'isActive',
               header: 'Status',
+              sortable: false,
               cell: (item: CivilManagement.QualityLabItem) => (
-                <button
-                  type="button"
-                  onClick={() => toggleStatus(item.id)}
-                  style={{
-                    border: 'none',
-                    background: 'transparent',
-                    cursor: 'pointer',
-                    padding: 0,
-                  }}
-                  title="Click to toggle status"
-                >
-                  <StatusBadge
-                    label={item.isActive ? 'Active' : 'Inactive'}
-                    variant={item.isActive ? 'success' : 'neutral'}
-                  />
-                </button>
+                <StatusButton
+                  value={item.isActive !== false}
+                  onClick={() => handleToggleStatus(item)}
+                />
               ),
             },
             {
-              field: 'id',
-              header: 'Actions',
+              header: 'Action',
               sortable: false,
               cell: (item: CivilManagement.QualityLabItem) => (
-                <div style={{ display: 'flex', gap: '0.375rem' }}>
-                  <Button
-                    size="small"
-                    label=""
-                    icon="pencil"
-                    variant="outlined"
-                    onClick={() => openEdit(item)}
-                  />
-                  <Button
-                    size="small"
-                    label=""
-                    icon={item.isActive ? 'lock' : 'unlock'}
-                    variant="outlined"
-                    onClick={() => toggleStatus(item.id)}
-                  />
-                </div>
+                <GridActionButtons
+                  onView={() => setPopup({ mode: 'view', item })}
+                  onEdit={() => openEdit(item)}
+                />
               ),
             },
           ]}
+          toolbar={
+            <Button
+              label="Add Quality Lab"
+              icon="plus"
+              variant="primary"
+              onClick={openCreate}
+            />
+          }
           searchBox
-          searchPlaceholder="Search laboratories..."
         />
       </FormCard>
 
       <FormPopup
-        visible={popup.mode !== 'closed'}
-        onHide={() => setPopup({ mode: 'closed' })}
-        title={
-          popup.mode === 'add'
-            ? 'Register Quality Testing Lab'
-            : 'Edit Quality Lab'
-        }
-        subtitle="Empanel an accredited laboratory for mandatory quality audits."
         size="lg"
+        visible={popup.mode !== 'closed'}
+        onHide={closePopup}
+        title={
+          popup.mode === 'create'
+            ? 'Add New Quality Lab'
+            : popup.mode === 'edit'
+              ? 'Edit Quality Lab'
+              : 'Quality Lab Details'
+        }
+        subtitle={
+          popup.mode === 'view'
+            ? 'View quality lab details and testing scope.'
+            : 'Manage civil testing and quality control laboratories.'
+        }
       >
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem',
-            marginTop: '0.5rem',
-          }}
-        >
-          <TextBox
-            label="Laboratory Name / Institution"
-            placeholder="e.g. IIT Bhopal Central Civil Testing Lab"
-            value={formName}
-            onChange={setFormName}
-            required
-          />
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '1rem',
-            }}
-          >
-            <TextBox
-              label="NABL Certificate No."
-              placeholder="e.g. NABL-TC-8891"
-              value={formNabl}
-              onChange={setFormNabl}
-              required
+        {(popup.mode === 'create' || popup.mode === 'edit') && (
+          <form onSubmit={handleSave}>
+            <FormGrid columns={2}>
+              <TextBox
+                label="Lab Name"
+                placeholder="Enter lab name..."
+                value={name}
+                onChange={setName}
+                maxLength={200}
+                required
+              />
+              <TextBox
+                label="NABL Accreditation Number"
+                placeholder="e.g. NABL-12345"
+                value={nablAccreditationNumber}
+                onChange={setNablAccreditationNumber}
+                maxLength={50}
+                required
+              />
+            </FormGrid>
+
+            <FormGrid columns={2} className="mt-3">
+              <TextBox
+                label="Lab Director"
+                placeholder="Enter director name..."
+                value={labDirector}
+                onChange={setLabDirector}
+                maxLength={150}
+                required
+              />
+              <TextBox
+                label="Mobile Number"
+                placeholder="e.g. 9876543210"
+                value={mobileNumber}
+                onChange={setMobileNumber}
+                maxLength={15}
+              />
+            </FormGrid>
+
+            <FormGrid columns={2} className="mt-3">
+              <TextBox
+                label="Email"
+                placeholder="e.g. director@qualitylab.com"
+                value={email}
+                onChange={setEmail}
+                maxLength={150}
+              />
+              <TextBox
+                label="Lab Address"
+                placeholder="Enter lab location address..."
+                value={labAddress}
+                onChange={setLabAddress}
+                maxLength={500}
+              />
+            </FormGrid>
+
+            <FormGrid columns={1} className="mt-3">
+              <TextArea
+                label="Testing Scope"
+                placeholder="Enter testing capabilities and scope details..."
+                value={testingScope}
+                onChange={setTestingScope}
+                rows={3}
+                required
+              />
+            </FormGrid>
+
+            <FormActions
+              isEditMode={popup.mode === 'edit'}
+              onSave={handleSave}
+              onReset={handleReset}
             />
-            <TextBox
-              label="Accreditation Validity Date"
-              placeholder="YYYY-MM-DD"
-              value={formValidity}
-              onChange={setFormValidity}
-            />
-          </div>
-          <TextBox
-            label="Authorized Testing Scope"
-            placeholder="e.g. Concrete, Steel, Bitumen, Soils, Aggregates"
-            value={formScope}
-            onChange={setFormScope}
-          />
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr 1fr',
-              gap: '1rem',
-            }}
-          >
-            <TextBox
-              label="Authorized Contact Person"
-              placeholder="Dr. R.C. Mishra"
-              value={formContact}
-              onChange={setFormContact}
-            />
-            <TextBox
-              label="Mobile Number"
-              placeholder="9425012345"
-              value={formMobile}
-              onChange={setFormMobile}
-            />
-            <TextBox
-              label="Official Email"
-              placeholder="civil.testing@institute.ac.in"
-              value={formEmail}
-              onChange={setFormEmail}
-            />
-          </div>
-          <TextArea
-            label="Laboratory Campus Address"
-            placeholder="Physical address, building, and location..."
-            value={formAddress}
-            onChange={setFormAddress}
-            rows={2}
-          />
-          <DropDownList
-            label="Status"
-            data={[
-              { label: 'Active (Empaneled)', value: 'true' },
-              { label: 'Inactive (Suspended)', value: 'false' },
+          </form>
+        )}
+
+        {popup.mode === 'view' && popup.item && (
+          <PreviewGrid
+            columns={3}
+            fields={[
+              { label: 'Lab Name', value: popup.item.name },
+              {
+                label: 'NABL Accreditation Number',
+                value:
+                  popup.item.nablAccreditationNumber ||
+                  (popup.item as any).nablAccreditation ||
+                  '-',
+              },
+              {
+                label: 'Lab Director',
+                value:
+                  popup.item.labDirector ||
+                  (popup.item as any).contactPerson ||
+                  '-',
+              },
+              {
+                label: 'Mobile Number',
+                value:
+                  popup.item.mobileNumber || (popup.item as any).mobile || '-',
+              },
+              { label: 'Email', value: popup.item.email || '-' },
+              {
+                label: 'Lab Address',
+                value:
+                  popup.item.labAddress || (popup.item as any).address || '-',
+                fullWidth: true,
+              },
+              {
+                label: 'Testing Scope',
+                value:
+                  popup.item.testingScope ||
+                  (popup.item as any).scopeOfTesting ||
+                  '-',
+                fullWidth: true,
+              },
+              {
+                label: 'Status',
+                value: (
+                  <StatusBadge
+                    label={popup.item.isActive ? 'Active' : 'Inactive'}
+                    variant={popup.item.isActive ? 'approved' : 'rejected'}
+                  />
+                ),
+              },
             ]}
-            textField="label"
-            optionValue="value"
-            value={formActive ? 'true' : 'false'}
-            onChange={val => setFormActive(val === 'true')}
           />
-          <div className="flex justify-end gap-3 mt-4">
-            <Button
-              label="Cancel"
-              variant="outlined"
-              onClick={() => setPopup({ mode: 'closed' })}
-            />
-            <Button
-              label={popup.mode === 'add' ? 'Register Lab' : 'Save Changes'}
-              variant="primary"
-              icon="check"
-              onClick={handleSave}
-            />
-          </div>
-        </div>
+        )}
       </FormPopup>
     </FormPage>
   );

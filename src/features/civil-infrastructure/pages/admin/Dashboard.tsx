@@ -15,10 +15,10 @@ import {
 import { FormCard, FormPage, StatCard } from 'shared/new-components';
 import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import {
-  civilWorks as initialWorks,
   milestones as initialMilestones,
   raBills as initialRaBills,
   tenders as initialTenders,
+  civilWorks as initialWorks,
 } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';

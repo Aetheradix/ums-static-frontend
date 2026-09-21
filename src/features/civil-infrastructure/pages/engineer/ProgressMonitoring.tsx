@@ -9,13 +9,13 @@ import {
   FormPopup,
   GridPanel,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import {
   type ProgressLog,
-  progressLogs as initialLogs,
   civilWorks,
+  progressLogs as initialLogs,
   milestones as initialMilestones,
 } from '../../mocks';
-import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
@@ -366,7 +366,7 @@ export default function ProgressMonitoring() {
           <>
             <FormGrid columns={3}>
               <DropDownList
-                label="Work *"
+                label="Work"
                 data={WORK_OPTIONS}
                 textField={'name' as any}
                 optionValue="value"
@@ -386,9 +386,10 @@ export default function ProgressMonitoring() {
                     setGeoLon('77.4250');
                   }
                 }}
+                required
               />
               <DropDownList
-                label="Select Milestone *"
+                label="Select Milestone"
                 data={milestones
                   .filter((m: any) => m.workId === workId)
                   .map((m: any) => ({
@@ -402,7 +403,7 @@ export default function ProgressMonitoring() {
                 required
               />
               <TextBox
-                label="Physical Progress (%) *"
+                label="Physical Progress (%)"
                 placeholder="0–100"
                 value={progress}
                 onChange={setProgress}
@@ -420,23 +421,14 @@ export default function ProgressMonitoring() {
                 return (
                   <div
                     style={{
-                      padding: '0.875rem 1.125rem',
                       background: '#f8fafc',
                       border: '1px solid #e2e8f0',
                       borderRadius: '0.75rem',
+                      padding: '0.875rem 1.125rem',
                       fontSize: '0.8125rem',
                       marginBottom: '1rem',
                     }}
                   >
-                    <div
-                      style={{
-                        fontWeight: 700,
-                        color: '#1e293b',
-                        marginBottom: '0.5rem',
-                      }}
-                    >
-                      📋 Milestone Target Details
-                    </div>
                     <div
                       style={{
                         display: 'grid',
@@ -523,7 +515,7 @@ export default function ProgressMonitoring() {
                 );
               })()}
             <TextArea
-              label="Progress Description *"
+              label="Progress Description"
               placeholder="Describe work done today, quantities, locations, sections..."
               value={description}
               onChange={setDescription}
@@ -533,13 +525,13 @@ export default function ProgressMonitoring() {
             <FormCard title="🌍 Mandatory Geo-tagging">
               <FormGrid columns={2}>
                 <TextBox
-                  label="GPS Latitude *"
+                  label="GPS Latitude"
                   value={geoLat}
                   disabled
                   required
                 />
                 <TextBox
-                  label="GPS Longitude *"
+                  label="GPS Longitude"
                   value={geoLon}
                   disabled
                   required

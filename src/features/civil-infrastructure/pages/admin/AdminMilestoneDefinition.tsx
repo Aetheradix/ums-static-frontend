@@ -16,8 +16,8 @@ import {
 } from 'shared/new-components';
 import {
   type Milestone,
-  milestones as initialMilestones,
   civilWorks,
+  milestones as initialMilestones,
 } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -724,7 +724,7 @@ export default function AdminMilestoneDefinition() {
         >
           <div style={{ marginTop: '0.5rem' }}>
             <DropDownList
-              label="Awarded Civil Work *"
+              label="Awarded Civil Work"
               data={works.map((w: any) => ({
                 name: `${w.workId} — ${w.name}${w.category ? ` [${w.category}]` : ''}`,
                 value: w.id,
@@ -733,6 +733,7 @@ export default function AdminMilestoneDefinition() {
               optionValue="value"
               value={selectedWorkId}
               onChange={v => setSelectedWorkId(v as string)}
+              required
             />
           </div>
 

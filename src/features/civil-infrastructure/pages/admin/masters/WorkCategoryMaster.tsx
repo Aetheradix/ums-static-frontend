@@ -1,96 +1,107 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ToastService } from 'services';
-import { Button } from 'shared/components/buttons';
-import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
+import { Button, StatusButton } from 'shared/components/buttons';
+import { TextBox } from 'shared/components/forms';
 import {
+  FormActions,
   FormCard,
+  FormGrid,
   FormPage,
   FormPopup,
   GridPanel,
-  StatusBadge,
 } from 'shared/new-components';
-import { CIVIL_STORAGE_KEYS, civilStorage } from '../../../civilStorage';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../../civilStorage';
 import { initialWorkCategories } from '../../../mocks';
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
 
-const STORAGE_KEY = CIVIL_STORAGE_KEYS.WORK_CATEGORIES;
+type PopupState =
+  | { mode: 'closed' }
+  | { mode: 'create' }
+  | { mode: 'edit'; item: CivilManagement.WorkCategoryMaster };
 
 export default function WorkCategoryMaster() {
-  const [data, setData] = useState<CivilManagement.WorkCategoryMaster[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : initialWorkCategories;
-  });
+  const [data, setData] = useCivilStorage<CivilManagement.WorkCategoryMaster[]>(
+    CIVIL_STORAGE_KEYS.WORK_CATEGORIES,
+    initialWorkCategories
+  );
 
-  const [popup, setPopup] = useState<{
-    mode: 'closed' | 'add' | 'edit';
-    item?: CivilManagement.WorkCategoryMaster;
-  }>({ mode: 'closed' });
+  const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
 
-  const [formCode, setFormCode] = useState('');
-  const [formName, setFormName] = useState('');
-  const [formDesc, setFormDesc] = useState('');
-  const [formActive, setFormActive] = useState(true);
+  const [code, setCode] = useState('');
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
 
-  useEffect(() => {
-    civilStorage.set(STORAGE_KEY, data);
-  }, [data]);
+  const closePopup = useCallback(() => setPopup({ mode: 'closed' }), []);
 
-  const openAdd = () => {
-    setFormCode('');
-    setFormName('');
-    setFormDesc('');
-    setFormActive(true);
-    setPopup({ mode: 'add' });
+  const openCreate = () => {
+    setCode('');
+    setName('');
+    setDescription('');
+    setPopup({ mode: 'create' });
   };
 
   const openEdit = (item: CivilManagement.WorkCategoryMaster) => {
-    setFormCode(item.code);
-    setFormName(item.name);
-    setFormDesc(item.description || '');
-    setFormActive(item.isActive);
+    setCode(item.code || '');
+    setName(item.name || '');
+    setDescription(item.description || '');
     setPopup({ mode: 'edit', item });
   };
 
-  const handleSave = () => {
-    if (!formCode.trim() || !formName.trim()) {
-      ToastService.error('Category Code and Category Name are required.');
+  const handleReset = () => {
+    if (popup.mode === 'edit' && popup.item) {
+      openEdit(popup.item);
+    } else {
+      openCreate();
+    }
+  };
+
+  const handleSave = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!code.trim()) {
+      ToastService.error('Code is required.');
+      return;
+    }
+    if (!name.trim()) {
+      ToastService.error('Name is required.');
       return;
     }
 
-    if (popup.mode === 'add') {
+    if (popup.mode === 'create') {
+      const nextId = data.length + 1;
       const newItem: CivilManagement.WorkCategoryMaster = {
+        workCategoryId: nextId,
         id: `WC-${Date.now().toString().slice(-4)}`,
-        code: formCode.trim().toUpperCase(),
-        name: formName.trim(),
-        description: formDesc.trim(),
-        isActive: formActive,
+        code: code.trim().toUpperCase(),
+        name: name.trim(),
+        description: description.trim() || undefined,
+        isActive: true,
       };
       setData(prev => [newItem, ...prev]);
       ToastService.success(`Work Category "${newItem.name}" created.`);
     } else if (popup.mode === 'edit' && popup.item) {
       setData(prev =>
         prev.map(d =>
+          d.workCategoryId === popup.item!.workCategoryId ||
           d.id === popup.item!.id
             ? {
                 ...d,
-                code: formCode.trim().toUpperCase(),
-                name: formName.trim(),
-                description: formDesc.trim(),
-                isActive: formActive,
+                code: code.trim().toUpperCase(),
+                name: name.trim(),
+                description: description.trim() || undefined,
               }
             : d
         )
       );
-      ToastService.success(`Work Category updated.`);
+      ToastService.success('Work Category updated.');
     }
     setPopup({ mode: 'closed' });
   };
 
-  const toggleStatus = (id: string) => {
+  const handleToggleStatus = (item: CivilManagement.WorkCategoryMaster) => {
     setData(prev =>
       prev.map(d => {
-        if (d.id === id) {
+        if (d.workCategoryId === item.workCategoryId || d.id === item.id) {
           const next = !d.isActive;
           ToastService.info(
             `Work Category ${next ? 'Activated' : 'Deactivated'}.`
@@ -105,184 +116,103 @@ export default function WorkCategoryMaster() {
   return (
     <FormPage
       title="Work Category Master"
-      description="Define civil work classifications and workflow governance archetypes (Capital, Maintenance, Renewal, Strengthening, Deposit, Emergency)."
+      description="Manage work category classifications for civil engineering works."
       breadcrumbs={[
         { label: 'Home', to: '/home/menu' },
         { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
         { label: 'Admin Login', to: civilUrls.adminMenu },
-        { label: 'External Masters', to: civilUrls.externalMastersMenu },
+        { label: 'External Masters', to: civilUrls.workCategoryMaster },
         { label: 'Work Category' },
       ]}
     >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          marginBottom: '1rem',
-        }}
-      >
-        <Button
-          label="Add Work Category"
-          icon="plus"
-          variant="primary"
-          onClick={openAdd}
-        />
-      </div>
-
       <FormCard>
         <GridPanel
           data={data}
+          onEdit={item => openEdit(item)}
           columns={[
-            { cell: (_, o) => <span>{o.rowIndex + 1}</span>, width: '50px' },
             {
-              field: 'code',
-              header: 'Category Code',
-              cell: (item: CivilManagement.WorkCategoryMaster) => (
-                <span
-                  style={{
-                    fontFamily: 'monospace',
-                    fontWeight: 700,
-                    color: '#1d4ed8',
-                  }}
-                >
-                  {item.code}
-                </span>
-              ),
+              cell: (_, option) => <span>{option.rowIndex + 1}</span>,
+              width: '30px',
             },
+            { field: 'code', header: 'Code' },
+            { field: 'name', header: 'Name' },
             {
-              field: 'name',
-              header: 'Category Title',
+              field: 'description',
+              header: 'Description',
               cell: (item: CivilManagement.WorkCategoryMaster) => (
-                <div>
-                  <div style={{ fontWeight: 600, color: '#111827' }}>
-                    {item.name}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: '0.75rem',
-                      color: '#6b7280',
-                      marginTop: '2px',
-                    }}
-                  >
-                    {item.description}
-                  </div>
-                </div>
+                <span>{item.description ? item.description : 'N/A'}</span>
               ),
             },
             {
               field: 'isActive',
               header: 'Status',
-              cell: (item: CivilManagement.WorkCategoryMaster) => (
-                <button
-                  type="button"
-                  onClick={() => toggleStatus(item.id)}
-                  style={{
-                    border: 'none',
-                    background: 'transparent',
-                    cursor: 'pointer',
-                    padding: 0,
-                  }}
-                  title="Click to toggle status"
-                >
-                  <StatusBadge
-                    label={item.isActive ? 'Active' : 'Inactive'}
-                    variant={item.isActive ? 'success' : 'neutral'}
-                  />
-                </button>
-              ),
-            },
-            {
-              field: 'id',
-              header: 'Actions',
               sortable: false,
               cell: (item: CivilManagement.WorkCategoryMaster) => (
-                <div style={{ display: 'flex', gap: '0.375rem' }}>
-                  <Button
-                    size="small"
-                    label=""
-                    icon="pencil"
-                    variant="outlined"
-                    onClick={() => openEdit(item)}
-                  />
-                  <Button
-                    size="small"
-                    label=""
-                    icon={item.isActive ? 'lock' : 'unlock'}
-                    variant="outlined"
-                    onClick={() => toggleStatus(item.id)}
-                  />
-                </div>
+                <StatusButton
+                  value={item.isActive}
+                  onClick={() => handleToggleStatus(item)}
+                />
               ),
             },
           ]}
+          toolbar={
+            <Button
+              label="Create"
+              icon="plus"
+              variant="primary"
+              onClick={openCreate}
+            />
+          }
           searchBox
-          searchPlaceholder="Search work categories..."
         />
       </FormCard>
 
       <FormPopup
         visible={popup.mode !== 'closed'}
-        onHide={() => setPopup({ mode: 'closed' })}
+        onHide={closePopup}
         title={
-          popup.mode === 'add' ? 'Add Work Category' : 'Edit Work Category'
+          popup.mode === 'edit' ? 'Edit Work Category' : 'Create Work Category'
         }
-        subtitle="Work category classification dictating regulatory lifecycle."
-        size="md"
+        subtitle={
+          popup.mode === 'edit'
+            ? 'Update the work category details.'
+            : 'Fill in the details to add a new work category.'
+        }
       >
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem',
-            marginTop: '0.5rem',
-          }}
-        >
-          <TextBox
-            label="Category Code"
-            placeholder="e.g. NCC, MNT, REN"
-            value={formCode}
-            onChange={setFormCode}
-            required
-          />
-          <TextBox
-            label="Category Name"
-            placeholder="e.g. New Capital Construction"
-            value={formName}
-            onChange={setFormName}
-            required
-          />
-          <TextArea
-            label="Description & Regulatory Scope"
-            placeholder="Explain workflow routing and accounting criteria..."
-            value={formDesc}
-            onChange={setFormDesc}
-            rows={3}
-          />
-          <DropDownList
-            label="Status"
-            data={[
-              { label: 'Active', value: 'true' },
-              { label: 'Inactive', value: 'false' },
-            ]}
-            textField="label"
-            optionValue="value"
-            value={formActive ? 'true' : 'false'}
-            onChange={val => setFormActive(val === 'true')}
-          />
-          <div className="flex justify-end gap-3 mt-4">
-            <Button
-              label="Cancel"
-              variant="outlined"
-              onClick={() => setPopup({ mode: 'closed' })}
+        {(popup.mode === 'create' || popup.mode === 'edit') && (
+          <form onSubmit={handleSave}>
+            <FormGrid columns={2}>
+              <TextBox
+                label="Code"
+                placeholder="Enter Code (e.g. BLD-CIV)"
+                value={code}
+                onChange={setCode}
+                maxLength={50}
+                required
+              />
+              <TextBox
+                label="Name"
+                placeholder="Enter Work Category Name"
+                value={name}
+                onChange={setName}
+                maxLength={150}
+                required
+              />
+            </FormGrid>
+            <TextBox
+              label="Description"
+              placeholder="Enter Description"
+              value={description}
+              onChange={setDescription}
+              maxLength={255}
             />
-            <Button
-              label={popup.mode === 'add' ? 'Create Category' : 'Save Changes'}
-              variant="primary"
-              icon="check"
-              onClick={handleSave}
+            <FormActions
+              isEditMode={popup.mode === 'edit'}
+              onSave={handleSave}
+              onReset={handleReset}
             />
-          </div>
-        </div>
+          </form>
+        )}
       </FormPopup>
     </FormPage>
   );

@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import { DropDownList, TextBox } from 'shared/components/forms';
+import { TextBox } from 'shared/components/forms';
 import {
   FormCard,
   FormPage,
@@ -9,70 +9,84 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
-import { CIVIL_STORAGE_KEYS, civilStorage } from '../../../civilStorage';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../../civilStorage';
 import { initialSORTypes } from '../../../mocks';
 import { civilUrls } from '../../../urls';
 import '../../civil.css';
 
-const STORAGE_KEY = CIVIL_STORAGE_KEYS.SOR_TYPES;
-
 export default function SORTypeMaster() {
-  const [data, setData] = useState<CivilManagement.SORType[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : initialSORTypes;
-  });
+  const [data, setData] = useCivilStorage<CivilManagement.SORType[]>(
+    CIVIL_STORAGE_KEYS.SOR_TYPES,
+    initialSORTypes
+  );
 
   const [popup, setPopup] = useState<{
     mode: 'closed' | 'add' | 'edit';
     item?: CivilManagement.SORType;
   }>({ mode: 'closed' });
 
-  const [formCode, setFormCode] = useState('');
   const [formName, setFormName] = useState('');
-  const [formActive, setFormActive] = useState(true);
-
-  useEffect(() => {
-    civilStorage.set(STORAGE_KEY, data);
-  }, [data]);
+  const [formCode, setFormCode] = useState('');
+  const [formDesc, setFormDesc] = useState('');
 
   const openAdd = () => {
-    setFormCode('');
     setFormName('');
-    setFormActive(true);
+    setFormCode('');
+    setFormDesc('');
     setPopup({ mode: 'add' });
   };
 
   const openEdit = (item: CivilManagement.SORType) => {
-    setFormCode(item.code);
-    setFormName(item.name);
-    setFormActive(item.isActive);
+    setFormName(
+      item.name || (item as any).type || (item as any).description || ''
+    );
+    setFormCode(item.code || '');
+    setFormDesc((item as any).description || '');
     setPopup({ mode: 'edit', item });
   };
 
+  const handleReset = () => {
+    if (popup.mode === 'edit' && popup.item) {
+      setFormName(
+        popup.item.name ||
+          (popup.item as any).type ||
+          (popup.item as any).description ||
+          ''
+      );
+      setFormCode(popup.item.code || '');
+      setFormDesc((popup.item as any).description || '');
+    } else {
+      setFormName('');
+      setFormCode('');
+      setFormDesc('');
+    }
+  };
+
   const handleSave = () => {
-    if (!formCode.trim() || !formName.trim()) {
-      ToastService.error('SOR Type Code and Name are required.');
+    if (!formName.trim() || !formCode.trim()) {
+      ToastService.error('Name and Code are required.');
       return;
     }
 
     if (popup.mode === 'add') {
       const newItem: CivilManagement.SORType = {
         id: `ST-${Date.now().toString().slice(-4)}`,
-        code: formCode.trim().toUpperCase(),
         name: formName.trim(),
-        isActive: formActive,
+        code: formCode.trim().toUpperCase(),
+        description: formDesc.trim(),
+        isActive: true,
       };
       setData(prev => [newItem, ...prev]);
-      ToastService.success(`SOR Type "${newItem.name}" added successfully.`);
+      ToastService.success(`SOR Type "${newItem.name}" created successfully.`);
     } else if (popup.mode === 'edit' && popup.item) {
       setData(prev =>
         prev.map(d =>
           d.id === popup.item!.id
             ? {
                 ...d,
-                code: formCode.trim().toUpperCase(),
                 name: formName.trim(),
-                isActive: formActive,
+                code: formCode.trim().toUpperCase(),
+                description: formDesc.trim(),
               }
             : d
         )
@@ -100,7 +114,7 @@ export default function SORTypeMaster() {
   return (
     <FormPage
       title="SOR Type Master"
-      description="Define Schedule of Rates top-level classifications (e.g., Building, Roads, Electrical, Public Health)."
+      description="Manage Schedule of Rates (SOR) type registries for civil infrastructure."
       breadcrumbs={[
         { label: 'Home', to: '/home/menu' },
         { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
@@ -109,29 +123,26 @@ export default function SORTypeMaster() {
         { label: 'SOR Type' },
       ]}
     >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          marginBottom: '1rem',
-        }}
-      >
-        <Button
-          label="Add SOR Type"
-          icon="plus"
-          variant="primary"
-          onClick={openAdd}
-        />
-      </div>
-
       <FormCard>
         <GridPanel
           data={data}
           columns={[
             { cell: (_, o) => <span>{o.rowIndex + 1}</span>, width: '50px' },
             {
+              field: 'name',
+              header: 'Name',
+              cell: (item: CivilManagement.SORType) => (
+                <span style={{ fontWeight: 600, color: '#111827' }}>
+                  {item.name ||
+                    (item as any).type ||
+                    (item as any).description ||
+                    item.code}
+                </span>
+              ),
+            },
+            {
               field: 'code',
-              header: 'SOR Type Code',
+              header: 'Code',
               cell: (item: CivilManagement.SORType) => (
                 <span
                   style={{
@@ -145,10 +156,10 @@ export default function SORTypeMaster() {
               ),
             },
             {
-              field: 'name',
-              header: 'Classification / Title',
+              field: 'description',
+              header: 'Description',
               cell: (item: CivilManagement.SORType) => (
-                <span style={{ fontWeight: 600 }}>{item.name}</span>
+                <span>{(item as any).description || item.name || 'N/A'}</span>
               ),
             },
             {
@@ -157,7 +168,7 @@ export default function SORTypeMaster() {
               cell: (item: CivilManagement.SORType) => (
                 <button
                   type="button"
-                  onClick={() => toggleStatus(item.id)}
+                  onClick={() => toggleStatus(String(item.id || ''))}
                   style={{
                     border: 'none',
                     background: 'transparent',
@@ -167,15 +178,15 @@ export default function SORTypeMaster() {
                   title="Click to toggle status"
                 >
                   <StatusBadge
-                    label={item.isActive ? 'Active' : 'Inactive'}
-                    variant={item.isActive ? 'success' : 'neutral'}
+                    label={item.isActive !== false ? 'Active' : 'Inactive'}
+                    variant={item.isActive !== false ? 'success' : 'neutral'}
                   />
                 </button>
               ),
             },
             {
               field: 'id',
-              header: 'Actions',
+              header: 'Action',
               sortable: false,
               cell: (item: CivilManagement.SORType) => (
                 <div style={{ display: 'flex', gap: '0.375rem' }}>
@@ -186,72 +197,81 @@ export default function SORTypeMaster() {
                     variant="outlined"
                     onClick={() => openEdit(item)}
                   />
-                  <Button
-                    size="small"
-                    label=""
-                    icon={item.isActive ? 'lock' : 'unlock'}
-                    variant="outlined"
-                    onClick={() => toggleStatus(item.id)}
-                  />
                 </div>
               ),
             },
           ]}
+          toolbar={
+            <Button
+              label="Create"
+              icon="plus"
+              variant="primary"
+              onClick={openAdd}
+            />
+          }
           searchBox
-          searchPlaceholder="Search SOR types by code or name..."
+          searchPlaceholder="Search..."
         />
       </FormCard>
 
       <FormPopup
         visible={popup.mode !== 'closed'}
         onHide={() => setPopup({ mode: 'closed' })}
-        title={popup.mode === 'add' ? 'Add SOR Type' : 'Edit SOR Type'}
-        subtitle="Schedule of Rates top-level classification."
+        title={popup.mode === 'add' ? 'Create SOR Type' : 'Edit SOR Type'}
+        subtitle={
+          popup.mode === 'add'
+            ? 'Fill in the details to add a new SOR type.'
+            : 'Update the SOR type details.'
+        }
         size="md"
       >
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '1rem',
+            gap: '1.25rem',
             marginTop: '0.5rem',
           }}
         >
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '1.25rem',
+            }}
+          >
+            <TextBox
+              label="Name"
+              placeholder="Enter SOR Type Name"
+              value={formName}
+              onChange={setFormName}
+              required
+            />
+            <TextBox
+              label="Code"
+              placeholder="Enter Code (e.g. CIVIL)"
+              value={formCode}
+              onChange={setFormCode}
+              required
+            />
+          </div>
           <TextBox
-            label="SOR Type Code"
-            placeholder="e.g. SOR-BLD"
-            value={formCode}
-            onChange={setFormCode}
-            required
-          />
-          <TextBox
-            label="Classification Title"
-            placeholder="e.g. Building & Civil Works"
-            value={formName}
-            onChange={setFormName}
-            required
-          />
-          <DropDownList
-            label="Status"
-            data={[
-              { label: 'Active', value: 'true' },
-              { label: 'Inactive', value: 'false' },
-            ]}
-            textField="label"
-            optionValue="value"
-            value={formActive ? 'true' : 'false'}
-            onChange={val => setFormActive(val === 'true')}
+            label="Description"
+            placeholder="Enter Description"
+            value={formDesc}
+            onChange={setFormDesc}
           />
           <div className="flex justify-end gap-3 mt-4">
             <Button
-              label="Cancel"
+              label="Reset"
+              icon="times"
               variant="outlined"
-              onClick={() => setPopup({ mode: 'closed' })}
+              onClick={handleReset}
             />
             <Button
-              label={popup.mode === 'add' ? 'Create Type' : 'Save Changes'}
+              label="Save"
               variant="primary"
-              icon="check"
+              icon="save"
               onClick={handleSave}
             />
           </div>

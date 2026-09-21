@@ -1,16 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { Button } from 'shared/components/buttons';
 import {
   FormCard,
   FormPage,
   FormPopup,
   GridPanel,
 } from 'shared/new-components';
-import { Button } from 'shared/components/buttons';
 import {
   civilWorks,
-  raBills,
   contractors,
   milestones as initialMilestones,
+  raBills,
 } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -54,7 +54,10 @@ export default function AdminReports() {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  const totalAA = works.reduce((s, w) => s + w.aaAmount, 0);
+  const totalAA = works.reduce(
+    (s, w) => s + (w.administrativeApprovalAmount || w.aaAmount || 0),
+    0
+  );
   const totalContract = works.reduce((s, w) => s + w.contractAmount, 0);
   const totalPaid = bills
     .filter(b => b.status === 'Paid')
@@ -148,11 +151,12 @@ export default function AdminReports() {
               ),
             },
             {
-              field: 'aaAmount',
+              field: 'administrativeApprovalAmount',
               header: 'AA Amount',
-              cell: (w: any) => (
-                <span>₹{(w.aaAmount / 100000).toFixed(1)}L</span>
-              ),
+              cell: (w: any) => {
+                const amt = w.administrativeApprovalAmount || w.aaAmount || 0;
+                return <span>₹{(amt / 100000).toFixed(1)}L</span>;
+              },
             },
             {
               field: 'contractAmount',
@@ -395,7 +399,10 @@ export default function AdminReports() {
                         'Estimated Cost',
                         `₹${(w.estimatedCost / 100000).toFixed(2)}L`,
                       ],
-                      ['AA Amount', `₹${(w.aaAmount / 100000).toFixed(2)}L`],
+                      [
+                        'AA Amount',
+                        `₹${((w.administrativeApprovalAmount || w.aaAmount || 0) / 100000).toFixed(2)}L`,
+                      ],
                       [
                         'Contract Value',
                         w.contractAmount > 0

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
@@ -12,16 +12,16 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import {
   type BOQItem,
   type CivilWork,
-  boqItems as initialBOQ,
   civilWorks,
-  sorItems,
-  initialSORTypes,
+  boqItems as initialBOQ,
   initialSORChapters,
+  initialSORTypes,
+  sorItems,
 } from '../../mocks';
-import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
@@ -100,7 +100,10 @@ export default function AdminBOQCompilation() {
       const q = Number(qty);
       return rate > 0 && q > 0 ? rate * q : 0;
     }
-    return selectedSor && qty ? Number(qty) * selectedSor.govtRate : 0;
+    const rate = selectedSor
+      ? (selectedSor.rate ?? selectedSor.govtRate ?? 0)
+      : 0;
+    return rate > 0 && qty ? Number(qty) * rate : 0;
   })();
 
   const handleWorkChange = (val: unknown) => {
@@ -115,6 +118,9 @@ export default function AdminBOQCompilation() {
 
   const handleSaveItem = () => {
     if (popup.mode === 'add') {
+      const boqSeq = (workBOQItems.length + 1).toString().padStart(2, '0');
+      const generatedCode = `BOQ-${selectedWorkId.padStart(3, '0')}-${boqSeq}`;
+
       if (isNonSOR) {
         if (!nonSorDescription.trim()) {
           ToastService.error('Item description is required for Non-SOR work.');
@@ -129,17 +135,23 @@ export default function AdminBOQCompilation() {
           return;
         }
         const refSor = sorItems[0];
+        const numRate = Number(nonSorRate);
+        const numQty = Number(qty);
         const newItem: BOQItem = {
           id: `boq-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-          boqId: `BOQ-${selectedWorkId.padStart(3, '0')}`,
+          billOfQuantityCode: generatedCode,
           workId: selectedWorkId,
           sorItemId: refSor?.id ?? 'non-sor',
           sorCode: 'NON-SOR',
-          description: nonSorDescription,
+          isNonSor: true,
+          itemDescription: nonSorDescription.trim(),
+          description: nonSorDescription.trim(),
           unit: nonSorUnit || refSor?.unit || 'Unit',
-          govtRate: Number(nonSorRate),
-          approvedQty: Number(qty),
-          amount: calculatedAmt,
+          rate: numRate,
+          govtRate: numRate,
+          approvedQuantity: numQty,
+          approvedQty: numQty,
+          amount: numRate * numQty,
           isLocked: false,
         };
         setData(prev => [...prev, newItem]);
@@ -159,17 +171,33 @@ export default function AdminBOQCompilation() {
           );
           return;
         }
+        const numRate = selectedSor
+          ? (selectedSor.rate ?? selectedSor.govtRate ?? 0)
+          : 0;
+        const numQty = Number(qty);
+        const itemDesc = selectedSor
+          ? selectedSor.itemDescription ||
+            selectedSor.workDescription ||
+            selectedSor.description ||
+            ''
+          : '';
+        const itemSorCode = selectedSor?.sorCode || selectedSor?.code || '';
+
         const newItem: BOQItem = {
           id: `boq-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-          boqId: `BOQ-${selectedWorkId.padStart(3, '0')}`,
+          billOfQuantityCode: generatedCode,
           workId: selectedWorkId,
           sorItemId: selectedSorId,
-          sorCode: selectedSor?.code ?? '',
-          description: selectedSor?.description ?? '',
-          unit: selectedSor?.unit ?? '',
-          govtRate: selectedSor?.govtRate ?? 0,
-          approvedQty: Number(qty),
-          amount: calculatedAmt,
+          sorCode: itemSorCode,
+          isNonSor: false,
+          itemDescription: itemDesc,
+          description: itemDesc,
+          unit: selectedSor?.unit ?? 'Unit',
+          rate: numRate,
+          govtRate: numRate,
+          approvedQuantity: numQty,
+          approvedQty: numQty,
+          amount: numRate * numQty,
           isLocked: false,
         };
         setData(prev => {
@@ -191,16 +219,20 @@ export default function AdminBOQCompilation() {
         ToastService.error('Quantity must be greater than 0.');
         return;
       }
+      const numQty = Number(qty);
       setData(prev =>
-        prev.map(item =>
-          item.id === popup.item.id
-            ? {
-                ...item,
-                approvedQty: Number(qty),
-                amount: Number(qty) * item.govtRate,
-              }
-            : item
-        )
+        prev.map(item => {
+          if (item.id === popup.item.id) {
+            const r = item.rate ?? item.govtRate ?? 0;
+            return {
+              ...item,
+              approvedQuantity: numQty,
+              approvedQty: numQty,
+              amount: numQty * r,
+            };
+          }
+          return item;
+        })
       );
       ToastService.success('BOQ item quantity updated.');
     }
@@ -214,7 +246,7 @@ export default function AdminBOQCompilation() {
 
   const handleDeleteItem = (item: BOQItem) => {
     const isConfirmed = window.confirm(
-      `Are you sure you want to delete line item "${item.sorCode || item.description}"? This action cannot be undone.`
+      `Are you sure you want to delete line item "${item.sorCode || item.itemDescription || item.description}"? This action cannot be undone.`
     );
     if (!isConfirmed) return;
 
@@ -243,10 +275,11 @@ export default function AdminBOQCompilation() {
     );
     if (!isConfirmed) return;
 
+    const lockTime = new Date().toISOString();
     setData(prev =>
       prev.map(item =>
         String(item.workId) === selectedWorkId
-          ? { ...item, isLocked: true }
+          ? { ...item, isLocked: true, lockedAt: lockTime }
           : item
       )
     );
@@ -330,13 +363,14 @@ export default function AdminBOQCompilation() {
         >
           <div style={{ marginTop: '0.5rem' }}>
             <DropDownList
-              label="Work In-Progress / Registered *"
+              label="Work In-Progress / Registered"
               data={workOptions}
               textField="text"
               optionValue="value"
               value={selectedWorkId}
               onChange={handleWorkChange}
               placeholder="Search by work code or project name..."
+              required
             />
           </div>
         </FormCard>
@@ -437,8 +471,25 @@ export default function AdminBOQCompilation() {
               width: '50px',
             },
             {
+              field: 'billOfQuantityCode',
+              header: 'BOQ Code',
+              cell: (item: BOQItem) => (
+                <span
+                  style={{
+                    fontFamily: 'monospace',
+                    fontWeight: 700,
+                    color: '#0f766e',
+                    fontSize: '0.75rem',
+                  }}
+                >
+                  {item.billOfQuantityCode || '—'}
+                </span>
+              ),
+              width: '120px',
+            },
+            {
               field: 'sorCode',
-              header: 'Serial Number',
+              header: 'Item Code',
               cell: (item: BOQItem) => (
                 <span
                   style={{
@@ -448,38 +499,44 @@ export default function AdminBOQCompilation() {
                     fontSize: '0.75rem',
                   }}
                 >
-                  {item.sorCode || '—'}
+                  {item.sorCode || (item.isNonSor ? 'NON-SOR' : '—')}
                 </span>
               ),
-              width: '120px',
+              width: '110px',
             },
             {
-              field: 'description',
-              header: 'Description',
+              field: 'itemDescription',
+              header: 'Item Description',
               cell: (item: BOQItem) => (
                 <span style={{ fontSize: '0.8125rem' }}>
-                  {item.description}
+                  {item.itemDescription || item.description}
                 </span>
               ),
             },
             {
-              field: 'govtRate',
-              header: 'SOR Rate',
-              cell: (item: BOQItem) => (
-                <span>
-                  ₹{item.govtRate.toLocaleString('en-IN')} / {item.unit}
-                </span>
-              ),
+              field: 'rate',
+              header: 'Rate (₹)',
+              cell: (item: BOQItem) => {
+                const r = item.rate ?? item.govtRate ?? 0;
+                return (
+                  <span>
+                    ₹{r.toLocaleString('en-IN')} / {item.unit}
+                  </span>
+                );
+              },
               width: '130px',
             },
             {
-              field: 'approvedQty',
+              field: 'approvedQuantity',
               header: 'Approved Qty',
-              cell: (item: BOQItem) => (
-                <span style={{ fontWeight: 700 }}>
-                  {item.approvedQty.toLocaleString('en-IN')} {item.unit}
-                </span>
-              ),
+              cell: (item: BOQItem) => {
+                const q = item.approvedQuantity ?? item.approvedQty ?? 0;
+                return (
+                  <span style={{ fontWeight: 700 }}>
+                    {q.toLocaleString('en-IN')} {item.unit}
+                  </span>
+                );
+              },
               width: '130px',
             },
             {
@@ -502,11 +559,20 @@ export default function AdminBOQCompilation() {
               sortable: false,
               cell: (item: BOQItem) =>
                 item.isLocked || isLocked ? (
-                  <StatusBadge label="Baseline Locked" variant="approved" />
+                  <StatusBadge
+                    label={
+                      item.lockedAt
+                        ? `Locked (${new Date(item.lockedAt).toLocaleDateString('en-IN')})`
+                        : 'Baseline Locked'
+                    }
+                    variant="approved"
+                  />
                 ) : (
                   <GridActionButtons
                     onEdit={() => {
-                      setQty(String(item.approvedQty));
+                      setQty(
+                        String(item.approvedQuantity ?? item.approvedQty ?? '')
+                      );
                       setPopup({ mode: 'edit', item });
                     }}
                     onDelete={() => handleDeleteItem(item)}
@@ -514,7 +580,7 @@ export default function AdminBOQCompilation() {
                     deleteTooltip="Delete Line Item"
                   />
                 ),
-              width: '130px',
+              width: '150px',
             },
           ]}
           toolbar={
@@ -602,27 +668,28 @@ export default function AdminBOQCompilation() {
                 </div>
                 <FormGrid columns={2}>
                   <TextBox
-                    label="Item Description *"
+                    label="Item Description"
                     placeholder="e.g. Providing and laying interlocking paver blocks"
                     value={nonSorDescription}
                     onChange={setNonSorDescription}
                     required
                   />
                   <TextBox
-                    label="Unit *"
+                    label="Unit"
                     placeholder="e.g. Sqm, Cum, RM"
                     value={nonSorUnit}
                     onChange={setNonSorUnit}
+                    required
                   />
                   <TextBox
-                    label="Rate per Unit (₹) *"
+                    label="Rate per Unit (₹)"
                     placeholder="e.g. 850"
                     value={nonSorRate}
                     onChange={setNonSorRate}
                     required
                   />
                   <TextBox
-                    label="Approved Quantity *"
+                    label="Approved Quantity"
                     placeholder="e.g. 500"
                     value={qty}
                     onChange={setQty}
@@ -695,11 +762,19 @@ export default function AdminBOQCompilation() {
                   />
                 </div>
                 <DropDownList
-                  label="Select Item from Government SOR Master *"
-                  data={sorItems.map(s => ({
-                    name: `${s.code} — ${s.description.substring(0, 70)}... (₹${s.govtRate}/${s.unit})`,
-                    value: s.id,
-                  }))}
+                  label="Select Item from Government SOR Master"
+                  data={sorItems.map(s => {
+                    const r = s.rate ?? s.govtRate ?? 0;
+                    const desc =
+                      s.itemDescription ||
+                      s.workDescription ||
+                      s.description ||
+                      '';
+                    return {
+                      name: `${s.sorCode || s.code} — ${desc.substring(0, 70)}... (₹${r}/${s.unit})`,
+                      value: s.id,
+                    };
+                  })}
                   textField="name"
                   optionValue="value"
                   value={selectedSorId}
@@ -707,6 +782,7 @@ export default function AdminBOQCompilation() {
                     setSelectedSorId(v as string);
                     setQty('');
                   }}
+                  required
                 />
               </div>
             )}
@@ -724,10 +800,14 @@ export default function AdminBOQCompilation() {
               fontSize: '0.8125rem',
             }}
           >
-            <strong>Item Description:</strong> {popup.item.description} (
-            {popup.item.sorCode})<br />
-            <strong>Govt Standard Rate:</strong> ₹
-            {popup.item.govtRate.toLocaleString('en-IN')} per {popup.item.unit}
+            <strong>Item Description:</strong>{' '}
+            {popup.item.itemDescription || popup.item.description} (
+            {popup.item.sorCode || popup.item.billOfQuantityCode})<br />
+            <strong>Standard Rate:</strong> ₹
+            {(popup.item.rate ?? popup.item.govtRate ?? 0).toLocaleString(
+              'en-IN'
+            )}{' '}
+            per {popup.item.unit}
           </div>
         )}
 
@@ -753,7 +833,7 @@ export default function AdminBOQCompilation() {
                   popup.mode === 'add' && calculatedAmt > 0
                     ? `₹${calculatedAmt.toLocaleString('en-IN')}`
                     : popup.mode === 'edit' && popup.item && qty
-                      ? `₹ ${(Number(qty) * popup.item.govtRate).toLocaleString('en-IN')}`
+                      ? `₹ ${(Number(qty) * (popup.item.rate ?? popup.item.govtRate ?? 0)).toLocaleString('en-IN')}`
                       : '—'
                 }
                 onChange={() => {}}
@@ -774,7 +854,7 @@ export default function AdminBOQCompilation() {
                 label="Calculated Cost (₹)"
                 value={
                   qty
-                    ? `₹ ${(Number(qty) * popup.item.govtRate).toLocaleString('en-IN')}`
+                    ? `₹ ${(Number(qty) * (popup.item.rate ?? popup.item.govtRate ?? 0)).toLocaleString('en-IN')}`
                     : '—'
                 }
                 onChange={() => {}}

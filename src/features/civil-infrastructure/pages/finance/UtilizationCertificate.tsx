@@ -559,7 +559,7 @@ export default function UtilizationCertificate() {
             }}
           >
             <DropDownList
-              label="Civil Work Project *"
+              label="Civil Work Project"
               data={works.map(w => ({
                 label: `${w.workId} — ${w.name} (${w.fundingSource})`,
                 value: w.id,
@@ -577,14 +577,14 @@ export default function UtilizationCertificate() {
 
             <FormGrid columns={2}>
               <TextBox
-                label="Grant Sanction Letter Order Number *"
+                label="Grant Sanction Letter Order Number"
                 placeholder="F.No. 4-12/2025(CU-UGC)"
                 value={formGrantNo}
                 onChange={setFormGrantNo}
                 required
               />
               <TextBox
-                label="Sanctioned Grant Amount (₹) *"
+                label="Sanctioned Grant Amount (₹)"
                 placeholder="25000000"
                 value={formGrantAmt}
                 onChange={setFormGrantAmt}
@@ -594,14 +594,14 @@ export default function UtilizationCertificate() {
 
             <FormGrid columns={2}>
               <TextBox
-                label="Period From *"
+                label="Period From"
                 placeholder="YYYY-MM-DD"
                 value={formFrom}
                 onChange={setFormFrom}
                 required
               />
               <TextBox
-                label="Period To *"
+                label="Period To"
                 placeholder="YYYY-MM-DD"
                 value={formTo}
                 onChange={setFormTo}
@@ -611,7 +611,7 @@ export default function UtilizationCertificate() {
 
             <FormGrid columns={2}>
               <TextBox
-                label="Current Period Expenditure Utilized (₹) *"
+                label="Current Period Expenditure Utilized (₹)"
                 placeholder="14200000"
                 value={formCurrExp}
                 onChange={setFormCurrExp}
