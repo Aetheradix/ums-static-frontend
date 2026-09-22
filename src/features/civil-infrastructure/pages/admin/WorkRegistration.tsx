@@ -87,6 +87,7 @@ const EMPTY_WORK = {
   workBasis: 'SOR',
   executionRoute: 'Internal',
   isStatuaryCheck: false,
+  isStatutoryCheck: false,
   status: 'Registered',
   isActive: true,
   mandateDocs: {} as Record<string, string>,
@@ -97,29 +98,33 @@ export default function WorkRegistration() {
   const [data, setData] = useState<any[]>(() => {
     const saved = localStorage.getItem('civil_works');
     const list = saved ? JSON.parse(saved) : initialData;
-    return list.map((w: any) => ({
-      ...w,
-      workRegistrationId: w.workRegistrationId || Number(w.id) || 0,
-      code: w.code || w.workId || `CW-2025-${String(w.id).padStart(3, '0')}`,
-      priorityLevel: w.priorityLevel || w.priority || 'Medium',
-      workBasis:
-        w.workBasis === 'SOR Based' || w.workBasis === 'SOR'
-          ? 'SOR'
-          : w.workBasis === 'BOQ Based' ||
-              w.workBasis === 'BOQBased' ||
-              w.workBasis === 'BoqBased'
-            ? 'BoqBased'
-            : w.workBasis || 'SOR',
-      executionRoute:
-        w.executionRoute === 'External Agency' ||
-        w.executionRoute === 'External' ||
-        w.executionRoute === 'ExternalAgency'
-          ? 'ExternalAgency'
-          : 'Internal',
-      isActive: w.isActive !== false,
-      isStatuaryCheck: Boolean(w.isStatuaryCheck),
-      mandateDocs: w.mandateDocs || {},
-    }));
+    return list.map((w: any) => {
+      const isStat = Boolean(w.isStatuaryCheck ?? w.isStatutoryCheck ?? false);
+      return {
+        ...w,
+        workRegistrationId: w.workRegistrationId || Number(w.id) || 0,
+        code: w.code || w.workId || `CW-2025-${String(w.id).padStart(3, '0')}`,
+        priorityLevel: w.priorityLevel || w.priority || 'Medium',
+        workBasis:
+          w.workBasis === 'SOR Based' || w.workBasis === 'SOR'
+            ? 'SOR'
+            : w.workBasis === 'BOQ Based' ||
+                w.workBasis === 'BOQBased' ||
+                w.workBasis === 'BoqBased'
+              ? 'BoqBased'
+              : w.workBasis || 'SOR',
+        executionRoute:
+          w.executionRoute === 'External Agency' ||
+          w.executionRoute === 'External' ||
+          w.executionRoute === 'ExternalAgency'
+            ? 'ExternalAgency'
+            : 'Internal',
+        isActive: w.isActive !== false,
+        isStatuaryCheck: isStat,
+        isStatutoryCheck: isStat,
+        mandateDocs: w.mandateDocs || {},
+      };
+    });
   });
 
   const [projects] = useState<CivilManagement.CivilProject[]>(() => {
@@ -190,6 +195,7 @@ export default function WorkRegistration() {
       fundingSourceId: 1,
       fundingSourceName: firstFund?.name || '',
       isStatuaryCheck: false,
+      isStatutoryCheck: false,
       mandateDocs: {},
     });
     setEditingItem(null);
@@ -197,8 +203,13 @@ export default function WorkRegistration() {
   };
 
   const openEdit = (item: any) => {
+    const isStat = Boolean(
+      item.isStatuaryCheck ?? item.isStatutoryCheck ?? false
+    );
     setForm({
       ...item,
+      isStatuaryCheck: isStat,
+      isStatutoryCheck: isStat,
       mandateDocs: item.mandateDocs || {},
     });
     setEditingItem(item);
@@ -260,6 +271,9 @@ export default function WorkRegistration() {
 
     const workRegId = form.workRegistrationId || Date.now();
     const workCode = form.code || nextWorkCode();
+    const isStat = Boolean(
+      form.isStatuaryCheck ?? form.isStatutoryCheck ?? false
+    );
 
     const payload = {
       workRegistrationId: workRegId,
@@ -278,6 +292,8 @@ export default function WorkRegistration() {
       workBasis: form.workBasis || 'SOR',
       executionRoute: form.executionRoute || 'Internal',
       status: form.status || 'Registered',
+      isStatuaryCheck: isStat,
+      isStatutoryCheck: isStat,
       isActive: form.isActive !== false,
       mandateDocs: form.mandateDocs || {},
     };
@@ -448,9 +464,15 @@ export default function WorkRegistration() {
 
             <Checkbox
               label="Statutory Compliance Verified"
-              checked={!!form.isStatuaryCheck}
+              checked={Boolean(
+                form.isStatuaryCheck ?? form.isStatutoryCheck ?? false
+              )}
               onChange={val =>
-                setForm((f: any) => ({ ...f, isStatuaryCheck: val }))
+                setForm((f: any) => ({
+                  ...f,
+                  isStatuaryCheck: val,
+                  isStatutoryCheck: val,
+                }))
               }
             />
 
@@ -501,6 +523,9 @@ export default function WorkRegistration() {
   if (mode === 'view' && viewItem) {
     const workCode =
       viewItem.code || viewItem.workId || `#${viewItem.workRegistrationId}`;
+    const isStat = Boolean(
+      viewItem.isStatuaryCheck ?? viewItem.isStatutoryCheck ?? false
+    );
     return (
       <FormPage
         title={`Work Details — ${workCode}`}
@@ -549,12 +574,12 @@ export default function WorkRegistration() {
                 value: (
                   <span
                     className={`text-xs font-semibold px-2 py-0.5 rounded ${
-                      viewItem.isStatuaryCheck
+                      isStat
                         ? 'bg-green-100 text-green-700 border border-green-300'
                         : 'bg-gray-100 text-gray-500 border border-gray-200'
                     }`}
                   >
-                    {viewItem.isStatuaryCheck ? '✓ Yes' : '✗ No'}
+                    {isStat ? '✓ Yes' : '✗ No'}
                   </span>
                 ),
               },
@@ -611,7 +636,7 @@ export default function WorkRegistration() {
             type="button"
           />
           <div className="flex items-center gap-2">
-            {viewItem.isStatuaryCheck && (
+            {isStat && (
               <Button
                 label="Statutory Compliance"
                 icon="shield"
@@ -702,18 +727,23 @@ export default function WorkRegistration() {
             },
             {
               field: 'isStatuaryCheck',
-              header: 'Statuary Check',
-              cell: (w: any) => (
-                <span
-                  className={`text-xs font-semibold px-2 py-0.5 rounded ${
-                    w.isStatuaryCheck
-                      ? 'bg-green-100 text-green-700 border border-green-300'
-                      : 'bg-gray-100 text-gray-500 border border-gray-200'
-                  }`}
-                >
-                  {w.isStatuaryCheck ? '✓ Yes' : '✗ No'}
-                </span>
-              ),
+              header: 'Statutory Check',
+              cell: (w: any) => {
+                const isStat = Boolean(
+                  w.isStatuaryCheck ?? w.isStatutoryCheck ?? false
+                );
+                return (
+                  <span
+                    className={`text-xs font-semibold px-2 py-0.5 rounded ${
+                      isStat
+                        ? 'bg-green-100 text-green-700 border border-green-300'
+                        : 'bg-gray-100 text-gray-500 border border-gray-200'
+                    }`}
+                  >
+                    {isStat ? '✓ Yes' : '✗ No'}
+                  </span>
+                );
+              },
             },
             {
               field: 'status',
@@ -744,6 +774,9 @@ export default function WorkRegistration() {
                 const workId = String(
                   item.workRegistrationId || item.id || item.workId || ''
                 );
+                const hasStatutory = Boolean(
+                  item.isStatuaryCheck ?? item.isStatutoryCheck ?? false
+                );
                 return (
                   <div className="grid-action-buttons">
                     <Button
@@ -764,7 +797,7 @@ export default function WorkRegistration() {
                       tooltip="Edit Work"
                       ariaLabel="Edit Work"
                     />
-                    {item.isStatuaryCheck && (
+                    {hasStatutory && (
                       <Button
                         icon="shield"
                         variant="outlined"

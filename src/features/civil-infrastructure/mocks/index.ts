@@ -49,7 +49,7 @@ export interface MockWorkRegistration {
   status: string;
   estimatedCost: number;
   isActive: boolean;
-  isStatuaryCheck?: boolean;
+  isStatutoryCheck?: boolean;
 }
 
 export interface MockAdministrativeSanction extends MockWorkRegistration {
@@ -165,7 +165,7 @@ export interface CivilWork {
   ownershipVerified?: string;
   // Dynamic documents uploaded via document master
   mandateDocs?: Record<string, string>; // { docTypeName: uploadedFileName }
-  isStatuaryCheck?: boolean;
+  isStatutoryCheck?: boolean;
   isActive?: boolean;
 }
 
@@ -228,6 +228,7 @@ export const civilWorks: CivilWork[] = [
     tpiAgencyName: 'RITES Limited',
     qualityLabId: 'LAB-01',
     qualityLabName: 'IIT Bhopal Civil Testing Lab',
+    isStatutoryCheck: true,
     isActive: true,
   },
   {
@@ -290,6 +291,7 @@ export const civilWorks: CivilWork[] = [
     tpiAgencyName: 'SGS India Pvt Ltd',
     qualityLabId: 'LAB-02',
     qualityLabName: 'MANIT Material Testing Lab',
+    isStatutoryCheck: true,
     isActive: true,
   },
   {
