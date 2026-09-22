@@ -119,9 +119,20 @@ export default function StatutoryCompliance() {
 
   useEffect(() => {
     if (paramWorkId) {
-      setFilterWorkId(paramWorkId);
+      const matched = works.find(
+        w =>
+          String(w.workRegistrationId) === String(paramWorkId) ||
+          String(w.id) === String(paramWorkId) ||
+          String(w.code) === String(paramWorkId) ||
+          String(w.workId) === String(paramWorkId)
+      );
+      if (matched) {
+        setFilterWorkId(String(matched.workRegistrationId || matched.id));
+      } else {
+        setFilterWorkId(paramWorkId);
+      }
     }
-  }, [paramWorkId]);
+  }, [paramWorkId, works]);
 
   const [mode, setMode] = useState<PageMode>('list');
   const [activeItem, setActiveItem] =
@@ -144,19 +155,36 @@ export default function StatutoryCompliance() {
   const statutoryWorks = useMemo(() => {
     return works.filter(
       w =>
-        Boolean(w.isStatuaryCheck) ||
+        Boolean(w.isStatuaryCheck ?? w.isStatutoryCheck ?? false) ||
         (w.isStatuaryCheck === undefined &&
+          w.isStatutoryCheck === undefined &&
           (w.id === '1' ||
             w.id === '2' ||
             w.workRegistrationId === 1 ||
-            w.workRegistrationId === 2))
+            w.workRegistrationId === 2)) ||
+        (paramWorkId &&
+          (String(w.workRegistrationId) === String(paramWorkId) ||
+            String(w.id) === String(paramWorkId) ||
+            String(w.code) === String(paramWorkId) ||
+            String(w.workId) === String(paramWorkId)))
     );
-  }, [works]);
+  }, [works, paramWorkId]);
 
   const filteredData = useMemo(() => {
     if (filterWorkId === 'ALL') return data;
-    return data.filter(d => String(d.workId) === String(filterWorkId));
-  }, [data, filterWorkId]);
+    return data.filter(
+      d =>
+        String(d.workId) === String(filterWorkId) ||
+        works.some(
+          w =>
+            String(w.workRegistrationId || w.id) === String(filterWorkId) &&
+            (String(d.workId) === String(w.id) ||
+              String(d.workId) === String(w.workRegistrationId) ||
+              String(d.workId) === String(w.code) ||
+              String(d.workId) === String(w.workId))
+        )
+    );
+  }, [data, filterWorkId, works]);
 
   // Check how many critical clearances are pending
   const blockingPending = useMemo(() => {
