@@ -7775,7 +7775,7 @@ export const menuConfig: Menu.MenuItem[] = [
               //   colorScheme: 'teal',
               // },
               {
-                label: 'External Masters',
+                label: 'Masters',
                 slug: 'civil-external-masters',
                 description:
                   'Manage SOR types, chapters, subjects, items, projects, funding sources, labs, and status masters.',

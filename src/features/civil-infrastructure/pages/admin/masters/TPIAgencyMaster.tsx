@@ -161,7 +161,7 @@ export default function TPIAgencyMaster() {
         { label: 'Home', to: '/home/menu' },
         { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
         { label: 'Admin Login', to: civilUrls.adminMenu },
-        { label: 'External Masters', to: civilUrls.tpiAgencyMaster },
+        { label: 'Masters', to: civilUrls.tpiAgencyMaster },
         { label: 'Quality Inspection Agency (TPI)' },
       ]}
     >
