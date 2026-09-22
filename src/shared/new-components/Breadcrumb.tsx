@@ -85,7 +85,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
         path.toLowerCase() === 'masters' &&
         location.pathname.includes('civil-infrastructure')
       ) {
-        label = 'External Masters';
+        label = 'Masters';
       }
 
       let toPath = currentPath;

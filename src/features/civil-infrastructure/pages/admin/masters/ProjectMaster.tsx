@@ -144,7 +144,7 @@ export default function ProjectMaster() {
         { label: 'Home', to: '/home/menu' },
         { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
         { label: 'Admin Login', to: civilUrls.adminMenu },
-        { label: 'External Masters', to: civilUrls.externalMastersMenu },
+        { label: 'Masters', to: civilUrls.externalMastersMenu },
         { label: 'Civil Project Master' },
       ]}
     >

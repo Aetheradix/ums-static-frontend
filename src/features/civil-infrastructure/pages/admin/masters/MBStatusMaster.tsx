@@ -114,7 +114,7 @@ export default function MBStatusMaster() {
         { label: 'Home', to: '/home/menu' },
         { label: 'Civil Infrastructure', to: civilUrls.civilMenu },
         { label: 'Admin Login', to: civilUrls.adminMenu },
-        { label: 'External Masters', to: civilUrls.mbStatusMaster },
+        { label: 'Masters', to: civilUrls.mbStatusMaster },
         { label: 'Measurement Book Status' },
       ]}
     >
