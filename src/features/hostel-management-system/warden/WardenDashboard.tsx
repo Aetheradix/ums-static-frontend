@@ -10,6 +10,7 @@ import {
 import {
   MOCK_WARDEN_HOSTEL_ID,
   hostelOccupancy,
+  isAwaitingRoom,
   today,
   useHms,
   useHmsRole,
@@ -32,10 +33,11 @@ export default function WardenDashboard() {
 
   const counts = useMemo(
     () => ({
+      // Students the Hostel Cell has forwarded here whose room is still to allot.
       pendingAdmissions: data.applications.filter(
         a =>
-          a.status === 'Forwarded' &&
-          a.assignedHostelId === MOCK_WARDEN_HOSTEL_ID
+          a.assignedHostelId === MOCK_WARDEN_HOSTEL_ID &&
+          isAwaitingRoom(a, data.allocations)
       ).length,
       pendingLeave: data.leaveRequests.filter(
         l => l.hostelId === MOCK_WARDEN_HOSTEL_ID && l.status === 'Pending'
@@ -71,7 +73,7 @@ export default function WardenDashboard() {
 
   const actions = [
     {
-      label: 'Admission Requests',
+      label: 'Rooms to Allot',
       count: counts.pendingAdmissions,
       path: hmsUrls.warden.admissionRequests,
       icon: 'how_to_reg',

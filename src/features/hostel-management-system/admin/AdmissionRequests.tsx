@@ -17,8 +17,11 @@ import { KeyValueTile, OccupancyBar, SectionNote } from '../components/ui';
 import {
   APPLICATION_STATUS_LABEL,
   APPLICATION_STATUS_VARIANT,
+  buildStudentCredentials,
   hostelPipeline,
+  isAwaitingRoom,
   MOCK_ADMIN_NAME,
+  nextStudentSequence,
   today,
   useHms,
   useHmsRole,
@@ -32,8 +35,7 @@ import { hmsBreadcrumbs } from '../utils/breadcrumbs';
 
 const FILTERS = [
   { id: 'Pending', text: 'Awaiting Assignment' },
-  { id: 'Forwarded', text: 'Forwarded to Warden' },
-  { id: 'Approved', text: 'Approved' },
+  { id: 'Approved', text: 'Approved & Forwarded' },
   { id: 'Rejected', text: 'Rejected' },
   { id: 'All', text: 'All Applications' },
 ];
@@ -59,10 +61,12 @@ interface CapacityRow extends HostelPipeline {
 }
 
 /**
- * The Hostel Cell's inbox. Every application from the public forum lands
- * here unassigned; the admin picks a hostel for it — with that hostel's
- * capacity, occupancy and already-forwarded requests in view — and forwards
- * it to the warden, who approves it and allots the room.
+ * The Hostel Cell's inbox — where every admission decision is taken. An
+ * application from the public forum lands here unassigned; the admin either
+ * approves it, picking a hostel with that hostel's capacity, occupancy and
+ * already-forwarded students in view, or rejects it. Approving issues the
+ * student's ERP credentials and forwards them to the warden, whose remaining
+ * job is to allot a room.
  */
 export default function AdmissionRequests() {
   const { data, update } = useHms();
@@ -73,6 +77,9 @@ export default function AdmissionRequests() {
   const [assigning, setAssigning] = useState<Application | null>(null);
   const [hostelId, setHostelId] = useState('');
   const [note, setNote] = useState('');
+  const [rejecting, setRejecting] = useState<Application | null>(null);
+  const [rejectRemark, setRejectRemark] = useState('');
+  const [approved, setApproved] = useState<Application | null>(null);
 
   /** Capacity, occupancy and forwarded requests for every hostel on the system. */
   const capacityRows: CapacityRow[] = useMemo(
@@ -101,11 +108,13 @@ export default function AdmissionRequests() {
   const pipelineFor = (id: string): CapacityRow | undefined => {
     const row = pipelineById.get(id);
     if (!row || !assigning) return row;
-    if (assigning.status !== 'Forwarded' || assigning.assignedHostelId !== id)
+    if (
+      assigning.assignedHostelId !== id ||
+      !isAwaitingRoom(assigning, data.allocations)
+    )
       return row;
     return {
       ...row,
-      awaitingDecision: row.awaitingDecision - 1,
       forwarded: row.forwarded - 1,
       headroom: row.headroom + 1,
     };
@@ -122,11 +131,13 @@ export default function AdmissionRequests() {
   const counts = useMemo(
     () => ({
       pending: data.applications.filter(a => a.status === 'Pending').length,
-      forwarded: data.applications.filter(a => a.status === 'Forwarded').length,
       approved: data.applications.filter(a => a.status === 'Approved').length,
+      awaitingRoom: data.applications.filter(a =>
+        isAwaitingRoom(a, data.allocations)
+      ).length,
       rejected: data.applications.filter(a => a.status === 'Rejected').length,
     }),
-    [data.applications]
+    [data.applications, data.allocations]
   );
 
   const hostelName = (id: string) =>
@@ -163,30 +174,98 @@ export default function AdmissionRequests() {
     setNote('');
   };
 
-  const handleForward = () => {
+  /**
+   * Approve the application against the chosen hostel and forward it to that
+   * warden. A first approval also issues the student's ERP credentials; a
+   * re-assignment keeps the credentials they already hold.
+   */
+  const handleApprove = () => {
     if (!assigning || !hostelId) {
       ToastService.success('Pick a hostel to forward this application to.');
       return;
     }
-    const moved = assigning.status === 'Forwarded';
-    update('applications', assigning.id, {
+    const moved = assigning.status === 'Approved';
+    const credentials = moved
+      ? { erpLoginId: assigning.erpLoginId, erpPassword: assigning.erpPassword }
+      : buildStudentCredentials(
+          assigning.studentName,
+          nextStudentSequence(data)
+        );
+    const next: Application = {
       ...assigning,
-      status: 'Forwarded',
+      status: 'Approved',
       assignedHostelId: hostelId,
       forwardedOn: today(),
       forwardedBy: MOCK_ADMIN_NAME,
       adminRemarks: note.trim(),
-    });
-    ToastService.success(
-      `${assigning.studentName}'s application ${moved ? 'moved' : 'forwarded'} to ${hostelName(hostelId)}.`
-    );
+      decisionDate: moved ? assigning.decisionDate : today(),
+      decidedBy: MOCK_ADMIN_NAME,
+      remarks:
+        assigning.remarks || 'Approved. Forwarded to the warden for allotment.',
+      ...credentials,
+    };
+    update('applications', assigning.id, next);
     closeAssign();
+    if (moved) {
+      ToastService.success(
+        `${next.studentName} moved to ${hostelName(hostelId)}.`
+      );
+    } else {
+      setApproved(next);
+      ToastService.success(
+        `${next.studentName}'s application approved and forwarded to ${hostelName(hostelId)}.`
+      );
+    }
+  };
+
+  const openReject = (application: Application) => {
+    setRejecting(application);
+    setRejectRemark('');
+    setViewing(null);
+  };
+
+  const handleReject = () => {
+    if (!rejecting) return;
+    update('applications', rejecting.id, {
+      ...rejecting,
+      status: 'Rejected',
+      assignedHostelId: '',
+      forwardedOn: '',
+      forwardedBy: '',
+      decisionDate: today(),
+      decidedBy: MOCK_ADMIN_NAME,
+      remarks: rejectRemark.trim() || 'Application rejected.',
+      erpLoginId: '',
+      erpPassword: '',
+    });
+    ToastService.success(`${rejecting.studentName}'s application rejected.`);
+    setRejecting(null);
+    setRejectRemark('');
+  };
+
+  /** Undo a decision — the application goes back to the Hostel Cell's queue. */
+  const handleReopen = (application: Application) => {
+    update('applications', application.id, {
+      ...application,
+      status: 'Pending',
+      assignedHostelId: '',
+      forwardedOn: '',
+      forwardedBy: '',
+      adminRemarks: '',
+      decisionDate: '',
+      decidedBy: '',
+      remarks: '',
+      erpLoginId: '',
+      erpPassword: '',
+    });
+    setViewing(null);
+    ToastService.success('Application moved back to Awaiting Assignment.');
   };
 
   return (
     <FormPage
       title="Admission Requests"
-      description="Applications from the public forum land here. Assign each one a hostel — with capacity, occupancy and forwarded requests in view — and forward it to that hostel's warden for approval and room allotment."
+      description="Applications from the public forum land here for a decision. Approve one against a hostel — with that hostel's capacity, occupancy and forwarded students in view — and it goes to the warden for room allotment, or reject it outright."
       breadcrumbs={hmsBreadcrumbs(activePortal, 'Admission Requests')}
     >
       <FormGrid columns={4}>
@@ -198,18 +277,18 @@ export default function AdmissionRequests() {
           subtitle="With the Hostel Cell — no hostel yet"
         />
         <StatCard
-          title="Forwarded to Wardens"
-          value={counts.forwarded}
-          icon="send"
-          colorScheme="blue"
-          subtitle="Awaiting a warden's decision"
-        />
-        <StatCard
-          title="Approved"
+          title="Approved & Forwarded"
           value={counts.approved}
           icon="check_circle"
           colorScheme="green"
-          subtitle="Credentials issued by wardens"
+          subtitle="ERP credentials issued"
+        />
+        <StatCard
+          title="Awaiting Room"
+          value={counts.awaitingRoom}
+          icon="send"
+          colorScheme="blue"
+          subtitle="With wardens, no room allotted yet"
         />
         <StatCard
           title="Rejected"
@@ -222,7 +301,7 @@ export default function AdmissionRequests() {
 
       <FormCard
         title="Hostel Capacity at a Glance"
-        subtitle="Total capacity, seats occupied and requests already forwarded — so you can judge how many more each hostel can take before you forward."
+        subtitle="Total capacity, seats occupied and students already forwarded — so you can judge how many more each hostel can take before you approve another."
         icon="chart-bar"
       >
         <GridPanel<CapacityRow>
@@ -280,13 +359,12 @@ export default function AdmissionRequests() {
             {
               field: 'forwarded',
               header: 'Forwarded',
-              width: 190,
+              width: 170,
               cell: item => (
                 <div className="flex flex-col">
                   <span className="font-semibold">{item.forwarded}</span>
                   <span className="text-xs text-slate-500 dark:text-slate-400">
-                    {item.awaitingDecision} awaiting decision ·{' '}
-                    {item.approvedAwaitingRoom} approved, no room yet
+                    awaiting room allotment
                   </span>
                 </div>
               ),
@@ -318,9 +396,8 @@ export default function AdmissionRequests() {
         <div className="mt-4">
           <SectionNote tone="info" title="How to read these numbers">
             Occupied counts beds under an active allotment. Forwarded counts
-            every request already with the warden that has not yet become an
-            occupied bed — awaiting a decision, or approved and waiting for a
-            room. Can Forward is the total capacity less both.
+            students you have approved and sent here whose room the warden has
+            not allotted yet. Can Forward is the total capacity less both.
           </SectionNote>
         </div>
       </FormCard>
@@ -427,7 +504,7 @@ export default function AdmissionRequests() {
             {
               header: 'Action',
               sortable: false,
-              width: 250,
+              width: 280,
               cell: item => (
                 <div className="flex flex-wrap gap-2">
                   <Button
@@ -438,21 +515,40 @@ export default function AdmissionRequests() {
                     onClick={() => setViewing(item)}
                   />
                   {item.status === 'Pending' && (
-                    <Button
-                      label="Assign & Forward"
-                      icon="send"
-                      variant="primary"
-                      size="small"
-                      onClick={() => openAssign(item)}
-                    />
+                    <>
+                      <Button
+                        label="Approve & Forward"
+                        icon="send"
+                        variant="success"
+                        size="small"
+                        onClick={() => openAssign(item)}
+                      />
+                      <Button
+                        label="Reject"
+                        icon="times"
+                        variant="danger"
+                        size="small"
+                        onClick={() => openReject(item)}
+                      />
+                    </>
                   )}
-                  {item.status === 'Forwarded' && (
+                  {/* A student the warden has already housed stays put. */}
+                  {isAwaitingRoom(item, data.allocations) && (
                     <Button
                       label="Re-assign"
                       icon="sync"
                       variant="outlined"
                       size="small"
                       onClick={() => openAssign(item)}
+                    />
+                  )}
+                  {item.status === 'Rejected' && (
+                    <Button
+                      label="Re-open"
+                      icon="replay"
+                      variant="outlined"
+                      size="small"
+                      onClick={() => handleReopen(item)}
                     />
                   )}
                 </div>
@@ -479,14 +575,22 @@ export default function AdmissionRequests() {
                 onClick={() => setViewing(null)}
               />
               {viewing.status === 'Pending' && (
-                <Button
-                  label="Assign Hostel & Forward"
-                  variant="primary"
-                  icon="send"
-                  onClick={() => openAssign(viewing)}
-                />
+                <>
+                  <Button
+                    label="Reject"
+                    variant="danger"
+                    icon="times"
+                    onClick={() => openReject(viewing)}
+                  />
+                  <Button
+                    label="Approve & Forward"
+                    variant="success"
+                    icon="send"
+                    onClick={() => openAssign(viewing)}
+                  />
+                </>
               )}
-              {viewing.status === 'Forwarded' && (
+              {isAwaitingRoom(viewing, data.allocations) && (
                 <Button
                   label="Re-assign Hostel"
                   variant="outlined"
@@ -596,10 +700,6 @@ export default function AdmissionRequests() {
 
             <PreviewSection title="Hostel Assignment" step={5}>
               <PreviewField
-                label="Status"
-                value={APPLICATION_STATUS_LABEL[viewing.status]}
-              />
-              <PreviewField
                 label="Assigned Hostel"
                 value={
                   viewing.assignedHostelId
@@ -617,7 +717,11 @@ export default function AdmissionRequests() {
             </PreviewSection>
 
             {viewing.status !== 'Pending' && (
-              <PreviewSection title="Warden's Decision" step={6}>
+              <PreviewSection title="Decision" step={6}>
+                <PreviewField
+                  label="Status"
+                  value={APPLICATION_STATUS_LABEL[viewing.status]}
+                />
                 <PreviewField
                   label="Decision Date"
                   value={viewing.decisionDate}
@@ -629,6 +733,10 @@ export default function AdmissionRequests() {
                   fullWidth
                 />
                 <PreviewField label="ERP Login ID" value={viewing.erpLoginId} />
+                <PreviewField
+                  label="ERP Password"
+                  value={viewing.erpPassword}
+                />
               </PreviewSection>
             )}
           </>
@@ -639,9 +747,9 @@ export default function AdmissionRequests() {
         visible={Boolean(assigning)}
         onHide={closeAssign}
         title={
-          assigning?.status === 'Forwarded'
+          assigning?.status === 'Approved'
             ? 'Re-assign Hostel'
-            : 'Assign Hostel & Forward'
+            : 'Approve & Forward'
         }
         subtitle={
           assigning
@@ -654,14 +762,14 @@ export default function AdmissionRequests() {
             <Button label="Cancel" variant="outlined" onClick={closeAssign} />
             <Button
               label={
-                assigning?.status === 'Forwarded'
+                assigning?.status === 'Approved'
                   ? 'Move to This Warden'
-                  : 'Forward to Warden'
+                  : 'Approve & Forward'
               }
-              variant="primary"
+              variant="success"
               icon="send"
               disabled={!hostelId}
-              onClick={handleForward}
+              onClick={handleApprove}
             />
           </div>
         }
@@ -766,10 +874,95 @@ export default function AdmissionRequests() {
                 tone="danger"
                 title="No seats left to forward against"
               >
-                Forwarding will still send the application to the warden, but
-                they may have no bed to allot. Consider another hostel.
+                Forwarding will still send the student to the warden, but they
+                may have no bed to allot. Consider another hostel.
               </SectionNote>
             )}
+          </div>
+        )}
+      </FormPopup>
+
+      <FormPopup
+        visible={Boolean(rejecting)}
+        onHide={() => setRejecting(null)}
+        title="Reject Application"
+        subtitle={
+          rejecting
+            ? `${rejecting.applicationNo} — ${rejecting.studentName}`
+            : ''
+        }
+        footer={
+          <div className="flex justify-end gap-3">
+            <Button
+              label="Cancel"
+              variant="outlined"
+              onClick={() => setRejecting(null)}
+            />
+            <Button
+              label="Confirm Rejection"
+              variant="danger"
+              icon="times"
+              onClick={handleReject}
+            />
+          </div>
+        }
+      >
+        <TextArea
+          label="Reason for Rejection"
+          rows={4}
+          placeholder="Shown to the applicant on the public tracking page."
+          value={rejectRemark}
+          onChange={setRejectRemark}
+        />
+      </FormPopup>
+
+      <FormPopup
+        visible={Boolean(approved)}
+        onHide={() => setApproved(null)}
+        title="Approved & Forwarded"
+        subtitle="The student can now sign in, pay the hostel fee and caution money. The warden allots their room."
+        footer={
+          <div className="flex justify-end gap-3">
+            <Button
+              label="Done"
+              variant="primary"
+              onClick={() => setApproved(null)}
+            />
+          </div>
+        }
+      >
+        {approved && (
+          <div className="flex flex-col gap-4">
+            <div className="rounded-xl border border-slate-200 px-5 py-4 dark:border-slate-700">
+              <p className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                {approved.studentName}
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                {approved.rollNumber} · {hostelName(approved.assignedHostelId)}{' '}
+                · prefers{' '}
+                {approved.preferredRoomType || 'no particular room type'}
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <KeyValueTile
+                label="Login ID"
+                value={approved.erpLoginId}
+                mono
+                tone="success"
+              />
+              <KeyValueTile
+                label="Password"
+                value={approved.erpPassword}
+                mono
+                tone="success"
+              />
+            </div>
+            <SectionNote tone="info">
+              These also appear to the student on the public
+              application-tracking page. {hostelName(approved.assignedHostelId)}
+              's warden now sees them under Admission Requests and allots the
+              room.
+            </SectionNote>
           </div>
         )}
       </FormPopup>

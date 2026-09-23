@@ -26,7 +26,7 @@ export const menuConfig: Menu.MenuItem[] = [
         label: 'Hostel Admin',
         slug: 'hms-admin',
         description:
-          'Register hostels and issue their credentials, assign admission requests to a hostel and forward them to the warden, and monitor seats hostel-wise.',
+          'Register hostels and issue their credentials, approve or reject admission requests and forward them to a hostel, and monitor seats hostel-wise.',
         path: '/hostel-management-system/admin',
         icon: 'admin_panel_settings',
         colorScheme: 'red',
@@ -51,7 +51,7 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Admission Requests',
             slug: 'hms-admin-admission-requests',
             description:
-              'Assign each application a hostel — with capacity, occupied and forwarded counts in view — and forward it to that warden.',
+              'Approve or reject each application, assigning a hostel — with capacity, occupied and forwarded counts in view — and forward it to that warden.',
             path: '/hostel-management-system/admin/admission-requests',
             icon: 'forward_to_inbox',
             colorScheme: 'orange',
@@ -78,7 +78,7 @@ export const menuConfig: Menu.MenuItem[] = [
         label: 'Hostel Warden',
         slug: 'hms-warden',
         description:
-          'Configure rooms and facilities, approve the admissions forwarded to you, allot rooms, and run attendance, leave, mess, visitors and grievances.',
+          'Configure rooms and facilities, allot rooms to the students forwarded to you, and run attendance, leave, mess, visitors and grievances.',
         path: '/hostel-management-system/warden',
         icon: 'badge',
         colorScheme: 'purple',
@@ -110,7 +110,7 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Admission Requests',
             slug: 'hms-admission-requests',
             description:
-              'Approve or reject the applications the Hostel Cell has assigned to your hostel, and issue student ERP credentials.',
+              'Students the Hostel Cell has approved and forwarded to your hostel, and whether each one has a room yet.',
             path: '/hostel-management-system/warden/admission-requests',
             icon: 'how_to_reg',
             colorScheme: 'indigo',

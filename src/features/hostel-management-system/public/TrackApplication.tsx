@@ -125,8 +125,9 @@ export default function TrackApplication() {
                 tone="success"
                 title="Your ERP credentials are ready"
               >
+                You have been assigned {hostelName(result.assignedHostelId)}.
                 Sign in to the Student Portal with these, pay the hostel fee and
-                caution money, and the warden will allot your room.
+                caution money, and that hostel's warden will allot your room.
               </SectionNote>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <KeyValueTile
@@ -147,21 +148,10 @@ export default function TrackApplication() {
 
           {result.status === 'Pending' && (
             <div className="mt-5">
-              <SectionNote tone="warning" title="Awaiting hostel assignment">
+              <SectionNote tone="warning" title="Awaiting a decision">
                 Your application is with the University Hostel Cell, which
-                assigns you a hostel and forwards it to that hostel's warden.
-                Check back to see which hostel you have been assigned.
-              </SectionNote>
-            </div>
-          )}
-
-          {result.status === 'Forwarded' && (
-            <div className="mt-5">
-              <SectionNote tone="info" title="Awaiting the warden's decision">
-                You have been assigned {hostelName(result.assignedHostelId)} and
-                your application was forwarded to its warden on{' '}
-                {result.forwardedOn}. Your ERP credentials appear here once it
-                is approved.
+                approves it and assigns you a hostel. Check back to see which
+                hostel you have been given and to collect your ERP credentials.
               </SectionNote>
             </div>
           )}

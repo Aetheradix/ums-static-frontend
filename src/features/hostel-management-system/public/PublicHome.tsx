@@ -5,7 +5,7 @@ export default function PublicHome() {
   return (
     <PortalSelector
       moduleTitle="Hostel Admission — Public Forum"
-      moduleDescription="Apply for university hostel accommodation without signing in. Your academic details are fetched from the university record; the University Hostel Cell assigns you a hostel, its warden reviews the request, and your ERP credentials are issued once it is approved."
+      moduleDescription="Apply for university hostel accommodation without signing in. Your academic details are fetched from the university record; the University Hostel Cell decides your application and assigns your hostel, and its warden allots your room."
       portals={[
         {
           title: 'Apply for Hostel',
@@ -18,7 +18,7 @@ export default function PublicHome() {
         {
           title: 'Track Application',
           description:
-            'See which hostel you have been assigned, whether the warden has approved you — and collect your ERP credentials.',
+            'See whether the Hostel Cell has approved you, which hostel you have been assigned — and collect your ERP credentials.',
           icon: 'search',
           colorScheme: 'teal',
           path: hmsUrls.public.track,

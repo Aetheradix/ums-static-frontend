@@ -26,7 +26,7 @@ export default function HmsPortalPage() {
         {
           title: 'Hostel Admin',
           description:
-            'Register hostels and issue their credentials, assign each admission request a hostel and forward it to the warden, and monitor seats hostel-wise.',
+            'Register hostels and issue their credentials, decide each admission request and forward it to a hostel, and monitor seats hostel-wise.',
           icon: 'admin_panel_settings',
           colorScheme: 'red',
           path: hmsUrls.admin.root,
@@ -34,7 +34,7 @@ export default function HmsPortalPage() {
         {
           title: 'Hostel Warden',
           description:
-            'Configure rooms and facilities, approve the admissions forwarded to you, allot rooms, and run attendance, leave, mess, visitors and grievances.',
+            'Configure rooms and facilities, allot rooms to the students forwarded to you, and run attendance, leave, mess, visitors and grievances.',
           icon: 'badge',
           colorScheme: 'purple',
           path: hmsUrls.warden.root,
