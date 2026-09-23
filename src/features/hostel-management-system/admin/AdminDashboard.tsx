@@ -15,6 +15,7 @@ import {
   APPLICATION_STATUS_VARIANT,
   hostelOccupancy,
   hostelPipeline,
+  isAwaitingRoom,
   useHms,
   useHmsRole,
 } from '../context/HmsContext';
@@ -47,8 +48,9 @@ export default function AdminDashboard() {
       availableBeds: Math.max(configuredBeds - allottedBeds, 0),
       awaitingAssignment: data.applications.filter(a => a.status === 'Pending')
         .length,
-      withWardens: data.applications.filter(a => a.status === 'Forwarded')
-        .length,
+      withWardens: data.applications.filter(a =>
+        isAwaitingRoom(a, data.allocations)
+      ).length,
       openGrievances: data.grievances.filter(
         g => g.status === 'Open' || g.status === 'In Progress'
       ).length,
@@ -111,7 +113,7 @@ export default function AdminDashboard() {
           value={stats.awaitingAssignment}
           icon="forward_to_inbox"
           colorScheme="amber"
-          subtitle={`${stats.withWardens} forwarded, with wardens`}
+          subtitle={`${stats.withWardens} forwarded, awaiting a room`}
         />
       </FormGrid>
 

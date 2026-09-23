@@ -9,7 +9,12 @@ import {
   Tabs,
 } from 'shared/new-components';
 import { OccupancyBar } from '../components/ui';
-import { hostelOccupancy, useHms, useHmsRole } from '../context/HmsContext';
+import {
+  hostelOccupancy,
+  isAwaitingRoom,
+  useHms,
+  useHmsRole,
+} from '../context/HmsContext';
 import { hmsBreadcrumbs } from '../utils/breadcrumbs';
 
 export default function AdminReports() {
@@ -38,22 +43,25 @@ export default function AdminReports() {
   );
 
   // ── Admission pipeline ────────────────────────────────────────────────────
-  // Per hostel, so only applications the Hostel Cell has assigned appear here;
-  // the unassigned remainder is surfaced as a total above the table.
+  // Per hostel, so only students the Hostel Cell has approved and forwarded
+  // appear here; applications still awaiting a decision, and the rejected ones,
+  // never reach a hostel and are surfaced as totals above the table.
   const admissionRows = useMemo(
     () =>
       data.hostels.map(h => {
         const apps = data.applications.filter(a => a.assignedHostelId === h.id);
+        const awaitingRoom = apps.filter(a =>
+          isAwaitingRoom(a, data.allocations)
+        ).length;
         return {
           id: h.id,
           hostel: h.nameEn,
           total: apps.length,
-          forwarded: apps.filter(a => a.status === 'Forwarded').length,
-          approved: apps.filter(a => a.status === 'Approved').length,
-          rejected: apps.filter(a => a.status === 'Rejected').length,
+          awaitingRoom,
+          allotted: apps.length - awaitingRoom,
         };
       }),
-    [data.hostels, data.applications]
+    [data.hostels, data.applications, data.allocations]
   );
 
   // ── Fee collection ────────────────────────────────────────────────────────
@@ -129,6 +137,7 @@ export default function AdminReports() {
         .reduce((s, p) => s + p.amount, 0),
       applications: data.applications.length,
       unassigned: data.applications.filter(a => a.status === 'Pending').length,
+      rejected: data.applications.filter(a => a.status === 'Rejected').length,
       grievances: data.grievances.length,
     }),
     [data.payments, data.applications, data.grievances]
@@ -158,7 +167,7 @@ export default function AdminReports() {
           value={totals.applications}
           icon="assignment"
           colorScheme="blue"
-          subtitle={`${totals.unassigned} awaiting hostel assignment`}
+          subtitle={`${totals.unassigned} awaiting a decision · ${totals.rejected} rejected`}
         />
         <StatCard
           title="Grievances"
@@ -209,37 +218,26 @@ export default function AdminReports() {
                   emptyMessage="No applications received."
                   columns={[
                     { field: 'hostel', header: 'Hostel', width: 260 },
-                    { field: 'total', header: 'Assigned', width: 130 },
+                    { field: 'total', header: 'Forwarded Here', width: 150 },
                     {
-                      field: 'forwarded',
-                      header: 'With Warden',
-                      width: 120,
+                      field: 'awaitingRoom',
+                      header: 'Awaiting Room',
+                      width: 140,
                       cell: item => (
                         <StatusBadge
-                          label={String(item.forwarded)}
-                          variant={item.forwarded > 0 ? 'info' : 'muted'}
+                          label={String(item.awaitingRoom)}
+                          variant={item.awaitingRoom > 0 ? 'pending' : 'muted'}
                         />
                       ),
                     },
                     {
-                      field: 'approved',
-                      header: 'Approved',
-                      width: 120,
+                      field: 'allotted',
+                      header: 'Room Allotted',
+                      width: 140,
                       cell: item => (
                         <StatusBadge
-                          label={String(item.approved)}
-                          variant="approved"
-                        />
-                      ),
-                    },
-                    {
-                      field: 'rejected',
-                      header: 'Rejected',
-                      width: 120,
-                      cell: item => (
-                        <StatusBadge
-                          label={String(item.rejected)}
-                          variant={item.rejected > 0 ? 'rejected' : 'muted'}
+                          label={String(item.allotted)}
+                          variant={item.allotted > 0 ? 'approved' : 'muted'}
                         />
                       ),
                     },

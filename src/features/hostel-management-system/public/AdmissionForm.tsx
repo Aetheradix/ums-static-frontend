@@ -190,7 +190,7 @@ export default function AdmissionForm() {
     return (
       <FormPage
         title="Application Submitted"
-        description="Your hostel admission form has reached the University Hostel Cell, which assigns your hostel and forwards it to the warden."
+        description="Your hostel admission form has reached the University Hostel Cell, which decides it and assigns your hostel."
       >
         <FormCard title="Acknowledgement" icon="check-circle">
           <div className="flex flex-col items-center gap-5 py-8 text-center">
@@ -204,10 +204,10 @@ export default function AdmissionForm() {
                 Thank you, {submitted.studentName || 'applicant'}
               </h3>
               <p className="mx-auto mt-2 max-w-xl text-sm text-slate-600 dark:text-slate-300">
-                The University Hostel Cell will assign you a hostel and forward
-                your application to its warden for approval. Track it with your
-                application number — once the warden approves, your ERP login
-                credentials appear on the tracking page.
+                The University Hostel Cell will review your application and
+                assign you a hostel. Track it with your application number —
+                once it is approved, your ERP login credentials appear on the
+                tracking page and the hostel's warden allots your room.
               </p>
             </div>
             <div className="w-full max-w-md">
@@ -442,7 +442,7 @@ export default function AdmissionForm() {
         <>
           <FormCard
             title="Room Preference"
-            subtitle="The University Hostel Cell assigns your hostel, and its warden allots your room after approval — your room-type preference is taken into account."
+            subtitle="The University Hostel Cell assigns your hostel when it approves your application, and that hostel's warden allots your room — your room-type preference is taken into account."
             icon="home"
           >
             <FormGrid columns={2}>
@@ -459,7 +459,8 @@ export default function AdmissionForm() {
               <SectionNote tone="info" title="You do not pick a hostel">
                 Hostels are assigned by the University Hostel Cell according to
                 your gender and the seats available. You will see the hostel
-                assigned to you on the tracking page.
+                assigned to you on the tracking page once your application is
+                approved.
               </SectionNote>
             </div>
           </FormCard>

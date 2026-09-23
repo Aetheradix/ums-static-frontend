@@ -46,8 +46,8 @@ import Warnings from './shared/Warnings';
  * into its own workspace.
  *
  * Admission flow: an applicant submits from the public forum → the hostel
- * admin assigns a hostel and forwards the request → that hostel's warden
- * approves it (issuing ERP credentials) and allots a room.
+ * admin approves or rejects it, assigning a hostel and issuing ERP
+ * credentials → that hostel's warden allots the room.
  */
 export default function HostelManagementSystem() {
   return (
