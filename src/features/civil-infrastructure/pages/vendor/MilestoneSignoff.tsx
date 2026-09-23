@@ -18,13 +18,6 @@ import { civilUrls } from '../../urls';
 import '../civil.css';
 
 export default function MilestoneSignoff() {
-  // One-time clean reset of milestones and requests to clear previously completed mock data
-  if (!localStorage.getItem('civil_milestones_clean_reset_v3')) {
-    localStorage.removeItem('civil_milestones');
-    localStorage.removeItem('civil_milestone_payment_requests');
-    localStorage.setItem('civil_milestones_clean_reset_v3', 'true');
-  }
-
   const [data, setData] = useState<Milestone[]>(() => {
     const saved = localStorage.getItem('civil_milestones');
     if (saved) {

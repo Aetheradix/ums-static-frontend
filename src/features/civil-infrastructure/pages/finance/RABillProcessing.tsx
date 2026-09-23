@@ -3,6 +3,7 @@ import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
 import {
+  ConfirmDialog,
   FormCard,
   FormGrid,
   FormPage,
@@ -12,17 +13,24 @@ import {
 } from 'shared/new-components';
 import { type RABill, raBills as initialData, mbEntries } from '../../mocks';
 import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
+import { ApprovalTimeline } from '../../components/shared';
+import { makeAuditEntry } from '../../utils/audit';
+import { formatCurrency as inr, todayISO } from '../../utils/format';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
 const statusVariant = (s: string) =>
-  s === 'Paid'
+  s === 'Paid' || s === 'DDO Passed'
     ? 'approved'
     : s === 'Rejected'
       ? 'rejected'
       : s === 'Finance Cleared' || s === 'EE Approved'
         ? 'pending'
         : 'neutral';
+
+/** Actors representing the finance maker (dealing hand) and DDO checker. */
+const FINANCE_MAKER = 'Assistant Accounts Officer (Finance)';
+const DDO_CHECKER = 'Drawing & Disbursing Officer (DDO)';
 
 export default function RABillProcessing() {
   const [data, setData] = useCivilStorage<RABill[]>(
@@ -68,8 +76,13 @@ export default function RABillProcessing() {
   const linkedMBs = (ids: string[]) =>
     mbList.filter((m: any) => ids.includes(m.id));
 
-  const formatCurrency = (n?: number) =>
-    n !== undefined ? `₹${Number(n).toLocaleString('en-IN')}` : '₹0';
+  const formatCurrency = (n?: number) => inr(n);
+
+  // Confirmation dialog for irreversible / financial actions
+  const [confirm, setConfirm] = useState<{
+    mode: 'closed' | 'clear' | 'reject' | 'ddo';
+    item?: RABill;
+  }>({ mode: 'closed' });
 
   const openProcessModal = (item: RABill) => {
     setCalcForm({
@@ -115,6 +128,7 @@ export default function RABillProcessing() {
     calcForm.otherDeductions;
   const netPayable = calcForm.grossAmount + computedGST - totalDeductions;
 
+  // Step 1 (maker): validate, then ask for confirmation before clearing.
   const handleProcess = () => {
     if (!popup.item) return;
     const mbsApproved = linkedMBs(popup.item.linkedMBs).every(
@@ -126,9 +140,21 @@ export default function RABillProcessing() {
       );
       return;
     }
+    setConfirm({ mode: 'clear', item: popup.item });
+  };
 
+  // Applies the finance clearance (maker stage → 'Finance Cleared').
+  const doClear = () => {
+    if (!confirm.item) return;
+    const target = confirm.item;
+    const entry = makeAuditEntry({
+      status: 'Finance Cleared',
+      actor: FINANCE_MAKER,
+      remarks: remarks.trim() || undefined,
+      action: 'Finance Cleared (GST & statutory TDS audited)',
+    });
     const updated = data.map((b: RABill) =>
-      b.id === popup.item!.id
+      b.id === target.id
         ? {
             ...b,
             gstRate: calcForm.gstRate,
@@ -145,14 +171,80 @@ export default function RABillProcessing() {
             otherDeductions: calcForm.otherDeductions,
             netPayable: netPayable,
             status: 'Finance Cleared' as const,
+            financeClearedBy: FINANCE_MAKER,
+            financeClearedDate: todayISO(),
             remarks: remarks || b.remarks,
+            statusHistory: [...(b.statusHistory ?? []), entry],
           }
         : b
     );
     setData(updated);
     ToastService.success(
-      `Bill ${popup.item.billNo} verified with GST & statutory TDS deductions. Net Payable ₹${netPayable.toLocaleString('en-IN')} cleared for payment.`
+      `Bill ${target.billNo} cleared by Finance. Net Payable ${inr(netPayable)} now awaits DDO pass-for-payment.`
     );
+    setConfirm({ mode: 'closed' });
+    setPopup({ mode: 'closed' });
+  };
+
+  // Step 2 (checker): DDO passes a Finance-Cleared bill for payment.
+  const doDDOPass = () => {
+    if (!confirm.item) return;
+    const target = confirm.item;
+    const entry = makeAuditEntry({
+      status: 'DDO Passed',
+      actor: DDO_CHECKER,
+      action: 'Passed for payment by DDO',
+    });
+    setData(
+      data.map((b: RABill) =>
+        b.id === target.id
+          ? {
+              ...b,
+              status: 'DDO Passed' as const,
+              ddoPassedBy: DDO_CHECKER,
+              ddoPassedDate: todayISO(),
+              statusHistory: [...(b.statusHistory ?? []), entry],
+            }
+          : b
+      )
+    );
+    ToastService.success(
+      `Bill ${target.billNo} passed for payment by DDO. Released to payment queue.`
+    );
+    setConfirm({ mode: 'closed' });
+    setPopup({ mode: 'closed' });
+  };
+
+  // Reject (any stage before payment) — now persisted with reason + audit.
+  const doReject = () => {
+    if (!confirm.item) return;
+    const target = confirm.item;
+    if (!remarks.trim()) {
+      ToastService.error('A rejection reason is required.');
+      return;
+    }
+    const entry = makeAuditEntry({
+      status: 'Rejected',
+      actor: FINANCE_MAKER,
+      remarks: remarks.trim(),
+      action: 'Rejected by Finance',
+    });
+    setData(
+      data.map((b: RABill) =>
+        b.id === target.id
+          ? {
+              ...b,
+              status: 'Rejected' as const,
+              rejectedBy: FINANCE_MAKER,
+              rejectionReason: remarks.trim(),
+              remarks: remarks.trim(),
+              statusHistory: [...(b.statusHistory ?? []), entry],
+            }
+          : b
+      )
+    );
+    ToastService.error(`Bill ${target.billNo} rejected and returned.`);
+    setConfirm({ mode: 'closed' });
     setPopup({ mode: 'closed' });
   };
 
@@ -386,6 +478,19 @@ export default function RABillProcessing() {
                       icon="check"
                       variant="primary"
                       onClick={() => openProcessModal(item)}
+                    />
+                  )}
+                  {item.status === 'Finance Cleared' && (
+                    <Button
+                      size="small"
+                      label="DDO Pass"
+                      icon="verified"
+                      variant="primary"
+                      title="Drawing & Disbursing Officer pass-for-payment"
+                      onClick={() => {
+                        setRemarks('');
+                        setConfirm({ mode: 'ddo', item });
+                      }}
                     />
                   )}
                 </div>
@@ -773,12 +878,17 @@ export default function RABillProcessing() {
                     label="Reject Bill"
                     variant="danger"
                     onClick={() => {
-                      ToastService.error('Bill rejected.');
-                      setPopup({ mode: 'closed' });
+                      if (!remarks.trim()) {
+                        ToastService.error(
+                          'Enter a rejection reason in remarks before rejecting.'
+                        );
+                        return;
+                      }
+                      setConfirm({ mode: 'reject', item: popup.item });
                     }}
                   />
                   <Button
-                    label="Clear & Approve for Payment"
+                    label="Clear for DDO Pass"
                     variant="primary"
                     icon="check"
                     onClick={handleProcess}
@@ -1019,6 +1129,13 @@ export default function RABillProcessing() {
                   </table>
                 </div>
 
+                {popup.item.statusHistory &&
+                  popup.item.statusHistory.length > 0 && (
+                    <div style={{ marginBottom: '1rem' }}>
+                      <ApprovalTimeline entries={popup.item.statusHistory} />
+                    </div>
+                  )}
+
                 <div className="flex justify-end mt-4">
                   <Button
                     label="Close"
@@ -1108,6 +1225,34 @@ export default function RABillProcessing() {
           </div>
         )}
       </FormPopup>
+
+      <ConfirmDialog
+        visible={confirm.mode === 'clear'}
+        variant="info"
+        title="Clear Bill for Payment?"
+        message={`Finance clearance applies GST & statutory deductions and computes Net Payable ${inr(netPayable)} for ${confirm.item?.billNo}. It will then await DDO pass-for-payment. Proceed?`}
+        confirmLabel="Clear Bill"
+        onConfirm={doClear}
+        onHide={() => setConfirm({ mode: 'closed' })}
+      />
+      <ConfirmDialog
+        visible={confirm.mode === 'ddo'}
+        variant="info"
+        title="DDO Pass for Payment?"
+        message={`As Drawing & Disbursing Officer, pass ${confirm.item?.billNo} (Net Payable ${inr(confirm.item?.netPayable)}) for payment. This authorizes release to the payment queue.`}
+        confirmLabel="Pass for Payment"
+        onConfirm={doDDOPass}
+        onHide={() => setConfirm({ mode: 'closed' })}
+      />
+      <ConfirmDialog
+        visible={confirm.mode === 'reject'}
+        variant="danger"
+        title="Reject RA Bill?"
+        message={`Bill ${confirm.item?.billNo} will be rejected and returned. The reason you entered will be recorded in the audit trail.`}
+        confirmLabel="Reject Bill"
+        onConfirm={doReject}
+        onHide={() => setConfirm({ mode: 'closed' })}
+      />
     </FormPage>
   );
 }

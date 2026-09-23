@@ -4,6 +4,7 @@ import { Button, ButtonPanel, StatusButton } from 'shared/components/buttons';
 import { DropDownList, NumberBox, TextBox } from 'shared/components/forms';
 import GridActionButtons from 'shared/components/grid/GridActionButtons';
 import {
+  ConfirmDialog,
   FormCard,
   FormGrid,
   FormPage,
@@ -34,6 +35,11 @@ export default function AgencyRegistration() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('VENDOR');
   const [mode, setMode] = useState<PageMode>('list');
   const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [confirmSuspend, setConfirmSuspend] = useState<
+    | { open: false }
+    | { open: true; kind: 'vendor'; item: MockVendorAgencyRegistration }
+    | { open: true; kind: 'lab' | 'tpi'; id: string; name: string }
+  >({ open: false });
 
   // Vendor / Contractor state
   const [vendors, setVendors] = useState<MockVendorAgencyRegistration[]>(() => {
@@ -314,7 +320,7 @@ export default function AgencyRegistration() {
     handleBackToList();
   };
 
-  const toggleVendorStatus = (item: MockVendorAgencyRegistration) => {
+  const doToggleVendor = (item: MockVendorAgencyRegistration) => {
     setVendors(prev =>
       prev.map(v => {
         if (v.vendorAgencyRegistrationId === item.vendorAgencyRegistrationId) {
@@ -329,7 +335,16 @@ export default function AgencyRegistration() {
     );
   };
 
-  const toggleLabStatus = (id: string) => {
+  const toggleVendorStatus = (item: MockVendorAgencyRegistration) => {
+    // Suspending a registered contractor is destructive → confirm first.
+    if (item.isActive) {
+      setConfirmSuspend({ open: true, kind: 'vendor', item });
+      return;
+    }
+    doToggleVendor(item);
+  };
+
+  const doToggleLab = (id: string) => {
     setLabs(prev =>
       prev.map(l => {
         if (l.id === id) {
@@ -344,7 +359,21 @@ export default function AgencyRegistration() {
     );
   };
 
-  const toggleTpiStatus = (id: string) => {
+  const toggleLabStatus = (id: string) => {
+    const lab = labs.find(l => l.id === id);
+    if (lab?.isActive) {
+      setConfirmSuspend({
+        open: true,
+        kind: 'lab',
+        id,
+        name: lab.name ?? 'this lab',
+      });
+      return;
+    }
+    doToggleLab(id);
+  };
+
+  const doToggleTpi = (id: string) => {
     setTpiAgencies(prev =>
       prev.map(t => {
         if (t.id === id) {
@@ -357,6 +386,32 @@ export default function AgencyRegistration() {
         return t;
       })
     );
+  };
+
+  const toggleTpiStatus = (id: string) => {
+    const tpi = tpiAgencies.find(t => t.id === id);
+    if (tpi?.isActive) {
+      setConfirmSuspend({
+        open: true,
+        kind: 'tpi',
+        id,
+        name: tpi.name ?? 'this agency',
+      });
+      return;
+    }
+    doToggleTpi(id);
+  };
+
+  const handleConfirmSuspend = () => {
+    if (!confirmSuspend.open) return;
+    if (confirmSuspend.kind === 'vendor') {
+      doToggleVendor(confirmSuspend.item);
+    } else if (confirmSuspend.kind === 'lab') {
+      doToggleLab(confirmSuspend.id);
+    } else {
+      doToggleTpi(confirmSuspend.id);
+    }
+    setConfirmSuspend({ open: false });
   };
 
   if (mode === 'create' || mode === 'edit') {
@@ -1395,6 +1450,30 @@ export default function AgencyRegistration() {
           />
         </FormCard>
       )}
+
+      <ConfirmDialog
+        visible={confirmSuspend.open}
+        onHide={() => setConfirmSuspend({ open: false })}
+        onConfirm={handleConfirmSuspend}
+        variant="danger"
+        title={
+          confirmSuspend.open && confirmSuspend.kind === 'vendor'
+            ? 'Suspend Vendor Agency'
+            : 'Deactivate Agency'
+        }
+        message={
+          confirmSuspend.open && confirmSuspend.kind === 'vendor'
+            ? `Suspending "${confirmSuspend.item.companyName}" removes it from empanelment for new works. Existing contracts are unaffected. You can reactivate it later. Proceed?`
+            : confirmSuspend.open
+              ? `Deactivating "${confirmSuspend.name}" removes it from the active empanelment list. You can reactivate it later. Proceed?`
+              : ''
+        }
+        confirmLabel={
+          confirmSuspend.open && confirmSuspend.kind === 'vendor'
+            ? 'Suspend'
+            : 'Deactivate'
+        }
+      />
     </FormPage>
   );
 }

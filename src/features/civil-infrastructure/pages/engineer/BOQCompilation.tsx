@@ -26,10 +26,12 @@ export default function BOQCompilation() {
     initialBOQ
   );
 
-  const worksWithBOQ = [...new Set(allBOQItems.map(b => String(b.workId)))];
-  const worksList = civilWorksList.filter((w: any) =>
-    worksWithBOQ.includes(String(w.workRegistrationId || w.id))
-  );
+  // Show every registered work, not only those that already carry BOQ line
+  // items. A freshly registered work has zero BOQ rows until the admin authors
+  // them; filtering those out made the work invisible here, so the engineer
+  // could never see that a BOQ was still pending. Works without items now
+  // surface with a "0 items / Draft" row instead of vanishing (Gap #5).
+  const worksList = civilWorksList;
 
   const workBOQ = (wid: string) =>
     allBOQItems.filter(b => String(b.workId) === String(wid));

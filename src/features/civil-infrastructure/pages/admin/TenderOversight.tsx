@@ -4,10 +4,12 @@ import { Button } from 'shared/components/buttons';
 import {
   DatePicker,
   DropDownList,
+  NumberBox,
   TextArea,
   TextBox,
 } from 'shared/components/forms';
 import {
+  ConfirmDialog,
   FormCard,
   FormGrid,
   FormPage,
@@ -17,10 +19,13 @@ import {
   Tabs,
 } from 'shared/new-components';
 import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
+import { TENDER_ELIGIBLE_STATUSES } from '../../constants/workflowStatus';
+import { appendAudit, makeAuditEntry } from '../../utils/audit';
 import {
   type CivilTender,
   contractors as initialContractors,
   initialLabAgencies,
+  initialVendorAgencies,
   tenders as initialTenders,
   initialTPIAgencies,
   workOrders as initialWorkOrders,
@@ -35,6 +40,8 @@ const statusVariant = (s: string) => {
   if (s === 'Published' || s === 'Bids Received') return 'pending';
   return 'neutral';
 };
+
+const TENDER_AWARDER = 'Tender Evaluation Committee';
 
 export default function TenderOversight() {
   // Load data from localStorage
@@ -111,6 +118,8 @@ export default function TenderOversight() {
   const [l1Name, setL1Name] = useState('');
   const [l1Amt, setL1Amt] = useState('');
   const [remarks, setRemarks] = useState('');
+  const [confirmAward, setConfirmAward] = useState(false);
+  const [confirmMapping, setConfirmMapping] = useState(false);
 
   const [tpiAgencies] = useState<any[]>(() => {
     const saved = localStorage.getItem('civil_tpi_agencies');
@@ -119,6 +128,13 @@ export default function TenderOversight() {
   const [labAgencies] = useState<any[]>(() => {
     const saved = localStorage.getItem('civil_lab_agencies');
     return saved ? JSON.parse(saved) : initialLabAgencies;
+  });
+  // Vendors onboarded via AgencyVerification land in civil_vendor_agencies;
+  // merge them with the legacy civil_contractors list so a freshly-approved
+  // vendor is selectable when mapping a work to a tender award (Gap #3).
+  const [vendorAgencies] = useState<any[]>(() => {
+    const saved = localStorage.getItem('civil_vendor_agencies');
+    return saved ? JSON.parse(saved) : initialVendorAgencies;
   });
 
   // Mapping Form State
@@ -137,6 +153,21 @@ export default function TenderOversight() {
   const [mappingViewMode, setMappingViewMode] = useState<'list' | 'create'>(
     'list'
   );
+
+  // Unified pick-list: legacy contractors + vendor agencies onboarded via
+  // AgencyVerification, normalized to one shape so the dropdown and the award
+  // lookups agree regardless of which registry a vendor came from (Gap #3).
+  const mappableContractors = [
+    ...(contractors.length > 0 ? contractors : initialContractors),
+    ...(vendorAgencies.length > 0 ? vendorAgencies : initialVendorAgencies),
+  ]
+    .filter((c: any) => c.status === 'Active' || c.isActive !== false)
+    .map((c: any) => ({
+      ...c,
+      id: String(c.id ?? c.vendorAgencyRegistrationId),
+      companyName: c.companyName || c.name,
+      grade: c.grade || c.class || c.licenseGrade || 'Class A',
+    }));
 
   useEffect(() => {
     if (mapTenderPricingType === 'At Par') {
@@ -172,6 +203,20 @@ export default function TenderOversight() {
 
   const handleAward = () => {
     if (!popup.item) return;
+    if (!l1Name.trim()) {
+      ToastService.error('L1 Contractor Name is required.');
+      return;
+    }
+    if (!l1Amt || Number(l1Amt) <= 0) {
+      ToastService.error('A valid L1 Bid Amount is required.');
+      return;
+    }
+    // Awarding commits a contract value and generates a Work Order → confirm.
+    setConfirmAward(true);
+  };
+
+  const doAward = () => {
+    if (!popup.item) return;
     const cont = contractors.find(
       (c: any) => c.companyName === l1Name || c.id === l1Name
     );
@@ -198,6 +243,15 @@ export default function TenderOversight() {
             ...w,
             status: 'Tender Awarded' as any,
             contractAmount: Number(l1Amt),
+            statusHistory: appendAudit(
+              w.statusHistory,
+              makeAuditEntry({
+                status: 'Tender Awarded',
+                actor: TENDER_AWARDER,
+                remarks: remarks.trim() || undefined,
+                action: `Awarded to ${contractorName} at ₹${Number(l1Amt).toLocaleString('en-IN')}`,
+              })
+            ),
           }
         : w
     );
@@ -233,6 +287,7 @@ export default function TenderOversight() {
     ToastService.success(
       `L1 Bidder identified. Tender awarded & Work Order draft generated.`
     );
+    setConfirmAward(false);
     setPopup({ mode: 'closed' });
   };
 
@@ -254,16 +309,27 @@ export default function TenderOversight() {
     }
 
     const selectedWork = works.find((w: any) => w.id === mapWorkId);
-    const selectedContractor = contractors.find(
+    const selectedContractor = mappableContractors.find(
       (c: any) => c.id === mapContractorId
     );
-    const selectedTpi = tpiAgencies.find((t: any) => t.id === mapTpiAgencyId);
-    const selectedLab = labAgencies.find((l: any) => l.id === mapQualityLabId);
 
     if (!selectedWork || !selectedContractor) {
       ToastService.error('Selected Work or Contractor is invalid.');
       return;
     }
+
+    // Mapping awards a contract and generates a Work Order → confirm first.
+    setConfirmMapping(true);
+  };
+
+  const doCreateMapping = () => {
+    const selectedWork = works.find((w: any) => w.id === mapWorkId);
+    const selectedContractor = mappableContractors.find(
+      (c: any) => c.id === mapContractorId
+    );
+    const selectedTpi = tpiAgencies.find((t: any) => t.id === mapTpiAgencyId);
+    const selectedLab = labAgencies.find((l: any) => l.id === mapQualityLabId);
+    if (!selectedWork || !selectedContractor) return;
 
     // 1. Create a Tender if not exists, or update existing tender
     const existingTender = tenders.find((t: any) => t.workId === mapWorkId);
@@ -420,14 +486,7 @@ export default function TenderOversight() {
                         label="Registered Work"
                         data={works
                           .filter((w: any) =>
-                            [
-                              'Registered',
-                              'Requirement Generated',
-                              'AA Approved',
-                              'TS Granted',
-                              'Budget Locked',
-                              'Tender Stage',
-                            ].includes(w.status)
+                            TENDER_ELIGIBLE_STATUSES.includes(w.status)
                           )
                           .map((w: any) => ({
                             name: `${w.workId} - ${w.name} (Est: ₹${(w.estimatedCost / 100000).toFixed(1)}L)`,
@@ -445,18 +504,10 @@ export default function TenderOversight() {
                       />
                       <DropDownList
                         label="Contractor / Agency"
-                        data={(contractors.length > 0
-                          ? contractors
-                          : initialContractors
-                        )
-                          .filter(
-                            (c: any) =>
-                              c.status === 'Active' || c.isActive !== false
-                          )
-                          .map((c: any) => ({
-                            name: `${c.name || c.companyName} (${c.class || c.licenseGrade || 'Class A'})`,
-                            value: c.id || c.vendorAgencyRegistrationId,
-                          }))}
+                        data={mappableContractors.map((c: any) => ({
+                          name: `${c.companyName} (${c.grade})`,
+                          value: c.id,
+                        }))}
                         textField={'name' as any}
                         optionValue="value"
                         value={mapContractorId}
@@ -595,92 +646,98 @@ export default function TenderOversight() {
                     />
                   </div>
 
-                  <table className="civil-table">
-                    <thead>
-                      <tr>
-                        <th>Work ID</th>
-                        <th>Project Name</th>
-                        <th>Contractor Name</th>
-                        <th>TPI Agency</th>
-                        <th>Quality Lab</th>
-                        <th>Contract Value</th>
-                        <th>Timeline</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {works
-                        .filter((w: any) =>
-                          [
-                            'Tender Awarded',
-                            'Work Order Issued',
-                            'In Progress',
-                            'Completed',
-                          ].includes(w.status)
-                        )
-                        .map((w: any) => {
+                  <GridPanel
+                    data={works.filter((w: any) =>
+                      [
+                        'Tender Awarded',
+                        'Work Order Issued',
+                        'In Progress',
+                        'Completed',
+                      ].includes(w.status)
+                    )}
+                    columns={[
+                      {
+                        field: 'workId',
+                        header: 'Work ID',
+                        cell: (w: any) => (
+                          <span
+                            style={{
+                              fontFamily: 'monospace',
+                              fontWeight: 700,
+                              fontSize: '0.72rem',
+                            }}
+                          >
+                            {w.workId}
+                          </span>
+                        ),
+                      },
+                      { field: 'name', header: 'Project Name' },
+                      {
+                        field: 'l1ContractorName' as any,
+                        header: 'Contractor Name',
+                        cell: (w: any) => {
                           const tender = tenders.find(
                             (t: any) => t.workId === w.id
                           );
                           return (
-                            <tr key={w.id}>
-                              <td>
-                                <span
-                                  style={{
-                                    fontFamily: 'monospace',
-                                    fontWeight: 700,
-                                    fontSize: '0.72rem',
-                                  }}
-                                >
-                                  {w.workId}
-                                </span>
-                              </td>
-                              <td style={{ maxWidth: '150px' }}>{w.name}</td>
-                              <td style={{ fontWeight: 600 }}>
-                                {tender?.l1ContractorName ??
-                                  w.externalAgency ??
-                                  '—'}
-                              </td>
-                              <td>
-                                <span
-                                  style={{
-                                    fontSize: '0.75rem',
-                                    fontWeight: 500,
-                                  }}
-                                >
-                                  {w.tpiAgencyName ?? '—'}
-                                </span>
-                              </td>
-                              <td>
-                                <span
-                                  style={{
-                                    fontSize: '0.75rem',
-                                    fontWeight: 500,
-                                  }}
-                                >
-                                  {w.qualityLabName ?? '—'}
-                                </span>
-                              </td>
-                              <td style={{ fontWeight: 700, color: '#16a34a' }}>
-                                ₹
-                                {(
-                                  (w.contractAmount || w.estimatedCost) / 100000
-                                ).toFixed(1)}
-                                L
-                              </td>
-                              <td
-                                style={{
-                                  fontSize: '0.72rem',
-                                  color: '#6b7280',
-                                }}
-                              >
-                                {w.startDate ?? '—'} to{' '}
-                                {w.expectedEndDate ?? '—'}
-                              </td>
-                            </tr>
+                            <span style={{ fontWeight: 600 }}>
+                              {tender?.l1ContractorName ??
+                                w.externalAgency ??
+                                '—'}
+                            </span>
                           );
-                        })}
-                    </tbody>
-                  </table>
+                        },
+                      },
+                      {
+                        field: 'tpiAgencyName',
+                        header: 'TPI Agency',
+                        cell: (w: any) => (
+                          <span
+                            style={{ fontSize: '0.75rem', fontWeight: 500 }}
+                          >
+                            {w.tpiAgencyName ?? '—'}
+                          </span>
+                        ),
+                      },
+                      {
+                        field: 'qualityLabName',
+                        header: 'Quality Lab',
+                        cell: (w: any) => (
+                          <span
+                            style={{ fontSize: '0.75rem', fontWeight: 500 }}
+                          >
+                            {w.qualityLabName ?? '—'}
+                          </span>
+                        ),
+                      },
+                      {
+                        field: 'contractAmount',
+                        header: 'Contract Value',
+                        cell: (w: any) => (
+                          <span style={{ fontWeight: 700, color: '#16a34a' }}>
+                            ₹
+                            {(
+                              (w.contractAmount || w.estimatedCost) / 100000
+                            ).toFixed(1)}
+                            L
+                          </span>
+                        ),
+                      },
+                      {
+                        field: 'startDate',
+                        header: 'Timeline',
+                        cell: (w: any) => (
+                          <span
+                            style={{ fontSize: '0.72rem', color: '#6b7280' }}
+                          >
+                            {w.startDate ?? '—'} to {w.expectedEndDate ?? '—'}
+                          </span>
+                        ),
+                      },
+                    ]}
+                    searchBox
+                    searchPlaceholder="Search active mappings..."
+                  />
                 </FormCard>
               ),
           },
@@ -985,64 +1042,23 @@ export default function TenderOversight() {
                   eligible bids by price. The lowest eligible bidder (L1) who
                   meets technical criteria is selected for award.
                 </div>
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '1rem',
-                    marginBottom: '1rem',
-                  }}
-                >
-                  <div>
-                    <label
-                      style={{
-                        display: 'block',
-                        fontSize: '0.8125rem',
-                        fontWeight: 600,
-                        marginBottom: '0.375rem',
-                      }}
-                    >
-                      L1 Contractor Name *
-                    </label>
-                    <input
-                      style={{
-                        width: '100%',
-                        padding: '0.5rem 0.75rem',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '0.5rem',
-                        fontSize: '0.875rem',
-                      }}
-                      placeholder="Select L1 bidder..."
-                      value={l1Name}
-                      onChange={e => setL1Name(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label
-                      style={{
-                        display: 'block',
-                        fontSize: '0.8125rem',
-                        fontWeight: 600,
-                        marginBottom: '0.375rem',
-                      }}
-                    >
-                      L1 Bid Amount (₹) *
-                    </label>
-                    <input
-                      type="number"
-                      style={{
-                        width: '100%',
-                        padding: '0.5rem 0.75rem',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '0.5rem',
-                        fontSize: '0.875rem',
-                      }}
-                      placeholder="e.g. 25850000"
-                      value={l1Amt}
-                      onChange={e => setL1Amt(e.target.value)}
-                    />
-                  </div>
-                </div>
+                <FormGrid columns={2}>
+                  <TextBox
+                    label="L1 Contractor Name"
+                    placeholder="Select L1 bidder..."
+                    value={l1Name}
+                    onChange={setL1Name}
+                    required
+                  />
+                  <NumberBox
+                    label="L1 Bid Amount (₹)"
+                    placeholder="e.g. 25850000"
+                    value={l1Amt ? Number(l1Amt) : undefined}
+                    onChange={v => setL1Amt(v ? String(v) : '')}
+                    mode="decimal"
+                    required
+                  />
+                </FormGrid>
                 <TextArea
                   label="Evaluation Committee Remarks"
                   value={remarks}
@@ -1067,6 +1083,29 @@ export default function TenderOversight() {
           </>
         )}
       </FormPopup>
+
+      <ConfirmDialog
+        visible={confirmAward}
+        onHide={() => setConfirmAward(false)}
+        onConfirm={doAward}
+        variant="warning"
+        title="Award Tender"
+        message={`This awards ${popup.item?.tenderNo ?? 'the tender'} to ${l1Name || 'the L1 bidder'} at ₹${l1Amt ? Number(l1Amt).toLocaleString('en-IN') : '0'}, sets the work's contract value, and auto-generates a Work Order draft. Proceed?`}
+        confirmLabel="Award Tender"
+      />
+
+      <ConfirmDialog
+        visible={confirmMapping}
+        onHide={() => setConfirmMapping(false)}
+        onConfirm={() => {
+          doCreateMapping();
+          setConfirmMapping(false);
+        }}
+        variant="warning"
+        title="Execute Agency-Work Mapping"
+        message={`This maps the selected contractor and agencies to the work, awards a contract of ₹${mapActualTenderAmt ? Number(mapActualTenderAmt).toLocaleString('en-IN') : '0'}, and generates a Work Order. Proceed?`}
+        confirmLabel="Execute Mapping"
+      />
     </FormPage>
   );
 }

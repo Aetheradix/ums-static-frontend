@@ -3,14 +3,18 @@ import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { TextArea } from 'shared/components/forms';
 import {
+  ConfirmDialog,
   FormCard,
   FormPage,
   FormPopup,
   GridPanel,
 } from 'shared/new-components';
+import { formatCurrency } from 'shared/utils/currency';
 import { civilWorks } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
+
+const MS_APPROVER = 'Executive Engineer (EE)';
 
 type PopupState =
   | { mode: 'closed' }
@@ -77,6 +81,9 @@ export default function MilestoneApprovals() {
 
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
   const [milestoneRemarks, setMilestoneRemarks] = useState('');
+  const [confirmDecision, setConfirmDecision] = useState<
+    'closed' | 'approve' | 'reject'
+  >('closed');
 
   // Watch local storage for external updates (e.g. from site engineer)
   useEffect(() => {
@@ -106,6 +113,19 @@ export default function MilestoneApprovals() {
             status: isApproved ? 'Approved by Admin' : 'Rejected by Admin',
             approvalDate: new Date().toISOString().split('T')[0],
             approvalRemarks: milestoneRemarks,
+            statusHistory: [
+              ...(Array.isArray(r.statusHistory) ? r.statusHistory : []),
+              {
+                status: isApproved ? 'Approved by Admin' : 'Rejected by Admin',
+                actor: MS_APPROVER,
+                date: new Date().toISOString().split('T')[0],
+                timestamp: new Date().toISOString(),
+                remarks: milestoneRemarks.trim() || undefined,
+                action: isApproved
+                  ? `Approved milestone sign-off; released ${formatCurrency(r.amountToRelease)} for payment`
+                  : 'Rejected milestone sign-off',
+              },
+            ],
           }
         : r
     );
@@ -376,7 +396,7 @@ export default function MilestoneApprovals() {
                         );
                         return;
                       }
-                      handleApproveMilestone(false);
+                      setConfirmDecision('reject');
                     }}
                   />
                   <Button
@@ -388,7 +408,7 @@ export default function MilestoneApprovals() {
                         ToastService.error('Review remarks are required.');
                         return;
                       }
-                      handleApproveMilestone(true);
+                      setConfirmDecision('approve');
                     }}
                   />
                 </div>
@@ -397,6 +417,36 @@ export default function MilestoneApprovals() {
           </>
         )}
       </FormPopup>
+
+      <ConfirmDialog
+        visible={confirmDecision === 'approve'}
+        onHide={() => setConfirmDecision('closed')}
+        onConfirm={() => {
+          handleApproveMilestone(true);
+          setConfirmDecision('closed');
+        }}
+        variant="warning"
+        title="Approve & Release Payment"
+        message={
+          popup.mode === 'review_milestone'
+            ? `This approves the milestone sign-off and forwards ${formatCurrency(popup.requestItem.amountToRelease)} to Finance for payment. Proceed?`
+            : ''
+        }
+        confirmLabel="Approve & Release"
+      />
+
+      <ConfirmDialog
+        visible={confirmDecision === 'reject'}
+        onHide={() => setConfirmDecision('closed')}
+        onConfirm={() => {
+          handleApproveMilestone(false);
+          setConfirmDecision('closed');
+        }}
+        variant="danger"
+        title="Reject Sign-off"
+        message="This rejects the milestone sign-off and notifies the site engineer. The milestone reverts to In Progress. Proceed?"
+        confirmLabel="Reject"
+      />
     </FormPage>
   );
 }

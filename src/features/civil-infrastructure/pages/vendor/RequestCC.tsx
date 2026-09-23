@@ -10,6 +10,7 @@ import {
   GridPanel,
 } from 'shared/new-components';
 import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
+import { type CCRequestItem, initialCCRequests } from '../../data/ccRequests';
 import { civilWorks } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -20,14 +21,16 @@ type PopupState =
   | { mode: 'view'; requestItem: any };
 
 export default function RequestCC() {
-  const [works, setWorks] = useCivilStorage<any[]>(
-    CIVIL_STORAGE_KEYS.WORKS,
-    civilWorks
-  );
+  const [works] = useCivilStorage<any[]>(CIVIL_STORAGE_KEYS.WORKS, civilWorks);
 
-  const [ccRequests, setCcRequests] = useCivilStorage<any[]>(
+  // Seed with the shared initial CC records (not []). Passing [] here made
+  // civilStorage persist an empty list on first mount, so whichever of
+  // RequestCC / CompletionCertificate loaded first decided whether the two
+  // pre-issued certificates existed — the pages disagreed on the same key.
+  // Both now fall back to the same seed (Gap #6).
+  const [ccRequests, setCcRequests] = useCivilStorage<CCRequestItem[]>(
     CIVIL_STORAGE_KEYS.CC_REQUESTS,
-    []
+    initialCCRequests
   );
 
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
@@ -49,7 +52,12 @@ export default function RequestCC() {
     }
 
     const item = popup.item;
-    const newRequest = {
+    // Build a complete CCRequestItem so the admin CompletionCertificate grid —
+    // which reads snags / qualityChecks / committeeMembers on every row — can
+    // render and certify this request without crashing. The joint-inspection
+    // dossier fields start empty and are filled in by the admin during
+    // certification (Gap #6).
+    const newRequest: CCRequestItem = {
       id: item.id, // using workId as key
       workId: item.id,
       workNo: item.workId,
@@ -61,6 +69,15 @@ export default function RequestCC() {
         finalBillNo || 'BILL/FW/' + Math.floor(Math.random() * 10000),
       requestDate: new Date().toISOString().split('T')[0],
       status: 'Pending Admin Action',
+      certificateNo: '',
+      issueDate: '',
+      adminRemarks: '',
+      dlpDurationMonths: 12,
+      userDepartment: item.userDepartment || 'Estate Section / User Department',
+      estateOfficer: 'Dr. S. K. Verma (Estate Officer)',
+      committeeMembers: [],
+      snags: [],
+      qualityChecks: [],
     };
 
     const updatedCC = [
@@ -69,13 +86,9 @@ export default function RequestCC() {
     ];
     setCcRequests(updatedCC);
 
-    // Also update physical progress to 100% and status to Completed in civil_works
-    const updatedWorks = works.map(w =>
-      w.id === item.id
-        ? { ...w, physicalProgress: 100, status: 'Completed' }
-        : w
-    );
-    setWorks(updatedWorks);
+    // The work is NOT marked Completed here — a CC request is pending admin
+    // review. Admin issuing the certificate is what advances the work status.
+    // The ccRequests record (status 'Pending Admin Action') drives the grid.
 
     ToastService.success(
       'Completion Certificate (CC) request submitted successfully to Admin.'

@@ -106,13 +106,51 @@ export default function StatutoryCompliance() {
   const [searchParams] = useSearchParams();
   const paramWorkId = searchParams.get('workId');
 
-  const [works] = useCivilStorage<any[]>(
+  const [works, setWorks] = useCivilStorage<any[]>(
     CIVIL_STORAGE_KEYS.WORKS,
     initialWorks
   );
   const [data, setData] = useCivilStorage<CivilManagement.StatutoryClearance[]>(
     CIVIL_STORAGE_KEYS.STATUTORY_CLEARANCES,
     INITIAL_CLEARANCES
+  );
+
+  // Write a compliance summary back onto the work record so downstream pages
+  // (work registration's statutory shield, tender gating) can see clearance
+  // state without re-reading the whole clearance list. Advisory only — nothing
+  // is hard-blocked here (D4).
+  const applyWorkCompliance = useCallback(
+    (clearances: CivilManagement.StatutoryClearance[], workId: string) => {
+      const forWork = clearances.filter(
+        c => String(c.workId) === String(workId)
+      );
+      const blockingPendingCount = forWork.filter(
+        c =>
+          c.isBlocking && c.status !== 'Received' && c.status !== 'Not Required'
+      ).length;
+      const summary =
+        forWork.length === 0
+          ? 'Not Tracked'
+          : blockingPendingCount > 0
+            ? 'Blocking Pending'
+            : 'Cleared';
+      setWorks(prev =>
+        prev.map(w =>
+          String(w.workRegistrationId || w.id) === String(workId) ||
+          String(w.id) === String(workId)
+            ? {
+                ...w,
+                statutoryClearanceStatus: summary,
+                statutoryBlockingPending: blockingPendingCount,
+                statutoryClearanceUpdatedAt: new Date()
+                  .toISOString()
+                  .split('T')[0],
+              }
+            : w
+        )
+      );
+    },
+    [setWorks]
   );
 
   const [filterWorkId, setFilterWorkId] = useState(paramWorkId || 'ALL');
@@ -273,31 +311,33 @@ export default function StatutoryCompliance() {
         status: formStatus,
         remarks: formRemarks,
       };
-      setData(prev => [newItem, ...prev]);
+      const nextData = [newItem, ...data];
+      setData(nextData);
+      applyWorkCompliance(nextData, formWorkId);
       ToastService.success(`Clearance requirement "${formType}" tracked.`);
     } else if (mode === 'edit' && activeItem) {
-      setData(prev =>
-        prev.map(d =>
-          d.id === activeItem.id
-            ? {
-                ...d,
-                workId: formWorkId,
-                workName: w?.name || d.workName,
-                clearanceType: formType,
-                authority: formAuthority.trim(),
-                applicationDate: formAppDate,
-                expectedDate: formExpDate,
-                receivedDate: formRecDate,
-                validUpto: formValidity,
-                referenceNo: formRefNo.trim(),
-                documentFileName: formFileName,
-                isBlocking: formBlocking,
-                status: formStatus,
-                remarks: formRemarks,
-              }
-            : d
-        )
+      const nextData = data.map(d =>
+        d.id === activeItem.id
+          ? {
+              ...d,
+              workId: formWorkId,
+              workName: w?.name || d.workName,
+              clearanceType: formType,
+              authority: formAuthority.trim(),
+              applicationDate: formAppDate,
+              expectedDate: formExpDate,
+              receivedDate: formRecDate,
+              validUpto: formValidity,
+              referenceNo: formRefNo.trim(),
+              documentFileName: formFileName,
+              isBlocking: formBlocking,
+              status: formStatus,
+              remarks: formRemarks,
+            }
+          : d
       );
+      setData(nextData);
+      applyWorkCompliance(nextData, formWorkId);
       ToastService.success('Clearance record updated.');
     }
     handleBackToList();

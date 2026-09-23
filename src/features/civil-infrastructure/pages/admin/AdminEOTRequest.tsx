@@ -3,6 +3,7 @@ import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { TextArea, TextBox } from 'shared/components/forms';
 import {
+  ConfirmDialog,
   FormCard,
   FormGrid,
   FormPage,
@@ -11,6 +12,7 @@ import {
   StatusBadge,
 } from 'shared/new-components';
 import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
+import { appendAudit, makeAuditEntry } from '../../utils/audit';
 import {
   type EOTRequest,
   eotRequests as initialData,
@@ -18,6 +20,8 @@ import {
 } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
+
+const EOT_APPROVER = 'Executive Engineer (EE)';
 
 const statusVariant = (s: string) =>
   s === 'Approved'
@@ -45,6 +49,9 @@ export default function AdminEOTRequest() {
   const [approvedDays, setApprovedDays] = useState('');
   const [approvedBudget, setApprovedBudget] = useState('');
   const [resolution, setResolution] = useState('');
+  const [confirmDecision, setConfirmDecision] = useState<
+    'closed' | 'approve' | 'reject'
+  >('closed');
 
   const handleOpenReview = (item: any) => {
     setApprovedDays(String(item.daysRequested ?? ''));
@@ -53,10 +60,14 @@ export default function AdminEOTRequest() {
     setPopup({ mode: 'review', item });
   };
 
-  const handleProcess = (approve: boolean) => {
+  const handleReviewDecision = (approve: boolean) => {
     if (!popup.item) return;
     const item = popup.item;
 
+    if (!resolution.trim()) {
+      ToastService.error('Resolution remarks are required.');
+      return;
+    }
     if (approve) {
       if (
         item.type === 'Extension of Time' &&
@@ -73,6 +84,12 @@ export default function AdminEOTRequest() {
         return;
       }
     }
+    setConfirmDecision(approve ? 'approve' : 'reject');
+  };
+
+  const handleProcess = (approve: boolean) => {
+    if (!popup.item) return;
+    const item = popup.item;
 
     // 1. Update EOT Request
     const updatedData = data.map((e: any) => {
@@ -110,6 +127,15 @@ export default function AdminEOTRequest() {
             return {
               ...w,
               expectedEndDate: newDate.toISOString().split('T')[0],
+              statusHistory: appendAudit(
+                w.statusHistory,
+                makeAuditEntry({
+                  status: w.status,
+                  actor: EOT_APPROVER,
+                  remarks: resolution.trim() || undefined,
+                  action: `Approved EOT ${item.eotNo}: +${approvedDays} days`,
+                })
+              ),
             };
           } else if (item.type === 'Revised Estimate') {
             return {
@@ -118,6 +144,15 @@ export default function AdminEOTRequest() {
               tsAmount: w.tsAmount
                 ? w.tsAmount + Number(approvedBudget)
                 : w.tsAmount,
+              statusHistory: appendAudit(
+                w.statusHistory,
+                makeAuditEntry({
+                  status: w.status,
+                  actor: EOT_APPROVER,
+                  remarks: resolution.trim() || undefined,
+                  action: `Approved Revised Estimate ${item.eotNo}: +₹${Number(approvedBudget).toLocaleString('en-IN')}`,
+                })
+              ),
             };
           }
         }
@@ -131,6 +166,7 @@ export default function AdminEOTRequest() {
       ToastService.error('EOT Request application marked as Rejected.');
     }
 
+    setConfirmDecision('closed');
     setPopup({ mode: 'closed' });
   };
 
@@ -519,13 +555,13 @@ export default function AdminEOTRequest() {
                     label="Reject Application"
                     variant="danger"
                     icon="times"
-                    onClick={() => handleProcess(false)}
+                    onClick={() => handleReviewDecision(false)}
                   />
                   <Button
                     label="Approve Application"
                     variant="primary"
                     icon="check"
-                    onClick={() => handleProcess(true)}
+                    onClick={() => handleReviewDecision(true)}
                   />
                 </div>
               </>
@@ -590,6 +626,30 @@ export default function AdminEOTRequest() {
           </>
         )}
       </FormPopup>
+
+      <ConfirmDialog
+        visible={confirmDecision === 'approve'}
+        onHide={() => setConfirmDecision('closed')}
+        onConfirm={() => handleProcess(true)}
+        variant="warning"
+        title="Approve Application"
+        message={
+          popup.item?.type === 'Extension of Time'
+            ? `This approves the EOT and extends the project deadline by ${approvedDays} days in the active registry. Proceed?`
+            : `This approves the Revised Estimate and adds ₹${approvedBudget ? Number(approvedBudget).toLocaleString('en-IN') : '0'} to the project budget. Proceed?`
+        }
+        confirmLabel="Approve"
+      />
+
+      <ConfirmDialog
+        visible={confirmDecision === 'reject'}
+        onHide={() => setConfirmDecision('closed')}
+        onConfirm={() => handleProcess(false)}
+        variant="danger"
+        title="Reject Application"
+        message="This rejects the contractor's application. No changes are made to the project schedule or budget. Proceed?"
+        confirmLabel="Reject"
+      />
     </FormPage>
   );
 }

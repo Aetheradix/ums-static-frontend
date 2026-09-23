@@ -8,16 +8,21 @@ import {
   TextBox,
 } from 'shared/components/forms';
 import {
+  ConfirmDialog,
   FormCard,
   FormGrid,
   FormPage,
   FormPopup,
   GridPanel,
 } from 'shared/new-components';
+import { formatCurrency } from 'shared/utils/currency';
 import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
+import { appendAudit, makeAuditEntry } from '../../utils/audit';
 import { civilWorks } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
+
+const BUDGET_LOCKER = 'Finance Officer';
 
 export default function BudgetLock() {
   const [data, setData] = useState(() => {
@@ -50,6 +55,10 @@ export default function BudgetLock() {
   const [bHead, setBHead] = useState('Civil Works');
   const [remarks, setRemarks] = useState('');
   const [lockAmount, setLockAmount] = useState<number | null>(null);
+  const [confirmLock, setConfirmLock] = useState<{
+    open: boolean;
+    amount: number;
+  }>({ open: false, amount: 0 });
 
   useEffect(() => {
     civilStorage.set(CIVIL_STORAGE_KEYS.WORKS, data);
@@ -57,10 +66,25 @@ export default function BudgetLock() {
 
   const handleLock = () => {
     if (!popup.item) return;
+    if (!fYear.trim()) {
+      ToastService.error('Financial Year is required.');
+      return;
+    }
     const finalAmount =
       lockAmount != null && Number(lockAmount) > 0
         ? Number(lockAmount)
         : popup.item.tsAmount;
+    if (!finalAmount || finalAmount <= 0) {
+      ToastService.error('A valid amount to lock is required.');
+      return;
+    }
+    // Locking funds is a hard financial commit → confirm first.
+    setConfirmLock({ open: true, amount: finalAmount });
+  };
+
+  const doLock = () => {
+    if (!popup.item) return;
+    const finalAmount = confirmLock.amount;
 
     setData((prev: any[]) =>
       prev.map((d: any) =>
@@ -75,6 +99,15 @@ export default function BudgetLock() {
               budgetHead: bHead,
               budgetAmount: finalAmount,
               tsAmount: finalAmount,
+              statusHistory: appendAudit(
+                d.statusHistory,
+                makeAuditEntry({
+                  status: 'Budget Locked',
+                  actor: BUDGET_LOCKER,
+                  remarks: remarks.trim() || undefined,
+                  action: `Locked ${formatCurrency(finalAmount)} under ${bHead} (${fYear})`,
+                })
+              ),
             }
           : d
       )
@@ -82,6 +115,7 @@ export default function BudgetLock() {
     ToastService.success(
       'Fiscal budget locked in ledger. Tender publication now unblocked.'
     );
+    setConfirmLock({ open: false, amount: 0 });
     setPopup({ mode: 'closed' });
   };
 
@@ -322,6 +356,16 @@ export default function BudgetLock() {
           </>
         )}
       </FormPopup>
+
+      <ConfirmDialog
+        visible={confirmLock.open}
+        onHide={() => setConfirmLock({ open: false, amount: 0 })}
+        onConfirm={doLock}
+        variant="warning"
+        title="Confirm Budget Lock"
+        message={`This locks ${formatCurrency(confirmLock.amount)} against ${popup.item?.workId ?? 'this work'} in the ledger and unblocks tender publication. Locked funds are committed. Proceed?`}
+        confirmLabel="Lock Budget"
+      />
     </FormPage>
   );
 }

@@ -15,11 +15,16 @@ import {
   civilStorage,
   useCivilStorage,
 } from '../../civilStorage';
-import { civilWorks as initialWorks } from '../../mocks';
+import { RA_BILL_STATUS } from '../../constants/workflowStatus';
+import {
+  type RABill,
+  civilWorks as initialWorks,
+  raBills as initialBills,
+} from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
-const STORAGE_KEY = 'civil_utilization_certificates';
+const STORAGE_KEY = CIVIL_STORAGE_KEYS.UTILIZATION_CERTIFICATES;
 
 const INITIAL_UCS: CivilManagement.UtilizationCertificate[] = [
   {
@@ -97,6 +102,32 @@ export default function UtilizationCertificate() {
     initialWorks
   );
 
+  // Real paid RA bills are the source of truth for "money utilized". A UC's
+  // expenditure schedule is derived from them rather than typed by hand, so the
+  // GFR 12-A total always reconciles with what Finance actually released
+  // (Gap #7).
+  const [bills] = useCivilStorage<RABill[]>(
+    CIVIL_STORAGE_KEYS.RA_BILLS,
+    initialBills
+  );
+
+  const paidBillsForWork = (workId: string): RABill[] =>
+    bills.filter(
+      b =>
+        String(b.workId) === String(workId) && b.status === RA_BILL_STATUS.PAID
+    );
+
+  const deriveExpenditures = (workId: string) =>
+    paidBillsForWork(workId).map(b => ({
+      billNo: b.billNo,
+      billDate: b.billDate,
+      grossAmount: b.grossAmount,
+      netPaid: b.netPayable,
+    }));
+
+  const derivedUtilized = (workId: string): number =>
+    paidBillsForWork(workId).reduce((s, b) => s + (b.netPayable || 0), 0);
+
   const [data, setData] = useState<CivilManagement.UtilizationCertificate[]>(
     () => {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -123,12 +154,14 @@ export default function UtilizationCertificate() {
 
   const openAdd = () => {
     const w = works[0];
-    setFormWorkId(w?.id || '1');
+    const wid = w?.id || '1';
+    setFormWorkId(wid);
     setFormGrantNo('UGC/GR/CW/2026/01');
     setFormGrantAmt((w?.aaAmount || 20000000).toString());
     setFormFrom('2024-04-01');
     setFormTo('2025-03-31');
-    setFormCurrExp('8500000');
+    const derived = derivedUtilized(wid);
+    setFormCurrExp(derived > 0 ? String(derived) : '8500000');
     setFormPrevExp('0');
     setPopup({ mode: 'add' });
   };
@@ -140,7 +173,11 @@ export default function UtilizationCertificate() {
   const handleGenerateUC = () => {
     const w = works.find(x => x.id === formWorkId);
     const grant = Number(formGrantAmt) || 0;
-    const curr = Number(formCurrExp) || 0;
+    const derivedExp = deriveExpenditures(formWorkId);
+    const derivedTotal = derivedUtilized(formWorkId);
+    // Prefer the total actually released via paid RA bills; fall back to the
+    // manually entered figure only when the work has no paid bills yet.
+    const curr = derivedTotal > 0 ? derivedTotal : Number(formCurrExp) || 0;
     const prev = Number(formPrevExp) || 0;
     const cum = curr + prev;
     const bal = Math.max(0, grant - cum);
@@ -164,7 +201,7 @@ export default function UtilizationCertificate() {
       status: 'Certified',
       certifiedBy: 'Finance Officer & Registrar',
       certifiedDate: new Date().toISOString().split('T')[0],
-      expenditures: [],
+      expenditures: derivedExp,
     };
 
     setData(prev => [newUc, ...prev]);
@@ -571,6 +608,8 @@ export default function UtilizationCertificate() {
                 setFormWorkId(val as string);
                 const w = works.find(x => x.id === val);
                 if (w) setFormGrantAmt((w.aaAmount || 20000000).toString());
+                const derived = derivedUtilized(val as string);
+                if (derived > 0) setFormCurrExp(String(derived));
               }}
               required
             />
@@ -611,7 +650,7 @@ export default function UtilizationCertificate() {
 
             <FormGrid columns={2}>
               <TextBox
-                label="Current Period Expenditure Utilized (₹)"
+                label="Current Period Expenditure Utilized (₹) — auto-filled from paid RA bills"
                 placeholder="14200000"
                 value={formCurrExp}
                 onChange={setFormCurrExp}

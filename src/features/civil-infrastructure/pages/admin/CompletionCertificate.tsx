@@ -3,6 +3,7 @@ import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
 import {
+  ConfirmDialog,
   FormCard,
   FormGrid,
   FormPage,
@@ -10,274 +11,13 @@ import {
   StatusBadge,
 } from 'shared/new-components';
 import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
+import { type CCRequestItem, initialCCRequests } from '../../data/ccRequests';
+import { appendAudit, makeAuditEntry } from '../../utils/audit';
 import { civilWorks } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
 
-interface SnagItem {
-  id: string;
-  description: string;
-  location: string;
-  severity: 'Critical' | 'Major' | 'Minor';
-  rectified: boolean;
-  verifiedByAE: boolean;
-}
-
-interface InspectionMember {
-  designation: string;
-  name: string;
-  department: string;
-  signed: boolean;
-}
-
-interface QualityCheckItem {
-  testName: string;
-  standard: string;
-  result: 'Pass' | 'Fail' | 'Pending';
-  certificateRef: string;
-}
-
-interface CCRequestItem {
-  id: string;
-  workId: string;
-  workNo: string;
-  workName: string;
-  status: 'Pending' | 'Joint Inspected' | 'Certificate Issued';
-  actualCompletionDate: string;
-  certificateNo: string;
-  issueDate: string;
-  adminRemarks: string;
-  dlpDurationMonths: number;
-  userDepartment: string;
-  estateOfficer: string;
-  committeeMembers: InspectionMember[];
-  snags: SnagItem[];
-  qualityChecks: QualityCheckItem[];
-}
-
-const INITIAL_CC_REQUESTS: CCRequestItem[] = [
-  {
-    id: 'cc_1',
-    workId: '1',
-    workNo: 'CW-2025-001',
-    workName: 'New Academic Block – Science Wing',
-    status: 'Pending',
-    actualCompletionDate: '2026-06-15',
-    certificateNo: '',
-    issueDate: '',
-    adminRemarks: '',
-    dlpDurationMonths: 12,
-    userDepartment: 'Faculty of Science & Technology',
-    estateOfficer: 'Dr. S. K. Verma (Estate Officer)',
-    committeeMembers: [
-      {
-        designation: 'Executive Engineer (Civil)',
-        name: 'Er. R. K. Sharma',
-        department: 'University Works Division',
-        signed: true,
-      },
-      {
-        designation: 'Assistant Engineer (Civil)',
-        name: 'Er. Amit Patel',
-        department: 'Sub-Division 1',
-        signed: true,
-      },
-      {
-        designation: 'Structural Consultant',
-        name: 'Dr. P. N. Rao',
-        department: 'External Consultant',
-        signed: true,
-      },
-      {
-        designation: 'Project Architect',
-        name: 'Ar. Sunita Mehta',
-        department: 'Design Studio Bhopal',
-        signed: true,
-      },
-      {
-        designation: 'Third Party Inspector (TPI)',
-        name: 'Er. Vikas Saxena',
-        department: 'RITES Limited',
-        signed: true,
-      },
-      {
-        designation: 'User Department Representative',
-        name: 'Prof. A. C. Joshi',
-        department: 'Dean, Science Faculty',
-        signed: true,
-      },
-    ],
-    snags: [
-      {
-        id: 'SN-01',
-        description:
-          'Touchup painting required near 2nd floor staircase landing',
-        location: 'Block A, 2nd Floor',
-        severity: 'Minor',
-        rectified: true,
-        verifiedByAE: true,
-      },
-      {
-        id: 'SN-02',
-        description: 'Window latch adjustment in Chemistry Lab 204',
-        location: 'Lab 204',
-        severity: 'Minor',
-        rectified: true,
-        verifiedByAE: true,
-      },
-    ],
-    qualityChecks: [
-      {
-        testName: '28-Day Concrete Cube Compressive Strength (M25/M30)',
-        standard: 'IS 456 & IS 516',
-        result: 'Pass',
-        certificateRef: 'IITB/CIVIL/2026/C-881',
-      },
-      {
-        testName: 'Structural Steel Tensile & Bend Test',
-        standard: 'IS 1786 (Fe 500D)',
-        result: 'Pass',
-        certificateRef: 'MANIT/MTL/2025/S-102',
-      },
-      {
-        testName: 'Roof Waterproofing Ponding Test (72 Hours)',
-        standard: 'CPWD Spec 22.1',
-        result: 'Pass',
-        certificateRef: 'RITES/QA/2026/WP-09',
-      },
-      {
-        testName: 'Plumbing & Drainage Hydraulic Pressure Test',
-        standard: 'IS 2065',
-        result: 'Pass',
-        certificateRef: 'UWD/PLUMB/2026/04',
-      },
-    ],
-  },
-  {
-    id: 'cc_2',
-    workId: '2',
-    workNo: 'CW-2025-002',
-    workName: 'Boys Hostel Block D – 200 Beds',
-    status: 'Certificate Issued',
-    actualCompletionDate: '2026-05-10',
-    certificateNo: 'COMP/CW/2026/024',
-    issueDate: '2026-05-12',
-    adminRemarks:
-      'Inspected and certified by Chief Engineer. Handover deed executed with Chief Warden.',
-    dlpDurationMonths: 24,
-    userDepartment: 'Hostel Administration & Chief Warden Office',
-    estateOfficer: 'Dr. S. K. Verma (Estate Officer)',
-    committeeMembers: [
-      {
-        designation: 'Executive Engineer (Civil)',
-        name: 'Er. R. K. Sharma',
-        department: 'University Works Division',
-        signed: true,
-      },
-      {
-        designation: 'Assistant Engineer (Civil)',
-        name: 'Er. Amit Patel',
-        department: 'Sub-Division 1',
-        signed: true,
-      },
-      {
-        designation: 'Third Party Inspector (TPI)',
-        name: 'Er. M. K. Gupta',
-        department: 'SGS India Pvt Ltd',
-        signed: true,
-      },
-      {
-        designation: 'Chief Warden',
-        name: 'Prof. R. S. Rathore',
-        department: 'University Hostels',
-        signed: true,
-      },
-    ],
-    snags: [
-      {
-        id: 'SN-03',
-        description: 'Mess kitchen exhaust duct sealing',
-        location: 'Ground Floor Dining',
-        severity: 'Minor',
-        rectified: true,
-        verifiedByAE: true,
-      },
-    ],
-    qualityChecks: [
-      {
-        testName: '28-Day Concrete Cube Test',
-        standard: 'IS 456:2000',
-        result: 'Pass',
-        certificateRef: 'MANIT/2026/CC-99',
-      },
-      {
-        testName: 'Sanitary Fixtures Leakage Check',
-        standard: 'CPWD Spec',
-        result: 'Pass',
-        certificateRef: 'UWD/SAN/2026/12',
-      },
-    ],
-  },
-  {
-    id: 'cc_3',
-    workId: '3',
-    workNo: 'CW-2025-003',
-    workName: 'Internal Campus Road Resurfacing',
-    status: 'Pending',
-    actualCompletionDate: '2026-07-01',
-    certificateNo: '',
-    issueDate: '',
-    adminRemarks: '',
-    dlpDurationMonths: 12,
-    userDepartment: 'Estate & Campus Maintenance Section',
-    estateOfficer: 'Dr. S. K. Verma (Estate Officer)',
-    committeeMembers: [
-      {
-        designation: 'Executive Engineer (Civil)',
-        name: 'Er. R. K. Sharma',
-        department: 'University Works Division',
-        signed: true,
-      },
-      {
-        designation: 'Assistant Engineer (Civil)',
-        name: 'Er. Priya Sen',
-        department: 'Sub-Division 2',
-        signed: true,
-      },
-      {
-        designation: 'TPI Inspector',
-        name: 'Er. S. Nair',
-        department: 'WAPCOS Ltd',
-        signed: true,
-      },
-    ],
-    snags: [
-      {
-        id: 'SN-04',
-        description:
-          'Road berm leveling and curb stone painting along Gate 3 stretch',
-        location: 'Gate 3 Avenue',
-        severity: 'Critical',
-        rectified: false,
-        verifiedByAE: false,
-      },
-    ],
-    qualityChecks: [
-      {
-        testName: 'Bitumen Density & Core Cutter Test',
-        standard: 'MoRTH Sec 500',
-        result: 'Pass',
-        certificateRef: 'PWD/LAB/2026/R-401',
-      },
-      {
-        testName: 'Pavement Unevenness / Roughness Index (IRI)',
-        standard: 'IRC:SP:16',
-        result: 'Pass',
-        certificateRef: 'WAPCOS/QA/2026/02',
-      },
-    ],
-  },
-];
+const CC_ISSUER = 'Chief Engineer / Estate Officer';
 
 export default function CompletionCertificate() {
   const [works, setWorks] = useCivilStorage<any[]>(
@@ -286,7 +26,7 @@ export default function CompletionCertificate() {
   );
   const [ccRequests, setCcRequests] = useCivilStorage<CCRequestItem[]>(
     CIVIL_STORAGE_KEYS.CC_REQUESTS,
-    INITIAL_CC_REQUESTS
+    initialCCRequests
   );
 
   const [viewMode, setViewMode] = useState<'list' | 'certify' | 'view'>('list');
@@ -299,6 +39,7 @@ export default function CompletionCertificate() {
   const [estateOfficer, setEstateOfficer] = useState(
     'Dr. S. K. Verma (Estate Officer)'
   );
+  const [confirmCertify, setConfirmCertify] = useState(false);
 
   const openCertifyPage = (item: CCRequestItem) => {
     setSelectedItem(item);
@@ -341,13 +82,21 @@ export default function CompletionCertificate() {
     ToastService.info('Snag resolution status updated.');
   };
 
-  // Handle final CC issuance
+  // Validate final CC issuance, then confirm (legal DLP + asset handover).
   const handleCertify = () => {
     if (!certNo.trim()) {
       ToastService.error('Certificate number is required.');
       return;
     }
     if (!selectedItem) return;
+    if (!handoverDept.trim()) {
+      ToastService.error('Taking-Over Department is required.');
+      return;
+    }
+    if (!certRemarks.trim()) {
+      ToastService.error('Certification remarks are required.');
+      return;
+    }
 
     // RULE: Cannot issue CC if there are unrectified snags
     const hasUnresolvedSnags = selectedItem.snags.some(
@@ -359,6 +108,12 @@ export default function CompletionCertificate() {
       );
       return;
     }
+
+    setConfirmCertify(true);
+  };
+
+  const doCertify = () => {
+    if (!selectedItem) return;
 
     // Update CC request status
     const updatedRequests = ccRequests.map((r: CCRequestItem) =>
@@ -380,7 +135,18 @@ export default function CompletionCertificate() {
     // Update civil_works status to 'DLP Active'
     const updatedWorks = works.map((w: any) =>
       w.id === selectedItem.workId || w.workId === selectedItem.workId
-        ? { ...w, status: 'DLP Active' as any }
+        ? {
+            ...w,
+            status: 'DLP Active' as any,
+            statusHistory: appendAudit(w.statusHistory, {
+              ...makeAuditEntry({
+                status: 'DLP Active',
+                actor: CC_ISSUER,
+                remarks: certRemarks.trim() || undefined,
+                action: `Issued Completion Certificate ${certNo}; DLP ${dlpMonths} months`,
+              }),
+            }),
+          }
         : w
     );
     setWorks(updatedWorks);
@@ -388,6 +154,7 @@ export default function CompletionCertificate() {
     ToastService.success(
       `Completion Certificate ${certNo} issued! Handed over to ${handoverDept}. DLP timer (${dlpMonths} months) initiated.`
     );
+    setConfirmCertify(false);
     handleBackToList();
   };
 
@@ -742,6 +509,16 @@ export default function CompletionCertificate() {
             </div>
           </FormCard>
         )}
+
+        <ConfirmDialog
+          visible={confirmCertify}
+          onHide={() => setConfirmCertify(false)}
+          onConfirm={doCertify}
+          variant="warning"
+          title="Issue Completion Certificate"
+          message={`This issues Completion Certificate ${certNo}, hands the asset over to ${handoverDept || 'the using department'}, and starts the ${dlpMonths}-month Defect Liability Period. This is a formal statutory action. Proceed?`}
+          confirmLabel="Issue Certificate"
+        />
       </FormPage>
     );
   }

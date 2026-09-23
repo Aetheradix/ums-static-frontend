@@ -5,6 +5,7 @@ import { FileUpload, NumberBox, TextArea } from 'shared/components/forms';
 import GridActionButtons from 'shared/components/grid/GridActionButtons';
 import { AlertPanel } from 'shared/components/panels';
 import {
+  ConfirmDialog,
   FormCard,
   FormGrid,
   FormPage,
@@ -14,10 +15,21 @@ import {
   StatusBadge,
 } from 'shared/new-components';
 import { formatCurrency } from 'shared/utils/currency';
-import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
-import { civilWorks as initialWorks } from '../../mocks';
+import {
+  CIVIL_STORAGE_KEYS,
+  civilStorage,
+  useCivilStorage,
+} from '../../civilStorage';
+import { appendAudit, makeAuditEntry } from '../../utils/audit';
+import {
+  type MockTechnicalPlan,
+  civilWorks as initialWorks,
+  initialTechnicalPlans,
+} from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
+
+const TS_APPROVER = 'Superintending Engineer (SE)';
 
 type PopupState =
   | { mode: 'closed' }
@@ -58,10 +70,33 @@ export default function TechnicalSanction() {
     }));
   });
 
+  // Read-only: the engineer's technical plan (soil, bearing capacity, concrete
+  // grade, material estimates) authored on the Technical Planning page. It is
+  // surfaced here so the sanctioning authority reviews the actual engineering
+  // basis before issuing TS, instead of the plan being a dead-end write.
+  const [technicalPlans] = useCivilStorage<MockTechnicalPlan[]>(
+    CIVIL_STORAGE_KEYS.TECHNICAL_PLANS,
+    initialTechnicalPlans
+  );
+
+  const planForWork = (item: any): MockTechnicalPlan | undefined =>
+    technicalPlans.find(
+      p =>
+        String(p.workRegistrationId) === String(item.workRegistrationId) ||
+        String(p.workRegistrationId) === String(item.id) ||
+        (item.code && String(p.workRegistrationCode) === String(item.code)) ||
+        (item.workId && String(p.workRegistrationCode) === String(item.workId))
+    );
+
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
   const [tsAmount, setTsAmount] = useState<number | null>(null);
   const [remark, setRemark] = useState('');
   const [documentFile, setDocumentFile] = useState<File | null>(null);
+  const [confirmGrant, setConfirmGrant] = useState<{
+    open: boolean;
+    amount: number;
+    docName: string;
+  }>({ open: false, amount: 0, docName: '' });
 
   useEffect(() => {
     civilStorage.set(CIVIL_STORAGE_KEYS.WORKS, data);
@@ -135,11 +170,20 @@ export default function TechnicalSanction() {
       return;
     }
 
-    const targetItem = popup.item;
     const docName = documentFile
       ? documentFile.name
-      : targetItem.documentName ||
-        `TS_Order_${targetItem.code || targetItem.workId}.pdf`;
+      : popup.item.documentName ||
+        `TS_Order_${popup.item.code || popup.item.workId}.pdf`;
+
+    // Technical Sanction sets the technical expenditure limit → confirm first.
+    setConfirmGrant({ open: true, amount: enteredAmount, docName });
+  };
+
+  const doGrant = () => {
+    if (popup.mode !== 'grant' || !popup.item) return;
+    const targetItem = popup.item;
+    const enteredAmount = confirmGrant.amount;
+    const docName = confirmGrant.docName;
 
     setData(prev =>
       prev.map(d =>
@@ -159,6 +203,15 @@ export default function TechnicalSanction() {
                 d.status === 'AaApproved' || d.status === 'AA Approved'
                   ? 'TsGranted'
                   : d.status,
+              statusHistory: appendAudit(
+                d.statusHistory,
+                makeAuditEntry({
+                  status: 'TsGranted',
+                  actor: TS_APPROVER,
+                  remarks: remark.trim() || undefined,
+                  action: `Issued Technical Sanction of ${formatCurrency(enteredAmount)}`,
+                })
+              ),
             }
           : d
       )
@@ -167,10 +220,16 @@ export default function TechnicalSanction() {
     ToastService.success(
       `Technical Sanction of ${formatCurrency(enteredAmount)} granted successfully.`
     );
+    setConfirmGrant({ open: false, amount: 0, docName: '' });
     closePopup();
   };
 
-  const handleToggleStatus = (item: any) => {
+  const [confirmToggle, setConfirmToggle] = useState<{
+    open: boolean;
+    item?: any;
+  }>({ open: false });
+
+  const doToggleStatus = (item: any) => {
     setData(prev =>
       prev.map(d => {
         if (
@@ -185,6 +244,68 @@ export default function TechnicalSanction() {
         }
         return d;
       })
+    );
+  };
+
+  const handleToggleStatus = (item: any) => {
+    if (item.isActive !== false) {
+      setConfirmToggle({ open: true, item });
+      return;
+    }
+    doToggleStatus(item);
+  };
+
+  const renderTechnicalPlanCard = (item: any) => {
+    const plan = planForWork(item);
+    if (!plan) {
+      return (
+        <FormCard title="Engineering Technical Plan">
+          <AlertPanel severity="info" title="No technical plan on record">
+            The Engineer has not submitted a Technical Plan for this work yet.
+            Sanction can still be issued, but the structural design basis is not
+            available for review.
+          </AlertPanel>
+        </FormCard>
+      );
+    }
+    return (
+      <FormCard title="Engineering Technical Plan (from Technical Planning)">
+        <PreviewGrid
+          columns={3}
+          fields={[
+            { label: 'Plan Status', value: plan.status },
+            {
+              label: 'Plot Area (Sq. Ft.)',
+              value: plan.plotArea?.toLocaleString('en-IN') ?? '—',
+            },
+            {
+              label: 'Built-up Area (Sq. Ft.)',
+              value: plan.builtUpArea
+                ? plan.builtUpArea.toLocaleString('en-IN')
+                : '—',
+            },
+            { label: 'Number of Floors', value: plan.numberOfFloors || '—' },
+            { label: 'Soil Type', value: plan.soilType || '—' },
+            {
+              label: 'Bearing Capacity (KN/m²)',
+              value: plan.bearingCapacity ? `${plan.bearingCapacity}` : '—',
+            },
+            { label: 'Concrete Grade', value: plan.concreteGrade || '—' },
+            {
+              label: 'Steel Quantity (MT)',
+              value:
+                plan.steelQuantity != null ? `${plan.steelQuantity} MT` : '—',
+            },
+            {
+              label: 'Brickwork Quantity (Cum)',
+              value:
+                plan.brickworkQuantity != null
+                  ? `${plan.brickworkQuantity} Cum`
+                  : '—',
+            },
+          ]}
+        />
+      </FormCard>
     );
   };
 
@@ -473,6 +594,8 @@ export default function TechnicalSanction() {
               />
             </FormCard>
 
+            {renderTechnicalPlanCard(popup.item)}
+
             <ButtonPanel>
               <Button label="Close" variant="outlined" onClick={closePopup} />
             </ButtonPanel>
@@ -533,6 +656,8 @@ export default function TechnicalSanction() {
               />
             </FormCard>
 
+            {renderTechnicalPlanCard(popup.item)}
+
             {/* Input Section */}
             <FormGrid columns={1}>
               <NumberBox
@@ -591,6 +716,29 @@ export default function TechnicalSanction() {
           </form>
         )}
       </FormPopup>
+
+      <ConfirmDialog
+        visible={confirmGrant.open}
+        onHide={() => setConfirmGrant({ open: false, amount: 0, docName: '' })}
+        onConfirm={doGrant}
+        variant="warning"
+        title="Confirm Technical Sanction"
+        message={`This issues a Technical Sanction of ${formatCurrency(confirmGrant.amount)}, setting the technical expenditure limit for tendering and execution. Proceed?`}
+        confirmLabel="Issue TS"
+      />
+
+      <ConfirmDialog
+        visible={confirmToggle.open}
+        onHide={() => setConfirmToggle({ open: false })}
+        onConfirm={() => {
+          if (confirmToggle.item) doToggleStatus(confirmToggle.item);
+          setConfirmToggle({ open: false });
+        }}
+        variant="danger"
+        title="Deactivate Sanction Record"
+        message="Deactivating this technical sanction record removes it from active workflows. You can re-activate it later. Proceed?"
+        confirmLabel="Deactivate"
+      />
     </FormPage>
   );
 }
