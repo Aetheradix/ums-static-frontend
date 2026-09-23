@@ -43,7 +43,9 @@ export default function PaymentRelease() {
   const [payRef, setPayRef] = useState('');
   const [payRemarks, setPayRemarks] = useState('');
 
-  const readyToPay = data.filter((b: any) => b.status === 'Finance Cleared');
+  // Only DDO-passed bills are releasable (maker-checker: Finance clears →
+  // DDO passes for payment → payment released).
+  const readyToPay = data.filter((b: any) => b.status === 'DDO Passed');
   const paid = data.filter((b: any) => b.status === 'Paid');
 
   const handleRelease = () => {

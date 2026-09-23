@@ -5,6 +5,7 @@ import { FileUpload, NumberBox, TextArea } from 'shared/components/forms';
 import GridActionButtons from 'shared/components/grid/GridActionButtons';
 import { AlertPanel } from 'shared/components/panels';
 import {
+  ConfirmDialog,
   FormCard,
   FormGrid,
   FormPage,
@@ -15,9 +16,12 @@ import {
 } from 'shared/new-components';
 import { formatCurrency } from 'shared/utils/currency';
 import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
+import { makeAuditEntry, appendAudit } from '../../utils/audit';
 import { civilWorks as initialWorks } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
+
+const AA_APPROVER = 'Executive Engineer (EE)';
 
 type PopupState =
   | { mode: 'closed' }
@@ -54,6 +58,11 @@ export default function AdminApproval() {
   const [aaAmount, setAaAmount] = useState<number | null>(null);
   const [remark, setRemark] = useState('');
   const [documentFile, setDocumentFile] = useState<File | null>(null);
+  const [confirm, setConfirm] = useState<
+    | { mode: 'closed' }
+    | { mode: 'grant'; amount: number; docName: string }
+    | { mode: 'toggle'; item: any }
+  >({ mode: 'closed' });
 
   useEffect(() => {
     civilStorage.set(CIVIL_STORAGE_KEYS.WORKS, data);
@@ -122,10 +131,19 @@ export default function AdminApproval() {
       return;
     }
 
-    const targetItem = popup.item;
     const docName = documentFile
       ? documentFile.name
-      : targetItem.documentName || `Sanction_Order_${targetItem.code}.pdf`;
+      : popup.item.documentName || `Sanction_Order_${popup.item.code}.pdf`;
+
+    // Financial, legally-binding action → confirm before committing the budget.
+    setConfirm({ mode: 'grant', amount, docName });
+  };
+
+  const doGrant = () => {
+    if (popup.mode !== 'grant' || !popup.item || confirm.mode !== 'grant')
+      return;
+    const targetItem = popup.item;
+    const { amount, docName } = confirm;
 
     setData(prev =>
       prev.map(d =>
@@ -146,6 +164,15 @@ export default function AdminApproval() {
                 d.status === 'Requirement Generated'
                   ? 'AaApproved'
                   : d.status,
+              statusHistory: appendAudit(
+                d.statusHistory,
+                makeAuditEntry({
+                  status: 'AaApproved',
+                  actor: AA_APPROVER,
+                  remarks: remark.trim() || undefined,
+                  action: `Granted Administrative Approval of ${formatCurrency(amount)}`,
+                })
+              ),
             }
           : d
       )
@@ -154,10 +181,11 @@ export default function AdminApproval() {
     ToastService.success(
       `Administrative Approval of ${formatCurrency(amount)} granted successfully.`
     );
+    setConfirm({ mode: 'closed' });
     closePopup();
   };
 
-  const handleToggleStatus = (item: any) => {
+  const doToggleStatus = (item: any) => {
     setData(prev =>
       prev.map(d => {
         if (
@@ -173,6 +201,15 @@ export default function AdminApproval() {
         return d;
       })
     );
+  };
+
+  const handleToggleStatus = (item: any) => {
+    // Deactivating a live sanction record is destructive → confirm first.
+    if (item.isActive !== false) {
+      setConfirm({ mode: 'toggle', item });
+      return;
+    }
+    doToggleStatus(item);
   };
 
   return (
@@ -553,6 +590,33 @@ export default function AdminApproval() {
           </div>
         )}
       </FormPopup>
+
+      <ConfirmDialog
+        visible={confirm.mode === 'grant'}
+        onHide={() => setConfirm({ mode: 'closed' })}
+        onConfirm={doGrant}
+        variant="warning"
+        title="Confirm Administrative Approval"
+        message={
+          confirm.mode === 'grant'
+            ? `This grants a legally-binding Administrative Approval of ${formatCurrency(confirm.amount)}, fixing the project's cost ceiling for Technical Sanction, tendering and execution. Proceed?`
+            : ''
+        }
+        confirmLabel="Grant Approval"
+      />
+
+      <ConfirmDialog
+        visible={confirm.mode === 'toggle'}
+        onHide={() => setConfirm({ mode: 'closed' })}
+        onConfirm={() => {
+          if (confirm.mode === 'toggle') doToggleStatus(confirm.item);
+          setConfirm({ mode: 'closed' });
+        }}
+        variant="danger"
+        title="Deactivate Sanction Record"
+        message="Deactivating this administrative sanction record removes it from active workflows. You can re-activate it later. Proceed?"
+        confirmLabel="Deactivate"
+      />
     </FormPage>
   );
 }

@@ -3,6 +3,7 @@ import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
 import {
+  ConfirmDialog,
   FormCard,
   FormGrid,
   FormPage,
@@ -11,6 +12,7 @@ import {
   StatusBadge,
 } from 'shared/new-components';
 import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
+import { appendAudit, makeAuditEntry } from '../../utils/audit';
 import {
   contractors as initialContractors,
   milestones as initialMilestones,
@@ -86,6 +88,12 @@ export default function WorkOrderSign() {
     item?: any;
   }>({ mode: 'closed' });
   const [remarks, setRemarks] = useState('');
+  const [confirmState, setConfirmState] = useState<
+    | { mode: 'closed' }
+    | { mode: 'sign' }
+    | { mode: 'suspend' }
+    | { mode: 'revoke'; item: CivilManagement.WorkSuspensionForeclosure }
+  >({ mode: 'closed' });
 
   const [agrForm, setAgrForm] =
     useState<CivilManagement.ContractAgreementDetails>({
@@ -232,8 +240,13 @@ export default function WorkOrderSign() {
     setWoViewMode('list');
   };
 
-  // Sign Work Order handler
+  // Sign Work Order handler — legally-binding Notice to Proceed → confirm first.
   const handleSign = () => {
+    if (!popup.item) return;
+    setConfirmState({ mode: 'sign' });
+  };
+
+  const doSign = () => {
     if (!popup.item) return;
     const updated = workOrders.map((w: any) =>
       w.id === popup.item.id
@@ -243,6 +256,15 @@ export default function WorkOrderSign() {
             signedByEE: true,
             signedByAdmin: true,
             status: 'Work Started' as any,
+            statusHistory: appendAudit(
+              w.statusHistory,
+              makeAuditEntry({
+                status: 'Work Started',
+                actor: 'Administrative Officer',
+                remarks: remarks.trim() || undefined,
+                action: 'Signed & issued Notice to Proceed',
+              })
+            ),
           }
         : w
     );
@@ -260,6 +282,7 @@ export default function WorkOrderSign() {
     ToastService.success(
       'Work Order approved and signed by Admin. Notice to Proceed issued. Project start timestamp recorded.'
     );
+    setConfirmState({ mode: 'closed' });
     setPopup({ mode: 'closed' });
   };
 
@@ -286,7 +309,7 @@ export default function WorkOrderSign() {
     setSuspViewMode('create');
   };
 
-  // Save new Suspension / Foreclosure order
+  // Validate Suspension / Foreclosure order, then confirm (destructive).
   const handleSaveSuspension = () => {
     if (!suspForm.orderNo.trim() || !suspForm.workOrderId) {
       ToastService.error('Order Number and Target Work Order are required.');
@@ -297,6 +320,25 @@ export default function WorkOrderSign() {
       ToastService.error('Selected Work Order not found.');
       return;
     }
+    if (!suspForm.reasonDescription.trim()) {
+      ToastService.error('A detailed reason is required.');
+      return;
+    }
+    if (
+      suspForm.actionType === 'Foreclosure' &&
+      !suspForm.finalMeasurementDate
+    ) {
+      ToastService.error(
+        'Final Joint Measurement Date is required for a Foreclosure.'
+      );
+      return;
+    }
+    setConfirmState({ mode: 'suspend' });
+  };
+
+  const doSaveSuspension = () => {
+    const targetWO = workOrders.find((w: any) => w.id === suspForm.workOrderId);
+    if (!targetWO) return;
 
     const newEntry: CivilManagement.WorkSuspensionForeclosure = {
       id: `WS-${Date.now().toString().slice(-4)}`,
@@ -363,11 +405,18 @@ export default function WorkOrderSign() {
     ToastService.success(
       `${suspForm.actionType} order ${suspForm.orderNo} recorded. Work status changed to "${nextWOStatus}".`
     );
+    setConfirmState({ mode: 'closed' });
     setSuspViewMode('list');
   };
 
-  // Revoke an active suspension
+  // Revoke an active suspension → confirm first.
   const handleRevokeSuspension = (
+    item: CivilManagement.WorkSuspensionForeclosure
+  ) => {
+    setConfirmState({ mode: 'revoke', item });
+  };
+
+  const doRevokeSuspension = (
     item: CivilManagement.WorkSuspensionForeclosure
   ) => {
     const updatedSusp = suspensions.map(s =>
@@ -399,6 +448,7 @@ export default function WorkOrderSign() {
     ToastService.success(
       `Suspension ${item.orderNo} revoked. Work has been resumed to "In Progress".`
     );
+    setConfirmState({ mode: 'closed' });
   };
 
   const statusVariant = (s: string) =>
@@ -1945,10 +1995,7 @@ export default function WorkOrderSign() {
                         label="Revoke Suspension"
                         icon="undo"
                         variant="success"
-                        onClick={() => {
-                          handleRevokeSuspension(selectedSusp!);
-                          setSuspViewMode('list');
-                        }}
+                        onClick={() => handleRevokeSuspension(selectedSusp!)}
                       />
                     )}
                     <Button
@@ -1963,6 +2010,45 @@ export default function WorkOrderSign() {
           )}
         </>
       )}
+
+      <ConfirmDialog
+        visible={confirmState.mode === 'sign'}
+        onHide={() => setConfirmState({ mode: 'closed' })}
+        onConfirm={doSign}
+        variant="warning"
+        title="Sign & Issue Work Order"
+        message={`This records digital signatures and formally issues the Notice to Proceed for ${popup.item?.workOrderNo ?? 'this work order'}, establishing the legal commencement date. Proceed?`}
+        confirmLabel="Sign & Issue"
+      />
+
+      <ConfirmDialog
+        visible={confirmState.mode === 'suspend'}
+        onHide={() => setConfirmState({ mode: 'closed' })}
+        onConfirm={doSaveSuspension}
+        variant="danger"
+        title={`Issue ${suspForm.actionType} Order`}
+        message={
+          suspForm.actionType === 'Suspension'
+            ? 'This suspends the selected work order under CPWD Clause 15 and changes its status to Suspended. Proceed?'
+            : 'This forecloses the selected work order under CPWD Clause 13 and terminates the contract. This is a serious statutory action. Proceed?'
+        }
+        confirmLabel={`Issue ${suspForm.actionType}`}
+      />
+
+      <ConfirmDialog
+        visible={confirmState.mode === 'revoke'}
+        onHide={() => setConfirmState({ mode: 'closed' })}
+        onConfirm={() => {
+          if (confirmState.mode === 'revoke') {
+            doRevokeSuspension(confirmState.item);
+            setSuspViewMode('list');
+          }
+        }}
+        variant="warning"
+        title="Revoke Suspension"
+        message="This revokes the active suspension and resumes the work order to In Progress. Proceed?"
+        confirmLabel="Revoke & Resume"
+      />
     </FormPage>
   );
 }

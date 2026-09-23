@@ -7864,22 +7864,22 @@ export const menuConfig: Menu.MenuItem[] = [
                     icon: 'description',
                     colorScheme: 'amber',
                   },
-                  {
-                    label: 'Quality Lab Master',
-                    description:
-                      'Empaneled material testing laboratories, NABL accreditation, and scopes.',
-                    path: '/civil-infrastructure/admin/masters/quality-labs',
-                    icon: 'science',
-                    colorScheme: 'red',
-                  },
-                  {
-                    label: 'TPI Agency Master',
-                    description:
-                      'Empaneled Third-Party Inspection QA agencies and contract periods.',
-                    path: '/civil-infrastructure/admin/masters/tpi-agencies',
-                    icon: 'fact_check',
-                    colorScheme: 'indigo',
-                  },
+                  // {
+                  //   label: 'Quality Lab Master',
+                  //   description:
+                  //     'Empaneled material testing laboratories, NABL accreditation, and scopes.',
+                  //   path: '/civil-infrastructure/admin/masters/quality-labs',
+                  //   icon: 'science',
+                  //   colorScheme: 'red',
+                  // },
+                  // {
+                  //   label: 'TPI Agency Master',
+                  //   description:
+                  //     'Empaneled Third-Party Inspection QA agencies and contract periods.',
+                  //   path: '/civil-infrastructure/admin/masters/tpi-agencies',
+                  //   icon: 'fact_check',
+                  //   colorScheme: 'indigo',
+                  // },
                   {
                     label: 'MB Status Master',
                     description:
@@ -8023,7 +8023,7 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Site Engineer Login',
             slug: 'civil-engineer',
             description:
-              'Technical planning, SOR, BOQ compilation, E-MB entries, and quality testing.',
+              'SOR, BOQ compilation, E-MB entries, and quality testing.',
             icon: 'engineering',
             colorScheme: 'purple',
             path: '/home/sub-menu/civil-engineer',
@@ -8036,14 +8036,14 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'dashboard',
                 colorScheme: 'blue',
               },
-              {
-                label: 'Technical Planning',
-                description:
-                  'Manage civil engineering technical plans, plot areas, concrete grades, and material estimations.',
-                path: '/civil-infrastructure/engineer/technical-planning',
-                icon: 'architecture',
-                colorScheme: 'purple',
-              },
+              // {
+              //   label: 'Technical Planning',
+              //   description:
+              //     'Manage civil engineering technical plans, plot areas, concrete grades, and material estimations.',
+              //   path: '/civil-infrastructure/engineer/technical-planning',
+              //   icon: 'architecture',
+              //   colorScheme: 'purple',
+              // },
               {
                 label: 'SOR Rate Master',
                 description:

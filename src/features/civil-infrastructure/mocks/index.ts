@@ -1910,6 +1910,7 @@ export type RABillStatus =
   | 'AE Checked'
   | 'EE Approved'
   | 'Finance Cleared'
+  | 'DDO Passed'
   | 'Paid'
   | 'Rejected';
 
@@ -1943,6 +1944,21 @@ export interface RABill {
   gstTdsAmount?: number;
   labourCessRate?: number; // 1% (BOCW Act)
   labourCessAmount?: number;
+  // Maker-checker (DDO) authorization audit
+  financeClearedBy?: string;
+  financeClearedDate?: string;
+  ddoPassedBy?: string;
+  ddoPassedDate?: string;
+  rejectedBy?: string;
+  rejectionReason?: string;
+  statusHistory?: {
+    status: string;
+    actor: string;
+    date: string;
+    timestamp: string;
+    remarks?: string;
+    action?: string;
+  }[];
 }
 
 export const raBills: RABill[] = [

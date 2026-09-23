@@ -1,5 +1,6 @@
 import { FormCard, FormPage } from 'shared/new-components';
 import { CIVIL_STORAGE_KEYS, useCivilStorage } from '../../civilStorage';
+import { EXECUTION_ROUTE } from '../../constants/workflowStatus';
 import { civilWorks } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
@@ -54,10 +55,17 @@ const EXECUTION_ROUTING: Array<{
 
 export default function ExecutionRouter() {
   const [works] = useCivilStorage<any[]>(CIVIL_STORAGE_KEYS.WORKS, civilWorks);
-  const internal = works.filter(w => w.executionRoute === 'Internal');
+  const internal = works.filter(
+    w => w.executionRoute === EXECUTION_ROUTE.INTERNAL
+  );
+  // WorkRegistration normalizes every inbound variant to EXECUTION_ROUTE.
+  // EXTERNAL_AGENCY on save; the legacy spellings are tolerated only for any
+  // pre-normalization records still in storage (Gap #4).
   const external = works.filter(
     w =>
-      w.executionRoute === 'External Agency' || w.executionRoute === 'External'
+      w.executionRoute === EXECUTION_ROUTE.EXTERNAL_AGENCY ||
+      w.executionRoute === 'External Agency' ||
+      w.executionRoute === 'External'
   );
 
   return (

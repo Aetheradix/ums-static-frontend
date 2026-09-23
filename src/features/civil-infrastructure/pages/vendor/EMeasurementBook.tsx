@@ -12,6 +12,7 @@ import {
   Tabs,
 } from 'shared/new-components';
 import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
+import { RA_BILL_STATUS } from '../../constants/workflowStatus';
 import {
   type CivilWork,
   type MBEntry,
@@ -367,7 +368,12 @@ export default function EMeasurementBook() {
       otherDeductions: 0,
       netPayable: gross - advDeduct - sdDeduct,
       cumulativePaid: 0,
-      status: 'Submitted',
+      // Generated on the EE's own page from EE-approved MB entries, so the
+      // bill enters the ladder already EE-certified — the first state Finance
+      // (RABillProcessing) can audit & clear. Previously created as
+      // 'Submitted', which Finance's filter never matched, so RA bills
+      // silently never reached Finance (Gap #1).
+      status: RA_BILL_STATUS.EE_APPROVED,
       linkedMBs: selectedApprovedMBIds,
       remarks:
         raBillRemarks ||

@@ -30,6 +30,10 @@ import {
   tenders,
   workOrders,
 } from './mocks';
+import { initialCCRequests } from './data/ccRequests';
+
+// Re-exported so pages can keep importing the CC seed from civilStorage.
+export { initialCCRequests };
 
 export const CIVIL_STORAGE_KEYS = {
   WORKS: 'civil_works',
@@ -66,6 +70,9 @@ export const CIVIL_STORAGE_KEYS = {
   MB_STATUSES: 'civil_mb_statuses',
   STATUS_MASTERS: 'civil_status_masters',
   STATUTORY_CLEARANCES: 'civil_statutory_clearances',
+  MILESTONE_PAYMENT_REQUESTS: 'civil_milestone_payment_requests',
+  WORK_MANPOWER_MAPPINGS: 'civil_work_manpower_mappings',
+  UTILIZATION_CERTIFICATES: 'civil_utilization_certificates',
 } as const;
 
 export type CivilStorageKey =
@@ -114,48 +121,6 @@ export const initialAssets = [
     handoverDoc: 'Handover_Cert_CW_002.pdf',
     remarks:
       'Structural strengthening and toilet block overhaul capitalized into hostel infrastructure asset register.',
-  },
-];
-
-export const initialCCRequests = [
-  {
-    id: 'CC-REQ-001',
-    workId: '1',
-    workCode: 'CW-2025-001',
-    workName: 'New Academic Block – Science Wing',
-    requestDate: '2025-05-20',
-    requestedBy: 'Er. Rajesh Sharma (EE)',
-    contractorName: 'M/s Apex Infrastructure Ltd.',
-    inspectionDate: '2025-05-28',
-    inspectionCommittee:
-      'Dean (Planning), Chief Engineer, University Architect, TPI Lead',
-    snagListCompleted: true,
-    tpiNocObtained: true,
-    status: 'Approved',
-    certificateNo: 'CC/UNI/CIVIL/2025/001',
-    issueDate: '2025-06-01',
-    issuedBy: 'Registrar & Chief Engineer',
-    remarks:
-      'All 4 wings inspected. Structure certified safe for academic occupation.',
-  },
-  {
-    id: 'CC-REQ-002',
-    workId: '2',
-    workCode: 'CW-2025-002',
-    workName: 'Hostel No. 4 Renovation & Strengthening',
-    requestDate: '2025-06-10',
-    requestedBy: 'Er. S.K. Verma (AE)',
-    contractorName: 'M/s Buildcon Infra Projects',
-    inspectionDate: '2025-06-18',
-    inspectionCommittee: 'Chief Warden, Executive Engineer, Estate Officer',
-    snagListCompleted: true,
-    tpiNocObtained: true,
-    status: 'Approved',
-    certificateNo: 'CC/UNI/CIVIL/2025/002',
-    issueDate: '2025-06-25',
-    issuedBy: 'Chief Engineer',
-    remarks:
-      'Strengthening certified compliant with IS 13920 seismic standards.',
   },
 ];
 
@@ -208,6 +173,9 @@ export const DEFAULT_DATA_MAP: Record<string, any> = {
   [CIVIL_STORAGE_KEYS.BOQ_ITEMS]: boqItems,
   [CIVIL_STORAGE_KEYS.MB_STATUSES]: initialMBStatuses,
   [CIVIL_STORAGE_KEYS.STATUS_MASTERS]: initialStatusMasters,
+  [CIVIL_STORAGE_KEYS.MILESTONE_PAYMENT_REQUESTS]: [],
+  [CIVIL_STORAGE_KEYS.WORK_MANPOWER_MAPPINGS]: [],
+  [CIVIL_STORAGE_KEYS.UTILIZATION_CERTIFICATES]: [],
 };
 
 const EVENT_NAME = 'civil_storage_update';

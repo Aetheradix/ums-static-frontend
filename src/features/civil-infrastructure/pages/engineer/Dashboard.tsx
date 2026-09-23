@@ -51,6 +51,17 @@ export default function EngineerDashboard() {
     CIVIL_STORAGE_KEYS.MB_ENTRIES,
     initialMBEntries
   );
+  // Live field logs so a progress update entered on the Progress Monitoring
+  // page shows up here, instead of the static mock list that never changed.
+  const [logs] = useCivilStorage<any[]>(
+    CIVIL_STORAGE_KEYS.PROGRESS_LOGS,
+    progressLogs
+  );
+  const recentLogs = [...logs]
+    .sort((a: any, b: any) =>
+      String(b.logDate || '').localeCompare(String(a.logDate || ''))
+    )
+    .slice(0, 3);
 
   const myWorks = works.filter((w: any) =>
     ['In Progress', 'Work Order Issued', 'Tender Awarded'].includes(w.status)
@@ -279,7 +290,18 @@ export default function EngineerDashboard() {
           </FormCard>
 
           <FormCard title="Recent Field Logs">
-            {progressLogs.slice(0, 3).map(log => (
+            {recentLogs.length === 0 && (
+              <div
+                style={{
+                  padding: '0.75rem 0',
+                  fontSize: '0.8125rem',
+                  color: '#9ca3af',
+                }}
+              >
+                No field logs recorded yet.
+              </div>
+            )}
+            {recentLogs.map(log => (
               <div
                 key={log.id}
                 style={{
