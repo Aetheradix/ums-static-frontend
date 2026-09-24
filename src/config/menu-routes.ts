@@ -7784,6 +7784,14 @@ export const menuConfig: Menu.MenuItem[] = [
                 path: '/home/sub-menu/civil-external-masters',
                 children: [
                   {
+                    label: 'Project Master',
+                    description:
+                      'Campus project definitions, locations, and structural categories.',
+                    path: '/civil-infrastructure/admin/masters/projects',
+                    icon: 'apartment',
+                    colorScheme: 'orange',
+                  },
+                  {
                     label: 'SOR Types',
                     description:
                       'Schedule of Rates major classifications and code definitions.',
@@ -7814,14 +7822,6 @@ export const menuConfig: Menu.MenuItem[] = [
                     path: '/civil-infrastructure/admin/masters/sor-items',
                     icon: 'format_list_numbered',
                     colorScheme: 'purple',
-                  },
-                  {
-                    label: 'Project Master',
-                    description:
-                      'Campus project definitions, locations, and structural categories.',
-                    path: '/civil-infrastructure/admin/masters/projects',
-                    icon: 'apartment',
-                    colorScheme: 'orange',
                   },
                   {
                     label: 'Work Category Master',
