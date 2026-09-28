@@ -674,7 +674,10 @@ export default function RABillProcessing() {
                       { label: '5% (Standard CPWD Clause 1)', value: 5 },
                       { label: '2.5% (Special Scheme)', value: 2.5 },
                       { label: '10% (High Risk Work)', value: 10 },
-                      { label: '0% (PBG Lodged)', value: 0 },
+                      {
+                        label: '0% (Performance Bank Guarantee Lodged)',
+                        value: 0,
+                      },
                     ]}
                     textField="label"
                     optionValue="value"
