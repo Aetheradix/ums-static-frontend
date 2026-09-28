@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import GridActionButtons from 'shared/components/grid/GridActionButtons';
@@ -19,10 +19,119 @@ import {
   workOrders as initialWorkOrders,
   civilWorks as initialWorks,
   initialWorkSuspensions,
-  initialMandateDocuments,
 } from '../../mocks';
 import { civilUrls } from '../../urls';
 import '../civil.css';
+
+// Interactive File Upload Widget with file browsing and drag & drop support
+function FileUploadCell({
+  docName,
+  onFileSelect,
+  onClear,
+}: {
+  docName: string;
+  onFileSelect: (fileName: string) => void;
+  onClear: () => void;
+}) {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      onFileSelect(file.name);
+      ToastService.success(`Attached "${file.name}"`);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      onFileSelect(file.name);
+      ToastService.success(`Attached "${file.name}"`);
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-2">
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+        onChange={handleFileChange}
+      />
+      {docName ? (
+        <div className="flex items-center justify-between gap-2 p-2 px-3 bg-blue-50/70 border border-blue-200 rounded-lg w-full">
+          <div className="flex items-center gap-2 overflow-hidden">
+            <i className="pi pi-file-pdf text-red-600 text-base flex-shrink-0" />
+            <div className="truncate">
+              <span
+                className="font-mono text-xs text-blue-900 font-bold block truncate"
+                title={docName}
+              >
+                {docName}
+              </span>
+              <span className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
+                <i className="pi pi-check text-[9px]" /> Ready to submit
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="px-2.5 py-1 text-[11px] font-semibold text-blue-700 bg-white hover:bg-blue-100 rounded border border-blue-300 transition-colors shadow-xs cursor-pointer"
+              title="Replace this document"
+            >
+              Change File
+            </button>
+            <button
+              type="button"
+              onClick={onClear}
+              className="p-1 px-1.5 text-red-600 hover:bg-red-100 rounded border border-red-200 transition-colors cursor-pointer"
+              title="Remove attached file"
+            >
+              <i className="pi pi-trash text-xs" />
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div
+          onDragOver={e => {
+            e.preventDefault();
+            setIsDragging(true);
+          }}
+          onDragLeave={() => setIsDragging(false)}
+          onDrop={handleDrop}
+          onClick={() => fileInputRef.current?.click()}
+          className={`flex items-center justify-between p-2 px-3.5 border border-dashed rounded-lg text-xs w-full transition-all cursor-pointer ${
+            isDragging
+              ? 'border-blue-500 bg-blue-50 text-blue-700'
+              : 'border-slate-300 hover:border-blue-500 hover:bg-blue-50/40 text-slate-600 hover:text-blue-700'
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            <i className="pi pi-cloud-upload text-base text-blue-600" />
+            <div>
+              <span className="font-semibold block">
+                Click to Browse or Drag & Drop File
+              </span>
+              <span className="text-[10px] text-slate-400">
+                PDF, DOC, DOCX, JPG (Max 25MB)
+              </span>
+            </div>
+          </div>
+          <span className="px-2.5 py-1 bg-white border border-slate-300 rounded text-[11px] font-semibold text-slate-700 shadow-2xs">
+            Browse
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function WorkOrderSign() {
   const [activeTab, setActiveTab] = useState<'WORK_ORDERS' | 'SUSPENSION'>(
@@ -67,11 +176,6 @@ export default function WorkOrderSign() {
     return saved ? JSON.parse(saved) : initialMilestones;
   });
 
-  const [mandateDocs] = useState<CivilManagement.MandateDocument[]>(() => {
-    const saved = localStorage.getItem('civil_mandate_documents');
-    return saved ? JSON.parse(saved) : initialMandateDocuments;
-  });
-
   const [suspensions, setSuspensions] = useState<
     CivilManagement.WorkSuspensionForeclosure[]
   >(() => {
@@ -98,34 +202,10 @@ export default function WorkOrderSign() {
     | { mode: 'revoke'; item: CivilManagement.WorkSuspensionForeclosure }
   >({ mode: 'closed' });
 
-  // Mandate Document options for dropdowns across Part A, B, C, D
-  const mandateDocOptions = [
-    ...(mandateDocs || [])
-      .filter(d => d.isActive !== false)
-      .map(d => ({ label: d.name, value: d.name })),
-    { label: 'Work Order Copy', value: 'Work Order Copy' },
-    { label: 'Contract Agreement Deed', value: 'Contract Agreement Deed' },
-    {
-      label: 'Performance Bank Guarantee / Security Deposit',
-      value: 'Performance Bank Guarantee / Security Deposit',
-    },
-    {
-      label: 'Mobilization Advance Bank Guarantee / Receipt',
-      value: 'Mobilization Advance Bank Guarantee / Receipt',
-    },
-    {
-      label: 'Stamp Duty Certificate / Challan',
-      value: 'Stamp Duty Certificate / Challan',
-    },
-  ].filter(
-    (item, index, self) => index === self.findIndex(t => t.value === item.value)
-  );
-
   const [agrForm, setAgrForm] = useState<{
     // Part A: Work Registration & Order Details
     workOrderNo: string;
     orderDate: string;
-    workOrderDocType: string;
     workOrderDoc: string;
 
     // Part B: Performance Bank Guarantee / Security Deposit (If Applicable)
@@ -133,7 +213,6 @@ export default function WorkOrderSign() {
     bgBank: string;
     bgAmount: number;
     bgExpiryDate: string;
-    bgDocType: string;
     bgDoc: string;
 
     // Part C: Mobilization Advance Bank Guarantee (If Applicable)
@@ -141,7 +220,6 @@ export default function WorkOrderSign() {
     mobAdvanceBgBank: string;
     mobAdvanceBgAmount: number;
     mobAdvanceBgExpiry: string;
-    mobAdvanceDocType: string;
     mobAdvanceDoc: string;
 
     // Part D: Statutory Agreement & Stamp Duty Details (If Applicable)
@@ -150,31 +228,26 @@ export default function WorkOrderSign() {
     stampDutyAmount: number;
     stampDutyReceiptNo: string;
     registrationStatus: 'Registered' | 'Notary Stamped' | 'Pending';
-    agreementDocType: string;
     scannedAgreementDoc: string;
   }>({
     workOrderNo: '',
     orderDate: '',
-    workOrderDocType: 'Work Order Copy',
     workOrderDoc: '',
     bgNo: '',
     bgBank: '',
     bgAmount: 0,
     bgExpiryDate: '',
-    bgDocType: 'Performance Bank Guarantee / Security Deposit',
     bgDoc: '',
     mobAdvanceBgNo: '',
     mobAdvanceBgBank: '',
     mobAdvanceBgAmount: 0,
     mobAdvanceBgExpiry: '',
-    mobAdvanceDocType: 'Mobilization Advance Bank Guarantee / Receipt',
     mobAdvanceDoc: '',
     agreementNo: '',
     agreementDate: '',
     stampDutyAmount: 0,
     stampDutyReceiptNo: '',
     registrationStatus: 'Registered',
-    agreementDocType: 'Contract Agreement Deed',
     scannedAgreementDoc: '',
   });
 
@@ -247,7 +320,6 @@ export default function WorkOrderSign() {
         item.orderDate ||
         item.issuedDate ||
         new Date().toISOString().split('T')[0],
-      workOrderDocType: item.workOrderDocType || 'Work Order Copy',
       workOrderDoc:
         item.workOrderDoc ||
         (item.workOrderNo
@@ -264,8 +336,6 @@ export default function WorkOrderSign() {
         item.sdAmount ||
         Math.round((item.contractAmount || 0) * 0.05),
       bgExpiryDate: item.bgExpiryDate || item.completionDate || '',
-      bgDocType:
-        item.bgDocType || 'Performance Bank Guarantee / Security Deposit',
       bgDoc:
         item.bgDoc ||
         (item.bgNo
@@ -277,9 +347,6 @@ export default function WorkOrderSign() {
       mobAdvanceBgBank: item.mobAdvanceBgBank || '',
       mobAdvanceBgAmount: item.mobAdvanceBgAmount || 0,
       mobAdvanceBgExpiry: item.mobAdvanceBgExpiry || '',
-      mobAdvanceDocType:
-        item.mobAdvanceDocType ||
-        'Mobilization Advance Bank Guarantee / Receipt',
       mobAdvanceDoc:
         item.mobAdvanceDoc ||
         (item.mobAdvanceBgNo
@@ -299,7 +366,6 @@ export default function WorkOrderSign() {
         item.stampDutyReceiptNo ||
         `STAMP/MP/${new Date().getFullYear()}/${Math.floor(10000 + Math.random() * 90000)}`,
       registrationStatus: item.registrationStatus || 'Registered',
-      agreementDocType: item.agreementDocType || 'Contract Agreement Deed',
       scannedAgreementDoc:
         item.scannedAgreementDoc || 'Scanned_Agreement_Stamped.pdf',
     });
@@ -320,33 +386,29 @@ export default function WorkOrderSign() {
             workOrderNo: agrForm.workOrderNo,
             issuedDate: agrForm.orderDate,
             orderDate: agrForm.orderDate,
-            workOrderDocType: agrForm.workOrderDocType,
             workOrderDoc: agrForm.workOrderDoc,
             agreementNo: agrForm.agreementNo,
             agreementDate: agrForm.agreementDate,
             stampDutyAmount: Number(agrForm.stampDutyAmount) || 0,
             stampDutyReceiptNo: agrForm.stampDutyReceiptNo,
             registrationStatus: agrForm.registrationStatus,
-            agreementDocType: agrForm.agreementDocType,
             scannedAgreementDoc: agrForm.scannedAgreementDoc,
             bgNo: agrForm.bgNo,
             bgBank: agrForm.bgBank,
             bgAmount: Number(agrForm.bgAmount) || 0,
             bgExpiryDate: agrForm.bgExpiryDate,
-            bgDocType: agrForm.bgDocType,
             bgDoc: agrForm.bgDoc,
             mobAdvanceBgNo: agrForm.mobAdvanceBgNo,
             mobAdvanceBgBank: agrForm.mobAdvanceBgBank,
             mobAdvanceBgAmount: Number(agrForm.mobAdvanceBgAmount) || 0,
             mobAdvanceBgExpiry: agrForm.mobAdvanceBgExpiry,
-            mobAdvanceDocType: agrForm.mobAdvanceDocType,
             mobAdvanceDoc: agrForm.mobAdvanceDoc,
           }
         : w
     );
     setWorkOrders(updated);
     ToastService.success(
-      `Work Order & Contract Agreement details updated for ${agrForm.workOrderNo}.`
+      `Work Order & Contract Agreement details and attachments updated for ${agrForm.workOrderNo}.`
     );
     setWoViewMode('list');
   };
@@ -1000,8 +1062,8 @@ export default function WorkOrderSign() {
                           </div>
                         </div>
 
-                        {/* New Text Boxes for Part A */}
-                        <FormGrid columns={3}>
+                        {/* Clean Text Boxes for Part A */}
+                        <FormGrid columns={2}>
                           <TextBox
                             label="Work Order No"
                             placeholder="WO/CW/2025-26/001"
@@ -1019,29 +1081,7 @@ export default function WorkOrderSign() {
                             }
                             required
                           />
-                          <DropDownList
-                            label="Document Uploaded Dropdown (Mandate Document)"
-                            data={mandateDocOptions}
-                            textField="label"
-                            optionValue="value"
-                            value={agrForm.workOrderDocType}
-                            onChange={val =>
-                              setAgrForm({
-                                ...agrForm,
-                                workOrderDocType: String(val),
-                              })
-                            }
-                            required
-                          />
                         </FormGrid>
-                        <TextBox
-                          label="Work Order Document File Name / Reference"
-                          placeholder="Work_Order_Signed_Document.pdf"
-                          value={agrForm.workOrderDoc || ''}
-                          onChange={val =>
-                            setAgrForm({ ...agrForm, workOrderDoc: val })
-                          }
-                        />
                       </div>
 
                       {/* ======================================================== */}
@@ -1101,27 +1141,6 @@ export default function WorkOrderSign() {
                             value={agrForm.bgExpiryDate || ''}
                             onChange={val =>
                               setAgrForm({ ...agrForm, bgExpiryDate: val })
-                            }
-                          />
-                        </FormGrid>
-
-                        <FormGrid columns={2}>
-                          <DropDownList
-                            label="Document Uploaded Dropdown (Mandate Document)"
-                            data={mandateDocOptions}
-                            textField="label"
-                            optionValue="value"
-                            value={agrForm.bgDocType}
-                            onChange={val =>
-                              setAgrForm({ ...agrForm, bgDocType: String(val) })
-                            }
-                          />
-                          <TextBox
-                            label="Bank Guarantee Document File Name / Reference"
-                            placeholder="Performance_Bank_Guarantee_Bond.pdf"
-                            value={agrForm.bgDoc || ''}
-                            onChange={val =>
-                              setAgrForm({ ...agrForm, bgDoc: val })
                             }
                           />
                         </FormGrid>
@@ -1187,30 +1206,6 @@ export default function WorkOrderSign() {
                                 ...agrForm,
                                 mobAdvanceBgExpiry: val,
                               })
-                            }
-                          />
-                        </FormGrid>
-
-                        <FormGrid columns={2}>
-                          <DropDownList
-                            label="Document Uploaded Dropdown (Mandate Document)"
-                            data={mandateDocOptions}
-                            textField="label"
-                            optionValue="value"
-                            value={agrForm.mobAdvanceDocType}
-                            onChange={val =>
-                              setAgrForm({
-                                ...agrForm,
-                                mobAdvanceDocType: String(val),
-                              })
-                            }
-                          />
-                          <TextBox
-                            label="Advance Bank Guarantee Document File Name / Reference"
-                            placeholder="Mobilization_Advance_Bank_Guarantee_Bond.pdf"
-                            value={agrForm.mobAdvanceDoc || ''}
-                            onChange={val =>
-                              setAgrForm({ ...agrForm, mobAdvanceDoc: val })
                             }
                           />
                         </FormGrid>
@@ -1310,33 +1305,387 @@ export default function WorkOrderSign() {
                             required
                           />
                         </FormGrid>
+                      </div>
 
-                        <FormGrid columns={2}>
-                          <DropDownList
-                            label="Document Uploaded Dropdown (Mandate Document)"
-                            data={mandateDocOptions}
-                            textField="label"
-                            optionValue="value"
-                            value={agrForm.agreementDocType}
-                            onChange={val =>
-                              setAgrForm({
-                                ...agrForm,
-                                agreementDocType: String(val),
-                              })
-                            }
-                          />
-                          <TextBox
-                            label="Scanned Agreement Document File Name / Reference"
-                            placeholder="Contract_Agreement_Signed.pdf"
-                            value={agrForm.scannedAgreementDoc || ''}
-                            onChange={val =>
-                              setAgrForm({
-                                ...agrForm,
-                                scannedAgreementDoc: val,
-                              })
-                            }
-                          />
-                        </FormGrid>
+                      {/* ======================================================== */}
+                      {/* UNIFIED MANDATE DOCUMENTS CHECKLIST (4 DOCUMENTS IN 1 REQUEST) */}
+                      {/* ======================================================== */}
+                      <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                        <div className="flex items-center justify-between pb-2 border-b border-slate-200">
+                          <div className="flex items-center gap-2">
+                            <span className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs">
+                              <i className="pi pi-paperclip text-xs" />
+                            </span>
+                            <div>
+                              <h5 className="font-bold text-slate-800 text-sm m-0">
+                                Mandate Contract Documents & Attachments
+                                Checklist
+                              </h5>
+                              <span className="text-[11px] text-gray-500">
+                                Upload and verify all 4 contract attachments in
+                                a single submission (No repeated dropdown
+                                selection needed)
+                              </span>
+                            </div>
+                          </div>
+                          <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 flex items-center gap-1">
+                            <i className="pi pi-check-circle text-xs" /> 4-in-1
+                            Unified Attachment Suite
+                          </span>
+                        </div>
+
+                        <div className="overflow-x-auto bg-white rounded-lg border border-slate-200 shadow-sm">
+                          <table className="civil-table w-full text-xs">
+                            <thead>
+                              <tr className="bg-gray-100">
+                                <th
+                                  style={{ width: '45px', textAlign: 'center' }}
+                                  className="p-2.5 font-semibold text-slate-600"
+                                >
+                                  #
+                                </th>
+                                <th
+                                  style={{ width: '250px', textAlign: 'left' }}
+                                  className="p-2.5 font-semibold text-slate-600"
+                                >
+                                  Document Category
+                                </th>
+                                <th
+                                  style={{
+                                    width: '110px',
+                                    textAlign: 'center',
+                                  }}
+                                  className="p-2.5 font-semibold text-slate-600"
+                                >
+                                  Contract Part
+                                </th>
+                                <th
+                                  style={{
+                                    width: '110px',
+                                    textAlign: 'center',
+                                  }}
+                                  className="p-2.5 font-semibold text-slate-600"
+                                >
+                                  Requirement
+                                </th>
+                                <th
+                                  style={{ textAlign: 'left' }}
+                                  className="p-2.5 font-semibold text-slate-600"
+                                >
+                                  File Attachment / Reference
+                                </th>
+                                <th
+                                  style={{
+                                    width: '110px',
+                                    textAlign: 'center',
+                                  }}
+                                  className="p-2.5 font-semibold text-slate-600"
+                                >
+                                  Status
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {/* Row 1: Part A Work Order Copy */}
+                              <tr className="border-t border-gray-100 hover:bg-slate-50/50">
+                                <td
+                                  style={{ textAlign: 'center' }}
+                                  className="p-2.5 font-bold text-slate-600"
+                                >
+                                  1
+                                </td>
+                                <td
+                                  style={{ textAlign: 'left' }}
+                                  className="p-2.5"
+                                >
+                                  <div className="font-bold text-slate-900">
+                                    Work Order Document
+                                  </div>
+                                  <div className="text-[11px] text-gray-500">
+                                    Signed administrative work order copy
+                                  </div>
+                                </td>
+                                <td
+                                  style={{ textAlign: 'center' }}
+                                  className="p-2.5 font-medium text-slate-700"
+                                >
+                                  <span className="civil-pill blue text-[10px]">
+                                    Part A
+                                  </span>
+                                </td>
+                                <td
+                                  style={{ textAlign: 'center' }}
+                                  className="p-2.5"
+                                >
+                                  <span className="civil-pill red text-[10px]">
+                                    Mandatory
+                                  </span>
+                                </td>
+                                <td
+                                  style={{ textAlign: 'left' }}
+                                  className="p-2.5"
+                                >
+                                  <FileUploadCell
+                                    docName={agrForm.workOrderDoc}
+                                    onFileSelect={fileName =>
+                                      setAgrForm({
+                                        ...agrForm,
+                                        workOrderDoc: fileName,
+                                      })
+                                    }
+                                    onClear={() =>
+                                      setAgrForm({
+                                        ...agrForm,
+                                        workOrderDoc: '',
+                                      })
+                                    }
+                                  />
+                                </td>
+                                <td
+                                  style={{ textAlign: 'center' }}
+                                  className="p-2.5"
+                                >
+                                  {agrForm.workOrderDoc ? (
+                                    <span className="civil-pill green text-[10px]">
+                                      Attached ✓
+                                    </span>
+                                  ) : (
+                                    <span className="civil-pill amber text-[10px]">
+                                      Pending
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
+
+                              {/* Row 2: Part B Performance Bank Guarantee / SD */}
+                              <tr className="border-t border-gray-100 hover:bg-slate-50/50">
+                                <td
+                                  style={{ textAlign: 'center' }}
+                                  className="p-2.5 font-bold text-slate-600"
+                                >
+                                  2
+                                </td>
+                                <td
+                                  style={{ textAlign: 'left' }}
+                                  className="p-2.5"
+                                >
+                                  <div className="font-bold text-slate-900">
+                                    Performance Bank Guarantee / SD Bond
+                                  </div>
+                                  <div className="text-[11px] text-gray-500">
+                                    Bank guarantee bond or SD deduction receipt
+                                  </div>
+                                </td>
+                                <td
+                                  style={{ textAlign: 'center' }}
+                                  className="p-2.5 font-medium text-slate-700"
+                                >
+                                  <span className="civil-pill blue text-[10px]">
+                                    Part B
+                                  </span>
+                                </td>
+                                <td
+                                  style={{ textAlign: 'center' }}
+                                  className="p-2.5"
+                                >
+                                  {agrForm.bgNo || agrForm.bgAmount ? (
+                                    <span className="civil-pill red text-[10px]">
+                                      Required
+                                    </span>
+                                  ) : (
+                                    <span className="civil-pill neutral text-[10px]">
+                                      As Applicable
+                                    </span>
+                                  )}
+                                </td>
+                                <td
+                                  style={{ textAlign: 'left' }}
+                                  className="p-2.5"
+                                >
+                                  <FileUploadCell
+                                    docName={agrForm.bgDoc}
+                                    onFileSelect={fileName =>
+                                      setAgrForm({
+                                        ...agrForm,
+                                        bgDoc: fileName,
+                                      })
+                                    }
+                                    onClear={() =>
+                                      setAgrForm({
+                                        ...agrForm,
+                                        bgDoc: '',
+                                      })
+                                    }
+                                  />
+                                </td>
+                                <td
+                                  style={{ textAlign: 'center' }}
+                                  className="p-2.5"
+                                >
+                                  {agrForm.bgDoc ? (
+                                    <span className="civil-pill green text-[10px]">
+                                      Attached ✓
+                                    </span>
+                                  ) : (
+                                    <span className="text-gray-400 text-[11px]">
+                                      Optional
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
+
+                              {/* Row 3: Part C Mobilization Advance Bank Guarantee */}
+                              <tr className="border-t border-gray-100 hover:bg-slate-50/50">
+                                <td
+                                  style={{ textAlign: 'center' }}
+                                  className="p-2.5 font-bold text-slate-600"
+                                >
+                                  3
+                                </td>
+                                <td
+                                  style={{ textAlign: 'left' }}
+                                  className="p-2.5"
+                                >
+                                  <div className="font-bold text-slate-900">
+                                    Mobilization Advance Bank Guarantee
+                                  </div>
+                                  <div className="text-[11px] text-gray-500">
+                                    Bank guarantee against advance mobilization
+                                    payment
+                                  </div>
+                                </td>
+                                <td
+                                  style={{ textAlign: 'center' }}
+                                  className="p-2.5 font-medium text-slate-700"
+                                >
+                                  <span className="civil-pill blue text-[10px]">
+                                    Part C
+                                  </span>
+                                </td>
+                                <td
+                                  style={{ textAlign: 'center' }}
+                                  className="p-2.5"
+                                >
+                                  {agrForm.mobAdvanceBgNo ||
+                                  agrForm.mobAdvanceBgAmount ? (
+                                    <span className="civil-pill red text-[10px]">
+                                      Required
+                                    </span>
+                                  ) : (
+                                    <span className="civil-pill neutral text-[10px]">
+                                      As Applicable
+                                    </span>
+                                  )}
+                                </td>
+                                <td
+                                  style={{ textAlign: 'left' }}
+                                  className="p-2.5"
+                                >
+                                  <FileUploadCell
+                                    docName={agrForm.mobAdvanceDoc}
+                                    onFileSelect={fileName =>
+                                      setAgrForm({
+                                        ...agrForm,
+                                        mobAdvanceDoc: fileName,
+                                      })
+                                    }
+                                    onClear={() =>
+                                      setAgrForm({
+                                        ...agrForm,
+                                        mobAdvanceDoc: '',
+                                      })
+                                    }
+                                  />
+                                </td>
+                                <td
+                                  style={{ textAlign: 'center' }}
+                                  className="p-2.5"
+                                >
+                                  {agrForm.mobAdvanceDoc ? (
+                                    <span className="civil-pill green text-[10px]">
+                                      Attached ✓
+                                    </span>
+                                  ) : (
+                                    <span className="text-gray-400 text-[11px]">
+                                      Optional
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
+
+                              {/* Row 4: Part D Contract Agreement Deed */}
+                              <tr className="border-t border-gray-100 hover:bg-slate-50/50">
+                                <td
+                                  style={{ textAlign: 'center' }}
+                                  className="p-2.5 font-bold text-slate-600"
+                                >
+                                  4
+                                </td>
+                                <td
+                                  style={{ textAlign: 'left' }}
+                                  className="p-2.5"
+                                >
+                                  <div className="font-bold text-slate-900">
+                                    Contract Agreement Deed & Stamp Duty
+                                  </div>
+                                  <div className="text-[11px] text-gray-500">
+                                    Stamped and signed legal agreement deed
+                                  </div>
+                                </td>
+                                <td
+                                  style={{ textAlign: 'center' }}
+                                  className="p-2.5 font-medium text-slate-700"
+                                >
+                                  <span className="civil-pill blue text-[10px]">
+                                    Part D
+                                  </span>
+                                </td>
+                                <td
+                                  style={{ textAlign: 'center' }}
+                                  className="p-2.5"
+                                >
+                                  <span className="civil-pill red text-[10px]">
+                                    Mandatory
+                                  </span>
+                                </td>
+                                <td
+                                  style={{ textAlign: 'left' }}
+                                  className="p-2.5"
+                                >
+                                  <FileUploadCell
+                                    docName={agrForm.scannedAgreementDoc}
+                                    onFileSelect={fileName =>
+                                      setAgrForm({
+                                        ...agrForm,
+                                        scannedAgreementDoc: fileName,
+                                      })
+                                    }
+                                    onClear={() =>
+                                      setAgrForm({
+                                        ...agrForm,
+                                        scannedAgreementDoc: '',
+                                      })
+                                    }
+                                  />
+                                </td>
+                                <td
+                                  style={{ textAlign: 'center' }}
+                                  className="p-2.5"
+                                >
+                                  {agrForm.scannedAgreementDoc ? (
+                                    <span className="civil-pill green text-[10px]">
+                                      Attached ✓
+                                    </span>
+                                  ) : (
+                                    <span className="civil-pill amber text-[10px]">
+                                      Pending
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
 
                       <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-gray-100">
@@ -1510,16 +1859,6 @@ export default function WorkOrderSign() {
                           </div>
                           <div>
                             <div className="text-gray-500 font-semibold text-[11px] uppercase tracking-wider mb-1">
-                              Document Uploaded (Mandate Document)
-                            </div>
-                            <div className="text-blue-700 font-mono text-[11px] truncate">
-                              {selectedWO.workOrderDoc ||
-                                selectedWO.workOrderDocType ||
-                                'Work_Order_Signed_Document.pdf'}
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-gray-500 font-semibold text-[11px] uppercase tracking-wider mb-1">
                               Contract Value
                             </div>
                             <div className="font-bold text-green-700 text-xs">
@@ -1593,19 +1932,6 @@ export default function WorkOrderSign() {
                                   : ''}
                               </strong>
                             </div>
-                            {selectedWO.bgDoc && (
-                              <div className="md:col-span-3">
-                                <div className="text-gray-500 font-medium text-[11px]">
-                                  Document Uploaded (Mandate Document)
-                                </div>
-                                <span className="text-xs text-blue-700 font-mono">
-                                  {selectedWO.bgDoc} (
-                                  {selectedWO.bgDocType ||
-                                    'Performance Bank Guarantee / Security Deposit'}
-                                  )
-                                </span>
-                              </div>
-                            )}
                           </div>
                         </div>
 
@@ -1664,7 +1990,7 @@ export default function WorkOrderSign() {
                               (If Applicable)
                             </span>
                           </div>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                          <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
                             <div>
                               <div className="text-gray-500 font-medium text-[11px]">
                                 Agreement Number
@@ -1701,17 +2027,98 @@ export default function WorkOrderSign() {
                                 {selectedWO.stampDutyReceiptNo || '—'}
                               </span>
                             </div>
-                            <div className="md:col-span-2">
-                              <div className="text-gray-500 font-medium text-[11px]">
-                                Document Uploaded (Mandate Document)
+                          </div>
+                        </div>
+
+                        {/* Unified Attached Documents Dossier */}
+                        <div className="p-3.5 bg-white border border-slate-200 rounded-lg shadow-sm space-y-3">
+                          <div className="text-xs font-bold text-blue-900 flex items-center justify-between">
+                            <div className="flex items-center gap-1.5">
+                              <i className="pi pi-paperclip text-blue-600" />
+                              <span>
+                                Mandate Contract Document Attachments Dossier
+                              </span>
+                            </div>
+                            <span className="text-[10px] text-gray-500 font-normal">
+                              All statutory contract documents
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                            {/* Doc 1: Part A */}
+                            <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between">
+                              <div>
+                                <div className="font-semibold text-slate-800 text-[11px]">
+                                  1. Work Order Document (Part A)
+                                </div>
+                                <div className="text-blue-700 font-mono text-[11px] truncate max-w-[220px]">
+                                  {selectedWO.workOrderDoc ||
+                                    'Work_Order_Signed_Document.pdf'}
+                                </div>
                               </div>
-                              <span className="text-xs text-blue-700 font-mono">
-                                {selectedWO.scannedAgreementDoc ||
-                                  'Contract_Agreement_Signed.pdf'}{' '}
-                                (
-                                {selectedWO.agreementDocType ||
-                                  'Contract Agreement Deed'}
-                                )
+                              <span className="civil-pill green text-[10px]">
+                                Verified ✓
+                              </span>
+                            </div>
+
+                            {/* Doc 2: Part B */}
+                            <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between">
+                              <div>
+                                <div className="font-semibold text-slate-800 text-[11px]">
+                                  2. Performance Bank Guarantee / SD Bond (Part
+                                  B)
+                                </div>
+                                <div className="text-blue-700 font-mono text-[11px] truncate max-w-[220px]">
+                                  {selectedWO.bgDoc ||
+                                    (selectedWO.bgNo
+                                      ? `${selectedWO.bgNo}_Bond.pdf`
+                                      : 'SD_Deducted_In_Bills.pdf')}
+                                </div>
+                              </div>
+                              <span className="civil-pill green text-[10px]">
+                                Verified ✓
+                              </span>
+                            </div>
+
+                            {/* Doc 3: Part C */}
+                            <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between">
+                              <div>
+                                <div className="font-semibold text-slate-800 text-[11px]">
+                                  3. Mobilization Advance BG (Part C)
+                                </div>
+                                <div className="text-blue-700 font-mono text-[11px] truncate max-w-[220px]">
+                                  {selectedWO.mobAdvanceDoc ||
+                                    (selectedWO.mobAdvanceBgNo
+                                      ? `${selectedWO.mobAdvanceBgNo}_Receipt.pdf`
+                                      : 'Not Applicable')}
+                                </div>
+                              </div>
+                              <span
+                                className={
+                                  selectedWO.mobAdvanceBgNo
+                                    ? 'civil-pill green text-[10px]'
+                                    : 'civil-pill neutral text-[10px]'
+                                }
+                              >
+                                {selectedWO.mobAdvanceBgNo
+                                  ? 'Verified ✓'
+                                  : 'N/A'}
+                              </span>
+                            </div>
+
+                            {/* Doc 4: Part D */}
+                            <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between">
+                              <div>
+                                <div className="font-semibold text-slate-800 text-[11px]">
+                                  4. Stamped Agreement Deed (Part D)
+                                </div>
+                                <div className="text-blue-700 font-mono text-[11px] truncate max-w-[220px]">
+                                  {selectedWO.scannedAgreementDoc ||
+                                    'Contract_Agreement_Signed.pdf'}
+                                </div>
+                              </div>
+                              <span className="civil-pill green text-[10px]">
+                                Verified ✓
                               </span>
                             </div>
                           </div>
