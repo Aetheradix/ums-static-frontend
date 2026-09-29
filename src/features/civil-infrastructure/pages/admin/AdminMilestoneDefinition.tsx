@@ -162,6 +162,11 @@ export default function AdminMilestoneDefinition() {
       return;
     }
 
+    if (mStart && mEnd && mEnd < mStart) {
+      ToastService.error('Planned End Date cannot precede Planned Start Date.');
+      return;
+    }
+
     if (qaRequired === 'Yes' && !testName.trim()) {
       ToastService.error('Quality Test Name is required.');
       return;
@@ -223,6 +228,18 @@ export default function AdminMilestoneDefinition() {
     setData(prev => prev.filter(m => m.workId !== selectedWorkId));
     ToastService.success(
       'All milestones cleared for the selected work. You can now define them from scratch.'
+    );
+  };
+
+  const handleFinalizeMilestones = () => {
+    if (totalWeightage !== 100) {
+      ToastService.error(
+        `Total weightage must equal exactly 100% to finalize (Current: ${totalWeightage}%).`
+      );
+      return;
+    }
+    ToastService.success(
+      'Milestone schedule finalized and sealed for Work Order signing!'
     );
   };
 
@@ -469,28 +486,41 @@ export default function AdminMilestoneDefinition() {
             },
           ]}
           toolbar={
-            totalWeightage < 100 ? (
-              <Button
-                label="Add Project Milestone"
-                icon="plus"
-                variant="primary"
-                onClick={() => setPopup({ mode: 'create' })}
-              />
-            ) : (
-              <div
-                style={{
-                  background: '#dcfce7',
-                  border: '1px solid #86efac',
-                  borderRadius: '0.5rem',
-                  padding: '0.375rem 0.75rem',
-                  fontSize: '0.8125rem',
-                  color: '#15803d',
-                  fontWeight: 600,
-                }}
-              >
-                ✓ 100% milestone weightage allocated. Payments scheduled.
-              </div>
-            )
+            <div
+              style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}
+            >
+              {totalWeightage < 100 && (
+                <Button
+                  label="Add Project Milestone"
+                  icon="plus"
+                  variant="primary"
+                  onClick={() => setPopup({ mode: 'create' })}
+                />
+              )}
+              {totalWeightage === 100 && (
+                <Button
+                  label="Finalize Milestone Setup"
+                  icon="check"
+                  variant="success"
+                  onClick={handleFinalizeMilestones}
+                />
+              )}
+              {totalWeightage === 100 && (
+                <div
+                  style={{
+                    background: '#dcfce7',
+                    border: '1px solid #86efac',
+                    borderRadius: '0.5rem',
+                    padding: '0.375rem 0.75rem',
+                    fontSize: '0.8125rem',
+                    color: '#15803d',
+                    fontWeight: 600,
+                  }}
+                >
+                  ✓ 100% milestone weightage allocated.
+                </div>
+              )}
+            </div>
           }
         />
       </FormCard>
