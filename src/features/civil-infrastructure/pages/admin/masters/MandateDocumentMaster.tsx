@@ -155,7 +155,7 @@ export default function MandateDocumentMaster() {
             { cell: (_, o) => <span>{o.rowIndex + 1}</span>, width: '50px' },
             {
               field: 'name',
-              header: 'Name',
+              header: 'DocumentName',
               sortable: true,
             },
             {

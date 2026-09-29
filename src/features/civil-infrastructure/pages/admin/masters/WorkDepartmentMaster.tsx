@@ -124,7 +124,7 @@ export default function WorkDepartmentMaster() {
               cell: (_, option) => <span>{option.rowIndex + 1}</span>,
               width: '30px',
             },
-            { field: 'name', header: 'Name' },
+            { field: 'name', header: 'Department Name' },
             {
               field: 'description',
               header: 'Description',

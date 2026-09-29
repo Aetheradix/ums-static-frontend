@@ -134,8 +134,8 @@ export default function WorkCategoryMaster() {
               cell: (_, option) => <span>{option.rowIndex + 1}</span>,
               width: '30px',
             },
-            { field: 'code', header: 'Code' },
-            { field: 'name', header: 'Name' },
+            { field: 'code', header: 'Category Code' },
+            { field: 'name', header: 'Category Name' },
             {
               field: 'description',
               header: 'Description',

@@ -39,99 +39,6 @@ const parseLocalDate = (str?: string): Date | undefined => {
   return new Date(year, month - 1, day);
 };
 
-const PRESET_OPTIONS = [
-  {
-    value: 'custom',
-    label: 'Custom Milestone (Type below)',
-    name: '',
-    desc: '',
-    weight: '',
-    qa: 'No',
-    testName: '',
-  },
-  {
-    value: 'b_found',
-    label: '[Building] Excavation & Foundation',
-    name: 'Excavation & Foundation',
-    desc: 'Excavation, footings, and substructure foundation works',
-    weight: '15',
-    qa: 'Yes',
-    testName: 'Soil bearing test / PCC compressive test',
-  },
-  {
-    value: 'b_plinth',
-    label: '[Building] Plinth Level Construction',
-    name: 'Plinth Level Construction',
-    desc: 'Plinth beam laying, damp proof course and backfilling',
-    weight: '20',
-    qa: 'Yes',
-    testName: 'Cube Compressive Strength (IS 456)',
-  },
-  {
-    value: 'b_masonry',
-    label: '[Building] Brickwork & Partition Walls',
-    name: 'Brickwork & Partition Walls',
-    desc: 'Superstructure brickwork masonry and partition wall layout',
-    weight: '25',
-    qa: 'Yes',
-    testName: 'Brick Compressive strength & water absorption',
-  },
-  {
-    value: 'b_slab',
-    label: '[Building] Roof Slab casting (RCC)',
-    name: 'Roof Slab casting (RCC)',
-    desc: 'Slab reinforcement binding and RCC concrete pouring',
-    weight: '25',
-    qa: 'Yes',
-    testName: 'RCC Slab Concrete Cube test',
-  },
-  {
-    value: 'b_finishing',
-    label: '[Building] Finishing & Handover',
-    name: 'Finishing & Handover',
-    desc: 'Plastering, painting, flooring, MEP fittings and final handover',
-    weight: '15',
-    qa: 'No',
-    testName: '',
-  },
-  {
-    value: 'r_grade',
-    label: '[Road] Surface Excavation & Prep',
-    name: 'Surface Excavation & Prep',
-    desc: 'Excavation of old asphalt road surface, sub-grade grading and compaction',
-    weight: '20',
-    qa: 'Yes',
-    testName: 'Sub-grade Soil compaction test',
-  },
-  {
-    value: 'r_base',
-    label: '[Road] Sub-base & Base Course',
-    name: 'Sub-base & Base Course',
-    desc: 'Granular sub-base (GSB) and Wet Mix Macadam (WMM) layers',
-    weight: '35',
-    qa: 'Yes',
-    testName: 'Granular sub-base Proctor Compaction',
-  },
-  {
-    value: 'r_asphalt',
-    label: '[Road] Bituminous Asphalt Concrete',
-    name: 'Bituminous Asphalt Concrete',
-    desc: 'Laying of Dense Bituminous Macadam (DBM) and bituminous concrete wearing course',
-    weight: '30',
-    qa: 'Yes',
-    testName: 'Bitumen extraction & wearing course test',
-  },
-  {
-    value: 'r_marking',
-    label: '[Road] Shoulders & Road Markings',
-    name: 'Shoulders & Road Markings',
-    desc: 'Earthen shoulders, road painting, signs, and public safety markers',
-    weight: '15',
-    qa: 'No',
-    testName: '',
-  },
-];
-
 export default function AdminMilestoneDefinition() {
   const [data, setData] = useState<Milestone[]>(() => {
     const saved = localStorage.getItem('civil_milestones');
@@ -181,7 +88,6 @@ export default function AdminMilestoneDefinition() {
   const [popup, setPopup] = useState<PopupState>({ mode: 'closed' });
 
   // Add Form State
-  const [selectedPresetId, setSelectedPresetId] = useState('custom');
   const [mName, setMName] = useState('');
   const [mDesc, setMDesc] = useState('');
   const [mWeight, setMWeight] = useState('');
@@ -256,6 +162,11 @@ export default function AdminMilestoneDefinition() {
       return;
     }
 
+    if (mStart && mEnd && mEnd < mStart) {
+      ToastService.error('Planned End Date cannot precede Planned Start Date.');
+      return;
+    }
+
     if (qaRequired === 'Yes' && !testName.trim()) {
       ToastService.error('Quality Test Name is required.');
       return;
@@ -300,7 +211,6 @@ export default function AdminMilestoneDefinition() {
     setMEnd('');
     setQaRequired('No');
     setTestName('');
-    setSelectedPresetId('custom');
   };
 
   const handleDeleteMilestone = (id: string) => {
@@ -321,358 +231,15 @@ export default function AdminMilestoneDefinition() {
     );
   };
 
-  const handleSelectPreset = (val: string) => {
-    setSelectedPresetId(val);
-    const preset = PRESET_OPTIONS.find(p => p.value === val);
-    if (preset && val !== 'custom') {
-      setMName(preset.name);
-      setMDesc(preset.desc);
-      setMWeight(preset.weight);
-      setQaRequired(preset.qa);
-      setTestName(preset.testName || '');
-    } else {
-      setMName('');
-      setMDesc('');
-      setMWeight('');
-      setQaRequired('No');
-      setTestName('');
+  const handleFinalizeMilestones = () => {
+    if (totalWeightage !== 100) {
+      ToastService.error(
+        `Total weightage must equal exactly 100% to finalize (Current: ${totalWeightage}%).`
+      );
+      return;
     }
-  };
-
-  const loadTemplate = (
-    type: 'building' | 'road' | 'pipeline' | 'electrical'
-  ) => {
-    const baseDate = new Date();
-    const ms: Milestone[] = [];
-
-    if (type === 'building') {
-      ms.push(
-        {
-          id: String(Date.now() + 1),
-          workId: selectedWorkId,
-          workName: currentWork?.name ?? '',
-          sequenceNo: 1,
-          milestoneName: 'Excavation & Foundation',
-          description:
-            'Excavation, footings, and substructure foundation works',
-          plannedStartDate: baseDate.toISOString().split('T')[0],
-          plannedEndDate: new Date(
-            baseDate.getTime() + 60 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          weightage: 15,
-          status: 'Pending',
-          qualityTestRequired: true,
-        },
-        {
-          id: String(Date.now() + 2),
-          workId: selectedWorkId,
-          workName: currentWork?.name ?? '',
-          sequenceNo: 2,
-          milestoneName: 'Plinth Level Construction',
-          description: 'Plinth beam laying, damp proof course and backfilling',
-          plannedStartDate: new Date(
-            baseDate.getTime() + 61 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          plannedEndDate: new Date(
-            baseDate.getTime() + 100 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          weightage: 20,
-          status: 'Pending',
-          qualityTestRequired: true,
-        },
-        {
-          id: String(Date.now() + 3),
-          workId: selectedWorkId,
-          workName: currentWork?.name ?? '',
-          sequenceNo: 3,
-          milestoneName: 'Brickwork & Partition Walls',
-          description:
-            'Superstructure brickwork masonry and partition wall layout',
-          plannedStartDate: new Date(
-            baseDate.getTime() + 101 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          plannedEndDate: new Date(
-            baseDate.getTime() + 150 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          weightage: 25,
-          status: 'Pending',
-          qualityTestRequired: true,
-        },
-        {
-          id: String(Date.now() + 4),
-          workId: selectedWorkId,
-          workName: currentWork?.name ?? '',
-          sequenceNo: 4,
-          milestoneName: 'Roof Slab casting (RCC)',
-          description: 'Slab reinforcement binding and RCC concrete pouring',
-          plannedStartDate: new Date(
-            baseDate.getTime() + 151 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          plannedEndDate: new Date(
-            baseDate.getTime() + 180 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          weightage: 25,
-          status: 'Pending',
-          qualityTestRequired: true,
-        },
-        {
-          id: String(Date.now() + 5),
-          workId: selectedWorkId,
-          workName: currentWork?.name ?? '',
-          sequenceNo: 5,
-          milestoneName: 'Finishing & Handover',
-          description:
-            'Plastering, painting, flooring, MEP fittings and final handover',
-          plannedStartDate: new Date(
-            baseDate.getTime() + 181 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          plannedEndDate: new Date(
-            baseDate.getTime() + 240 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          weightage: 15,
-          status: 'Pending',
-          qualityTestRequired: false,
-        }
-      );
-    } else if (type === 'road') {
-      ms.push(
-        {
-          id: String(Date.now() + 1),
-          workId: selectedWorkId,
-          workName: currentWork?.name ?? '',
-          sequenceNo: 1,
-          milestoneName: 'Surface Excavation & Prep',
-          description:
-            'Excavation of old asphalt, sub-grade grading and compaction',
-          plannedStartDate: baseDate.toISOString().split('T')[0],
-          plannedEndDate: new Date(
-            baseDate.getTime() + 20 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          weightage: 20,
-          status: 'Pending',
-          qualityTestRequired: true,
-        },
-        {
-          id: String(Date.now() + 2),
-          workId: selectedWorkId,
-          workName: currentWork?.name ?? '',
-          sequenceNo: 2,
-          milestoneName: 'Sub-base & Base Course',
-          description:
-            'Granular sub-base (GSB) and Wet Mix Macadam (WMM) layers',
-          plannedStartDate: new Date(
-            baseDate.getTime() + 21 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          plannedEndDate: new Date(
-            baseDate.getTime() + 50 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          weightage: 35,
-          status: 'Pending',
-          qualityTestRequired: true,
-        },
-        {
-          id: String(Date.now() + 3),
-          workId: selectedWorkId,
-          workName: currentWork?.name ?? '',
-          sequenceNo: 3,
-          milestoneName: 'Bituminous Asphalt Concrete',
-          description:
-            'Laying of Dense Bituminous Macadam (DBM) and wearing course',
-          plannedStartDate: new Date(
-            baseDate.getTime() + 51 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          plannedEndDate: new Date(
-            baseDate.getTime() + 75 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          weightage: 30,
-          status: 'Pending',
-          qualityTestRequired: true,
-        },
-        {
-          id: String(Date.now() + 4),
-          workId: selectedWorkId,
-          workName: currentWork?.name ?? '',
-          sequenceNo: 4,
-          milestoneName: 'Shoulders & Road Markings',
-          description:
-            'Earthen shoulders, road painting, signs, and public safety markers',
-          plannedStartDate: new Date(
-            baseDate.getTime() + 76 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          plannedEndDate: new Date(
-            baseDate.getTime() + 90 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          weightage: 15,
-          status: 'Pending',
-          qualityTestRequired: false,
-        }
-      );
-    } else if (type === 'pipeline') {
-      ms.push(
-        {
-          id: String(Date.now() + 1),
-          workId: selectedWorkId,
-          workName: currentWork?.name ?? '',
-          sequenceNo: 1,
-          milestoneName: 'Trench Excavation',
-          description: 'Excavation of trench and preparing sand bedding',
-          plannedStartDate: baseDate.toISOString().split('T')[0],
-          plannedEndDate: new Date(
-            baseDate.getTime() + 30 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          weightage: 25,
-          status: 'Pending',
-          qualityTestRequired: false,
-        },
-        {
-          id: String(Date.now() + 2),
-          workId: selectedWorkId,
-          workName: currentWork?.name ?? '',
-          sequenceNo: 2,
-          milestoneName: 'Pipe Laying & Jointing',
-          description:
-            'Laying of DI/HDPE pipes and welding/jointing validation',
-          plannedStartDate: new Date(
-            baseDate.getTime() + 31 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          plannedEndDate: new Date(
-            baseDate.getTime() + 70 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          weightage: 50,
-          status: 'Pending',
-          qualityTestRequired: true,
-        },
-        {
-          id: String(Date.now() + 3),
-          workId: selectedWorkId,
-          workName: currentWork?.name ?? '',
-          sequenceNo: 3,
-          milestoneName: 'Testing & Backfilling',
-          description:
-            'Hydrostatic pressure testing of joints, backfilling and site restoration',
-          plannedStartDate: new Date(
-            baseDate.getTime() + 71 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          plannedEndDate: new Date(
-            baseDate.getTime() + 90 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          weightage: 25,
-          status: 'Pending',
-          qualityTestRequired: true,
-        }
-      );
-    } else if (type === 'electrical') {
-      ms.push(
-        {
-          id: String(Date.now() + 1),
-          workId: selectedWorkId,
-          workName: currentWork?.name ?? '',
-          sequenceNo: 1,
-          milestoneName: 'Foundations & Structure',
-          description:
-            'RCC foundations for transformer yard and pole erections',
-          plannedStartDate: baseDate.toISOString().split('T')[0],
-          plannedEndDate: new Date(
-            baseDate.getTime() + 20 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          weightage: 30,
-          status: 'Pending',
-          qualityTestRequired: true,
-        },
-        {
-          id: String(Date.now() + 2),
-          workId: selectedWorkId,
-          workName: currentWork?.name ?? '',
-          sequenceNo: 2,
-          milestoneName: 'Equipment & Cabling',
-          description:
-            'Positioning transformers/HT panels, cabling and grounding joints',
-          plannedStartDate: new Date(
-            baseDate.getTime() + 21 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          plannedEndDate: new Date(
-            baseDate.getTime() + 50 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          weightage: 50,
-          status: 'Pending',
-          qualityTestRequired: true,
-        },
-        {
-          id: String(Date.now() + 3),
-          workId: selectedWorkId,
-          workName: currentWork?.name ?? '',
-          sequenceNo: 3,
-          milestoneName: 'Commissioning & Charge',
-          description:
-            'SLA inspection testing, electrical inspector clearance, charging yard',
-          plannedStartDate: new Date(
-            baseDate.getTime() + 51 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          plannedEndDate: new Date(
-            baseDate.getTime() + 65 * 24 * 60 * 60 * 1000
-          )
-            .toISOString()
-            .split('T')[0],
-          weightage: 20,
-          status: 'Pending',
-          qualityTestRequired: false,
-        }
-      );
-    }
-
-    setData(prev => [...prev.filter(m => m.workId !== selectedWorkId), ...ms]);
     ToastService.success(
-      `${type.toUpperCase()} milestone template loaded successfully.`
+      'Milestone schedule finalized and sealed for Work Order signing!'
     );
   };
 
@@ -741,58 +308,14 @@ export default function AdminMilestoneDefinition() {
             style={{
               marginTop: '1rem',
               borderTop: '1px solid #f3f4f6',
-              paddingTop: '1rem',
+              paddingTop: '0.75rem',
               display: 'flex',
-              justifyContent: 'space-between',
+              justifyContent: 'flex-end',
               alignItems: 'center',
             }}
           >
-            <div>
-              <label
-                style={{
-                  fontSize: '0.72rem',
-                  fontWeight: 700,
-                  color: '#4b5563',
-                  textTransform: 'uppercase',
-                  display: 'block',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                🪄 Auto-populate Standard Milestone Templates
-              </label>
-              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                <Button
-                  label="Building"
-                  icon="building"
-                  size="small"
-                  variant="outlined"
-                  onClick={() => loadTemplate('building')}
-                />
-                <Button
-                  label="Road"
-                  icon="map"
-                  size="small"
-                  variant="outlined"
-                  onClick={() => loadTemplate('road')}
-                />
-                <Button
-                  label="Pipeline"
-                  icon="filter"
-                  size="small"
-                  variant="outlined"
-                  onClick={() => loadTemplate('pipeline')}
-                />
-                <Button
-                  label="Electrical"
-                  icon="bolt"
-                  size="small"
-                  variant="outlined"
-                  onClick={() => loadTemplate('electrical')}
-                />
-              </div>
-            </div>
             <Button
-              label="Reset Milestones"
+              label="Clear All Milestones"
               icon="trash"
               size="small"
               variant="danger"
@@ -963,28 +486,41 @@ export default function AdminMilestoneDefinition() {
             },
           ]}
           toolbar={
-            totalWeightage < 100 ? (
-              <Button
-                label="Add Project Milestone"
-                icon="plus"
-                variant="primary"
-                onClick={() => setPopup({ mode: 'create' })}
-              />
-            ) : (
-              <div
-                style={{
-                  background: '#dcfce7',
-                  border: '1px solid #86efac',
-                  borderRadius: '0.5rem',
-                  padding: '0.375rem 0.75rem',
-                  fontSize: '0.8125rem',
-                  color: '#15803d',
-                  fontWeight: 600,
-                }}
-              >
-                ✓ 100% milestone weightage allocated. Payments scheduled.
-              </div>
-            )
+            <div
+              style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}
+            >
+              {totalWeightage < 100 && (
+                <Button
+                  label="Add Project Milestone"
+                  icon="plus"
+                  variant="primary"
+                  onClick={() => setPopup({ mode: 'create' })}
+                />
+              )}
+              {totalWeightage === 100 && (
+                <Button
+                  label="Finalize Milestone Setup"
+                  icon="check"
+                  variant="success"
+                  onClick={handleFinalizeMilestones}
+                />
+              )}
+              {totalWeightage === 100 && (
+                <div
+                  style={{
+                    background: '#dcfce7',
+                    border: '1px solid #86efac',
+                    borderRadius: '0.5rem',
+                    padding: '0.375rem 0.75rem',
+                    fontSize: '0.8125rem',
+                    color: '#15803d',
+                    fontWeight: 600,
+                  }}
+                >
+                  ✓ 100% milestone weightage allocated.
+                </div>
+              )}
+            </div>
           }
         />
       </FormCard>
@@ -997,17 +533,6 @@ export default function AdminMilestoneDefinition() {
         subtitle="Specify milestone linked to physical construction and payment release."
         size="lg"
       >
-        <div style={{ marginBottom: '1rem' }}>
-          <DropDownList
-            label="Load Standard Civil Stage (Quick Select Preset)"
-            data={PRESET_OPTIONS}
-            textField="label"
-            optionValue="value"
-            value={selectedPresetId}
-            onChange={v => handleSelectPreset(v as string)}
-          />
-        </div>
-
         <FormGrid columns={2}>
           <TextBox
             label="Milestone Name / Stage"
