@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import GridActionButtons from 'shared/components/grid/GridActionButtons';
 import { DropDownList, TextArea, TextBox } from 'shared/components/forms';
+import GridActionButtons from 'shared/components/grid/GridActionButtons';
 import {
   ConfirmDialog,
   FormCard,
@@ -12,7 +12,6 @@ import {
   StatusBadge,
 } from 'shared/new-components';
 import { CIVIL_STORAGE_KEYS, civilStorage } from '../../civilStorage';
-import { appendAudit, makeAuditEntry } from '../../utils/audit';
 import {
   contractors as initialContractors,
   milestones as initialMilestones,
@@ -21,6 +20,7 @@ import {
   initialWorkSuspensions,
 } from '../../mocks';
 import { civilUrls } from '../../urls';
+import { appendAudit, makeAuditEntry } from '../../utils/audit';
 import '../civil.css';
 
 // Interactive File Upload Widget with file browsing and drag & drop support
@@ -190,6 +190,134 @@ export default function WorkOrderSign() {
     return initialWorkSuspensions;
   });
 
+  const [selectedFinancialYear, setSelectedFinancialYear] =
+    useState<string>('ALL');
+  const [searchedFinancialYear, setSearchedFinancialYear] =
+    useState<string>('ALL');
+
+  // Helper to accurately resolve Financial Year for any work order / contract
+  const getWorkOrderFY = (w: any): string => {
+    if (
+      w.financialYear &&
+      typeof w.financialYear === 'string' &&
+      w.financialYear.trim()
+    ) {
+      return w.financialYear.trim();
+    }
+
+    const matchedWork = civilWorks.find(
+      (cw: any) =>
+        cw.id === w.workId || cw.workId === w.workId || cw.code === w.workId
+    );
+
+    if (
+      matchedWork?.financialYear &&
+      typeof matchedWork.financialYear === 'string' &&
+      matchedWork.financialYear.trim()
+    ) {
+      return matchedWork.financialYear.trim();
+    }
+
+    const woMatch = (w.workOrderNo || '').match(/\b(20\d{2}-\d{2})\b/);
+    if (woMatch) return woMatch[1];
+
+    const agrMatch = (w.agreementNo || '').match(/\b(20\d{2}-\d{2})\b/);
+    if (agrMatch) return agrMatch[1];
+
+    const dateCandidate =
+      w.issuedDate ||
+      w.commencementDate ||
+      w.agreementDate ||
+      matchedWork?.registrationDate ||
+      matchedWork?.startDate ||
+      matchedWork?.createdAt;
+
+    if (dateCandidate) {
+      const d = new Date(dateCandidate);
+      if (!isNaN(d.getTime())) {
+        const year = d.getFullYear();
+        const month = d.getMonth() + 1;
+        if (month >= 4) {
+          return `${year}-${String((year + 1) % 100).padStart(2, '0')}`;
+        } else {
+          return `${year - 1}-${String(year % 100).padStart(2, '0')}`;
+        }
+      }
+    }
+
+    const code =
+      matchedWork?.code ||
+      matchedWork?.workId ||
+      (typeof w.workId === 'string' ? w.workId : '');
+    const codeMatch = code.match(/20(\d{2})/);
+    if (codeMatch) {
+      const yr = parseInt('20' + codeMatch[1], 10);
+      return `${yr}-${String((yr + 1) % 100).padStart(2, '0')}`;
+    }
+
+    return '2025-26';
+  };
+
+  const financialYearOptions = useMemo(() => {
+    const years = new Set<string>(['2026-27', '2025-26', '2024-25', '2023-24']);
+    workOrders.forEach((w: any) => {
+      const fy = getWorkOrderFY(w);
+      if (fy) years.add(fy);
+    });
+    const sorted = Array.from(years).sort().reverse();
+    return [
+      {
+        label: 'All Financial Years',
+        value: 'ALL',
+        text: 'All Financial Years',
+      },
+      ...sorted.map(fy => ({
+        label: `FY ${fy}`,
+        value: fy,
+        text: `FY ${fy}`,
+      })),
+    ];
+  }, [workOrders, civilWorks]);
+
+  const [displayedWorkOrders, setDisplayedWorkOrders] =
+    useState<any[]>(workOrders);
+
+  // Sync displayedWorkOrders when underlying workOrders list updates
+  useEffect(() => {
+    if (searchedFinancialYear === 'ALL') {
+      setDisplayedWorkOrders(workOrders);
+    } else {
+      setDisplayedWorkOrders(
+        workOrders.filter(
+          (w: any) => getWorkOrderFY(w) === searchedFinancialYear
+        )
+      );
+    }
+  }, [workOrders, searchedFinancialYear, civilWorks]);
+
+  const handleSearchFY = () => {
+    setSearchedFinancialYear(selectedFinancialYear);
+    if (selectedFinancialYear === 'ALL') {
+      setDisplayedWorkOrders(workOrders);
+      ToastService.info(`Showing all ${workOrders.length} work orders.`);
+    } else {
+      const filtered = workOrders.filter(
+        (w: any) => getWorkOrderFY(w) === selectedFinancialYear
+      );
+      setDisplayedWorkOrders(filtered);
+      ToastService.success(
+        `Fetched ${filtered.length} work order(s) for FY ${selectedFinancialYear}.`
+      );
+    }
+  };
+
+  const handleResetFY = () => {
+    setSelectedFinancialYear('ALL');
+    setSearchedFinancialYear('ALL');
+    setDisplayedWorkOrders(workOrders);
+    ToastService.info('Reset filter. Showing all work orders.');
+  };
+
   const [woViewMode, setWoViewMode] = useState<
     'list' | 'agreement' | 'view' | 'sign'
   >('list');
@@ -215,7 +343,7 @@ export default function WorkOrderSign() {
     bgExpiryDate: string;
     bgDoc: string;
 
-    // Part C: Mobilization Advance Bank Guarantee (If Applicable)
+    // Part C: Mobilization Advance (If Applicable)
     mobAdvanceBgNo: string;
     mobAdvanceBgBank: string;
     mobAdvanceBgAmount: number;
@@ -690,7 +818,9 @@ export default function WorkOrderSign() {
                   marginLeft: '0.25rem',
                 }}
               >
-                {workOrders.length}
+                {searchedFinancialYear !== 'ALL'
+                  ? `${displayedWorkOrders.length}/${workOrders.length}`
+                  : workOrders.length}
               </span>
             </button>
 
@@ -748,11 +878,62 @@ export default function WorkOrderSign() {
       {/* ======================================================== */}
       {activeTab === 'WORK_ORDERS' && (
         <>
-          {/* 1.1 List View */}
+          {/* External Filter Panel (Outside the Grid) */}
+          {woViewMode === 'list' && (
+            <FormCard className="mb-4">
+              <div className="flex flex-wrap items-end gap-4 p-1">
+                <div
+                  style={{
+                    minWidth: '240px',
+                    flex: '1 1 240px',
+                    maxWidth: '340px',
+                  }}
+                >
+                  <DropDownList
+                    label="Financial Year"
+                    value={selectedFinancialYear}
+                    onChange={val =>
+                      setSelectedFinancialYear(String(val || 'ALL'))
+                    }
+                    data={financialYearOptions}
+                    textField="label"
+                    valueField="value"
+                    filter={false}
+                  />
+                </div>
+                <div className="flex items-center gap-2 pb-1">
+                  <Button
+                    label="Search"
+                    icon="search"
+                    variant="primary"
+                    onClick={handleSearchFY}
+                  />
+                  <Button
+                    label="Reset"
+                    icon="refresh"
+                    variant="secondary"
+                    onClick={handleResetFY}
+                  />
+                </div>
+                {searchedFinancialYear !== 'ALL' && (
+                  <div className="flex items-center pb-2 text-xs text-blue-700 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-200">
+                    <i className="pi pi-info-circle mr-1.5" />
+                    <span>
+                      Filtered by <strong>FY {searchedFinancialYear}</strong> (
+                      {displayedWorkOrders.length} record
+                      {displayedWorkOrders.length !== 1 ? 's' : ''} found)
+                    </span>
+                  </div>
+                )}
+              </div>
+            </FormCard>
+          )}
+
+          {/* 1.1 List View Grid */}
           {woViewMode === 'list' && (
             <FormCard>
               <GridPanel
-                data={workOrders}
+                data={displayedWorkOrders}
                 columns={[
                   {
                     cell: (_, o) => <span>{o.rowIndex + 1}</span>,
@@ -779,6 +960,7 @@ export default function WorkOrderSign() {
                         matchedWork?.registrationDate ||
                         matchedWork?.startDate ||
                         w.issuedDate;
+                      const fy = getWorkOrderFY(w);
                       return (
                         <div>
                           <span
@@ -792,11 +974,33 @@ export default function WorkOrderSign() {
                           >
                             {regCode}
                           </span>
-                          <span
-                            style={{ fontSize: '0.7rem', color: '#6b7280' }}
+                          <div
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.35rem',
+                              marginTop: '2px',
+                              flexWrap: 'wrap',
+                            }}
                           >
-                            Date: {regDate}
-                          </span>
+                            <span
+                              style={{ fontSize: '0.7rem', color: '#6b7280' }}
+                            >
+                              Date: {regDate}
+                            </span>
+                            <span
+                              style={{
+                                fontSize: '0.65rem',
+                                fontWeight: 600,
+                                color: '#1e40af',
+                                background: '#dbeafe',
+                                padding: '0.05rem 0.35rem',
+                                borderRadius: '4px',
+                              }}
+                            >
+                              FY {fy}
+                            </span>
+                          </div>
                         </div>
                       );
                     },
@@ -880,7 +1084,7 @@ export default function WorkOrderSign() {
                   },
                   {
                     field: 'signedByAdmin',
-                    header: 'Digital Sign',
+                    header: 'Work Status',
                     cell: (w: any) =>
                       w.signedByAdmin ? (
                         <span className="civil-pill green">✓ Issued</span>
@@ -908,7 +1112,11 @@ export default function WorkOrderSign() {
                           setSelectedWO(item);
                           setWoViewMode('view');
                         }}
-                        onEdit={() => openAgreementPage(item)}
+                        onEdit={
+                          !item.signedByAdmin
+                            ? () => openAgreementPage(item)
+                            : undefined
+                        }
                         onApprove={
                           !item.signedByAdmin
                             ? () => {
@@ -1082,6 +1290,34 @@ export default function WorkOrderSign() {
                             required
                           />
                         </FormGrid>
+
+                        {/* Part A Attachment */}
+                        <div className="pt-3 border-t border-slate-200">
+                          <div className="text-xs font-semibold text-gray-700 mb-1.5 flex items-center justify-between">
+                            <span className="flex items-center gap-1.5 font-bold text-slate-800">
+                              <i className="pi pi-paperclip text-blue-600" />
+                              <span>Work Order Document (Mandatory)</span>
+                            </span>
+                            <span className="text-[11px] text-gray-500">
+                              Signed administrative work order copy
+                            </span>
+                          </div>
+                          <FileUploadCell
+                            docName={agrForm.workOrderDoc}
+                            onFileSelect={fileName =>
+                              setAgrForm({
+                                ...agrForm,
+                                workOrderDoc: fileName,
+                              })
+                            }
+                            onClear={() =>
+                              setAgrForm({
+                                ...agrForm,
+                                workOrderDoc: '',
+                              })
+                            }
+                          />
+                        </div>
                       </div>
 
                       {/* ======================================================== */}
@@ -1144,10 +1380,40 @@ export default function WorkOrderSign() {
                             }
                           />
                         </FormGrid>
+
+                        {/* Part B Attachment */}
+                        <div className="pt-3 border-t border-slate-200">
+                          <div className="text-xs font-semibold text-gray-700 mb-1.5 flex items-center justify-between">
+                            <span className="flex items-center gap-1.5 font-bold text-slate-800">
+                              <i className="pi pi-paperclip text-blue-600" />
+                              <span>
+                                Performance Bank Guarantee / SD Bond Document
+                              </span>
+                            </span>
+                            <span className="text-[11px] text-gray-500">
+                              Bank guarantee bond or SD deduction receipt
+                            </span>
+                          </div>
+                          <FileUploadCell
+                            docName={agrForm.bgDoc}
+                            onFileSelect={fileName =>
+                              setAgrForm({
+                                ...agrForm,
+                                bgDoc: fileName,
+                              })
+                            }
+                            onClear={() =>
+                              setAgrForm({
+                                ...agrForm,
+                                bgDoc: '',
+                              })
+                            }
+                          />
+                        </div>
                       </div>
 
                       {/* ======================================================== */}
-                      {/* PART C: MOBILIZATION ADVANCE BANK GUARANTEE (IF APPLICABLE) */}
+                      {/* PART C: Mobilization Advance (IF APPLICABLE) */}
                       {/* ======================================================== */}
                       <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-4">
                         <div className="flex items-center justify-between pb-2 border-b border-slate-200">
@@ -1156,8 +1422,7 @@ export default function WorkOrderSign() {
                               C
                             </span>
                             <h5 className="font-bold text-slate-800 text-sm m-0">
-                              Part C: Mobilization Advance Bank Guarantee (If
-                              Applicable)
+                              Part C: Mobilization Advance (If Applicable)
                             </h5>
                           </div>
                           <span className="text-[11px] text-gray-500 font-medium">
@@ -1167,7 +1432,7 @@ export default function WorkOrderSign() {
 
                         <FormGrid columns={2}>
                           <TextBox
-                            label="Advance Transaction Number"
+                            label="Transaction Number"
                             placeholder="BG-MOB-2025-001"
                             value={agrForm.mobAdvanceBgNo || ''}
                             onChange={val =>
@@ -1186,7 +1451,7 @@ export default function WorkOrderSign() {
 
                         <FormGrid columns={2}>
                           <TextBox
-                            label="Advance Amount (₹)"
+                            label="Amount (₹)"
                             type="number"
                             placeholder="2585000"
                             value={String(agrForm.mobAdvanceBgAmount || 0)}
@@ -1198,7 +1463,7 @@ export default function WorkOrderSign() {
                             }
                           />
                           <TextBox
-                            label="Advance Payment Date"
+                            label="Payment Date"
                             type="date"
                             value={agrForm.mobAdvanceBgExpiry || ''}
                             onChange={val =>
@@ -1209,6 +1474,36 @@ export default function WorkOrderSign() {
                             }
                           />
                         </FormGrid>
+
+                        {/* Part C Attachment */}
+                        <div className="pt-3 border-t border-slate-200">
+                          <div className="text-xs font-semibold text-gray-700 mb-1.5 flex items-center justify-between">
+                            <span className="flex items-center gap-1.5 font-bold text-slate-800">
+                              <i className="pi pi-paperclip text-blue-600" />
+                              <span>
+                                Mobilization Advance Document (If Applicable)
+                              </span>
+                            </span>
+                            <span className="text-[11px] text-gray-500">
+                              Advance payment guarantee or transaction proof
+                            </span>
+                          </div>
+                          <FileUploadCell
+                            docName={agrForm.mobAdvanceDoc}
+                            onFileSelect={fileName =>
+                              setAgrForm({
+                                ...agrForm,
+                                mobAdvanceDoc: fileName,
+                              })
+                            }
+                            onClear={() =>
+                              setAgrForm({
+                                ...agrForm,
+                                mobAdvanceDoc: '',
+                              })
+                            }
+                          />
+                        </div>
                       </div>
 
                       {/* ======================================================== */}
@@ -1305,386 +1600,36 @@ export default function WorkOrderSign() {
                             required
                           />
                         </FormGrid>
-                      </div>
 
-                      {/* ======================================================== */}
-                      {/* UNIFIED MANDATE DOCUMENTS CHECKLIST (4 DOCUMENTS IN 1 REQUEST) */}
-                      {/* ======================================================== */}
-                      <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
-                        <div className="flex items-center justify-between pb-2 border-b border-slate-200">
-                          <div className="flex items-center gap-2">
-                            <span className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs">
-                              <i className="pi pi-paperclip text-xs" />
-                            </span>
-                            <div>
-                              <h5 className="font-bold text-slate-800 text-sm m-0">
-                                Mandate Contract Documents & Attachments
-                                Checklist
-                              </h5>
-                              <span className="text-[11px] text-gray-500">
-                                Upload and verify all 4 contract attachments in
-                                a single submission (No repeated dropdown
-                                selection needed)
+                        {/* Part D Attachment */}
+                        <div className="pt-3 border-t border-slate-200">
+                          <div className="text-xs font-semibold text-gray-700 mb-1.5 flex items-center justify-between">
+                            <span className="flex items-center gap-1.5 font-bold text-slate-800">
+                              <i className="pi pi-paperclip text-blue-600" />
+                              <span>
+                                Contract Agreement Deed & Stamp Duty Document
+                                (Mandatory)
                               </span>
-                            </div>
+                            </span>
+                            <span className="text-[11px] text-gray-500">
+                              Stamped and signed legal agreement deed
+                            </span>
                           </div>
-                          <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 flex items-center gap-1">
-                            <i className="pi pi-check-circle text-xs" /> 4-in-1
-                            Unified Attachment Suite
-                          </span>
-                        </div>
-
-                        <div className="overflow-x-auto bg-white rounded-lg border border-slate-200 shadow-sm">
-                          <table className="civil-table w-full text-xs">
-                            <thead>
-                              <tr className="bg-gray-100">
-                                <th
-                                  style={{ width: '45px', textAlign: 'center' }}
-                                  className="p-2.5 font-semibold text-slate-600"
-                                >
-                                  #
-                                </th>
-                                <th
-                                  style={{ width: '250px', textAlign: 'left' }}
-                                  className="p-2.5 font-semibold text-slate-600"
-                                >
-                                  Document Category
-                                </th>
-                                <th
-                                  style={{
-                                    width: '110px',
-                                    textAlign: 'center',
-                                  }}
-                                  className="p-2.5 font-semibold text-slate-600"
-                                >
-                                  Contract Part
-                                </th>
-                                <th
-                                  style={{
-                                    width: '110px',
-                                    textAlign: 'center',
-                                  }}
-                                  className="p-2.5 font-semibold text-slate-600"
-                                >
-                                  Requirement
-                                </th>
-                                <th
-                                  style={{ textAlign: 'left' }}
-                                  className="p-2.5 font-semibold text-slate-600"
-                                >
-                                  File Attachment / Reference
-                                </th>
-                                <th
-                                  style={{
-                                    width: '110px',
-                                    textAlign: 'center',
-                                  }}
-                                  className="p-2.5 font-semibold text-slate-600"
-                                >
-                                  Status
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {/* Row 1: Part A Work Order Copy */}
-                              <tr className="border-t border-gray-100 hover:bg-slate-50/50">
-                                <td
-                                  style={{ textAlign: 'center' }}
-                                  className="p-2.5 font-bold text-slate-600"
-                                >
-                                  1
-                                </td>
-                                <td
-                                  style={{ textAlign: 'left' }}
-                                  className="p-2.5"
-                                >
-                                  <div className="font-bold text-slate-900">
-                                    Work Order Document
-                                  </div>
-                                  <div className="text-[11px] text-gray-500">
-                                    Signed administrative work order copy
-                                  </div>
-                                </td>
-                                <td
-                                  style={{ textAlign: 'center' }}
-                                  className="p-2.5 font-medium text-slate-700"
-                                >
-                                  <span className="civil-pill blue text-[10px]">
-                                    Part A
-                                  </span>
-                                </td>
-                                <td
-                                  style={{ textAlign: 'center' }}
-                                  className="p-2.5"
-                                >
-                                  <span className="civil-pill red text-[10px]">
-                                    Mandatory
-                                  </span>
-                                </td>
-                                <td
-                                  style={{ textAlign: 'left' }}
-                                  className="p-2.5"
-                                >
-                                  <FileUploadCell
-                                    docName={agrForm.workOrderDoc}
-                                    onFileSelect={fileName =>
-                                      setAgrForm({
-                                        ...agrForm,
-                                        workOrderDoc: fileName,
-                                      })
-                                    }
-                                    onClear={() =>
-                                      setAgrForm({
-                                        ...agrForm,
-                                        workOrderDoc: '',
-                                      })
-                                    }
-                                  />
-                                </td>
-                                <td
-                                  style={{ textAlign: 'center' }}
-                                  className="p-2.5"
-                                >
-                                  {agrForm.workOrderDoc ? (
-                                    <span className="civil-pill green text-[10px]">
-                                      Attached ✓
-                                    </span>
-                                  ) : (
-                                    <span className="civil-pill amber text-[10px]">
-                                      Pending
-                                    </span>
-                                  )}
-                                </td>
-                              </tr>
-
-                              {/* Row 2: Part B Performance Bank Guarantee / SD */}
-                              <tr className="border-t border-gray-100 hover:bg-slate-50/50">
-                                <td
-                                  style={{ textAlign: 'center' }}
-                                  className="p-2.5 font-bold text-slate-600"
-                                >
-                                  2
-                                </td>
-                                <td
-                                  style={{ textAlign: 'left' }}
-                                  className="p-2.5"
-                                >
-                                  <div className="font-bold text-slate-900">
-                                    Performance Bank Guarantee / SD Bond
-                                  </div>
-                                  <div className="text-[11px] text-gray-500">
-                                    Bank guarantee bond or SD deduction receipt
-                                  </div>
-                                </td>
-                                <td
-                                  style={{ textAlign: 'center' }}
-                                  className="p-2.5 font-medium text-slate-700"
-                                >
-                                  <span className="civil-pill blue text-[10px]">
-                                    Part B
-                                  </span>
-                                </td>
-                                <td
-                                  style={{ textAlign: 'center' }}
-                                  className="p-2.5"
-                                >
-                                  {agrForm.bgNo || agrForm.bgAmount ? (
-                                    <span className="civil-pill red text-[10px]">
-                                      Required
-                                    </span>
-                                  ) : (
-                                    <span className="civil-pill neutral text-[10px]">
-                                      As Applicable
-                                    </span>
-                                  )}
-                                </td>
-                                <td
-                                  style={{ textAlign: 'left' }}
-                                  className="p-2.5"
-                                >
-                                  <FileUploadCell
-                                    docName={agrForm.bgDoc}
-                                    onFileSelect={fileName =>
-                                      setAgrForm({
-                                        ...agrForm,
-                                        bgDoc: fileName,
-                                      })
-                                    }
-                                    onClear={() =>
-                                      setAgrForm({
-                                        ...agrForm,
-                                        bgDoc: '',
-                                      })
-                                    }
-                                  />
-                                </td>
-                                <td
-                                  style={{ textAlign: 'center' }}
-                                  className="p-2.5"
-                                >
-                                  {agrForm.bgDoc ? (
-                                    <span className="civil-pill green text-[10px]">
-                                      Attached ✓
-                                    </span>
-                                  ) : (
-                                    <span className="text-gray-400 text-[11px]">
-                                      Optional
-                                    </span>
-                                  )}
-                                </td>
-                              </tr>
-
-                              {/* Row 3: Part C Mobilization Advance Bank Guarantee */}
-                              <tr className="border-t border-gray-100 hover:bg-slate-50/50">
-                                <td
-                                  style={{ textAlign: 'center' }}
-                                  className="p-2.5 font-bold text-slate-600"
-                                >
-                                  3
-                                </td>
-                                <td
-                                  style={{ textAlign: 'left' }}
-                                  className="p-2.5"
-                                >
-                                  <div className="font-bold text-slate-900">
-                                    Mobilization Advance Bank Guarantee
-                                  </div>
-                                  <div className="text-[11px] text-gray-500">
-                                    Bank guarantee against advance mobilization
-                                    payment
-                                  </div>
-                                </td>
-                                <td
-                                  style={{ textAlign: 'center' }}
-                                  className="p-2.5 font-medium text-slate-700"
-                                >
-                                  <span className="civil-pill blue text-[10px]">
-                                    Part C
-                                  </span>
-                                </td>
-                                <td
-                                  style={{ textAlign: 'center' }}
-                                  className="p-2.5"
-                                >
-                                  {agrForm.mobAdvanceBgNo ||
-                                  agrForm.mobAdvanceBgAmount ? (
-                                    <span className="civil-pill red text-[10px]">
-                                      Required
-                                    </span>
-                                  ) : (
-                                    <span className="civil-pill neutral text-[10px]">
-                                      As Applicable
-                                    </span>
-                                  )}
-                                </td>
-                                <td
-                                  style={{ textAlign: 'left' }}
-                                  className="p-2.5"
-                                >
-                                  <FileUploadCell
-                                    docName={agrForm.mobAdvanceDoc}
-                                    onFileSelect={fileName =>
-                                      setAgrForm({
-                                        ...agrForm,
-                                        mobAdvanceDoc: fileName,
-                                      })
-                                    }
-                                    onClear={() =>
-                                      setAgrForm({
-                                        ...agrForm,
-                                        mobAdvanceDoc: '',
-                                      })
-                                    }
-                                  />
-                                </td>
-                                <td
-                                  style={{ textAlign: 'center' }}
-                                  className="p-2.5"
-                                >
-                                  {agrForm.mobAdvanceDoc ? (
-                                    <span className="civil-pill green text-[10px]">
-                                      Attached ✓
-                                    </span>
-                                  ) : (
-                                    <span className="text-gray-400 text-[11px]">
-                                      Optional
-                                    </span>
-                                  )}
-                                </td>
-                              </tr>
-
-                              {/* Row 4: Part D Contract Agreement Deed */}
-                              <tr className="border-t border-gray-100 hover:bg-slate-50/50">
-                                <td
-                                  style={{ textAlign: 'center' }}
-                                  className="p-2.5 font-bold text-slate-600"
-                                >
-                                  4
-                                </td>
-                                <td
-                                  style={{ textAlign: 'left' }}
-                                  className="p-2.5"
-                                >
-                                  <div className="font-bold text-slate-900">
-                                    Contract Agreement Deed & Stamp Duty
-                                  </div>
-                                  <div className="text-[11px] text-gray-500">
-                                    Stamped and signed legal agreement deed
-                                  </div>
-                                </td>
-                                <td
-                                  style={{ textAlign: 'center' }}
-                                  className="p-2.5 font-medium text-slate-700"
-                                >
-                                  <span className="civil-pill blue text-[10px]">
-                                    Part D
-                                  </span>
-                                </td>
-                                <td
-                                  style={{ textAlign: 'center' }}
-                                  className="p-2.5"
-                                >
-                                  <span className="civil-pill red text-[10px]">
-                                    Mandatory
-                                  </span>
-                                </td>
-                                <td
-                                  style={{ textAlign: 'left' }}
-                                  className="p-2.5"
-                                >
-                                  <FileUploadCell
-                                    docName={agrForm.scannedAgreementDoc}
-                                    onFileSelect={fileName =>
-                                      setAgrForm({
-                                        ...agrForm,
-                                        scannedAgreementDoc: fileName,
-                                      })
-                                    }
-                                    onClear={() =>
-                                      setAgrForm({
-                                        ...agrForm,
-                                        scannedAgreementDoc: '',
-                                      })
-                                    }
-                                  />
-                                </td>
-                                <td
-                                  style={{ textAlign: 'center' }}
-                                  className="p-2.5"
-                                >
-                                  {agrForm.scannedAgreementDoc ? (
-                                    <span className="civil-pill green text-[10px]">
-                                      Attached ✓
-                                    </span>
-                                  ) : (
-                                    <span className="civil-pill amber text-[10px]">
-                                      Pending
-                                    </span>
-                                  )}
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
+                          <FileUploadCell
+                            docName={agrForm.scannedAgreementDoc}
+                            onFileSelect={fileName =>
+                              setAgrForm({
+                                ...agrForm,
+                                scannedAgreementDoc: fileName,
+                              })
+                            }
+                            onClear={() =>
+                              setAgrForm({
+                                ...agrForm,
+                                scannedAgreementDoc: '',
+                              })
+                            }
+                          />
                         </div>
                       </div>
 
@@ -1887,13 +1832,15 @@ export default function WorkOrderSign() {
                               B, C & D)
                             </h5>
                           </div>
-                          <Button
-                            size="small"
-                            label="Edit Agreement Details"
-                            icon="file-edit"
-                            variant="outlined"
-                            onClick={() => openAgreementPage(selectedWO)}
-                          />
+                          {!selectedWO.signedByAdmin && (
+                            <Button
+                              size="small"
+                              label="Edit Agreement Details"
+                              icon="file-edit"
+                              variant="outlined"
+                              onClick={() => openAgreementPage(selectedWO)}
+                            />
+                          )}
                         </div>
 
                         {/* Part B Details */}
@@ -1939,8 +1886,7 @@ export default function WorkOrderSign() {
                         <div className="p-3.5 bg-white border border-slate-200 rounded-lg shadow-sm space-y-2">
                           <div className="text-xs font-bold text-blue-900 flex items-center gap-1.5">
                             <span>
-                              Part C: Mobilization Advance Bank Guarantee (If
-                              Applicable)
+                              Part C: Mobilization Advance (If Applicable)
                             </span>
                           </div>
                           {selectedWO.mobAdvanceBgNo ||
@@ -1948,7 +1894,7 @@ export default function WorkOrderSign() {
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
                               <div>
                                 <div className="text-gray-500 font-medium text-[11px]">
-                                  Advance Transaction Number
+                                  Transaction Number
                                 </div>
                                 <strong className="font-mono">
                                   {selectedWO.mobAdvanceBgNo || '—'}
@@ -1962,7 +1908,7 @@ export default function WorkOrderSign() {
                               </div>
                               <div>
                                 <div className="text-gray-500 font-medium text-[11px]">
-                                  Advance Amount (₹) / Advance Payment Date
+                                  Amount (₹) / Payment Date
                                 </div>
                                 <strong>
                                   {formatCurrency(
@@ -1976,8 +1922,7 @@ export default function WorkOrderSign() {
                             </div>
                           ) : (
                             <div className="text-xs text-gray-500 italic">
-                              No mobilization advance bank guarantee recorded
-                              for this contract.
+                              No Mobilization Advancerecorded for this contract.
                             </div>
                           )}
                         </div>
