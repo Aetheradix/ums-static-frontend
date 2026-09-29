@@ -1,8 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import { DropDownList, TextArea } from 'shared/components/forms';
+import { DropDownList } from 'shared/components/forms';
 import {
   FormCard,
   FormGrid,
@@ -14,166 +13,128 @@ import {
   StatCard,
   StatusBadge,
 } from 'shared/new-components';
-import { KeyValueTile, SectionNote } from '../components/ui';
+import { SectionNote } from '../components/ui';
 import {
-  buildStudentCredentials,
+  isAwaitingRoom,
   MOCK_WARDEN_HOSTEL_ID,
-  nextStudentSequence,
-  MOCK_WARDEN_NAME,
-  today,
   useHms,
   useHmsRole,
 } from '../context/HmsContext';
-import type { Application, ApplicationStatus } from '../context/HmsContext';
+import type { Application } from '../context/HmsContext';
 import { hmsBreadcrumbs } from '../utils/breadcrumbs';
 import { hmsUrls } from '../urls';
 
-const STATUS_VARIANT: Record<
-  ApplicationStatus,
-  'approved' | 'rejected' | 'pending'
-> = {
-  Approved: 'approved',
-  Rejected: 'rejected',
-  Pending: 'pending',
-};
-
 const FILTERS = [
-  { id: 'Pending', text: 'Pending' },
-  { id: 'Approved', text: 'Approved' },
-  { id: 'Rejected', text: 'Rejected' },
-  { id: 'All', text: 'All Applications' },
+  { id: 'Awaiting', text: 'Awaiting Room Allotment' },
+  { id: 'Allotted', text: 'Room Allotted' },
+  { id: 'All', text: 'All Students' },
 ];
 
+/**
+ * The warden's intake list. Admission decisions belong to the University
+ * Hostel Cell — everything here is already approved and forwarded, so the
+ * warden's job on this screen is to read a student's details and allot them a
+ * room.
+ */
 export default function AdmissionRequests() {
-  const { data, update } = useHms();
+  const { data } = useHms();
   const { activePortal } = useHmsRole();
   const navigate = useNavigate();
 
-  const [statusFilter, setStatusFilter] = useState('Pending');
+  const [statusFilter, setStatusFilter] = useState('Awaiting');
   const [viewing, setViewing] = useState<Application | null>(null);
-  const [rejecting, setRejecting] = useState<Application | null>(null);
-  const [rejectRemark, setRejectRemark] = useState('');
-  const [approved, setApproved] = useState<Application | null>(null);
 
-  /** The warden only sees applications addressed to their own hostel. */
+  /** Students the Hostel Cell has approved and forwarded to this hostel. */
   const scoped = useMemo(
     () =>
       data.applications.filter(
-        a => a.preferredHostelId === MOCK_WARDEN_HOSTEL_ID
+        a =>
+          a.assignedHostelId === MOCK_WARDEN_HOSTEL_ID &&
+          a.status === 'Approved'
       ),
     [data.applications]
   );
 
-  const rows = useMemo(
-    () =>
-      statusFilter === 'All'
-        ? scoped
-        : scoped.filter(a => a.status === statusFilter),
-    [scoped, statusFilter]
-  );
+  /** The room number this student holds, once the warden has allotted one. */
+  const roomNumber = (application: Application) => {
+    if (!application.erpLoginId) return '';
+    const allotment = data.allocations.find(
+      a => a.status === 'Active' && a.studentId === application.erpLoginId
+    );
+    if (!allotment) return '';
+    return (
+      data.rooms.find(r => r.id === allotment.roomId)?.roomNumber ??
+      allotment.roomId
+    );
+  };
 
-  const counts = useMemo(
-    () => ({
-      pending: scoped.filter(a => a.status === 'Pending').length,
-      approved: scoped.filter(a => a.status === 'Approved').length,
-      rejected: scoped.filter(a => a.status === 'Rejected').length,
-    }),
-    [scoped]
-  );
+  const rows = useMemo(() => {
+    if (statusFilter === 'All') return scoped;
+    const awaiting = statusFilter === 'Awaiting';
+    return scoped.filter(a => isAwaitingRoom(a, data.allocations) === awaiting);
+  }, [scoped, statusFilter, data.allocations]);
+
+  const counts = useMemo(() => {
+    const awaiting = scoped.filter(a =>
+      isAwaitingRoom(a, data.allocations)
+    ).length;
+    return {
+      forwarded: scoped.length,
+      awaiting,
+      allotted: scoped.length - awaiting,
+    };
+  }, [scoped, data.allocations]);
 
   const hostelName = (id: string) =>
     data.hostels.find(h => h.id === id)?.nameEn ?? '—';
 
-  const handleApprove = (application: Application) => {
-    const sequence = nextStudentSequence(data);
-    const credentials = buildStudentCredentials(
-      application.studentName,
-      sequence
-    );
-    const next: Application = {
-      ...application,
-      status: 'Approved',
-      decisionDate: today(),
-      decidedBy: MOCK_WARDEN_NAME,
-      remarks: application.remarks || 'Application approved.',
-      ...credentials,
-    };
-    update('applications', application.id, next);
-    setViewing(null);
-    setApproved(next);
-    ToastService.success(
-      `${application.studentName}'s application approved. ERP credentials issued.`
-    );
-  };
-
-  const handleReject = () => {
-    if (!rejecting) return;
-    update('applications', rejecting.id, {
-      ...rejecting,
-      status: 'Rejected',
-      decisionDate: today(),
-      decidedBy: MOCK_WARDEN_NAME,
-      remarks: rejectRemark.trim() || 'Application rejected.',
-      erpLoginId: '',
-      erpPassword: '',
-    });
-    ToastService.success(`${rejecting.studentName}'s application rejected.`);
-    setRejecting(null);
-    setRejectRemark('');
-    setViewing(null);
-  };
-
-  const handleReopen = (application: Application) => {
-    update('applications', application.id, {
-      ...application,
-      status: 'Pending',
-      decisionDate: '',
-      decidedBy: '',
-      remarks: '',
-      erpLoginId: '',
-      erpPassword: '',
-    });
-    ToastService.success('Application moved back to Pending.');
-  };
-
   return (
     <FormPage
       title="Admission Requests"
-      description="Applications sent to your hostel from the public forum. Approving one issues the student their ERP credentials so they can sign in and pay."
+      description="Students the University Hostel Cell has approved and forwarded to your hostel. Review each one and allot them a room — the admission decision has already been taken."
       breadcrumbs={hmsBreadcrumbs(activePortal, 'Admission Requests')}
     >
       <FormGrid columns={3}>
         <StatCard
-          title="Pending Review"
-          value={counts.pending}
+          title="Forwarded to You"
+          value={counts.forwarded}
+          icon="how_to_reg"
+          colorScheme="blue"
+          subtitle="Approved by the Hostel Cell"
+        />
+        <StatCard
+          title="Awaiting Room"
+          value={counts.awaiting}
           icon="hourglass_top"
           colorScheme="amber"
-          subtitle="Awaiting your decision"
+          subtitle="No room allotted yet"
         />
         <StatCard
-          title="Approved"
-          value={counts.approved}
-          icon="check_circle"
+          title="Room Allotted"
+          value={counts.allotted}
+          icon="bed"
           colorScheme="green"
-          subtitle="Credentials issued"
-        />
-        <StatCard
-          title="Rejected"
-          value={counts.rejected}
-          icon="cancel"
-          colorScheme="red"
-          subtitle="Returned to the applicant"
+          subtitle="Settled into your hostel"
         />
       </FormGrid>
 
       <FormCard
-        title="Applications"
-        subtitle="Filter by decision status, then open an application to review it in full."
+        title="Forwarded Students"
+        subtitle="Filter by allotment status, then open a student to review their application in full."
         icon="inbox"
+        headerAction={
+          <Button
+            label="Room Allotment"
+            icon="arrow-right"
+            variant="outlined"
+            size="small"
+            onClick={() => navigate(hmsUrls.warden.roomAllocation)}
+          />
+        }
       >
         <FormGrid columns={4}>
           <DropDownList
-            label="Decision Status"
+            label="Allotment Status"
             data={FILTERS}
             textField="text"
             valueField="id"
@@ -188,7 +149,10 @@ export default function AdmissionRequests() {
           searchPlaceholder="Search by name, roll number or application number..."
           searchFields={['studentName', 'rollNumber', 'applicationNo']}
           pagination
-          emptyMessage="No applications in this bucket."
+          // Allotment state comes from allocations rather than the row, so a
+          // memoised cell would keep showing the pre-allotment status.
+          cellMemo={false}
+          emptyMessage="No students in this bucket."
           columns={[
             {
               field: 'applicationNo',
@@ -235,22 +199,36 @@ export default function AdmissionRequests() {
                 />
               ),
             },
-            { field: 'submittedOn', header: 'Submitted', width: 125 },
             {
-              field: 'status',
-              header: 'Status',
-              width: 115,
+              field: 'forwardedOn',
+              header: 'Forwarded',
+              width: 130,
               cell: item => (
-                <StatusBadge
-                  label={item.status}
-                  variant={STATUS_VARIANT[item.status]}
-                />
+                <div className="flex flex-col">
+                  <span>{item.forwardedOn || '—'}</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                    Applied {item.submittedOn}
+                  </span>
+                </div>
               ),
+            },
+            {
+              header: 'Room',
+              sortable: false,
+              width: 160,
+              cell: item => {
+                const room = roomNumber(item);
+                return room ? (
+                  <StatusBadge label={`Room ${room}`} variant="success" />
+                ) : (
+                  <StatusBadge label="Awaiting allotment" variant="pending" />
+                );
+              },
             },
             {
               header: 'Action',
               sortable: false,
-              width: 260,
+              width: 210,
               cell: item => (
                 <div className="flex flex-wrap gap-2">
                   <Button
@@ -260,33 +238,13 @@ export default function AdmissionRequests() {
                     size="small"
                     onClick={() => setViewing(item)}
                   />
-                  {item.status === 'Pending' ? (
-                    <>
-                      <Button
-                        label="Approve"
-                        icon="check"
-                        variant="success"
-                        size="small"
-                        onClick={() => handleApprove(item)}
-                      />
-                      <Button
-                        label="Reject"
-                        icon="times"
-                        variant="danger"
-                        size="small"
-                        onClick={() => {
-                          setRejecting(item);
-                          setRejectRemark('');
-                        }}
-                      />
-                    </>
-                  ) : (
+                  {isAwaitingRoom(item, data.allocations) && (
                     <Button
-                      label="Re-open"
-                      icon="replay"
-                      variant="outlined"
+                      label="Allot Room"
+                      icon="bed"
+                      variant="primary"
                       size="small"
-                      onClick={() => handleReopen(item)}
+                      onClick={() => navigate(hmsUrls.warden.roomAllocation)}
                     />
                   )}
                 </div>
@@ -294,6 +252,14 @@ export default function AdmissionRequests() {
             },
           ]}
         />
+        <div className="mt-4">
+          <SectionNote tone="info" title="Who decides an admission">
+            The University Hostel Cell approves or rejects every application and
+            assigns the hostel. Students reach this list already approved, with
+            their ERP credentials issued — allot each one a room under Room
+            Allotment.
+          </SectionNote>
+        </div>
       </FormCard>
 
       <FormPopup
@@ -312,24 +278,16 @@ export default function AdmissionRequests() {
                 variant="outlined"
                 onClick={() => setViewing(null)}
               />
-              {viewing.status === 'Pending' && (
-                <>
-                  <Button
-                    label="Reject"
-                    variant="danger"
-                    icon="times"
-                    onClick={() => {
-                      setRejecting(viewing);
-                      setRejectRemark('');
-                    }}
-                  />
-                  <Button
-                    label="Approve & Issue Credentials"
-                    variant="success"
-                    icon="check"
-                    onClick={() => handleApprove(viewing)}
-                  />
-                </>
+              {isAwaitingRoom(viewing, data.allocations) && (
+                <Button
+                  label="Allot a Room"
+                  variant="primary"
+                  icon="bed"
+                  onClick={() => {
+                    setViewing(null);
+                    navigate(hmsUrls.warden.roomAllocation);
+                  }}
+                />
               )}
             </div>
           )
@@ -386,14 +344,21 @@ export default function AdmissionRequests() {
               />
             </PreviewSection>
 
-            <PreviewSection title="Hostel Preference & Emergency" step={3}>
+            <PreviewSection title="Hostel Assignment & Emergency" step={3}>
               <PreviewField
-                label="Preferred Hostel"
-                value={hostelName(viewing.preferredHostelId)}
+                label="Assigned Hostel"
+                value={hostelName(viewing.assignedHostelId)}
               />
               <PreviewField
                 label="Preferred Room Type"
                 value={viewing.preferredRoomType}
+              />
+              <PreviewField label="Forwarded On" value={viewing.forwardedOn} />
+              <PreviewField label="Forwarded By" value={viewing.forwardedBy} />
+              <PreviewField
+                label="Note from Hostel Cell"
+                value={viewing.adminRemarks}
+                fullWidth
               />
               <PreviewField
                 label="Emergency Contact"
@@ -435,8 +400,7 @@ export default function AdmissionRequests() {
               />
             </PreviewSection>
 
-            <PreviewSection title="Decision" step={5}>
-              <PreviewField label="Status" value={viewing.status} />
+            <PreviewSection title="Hostel Cell's Decision" step={5}>
               <PreviewField
                 label="Decision Date"
                 value={viewing.decisionDate}
@@ -447,88 +411,6 @@ export default function AdmissionRequests() {
               <PreviewField label="ERP Password" value={viewing.erpPassword} />
             </PreviewSection>
           </>
-        )}
-      </FormPopup>
-
-      <FormPopup
-        visible={Boolean(rejecting)}
-        onHide={() => setRejecting(null)}
-        title="Reject Application"
-        subtitle={rejecting?.studentName}
-        footer={
-          <div className="flex justify-end gap-3">
-            <Button
-              label="Cancel"
-              variant="outlined"
-              onClick={() => setRejecting(null)}
-            />
-            <Button
-              label="Confirm Rejection"
-              variant="danger"
-              onClick={handleReject}
-            />
-          </div>
-        }
-      >
-        <TextArea
-          label="Reason for Rejection"
-          rows={4}
-          placeholder="Shown to the applicant on the public tracking page."
-          value={rejectRemark}
-          onChange={setRejectRemark}
-        />
-      </FormPopup>
-
-      <FormPopup
-        visible={Boolean(approved)}
-        onHide={() => setApproved(null)}
-        title="ERP Credentials Issued"
-        subtitle="The student can now sign in, pay the hostel fee and caution money, and be allotted a room."
-        footer={
-          <div className="flex justify-end gap-3">
-            <Button
-              label="Allot a Room"
-              icon="bed"
-              variant="outlined"
-              onClick={() => {
-                setApproved(null);
-                navigate(hmsUrls.warden.roomAllocation);
-              }}
-            />
-            <Button
-              label="Done"
-              variant="primary"
-              onClick={() => setApproved(null)}
-            />
-          </div>
-        }
-      >
-        {approved && (
-          <div className="flex flex-col gap-4">
-            <div className="rounded-xl border border-slate-200 px-5 py-4 dark:border-slate-700">
-              <p className="text-sm font-bold text-slate-800 dark:text-slate-100">
-                {approved.studentName}
-              </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                {approved.rollNumber} · {hostelName(approved.preferredHostelId)}{' '}
-                · prefers{' '}
-                {approved.preferredRoomType || 'no particular room type'}
-              </p>
-            </div>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <KeyValueTile label="Login ID" value={approved.erpLoginId} mono />
-              <KeyValueTile
-                label="Password"
-                value={approved.erpPassword}
-                mono
-              />
-            </div>
-            <SectionNote tone="info">
-              These also appear to the student on the public
-              application-tracking page. Allot them a room once their fee is
-              paid.
-            </SectionNote>
-          </div>
         )}
       </FormPopup>
     </FormPage>

@@ -36,6 +36,14 @@ export default function CollegePortalPage() {
           colorScheme: 'green',
           path: '/affiliation-management-system/college-renewal/application',
         },
+        {
+          title: 'Special Service Requests',
+          description:
+            'Apply for Name Change, Location Change & Society Modification.',
+          icon: 'published_with_changes',
+          colorScheme: 'pink',
+          path: '/affiliation-management-system/special-service-requests',
+        },
       ]}
     />
   );

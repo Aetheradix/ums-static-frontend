@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Sidebar } from 'shared/new-components';
 import {
+  MOCK_ADMIN_NAME,
   MOCK_STUDENT_NAME,
   MOCK_WARDEN_NAME,
   useHms,
@@ -23,6 +24,11 @@ const adminNav: NavItem[] = [
     label: 'Hostel Registration',
     icon: 'apartment',
     path: hmsUrls.admin.hostelRegistration,
+  },
+  {
+    label: 'Admission Requests',
+    icon: 'forward_to_inbox',
+    path: hmsUrls.admin.admissionRequests,
   },
   {
     label: 'Seat Monitoring',
@@ -159,7 +165,7 @@ export default function HmsLayout() {
     if (activePortal === 'admin') {
       return {
         title: 'Hostel Admin',
-        subtitle: 'Signed in as University Hostel Cell',
+        subtitle: `Signed in as ${MOCK_ADMIN_NAME}`,
         icon: 'admin_panel_settings',
       };
     }

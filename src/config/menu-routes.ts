@@ -17,7 +17,7 @@ export const menuConfig: Menu.MenuItem[] = [
         label: 'Public Forum',
         slug: 'hms-public',
         description:
-          'Open to applicants — fill the hostel admission form without signing in, and track it until ERP credentials are issued.',
+          'Open to applicants — fill the hostel admission form without signing in, and track it from hostel assignment to ERP credentials.',
         path: '/hostel-admission',
         icon: 'public',
         colorScheme: 'green',
@@ -26,7 +26,7 @@ export const menuConfig: Menu.MenuItem[] = [
         label: 'Hostel Admin',
         slug: 'hms-admin',
         description:
-          'Register hostels and issue their credentials, monitor seats remaining hostel-wise, and read occupancy and collection reports.',
+          'Register hostels and issue their credentials, approve or reject admission requests and forward them to a hostel, and monitor seats hostel-wise.',
         path: '/hostel-management-system/admin',
         icon: 'admin_panel_settings',
         colorScheme: 'red',
@@ -46,6 +46,15 @@ export const menuConfig: Menu.MenuItem[] = [
             path: '/hostel-management-system/admin/hostel-registration',
             icon: 'apartment',
             colorScheme: 'blue',
+          },
+          {
+            label: 'Admission Requests',
+            slug: 'hms-admin-admission-requests',
+            description:
+              'Approve or reject each application, assigning a hostel — with capacity, occupied and forwarded counts in view — and forward it to that warden.',
+            path: '/hostel-management-system/admin/admission-requests',
+            icon: 'forward_to_inbox',
+            colorScheme: 'orange',
           },
           {
             label: 'Seat Monitoring',
@@ -69,7 +78,7 @@ export const menuConfig: Menu.MenuItem[] = [
         label: 'Hostel Warden',
         slug: 'hms-warden',
         description:
-          'Configure rooms and facilities, approve admissions, allot rooms, and run attendance, leave, mess, visitors and grievances.',
+          'Configure rooms and facilities, allot rooms to the students forwarded to you, and run attendance, leave, mess, visitors and grievances.',
         path: '/hostel-management-system/warden',
         icon: 'badge',
         colorScheme: 'purple',
@@ -101,7 +110,7 @@ export const menuConfig: Menu.MenuItem[] = [
             label: 'Admission Requests',
             slug: 'hms-admission-requests',
             description:
-              'Approve or reject applications sent to your hostel and issue student ERP credentials.',
+              'Students the Hostel Cell has approved and forwarded to your hostel, and whether each one has a room yet.',
             path: '/hostel-management-system/warden/admission-requests',
             icon: 'how_to_reg',
             colorScheme: 'indigo',
@@ -8435,6 +8444,15 @@ export const menuConfig: Menu.MenuItem[] = [
                 icon: 'sync',
                 colorScheme: 'orange',
               },
+              {
+                label: 'Special Service Requests',
+                slug: 'special-service-requests',
+                description:
+                  'Apply for Name Change, Location Change & Society Modification.',
+                path: '/affiliation-management-system/special-service-requests',
+                icon: 'published_with_changes',
+                colorScheme: 'pink',
+              },
             ],
           },
           {
@@ -8561,6 +8579,15 @@ export const menuConfig: Menu.MenuItem[] = [
                 colorScheme: 'purple',
               },
               {
+                label: 'Standing Committee Decision',
+                slug: 'standing-committee-decision',
+                description:
+                  'Record, review, and track final standing committee decisions.',
+                path: '/affiliation-management-system/standing-committee-decision',
+                icon: 'gavel',
+                colorScheme: 'indigo',
+              },
+              {
                 label: 'Final Registration Approval',
                 slug: 'final-registration-approval',
                 description:
@@ -8576,6 +8603,15 @@ export const menuConfig: Menu.MenuItem[] = [
                 path: '/affiliation-management-system/college-renewal-admin/upcoming',
                 icon: 'replay',
                 colorScheme: 'blue',
+              },
+              {
+                label: 'Special Service Request Approvals',
+                slug: 'special-service-request-approval',
+                description:
+                  'Scrutinize and approve college special service applications.',
+                path: '/affiliation-management-system/special-service-request-approval',
+                icon: 'published_with_changes',
+                colorScheme: 'teal',
               },
               {
                 label: 'Approval Status Report',

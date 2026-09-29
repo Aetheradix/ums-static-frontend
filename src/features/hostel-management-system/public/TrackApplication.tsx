@@ -11,14 +11,12 @@ import {
   StatusBadge,
 } from 'shared/new-components';
 import { KeyValueTile, SectionNote } from '../components/ui';
-import { useHms } from '../context/HmsContext';
+import {
+  APPLICATION_STATUS_LABEL,
+  APPLICATION_STATUS_VARIANT,
+  useHms,
+} from '../context/HmsContext';
 import type { Application } from '../context/HmsContext';
-
-const VARIANT = {
-  Approved: 'approved',
-  Rejected: 'rejected',
-  Pending: 'pending',
-} as const;
 
 export default function TrackApplication() {
   const { data } = useHms();
@@ -92,8 +90,8 @@ export default function TrackApplication() {
           icon="file"
           headerAction={
             <StatusBadge
-              label={result.status}
-              variant={VARIANT[result.status]}
+              label={APPLICATION_STATUS_LABEL[result.status]}
+              variant={APPLICATION_STATUS_VARIANT[result.status]}
             />
           }
         >
@@ -103,14 +101,19 @@ export default function TrackApplication() {
             <PreviewField label="Programme" value={result.programme} />
             <PreviewField label="Branch" value={result.branch} />
             <PreviewField
-              label="Applied Hostel"
-              value={hostelName(result.preferredHostelId)}
-            />
-            <PreviewField
               label="Preferred Room Type"
               value={result.preferredRoomType}
             />
+            <PreviewField
+              label="Assigned Hostel"
+              value={
+                result.assignedHostelId
+                  ? hostelName(result.assignedHostelId)
+                  : 'Not assigned yet'
+              }
+            />
             <PreviewField label="Submitted On" value={result.submittedOn} />
+            <PreviewField label="Forwarded On" value={result.forwardedOn} />
             <PreviewField label="Decision Date" value={result.decisionDate} />
             <PreviewField label="Decided By" value={result.decidedBy} />
             <PreviewField label="Remarks" value={result.remarks} fullWidth />
@@ -122,8 +125,9 @@ export default function TrackApplication() {
                 tone="success"
                 title="Your ERP credentials are ready"
               >
+                You have been assigned {hostelName(result.assignedHostelId)}.
                 Sign in to the Student Portal with these, pay the hostel fee and
-                caution money, and the warden will allot your room.
+                caution money, and that hostel's warden will allot your room.
               </SectionNote>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <KeyValueTile
@@ -144,12 +148,10 @@ export default function TrackApplication() {
 
           {result.status === 'Pending' && (
             <div className="mt-5">
-              <SectionNote
-                tone="warning"
-                title="Awaiting the warden's decision"
-              >
-                Your application is with {hostelName(result.preferredHostelId)}.
-                Your ERP credentials appear here once it is approved.
+              <SectionNote tone="warning" title="Awaiting a decision">
+                Your application is with the University Hostel Cell, which
+                approves it and assigns you a hostel. Check back to see which
+                hostel you have been given and to collect your ERP credentials.
               </SectionNote>
             </div>
           )}

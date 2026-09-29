@@ -59,13 +59,13 @@ export default function RoomAllocation() {
     [data.allocations]
   );
 
-  /** Approved applicants for this hostel who don't hold a room yet. */
+  /** Approved applicants assigned to this hostel who don't hold a room yet. */
   const awaitingAllotment = useMemo(
     () =>
       data.applications.filter(
         a =>
           a.status === 'Approved' &&
-          a.preferredHostelId === hostelId &&
+          a.assignedHostelId === hostelId &&
           a.erpLoginId &&
           !allottedStudentIds.has(a.erpLoginId)
       ),

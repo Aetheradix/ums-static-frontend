@@ -23,7 +23,11 @@ import BasicRegistrationDetails from './basic-registration-details';
 import ProfileScrutiny from './profile-scrutiny';
 import InspectionCommittee from './inspection-committee';
 import StandingCommitteeMeeting from './standing-committee-meeting';
+import StandingCommitteeDecision from './standing-committee-decision';
 import AffiliationFeeMasterRoutes from './affiliation-fee-master';
+import SpecialServiceRequests from './special-service-requests';
+import SpecialServiceRequestApproval from './special-service-request-approval';
+import AdminPortalPage from './AdminPortalPage';
 
 export default function AffiliationManagementSystem() {
   return (
@@ -42,10 +46,8 @@ export default function AffiliationManagementSystem() {
         path="college-login"
         element={<Navigate to="/home/sub-menu/college-login" replace />}
       />
-      <Route
-        path="admin-login"
-        element={<Navigate to="/home/sub-menu/admin-login" replace />}
-      />
+      <Route path="admin-login" element={<AdminPortalPage />} />
+      <Route path="admin" element={<AdminPortalPage />} />
 
       <Route
         path="registration-approval/*"
@@ -87,6 +89,10 @@ export default function AffiliationManagementSystem() {
         path="standing-committee-meeting/*"
         element={<StandingCommitteeMeeting />}
       />
+      <Route
+        path="standing-committee-decision/*"
+        element={<StandingCommitteeDecision />}
+      />
       <Route path="affiliation-settings/*">
         <Route path="available-facility/*" element={<AvailableFacility />} />
         <Route path="establishment-year/*" element={<EstablishmentYear />} />
@@ -98,6 +104,14 @@ export default function AffiliationManagementSystem() {
       <Route
         path="affiliation-fee-master/*"
         element={<AffiliationFeeMasterRoutes />}
+      />
+      <Route
+        path="special-service-requests/*"
+        element={<SpecialServiceRequests />}
+      />
+      <Route
+        path="special-service-request-approval/*"
+        element={<SpecialServiceRequestApproval />}
       />
     </Routes>
   );

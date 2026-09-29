@@ -12,6 +12,7 @@ import StudentPortalPage from './portal/StudentPortalPage';
 import AdminDashboard from './admin/AdminDashboard';
 import HostelRegistration from './admin/HostelRegistration';
 import HostelRegistrationForm from './admin/HostelRegistrationForm';
+import AdminAdmissionRequests from './admin/AdmissionRequests';
 import SeatMonitoring from './admin/SeatMonitoring';
 import AdminReports from './admin/AdminReports';
 
@@ -43,6 +44,10 @@ import Warnings from './shared/Warnings';
  * Hostel Management System — four entry points (public forum, hostel admin,
  * hostel warden, student). Sign-in is assumed: each portal opens straight
  * into its own workspace.
+ *
+ * Admission flow: an applicant submits from the public forum → the hostel
+ * admin approves or rejects it, assigning a hostel and issuing ERP
+ * credentials → that hostel's warden allots the room.
  */
 export default function HostelManagementSystem() {
   return (
@@ -62,6 +67,10 @@ export default function HostelManagementSystem() {
           <Route
             path="hostel-registration/:hostelId"
             element={<HostelRegistrationForm />}
+          />
+          <Route
+            path="admission-requests"
+            element={<AdminAdmissionRequests />}
           />
           <Route path="monitoring" element={<SeatMonitoring />} />
           <Route path="reports" element={<AdminReports />} />

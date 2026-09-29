@@ -51,6 +51,14 @@ export default function AdminPortalPage() {
           path: '/affiliation-management-system/standing-committee-meeting',
         },
         {
+          title: 'Standing Committee Decision',
+          description:
+            'Record, review, and track final affiliation decisions taken by the committee.',
+          icon: 'gavel',
+          colorScheme: 'indigo',
+          path: '/affiliation-management-system/standing-committee-decision',
+        },
+        {
           title: 'Final Registration Approval',
           description: 'Review inspection reports and grant final affiliation.',
           icon: 'verified',
@@ -63,6 +71,14 @@ export default function AdminPortalPage() {
           icon: 'event_repeat',
           colorScheme: 'purple',
           path: '/affiliation-management-system/college-renewal-admin/upcoming',
+        },
+        {
+          title: 'Special Service Request Approvals',
+          description:
+            'Scrutinize and approve college special service applications (Location, Name, Society change, etc.).',
+          icon: 'published_with_changes',
+          colorScheme: 'teal',
+          path: '/affiliation-management-system/special-service-request-approval',
         },
         {
           title: 'Approval Status Report',
