@@ -10,15 +10,14 @@ import { Button } from 'shared/components/buttons';
 import { DropDownList, TextBox, DatePicker } from 'shared/components/forms';
 import GridPanel from 'shared/new-components/GridPanel';
 import { ToastService } from 'services';
+import {
+  DUMMY_COLLEGES,
+  INITIAL_MEETINGS,
+  getCollegeProfileData,
+} from '../data';
+import CollegeProfileReviewModal from '../components/CollegeProfileReviewModal';
 
-// Mock Colleges / Applications
-const dummyColleges = [
-  { id: 1, name: 'Global Institute of Technology', applicationNo: 'APP-74921' },
-  { id: 2, name: 'National Science College', applicationNo: 'APP-18239' },
-  { id: 3, name: 'Sunrise Commerce Academy', applicationNo: 'APP-90234' },
-  { id: 4, name: 'Pioneer Engineering College', applicationNo: 'APP-48231' },
-  { id: 5, name: 'Govt Engineering College', applicationNo: 'APP-33921' },
-];
+export type MeetingItem = (typeof INITIAL_MEETINGS)[0];
 
 // Meeting status variants for StatusBadge
 const statusVariants: Record<
@@ -29,40 +28,26 @@ const statusVariants: Record<
   Scheduled: 'warning',
   Completed: 'success',
   Cancelled: 'danger',
+  'Deficiency Raised': 'danger',
+  Rejected: 'danger',
 };
 
-// Initial Mock Meetings
-const INITIAL_MEETINGS = [
-  {
-    id: 1,
-    collegeId: 1,
-    collegeName: 'Global Institute of Technology',
-    applicationNo: 'APP-74921',
-    meetingDate: new Date('2026-08-15'),
-    membersAvailable: 'Dr. R. K. Sen, Dr. A. Sharma, Prof. K. Singh',
-    meetingStatus: 'Scheduled',
-    remarks:
-      'Committee will verify classroom counts, building security parameters, and hostel capacity certificates.',
-  },
-  {
-    id: 2,
-    collegeId: 2,
-    collegeName: 'National Science College',
-    applicationNo: 'APP-18239',
-    meetingDate: new Date('2026-08-10'),
-    membersAvailable: 'Dr. R. K. Sen, Prof. L. Verma',
-    meetingStatus: 'Completed',
-    remarks:
-      'Discussed land ownership titles. Resolved to seek clarified affidavit documents in next hearing.',
-  },
-];
-
 export default function StandingCommitteeMeetingList() {
-  const [data, setData] = useState(INITIAL_MEETINGS);
+  const [data, setData] = useState<MeetingItem[]>(INITIAL_MEETINGS);
   const [showPopup, setShowPopup] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
 
-  // Form fields state
+  // Review Profile Modal State
+  const [viewingMeeting, setViewingMeeting] = useState<MeetingItem | null>(
+    null
+  );
+
+  // Section rejections stored per meeting ID: meetingId -> { stepNumber: reason }
+  const [sectionRejections, setSectionRejections] = useState<
+    Record<number, Record<number, string>>
+  >({});
+
+  // Form fields state for schedule/edit meeting
   const [selectedCollegeId, setSelectedCollegeId] = useState<number | null>(
     null
   );
@@ -71,6 +56,14 @@ export default function StandingCommitteeMeetingList() {
   const [membersAvailable, setMembersAvailable] = useState('');
   const [meetingStatus, setMeetingStatus] = useState('Draft');
   const [remarks, setRemarks] = useState('');
+
+  const handleOpenView = (item: MeetingItem) => {
+    setViewingMeeting(item);
+  };
+
+  const handleCloseView = () => {
+    setViewingMeeting(null);
+  };
 
   const handleOpenPopupForNew = () => {
     setEditingId(null);
@@ -83,7 +76,7 @@ export default function StandingCommitteeMeetingList() {
     setShowPopup(true);
   };
 
-  const handleOpenPopupForEdit = (item: (typeof INITIAL_MEETINGS)[0]) => {
+  const handleOpenPopupForEdit = (item: MeetingItem) => {
     setEditingId(item.id);
     setSelectedCollegeId(item.collegeId);
     setApplicationNumber(item.applicationNo);
@@ -94,7 +87,7 @@ export default function StandingCommitteeMeetingList() {
     setShowPopup(true);
   };
 
-  const handleScheduleAgain = (item: (typeof INITIAL_MEETINGS)[0]) => {
+  const handleScheduleAgain = (item: MeetingItem) => {
     setEditingId(null);
     setSelectedCollegeId(item.collegeId);
     setApplicationNumber(item.applicationNo);
@@ -132,7 +125,7 @@ export default function StandingCommitteeMeetingList() {
       return;
     }
 
-    const college = dummyColleges.find(c => c.id === selectedCollegeId);
+    const college = DUMMY_COLLEGES.find(c => c.id === selectedCollegeId);
     if (!college) return;
 
     if (editingId !== null) {
@@ -156,7 +149,7 @@ export default function StandingCommitteeMeetingList() {
       ToastService.success('Meeting details updated successfully.');
     } else {
       // Add mode
-      const newMeeting = {
+      const newMeeting: MeetingItem = {
         id: Date.now(),
         meetingDate,
         membersAvailable,
@@ -172,6 +165,138 @@ export default function StandingCommitteeMeetingList() {
 
     handleClosePopup();
   };
+
+  // Callback when section-wise deficiencies / rejections are submitted from the review modal
+  const handleSectionRejectionsSubmit = (
+    rejectionsMap: Record<number, string>
+  ) => {
+    if (!viewingMeeting) return;
+
+    const meetingId = viewingMeeting.id;
+    setSectionRejections(prev => ({
+      ...prev,
+      [meetingId]: rejectionsMap,
+    }));
+
+    const rejectedStepNumbers = Object.keys(rejectionsMap).map(Number);
+
+    if (rejectedStepNumbers.length > 0) {
+      const STEP_NAMES: Record<number, string> = {
+        1: 'College Registration Details',
+        2: 'General Info',
+        3: 'Course Registration',
+        4: 'Land & Building Details',
+        5: 'Academic Facilities',
+        6: 'Computers & Equipment',
+        7: 'Teaching & Non-Teaching Staff',
+        8: 'Compliance',
+        9: 'Others',
+        10: 'Signature & Declaration',
+      };
+
+      const deficiencySummary = rejectedStepNumbers
+        .map(
+          step =>
+            `• Step ${step} (${STEP_NAMES[step] || 'Section'}): ${rejectionsMap[step]}`
+        )
+        .join('\n');
+
+      const updatedRemarks = viewingMeeting.remarks
+        ? `${viewingMeeting.remarks}\n\n[Section Deficiencies]:\n${deficiencySummary}`
+        : `[Section Deficiencies]:\n${deficiencySummary}`;
+
+      // Update the meeting status and remarks
+      setData(prev =>
+        prev.map(item =>
+          item.id === meetingId
+            ? {
+                ...item,
+                meetingStatus: 'Deficiency Raised',
+                remarks: updatedRemarks,
+              }
+            : item
+        )
+      );
+
+      ToastService.success(
+        `Deficiencies recorded for ${rejectedStepNumbers.length} section(s) in ${viewingMeeting.collegeName}.`
+      );
+    } else {
+      ToastService.info(
+        `No section rejections marked for ${viewingMeeting.collegeName}.`
+      );
+    }
+
+    setViewingMeeting(null);
+  };
+
+  const handleApproveAffiliation = (remarks?: string, decision?: string) => {
+    if (!viewingMeeting) return;
+    const meetingId = viewingMeeting.id;
+    const chosenDecision = decision || 'Approve';
+    const statusMap: Record<string, string> = {
+      Approve: 'Approved',
+      'Approve with Conditions': 'Approved',
+      'Provisional Approval': 'Approved',
+      Reject: 'Rejected',
+    };
+    const newStatus = statusMap[chosenDecision] || 'Approved';
+    const finalRemarks =
+      remarks ||
+      'Affiliation approved by Standing Committee upon full review of application details.';
+
+    setData(prev =>
+      prev.map(item =>
+        item.id === meetingId
+          ? {
+              ...item,
+              meetingStatus: newStatus,
+              remarks: `[${chosenDecision}]: ${finalRemarks}`,
+            }
+          : item
+      )
+    );
+
+    if (newStatus === 'Rejected') {
+      ToastService.warn(
+        `Affiliation for ${viewingMeeting.collegeName} has been Rejected.`
+      );
+    } else {
+      ToastService.success(
+        `Affiliation for ${viewingMeeting.collegeName} has been marked as ${chosenDecision}.`
+      );
+    }
+    setViewingMeeting(null);
+  };
+
+  const handleFinalRejectAffiliation = (reason: string) => {
+    if (!viewingMeeting) return;
+    const meetingId = viewingMeeting.id;
+
+    setData(prev =>
+      prev.map(item =>
+        item.id === meetingId
+          ? {
+              ...item,
+              meetingStatus: 'Rejected',
+              remarks: reason,
+            }
+          : item
+      )
+    );
+
+    ToastService.warn(
+      `Affiliation for ${viewingMeeting.collegeName} has been Rejected.`
+    );
+    setViewingMeeting(null);
+  };
+
+  const currentProfile = viewingMeeting
+    ? getCollegeProfileData(
+        viewingMeeting.applicationNo,
+        viewingMeeting.collegeName
+      )
+    : null;
 
   return (
     <FormPage
@@ -265,9 +390,17 @@ export default function StandingCommitteeMeetingList() {
             {
               header: 'Actions',
               sortable: false,
-              width: '250px',
+              width: '280px',
               cell: item => (
                 <div className="flex items-center gap-1.5 justify-center">
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => handleOpenView(item)}
+                    icon="pi pi-eye"
+                    tooltip="View Profile Details & Inspection Review"
+                    ariaLabel="View Profile"
+                  />
                   <Button
                     variant="outlined"
                     size="small"
@@ -288,7 +421,7 @@ export default function StandingCommitteeMeetingList() {
                     size="small"
                     onClick={() => handleDelete(item.id)}
                     icon="pi pi-trash"
-                    label="Delete"
+                    tooltip="Delete Meeting"
                   />
                 </div>
               ),
@@ -297,6 +430,7 @@ export default function StandingCommitteeMeetingList() {
         />
       </FormCard>
 
+      {/* Edit / Schedule Meeting Dialog */}
       <FormPopup
         visible={showPopup}
         onHide={handleClosePopup}
@@ -328,14 +462,14 @@ export default function StandingCommitteeMeetingList() {
               label="Select College Name"
               defaultOptionText="Select College"
               placeholder="Select College"
-              data={dummyColleges}
+              data={DUMMY_COLLEGES}
               textField="name"
               valueField="id"
               value={selectedCollegeId}
               onChange={val => {
                 const collegeId = val as number;
                 setSelectedCollegeId(collegeId);
-                const college = dummyColleges.find(c => c.id === collegeId);
+                const college = DUMMY_COLLEGES.find(c => c.id === collegeId);
                 if (college) {
                   setApplicationNumber(college.applicationNo);
                 } else {
@@ -369,6 +503,9 @@ export default function StandingCommitteeMeetingList() {
                 { value: 'Scheduled', text: 'Scheduled' },
                 { value: 'Completed', text: 'Completed' },
                 { value: 'Cancelled', text: 'Cancelled' },
+                { value: 'Deficiency Raised', text: 'Deficiency Raised' },
+                { value: 'Approved', text: 'Approved' },
+                { value: 'Rejected', text: 'Rejected' },
               ]}
               textField="text"
               valueField="value"
@@ -395,6 +532,19 @@ export default function StandingCommitteeMeetingList() {
           />
         </div>
       </FormPopup>
+
+      {/* College Affiliation Profile Review Modal with Section-Wise Reject */}
+      {currentProfile && viewingMeeting && (
+        <CollegeProfileReviewModal
+          visible={viewingMeeting !== null}
+          onClose={handleCloseView}
+          profile={currentProfile}
+          initialRejections={sectionRejections[viewingMeeting.id] || {}}
+          onSubmitRejections={handleSectionRejectionsSubmit}
+          onApprove={handleApproveAffiliation}
+          onFinalReject={handleFinalRejectAffiliation}
+        />
+      )}
     </FormPage>
   );
 }
