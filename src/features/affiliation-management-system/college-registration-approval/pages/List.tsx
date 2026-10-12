@@ -106,7 +106,6 @@ export default function List() {
     3: 'neutral',
     4: 'neutral',
     5: 'neutral',
-    6: 'neutral',
   });
 
   const [sectionRemarks, setSectionRemarks] = useState<Record<number, string>>({
@@ -115,7 +114,6 @@ export default function List() {
     3: '',
     4: '',
     5: '',
-    6: '',
   });
 
   const [rejectingSectionId, setRejectingSectionId] = useState<number | null>(
@@ -132,9 +130,8 @@ export default function List() {
         3: 'neutral',
         4: 'neutral',
         5: 'neutral',
-        6: 'neutral',
       });
-      setSectionRemarks({ 1: '', 2: '', 3: '', 4: '', 5: '', 6: '' });
+      setSectionRemarks({ 1: '', 2: '', 3: '', 4: '', 5: '' });
       return;
     }
 
@@ -146,7 +143,6 @@ export default function List() {
           3: 'neutral',
           4: 'neutral',
           5: 'neutral',
-          6: 'neutral',
         });
         setSectionRemarks({
           1: selectedApproval.rejectionReason || 'Deficiency identified.',
@@ -154,7 +150,6 @@ export default function List() {
           3: '',
           4: '',
           5: '',
-          6: '',
         });
       } else {
         setSectionStatuses({
@@ -163,9 +158,8 @@ export default function List() {
           3: 'neutral',
           4: 'neutral',
           5: 'neutral',
-          6: 'neutral',
         });
-        setSectionRemarks({ 1: '', 2: '', 3: '', 4: '', 5: '', 6: '' });
+        setSectionRemarks({ 1: '', 2: '', 3: '', 4: '', 5: '' });
       }
     }
   }, [previewId, selectedApproval]);
@@ -189,9 +183,7 @@ export default function List() {
                 ? 'Ecosystem & Academics'
                 : stepNum === 4
                   ? 'Infrastructure & Facilities'
-                  : stepNum === 5
-                    ? 'Compliance & Funding'
-                    : 'Uploaded Documents';
+                  : 'Compliance & Funding';
         return `• ${sectionName}: ${sectionRemarks[stepNum] || 'No reason'}`;
       })
       .join('\n');
@@ -877,40 +869,6 @@ export default function List() {
                   value={preview.statute28Fulfilled}
                 />
                 <PreviewField
-                  label="Endowment Fund"
-                  value={preview.endowmentFundDetails}
-                />
-              </FormGrid>
-              <div className="mt-2">
-                <PreviewField
-                  label="MP Govt Permission Details"
-                  value={preview.mpGovtPermission}
-                  fullWidth
-                />
-              </div>
-              {sectionStatuses[5] === 'rejected' && (
-                <div className="affiliation-grid-full bg-red-50 border border-red-200 rounded-lg p-3 mt-4 flex items-start gap-2">
-                  <i className="pi pi-info-circle text-red-500 mt-0.5" />
-                  <div>
-                    <h5 className="text-sm font-semibold text-red-800">
-                      Deficiency / Rejection Reason:
-                    </h5>
-                    <p className="text-sm text-red-700 mt-1">
-                      {sectionRemarks[5] || 'No reason entered yet.'}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </PreviewSection>
-
-            <PreviewSection
-              step={6}
-              title="Uploaded Documents"
-              subtitle="Scanned copies of enclosures submitted by the college."
-              headerAction={renderSectionAction(6)}
-            >
-              <FormGrid columns={2}>
-                <PreviewField
                   label="Scanned copy of Affidavit"
                   value={
                     <a
@@ -929,25 +887,37 @@ export default function List() {
                   }
                 />
                 <PreviewField
-                  label="Other Documents"
-                  value={
-                    <a
-                      href="#"
-                      onClick={e => {
-                        e.preventDefault();
-                        ToastService.success(
-                          'Downloading Regular_Authority_NOC.pdf...'
-                        );
-                      }}
-                      className="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center gap-1.5"
-                    >
-                      <i className="pi pi-file-pdf text-red-500 text-base" />
-                      <span>Regular_Authority_NOC.pdf</span>
-                    </a>
-                  }
+                  label="Endowment Fund"
+                  value={preview.endowmentFundDetails}
                 />
               </FormGrid>
-              {sectionStatuses[6] === 'rejected' && (
+              <div className="mt-2">
+                <FormGrid columns={2}>
+                  <PreviewField
+                    label="MP Govt Permission Details"
+                    value={preview.mpGovtPermission}
+                  />
+                  <PreviewField
+                    label="Other Documents"
+                    value={
+                      <a
+                        href="#"
+                        onClick={e => {
+                          e.preventDefault();
+                          ToastService.success(
+                            'Downloading Regular_Authority_NOC.pdf...'
+                          );
+                        }}
+                        className="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center gap-1.5"
+                      >
+                        <i className="pi pi-file-pdf text-red-500 text-base" />
+                        <span>Regular_Authority_NOC.pdf</span>
+                      </a>
+                    }
+                  />
+                </FormGrid>
+              </div>
+              {sectionStatuses[5] === 'rejected' && (
                 <div className="affiliation-grid-full bg-red-50 border border-red-200 rounded-lg p-3 mt-4 flex items-start gap-2">
                   <i className="pi pi-info-circle text-red-500 mt-0.5" />
                   <div>
@@ -955,7 +925,7 @@ export default function List() {
                       Deficiency / Rejection Reason:
                     </h5>
                     <p className="text-sm text-red-700 mt-1">
-                      {sectionRemarks[6] || 'No reason entered yet.'}
+                      {sectionRemarks[5] || 'No reason entered yet.'}
                     </p>
                   </div>
                 </div>
