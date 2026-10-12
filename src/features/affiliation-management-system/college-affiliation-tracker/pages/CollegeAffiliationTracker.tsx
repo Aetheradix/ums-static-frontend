@@ -11,22 +11,21 @@ import {
   PreviewSummary,
   Stepper,
 } from 'shared/new-components';
-import { TextArea, TextBox } from 'shared/components/forms';
+import { TextBox } from 'shared/components/forms';
 import DocumentViewerModal from '../../standing-committee-meeting/components/DocumentViewerModal';
-import { defaultApplicationSteps, mockTrackerRecords } from '../mockdata';
+import { defaultApplicationSteps, mockTrackerRecords } from '../data';
 import type { CollegeAffiliationTrackerRecord } from '../types';
 import { getCollegeRegistration } from '../../registrationStore';
 
 interface TwoColumnDetailRow {
   field1: string;
   value1: React.ReactNode;
-  field2: string;
-  value2: React.ReactNode;
+  field2?: string;
+  value2?: React.ReactNode;
 }
 
 export default function CollegeAffiliationTracker() {
   const [applicationNo, setApplicationNo] = useState('');
-  const [viewMode, setViewMode] = useState<'table' | 'form'>('table');
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState<{
     title: string;
@@ -89,8 +88,8 @@ export default function CollegeAffiliationTracker() {
       {
         field1: 'College Official Email',
         value1: activeRecord.collegeEmail,
-        field2: 'Affiliation Type',
-        value2: activeRecord.affiliationType,
+        field2: 'Session',
+        value2: activeRecord.session || '2026-27',
       },
       {
         field1: 'Principal Name',
@@ -119,8 +118,8 @@ export default function CollegeAffiliationTracker() {
       {
         field1: 'College Address',
         value1: activeRecord.collegeAddress,
-        field2: 'Session',
-        value2: activeRecord.session || '2026-27',
+        field2: '',
+        value2: '',
       },
     ];
   }, [activeRecord]);
@@ -134,6 +133,44 @@ export default function CollegeAffiliationTracker() {
         s.decision?.toLowerCase().includes('disapprove') ||
         s.decision?.toLowerCase().includes('not recommend')
     );
+  }, [activeRecord]);
+
+  const currentStageInfo = useMemo(() => {
+    if (!activeRecord) return null;
+    const allSteps = activeRecord.progressSteps || defaultApplicationSteps;
+    const activeIndex = activeRecord.activeStepIndex ?? 0;
+
+    const isRejected =
+      activeRecord.currentStatusCode === 'rejected' || rejectedSteps.length > 0;
+    let targetStep = allSteps[0];
+    if (isRejected && rejectedSteps.length > 0) {
+      targetStep = rejectedSteps[0];
+    } else if (activeIndex > 0) {
+      targetStep = allSteps[Math.min(activeIndex - 1, allSteps.length - 1)];
+    }
+
+    return {
+      label: targetStep?.label || 'Application Submitted',
+      isRejected,
+    };
+  }, [activeRecord, rejectedSteps]);
+
+  const trackerSteps = useMemo(() => {
+    const rawSteps = activeRecord?.progressSteps || defaultApplicationSteps;
+    return rawSteps.map(step => {
+      const isRejected =
+        step.decision?.toLowerCase().includes('reject') ||
+        step.decision?.toLowerCase().includes('disapprove') ||
+        step.decision?.toLowerCase().includes('not recommend');
+
+      if (isRejected) {
+        return {
+          ...step,
+          label: `${step.label} (Rejected)`,
+        };
+      }
+      return step;
+    });
   }, [activeRecord]);
 
   const governingBodyMembers = useMemo(() => {
@@ -392,175 +429,118 @@ export default function CollegeAffiliationTracker() {
                 subtitle={`${activeRecord.collegeName} • Session: ${activeRecord.session || '2026-27'}`}
                 icon="building"
                 headerAction={
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Button
-                      type="button"
-                      label="Table View"
-                      icon="table"
-                      size="small"
-                      variant={viewMode === 'table' ? 'primary' : 'outlined'}
-                      onClick={() => setViewMode('table')}
-                    />
-                    <Button
-                      type="button"
-                      label="Form View"
-                      icon="id-card"
-                      size="small"
-                      variant={viewMode === 'form' ? 'primary' : 'outlined'}
-                      onClick={() => setViewMode('form')}
-                    />
-                    <Button
-                      type="button"
-                      label="View Complete Details"
-                      icon="eye"
-                      size="small"
-                      variant="primary"
-                      onClick={() => setShowDetailsModal(true)}
-                    />
-                  </div>
+                  <Button
+                    type="button"
+                    label="View Complete Details"
+                    icon="eye"
+                    size="small"
+                    variant="primary"
+                    onClick={() => setShowDetailsModal(true)}
+                  />
                 }
               >
                 <div className="space-y-5">
-                  {/* Highlighted Banner: View All Details & Documents */}
-                  <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-teal-200 bg-teal-50/70 p-3.5 shadow-xs dark:border-teal-900/60 dark:bg-teal-950/30">
-                    <div className="flex items-center gap-3">
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-teal-600 text-white shadow-xs">
-                        <i className="pi pi-folder-open text-base" />
+                  {/* Highlighted Banner: Current Application Stage Only */}
+                  {currentStageInfo && (
+                    <div
+                      className={`flex items-center gap-3.5 rounded-xl border px-4 py-2.5 shadow-xs ${
+                        currentStageInfo.isRejected
+                          ? 'border-rose-200 bg-rose-50/80 dark:border-rose-900/60 dark:bg-rose-950/30'
+                          : 'border-teal-200 bg-teal-50/70 dark:border-teal-900/60 dark:bg-teal-950/30'
+                      }`}
+                    >
+                      <span
+                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white shadow-xs ${
+                          currentStageInfo.isRejected
+                            ? 'bg-rose-600'
+                            : 'bg-teal-600'
+                        }`}
+                      >
+                        <i
+                          className={`pi ${
+                            currentStageInfo.isRejected
+                              ? 'pi-times-circle'
+                              : 'pi-compass'
+                          } text-base`}
+                        />
                       </span>
-                      <div>
-                        <h4 className="text-xs font-bold text-teal-950 dark:text-teal-200">
-                          Complete College Dossier &amp; Inspection Details
-                        </h4>
-                        <p className="text-[11px] text-teal-700 dark:text-teal-300">
-                          View comprehensive registration profile, inspection
-                          assignment committee, infrastructure, and 9 verified
-                          statutory documents.
-                        </p>
+                      <div className="flex flex-wrap items-center gap-2 text-sm">
+                        <span className="font-semibold text-slate-700 dark:text-zinc-300">
+                          {currentStageInfo.isRejected
+                            ? 'Rejected Stage:'
+                            : 'Current Stage:'}
+                        </span>
+                        <span
+                          className={`font-bold ${
+                            currentStageInfo.isRejected
+                              ? 'text-rose-700 dark:text-rose-300'
+                              : 'text-teal-900 dark:text-teal-200'
+                          }`}
+                        >
+                          {currentStageInfo.label}
+                        </span>
+                        {currentStageInfo.isRejected && (
+                          <span className="inline-flex items-center rounded-md bg-rose-100 px-2 py-0.5 text-xs font-bold text-rose-700 border border-rose-300 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800">
+                            Rejected
+                          </span>
+                        )}
                       </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* 1. APPLICATION & COLLEGE DETAILS */}
-                  {viewMode === 'table' ? (
-                    <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-zinc-800">
-                      <GridPanel<TwoColumnDetailRow>
-                        data={detailRows}
-                        pagination={false}
-                        columns={[
-                          {
-                            field: 'field1',
-                            header: 'Parameter',
-                            width: '24%',
-                            sortable: false,
-                            cell: row => (
-                              <span className="font-semibold text-slate-700 dark:text-zinc-300">
-                                {row.field1}
-                              </span>
-                            ),
-                          },
-                          {
-                            field: 'value1',
-                            header: 'Information',
-                            width: '26%',
-                            sortable: false,
-                            cell: row => (
-                              <span className="text-slate-800 dark:text-zinc-200">
-                                {row.value1}
-                              </span>
-                            ),
-                          },
-                          {
-                            field: 'field2',
-                            header: 'Parameter',
-                            width: '24%',
-                            sortable: false,
-                            cell: row => (
-                              <span className="font-semibold text-slate-700 dark:text-zinc-300">
-                                {row.field2}
-                              </span>
-                            ),
-                          },
-                          {
-                            field: 'value2',
-                            header: 'Information',
-                            width: '26%',
-                            sortable: false,
-                            cell: row => (
-                              <span className="text-slate-800 dark:text-zinc-200">
-                                {row.value2}
-                              </span>
-                            ),
-                          },
-                        ]}
-                      />
-                    </div>
-                  ) : (
-                    <div className="rounded-xl border border-slate-200 p-5 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <FormGrid columns={3}>
-                        <TextBox
-                          label="College Name"
-                          value={activeRecord.collegeName}
-                          readOnly
-                        />
-                        <TextBox
-                          label="College Type"
-                          value={activeRecord.collegeType}
-                          readOnly
-                        />
-                        <TextBox
-                          label="College Official Email"
-                          value={activeRecord.collegeEmail}
-                          readOnly
-                        />
-
-                        <TextBox
-                          label="Principal Name"
-                          value={activeRecord.principalName}
-                          readOnly
-                        />
-                        <TextBox
-                          label="Principal Mobile Number"
-                          value={activeRecord.principalMobileNo}
-                          readOnly
-                        />
-                        <TextBox
-                          label="Principal Email ID"
-                          value={activeRecord.principalEmail}
-                          readOnly
-                        />
-
-                        <TextBox
-                          label="State"
-                          value={activeRecord.state}
-                          readOnly
-                        />
-                        <TextBox
-                          label="District"
-                          value={activeRecord.district}
-                          readOnly
-                        />
-                        <TextBox
-                          label="Block / Tehsil"
-                          value={activeRecord.blockTehsil}
-                          readOnly
-                        />
-
-                        <TextBox
-                          label="PIN Code"
-                          value={activeRecord.pinCode}
-                          readOnly
-                        />
-
-                        <div className="col-span-full">
-                          <TextArea
-                            label="College Address"
-                            value={activeRecord.collegeAddress}
-                            readOnly
-                          />
-                        </div>
-                      </FormGrid>
-                    </div>
-                  )}
+                  <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-zinc-800">
+                    <GridPanel<TwoColumnDetailRow>
+                      data={detailRows}
+                      pagination={false}
+                      columns={[
+                        {
+                          field: 'field1',
+                          header: 'Parameter',
+                          width: '24%',
+                          sortable: false,
+                          cell: row => (
+                            <span className="font-semibold text-slate-700 dark:text-zinc-300">
+                              {row.field1}
+                            </span>
+                          ),
+                        },
+                        {
+                          field: 'value1',
+                          header: 'Information',
+                          width: '26%',
+                          sortable: false,
+                          cell: row => (
+                            <span className="text-slate-800 dark:text-zinc-200">
+                              {row.value1}
+                            </span>
+                          ),
+                        },
+                        {
+                          field: 'field2',
+                          header: 'Parameter',
+                          width: '24%',
+                          sortable: false,
+                          cell: row => (
+                            <span className="font-semibold text-slate-700 dark:text-zinc-300">
+                              {row.field2 || ''}
+                            </span>
+                          ),
+                        },
+                        {
+                          field: 'value2',
+                          header: 'Information',
+                          width: '26%',
+                          sortable: false,
+                          cell: row => (
+                            <span className="text-slate-800 dark:text-zinc-200">
+                              {row.value2 || ''}
+                            </span>
+                          ),
+                        },
+                      ]}
+                    />
+                  </div>
                 </div>
               </FormCard>
             )}
@@ -609,7 +589,7 @@ export default function CollegeAffiliationTracker() {
             )}
 
             <Stepper
-              steps={activeRecord.progressSteps || defaultApplicationSteps}
+              steps={trackerSteps}
               activeStep={activeRecord.activeStepIndex ?? 3}
               orientation="vertical"
             />
