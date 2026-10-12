@@ -7,6 +7,7 @@ import { collegeRenewalAdminUrls } from './college-renewal-admin/urls';
 import { inspectionAssignmentUrls } from './inspection-assignment/urls';
 import { finalRegistrationApprovalUrls } from './final-registration-approval/urls';
 import { standingCommitteeDecisionUrls } from './standing-committee-decision/urls';
+import { collegeAffiliationTrackerUrls } from './college-affiliation-tracker/urls';
 
 const baseUrl = '/affiliation-management-system';
 export const affiliationManagementSystemUrls = {
@@ -19,4 +20,5 @@ export const affiliationManagementSystemUrls = {
   standingCommitteeDecision: standingCommitteeDecisionUrls(baseUrl),
   availableFacility: availableFacilityUrls(`${baseUrl}/affiliation-settings`),
   establishmentYear: establishmentYearUrls(`${baseUrl}/affiliation-settings`),
+  collegeAffiliationTracker: collegeAffiliationTrackerUrls(baseUrl),
 };

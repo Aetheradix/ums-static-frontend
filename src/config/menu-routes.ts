@@ -8537,6 +8537,15 @@ export const menuConfig: Menu.MenuItem[] = [
                 ],
               },
               {
+                label: 'College Affiliation Tracker',
+                slug: 'college-affiliation-tracker',
+                description:
+                  'Track and monitor application progress step-by-step.',
+                path: '/affiliation-management-system/college-affiliation-tracker',
+                icon: 'timeline',
+                colorScheme: 'teal',
+              },
+              {
                 label: 'College Registration Approvals',
                 slug: 'registration-approval',
                 description: 'Manage college registration Approvals.',

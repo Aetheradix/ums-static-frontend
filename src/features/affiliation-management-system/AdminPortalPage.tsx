@@ -15,6 +15,13 @@ export default function AdminPortalPage() {
           path: '/home/sub-menu/affiliation-settings',
         },
         {
+          title: 'College Affiliation Tracker',
+          description: 'Track and monitor application progress step-by-step.',
+          icon: 'timeline',
+          colorScheme: 'teal',
+          path: '/affiliation-management-system/college-affiliation-tracker',
+        },
+        {
           title: 'College Registration Approvals',
           description: 'Manage college registration Approvals.',
           icon: 'edit_location',
