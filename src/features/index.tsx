@@ -57,6 +57,8 @@ import ContentFederationSystem from './content-federation-system';
 import EventTicketingRoutes from './event-ticketing-management';
 import LegalCaseManagementRoutes from './legal-case-management';
 import TimetableManagementRoutes from './timetable-management';
+import VisitingFaculty from './visiting-faculty';
+import VisitingFacultyPublic from './visiting-faculty/public';
 import SecurityManagement from './security-management';
 import ThesisManagementRoutes from './thesis-management';
 import TrainerDevelopment from './trainer-development';
@@ -169,6 +171,10 @@ export default function Features() {
       />
       <Route path="admission-portal/*" element={<AdmissionPortal />} />
       <Route path="hostel-admission/*" element={<HmsPublicForum />} />
+      <Route
+        path="visiting-faculty-registration/*"
+        element={<VisitingFacultyPublic />}
+      />
       <Route
         path="/*"
         element={
@@ -325,6 +331,10 @@ export default function Features() {
                       <Route
                         path="timetable-management/*"
                         element={<TimetableManagementRoutes />}
+                      />
+                      <Route
+                        path="visiting-faculty/*"
+                        element={<VisitingFaculty />}
                       />
                       <Route
                         path="trainer-development/*"
