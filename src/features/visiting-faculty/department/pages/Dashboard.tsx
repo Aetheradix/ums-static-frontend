@@ -12,7 +12,12 @@ import { DeptSwitcher, UniqueIdChip } from '../../components/ui';
 import { deptName } from '../../data';
 import { useVisitingFacultyStore } from '../../store';
 import type { Application } from '../../types';
-import { applicationVariant, formatDate, makeUniqueId } from '../../utils';
+import {
+  FINANCE_PENDING,
+  applicationVariant,
+  formatDate,
+  makeUniqueId,
+} from '../../utils';
 import { vfUrls } from '../../urls';
 
 export default function DepartmentDashboard() {
@@ -33,7 +38,8 @@ export default function DepartmentDashboard() {
   const billsAtFinance = bills.filter(
     b =>
       b.department === dept &&
-      ['Sent to Finance', 'Under Verification'].includes(b.status)
+      (FINANCE_PENDING.includes(b.status) ||
+        b.status === 'Pending Registrar & VC Approval')
   ).length;
 
   return (
@@ -62,7 +68,7 @@ export default function DepartmentDashboard() {
           title="Merit List"
           value={count(
             'In Merit List',
-            'Returned by Head Office',
+            'Returned by Registrar & VC',
             'Pending Approval'
           )}
           icon="list"

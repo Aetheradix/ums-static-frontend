@@ -6,7 +6,8 @@ import Dashboard from './pages/Dashboard';
 import Faculty from './pages/Faculty';
 import MeritList from './pages/MeritList';
 import Reports from './pages/Reports';
-import ScrutinyInterview from './pages/ScrutinyInterview';
+import Interview from './pages/Interview';
+import Scrutiny from './pages/Scrutiny';
 import { vfUrls } from '../urls';
 
 export default function DepartmentLogin() {
@@ -18,7 +19,8 @@ export default function DepartmentLogin() {
       />
       <Route path="dashboard" element={<Dashboard />} />
       <Route path="applications" element={<Applications />} />
-      <Route path="scrutiny" element={<ScrutinyInterview />} />
+      <Route path="scrutiny" element={<Scrutiny />} />
+      <Route path="interview" element={<Interview />} />
       <Route path="merit-list" element={<MeritList />} />
       <Route path="faculty" element={<Faculty />} />
       <Route path="attendance" element={<Attendance />} />

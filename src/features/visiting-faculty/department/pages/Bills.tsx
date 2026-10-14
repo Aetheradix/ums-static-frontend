@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import { DropDownList } from 'shared/components/forms';
+import { DropDownList, TextBox } from 'shared/components/forms';
 import {
   FormCard,
   FormGrid,
@@ -19,12 +19,16 @@ import {
   billAmountOf,
   billVariant,
   countSessions,
+  deptBatch,
   inr,
   periodLabel,
   periodOf,
 } from '../../utils';
 
 interface Row {
+  id: string;
+  uniqueId: string;
+  fullName: string;
   faculty: Faculty;
   pending: number;
   days: number;
@@ -58,6 +62,7 @@ export default function Bills() {
   const [period, setPeriod] = useState('');
   const activePeriod = period || periods[1] || periods[0] || '';
   const [viewing, setViewing] = useState<Bill | null>(null);
+  const [search, setSearch] = useState('');
 
   const rows: Row[] = faculty
     .filter(f => f.departments.includes(dept))
@@ -70,6 +75,9 @@ export default function Bills() {
       );
       const c = countSessions(own.filter(l => l.status === 'Verified'));
       return {
+        id: f.uniqueId,
+        uniqueId: f.uniqueId,
+        fullName: f.fullName,
         faculty: f,
         pending: own.filter(l => l.status === 'Pending').length,
         days: c.days,
@@ -85,6 +93,17 @@ export default function Bills() {
       };
     })
     .filter(r => r.days || r.pending || r.bill);
+
+  const deptTotal = deptBatch(dept, activePeriod, bills, rates).total;
+
+  const q = search.trim().toLowerCase();
+  const visibleRows = q
+    ? rows.filter(
+        r =>
+          r.fullName.toLowerCase().includes(q) ||
+          r.uniqueId.toLowerCase().includes(q)
+      )
+    : rows;
 
   const prepare = (r: Row) => {
     const result = prepareBill(dept, r.faculty, activePeriod);
@@ -117,8 +136,19 @@ export default function Bills() {
         pays at most {inr(rates.limit)} per Unique ID for the month across all
         UTDs. Only one bill per faculty, per department, per month.
       </StageNote>
+      {deptTotal > 0 && (
+        <StageNote
+          tone={deptTotal > rates.approvalThreshold ? 'warning' : 'info'}
+        >
+          {dept} total bill for {periodLabel(activePeriod)}:{' '}
+          <b>{inr(deptTotal)}</b>.{' '}
+          {deptTotal > rates.approvalThreshold
+            ? `Above ${inr(rates.approvalThreshold)} — Finance will send this month's bills to the Registrar & VC for approval before payment.`
+            : `Within ${inr(rates.approvalThreshold)} — Finance can pay directly.`}
+        </StageNote>
+      )}
 
-      <FormCard title="Billing Period" icon="calendar">
+      <FormCard title="Filters" icon="filter">
         <FormGrid columns={3}>
           <DropDownList
             label="Month"
@@ -128,6 +158,13 @@ export default function Bills() {
             value={activePeriod}
             onChange={v => setPeriod((v as string) ?? '')}
           />
+          <TextBox
+            label="Faculty Name / Unique ID"
+            placeholder="e.g. Rahul or RAHU234F"
+            icon="search"
+            value={search}
+            onChange={setSearch}
+          />
         </FormGrid>
       </FormCard>
 
@@ -136,7 +173,7 @@ export default function Bills() {
         icon="wallet"
       >
         <GridPanel
-          data={rows}
+          data={visibleRows}
           columns={[
             {
               header: 'Unique ID',

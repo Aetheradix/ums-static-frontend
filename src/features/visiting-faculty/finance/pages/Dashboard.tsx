@@ -11,7 +11,13 @@ import { crumbs } from '../../components/hooks';
 import { UniqueIdChip } from '../../components/ui';
 import { useVisitingFacultyStore } from '../../store';
 import type { Bill } from '../../types';
-import { billVariant, inr, limitCheck, periodLabel } from '../../utils';
+import {
+  FINANCE_PENDING,
+  billVariant,
+  inr,
+  limitCheck,
+  periodLabel,
+} from '../../utils';
 import { vfUrls } from '../../urls';
 
 export default function FinanceDashboard() {
@@ -19,8 +25,10 @@ export default function FinanceDashboard() {
   const bills = useVisitingFacultyStore(s => s.bills);
   const rates = useVisitingFacultyStore(s => s.rates);
 
-  const pending = bills.filter(b =>
-    ['Sent to Finance', 'Under Verification'].includes(b.status)
+  const pending = bills.filter(
+    b =>
+      FINANCE_PENDING.includes(b.status) ||
+      b.status === 'Pending Registrar & VC Approval'
   );
   const paid = bills.filter(b => b.paidOn);
   const totalPaid = paid.reduce((s, b) => s + (b.payable ?? 0), 0);

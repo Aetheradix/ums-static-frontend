@@ -30,7 +30,7 @@ const TABS: { title: string; statuses: Application['status'][] | null }[] = [
       'Interview Scheduled',
       'In Merit List',
       'Pending Approval',
-      'Returned by Head Office',
+      'Returned by Registrar & VC',
       'Joined',
       'Not Selected',
     ],

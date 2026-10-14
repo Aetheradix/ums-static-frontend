@@ -17,6 +17,8 @@ import type {
 import {
   billAmountOf,
   countSessions,
+  deptBatch,
+  simulateBatchPayment,
   limitCheck,
   makeUniqueId,
   periodOf,
@@ -94,6 +96,14 @@ interface VisitingFacultyState {
   sendBillToFinance: (id: string) => void;
   takeUpBill: (id: string) => void;
   releasePayment: (id: string, transactionRef: string, remarks: string) => void;
+  forwardBatchForApproval: (department: string, period: string) => void;
+  approveBatch: (department: string, period: string, remarks: string) => void;
+  returnBatch: (department: string, period: string, remarks: string) => void;
+  releaseBatch: (
+    department: string,
+    period: string,
+    transactionRef: string
+  ) => { count: number; paid: number; notPayable: number };
 }
 
 let seq = 1000;
@@ -188,7 +198,7 @@ export const useVisitingFacultyStore = create<VisitingFacultyState>(
 
     returnByHeadOffice: (id, remarks) =>
       patchApp(set, id, {
-        status: 'Returned by Head Office',
+        status: 'Returned by Registrar & VC',
         headOfficeRemarks: remarks,
       }),
 
@@ -289,12 +299,22 @@ export const useVisitingFacultyStore = create<VisitingFacultyState>(
 
     sendBillToFinance: id => patchBill(set, id, { status: 'Sent to Finance' }),
 
-    takeUpBill: id => patchBill(set, id, { status: 'Under Verification' }),
+    takeUpBill: id =>
+      set(s => ({
+        bills: s.bills.map(b =>
+          b.id === id && b.status === 'Sent to Finance'
+            ? { ...b, status: 'Under Verification' }
+            : b
+        ),
+      })),
 
     releasePayment: (id, transactionRef, remarks) => {
       const { bills, rates } = get();
       const target = bills.find(b => b.id === id);
       if (!target) return;
+      // A UTD total above the threshold is paid only after Registrar & VC approval.
+      if (!deptBatch(target.department, target.period, bills, rates).approved)
+        return;
       const { payable, notPayable } = limitCheck(target, bills, rates);
       const status: Bill['status'] =
         payable === 0
@@ -311,12 +331,89 @@ export const useVisitingFacultyStore = create<VisitingFacultyState>(
         financeRemarks: remarks || undefined,
       });
     },
+
+    forwardBatchForApproval: (department, period) =>
+      patchBatch(
+        set,
+        department,
+        period,
+        ['Sent to Finance', 'Under Verification'],
+        {
+          status: 'Pending Registrar & VC Approval',
+          sentForApprovalOn: todayIso(),
+          approvalRemarks: undefined,
+        }
+      ),
+
+    approveBatch: (department, period, remarks) =>
+      patchBatch(set, department, period, ['Pending Registrar & VC Approval'], {
+        status: 'Approved by Registrar & VC',
+        approvedOn: todayIso(),
+        approvedBy: 'Registrar & VC Sir',
+        approvalRemarks: remarks || undefined,
+      }),
+
+    returnBatch: (department, period, remarks) =>
+      patchBatch(set, department, period, ['Pending Registrar & VC Approval'], {
+        status: 'Under Verification',
+        approvalRemarks: remarks,
+      }),
+
+    releaseBatch: (department, period, transactionRef) => {
+      const { bills, rates } = get();
+      const batch = deptBatch(department, period, bills, rates);
+      if (!batch.approved) return { count: 0, paid: 0, notPayable: 0 };
+      const results = simulateBatchPayment(batch.items, bills, rates);
+      const paidOn = todayIso();
+      set(s => ({
+        bills: s.bills.map(b => {
+          const r = results.find(x => x.bill.id === b.id);
+          if (!r) return b;
+          return {
+            ...b,
+            payable: r.payable,
+            notPayable: r.notPayable,
+            paidOn,
+            status:
+              r.payable === 0
+                ? 'Not Payable'
+                : r.notPayable > 0
+                  ? 'Partially Paid'
+                  : 'Paid',
+            transactionRef: r.payable > 0 ? transactionRef : undefined,
+          };
+        }),
+      }));
+      return {
+        count: results.length,
+        paid: results.reduce((s, r) => s + r.payable, 0),
+        notPayable: results.reduce((s, r) => s + r.notPayable, 0),
+      };
+    },
   })
 );
 
 type SetState = (
   fn: (s: VisitingFacultyState) => Partial<VisitingFacultyState>
 ) => void;
+
+function patchBatch(
+  set: SetState,
+  department: string,
+  period: string,
+  from: Bill['status'][],
+  patch: Partial<Bill>
+) {
+  set(s => ({
+    bills: s.bills.map(b =>
+      b.department === department &&
+      b.period === period &&
+      from.includes(b.status)
+        ? { ...b, ...patch }
+        : b
+    ),
+  }));
+}
 
 function patchApp(set: SetState, id: string, patch: Partial<Application>) {
   set(s => ({
