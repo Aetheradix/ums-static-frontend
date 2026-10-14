@@ -13,7 +13,7 @@ export type ApplicationStatus =
   | 'Not Selected'
   | 'In Merit List'
   | 'Pending Approval'
-  | 'Returned by Head Office'
+  | 'Returned by Registrar & VC'
   | 'Joined';
 
 export type LogStatus = 'Pending' | 'Verified' | 'Rejected';
@@ -22,6 +22,8 @@ export type BillStatus =
   | 'Prepared'
   | 'Sent to Finance'
   | 'Under Verification'
+  | 'Pending Registrar & VC Approval'
+  | 'Approved by Registrar & VC'
   | 'Paid'
   | 'Partially Paid'
   | 'Not Payable';
@@ -123,12 +125,19 @@ export interface Bill {
   paidOn?: string;
   transactionRef?: string;
   financeRemarks?: string;
+  /** Set when the department's monthly total crossed the approval threshold. */
+  sentForApprovalOn?: string;
+  approvedOn?: string;
+  approvedBy?: string;
+  approvalRemarks?: string;
 }
 
 export interface RateMaster {
   theoryRate: number;
   practicalRate: number;
   limit: number;
+  /** A UTD's monthly bill total above this needs Registrar & VC approval. */
+  approvalThreshold: number;
 }
 
 /** A joined faculty — derived from Joined applications, keyed by Unique ID. */

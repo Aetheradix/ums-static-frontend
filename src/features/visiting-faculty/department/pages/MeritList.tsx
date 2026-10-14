@@ -1,20 +1,20 @@
 import { useState } from 'react';
 import { ToastService } from 'services';
 import {
-  BulkSelectTable,
   ConfirmDialog,
   FormCard,
   FormPage,
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import SelectableGrid from '../../components/SelectableGrid';
 import { crumbs, useSelection } from '../../components/hooks';
 import { DeptSwitcher, StageNote, UniqueIdChip } from '../../components/ui';
 import { useVisitingFacultyStore } from '../../store';
 import type { Application } from '../../types';
 import { applicationVariant, formatDate, makeUniqueId } from '../../utils';
 
-/** Stage J5 — merit list of finalised candidates, forwarded to Head Office. */
+/** Stage J5 — merit list of finalised candidates, forwarded to Registrar & VC. */
 export default function MeritList() {
   const dept = useVisitingFacultyStore(s => s.currentDept);
   const applications = useVisitingFacultyStore(s => s.applications);
@@ -27,7 +27,8 @@ export default function MeritList() {
     .filter(
       a =>
         a.department === dept &&
-        (a.status === 'In Merit List' || a.status === 'Returned by Head Office')
+        (a.status === 'In Merit List' ||
+          a.status === 'Returned by Registrar & VC')
     )
     .sort(byMarks);
   const forwarded = applications
@@ -40,7 +41,7 @@ export default function MeritList() {
   const forward = () => {
     forwardMeritList(sel.ids);
     ToastService.success(
-      `Merit list of ${sel.ids.length} candidate(s) forwarded to Head Office.`
+      `Merit list of ${sel.ids.length} candidate(s) forwarded to Registrar & VC.`
     );
     sel.clear();
     setConfirming(false);
@@ -49,14 +50,14 @@ export default function MeritList() {
   return (
     <FormPage
       title="Merit List"
-      description="Candidates finalised by the interview committee, ranked by interview marks. Forward the list to Head Office for final approval."
+      description="Candidates finalised by the interview committee, ranked by interview marks. Forward the list to Registrar & VC for final approval."
       breadcrumbs={crumbs('department', 'Merit List')}
       headerAction={<DeptSwitcher />}
     >
-      {finalised.some(a => a.status === 'Returned by Head Office') && (
+      {finalised.some(a => a.status === 'Returned by Registrar & VC') && (
         <StageNote tone="warning">
-          Head Office has returned one or more names with remarks. Review them
-          and forward again.
+          The Registrar & VC have returned one or more names with remarks.
+          Review them and forward again.
         </StageNote>
       )}
 
@@ -65,17 +66,14 @@ export default function MeritList() {
         subtitle="Ranked by interview marks"
         icon="sort-amount-down"
       >
-        <BulkSelectTable
+        <SelectableGrid
           data={finalised}
-          selected={sel.selected}
-          onToggleOne={sel.toggleOne}
-          onToggleAll={sel.toggleAll}
-          onClearSelection={sel.clear}
-          selectionNoun="candidate"
-          emptyMessage="No finalised candidates waiting to be forwarded."
-          bulkActions={[
+          selected={finalised.filter(r => sel.selected.has(r.id))}
+          onSelectionChange={r => sel.set(r.map(x => x.id))}
+          noun="candidate"
+          actions={[
             {
-              label: 'Forward to Head Office',
+              label: 'Forward to Registrar & VC',
               icon: 'send',
               variant: 'primary',
               onClick: () => setConfirming(true),
@@ -127,7 +125,7 @@ export default function MeritList() {
       </FormCard>
 
       <FormCard
-        title="Forwarded to Head Office"
+        title="Forwarded to Registrar & VC"
         subtitle="Awaiting final approval"
         icon="send"
       >
@@ -167,7 +165,7 @@ export default function MeritList() {
         onHide={() => setConfirming(false)}
         onConfirm={forward}
         title="Forward Merit List"
-        message={`Forward ${sel.ids.length} candidate(s) to Head Office for final approval?`}
+        message={`Forward ${sel.ids.length} candidate(s) to Registrar & VC for final approval?`}
         confirmLabel="Forward"
         variant="info"
       />

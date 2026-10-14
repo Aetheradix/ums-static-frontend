@@ -128,7 +128,7 @@ export function applicationVariant(status: ApplicationStatus): BadgeVariant {
     case 'Rejected':
     case 'Not Selected':
       return 'danger';
-    case 'Returned by Head Office':
+    case 'Returned by Registrar & VC':
       return 'warning';
     case 'In Merit List':
     case 'Pending Approval':
@@ -158,7 +158,85 @@ export function billVariant(status: BillStatus): BadgeVariant {
     case 'Sent to Finance':
     case 'Under Verification':
       return 'info';
+    case 'Pending Registrar & VC Approval':
+      return 'warning';
+    case 'Approved by Registrar & VC':
+      return 'approved';
     default:
       return 'pending';
   }
+}
+
+/** Adds the derived Unique ID as a field so grids can show and search it. */
+export const withUniqueId = <T extends { fullName: string; pan: string }>(
+  rows: T[]
+) => rows.map(r => ({ ...r, uniqueId: makeUniqueId(r.fullName, r.pan) }));
+
+/**
+ * Pays the unpaid bills of a batch one after another, so each bill sees
+ * what the earlier ones already paid to the same Unique ID.
+ */
+export function simulateBatchPayment(
+  items: Bill[],
+  allBills: Bill[],
+  rates: RateMaster
+) {
+  let working = [...allBills];
+  const today = todayIso();
+  return items
+    .filter(b => !b.paidOn)
+    .map(b => {
+      const { payable, notPayable } = limitCheck(b, working, rates);
+      working = working.map(w =>
+        w.id === b.id ? { ...w, payable, notPayable, paidOn: today } : w
+      );
+      return { bill: b, payable, notPayable };
+    });
+}
+
+/** Bills that have reached Finance — the ones counted in a department total. */
+export const AT_FINANCE: BillStatus[] = [
+  'Sent to Finance',
+  'Under Verification',
+  'Pending Registrar & VC Approval',
+  'Approved by Registrar & VC',
+  'Paid',
+  'Partially Paid',
+  'Not Payable',
+];
+
+/** Statuses Finance still has to act on. */
+export const FINANCE_PENDING: BillStatus[] = [
+  'Sent to Finance',
+  'Under Verification',
+  'Approved by Registrar & VC',
+];
+
+/**
+ * A UTD's bills for one month, taken together. If their total crosses the
+ * approval threshold (₹50,000), Finance must get Registrar & VC approval
+ * for the batch before releasing any payment from it.
+ */
+export function deptBatch(
+  department: string,
+  period: string,
+  bills: Bill[],
+  rates: RateMaster
+) {
+  const items = bills.filter(
+    b =>
+      b.department === department &&
+      b.period === period &&
+      AT_FINANCE.includes(b.status)
+  );
+  const total = items.reduce((s, b) => s + b.billAmount, 0);
+  const needsApproval = total > rates.approvalThreshold;
+  const unpaid = items.filter(b => !b.paidOn);
+  const awaiting = unpaid.some(
+    b => b.status === 'Pending Registrar & VC Approval'
+  );
+  const approved =
+    !needsApproval ||
+    unpaid.every(b => b.status === 'Approved by Registrar & VC');
+  return { items, total, needsApproval, awaiting, approved };
 }

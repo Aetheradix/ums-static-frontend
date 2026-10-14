@@ -19,6 +19,7 @@ export function useSelection(ids: string[]) {
     toggleAll: () =>
       setSelected(live.size === ids.length ? new Set() : new Set(ids)),
     clear: () => setSelected(new Set()),
+    set: (next: string[]) => setSelected(new Set(next)),
   };
 }
 
@@ -29,7 +30,10 @@ export function useFaculty() {
 
 const LOGINS = {
   department: { label: 'UTD Department Login', to: vfUrls.department.portal },
-  headOffice: { label: 'Head Office Login', to: vfUrls.headOffice.portal },
+  headOffice: {
+    label: 'Registrar & VC Sir Login',
+    to: vfUrls.headOffice.portal,
+  },
   finance: { label: 'Finance Department Login', to: vfUrls.finance.portal },
   mobile: { label: 'Mobile App', to: vfUrls.mobile.portal },
 };

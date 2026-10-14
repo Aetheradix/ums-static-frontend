@@ -3,13 +3,13 @@ import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextArea } from 'shared/components/forms';
 import {
-  BulkSelectTable,
   ConfirmDialog,
   FormCard,
   FormGrid,
   FormPage,
   FormPopup,
 } from 'shared/new-components';
+import SelectableGrid from '../../components/SelectableGrid';
 import { crumbs, useSelection } from '../../components/hooks';
 import {
   ApplicationDetails,
@@ -108,15 +108,12 @@ export default function Approvals() {
       </FormCard>
 
       <FormCard title="Pending Approval" icon="inbox">
-        <BulkSelectTable
+        <SelectableGrid
           data={pending}
-          selected={sel.selected}
-          onToggleOne={sel.toggleOne}
-          onToggleAll={sel.toggleAll}
-          onClearSelection={sel.clear}
-          selectionNoun="candidate"
-          emptyMessage="No merit list awaiting approval."
-          bulkActions={[
+          selected={pending.filter(r => sel.selected.has(r.id))}
+          onSelectionChange={r => sel.set(r.map(x => x.id))}
+          noun="candidate"
+          actions={[
             {
               label: 'Approve Joining',
               icon: 'check',
@@ -146,7 +143,6 @@ export default function Approvals() {
             { header: 'Forwarded On', cell: a => formatDate(a.forwardedOn) },
             {
               header: 'Actions',
-              stopPropagation: true,
               cell: a => (
                 <div className="flex gap-1">
                   <Button

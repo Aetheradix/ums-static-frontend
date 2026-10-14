@@ -159,8 +159,8 @@ export default function MobileApp() {
           >
             <ol className="flex list-decimal flex-col gap-2 pl-5 text-sm text-slate-700 dark:text-slate-300">
               <li>
-                The faculty signs in with the Unique ID issued after Head Office
-                approval.
+                The faculty signs in with the Unique ID issued after Registrar &
+                VC approval.
               </li>
               <li>
                 On reaching the department, they tap <b>Mark Attendance</b> —

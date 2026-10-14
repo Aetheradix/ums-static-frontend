@@ -85,6 +85,7 @@ export const DEFAULT_RATES: RateMaster = {
   theoryRate: 400,
   practicalRate: 800,
   limit: 30000,
+  approvalThreshold: 50000,
 };
 
 // ── Seed applications ──────────────────────────────────────────
@@ -570,8 +571,9 @@ export const SEED_BILLS: Bill[] = [
   bill(1, 'IET', RAHUL, 'Dr. Rahul Sharma', 20, 5, 'Paid', {
     payable: 12000,
     notPayable: 0,
-    paidOn: '2026-10-03',
-    transactionRef: 'NEFT/DAVV/0310/1182',
+    paidOn: '2026-10-04',
+    approvedOn: '2026-10-03',
+    transactionRef: 'NEFT/DAVV/0410/1182',
   }),
   bill(2, 'IIPS', RAHUL, 'Dr. Rahul Sharma', 25, 5, 'Paid', {
     payable: 14000,
@@ -582,10 +584,483 @@ export const SEED_BILLS: Bill[] = [
   bill(3, 'IMS', RAHUL, 'Dr. Rahul Sharma', 15, 5, 'Sent to Finance', {
     billDate: '2026-10-06',
   }),
-  bill(4, 'IET', PRIYA, 'Priya Verma', 45, 20, 'Sent to Finance', {
+  bill(4, 'IET', PRIYA, 'Priya Verma', 45, 20, 'Approved by Registrar & VC', {
     billDate: '2026-10-02',
+    approvedOn: '2026-10-03',
   }),
   bill(5, 'IIPS', ANIL, 'Prof. Anil Kumar Jain', 18, 6, 'Sent to Finance', {
     billDate: '2026-10-04',
   }),
 ];
+
+// ── Bulk sample data ───────────────────────────────────────────
+// Enough rows to exercise search, paging and the approval rules: more
+// joined faculty with September bills in every state, and a pipeline of
+// applications at every stage across the UTDs.
+
+const SUBJECT_PREFIX: Record<
+  string,
+  { program: string; branch: string; code: string }
+> = {
+  IET: { program: 'B.E.', branch: 'Computer Engineering', code: 'CER' },
+  IIPS: { program: 'MCA', branch: 'Information Technology', code: 'MCA-' },
+  IMS: { program: 'MBA', branch: 'Management', code: 'MBA-' },
+  SCSIT: { program: 'M.Sc', branch: 'Information Technology', code: 'MSC-CS-' },
+  SOC: { program: 'B.Com', branch: 'Commerce', code: 'BCOM-' },
+  SOE: { program: 'Integrated MBA', branch: 'Management', code: 'ECO-' },
+};
+
+const LETTERS = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+
+/** Deterministic, well-formed PAN for sample data. */
+function samplePan(fullName: string, i: number) {
+  const surname = fullName.trim().split(' ').pop() ?? 'X';
+  const l = (n: number) => LETTERS[n % LETTERS.length];
+  const digits = String(1000 + ((i * 7919) % 9000)).padStart(4, '0');
+  return `${l(i * 3 + 1)}${l(i * 5 + 7)}${l(i * 11 + 3)}P${surname[0].toUpperCase()}${digits}${l(i * 13 + 5)}`;
+}
+
+const codesFor = (dept: string, i: number) => {
+  const p = SUBJECT_PREFIX[dept];
+  return {
+    subjects: [
+      `${p.code}${300 + (i % 5) * 10 + 1}`,
+      `${p.code}${300 + (i % 5) * 10 + 4}`,
+    ],
+    labs: [`${p.code}L${30 + (i % 5)}`],
+  };
+};
+
+interface ExtraFaculty {
+  name: string;
+  dept: string;
+  theory: number;
+  practical: number;
+  bill?: Bill['status'];
+}
+
+const EXTRA_FACULTY: ExtraFaculty[] = [
+  // IET — September total above ₹50,000, already approved by Registrar & VC.
+  {
+    name: 'Dr. Sanjay Tiwari',
+    dept: 'IET',
+    theory: 22,
+    practical: 6,
+    bill: 'Approved by Registrar & VC',
+  },
+  {
+    name: 'Ankita Mishra',
+    dept: 'IET',
+    theory: 18,
+    practical: 5,
+    bill: 'Approved by Registrar & VC',
+  },
+  {
+    name: 'Rakesh Choudhary',
+    dept: 'IET',
+    theory: 15,
+    practical: 4,
+    bill: 'Approved by Registrar & VC',
+  },
+  {
+    name: 'Dr. Meenal Jain',
+    dept: 'IET',
+    theory: 25,
+    practical: 8,
+    bill: 'Approved by Registrar & VC',
+  },
+  // IIPS — verified, not yet billed by the department.
+  { name: 'Gaurav Agrawal', dept: 'IIPS', theory: 20, practical: 6 },
+  { name: 'Shweta Pandey', dept: 'IIPS', theory: 16, practical: 5 },
+  // IMS — at Finance, total above ₹50,000: needs to be forwarded.
+  {
+    name: 'Dr. Alok Verma',
+    dept: 'IMS',
+    theory: 26,
+    practical: 8,
+    bill: 'Sent to Finance',
+  },
+  {
+    name: 'Ritu Malviya',
+    dept: 'IMS',
+    theory: 20,
+    practical: 6,
+    bill: 'Sent to Finance',
+  },
+  {
+    name: 'Nitin Rathore',
+    dept: 'IMS',
+    theory: 24,
+    practical: 7,
+    bill: 'Sent to Finance',
+  },
+  // SCSIT — verified, not yet billed.
+  { name: 'Dr. Pankaj Dixit', dept: 'SCSIT', theory: 14, practical: 4 },
+  { name: 'Swati Bhatnagar', dept: 'SCSIT', theory: 12, practical: 4 },
+  // SOC — above ₹50,000, waiting with the Registrar & VC.
+  {
+    name: 'Mohit Goyal',
+    dept: 'SOC',
+    theory: 25,
+    practical: 6,
+    bill: 'Pending Registrar & VC Approval',
+  },
+  {
+    name: 'Dr. Kirti Sharma',
+    dept: 'SOC',
+    theory: 22,
+    practical: 8,
+    bill: 'Pending Registrar & VC Approval',
+  },
+  {
+    name: 'Varun Khandelwal',
+    dept: 'SOC',
+    theory: 18,
+    practical: 5,
+    bill: 'Pending Registrar & VC Approval',
+  },
+  {
+    name: 'Preeti Soni',
+    dept: 'SOC',
+    theory: 20,
+    practical: 6,
+    bill: 'Pending Registrar & VC Approval',
+  },
+  // SOE — under ₹50,000, Finance pays directly.
+  {
+    name: 'Dr. Ashok Raghuwanshi',
+    dept: 'SOE',
+    theory: 15,
+    practical: 5,
+    bill: 'Sent to Finance',
+  },
+  {
+    name: 'Nidhi Parmar',
+    dept: 'SOE',
+    theory: 12,
+    practical: 4,
+    bill: 'Sent to Finance',
+  },
+];
+
+let billSeq = SEED_BILLS.length;
+
+EXTRA_FACULTY.forEach((f, i) => {
+  const pan = samplePan(f.name, i + 100);
+  const p = SUBJECT_PREFIX[f.dept];
+  const { subjects, labs } = codesFor(f.dept, i);
+  SEED_APPLICATIONS.push(
+    app(f.dept, f.name, pan, 'Joined', {
+      ...joined('2026-08-0' + ((i % 8) + 1), (i % 4) + 1),
+      qualifications:
+        i % 3 === 0 ? ['M.E. / M.Tech', 'Ph.D.'] : ['M.E. / M.Tech', 'NET'],
+      programs: [p.program],
+      branches: [p.branch],
+      subjects,
+      labs,
+    })
+  );
+  const uid = makeUniqueId(f.name, pan);
+  SEED_LOGS.push(
+    ...logsFor(
+      uid,
+      f.dept,
+      '2026-09',
+      f.theory,
+      f.practical,
+      subjects,
+      labs,
+      'Verified'
+    ),
+    ...logsFor(
+      uid,
+      f.dept,
+      '2026-10',
+      4 + (i % 3),
+      2,
+      subjects,
+      labs,
+      'Pending',
+      1 + (i % 3),
+      10
+    )
+  );
+  if (f.bill) {
+    billSeq++;
+    SEED_BILLS.push(
+      bill(billSeq, f.dept, uid, f.name, f.theory, f.practical, f.bill, {
+        billDate: '2026-10-0' + ((i % 6) + 2),
+        ...(f.bill === 'Approved by Registrar & VC'
+          ? { approvedOn: '2026-10-03' }
+          : {}),
+      })
+    );
+  }
+});
+
+// Pipeline — applications at every stage, weighted towards IET.
+const FIRST = [
+  'Aarti',
+  'Abhishek',
+  'Akash',
+  'Amrita',
+  'Anand',
+  'Anjali',
+  'Arvind',
+  'Bhavna',
+  'Chetan',
+  'Deepika',
+  'Devendra',
+  'Divya',
+  'Harish',
+  'Ishita',
+  'Jayesh',
+  'Kavya',
+  'Lokesh',
+  'Madhuri',
+  'Manoj',
+  'Megha',
+  'Naveen',
+  'Pallavi',
+  'Prakash',
+  'Rachna',
+  'Rajat',
+  'Sakshi',
+  'Sandeep',
+  'Shalini',
+  'Sunil',
+  'Tanvi',
+];
+const LAST = [
+  'Bhargava',
+  'Chouksey',
+  'Dubey',
+  'Gupta',
+  'Joshi',
+  'Kushwaha',
+  'Mandloi',
+  'Nagar',
+  'Patidar',
+  'Rawat',
+  'Saxena',
+  'Thakur',
+  'Upadhyay',
+  'Vyas',
+  'Yadav',
+];
+const PIPE_DEPTS = ['IET', 'IET', 'IIPS', 'IMS', 'IET', 'SCSIT', 'SOC', 'SOE'];
+const PIPE_STATUS: ApplicationStatus[] = [
+  'Submitted',
+  'Submitted',
+  'In Scrutiny List',
+  'Submitted',
+  'Interview Scheduled',
+  'In Scrutiny List',
+  'Rejected',
+  'In Merit List',
+  'Pending Approval',
+  'Not Selected',
+  'In Scrutiny List',
+  'Interview Scheduled',
+];
+const QUALS = [
+  ['M.E. / M.Tech'],
+  ['M.E. / M.Tech', 'GATE'],
+  ['MCA', 'NET'],
+  ['MBA'],
+  ['M.Sc', 'SET'],
+  ['M.Com', 'NET'],
+  ['M.E. / M.Tech', 'Ph.D.'],
+];
+const INTERVIEW_DATES = [
+  '2026-10-16',
+  '2026-10-17',
+  '2026-10-20',
+  '2026-10-21',
+];
+const REJECTIONS = [
+  'Post-graduate degree not in the relevant subject.',
+  'Highest qualification document not legible.',
+  'Experience certificate missing.',
+  'PAN and Aadhar names do not match.',
+];
+
+for (let i = 0; i < 64; i++) {
+  const name = `${FIRST[i % FIRST.length]} ${LAST[(i * 7 + Math.floor(i / FIRST.length)) % LAST.length]}`;
+  const dept = PIPE_DEPTS[i % PIPE_DEPTS.length];
+  const status = PIPE_STATUS[i % PIPE_STATUS.length];
+  const p = SUBJECT_PREFIX[dept];
+  const { subjects, labs } = codesFor(dept, i);
+  const day = String((i % 12) + 1).padStart(2, '0');
+  const marks = 55 + ((i * 17) % 40);
+  const verified = !['Submitted', 'Rejected'].includes(status);
+  const interviewed = [
+    'In Merit List',
+    'Pending Approval',
+    'Not Selected',
+  ].includes(status);
+  SEED_APPLICATIONS.push(
+    app(dept, name, samplePan(name, i), status, {
+      submittedOn:
+        i % 3 === 0
+          ? `2026-10-${day}`
+          : `2026-09-${String(15 + (i % 14)).padStart(2, '0')}`,
+      qualifications: QUALS[i % QUALS.length],
+      programs: [p.program],
+      branches: [
+        i % 4 === 0 && dept === 'IET' ? 'Information Technology' : p.branch,
+      ],
+      years: [`${(i % 4) + 1}${['st', 'nd', 'rd', 'th'][i % 4]} Year`],
+      subjects,
+      labs,
+      theoryHoursPerWeek: 2 + (i % 4),
+      practicalHoursPerWeek: i % 3,
+      ...(verified ? { verifiedOn: '2026-10-01' } : {}),
+      ...(status === 'Rejected'
+        ? { rejectionReason: REJECTIONS[i % REJECTIONS.length] }
+        : {}),
+      ...(status === 'Interview Scheduled' || interviewed
+        ? {
+            interview: {
+              date: interviewed
+                ? '2026-10-06'
+                : INTERVIEW_DATES[i % INTERVIEW_DATES.length],
+              time: ['10:30', '11:30', '12:30', '14:30'][i % 4],
+              venue: `${dept} Committee Room, DAVV`,
+              committee: 'HoD, Senior Professor, Subject Expert',
+              ...(interviewed
+                ? {
+                    result:
+                      status === 'Not Selected'
+                        ? ('Not Selected' as const)
+                        : ('Finalised' as const),
+                    marks: status === 'Not Selected' ? 40 + (i % 10) : marks,
+                    remarks:
+                      status === 'Not Selected'
+                        ? 'Below the subject requirement.'
+                        : 'Good subject knowledge.',
+                  }
+                : {}),
+            },
+          }
+        : {}),
+      ...(status === 'Pending Approval'
+        ? { meritRank: (i % 3) + 2, forwardedOn: '2026-10-08' }
+        : {}),
+    })
+  );
+}
+
+// ── Finance history — a settled August cycle, more September bills ──
+
+const SEPT_TO_FINANCE: Record<string, Bill['status']> = {
+  SCSIT: 'Sent to Finance',
+};
+
+EXTRA_FACULTY.forEach((f, i) => {
+  const status = SEPT_TO_FINANCE[f.dept];
+  if (!status || f.bill) return;
+  const uid = makeUniqueId(f.name, samplePan(f.name, i + 100));
+  billSeq++;
+  SEED_BILLS.push(
+    bill(billSeq, f.dept, uid, f.name, f.theory, f.practical, status, {
+      billDate: '2026-10-09',
+    })
+  );
+});
+billSeq++;
+SEED_BILLS.push(
+  bill(billSeq, 'SCSIT', NEHA, 'Neha Joshi', 10, 4, 'Sent to Finance', {
+    billDate: '2026-10-09',
+  })
+);
+
+/** Everyone joined before August, with an August bill per UTD. */
+const AUGUST: {
+  dept: string;
+  uid: string;
+  name: string;
+  t: number;
+  p: number;
+}[] = [
+  { dept: 'IET', uid: RAHUL, name: 'Dr. Rahul Sharma', t: 25, p: 5 },
+  { dept: 'IIPS', uid: RAHUL, name: 'Dr. Rahul Sharma', t: 20, p: 5 },
+  { dept: 'IMS', uid: RAHUL, name: 'Dr. Rahul Sharma', t: 12, p: 5 },
+  { dept: 'IET', uid: PRIYA, name: 'Priya Verma', t: 40, p: 15 },
+  { dept: 'IIPS', uid: ANIL, name: 'Prof. Anil Kumar Jain', t: 22, p: 6 },
+  { dept: 'IET', uid: NEHA, name: 'Neha Joshi', t: 26, p: 8 },
+  { dept: 'SCSIT', uid: NEHA, name: 'Neha Joshi', t: 8, p: 3 },
+  ...EXTRA_FACULTY.map((f, i) => ({
+    dept: f.dept,
+    uid: makeUniqueId(f.name, samplePan(f.name, i + 100)),
+    name: f.name,
+    t: Math.max(f.theory - 4, 8),
+    p: Math.max(f.practical - 1, 2),
+  })),
+];
+
+const augPaid = new Map<string, number>();
+const augTotals = new Map<string, number>();
+AUGUST.forEach(a =>
+  augTotals.set(
+    a.dept,
+    (augTotals.get(a.dept) ?? 0) +
+      a.t * DEFAULT_RATES.theoryRate +
+      a.p * DEFAULT_RATES.practicalRate
+  )
+);
+
+AUGUST.forEach((a, i) => {
+  const amount =
+    a.t * DEFAULT_RATES.theoryRate + a.p * DEFAULT_RATES.practicalRate;
+  const already = augPaid.get(a.uid) ?? 0;
+  const payable = Math.min(amount, Math.max(DEFAULT_RATES.limit - already, 0));
+  augPaid.set(a.uid, already + payable);
+  const approval =
+    (augTotals.get(a.dept) ?? 0) > DEFAULT_RATES.approvalThreshold
+      ? {
+          sentForApprovalOn: '2026-09-04',
+          approvedOn: '2026-09-06',
+          approvedBy: 'Registrar & VC Sir',
+        }
+      : {};
+  SEED_BILLS.push({
+    id: `bill-aug-${i + 1}`,
+    billNo: `VFB/${a.dept}/2026-08/${String(i + 1).padStart(3, '0')}`,
+    billDate: '2026-09-02',
+    department: a.dept,
+    uniqueId: a.uid,
+    facultyName: a.name,
+    period: '2026-08',
+    daysPresent: Math.ceil(a.t / 2),
+    theoryCount: a.t,
+    practicalCount: a.p,
+    theoryRate: DEFAULT_RATES.theoryRate,
+    practicalRate: DEFAULT_RATES.practicalRate,
+    billAmount: amount,
+    hodCertified: true,
+    status:
+      payable === 0
+        ? 'Not Payable'
+        : payable < amount
+          ? 'Partially Paid'
+          : 'Paid',
+    payable,
+    notPayable: amount - payable,
+    paidOn: '2026-09-10',
+    transactionRef: `NEFT/DAVV/1009/AUG-${a.dept}`,
+    ...approval,
+  });
+});
+
+// Approval trail on the seeded September batches.
+SEED_BILLS.forEach(b => {
+  if (b.period !== '2026-09') return;
+  if (b.status === 'Pending Registrar & VC Approval')
+    b.sentForApprovalOn = '2026-10-07';
+  if (b.approvedOn) {
+    b.sentForApprovalOn = '2026-10-02';
+    b.approvedBy = 'Registrar & VC Sir';
+    b.approvalRemarks = 'Approved as per attendance verified by the HoD.';
+  }
+});

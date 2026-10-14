@@ -9,7 +9,7 @@ export default function Faculty() {
   return (
     <FormPage
       title="Joined Faculty"
-      description="Visiting faculty approved by Head Office for your department. Only these faculty can be billed."
+      description="Visiting faculty approved by Registrar & VC for your department. Only these faculty can be billed."
       breadcrumbs={crumbs('department', 'Joined Faculty')}
       headerAction={<DeptSwitcher />}
     >

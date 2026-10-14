@@ -34,17 +34,30 @@ export default function HeadOfficeDashboard() {
 
   return (
     <FormPage
-      title="Head Office — Visiting Faculty"
+      title="Registrar & VC — Visiting Faculty"
       description="University-wide view of visiting faculty joining and payment."
       breadcrumbs={crumbs('headOffice', 'Dashboard')}
     >
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <StatCard
           title="Awaiting Approval"
           value={pending}
           icon="inbox"
           colorScheme="amber"
           subtitle="Merit list candidates"
+        />
+        <StatCard
+          title="Department Bills to Approve"
+          value={
+            new Set(
+              bills
+                .filter(b => b.status === 'Pending Registrar & VC Approval')
+                .map(b => `${b.department}|${b.period}`)
+            ).size
+          }
+          icon="file-check"
+          colorScheme="orange"
+          subtitle="UTD totals above ₹50,000"
         />
         <StatCard
           title="Visiting Faculty"

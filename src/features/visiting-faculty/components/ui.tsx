@@ -207,7 +207,7 @@ export function ApplicationDetails({ app }: { app: Application }) {
           )}
           {app.headOfficeRemarks && (
             <PreviewField
-              label="Head Office Remarks"
+              label="Registrar & VC Remarks"
               value={app.headOfficeRemarks}
               fullWidth
             />

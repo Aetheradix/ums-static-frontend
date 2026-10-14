@@ -3,7 +3,6 @@ import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DropDownList, TextArea } from 'shared/components/forms';
 import {
-  BulkSelectTable,
   FormCard,
   FormGrid,
   FormPage,
@@ -11,6 +10,7 @@ import {
   GridPanel,
   StatusBadge,
 } from 'shared/new-components';
+import SelectableGrid from '../../components/SelectableGrid';
 import { crumbs, useFaculty, useSelection } from '../../components/hooks';
 import { DeptSwitcher, StageNote, UniqueIdChip } from '../../components/ui';
 import { useVisitingFacultyStore } from '../../store';
@@ -215,15 +215,13 @@ export default function Attendance() {
           day.
         </StageNote>
         <div className="mt-4">
-          <BulkSelectTable
+          <SelectableGrid
             data={rows}
-            selected={sel.selected}
-            onToggleOne={sel.toggleOne}
-            onToggleAll={sel.toggleAll}
-            onClearSelection={sel.clear}
-            selectionNoun="entry"
-            emptyMessage="No entries for the selected filters."
-            bulkActions={[
+            selected={rows.filter(r => sel.selected.has(r.id))}
+            onSelectionChange={r => sel.set(r.map(x => x.id))}
+            noun="entry"
+            isSelectable={l => l.status === 'Pending'}
+            actions={[
               {
                 label: 'Verify Selected',
                 icon: 'check',
@@ -252,7 +250,6 @@ export default function Attendance() {
               },
               {
                 header: 'Actions',
-                stopPropagation: true,
                 cell: l => (
                   <div className="flex gap-1">
                     <Button
