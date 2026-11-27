@@ -46,8 +46,11 @@ interface Row {
  */
 export default function TeachingReport({
   department,
+  branch,
 }: {
   department?: string;
+  /** Limits the report to one branch — the HOD login. */
+  branch?: string;
 }) {
   const logs = useVisitingFacultyStore(s => s.logs);
   const bills = useVisitingFacultyStore(s => s.bills);
@@ -69,6 +72,11 @@ export default function TeachingReport({
     for (const f of faculty) {
       for (const d of f.departments) {
         if (dept && d !== dept) continue;
+        if (
+          branch &&
+          !f.appointments.some(a => a.department === d && a.branch === branch)
+        )
+          continue;
         const own = logs.filter(
           l =>
             l.uniqueId === f.uniqueId &&
@@ -100,7 +108,7 @@ export default function TeachingReport({
       }
     }
     return out;
-  }, [faculty, logs, bills, rates, period, dept]);
+  }, [faculty, logs, bills, rates, period, dept, branch]);
 
   const totals = rows.reduce(
     (t, r) => ({

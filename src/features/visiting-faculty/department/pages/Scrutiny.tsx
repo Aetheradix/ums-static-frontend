@@ -3,14 +3,20 @@ import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
 import { DatePicker, DropDownList, TextBox } from 'shared/components/forms';
 import { FormCard, FormGrid, FormPage, FormPopup } from 'shared/new-components';
+import { useScope } from '../../components/scope';
 import { crumbs } from '../../components/hooks';
 import SelectableGrid from '../../components/SelectableGrid';
-import { DeptSwitcher, StageNote, UniqueIdChip } from '../../components/ui';
+import {
+  ApplicationTypeBadge,
+  StageNote,
+  UniqueIdChip,
+} from '../../components/ui';
 import {
   BRANCH_OPTIONS,
   PROGRAM_OPTIONS,
   QUALIFICATION_OPTIONS,
 } from '../../data';
+import { FACULTY_TYPE_OPTIONS, matchesFacultyType } from '../../data';
 import { useVisitingFacultyStore } from '../../store';
 import type { Interview } from '../../types';
 import { formatDate, fromIso, toIso, withUniqueId } from '../../utils';
@@ -26,13 +32,15 @@ const ALL = { id: '', text: 'All' };
 
 /** Stage J3 — verified applicants; the department sends the interview call. */
 export default function Scrutiny() {
-  const dept = useVisitingFacultyStore(s => s.currentDept);
+  const scope = useScope();
+  const { dept } = scope;
   const applications = useVisitingFacultyStore(s => s.applications);
   const scheduleInterview = useVisitingFacultyStore(s => s.scheduleInterview);
 
   const [program, setProgram] = useState('');
   const [branch, setBranch] = useState('');
   const [qualification, setQualification] = useState('');
+  const [facultyType, setFacultyType] = useState('');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [scheduling, setScheduling] = useState(false);
   const [interview, setInterview] = useState<Interview>(blankInterview(dept));
@@ -40,11 +48,12 @@ export default function Scrutiny() {
   const rows = withUniqueId(
     applications.filter(
       a =>
-        a.department === dept &&
+        scope.appInScope(a) &&
         a.status === 'In Scrutiny List' &&
         (!program || a.programs.includes(program)) &&
         (!branch || a.branches.includes(branch)) &&
-        (!qualification || a.qualifications.includes(qualification))
+        (!qualification || a.qualifications.includes(qualification)) &&
+        matchesFacultyType(a, facultyType)
     )
   ).map(a => ({
     ...a,
@@ -75,11 +84,11 @@ export default function Scrutiny() {
     <FormPage
       title="Scrutiny List"
       description="All verified applications of the department. Filter by program, branch or qualification, select candidates and send the interview call."
-      breadcrumbs={crumbs('department', 'Scrutiny List')}
-      headerAction={<DeptSwitcher />}
+      breadcrumbs={crumbs(scope.login, 'Scrutiny List')}
+      headerAction={<scope.Switcher />}
     >
       <FormCard title="Filters" icon="filter">
-        <FormGrid columns={3}>
+        <FormGrid columns={4}>
           <DropDownList
             label="Program"
             data={[ALL, ...PROGRAM_OPTIONS]}
@@ -103,6 +112,14 @@ export default function Scrutiny() {
             valueField="id"
             value={qualification}
             onChange={v => setQualification((v as string) ?? '')}
+          />
+          <DropDownList
+            label="Faculty Type"
+            data={FACULTY_TYPE_OPTIONS}
+            textField="text"
+            valueField="id"
+            value={facultyType}
+            onChange={v => setFacultyType((v as string) ?? '')}
           />
         </FormGrid>
       </FormCard>
@@ -147,6 +164,10 @@ export default function Scrutiny() {
               cell: a => <UniqueIdChip value={a.uniqueId} />,
             },
             { header: 'Name', field: 'fullName', sortable: true },
+            {
+              header: 'Faculty Type',
+              cell: a => <ApplicationTypeBadge app={a} />,
+            },
             { header: 'Qualification', field: 'qualificationList' },
             { header: 'Program', cell: a => a.programs.join(', ') },
             { header: 'Branch', cell: a => a.branches.join(', ') },

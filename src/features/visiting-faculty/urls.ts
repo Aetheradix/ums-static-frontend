@@ -10,19 +10,31 @@ export const vfUrls = {
   /** Public — outside the signed-in layout. */
   public: {
     register: '/visiting-faculty-registration',
+    newRegistration: '/visiting-faculty-registration/new',
+    reapply: '/visiting-faculty-registration/re-apply',
     track: '/visiting-faculty-registration/track',
+  },
+
+  hod: {
+    portal: '/home/sub-menu/vf-hod-login',
+    dashboard: `${root}/hod/dashboard`,
+    applications: `${root}/hod/applications`,
+    scrutiny: `${root}/hod/scrutiny`,
+    interview: `${root}/hod/interview`,
+    meritList: `${root}/hod/merit-list`,
+    faculty: `${root}/hod/faculty`,
+    attendance: `${root}/hod/attendance`,
+    bills: `${root}/hod/bills`,
+    reports: `${root}/hod/reports`,
   },
 
   department: {
     portal: '/home/sub-menu/vf-department-login',
     dashboard: `${root}/department/dashboard`,
-    applications: `${root}/department/applications`,
-    scrutiny: `${root}/department/scrutiny`,
-    interview: `${root}/department/interview`,
-    meritList: `${root}/department/merit-list`,
+    meritReview: `${root}/department/merit-review`,
+    billReview: `${root}/department/bill-review`,
     faculty: `${root}/department/faculty`,
     attendance: `${root}/department/attendance`,
-    bills: `${root}/department/bills`,
     reports: `${root}/department/reports`,
   },
 

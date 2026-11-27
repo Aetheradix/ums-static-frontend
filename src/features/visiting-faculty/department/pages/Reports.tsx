@@ -1,19 +1,22 @@
 import { FormPage } from 'shared/new-components';
 import { crumbs } from '../../components/hooks';
+import { useScope } from '../../components/scope';
 import TeachingReport from '../../components/TeachingReport';
-import { DeptSwitcher } from '../../components/ui';
-import { useVisitingFacultyStore } from '../../store';
 
 export default function Reports() {
-  const dept = useVisitingFacultyStore(s => s.currentDept);
+  const scope = useScope();
   return (
     <FormPage
       title="Teaching Report"
-      description="Faculty-wise days present, theory lectures and practicals taught in your department."
-      breadcrumbs={crumbs('department', 'Reports')}
-      headerAction={<DeptSwitcher />}
+      description={
+        scope.isHod
+          ? `Faculty-wise days present, theory lectures and practicals taught in ${scope.branch}.`
+          : `Faculty-wise days present, theory lectures and practicals taught in ${scope.dept}, across all branches.`
+      }
+      breadcrumbs={crumbs(scope.login, 'Reports')}
+      headerAction={<scope.Switcher />}
     >
-      <TeachingReport department={dept} />
+      <TeachingReport department={scope.dept} branch={scope.branch} />
     </FormPage>
   );
 }

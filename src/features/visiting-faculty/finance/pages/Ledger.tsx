@@ -1,5 +1,6 @@
 import { FormCard, FormPage, GridPanel } from 'shared/new-components';
 import { crumbs } from '../../components/hooks';
+import LimitMeter from '../../components/LimitMeter';
 import { UniqueIdChip } from '../../components/ui';
 import { useVisitingFacultyStore } from '../../store';
 import { inr, periodLabel } from '../../utils';
@@ -108,6 +109,12 @@ export default function Ledger() {
             {
               header: 'Awaiting',
               cell: (r: LedgerRow) => <span>{inr(r.pending)}</span>,
+            },
+            {
+              header: 'Limit Meter',
+              cell: (r: LedgerRow) => (
+                <LimitMeter uniqueId={r.uniqueId} period={r.period} compact />
+              ),
             },
             {
               header: 'Balance under Limit',

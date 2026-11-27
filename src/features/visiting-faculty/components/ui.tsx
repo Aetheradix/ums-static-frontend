@@ -7,7 +7,13 @@ import {
 import { DEPARTMENT_OPTIONS, deptName } from '../data';
 import { useVisitingFacultyStore } from '../store';
 import type { Application } from '../types';
-import { applicationVariant, formatDate, makeUniqueId } from '../utils';
+import {
+  applicationVariant,
+  formatDate,
+  isReapply,
+  makeUniqueId,
+  semesterLabel,
+} from '../utils';
 
 type Option = { id: string; text: string };
 
@@ -100,11 +106,52 @@ export function UniqueIdChip({ value }: { value: string }) {
   );
 }
 
+/** New faculty vs re-applying faculty — shown on every application screen. */
+export function ApplicationTypeBadge({
+  app,
+  showDetail = true,
+}: {
+  app: Pick<Application, 'applicationType' | 'reapplyFor'>;
+  showDetail?: boolean;
+}) {
+  const reapply = isReapply(app);
+  return (
+    <div className="flex flex-col items-start gap-0.5">
+      <StatusBadge
+        label={reapply ? 'Re-apply Faculty' : 'New Faculty'}
+        variant={reapply ? 'warning' : 'info'}
+      />
+      {reapply && showDetail && app.reapplyFor && (
+        <span className="text-[11px] text-slate-500 dark:text-slate-400">
+          {app.reapplyFor}
+        </span>
+      )}
+    </div>
+  );
+}
+
 /** Everything the applicant submitted, on one screen (stage J2). */
 export function ApplicationDetails({ app }: { app: Application }) {
   const list = (v: string[]) => v.filter(Boolean).join(', ') || '—';
   return (
     <div className="flex flex-col gap-4">
+      <StageNote tone={isReapply(app) ? 'warning' : 'info'}>
+        {isReapply(app) ? (
+          <>
+            <b>Re-apply Faculty</b> — already registered with DAVV, applying for{' '}
+            {app.reapplyFor === 'Another Subject'
+              ? 'another subject in the same UTD Department'
+              : 'another UTD Department'}
+            {app.davvExperienceYears !== undefined &&
+              ` · ${app.davvExperienceYears} year(s) of experience in DAVV`}
+            .
+          </>
+        ) : (
+          <>
+            <b>New Faculty</b> — first registration with DAVV.
+          </>
+        )}
+      </StageNote>
       <PreviewSection title="Application">
         <PreviewField label="Application No." value={app.applicationNo} />
         <PreviewField
@@ -124,7 +171,11 @@ export function ApplicationDetails({ app }: { app: Application }) {
           label="Submitted On"
           value={formatDate(app.submittedOn)}
         />
-        <PreviewField label="Department" value={deptName(app.department)} />
+        <PreviewField label="UTD Department" value={deptName(app.department)} />
+        <PreviewField
+          label="Application Type"
+          value={<ApplicationTypeBadge app={app} />}
+        />
         <PreviewField label="Designation" value={app.designation} />
       </PreviewSection>
       <PreviewSection title="Personal Information">
@@ -134,18 +185,27 @@ export function ApplicationDetails({ app }: { app: Application }) {
         <PreviewField label="PAN No" value={app.pan} />
         <PreviewField label="Aadhar No" value={app.aadhar} />
         <PreviewField
-          label="Date of Appointment"
-          value={formatDate(app.dateOfAppointment)}
+          label="Total Experience"
+          value={`${app.experienceYears} years`}
         />
+        {app.davvExperienceYears !== undefined && (
+          <PreviewField
+            label="Experience in DAVV"
+            value={`${app.davvExperienceYears} years`}
+          />
+        )}
         <PreviewField label="Qualification" value={list(app.qualifications)} />
         <PreviewField label="Address" value={app.address} fullWidth />
       </PreviewSection>
       <PreviewSection title="Teaching / Lab Assignment">
         <PreviewField label="Session" value={app.session} />
-        <PreviewField label="Semester" value={app.semester} />
+        <PreviewField
+          label="Semester Period"
+          value={semesterLabel(app.semester)}
+        />
         <PreviewField label="Program" value={list(app.programs)} />
         <PreviewField label="Branch" value={list(app.branches)} />
-        <PreviewField label="Year" value={list(app.years)} />
+        <PreviewField label="Semester" value={list(app.semesters)} />
         <PreviewField label="Subjects" value={list(app.subjects)} />
         <PreviewField label="Labs" value={list(app.labs)} />
         <PreviewField
@@ -167,6 +227,14 @@ export function ApplicationDetails({ app }: { app: Application }) {
           value={
             <span className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400">
               <i className="pi pi-file-pdf" /> {app.qualificationDocument}
+            </span>
+          }
+        />
+        <PreviewField
+          label="PAN Card"
+          value={
+            <span className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400">
+              <i className="pi pi-file-pdf" /> {app.panCardDocument}
             </span>
           }
         />
@@ -204,6 +272,12 @@ export function ApplicationDetails({ app }: { app: Application }) {
                 />
               )}
             </>
+          )}
+          {app.joiningDate && (
+            <PreviewField
+              label="Joining Date"
+              value={formatDate(app.joiningDate)}
+            />
           )}
           {app.headOfficeRemarks && (
             <PreviewField

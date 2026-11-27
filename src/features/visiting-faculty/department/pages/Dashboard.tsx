@@ -7,8 +7,9 @@ import {
   StatCard,
   StatusBadge,
 } from 'shared/new-components';
+import { useScope } from '../../components/scope';
 import { crumbs, useFaculty } from '../../components/hooks';
-import { DeptSwitcher, UniqueIdChip } from '../../components/ui';
+import { ApplicationTypeBadge, UniqueIdChip } from '../../components/ui';
 import { deptName } from '../../data';
 import { useVisitingFacultyStore } from '../../store';
 import type { Application } from '../../types';
@@ -22,34 +23,45 @@ import { vfUrls } from '../../urls';
 
 export default function DepartmentDashboard() {
   const navigate = useNavigate();
-  const dept = useVisitingFacultyStore(s => s.currentDept);
+  const scope = useScope();
+  const { dept } = scope;
   const applications = useVisitingFacultyStore(s => s.applications);
   const logs = useVisitingFacultyStore(s => s.logs);
   const bills = useVisitingFacultyStore(s => s.bills);
   const faculty = useFaculty();
 
-  const mine = applications.filter(a => a.department === dept);
+  const mine = applications.filter(scope.appInScope);
   const count = (...statuses: Application['status'][]) =>
     mine.filter(a => statuses.includes(a.status)).length;
   const pendingLogs = logs.filter(
-    l => l.department === dept && l.status === 'Pending'
+    l => scope.logInScope(l) && l.status === 'Pending'
   ).length;
-  const joined = faculty.filter(f => f.departments.includes(dept)).length;
+  const joined = faculty.filter(scope.facultyInScope).length;
+  const scopedBills = bills.filter(scope.billInScope);
+  const billsWithMe = scopedBills.filter(b =>
+    scope.isHod
+      ? ['Prepared', 'Returned by UTD'].includes(b.status)
+      : b.status === 'Sent to UTD'
+  ).length;
   const billsAtFinance = bills.filter(
     b =>
-      b.department === dept &&
+      scope.billInScope(b) &&
       (FINANCE_PENDING.includes(b.status) ||
         b.status === 'Pending Registrar & VC Approval')
   ).length;
 
   return (
     <FormPage
-      title={`UTD Department — ${dept}`}
-      description={deptName(dept)}
-      breadcrumbs={crumbs('department', 'Dashboard')}
-      headerAction={<DeptSwitcher />}
+      title={scope.title}
+      description={
+        scope.isHod
+          ? `${deptName(dept)} — ${scope.branch}`
+          : `${deptName(dept)} — all branch HODs`
+      }
+      breadcrumbs={crumbs(scope.login, 'Dashboard')}
+      headerAction={<scope.Switcher />}
     >
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <StatCard
           title="New Applications"
           value={count('Submitted')}
@@ -65,15 +77,19 @@ export default function DepartmentDashboard() {
           subtitle="Verified candidates"
         />
         <StatCard
-          title="Merit List"
-          value={count(
-            'In Merit List',
-            'Returned by Registrar & VC',
-            'Pending Approval'
-          )}
+          title={scope.isHod ? 'Merit List' : 'Merit Lists to Review'}
+          value={
+            scope.isHod
+              ? count('In Merit List')
+              : count('Forwarded to UTD', 'Returned by Registrar & VC')
+          }
           icon="list"
           colorScheme="amber"
-          subtitle="Finalised & forwarded"
+          subtitle={
+            scope.isHod
+              ? 'Ready to forward to the UTD Department'
+              : 'Forwarded by HODs — send to Registrar & VC'
+          }
         />
         <StatCard
           title="Joined Faculty"
@@ -88,6 +104,17 @@ export default function DepartmentDashboard() {
           icon="mobile"
           colorScheme="orange"
           subtitle="Attendance & lectures to verify"
+        />
+        <StatCard
+          title={scope.isHod ? 'Bills to Send' : 'Bills to Review'}
+          value={billsWithMe}
+          icon="file-edit"
+          colorScheme="indigo"
+          subtitle={
+            scope.isHod
+              ? 'Prepared or returned — send to UTD'
+              : 'From HODs — forward to Finance'
+          }
         />
         <StatCard
           title="Bills at Finance"
@@ -117,12 +144,14 @@ export default function DepartmentDashboard() {
         subtitle="From the public registration forum"
         icon="inbox"
         headerAction={
-          <Button
-            label="All Applications"
-            variant="outlined"
-            size="small"
-            onClick={() => navigate(vfUrls.department.applications)}
-          />
+          scope.isHod ? (
+            <Button
+              label="All Applications"
+              variant="outlined"
+              size="small"
+              onClick={() => navigate(vfUrls.hod.applications)}
+            />
+          ) : undefined
         }
       >
         <GridPanel
@@ -138,6 +167,10 @@ export default function DepartmentDashboard() {
               ),
             },
             { field: 'fullName', header: 'Name' },
+            {
+              header: 'Faculty Type',
+              cell: (a: Application) => <ApplicationTypeBadge app={a} />,
+            },
             {
               header: 'Submitted',
               cell: (a: Application) => (

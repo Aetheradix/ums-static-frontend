@@ -8,6 +8,7 @@ import {
   StatusBadge,
 } from 'shared/new-components';
 import { crumbs } from '../../components/hooks';
+import LimitMeter from '../../components/LimitMeter';
 import { UniqueIdChip } from '../../components/ui';
 import { useVisitingFacultyStore } from '../../store';
 import type { Bill } from '../../types';
@@ -101,6 +102,12 @@ export default function FinanceDashboard() {
             {
               header: 'Bill',
               cell: (b: Bill) => <span>{inr(b.billAmount)}</span>,
+            },
+            {
+              header: 'This Month — All UTDs',
+              cell: (b: Bill) => (
+                <LimitMeter uniqueId={b.uniqueId} period={b.period} compact />
+              ),
             },
             {
               header: 'Payable',

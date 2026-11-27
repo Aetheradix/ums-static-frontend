@@ -17,6 +17,7 @@ const STAGES: { label: string; reached: ApplicationStatus[] }[] = [
       'Interview Scheduled',
       'Not Selected',
       'In Merit List',
+      'Forwarded to UTD',
       'Pending Approval',
       'Returned by Registrar & VC',
       'Joined',
@@ -27,6 +28,7 @@ const STAGES: { label: string; reached: ApplicationStatus[] }[] = [
     reached: [
       'Not Selected',
       'In Merit List',
+      'Forwarded to UTD',
       'Pending Approval',
       'Returned by Registrar & VC',
       'Joined',
@@ -36,6 +38,7 @@ const STAGES: { label: string; reached: ApplicationStatus[] }[] = [
     label: 'Merit List',
     reached: [
       'In Merit List',
+      'Forwarded to UTD',
       'Pending Approval',
       'Returned by Registrar & VC',
       'Joined',

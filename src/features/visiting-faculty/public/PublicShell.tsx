@@ -1,8 +1,9 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { vfUrls } from '../urls';
 
 /** DAVV-branded chrome for the public registration forum — no sign-in. */
 export default function PublicShell() {
+  const { pathname } = useLocation();
   const tab = ({ isActive }: { isActive: boolean }) =>
     `rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
       isActive
@@ -27,7 +28,10 @@ export default function PublicShell() {
             </p>
           </div>
           <nav className="flex gap-2">
-            <NavLink to={vfUrls.public.register} end className={tab}>
+            <NavLink
+              to={vfUrls.public.register}
+              className={() => tab({ isActive: !pathname.endsWith('/track') })}
+            >
               Registration
             </NavLink>
             <NavLink to={vfUrls.public.track} className={tab}>

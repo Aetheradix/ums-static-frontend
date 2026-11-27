@@ -1736,10 +1736,101 @@ export const menuConfig: Menu.MenuItem[] = [
         ],
       },
       {
+        label: 'HOD Login',
+        slug: 'vf-hod-login',
+        description:
+          'Branch HOD (Computer Engineering, IT, Mechanical, Civil…) — applications, scrutiny, interview, merit list, attendance and bills of the branch.',
+        path: '/home/sub-menu/vf-hod-login',
+        icon: 'supervisor_account',
+        colorScheme: 'indigo',
+        navigationStyle: 'sidebar',
+        children: [
+          {
+            label: 'Dashboard',
+            slug: 'vf-hod-dashboard',
+            description: 'Branch applications, faculty and bills at a glance.',
+            path: '/visiting-faculty/hod/dashboard',
+            icon: 'dashboard',
+            colorScheme: 'blue',
+          },
+          {
+            label: 'Applications',
+            slug: 'vf-hod-applications',
+            description: 'View, verify or reject applications for your branch.',
+            path: '/visiting-faculty/hod/applications',
+            icon: 'inbox',
+            colorScheme: 'purple',
+          },
+          {
+            label: 'Scrutiny List',
+            slug: 'vf-hod-scrutiny',
+            description:
+              'Verified applicants — fix the interview date, venue and committee.',
+            path: '/visiting-faculty/hod/scrutiny',
+            icon: 'checklist',
+            colorScheme: 'indigo',
+          },
+          {
+            label: 'Interview',
+            slug: 'vf-hod-interview',
+            description:
+              'Scheduled interviews — record the committee result and marks.',
+            path: '/visiting-faculty/hod/interview',
+            icon: 'groups',
+            colorScheme: 'purple',
+          },
+          {
+            label: 'Merit List',
+            slug: 'vf-hod-merit-list',
+            description:
+              'Rank finalised candidates and forward them to the UTD Department.',
+            path: '/visiting-faculty/hod/merit-list',
+            icon: 'format_list_numbered',
+            colorScheme: 'amber',
+          },
+          {
+            label: 'Joined Faculty',
+            slug: 'vf-hod-faculty',
+            description:
+              'Approved faculty of your branch — enter the joining date once.',
+            path: '/visiting-faculty/hod/faculty',
+            icon: 'badge',
+            colorScheme: 'green',
+          },
+          {
+            label: 'Attendance & Lectures',
+            slug: 'vf-hod-attendance',
+            description:
+              'Verify attendance and lectures entered from the mobile app.',
+            path: '/visiting-faculty/hod/attendance',
+            icon: 'fact_check',
+            colorScheme: 'orange',
+          },
+          {
+            label: 'Bills',
+            slug: 'vf-hod-bills',
+            description:
+              'Prepare monthly bills and send them to the UTD Department.',
+            path: '/visiting-faculty/hod/bills',
+            icon: 'receipt_long',
+            colorScheme: 'teal',
+          },
+          {
+            label: 'Reports',
+            slug: 'vf-hod-reports',
+            description:
+              'Faculty-wise lectures and practicals taught in your branch.',
+            path: '/visiting-faculty/hod/reports',
+            icon: 'assessment',
+            colorScheme: 'pink',
+          },
+        ],
+      },
+      {
         label: 'UTD Department Login',
         slug: 'vf-department-login',
         description:
-          'Verify applications, scrutiny & interview, merit list, attendance verification and bills.',
+          'Review merit lists and bills forwarded by the branch HODs; forward to the Registrar & VC and Finance.',
         path: '/home/sub-menu/vf-department-login',
         icon: 'apartment',
         colorScheme: 'blue',
@@ -1748,71 +1839,44 @@ export const menuConfig: Menu.MenuItem[] = [
           {
             label: 'Dashboard',
             slug: 'vf-dept-dashboard',
-            description: 'Applications, faculty and bills at a glance.',
+            description:
+              'Merit lists and bills waiting for review, at a glance.',
             path: '/visiting-faculty/department/dashboard',
             icon: 'dashboard',
             colorScheme: 'blue',
           },
           {
-            label: 'Applications',
-            slug: 'vf-dept-applications',
+            label: 'Merit List Review',
+            slug: 'vf-dept-merit-review',
             description:
-              'View, verify or reject applications from the public forum.',
-            path: '/visiting-faculty/department/applications',
-            icon: 'inbox',
-            colorScheme: 'purple',
-          },
-          {
-            label: 'Scrutiny List',
-            slug: 'vf-dept-scrutiny',
-            description:
-              'Verified applicants — fix the interview date, venue and committee.',
-            path: '/visiting-faculty/department/scrutiny',
-            icon: 'checklist',
-            colorScheme: 'indigo',
-          },
-          {
-            label: 'Interview',
-            slug: 'vf-dept-interview',
-            description:
-              'Scheduled interviews — record the committee result and marks.',
-            path: '/visiting-faculty/department/interview',
-            icon: 'groups',
-            colorScheme: 'purple',
-          },
-          {
-            label: 'Merit List',
-            slug: 'vf-dept-merit-list',
-            description:
-              'Rank finalised candidates and forward them to Head Office.',
-            path: '/visiting-faculty/department/merit-list',
+              'Review HOD merit lists and forward them to the Registrar & VC.',
+            path: '/visiting-faculty/department/merit-review',
             icon: 'format_list_numbered',
             colorScheme: 'amber',
           },
           {
+            label: 'Bill Review',
+            slug: 'vf-dept-bill-review',
+            description: 'Review HOD bills and forward them to Finance.',
+            path: '/visiting-faculty/department/bill-review',
+            icon: 'receipt_long',
+            colorScheme: 'teal',
+          },
+          {
             label: 'Joined Faculty',
             slug: 'vf-dept-faculty',
-            description: 'Approved visiting faculty with their Unique IDs.',
+            description: 'Approved visiting faculty of every branch.',
             path: '/visiting-faculty/department/faculty',
             icon: 'badge',
             colorScheme: 'green',
           },
           {
-            label: 'Attendance & Lectures',
+            label: 'Attendance Review',
             slug: 'vf-dept-attendance',
-            description:
-              'Verify attendance and lectures entered from the mobile app.',
+            description: 'Attendance and lectures verified by the branch HODs.',
             path: '/visiting-faculty/department/attendance',
             icon: 'fact_check',
             colorScheme: 'orange',
-          },
-          {
-            label: 'Bills',
-            slug: 'vf-dept-bills',
-            description: 'Prepare monthly bills and send them to Finance.',
-            path: '/visiting-faculty/department/bills',
-            icon: 'receipt_long',
-            colorScheme: 'teal',
           },
           {
             label: 'Reports',

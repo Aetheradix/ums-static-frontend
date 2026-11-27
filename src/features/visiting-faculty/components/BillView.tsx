@@ -6,10 +6,18 @@ import {
 import { deptName } from '../data';
 import type { Bill } from '../types';
 import { billVariant, formatDate, inr, periodLabel } from '../utils';
+import BillAttendance from './BillAttendance';
 import { UniqueIdChip } from './ui';
 
 /** The visiting faculty bill in the prescribed format (§9.5 of the flow). */
-export default function BillView({ bill }: { bill: Bill }) {
+export default function BillView({
+  bill,
+  showAttendance = true,
+}: {
+  bill: Bill;
+  /** Day-wise attendance and lectures behind the bill. */
+  showAttendance?: boolean;
+}) {
   return (
     <div className="flex flex-col gap-4">
       <PreviewSection title="Bill">
@@ -103,6 +111,31 @@ export default function BillView({ bill }: { bill: Bill }) {
         {bill.paidOn &&
           ` · Paid on ${formatDate(bill.paidOn)}${bill.transactionRef ? ` (${bill.transactionRef})` : ''}.`}
       </p>
+
+      {(bill.branch || bill.sentToUtdOn || bill.utdRemarks) && (
+        <div className="flex flex-wrap gap-x-6 gap-y-1 rounded-lg bg-slate-50 px-4 py-2 text-xs text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+          {bill.branch && (
+            <span>
+              Prepared by: <b>{bill.branch} HOD</b>
+            </span>
+          )}
+          {bill.sentToUtdOn && (
+            <span>Sent to UTD: {formatDate(bill.sentToUtdOn)}</span>
+          )}
+          {bill.utdForwardedOn && (
+            <span>
+              UTD forwarded to Finance: {formatDate(bill.utdForwardedOn)}
+            </span>
+          )}
+          {bill.utdRemarks && (
+            <span className="text-red-600 dark:text-red-400">
+              UTD remarks: {bill.utdRemarks}
+            </span>
+          )}
+        </div>
+      )}
+
+      {showAttendance && <BillAttendance bill={bill} />}
     </div>
   );
 }

@@ -131,6 +131,7 @@ export function applicationVariant(status: ApplicationStatus): BadgeVariant {
     case 'Returned by Registrar & VC':
       return 'warning';
     case 'In Merit List':
+    case 'Forwarded to UTD':
     case 'Pending Approval':
       return 'info';
     case 'In Scrutiny List':
@@ -157,7 +158,10 @@ export function billVariant(status: BillStatus): BadgeVariant {
       return 'danger';
     case 'Sent to Finance':
     case 'Under Verification':
+    case 'Sent to UTD':
       return 'info';
+    case 'Returned by UTD':
+      return 'danger';
     case 'Pending Registrar & VC Approval':
       return 'warning';
     case 'Approved by Registrar & VC':
@@ -239,4 +243,47 @@ export function deptBatch(
     !needsApproval ||
     unpaid.every(b => b.status === 'Approved by Registrar & VC');
   return { items, total, needsApproval, awaiting, approved };
+}
+
+/** Semester period shown to users — stored as Odd (July–Dec) / Even (Jan–June). */
+export const semesterLabel = (s?: string) =>
+  s === 'Odd' ? 'July – Dec' : s === 'Even' ? 'Jan – June' : '—';
+
+export const isReapply = (a: { applicationType?: string }) =>
+  a.applicationType === 'Re-apply';
+
+/**
+ * Where one faculty stands against the monthly limit, across every UTD and
+ * branch: what is already paid, what is left, and which bills are still on
+ * their way (at the HOD, UTD, Finance or Registrar & VC).
+ */
+export function facultyMonthStatus(
+  uniqueId: string,
+  period: string,
+  bills: Bill[],
+  rates: RateMaster
+) {
+  const month = bills.filter(
+    b => b.uniqueId === uniqueId && b.period === period
+  );
+  const paidBills = month.filter(b => b.paidOn);
+  const paid = paidBills.reduce((s, b) => s + (b.payable ?? 0), 0);
+  const pendingBills = month.filter(b => !b.paidOn);
+  const pending = pendingBills.reduce((s, b) => s + b.billAmount, 0);
+  const balance = Math.max(rates.limit - paid, 0);
+  return {
+    month,
+    paid,
+    balance,
+    pending,
+    /** Pending bills that will not fit under the limit. */
+    overBy: Math.max(pending - balance, 0),
+    byDept: month.map(b => ({
+      department: b.department,
+      branch: b.branch,
+      amount: b.paidOn ? (b.payable ?? 0) : b.billAmount,
+      paid: !!b.paidOn,
+      status: b.status,
+    })),
+  };
 }
