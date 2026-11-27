@@ -13,6 +13,7 @@ import {
   Tabs,
 } from 'shared/new-components';
 import BillView from '../../components/BillView';
+import LimitMeter from '../../components/LimitMeter';
 import { crumbs } from '../../components/hooks';
 import { StageNote, UniqueIdChip } from '../../components/ui';
 import { DEPARTMENTS, deptName } from '../../data';
@@ -110,6 +111,8 @@ export default function FinanceBills() {
 
   const [openBillId, setOpenBillId] = useState<string | null>(null);
   const [openBatchId, setOpenBatchId] = useState<string | null>(null);
+  /** Department batch to return to after viewing one faculty's bill. */
+  const [backToBatch, setBackToBatch] = useState<string | null>(null);
   const [forwarding, setForwarding] = useState<BatchRow | null>(null);
   const [txnRef, setTxnRef] = useState('');
   const [remarks, setRemarks] = useState('');
@@ -128,55 +131,60 @@ export default function FinanceBills() {
           .map(b => `${b.department}|${b.period}`)
       ),
     ];
-    return keys
-      .map(id => {
-        const [department, p] = id.split('|');
-        const batch = deptBatch(department, p, bills, rates);
-        const items = batch.items;
-        const unpaid = items.filter(b => !b.paidOn);
-        const stage: Stage = !unpaid.length
-          ? 'Paid'
-          : batch.awaiting
-            ? 'With Registrar & VC'
-            : !batch.needsApproval
-              ? 'Verify & Pay'
-              : batch.approved
-                ? 'VC Approved — Process Payment'
-                : 'Forward to Registrar & VC';
-        const approvedItem = items.find(b => b.approvedOn);
-        return {
-          id,
-          department,
-          departmentName: deptName(department),
-          period: p,
-          items,
-          count: items.length,
-          total: batch.total,
-          paid: items.reduce(
-            (s, b) => s + (b.paidOn ? (b.payable ?? 0) : 0),
-            0
-          ),
-          needsApproval: batch.needsApproval,
-          stage,
-          receivedOn: items.map(b => b.billDate).sort()[0],
-          sentForApprovalOn: items.find(b => b.sentForApprovalOn)
-            ?.sentForApprovalOn,
-          approvedOn: approvedItem?.approvedOn,
-          approvedBy: approvedItem?.approvedBy,
-          approvalRemarks: items.find(b => b.approvalRemarks)?.approvalRemarks,
-          paidOn: unpaid.length
-            ? undefined
-            : items
-                .map(b => b.paidOn ?? '')
-                .sort()
-                .reverse()[0],
-        };
-      })
-      .sort(
-        (a, b) =>
-          b.period.localeCompare(a.period) ||
-          a.department.localeCompare(b.department)
-      );
+    return (
+      keys
+        .map(id => {
+          const [department, p] = id.split('|');
+          const batch = deptBatch(department, p, bills, rates);
+          const items = batch.items;
+          const unpaid = items.filter(b => !b.paidOn);
+          const stage: Stage = !unpaid.length
+            ? 'Paid'
+            : batch.awaiting
+              ? 'With Registrar & VC'
+              : !batch.needsApproval
+                ? 'Verify & Pay'
+                : batch.approved
+                  ? 'VC Approved — Process Payment'
+                  : 'Forward to Registrar & VC';
+          const approvedItem = items.find(b => b.approvedOn);
+          return {
+            id,
+            department,
+            departmentName: deptName(department),
+            period: p,
+            items,
+            count: items.length,
+            total: batch.total,
+            paid: items.reduce(
+              (s, b) => s + (b.paidOn ? (b.payable ?? 0) : 0),
+              0
+            ),
+            needsApproval: batch.needsApproval,
+            stage,
+            receivedOn: items.map(b => b.billDate).sort()[0],
+            sentForApprovalOn: items.find(b => b.sentForApprovalOn)
+              ?.sentForApprovalOn,
+            approvedOn: approvedItem?.approvedOn,
+            approvedBy: approvedItem?.approvedBy,
+            approvalRemarks: items.find(b => b.approvalRemarks)
+              ?.approvalRemarks,
+            paidOn: unpaid.length
+              ? undefined
+              : items
+                  .map(b => b.paidOn ?? '')
+                  .sort()
+                  .reverse()[0],
+          };
+        })
+        // Only bills that have reached Finance — HOD/UTD-stage bills stay out.
+        .filter(r => r.count > 0)
+        .sort(
+          (a, b) =>
+            b.period.localeCompare(a.period) ||
+            a.department.localeCompare(b.department)
+        )
+    );
   }, [bills, rates]);
 
   // ── Filters ─────────────────────────────────────────────────
@@ -232,6 +240,14 @@ export default function FinanceBills() {
     setTxnRef('');
     setRemarks('');
     setOpenBillId(b.id);
+  };
+
+  const closeBill = () => {
+    setOpenBillId(null);
+    if (backToBatch) {
+      setOpenBatchId(backToBatch);
+      setBackToBatch(null);
+    }
   };
 
   const showBatch = (r: BatchRow) => {
@@ -290,14 +306,23 @@ export default function FinanceBills() {
         ? `${openBill.billNo} marked Not Payable — limit already used.`
         : `${inr(billCheck.payable)} released to ${openBill.uniqueId}${billCheck.notPayable ? ` (${inr(billCheck.notPayable)} not payable)` : ''}.`
     );
-    setOpenBillId(null);
+    closeBill();
   };
 
   // ── Columns ─────────────────────────────────────────────────
   const batchColumns: Controls.ColumnProps<BatchRow>[] = [
     { field: 'department', header: 'UTD', sortable: true },
     { header: 'Month', cell: r => <span>{periodLabel(r.period)}</span> },
-    { field: 'count', header: 'Bills' },
+    { field: 'count', header: 'Faculty Bills' },
+    {
+      header: 'Theory / Practical',
+      cell: r => (
+        <span>
+          {r.items.reduce((s, b) => s + b.theoryCount, 0)} /{' '}
+          {r.items.reduce((s, b) => s + b.practicalCount, 0)}
+        </span>
+      ),
+    },
     {
       header: 'Department Total',
       cell: r => (
@@ -382,6 +407,10 @@ export default function FinanceBills() {
           )}
         </span>
       ),
+    },
+    {
+      header: 'This Month — All UTDs',
+      cell: b => <LimitMeter uniqueId={b.uniqueId} period={b.period} compact />,
     },
     {
       header: 'Status',
@@ -525,7 +554,7 @@ export default function FinanceBills() {
           onTabChange={e => setTab(e.index)}
           tabs={[
             {
-              title: `Department-wise Bills (${shownBatches.length})`,
+              title: `Department Summary (${shownBatches.length})`,
               content: <GridPanel data={shownBatches} columns={batchColumns} />,
             },
             {
@@ -806,6 +835,16 @@ export default function FinanceBills() {
                   },
                 },
                 {
+                  header: 'This Month — All UTDs',
+                  cell: (b: Bill) => (
+                    <LimitMeter
+                      uniqueId={b.uniqueId}
+                      period={b.period}
+                      compact
+                    />
+                  ),
+                },
+                {
                   header: 'Not Payable',
                   cell: (b: Bill) => {
                     const p = preview.find(r => r.bill.id === b.id);
@@ -824,6 +863,22 @@ export default function FinanceBills() {
                     <StatusBadge
                       label={b.status}
                       variant={billVariant(b.status)}
+                    />
+                  ),
+                },
+                {
+                  header: 'Faculty Bill',
+                  cell: (b: Bill) => (
+                    <Button
+                      label="View Details"
+                      icon="eye"
+                      variant="text"
+                      size="small"
+                      onClick={() => {
+                        setBackToBatch(openBatch.id);
+                        setOpenBatchId(null);
+                        showBill(b);
+                      }}
                     />
                   ),
                 },
@@ -864,7 +919,7 @@ export default function FinanceBills() {
       {/* ── Single bill ───────────────────────────────────── */}
       <FormPopup
         visible={!!openBill}
-        onHide={() => setOpenBillId(null)}
+        onHide={closeBill}
         title={openBill ? `Bill ${openBill.billNo}` : 'Bill'}
         subtitle={
           openBill
@@ -875,11 +930,7 @@ export default function FinanceBills() {
         footer={
           openBill && !openBill.paidOn && billBatch?.approved ? (
             <div className="flex justify-end gap-2">
-              <Button
-                label="Close"
-                variant="outlined"
-                onClick={() => setOpenBillId(null)}
-              />
+              <Button label="Close" variant="outlined" onClick={closeBill} />
               <Button
                 label={
                   billCheck?.payable
@@ -903,9 +954,10 @@ export default function FinanceBills() {
                 {inr(rates.approvalThreshold)}.{' '}
                 {billBatch.awaiting
                   ? 'Awaiting Registrar & VC approval; payment can be released after approval.'
-                  : 'Forward the department bills to the Registrar & VC from the Department-wise Bills tab.'}
+                  : 'Forward the department bills to the Registrar & VC from the Department Summary tab.'}
               </StageNote>
             )}
+            <LimitMeter uniqueId={openBill.uniqueId} period={openBill.period} />
             <BillView bill={openBill} />
             <FormCard
               title={`Consolidated Record — ${openBill.uniqueId}`}

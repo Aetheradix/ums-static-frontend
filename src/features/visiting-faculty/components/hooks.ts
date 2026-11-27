@@ -29,6 +29,7 @@ export function useFaculty() {
 }
 
 const LOGINS = {
+  hod: { label: 'HOD Login', to: vfUrls.hod.portal },
   department: { label: 'UTD Department Login', to: vfUrls.department.portal },
   headOffice: {
     label: 'Registrar & VC Sir Login',

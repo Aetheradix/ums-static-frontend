@@ -1,19 +1,26 @@
 import { useMemo, useState } from 'react';
 import { ToastService } from 'services';
 import { Button } from 'shared/components/buttons';
-import { TextArea } from 'shared/components/forms';
+import { DropDownList, TextArea } from 'shared/components/forms';
+import {
+  FACULTY_TYPE_OPTIONS,
+  hodBranchOf,
+  matchesFacultyType,
+} from '../../data';
 import {
   FormCard,
+  FormGrid,
   FormPage,
   FormPopup,
   GridPanel,
   StatusBadge,
   Tabs,
 } from 'shared/new-components';
+import { useScope } from '../../components/scope';
 import { crumbs } from '../../components/hooks';
 import {
   ApplicationDetails,
-  DeptSwitcher,
+  ApplicationTypeBadge,
   StageNote,
   UniqueIdChip,
 } from '../../components/ui';
@@ -29,6 +36,7 @@ const TABS: { title: string; statuses: Application['status'][] | null }[] = [
       'In Scrutiny List',
       'Interview Scheduled',
       'In Merit List',
+      'Forwarded to UTD',
       'Pending Approval',
       'Returned by Registrar & VC',
       'Joined',
@@ -41,7 +49,8 @@ const TABS: { title: string; statuses: Application['status'][] | null }[] = [
 
 /** Stage J2 — the department verifies or rejects each application. */
 export default function Applications() {
-  const dept = useVisitingFacultyStore(s => s.currentDept);
+  const scope = useScope();
+  const { dept } = scope;
   const applications = useVisitingFacultyStore(s => s.applications);
   const verifyApplication = useVisitingFacultyStore(s => s.verifyApplication);
   const rejectApplication = useVisitingFacultyStore(s => s.rejectApplication);
@@ -50,9 +59,12 @@ export default function Applications() {
   const [viewing, setViewing] = useState<Application | null>(null);
   const [rejecting, setRejecting] = useState<Application | null>(null);
   const [reason, setReason] = useState('');
+  const [facultyType, setFacultyType] = useState('');
 
   const pans = useMemo(() => joinedPans(applications), [applications]);
-  const mine = applications.filter(a => a.department === dept);
+  const mine = applications.filter(
+    a => scope.appInScope(a) && matchesFacultyType(a, facultyType)
+  );
 
   const rowsFor = (statuses: Application['status'][] | null) =>
     mine.filter(a => !statuses || statuses.includes(a.status));
@@ -94,6 +106,18 @@ export default function Applications() {
       ),
     },
     { field: 'fullName', header: 'Name', sortable: true },
+    {
+      header: 'Faculty Type',
+      cell: a => <ApplicationTypeBadge app={a} />,
+    },
+    ...(scope.isHod
+      ? []
+      : [
+          {
+            header: 'Branch (HOD)',
+            cell: (a: Application) => <span>{hodBranchOf(a)}</span>,
+          },
+        ]),
     { field: 'pan', header: 'PAN' },
     {
       header: 'Qualification',
@@ -121,7 +145,7 @@ export default function Applications() {
             size="small"
             onClick={() => setViewing(a)}
           />
-          {a.status === 'Submitted' && (
+          {scope.isHod && a.status === 'Submitted' && (
             <>
               <Button
                 label="Verify"
@@ -147,9 +171,13 @@ export default function Applications() {
   return (
     <FormPage
       title="Applications"
-      description="Applications from the public forum for your department. View the form and documents, then verify or reject."
-      breadcrumbs={crumbs('department', 'Applications')}
-      headerAction={<DeptSwitcher />}
+      description={
+        scope.isHod
+          ? `Applications for ${scope.branch} in ${dept}. View the form and documents, then verify or reject.`
+          : `All applications of ${dept}, across its branch HODs. HODs verify, scrutinise, interview and prepare the merit list — the UTD Department reviews.`
+      }
+      breadcrumbs={crumbs(scope.login, 'Applications')}
+      headerAction={<scope.Switcher />}
     >
       <StageNote>
         The Unique ID (first 4 letters of the name + last 4 characters of the
@@ -157,6 +185,18 @@ export default function Applications() {
         already belongs to a joined visiting faculty — on approval this
         department is added under the same ID.
       </StageNote>
+      <FormCard title="Filter" icon="filter">
+        <FormGrid columns={3}>
+          <DropDownList
+            label="Faculty Type"
+            data={FACULTY_TYPE_OPTIONS}
+            textField="text"
+            valueField="id"
+            value={facultyType}
+            onChange={v => setFacultyType((v as string) ?? '')}
+          />
+        </FormGrid>
+      </FormCard>
       <FormCard>
         <Tabs
           activeIndex={tab}
@@ -182,7 +222,7 @@ export default function Applications() {
         subtitle={viewing?.fullName}
         size="xl"
         footer={
-          viewing?.status === 'Submitted' ? (
+          scope.isHod && viewing?.status === 'Submitted' ? (
             <div className="flex justify-end gap-2">
               <Button
                 label="Reject"

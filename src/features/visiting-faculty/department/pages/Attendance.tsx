@@ -11,8 +11,9 @@ import {
   StatusBadge,
 } from 'shared/new-components';
 import SelectableGrid from '../../components/SelectableGrid';
+import { useScope } from '../../components/scope';
 import { crumbs, useFaculty, useSelection } from '../../components/hooks';
-import { DeptSwitcher, StageNote, UniqueIdChip } from '../../components/ui';
+import { StageNote, UniqueIdChip } from '../../components/ui';
 import { useVisitingFacultyStore } from '../../store';
 import type { DailyLog, LogStatus, TeachingSession } from '../../types';
 import {
@@ -30,14 +31,15 @@ import {
  * by teacher and date. The department verifies them before billing.
  */
 export default function Attendance() {
-  const dept = useVisitingFacultyStore(s => s.currentDept);
+  const scope = useScope();
+  const { dept } = scope;
   const logs = useVisitingFacultyStore(s => s.logs);
   const rates = useVisitingFacultyStore(s => s.rates);
   const verifyLogs = useVisitingFacultyStore(s => s.verifyLogs);
   const rejectLog = useVisitingFacultyStore(s => s.rejectLog);
   const faculty = useFaculty();
 
-  const deptLogs = logs.filter(l => l.department === dept);
+  const deptLogs = logs.filter(scope.logInScope);
   const periods = useMemo(
     () => [...new Set(deptLogs.map(l => periodOf(l.date)))].sort().reverse(),
     [deptLogs]
@@ -114,9 +116,13 @@ export default function Attendance() {
   return (
     <FormPage
       title="Attendance & Lectures"
-      description="Daily attendance, theory lectures and practicals entered by visiting faculty from the mobile app. Verify them before preparing the bill."
-      breadcrumbs={crumbs('department', 'Attendance & Lectures')}
-      headerAction={<DeptSwitcher />}
+      description={
+        scope.isHod
+          ? `Daily attendance, theory lectures and practicals entered from the mobile app by ${scope.branch} faculty. Verify them before preparing the bill.`
+          : `Attendance and lectures of ${dept} faculty, verified by the branch HODs. The UTD Department reviews them here — verification is done by the HOD.`
+      }
+      breadcrumbs={crumbs(scope.login, 'Attendance & Lectures')}
+      headerAction={<scope.Switcher />}
     >
       <FormCard title="Filters" icon="filter">
         <FormGrid columns={3}>
@@ -132,12 +138,10 @@ export default function Attendance() {
             label="Faculty"
             data={[
               { id: '', text: 'All Faculty' },
-              ...faculty
-                .filter(f => f.departments.includes(dept))
-                .map(f => ({
-                  id: f.uniqueId,
-                  text: `${f.fullName} (${f.uniqueId})`,
-                })),
+              ...faculty.filter(scope.facultyInScope).map(f => ({
+                id: f.uniqueId,
+                text: `${f.fullName} (${f.uniqueId})`,
+              })),
             ]}
             textField="text"
             valueField="id"
@@ -206,7 +210,11 @@ export default function Attendance() {
 
       <FormCard
         title="Mobile App Entries"
-        subtitle="Select pending entries to verify in bulk"
+        subtitle={
+          scope.isHod
+            ? 'Select pending entries to verify in bulk'
+            : 'Review only — HODs verify entries of their branch'
+        }
         icon="mobile"
       >
         <StageNote>
@@ -220,18 +228,31 @@ export default function Attendance() {
             selected={rows.filter(r => sel.selected.has(r.id))}
             onSelectionChange={r => sel.set(r.map(x => x.id))}
             noun="entry"
-            isSelectable={l => l.status === 'Pending'}
-            actions={[
-              {
-                label: 'Verify Selected',
-                icon: 'check',
-                variant: 'success',
-                onClick: verifySelected,
-              },
-            ]}
+            isSelectable={l => scope.isHod && l.status === 'Pending'}
+            actions={
+              scope.isHod
+                ? [
+                    {
+                      label: 'Verify Selected',
+                      icon: 'check',
+                      variant: 'success',
+                      onClick: verifySelected,
+                    },
+                  ]
+                : []
+            }
             columns={[
               { header: 'Date', cell: l => formatDate(l.date) },
               { header: 'Faculty', cell: l => nameOf(l.uniqueId) },
+              ...(scope.isHod
+                ? []
+                : [
+                    {
+                      header: 'Branch (HOD)',
+                      cell: (l: DailyLog) =>
+                        scope.branchOfFaculty(l.uniqueId, l.department) ?? '—',
+                    },
+                  ]),
               {
                 header: 'Unique ID',
                 cell: l => <UniqueIdChip value={l.uniqueId} />,
@@ -259,7 +280,7 @@ export default function Attendance() {
                       size="small"
                       onClick={() => setViewing(l)}
                     />
-                    {l.status === 'Pending' && (
+                    {scope.isHod && l.status === 'Pending' && (
                       <Button
                         label="Reject"
                         icon="times"
@@ -291,7 +312,7 @@ export default function Attendance() {
         }
         size="lg"
         footer={
-          viewing?.status === 'Pending' ? (
+          scope.isHod && viewing?.status === 'Pending' ? (
             <div className="flex justify-end gap-2">
               <Button
                 label="Reject"

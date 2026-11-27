@@ -1,31 +1,32 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import Applications from './pages/Applications';
+import { ScopeProvider } from '../components/scope';
 import Attendance from './pages/Attendance';
-import Bills from './pages/Bills';
+import BillReview from './pages/BillReview';
 import Dashboard from './pages/Dashboard';
 import Faculty from './pages/Faculty';
-import MeritList from './pages/MeritList';
+import MeritReview from './pages/MeritReview';
 import Reports from './pages/Reports';
-import Interview from './pages/Interview';
-import Scrutiny from './pages/Scrutiny';
 import { vfUrls } from '../urls';
 
+/**
+ * UTD Department login — reviews what its branch HODs forward: merit lists
+ * go on to the Registrar & VC, bills go on to Finance.
+ */
 export default function DepartmentLogin() {
   return (
-    <Routes>
-      <Route
-        index
-        element={<Navigate to={vfUrls.department.portal} replace />}
-      />
-      <Route path="dashboard" element={<Dashboard />} />
-      <Route path="applications" element={<Applications />} />
-      <Route path="scrutiny" element={<Scrutiny />} />
-      <Route path="interview" element={<Interview />} />
-      <Route path="merit-list" element={<MeritList />} />
-      <Route path="faculty" element={<Faculty />} />
-      <Route path="attendance" element={<Attendance />} />
-      <Route path="bills" element={<Bills />} />
-      <Route path="reports" element={<Reports />} />
-    </Routes>
+    <ScopeProvider role="utd">
+      <Routes>
+        <Route
+          index
+          element={<Navigate to={vfUrls.department.portal} replace />}
+        />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="merit-review" element={<MeritReview />} />
+        <Route path="faculty" element={<Faculty />} />
+        <Route path="attendance" element={<Attendance />} />
+        <Route path="bill-review" element={<BillReview />} />
+        <Route path="reports" element={<Reports />} />
+      </Routes>
+    </ScopeProvider>
   );
 }

@@ -171,9 +171,8 @@ export default function MobileApp() {
                 subject code, program and topic.
               </li>
               <li>
-                Entries appear in{' '}
-                <b>UTD Department → Attendance &amp; Lectures</b> by teacher and
-                date, for verification.
+                Entries appear in <b>HOD → Attendance &amp; Lectures</b> of
+                their branch by teacher and date, for verification.
               </li>
               <li>
                 Verified entries build the monthly bill (₹400 / theory, ₹800 /

@@ -16,8 +16,13 @@ import {
   StatusBadge,
   Tabs,
 } from 'shared/new-components';
+import { useScope } from '../../components/scope';
 import { crumbs } from '../../components/hooks';
-import { DeptSwitcher, StageNote, UniqueIdChip } from '../../components/ui';
+import {
+  ApplicationTypeBadge,
+  StageNote,
+  UniqueIdChip,
+} from '../../components/ui';
 import { useVisitingFacultyStore } from '../../store';
 import type { Application } from '../../types';
 import { applicationVariant, formatDate, withUniqueId } from '../../utils';
@@ -26,7 +31,7 @@ type Row = Application & { uniqueId: string };
 
 /** Stage J4 — the committee interviews in person and records the result. */
 export default function InterviewPage() {
-  const dept = useVisitingFacultyStore(s => s.currentDept);
+  const scope = useScope();
   const applications = useVisitingFacultyStore(s => s.applications);
   const recordInterviewResult = useVisitingFacultyStore(
     s => s.recordInterviewResult
@@ -42,7 +47,7 @@ export default function InterviewPage() {
   const [remarks, setRemarks] = useState('');
 
   const mine = withUniqueId(
-    applications.filter(a => a.department === dept && a.interview)
+    applications.filter(a => scope.appInScope(a) && a.interview)
   );
   const scheduled = mine.filter(
     a =>
@@ -85,6 +90,10 @@ export default function InterviewPage() {
     { header: 'Unique ID', cell: a => <UniqueIdChip value={a.uniqueId} /> },
     { field: 'fullName', header: 'Name', sortable: true },
     {
+      header: 'Faculty Type',
+      cell: a => <ApplicationTypeBadge app={a} />,
+    },
+    {
       header: 'Interview',
       cell: a => (
         <span>
@@ -98,8 +107,8 @@ export default function InterviewPage() {
     <FormPage
       title="Interview"
       description="Candidates called for the physical interview. The committee verifies original documents, interviews in person and records the result."
-      breadcrumbs={crumbs('department', 'Interview')}
-      headerAction={<DeptSwitcher />}
+      breadcrumbs={crumbs(scope.login, 'Interview')}
+      headerAction={<scope.Switcher />}
     >
       <FormCard>
         <Tabs

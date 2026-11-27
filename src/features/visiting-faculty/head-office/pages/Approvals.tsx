@@ -13,6 +13,7 @@ import SelectableGrid from '../../components/SelectableGrid';
 import { crumbs, useSelection } from '../../components/hooks';
 import {
   ApplicationDetails,
+  ApplicationTypeBadge,
   StageNote,
   UniqueIdChip,
 } from '../../components/ui';
@@ -138,6 +139,10 @@ export default function Approvals() {
               ),
             },
             { header: 'Name', field: 'fullName' },
+            {
+              header: 'Faculty Type',
+              cell: a => <ApplicationTypeBadge app={a} />,
+            },
             { header: 'Qualification', cell: a => a.qualifications.join(', ') },
             { header: 'Interview Marks', cell: a => a.interview?.marks ?? '—' },
             { header: 'Forwarded On', cell: a => formatDate(a.forwardedOn) },

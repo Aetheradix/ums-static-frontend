@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import DepartmentLogin from './department';
 import FinanceLogin from './finance';
 import HeadOfficeLogin from './head-office';
+import HodLogin from './hod';
 import MobileApp from './mobile/MobileApp';
 import { vfUrls } from './urls';
 
@@ -13,6 +14,7 @@ export default function VisitingFaculty() {
   return (
     <Routes>
       <Route index element={<Navigate to={vfUrls.portal} replace />} />
+      <Route path="hod/*" element={<HodLogin />} />
       <Route path="department/*" element={<DepartmentLogin />} />
       <Route path="head-office/*" element={<HeadOfficeLogin />} />
       <Route path="finance/*" element={<FinanceLogin />} />

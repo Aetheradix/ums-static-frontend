@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import {
   DEFAULT_RATES,
+  hodBranchOf,
   SEED_APPLICATIONS,
   SEED_BILLS,
   SEED_LOGS,
@@ -49,8 +50,11 @@ interface VisitingFacultyState {
   rates: RateMaster;
   /** The UTD the department login is acting for (auth is mocked). */
   currentDept: string;
+  /** The branch HOD login being acted as (auth is mocked). */
+  currentHod: { department: string; branch: string };
 
   setCurrentDept: (code: string) => void;
+  setCurrentHod: (department: string, branch: string) => void;
   setRates: (rates: RateMaster) => void;
 
   // Joining process
@@ -67,8 +71,14 @@ interface VisitingFacultyState {
     marks: number | undefined,
     remarks: string
   ) => void;
+  /** HOD → UTD Department. */
   forwardMeritList: (ids: string[]) => void;
+  /** UTD Department → Registrar & VC. */
+  utdForwardToRegistrar: (ids: string[]) => void;
+  utdReturnToHod: (id: string, remarks: string) => void;
   approveByHeadOffice: (ids: string[]) => void;
+  /** Sets the joining date once; later calls are ignored. */
+  setJoiningDate: (appId: string, date: string) => void;
   returnByHeadOffice: (id: string, remarks: string) => void;
 
   // Mobile app
@@ -93,7 +103,11 @@ interface VisitingFacultyState {
     faculty: Faculty,
     period: string
   ) => Bill | string;
-  sendBillToFinance: (id: string) => void;
+  /** HOD → UTD Department. */
+  sendBillToUtd: (id: string) => void;
+  /** UTD Department → Finance. */
+  utdForwardBills: (ids: string[]) => void;
+  utdReturnBill: (id: string, remarks: string) => void;
   takeUpBill: (id: string) => void;
   releasePayment: (id: string, transactionRef: string, remarks: string) => void;
   forwardBatchForApproval: (department: string, period: string) => void;
@@ -116,8 +130,11 @@ export const useVisitingFacultyStore = create<VisitingFacultyState>(
     bills: SEED_BILLS,
     rates: DEFAULT_RATES,
     currentDept: 'IET',
+    currentHod: { department: 'IET', branch: 'Computer Engineering' },
 
     setCurrentDept: code => set({ currentDept: code }),
+    setCurrentHod: (department, branch) =>
+      set({ currentHod: { department, branch } }),
     setRates: rates => set({ rates }),
 
     submitApplication: (form, departments) => {
@@ -177,21 +194,47 @@ export const useVisitingFacultyStore = create<VisitingFacultyState>(
           ids.includes(a.id)
             ? {
                 ...a,
-                status: 'Pending Approval',
-                forwardedOn,
+                status: 'Forwarded to UTD',
+                hodForwardedOn: forwardedOn,
                 meritRank: ranked.indexOf(a.id) + 1,
-                headOfficeRemarks: undefined,
+                utdRemarks: undefined,
               }
             : a
         ),
       }));
     },
 
+    utdForwardToRegistrar: ids =>
+      set(s => ({
+        applications: s.applications.map(a =>
+          ids.includes(a.id)
+            ? {
+                ...a,
+                status: 'Pending Approval',
+                forwardedOn: todayIso(),
+                headOfficeRemarks: undefined,
+              }
+            : a
+        ),
+      })),
+
+    utdReturnToHod: (id, remarks) =>
+      patchApp(set, id, { status: 'In Merit List', utdRemarks: remarks }),
+
     approveByHeadOffice: ids =>
       set(s => ({
         applications: s.applications.map(a =>
           ids.includes(a.id)
             ? { ...a, status: 'Joined', joinedOn: todayIso() }
+            : a
+        ),
+      })),
+
+    setJoiningDate: (appId, date) =>
+      set(s => ({
+        applications: s.applications.map(a =>
+          a.id === appId && a.status === 'Joined' && !a.joiningDate
+            ? { ...a, joiningDate: date }
             : a
         ),
       })),
@@ -292,12 +335,31 @@ export const useVisitingFacultyStore = create<VisitingFacultyState>(
         billAmount: billAmountOf(theory, practical, rates),
         hodCertified: true,
         status: 'Prepared',
+        branch: faculty.appointments.find(a => a.department === department)
+          ?.branch,
       };
       set(s => ({ bills: [created, ...s.bills] }));
       return created;
     },
 
-    sendBillToFinance: id => patchBill(set, id, { status: 'Sent to Finance' }),
+    sendBillToUtd: id =>
+      patchBill(set, id, {
+        status: 'Sent to UTD',
+        sentToUtdOn: todayIso(),
+        utdRemarks: undefined,
+      }),
+
+    utdForwardBills: ids =>
+      set(s => ({
+        bills: s.bills.map(b =>
+          ids.includes(b.id) && b.status === 'Sent to UTD'
+            ? { ...b, status: 'Sent to Finance', utdForwardedOn: todayIso() }
+            : b
+        ),
+      })),
+
+    utdReturnBill: (id, remarks) =>
+      patchBill(set, id, { status: 'Returned by UTD', utdRemarks: remarks }),
 
     takeUpBill: id =>
       set(s => ({
@@ -437,11 +499,19 @@ export function deriveFaculty(applications: Application[]): Faculty[] {
     const uniqueId = makeUniqueId(a.fullName, a.pan);
     const existing = map.get(uniqueId);
     if (existing) {
-      existing.departments.push(a.department);
+      if (!existing.departments.includes(a.department))
+        existing.departments.push(a.department);
       existing.subjects.push(...a.subjects.filter(Boolean));
       existing.labs.push(...a.labs.filter(Boolean));
       if (a.joinedOn && a.joinedOn < existing.joinedOn)
         existing.joinedOn = a.joinedOn;
+      existing.appointments.push({
+        appId: a.id,
+        department: a.department,
+        branch: hodBranchOf(a),
+        approvedOn: a.joinedOn,
+        joiningDate: a.joiningDate,
+      });
     } else {
       map.set(uniqueId, {
         uniqueId,
@@ -453,6 +523,15 @@ export function deriveFaculty(applications: Application[]): Faculty[] {
         subjects: a.subjects.filter(Boolean),
         labs: a.labs.filter(Boolean),
         joinedOn: a.joinedOn ?? a.submittedOn,
+        appointments: [
+          {
+            appId: a.id,
+            department: a.department,
+            branch: hodBranchOf(a),
+            approvedOn: a.joinedOn,
+            joiningDate: a.joiningDate,
+          },
+        ],
       });
     }
   }

@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import PublicShell from './PublicShell';
 import RegistrationForm from './RegistrationForm';
+import RegistrationStart from './RegistrationStart';
 import TrackApplication from './TrackApplication';
 import { vfUrls } from '../urls';
 
@@ -13,7 +14,9 @@ export default function VisitingFacultyPublic() {
   return (
     <Routes>
       <Route element={<PublicShell />}>
-        <Route index element={<RegistrationForm />} />
+        <Route index element={<RegistrationStart />} />
+        <Route path="new" element={<RegistrationForm mode="new" />} />
+        <Route path="re-apply" element={<RegistrationForm mode="reapply" />} />
         <Route path="track" element={<TrackApplication />} />
         <Route
           path="*"

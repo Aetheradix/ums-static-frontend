@@ -8,15 +8,21 @@ import {
   StatusBadge,
 } from 'shared/new-components';
 import SelectableGrid from '../../components/SelectableGrid';
+import { useScope } from '../../components/scope';
 import { crumbs, useSelection } from '../../components/hooks';
-import { DeptSwitcher, StageNote, UniqueIdChip } from '../../components/ui';
+import {
+  ApplicationTypeBadge,
+  StageNote,
+  UniqueIdChip,
+} from '../../components/ui';
 import { useVisitingFacultyStore } from '../../store';
 import type { Application } from '../../types';
 import { applicationVariant, formatDate, makeUniqueId } from '../../utils';
 
 /** Stage J5 — merit list of finalised candidates, forwarded to Registrar & VC. */
 export default function MeritList() {
-  const dept = useVisitingFacultyStore(s => s.currentDept);
+  const scope = useScope();
+  const { dept } = scope;
   const applications = useVisitingFacultyStore(s => s.applications);
   const forwardMeritList = useVisitingFacultyStore(s => s.forwardMeritList);
 
@@ -24,15 +30,18 @@ export default function MeritList() {
     (b.interview?.marks ?? 0) - (a.interview?.marks ?? 0);
 
   const finalised = applications
-    .filter(
-      a =>
-        a.department === dept &&
-        (a.status === 'In Merit List' ||
-          a.status === 'Returned by Registrar & VC')
-    )
+    .filter(a => scope.appInScope(a) && a.status === 'In Merit List')
     .sort(byMarks);
   const forwarded = applications
-    .filter(a => a.department === dept && a.status === 'Pending Approval')
+    .filter(
+      a =>
+        scope.appInScope(a) &&
+        [
+          'Forwarded to UTD',
+          'Pending Approval',
+          'Returned by Registrar & VC',
+        ].includes(a.status)
+    )
     .sort((a, b) => (a.meritRank ?? 0) - (b.meritRank ?? 0));
 
   const sel = useSelection(finalised.map(a => a.id));
@@ -41,7 +50,7 @@ export default function MeritList() {
   const forward = () => {
     forwardMeritList(sel.ids);
     ToastService.success(
-      `Merit list of ${sel.ids.length} candidate(s) forwarded to Registrar & VC.`
+      `Merit list of ${sel.ids.length} candidate(s) forwarded to the ${dept} UTD Department.`
     );
     sel.clear();
     setConfirming(false);
@@ -50,14 +59,14 @@ export default function MeritList() {
   return (
     <FormPage
       title="Merit List"
-      description="Candidates finalised by the interview committee, ranked by interview marks. Forward the list to Registrar & VC for final approval."
-      breadcrumbs={crumbs('department', 'Merit List')}
-      headerAction={<DeptSwitcher />}
+      description={`Candidates of ${scope.branch} finalised by the interview committee, ranked by interview marks. Forward the merit list to the ${dept} UTD Department — it reviews and sends it to the Registrar & VC.`}
+      breadcrumbs={crumbs(scope.login, 'Merit List')}
+      headerAction={<scope.Switcher />}
     >
-      {finalised.some(a => a.status === 'Returned by Registrar & VC') && (
+      {finalised.some(a => a.utdRemarks) && (
         <StageNote tone="warning">
-          The Registrar & VC have returned one or more names with remarks.
-          Review them and forward again.
+          The UTD Department has returned one or more names with remarks. Review
+          them and forward again.
         </StageNote>
       )}
 
@@ -73,7 +82,7 @@ export default function MeritList() {
           noun="candidate"
           actions={[
             {
-              label: 'Forward to Registrar & VC',
+              label: 'Forward to UTD Department',
               icon: 'send',
               variant: 'primary',
               onClick: () => setConfirming(true),
@@ -95,6 +104,10 @@ export default function MeritList() {
               ),
             },
             { header: 'Name', field: 'fullName' },
+            {
+              header: 'Faculty Type',
+              cell: a => <ApplicationTypeBadge app={a} />,
+            },
             { header: 'Qualification', cell: a => a.qualifications.join(', ') },
             {
               header: 'Marks',
@@ -112,9 +125,9 @@ export default function MeritList() {
                     label={a.status}
                     variant={applicationVariant(a.status)}
                   />
-                  {a.headOfficeRemarks && (
+                  {a.utdRemarks && (
                     <span className="text-xs text-amber-700 dark:text-amber-300">
-                      {a.headOfficeRemarks}
+                      UTD: {a.utdRemarks}
                     </span>
                   )}
                 </div>
@@ -125,8 +138,8 @@ export default function MeritList() {
       </FormCard>
 
       <FormCard
-        title="Forwarded to Registrar & VC"
-        subtitle="Awaiting final approval"
+        title="Forwarded"
+        subtitle="With the UTD Department, or sent on by it to the Registrar & VC"
         icon="send"
       >
         <GridPanel
@@ -136,6 +149,10 @@ export default function MeritList() {
             { field: 'applicationNo', header: 'Application No.' },
             { field: 'fullName', header: 'Name' },
             {
+              header: 'Faculty Type',
+              cell: (a: Application) => <ApplicationTypeBadge app={a} />,
+            },
+            {
               header: 'Marks',
               cell: (a: Application) => (
                 <span>{a.interview?.marks ?? '—'}</span>
@@ -144,7 +161,7 @@ export default function MeritList() {
             {
               header: 'Forwarded On',
               cell: (a: Application) => (
-                <span>{formatDate(a.forwardedOn)}</span>
+                <span>{formatDate(a.hodForwardedOn ?? a.forwardedOn)}</span>
               ),
             },
             {
@@ -165,7 +182,7 @@ export default function MeritList() {
         onHide={() => setConfirming(false)}
         onConfirm={forward}
         title="Forward Merit List"
-        message={`Forward ${sel.ids.length} candidate(s) to Registrar & VC for final approval?`}
+        message={`Forward the merit list of ${sel.ids.length} candidate(s) to the ${dept} UTD Department?`}
         confirmLabel="Forward"
         variant="info"
       />

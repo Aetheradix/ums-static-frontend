@@ -11,8 +11,9 @@ import {
   StatusBadge,
 } from 'shared/new-components';
 import BillView from '../../components/BillView';
+import { useScope } from '../../components/scope';
 import { crumbs, useFaculty } from '../../components/hooks';
-import { DeptSwitcher, StageNote, UniqueIdChip } from '../../components/ui';
+import { StageNote, UniqueIdChip } from '../../components/ui';
 import { useVisitingFacultyStore } from '../../store';
 import type { Bill, Faculty } from '../../types';
 import {
@@ -38,26 +39,23 @@ interface Row {
   bill?: Bill;
 }
 
-/** Stages P1–P2 — bill prepared from verified mobile entries, sent to Finance. */
+/** Stage P1 — the branch HOD prepares the bill from verified entries and sends it to the UTD Department. */
 export default function Bills() {
-  const dept = useVisitingFacultyStore(s => s.currentDept);
+  const scope = useScope();
+  const { dept } = scope;
   const logs = useVisitingFacultyStore(s => s.logs);
   const bills = useVisitingFacultyStore(s => s.bills);
   const rates = useVisitingFacultyStore(s => s.rates);
   const prepareBill = useVisitingFacultyStore(s => s.prepareBill);
-  const sendBillToFinance = useVisitingFacultyStore(s => s.sendBillToFinance);
+  const sendBillToUtd = useVisitingFacultyStore(s => s.sendBillToUtd);
   const faculty = useFaculty();
 
   const periods = useMemo(
     () =>
-      [
-        ...new Set(
-          logs.filter(l => l.department === dept).map(l => periodOf(l.date))
-        ),
-      ]
+      [...new Set(logs.filter(scope.logInScope).map(l => periodOf(l.date)))]
         .sort()
         .reverse(),
-    [logs, dept]
+    [logs, scope.logInScope]
   );
   const [period, setPeriod] = useState('');
   const activePeriod = period || periods[1] || periods[0] || '';
@@ -65,7 +63,7 @@ export default function Bills() {
   const [search, setSearch] = useState('');
 
   const rows: Row[] = faculty
-    .filter(f => f.departments.includes(dept))
+    .filter(scope.facultyInScope)
     .map(f => {
       const own = logs.filter(
         l =>
@@ -118,17 +116,19 @@ export default function Bills() {
   };
 
   const send = (b: Bill) => {
-    sendBillToFinance(b.id);
-    ToastService.success(`Bill ${b.billNo} sent to Finance.`);
+    sendBillToUtd(b.id);
+    ToastService.success(
+      `Bill ${b.billNo} sent to the ${dept} UTD Department for review.`
+    );
     setViewing(null);
   };
 
   return (
     <FormPage
       title="Bills"
-      description="Prepare the monthly bill of each visiting faculty from verified attendance and lectures, then send it to Finance."
-      breadcrumbs={crumbs('department', 'Bills')}
-      headerAction={<DeptSwitcher />}
+      description={`Prepare the monthly bill of each ${scope.branch} visiting faculty from verified attendance and lectures, then send it to the ${dept} UTD Department. The UTD reviews it and forwards it to Finance.`}
+      breadcrumbs={crumbs(scope.login, 'Bills')}
+      headerAction={<scope.Switcher />}
     >
       <StageNote>
         Bill = (Theory × {inr(rates.theoryRate)}) + (Practical ×{' '}
@@ -236,7 +236,9 @@ export default function Bills() {
                       size="small"
                       onClick={() => setViewing(r.bill!)}
                     />
-                    {r.bill.status === 'Prepared' && (
+                    {['Prepared', 'Returned by UTD'].includes(
+                      r.bill.status
+                    ) && (
                       <Button
                         label="Send"
                         icon="send"
@@ -265,9 +267,10 @@ export default function Bills() {
         visible={!!viewing}
         onHide={() => setViewing(null)}
         title={viewing ? `Bill ${viewing.billNo}` : 'Bill'}
-        size="lg"
+        size="xl"
         footer={
-          viewing?.status === 'Prepared' ? (
+          viewing &&
+          ['Prepared', 'Returned by UTD'].includes(viewing.status) ? (
             <div className="flex justify-end gap-2">
               <Button
                 label="Close"
@@ -275,7 +278,7 @@ export default function Bills() {
                 onClick={() => setViewing(null)}
               />
               <Button
-                label="Send to Finance"
+                label="Send to UTD Department"
                 icon="send"
                 variant="primary"
                 onClick={() => send(viewing)}

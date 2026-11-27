@@ -12,6 +12,7 @@ export type ApplicationStatus =
   | 'Interview Scheduled'
   | 'Not Selected'
   | 'In Merit List'
+  | 'Forwarded to UTD'
   | 'Pending Approval'
   | 'Returned by Registrar & VC'
   | 'Joined';
@@ -20,6 +21,8 @@ export type LogStatus = 'Pending' | 'Verified' | 'Rejected';
 
 export type BillStatus =
   | 'Prepared'
+  | 'Sent to UTD'
+  | 'Returned by UTD'
   | 'Sent to Finance'
   | 'Under Verification'
   | 'Pending Registrar & VC Approval'
@@ -57,28 +60,45 @@ export interface Application {
   address: string;
   qualifications: string[];
   designation: string;
-  dateOfAppointment: string;
+  /** Total teaching / professional experience, in years. */
+  experienceYears: number;
+  applicationType?: 'New Registration' | 'Re-apply';
+  reapplyFor?: 'Another Subject' | 'Another UTD Department';
+  /** Experience as visiting faculty at DAVV — re-apply only. */
+  davvExperienceYears?: number;
   pan: string;
   aadhar: string;
   session: string;
   semester: 'Odd' | 'Even';
   programs: string[];
   branches: string[];
-  years: string[];
+  /** Semesters taught, in Roman numerals (I–VI). */
+  semesters: string[];
   subjects: string[];
   labs: string[];
   theoryHoursPerWeek: number;
   practicalHoursPerWeek: number;
   resume: string;
   qualificationDocument: string;
+  panCardDocument: string;
   status: ApplicationStatus;
   rejectionReason?: string;
   verifiedOn?: string;
   interview?: Interview;
   meritRank?: number;
+  /** Date the HOD forwarded the merit list to the UTD Department. */
+  hodForwardedOn?: string;
+  /** Remarks when the UTD Department returns a candidate to the HOD. */
+  utdRemarks?: string;
   forwardedOn?: string;
   headOfficeRemarks?: string;
+  /** Date of Registrar & VC approval. */
   joinedOn?: string;
+  /**
+   * Actual joining date, entered once by the department after approval.
+   * Final — it cannot be changed afterwards.
+   */
+  joiningDate?: string;
 }
 
 /** One teaching session entered from the mobile app. */
@@ -125,6 +145,11 @@ export interface Bill {
   paidOn?: string;
   transactionRef?: string;
   financeRemarks?: string;
+  /** Branch whose HOD verified attendance and prepared the bill. */
+  branch?: string;
+  sentToUtdOn?: string;
+  utdForwardedOn?: string;
+  utdRemarks?: string;
   /** Set when the department's monthly total crossed the approval threshold. */
   sentForApprovalOn?: string;
   approvedOn?: string;
@@ -151,4 +176,12 @@ export interface Faculty {
   subjects: string[];
   labs: string[];
   joinedOn: string;
+  /** One entry per UTD the faculty is approved in. */
+  appointments: {
+    appId: string;
+    department: string;
+    branch: string;
+    approvedOn?: string;
+    joiningDate?: string;
+  }[];
 }
