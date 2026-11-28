@@ -17,7 +17,12 @@ import {
   PreviewField,
   PreviewSection,
 } from 'shared/new-components';
-import { MultiPick, StageNote, UniqueIdChip } from '../components/ui';
+import {
+  MultiPick,
+  StageNote,
+  SubjectCodeField,
+  UniqueIdChip,
+} from '../components/ui';
 import {
   DEPT_BRANCHES,
   DEPARTMENT_OPTIONS,
@@ -100,6 +105,7 @@ export default function RegistrationForm({ mode }: { mode: Mode }) {
   const navigate = useNavigate();
   const applications = useVisitingFacultyStore(s => s.applications);
   const submitApplication = useVisitingFacultyStore(s => s.submitApplication);
+  const subjectMaster = useVisitingFacultyStore(s => s.subjects);
 
   const [form, setForm] = useState<ApplicationForm>(blank);
   const [departments, setDepartments] = useState<string[]>([]);
@@ -262,6 +268,15 @@ export default function RegistrationForm({ mode }: { mode: Mode }) {
       e.semester = 'Select July – Dec or Jan – June.';
     if (!form.subjects.some(Boolean) && !form.labs.some(Boolean))
       e.subjects = 'Enter at least one subject or lab code.';
+    const unknown = (codes: string[], type: 'Theory' | 'Practical') =>
+      codes
+        .filter(Boolean)
+        .find(c => !subjectMaster.some(m => m.code === c && m.type === type));
+    const badSubject = unknown(form.subjects, 'Theory');
+    if (badSubject && !e.subjects)
+      e.subjects = `${badSubject} is not a theory subject in the subject master.`;
+    const badLab = unknown(form.labs, 'Practical');
+    if (badLab) e.labs = `${badLab} is not a lab in the subject master.`;
     if (!form.theoryHoursPerWeek && !form.practicalHoursPerWeek)
       e.theoryHoursPerWeek = 'Enter theory or practical hours per week.';
     if (!form.resume) e.resume = 'Upload your resume.';
@@ -758,10 +773,11 @@ export default function RegistrationForm({ mode }: { mode: Mode }) {
             onChange={v => set('semesters', v)}
           />
           {form.subjects.map((s, i) => (
-            <TextBox
+            <SubjectCodeField
               key={`subject-${i}`}
               label={`Subject ${i + 1}`}
               placeholder="Subject Code"
+              expected="Theory"
               value={s}
               errorMessage={i === 0 ? errors.subjects : undefined}
               onChange={v => setAt('subjects', i, v)}
@@ -771,11 +787,13 @@ export default function RegistrationForm({ mode }: { mode: Mode }) {
         <div className="mt-4">
           <FormGrid columns={4}>
             {form.labs.map((l, i) => (
-              <TextBox
+              <SubjectCodeField
                 key={`lab-${i}`}
                 label={`Lab ${i + 1}`}
-                placeholder="Subject code"
+                placeholder="Lab code"
+                expected="Practical"
                 value={l}
+                errorMessage={i === 0 ? errors.labs : undefined}
                 onChange={v => setAt('labs', i, v)}
               />
             ))}

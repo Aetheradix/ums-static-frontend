@@ -185,3 +185,33 @@ export interface Faculty {
     joiningDate?: string;
   }[];
 }
+
+/** A subject or lab of one branch, maintained by that branch's HOD. */
+export interface SubjectMaster {
+  id: string;
+  department: string;
+  branch: string;
+  code: string;
+  name: string;
+  /** Theory = subject (Subject 1–4 in the form); Practical = lab (Lab 1–8). */
+  type: SessionType;
+  program: string;
+  semester: string;
+}
+
+/** How many visiting faculty a branch needs for a subject in a term. */
+export interface FacultyRequirement {
+  id: string;
+  department: string;
+  branch: string;
+  session: string;
+  /** Odd = July–Dec, Even = Jan–June. */
+  semesterPeriod: 'Odd' | 'Even';
+  program: string;
+  semester: string;
+  subjectCode: string;
+  facultyRequired: number;
+  hoursPerWeek: number;
+  remarks?: string;
+  createdOn: string;
+}

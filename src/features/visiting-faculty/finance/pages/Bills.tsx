@@ -53,6 +53,10 @@ interface BatchRow {
   approvedBy?: string;
   approvalRemarks?: string;
   paidOn?: string;
+  /** Total of the whole department-month, even when the view is narrowed. */
+  deptTotal?: number;
+  /** True when a faculty search narrowed this row to that faculty's bills. */
+  narrowed?: boolean;
 }
 
 const STAGE_VARIANT: Record<
@@ -207,10 +211,34 @@ export default function FinanceBills() {
       b.uniqueId.toLowerCase().includes(q) ||
       b.billNo.toLowerCase().includes(q));
 
-  const shownBatches = batches.filter(batchMatch);
-  const readyBatches = batches.filter(
-    b => b.stage === 'VC Approved — Process Payment'
-  );
+  const facultyMatch = (b: Bill) =>
+    b.facultyName.toLowerCase().includes(q) ||
+    b.uniqueId.toLowerCase().includes(q);
+
+  /**
+   * A search by faculty name / Unique ID narrows every department row to
+   * that faculty's bills — counts, theory/practical and totals included.
+   * Stage and approval still follow the whole department-month.
+   */
+  const narrow = (r: BatchRow): BatchRow => {
+    if (!q || r.department.toLowerCase().includes(q))
+      return { ...r, deptTotal: r.total, narrowed: false };
+    const items = r.items.filter(facultyMatch);
+    return {
+      ...r,
+      items,
+      count: items.length,
+      total: items.reduce((s, b) => s + b.billAmount, 0),
+      paid: items.reduce((s, b) => s + (b.paidOn ? (b.payable ?? 0) : 0), 0),
+      deptTotal: r.total,
+      narrowed: true,
+    };
+  };
+
+  const shownBatches = batches.filter(batchMatch).map(narrow);
+  const readyBatches = batches
+    .filter(b => b.stage === 'VC Approved — Process Payment')
+    .map(narrow);
   const withVc = shownBatches.filter(b => b.stage === 'With Registrar & VC');
   const toForward = batches.filter(
     b => b.stage === 'Forward to Registrar & VC'
@@ -227,9 +255,14 @@ export default function FinanceBills() {
   const billBatch = openBill
     ? deptBatch(openBill.department, openBill.period, bills, rates)
     : null;
-  const openBatch = batches.find(b => b.id === openBatchId) ?? null;
-  const preview = openBatch
-    ? simulateBatchPayment(openBatch.items, bills, rates)
+  const openBatchFull = batches.find(b => b.id === openBatchId) ?? null;
+  const fullBatch = (id: string) => batches.find(b => b.id === id) ?? null;
+  const openBatch = openBatchFull ? narrow(openBatchFull) : null;
+  // Payment order runs over the whole department; the view shows the searched faculty only.
+  const preview = openBatchFull
+    ? simulateBatchPayment(openBatchFull.items, bills, rates).filter(r =>
+        openBatch?.items.some(b => b.id === r.bill.id)
+      )
     : [];
   const previewPayable = preview.reduce((s, r) => s + r.payable, 0);
   const previewNotPayable = preview.reduce((s, r) => s + r.notPayable, 0);
@@ -330,6 +363,11 @@ export default function FinanceBills() {
           className={`font-semibold ${r.needsApproval ? 'text-red-600 dark:text-red-400' : ''}`}
         >
           {inr(r.total)}
+          {r.narrowed && (
+            <span className="block text-[11px] font-normal text-slate-500">
+              Dept. total {inr(r.deptTotal ?? 0)}
+            </span>
+          )}
           {r.needsApproval && (
             <span className="block text-[11px] font-normal">
               above {inr(rates.approvalThreshold)}
@@ -363,7 +401,7 @@ export default function FinanceBills() {
               icon="send"
               variant="text"
               size="small"
-              onClick={() => setForwarding(r)}
+              onClick={() => setForwarding(fullBatch(r.id))}
             />
           )}
           {isPayable(r.stage) && (
@@ -692,7 +730,9 @@ export default function FinanceBills() {
         }
         subtitle={
           openBatch
-            ? `${openBatch.departmentName} · ${openBatch.count} bills · total ${inr(openBatch.total)}`
+            ? openBatch.narrowed
+              ? `Showing “${search.trim()}” only · ${openBatch.count} bill(s) · ${inr(openBatch.total)} (department total ${inr(openBatch.deptTotal ?? 0)})`
+              : `${openBatch.departmentName} · ${openBatch.count} bills · total ${inr(openBatch.total)}`
             : undefined
         }
         size="xl"
@@ -709,10 +749,10 @@ export default function FinanceBills() {
                   label="Forward to Registrar & VC"
                   icon="send"
                   variant="warning"
-                  onClick={() => setForwarding(openBatch)}
+                  onClick={() => setForwarding(openBatchFull)}
                 />
               )}
-              {isPayable(openBatch.stage) && (
+              {isPayable(openBatch.stage) && !openBatch.narrowed && (
                 <Button
                   label={`Release ${inr(previewPayable)}`}
                   icon="wallet"
@@ -775,6 +815,15 @@ export default function FinanceBills() {
               ))}
             </ol>
 
+            {openBatch.narrowed && (
+              <StageNote>
+                Showing only the bills of “{search.trim()}” in{' '}
+                {openBatch.department}. Approval and payment of the whole
+                department ({inr(openBatch.deptTotal ?? 0)}) work as usual —
+                clear the search to release the department&apos;s payment, or
+                release this bill alone from View Details.
+              </StageNote>
+            )}
             {openBatch.stage === 'With Registrar & VC' && (
               <StageNote tone="warning">
                 Forwarded on {formatDate(openBatch.sentForApprovalOn)} — waiting
@@ -887,7 +936,12 @@ export default function FinanceBills() {
 
             {preview.length > 0 && (
               <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-                {tile('Department Total', inr(openBatch.total))}
+                {tile(
+                  openBatch.narrowed
+                    ? 'Bill Total (searched)'
+                    : 'Department Total',
+                  inr(openBatch.total)
+                )}
                 {tile(
                   'Payable now',
                   inr(previewPayable),
@@ -901,7 +955,7 @@ export default function FinanceBills() {
               </div>
             )}
 
-            {isPayable(openBatch.stage) && (
+            {isPayable(openBatch.stage) && !openBatch.narrowed && (
               <FormGrid columns={2}>
                 <TextBox
                   label="Bank Transaction / Batch Reference"

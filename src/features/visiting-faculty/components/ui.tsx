@@ -1,4 +1,8 @@
-import { DropDownList, MultiSelectList } from 'shared/components/forms';
+import {
+  DropDownList,
+  MultiSelectList,
+  TextBox,
+} from 'shared/components/forms';
 import {
   PreviewField,
   PreviewSection,
@@ -287,6 +291,70 @@ export function ApplicationDetails({ app }: { app: Application }) {
             />
           )}
         </PreviewSection>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Subject / lab code input that looks the code up in the HODs' subject
+ * master and shows the name underneath. Subject fields expect a Theory
+ * code, lab fields a Practical code.
+ */
+export function SubjectCodeField({
+  label,
+  value,
+  onChange,
+  expected,
+  placeholder,
+  errorMessage,
+}: {
+  label: string;
+  value: string;
+  onChange: (code: string) => void;
+  expected: 'Theory' | 'Practical';
+  placeholder?: string;
+  errorMessage?: string;
+}) {
+  const subjects = useVisitingFacultyStore(s => s.subjects);
+  const code = value.trim().toUpperCase();
+  const found = code ? subjects.find(s => s.code === code) : undefined;
+  return (
+    <div className="flex flex-col gap-1">
+      <TextBox
+        label={label}
+        placeholder={placeholder}
+        value={value}
+        errorMessage={errorMessage}
+        onChange={v => onChange(v.toUpperCase().replace(/\s/g, ''))}
+      />
+      {code && (
+        <span
+          className={`text-xs ${
+            !found
+              ? 'text-red-600 dark:text-red-400'
+              : found.type !== expected
+                ? 'text-amber-600 dark:text-amber-400'
+                : 'text-green-700 dark:text-green-400'
+          }`}
+        >
+          {!found ? (
+            <>
+              <i className="pi pi-times-circle mr-1" />
+              Code not found in the subject master
+            </>
+          ) : (
+            <>
+              <i
+                className={`pi ${found.type !== expected ? 'pi-exclamation-triangle' : 'pi-check-circle'} mr-1`}
+              />
+              {found.name} · {found.type} · {found.department} {found.branch} ·
+              Sem {found.semester}
+              {found.type !== expected &&
+                ` — this is a ${found.type === 'Practical' ? 'lab' : 'theory subject'} code`}
+            </>
+          )}
+        </span>
       )}
     </div>
   );

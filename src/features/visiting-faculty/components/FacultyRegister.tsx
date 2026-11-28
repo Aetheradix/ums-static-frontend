@@ -186,7 +186,7 @@ export default function FacultyRegister({
         </FormGrid>
       </FormCard>
       <FormCard
-        title="Joined Visiting Faculty"
+        title="Appointed Visiting Faculty Details"
         subtitle="One Unique ID per faculty for the whole university — every department is linked under it."
         icon="id-card"
       >

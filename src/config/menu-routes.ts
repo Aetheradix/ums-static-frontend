@@ -1754,6 +1754,24 @@ export const menuConfig: Menu.MenuItem[] = [
             colorScheme: 'blue',
           },
           {
+            label: 'Subject Master',
+            slug: 'vf-hod-subject-master',
+            description:
+              'Subjects and labs of your branch — codes the registration form looks up.',
+            path: '/visiting-faculty/hod/subject-master',
+            icon: 'menu_book',
+            colorScheme: 'indigo',
+          },
+          {
+            label: 'Faculty Requirement',
+            slug: 'vf-hod-requirements',
+            description:
+              'Visiting faculty needed per subject, by session and semester period.',
+            path: '/visiting-faculty/hod/requirements',
+            icon: 'assignment_ind',
+            colorScheme: 'orange',
+          },
+          {
             label: 'Applications',
             slug: 'vf-hod-applications',
             description: 'View, verify or reject applications for your branch.',
@@ -1789,7 +1807,7 @@ export const menuConfig: Menu.MenuItem[] = [
             colorScheme: 'amber',
           },
           {
-            label: 'Joined Faculty',
+            label: 'Appointed Faculty',
             slug: 'vf-hod-faculty',
             description:
               'Approved faculty of your branch — enter the joining date once.',
@@ -1846,6 +1864,15 @@ export const menuConfig: Menu.MenuItem[] = [
             colorScheme: 'blue',
           },
           {
+            label: 'Faculty Requirement',
+            slug: 'vf-dept-requirements',
+            description:
+              'Visiting faculty needed by every branch, as entered by the HODs.',
+            path: '/visiting-faculty/department/requirements',
+            icon: 'assignment_ind',
+            colorScheme: 'orange',
+          },
+          {
             label: 'Merit List Review',
             slug: 'vf-dept-merit-review',
             description:
@@ -1863,7 +1890,7 @@ export const menuConfig: Menu.MenuItem[] = [
             colorScheme: 'teal',
           },
           {
-            label: 'Joined Faculty',
+            label: 'Appointed Faculty',
             slug: 'vf-dept-faculty',
             description: 'Approved visiting faculty of every branch.',
             path: '/visiting-faculty/department/faculty',

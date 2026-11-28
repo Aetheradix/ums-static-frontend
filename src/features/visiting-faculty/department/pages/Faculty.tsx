@@ -7,13 +7,13 @@ export default function Faculty() {
   const scope = useScope();
   return (
     <FormPage
-      title="Joined Faculty"
+      title="Appointed Faculty"
       description={
         scope.isHod
           ? `Visiting faculty of ${scope.branch} approved by Registrar & VC. Enter each joining date once — it is final.`
           : `Visiting faculty of ${scope.dept} across all branches. Joining dates are entered by the branch HODs.`
       }
-      breadcrumbs={crumbs(scope.login, 'Joined Faculty')}
+      breadcrumbs={crumbs(scope.login, 'Appointed Faculty')}
       headerAction={<scope.Switcher />}
     >
       <FacultyRegister

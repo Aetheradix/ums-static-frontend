@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import Faculty from './pages/Faculty';
 import MeritReview from './pages/MeritReview';
 import Reports from './pages/Reports';
+import Requirements from './pages/Requirements';
 import { vfUrls } from '../urls';
 
 /**
@@ -26,6 +27,7 @@ export default function DepartmentLogin() {
         <Route path="attendance" element={<Attendance />} />
         <Route path="bill-review" element={<BillReview />} />
         <Route path="reports" element={<Reports />} />
+        <Route path="requirements" element={<Requirements />} />
       </Routes>
     </ScopeProvider>
   );

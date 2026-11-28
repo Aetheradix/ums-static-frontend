@@ -8,6 +8,8 @@ import Faculty from '../department/pages/Faculty';
 import Interview from '../department/pages/Interview';
 import MeritList from '../department/pages/MeritList';
 import Reports from '../department/pages/Reports';
+import Requirements from '../department/pages/Requirements';
+import SubjectMaster from '../department/pages/SubjectMaster';
 import Scrutiny from '../department/pages/Scrutiny';
 import { vfUrls } from '../urls';
 
@@ -30,6 +32,8 @@ export default function HodLogin() {
         <Route path="attendance" element={<Attendance />} />
         <Route path="bills" element={<Bills />} />
         <Route path="reports" element={<Reports />} />
+        <Route path="subject-master" element={<SubjectMaster />} />
+        <Route path="requirements" element={<Requirements />} />
       </Routes>
     </ScopeProvider>
   );
