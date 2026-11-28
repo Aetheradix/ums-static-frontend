@@ -26,6 +26,8 @@ export const vfUrls = {
     attendance: `${root}/hod/attendance`,
     bills: `${root}/hod/bills`,
     reports: `${root}/hod/reports`,
+    subjectMaster: `${root}/hod/subject-master`,
+    requirements: `${root}/hod/requirements`,
   },
 
   department: {
@@ -36,6 +38,7 @@ export const vfUrls = {
     faculty: `${root}/department/faculty`,
     attendance: `${root}/department/attendance`,
     reports: `${root}/department/reports`,
+    requirements: `${root}/department/requirements`,
   },
 
   headOffice: {

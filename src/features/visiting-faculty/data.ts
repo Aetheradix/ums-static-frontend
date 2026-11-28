@@ -4,7 +4,9 @@ import type {
   Bill,
   DailyLog,
   Department,
+  FacultyRequirement,
   RateMaster,
+  SubjectMaster,
   TeachingSession,
 } from './types';
 import { makeUniqueId } from './utils';
@@ -1848,4 +1850,242 @@ MULTI_UTD.forEach((m, i) => {
       }
     )
   );
+});
+
+// ── Subject master and faculty requirements ────────────────────
+// Each HOD keeps the subjects and labs of the branch. The codes follow the
+// ones used in the sample applications, so names resolve everywhere.
+
+const SUBJECT_NAMES: Record<string, string[]> = {
+  CER: [
+    'Data Structures',
+    'Operating Systems',
+    'Computer Networks',
+    'Database Management Systems',
+    'Theory of Computation',
+    'Compiler Design',
+    'Software Engineering',
+    'Machine Learning',
+    'Computer Architecture',
+    'Design & Analysis of Algorithms',
+  ],
+  ITR: [
+    'Web Technologies',
+    'Object Oriented Programming',
+    'Information Security',
+    'Cloud Computing',
+    'Data Mining',
+    'Internet of Things',
+    'Distributed Systems',
+    'Mobile Application Development',
+    'Big Data Analytics',
+    'Software Testing',
+  ],
+  ETR: [
+    'Signals & Systems',
+    'Analog Communication',
+    'Digital Communication',
+    'Microprocessors',
+    'Antenna & Wave Propagation',
+    'VLSI Design',
+    'Control Systems',
+    'Digital Signal Processing',
+    'Optical Communication',
+    'Embedded Systems',
+  ],
+  EIR: [
+    'Transducers',
+    'Process Control',
+    'Industrial Instrumentation',
+    'Biomedical Instrumentation',
+    'Control Systems',
+    'Analytical Instrumentation',
+    'PLC & SCADA',
+    'Sensors & Actuators',
+    'Virtual Instrumentation',
+    'Power Electronics',
+  ],
+  MER: [
+    'Engineering Thermodynamics',
+    'Fluid Mechanics',
+    'Strength of Materials',
+    'Theory of Machines',
+    'Heat Transfer',
+    'Machine Design',
+    'Manufacturing Processes',
+    'Refrigeration & Air Conditioning',
+    'IC Engines',
+    'CAD/CAM',
+  ],
+  CVR: [
+    'Surveying',
+    'Structural Analysis',
+    'Geotechnical Engineering',
+    'Concrete Technology',
+    'Transportation Engineering',
+    'Hydraulics',
+    'Environmental Engineering',
+    'Design of Steel Structures',
+    'Estimation & Costing',
+    'Construction Management',
+  ],
+  'MCA-': [
+    'Programming in C',
+    'Discrete Mathematics',
+    'Java Programming',
+    'Python Programming',
+    'Data Structures using C++',
+    'Computer Graphics',
+    'Artificial Intelligence',
+    'Software Project Management',
+    'Linux Administration',
+    'Advanced DBMS',
+  ],
+  'IMBA-': [
+    'Principles of Management',
+    'Business Economics',
+    'Financial Accounting',
+    'Marketing Management',
+    'Organisational Behaviour',
+    'Business Statistics',
+    'Human Resource Management',
+    'Business Law',
+    'Operations Research',
+    'Strategic Management',
+  ],
+  'MBA-': [
+    'Managerial Economics',
+    'Corporate Finance',
+    'Marketing Research',
+    'Consumer Behaviour',
+    'Supply Chain Management',
+    'Business Analytics',
+    'Investment Management',
+    'Digital Marketing',
+    'Entrepreneurship',
+    'International Business',
+  ],
+  'MSC-CS-': [
+    'Advanced Algorithms',
+    'Data Science',
+    'Computer Vision',
+    'Natural Language Processing',
+    'Parallel Computing',
+    'Blockchain Technology',
+    'Deep Learning',
+    'Cryptography',
+    'Soft Computing',
+    'Research Methodology',
+  ],
+  'BCOM-': [
+    'Financial Accounting',
+    'Cost Accounting',
+    'Income Tax',
+    'Business Law',
+    'Corporate Accounting',
+    'Auditing',
+    'Banking & Insurance',
+    'Management Accounting',
+    'GST',
+    'E-Commerce',
+  ],
+  'ECO-': [
+    'Microeconomics',
+    'Macroeconomics',
+    'Indian Economy',
+    'Econometrics',
+    'Public Finance',
+    'International Economics',
+    'Development Economics',
+    'Monetary Economics',
+    'Agricultural Economics',
+    'Environmental Economics',
+  ],
+};
+
+let subjectSeq = 0;
+
+export const SEED_SUBJECTS: SubjectMaster[] = Object.entries(
+  BRANCH_CODE
+).flatMap(([key, code]) => {
+  const [department, branch] = key.split('|');
+  const names = SUBJECT_NAMES[code] ?? SUBJECT_NAMES.CER;
+  const program = BRANCH_PROGRAM[department] ?? 'B.E.';
+  const theory = [
+    301, 303, 304, 311, 313, 314, 321, 323, 324, 331, 334, 341, 344, 402, 412,
+    422, 432, 442, 452, 462, 472, 482,
+  ];
+  const labs = [30, 31, 32, 33, 34, 40, 41, 42, 43, 44, 45, 46, 47, 48];
+  return [
+    ...theory.map((n, i) => ({
+      id: `sub-${++subjectSeq}`,
+      department,
+      branch,
+      code: `${code}${n}`,
+      name: names[i % names.length],
+      type: 'Theory' as const,
+      program,
+      semester: SEMESTER_NUMBERS[Math.floor(n / 100) - 1] ?? 'III',
+    })),
+    ...labs.map((n, i) => ({
+      id: `sub-${++subjectSeq}`,
+      department,
+      branch,
+      code: `${code}L${n}`,
+      name: `${names[i % names.length]} Lab`,
+      type: 'Practical' as const,
+      program,
+      semester: SEMESTER_NUMBERS[Math.floor(n / 10) - 1] ?? 'III',
+    })),
+  ];
+});
+
+export const SEED_REQUIREMENTS: FacultyRequirement[] = Object.entries(
+  BRANCH_CODE
+).flatMap(([key, code], b) => {
+  const [department, branch] = key.split('|');
+  const program = BRANCH_PROGRAM[department] ?? 'B.E.';
+  const rows: [string, 'Odd' | 'Even', string, number, number, number][] = [
+    // session, period, semester, code number, required, hours/week
+    ['2026-2027', 'Odd', 'III', 301, 2, 4],
+    ['2026-2027', 'Odd', 'III', 304, 1, 3],
+    ['2026-2027', 'Odd', 'IV', 402, 1, 4],
+    ['2026-2027', 'Even', 'IV', 412, 2, 4],
+    ['2026-2027', 'Even', 'V', 432, 1, 3],
+    ['2025-2026', 'Even', 'IV', 311, 1, 4],
+  ];
+  return [
+    ...rows.map(
+      (
+        [session, semesterPeriod, semester, n, facultyRequired, hoursPerWeek],
+        i
+      ) => ({
+        id: `req-${b}-${i}`,
+        department,
+        branch,
+        session,
+        semesterPeriod,
+        program,
+        semester,
+        subjectCode: `${code}${n}`,
+        facultyRequired,
+        hoursPerWeek,
+        remarks: i === 0 ? 'Regular faculty on leave for the term.' : undefined,
+        createdOn: session === '2025-2026' ? '2026-01-05' : '2026-06-20',
+      })
+    ),
+    {
+      id: `req-${b}-lab`,
+      department,
+      branch,
+      session: '2026-2027',
+      semesterPeriod: 'Odd' as const,
+      program,
+      semester: 'III',
+      subjectCode: `${code}L30`,
+      facultyRequired: 1,
+      hoursPerWeek: 2,
+      createdOn: '2026-06-20',
+    },
+  ];
 });

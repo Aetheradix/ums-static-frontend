@@ -89,7 +89,7 @@ export default function HeadOfficeDashboard() {
             { field: 'applications', header: 'Applications' },
             { field: 'inProcess', header: 'In Process' },
             { field: 'pending', header: 'Awaiting Approval' },
-            { field: 'joined', header: 'Joined Faculty' },
+            { field: 'joined', header: 'Appointed Faculty' },
           ]}
         />
       </FormCard>

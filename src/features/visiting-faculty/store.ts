@@ -5,14 +5,18 @@ import {
   SEED_APPLICATIONS,
   SEED_BILLS,
   SEED_LOGS,
+  SEED_REQUIREMENTS,
+  SEED_SUBJECTS,
 } from './data';
 import type {
   Application,
   Bill,
   DailyLog,
   Faculty,
+  FacultyRequirement,
   Interview,
   RateMaster,
+  SubjectMaster,
   TeachingSession,
 } from './types';
 import {
@@ -48,6 +52,8 @@ interface VisitingFacultyState {
   logs: DailyLog[];
   bills: Bill[];
   rates: RateMaster;
+  subjects: SubjectMaster[];
+  requirements: FacultyRequirement[];
   /** The UTD the department login is acting for (auth is mocked). */
   currentDept: string;
   /** The branch HOD login being acted as (auth is mocked). */
@@ -56,6 +62,10 @@ interface VisitingFacultyState {
   setCurrentDept: (code: string) => void;
   setCurrentHod: (department: string, branch: string) => void;
   setRates: (rates: RateMaster) => void;
+  saveSubject: (subject: SubjectMaster) => string | null;
+  removeSubject: (id: string) => void;
+  saveRequirement: (req: FacultyRequirement) => void;
+  removeRequirement: (id: string) => void;
 
   // Joining process
   submitApplication: (
@@ -129,6 +139,8 @@ export const useVisitingFacultyStore = create<VisitingFacultyState>(
     logs: SEED_LOGS,
     bills: SEED_BILLS,
     rates: DEFAULT_RATES,
+    subjects: SEED_SUBJECTS,
+    requirements: SEED_REQUIREMENTS,
     currentDept: 'IET',
     currentHod: { department: 'IET', branch: 'Computer Engineering' },
 
@@ -136,6 +148,36 @@ export const useVisitingFacultyStore = create<VisitingFacultyState>(
     setCurrentHod: (department, branch) =>
       set({ currentHod: { department, branch } }),
     setRates: rates => set({ rates }),
+
+    saveSubject: subject => {
+      const code = subject.code.trim().toUpperCase();
+      const clash = get().subjects.some(
+        s => s.code === code && s.id !== subject.id
+      );
+      if (clash) return `Code ${code} is already in the subject master.`;
+      const row = { ...subject, code, id: subject.id || nextId('sub') };
+      set(s => ({
+        subjects: s.subjects.some(x => x.id === row.id)
+          ? s.subjects.map(x => (x.id === row.id ? row : x))
+          : [row, ...s.subjects],
+      }));
+      return null;
+    },
+
+    removeSubject: id =>
+      set(s => ({ subjects: s.subjects.filter(x => x.id !== id) })),
+
+    saveRequirement: req => {
+      const row = { ...req, id: req.id || nextId('req') };
+      set(s => ({
+        requirements: s.requirements.some(x => x.id === row.id)
+          ? s.requirements.map(x => (x.id === row.id ? row : x))
+          : [row, ...s.requirements],
+      }));
+    },
+
+    removeRequirement: id =>
+      set(s => ({ requirements: s.requirements.filter(x => x.id !== id) })),
 
     submitApplication: (form, departments) => {
       const submittedOn = todayIso();

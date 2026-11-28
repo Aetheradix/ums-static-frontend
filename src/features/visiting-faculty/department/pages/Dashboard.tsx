@@ -92,7 +92,7 @@ export default function DepartmentDashboard() {
           }
         />
         <StatCard
-          title="Joined Faculty"
+          title="Appointed Faculty"
           value={joined}
           icon="id-card"
           colorScheme="green"
